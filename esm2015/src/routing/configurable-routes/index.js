@@ -1,0 +1,12 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ConfigurableRoutesConfig } from './config/configurable-routes-config';
+export {} from './config/storefront-routes-translations';
+export { UrlTranslationModule, TranslateUrlPipe } from './url-translation/index';
+export { ConfigurableRoutesService } from './configurable-routes.service';
+export { initConfigurableRoutes, ConfigurableRoutesModule } from './configurable-routes.module';
+export { RoutesConfigLoader } from './routes-config-loader';
+export {} from './routes-config';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcm91dGluZy9jb25maWd1cmFibGUtcm91dGVzL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSx5Q0FBYyxxQ0FBcUMsQ0FBQztBQUNwRCxlQUFjLHlDQUF5QyxDQUFDO0FBQ3hELHVEQUFjLHlCQUF5QixDQUFDO0FBRXhDLDBDQUFjLCtCQUErQixDQUFDO0FBQzlDLGlFQUFjLDhCQUE4QixDQUFDO0FBQzdDLG1DQUFjLHdCQUF3QixDQUFDO0FBQ3ZDLGVBQWMsaUJBQWlCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL2NvbmZpZy9jb25maWd1cmFibGUtcm91dGVzLWNvbmZpZyc7XG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZy9zdG9yZWZyb250LXJvdXRlcy10cmFuc2xhdGlvbnMnO1xuZXhwb3J0ICogZnJvbSAnLi91cmwtdHJhbnNsYXRpb24vaW5kZXgnO1xuXG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZ3VyYWJsZS1yb3V0ZXMuc2VydmljZSc7XG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZ3VyYWJsZS1yb3V0ZXMubW9kdWxlJztcbmV4cG9ydCAqIGZyb20gJy4vcm91dGVzLWNvbmZpZy1sb2FkZXInO1xuZXhwb3J0ICogZnJvbSAnLi9yb3V0ZXMtY29uZmlnJztcbiJdfQ==

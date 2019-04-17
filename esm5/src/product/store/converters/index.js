@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ProductImageConverterService } from './product-image-converter.service';
+export { ProductReferenceConverterService } from './product-reference-converter.service';
+export { ProductConverterModule } from './product-converter.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9zdG9yZS9jb252ZXJ0ZXJzL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSw2Q0FBYyxtQ0FBbUMsQ0FBQztBQUNsRCxpREFBYyx1Q0FBdUMsQ0FBQztBQUN0RCx1Q0FBYyw0QkFBNEIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1pbWFnZS1jb252ZXJ0ZXIuc2VydmljZSc7XG5leHBvcnQgKiBmcm9tICcuL3Byb2R1Y3QtcmVmZXJlbmNlLWNvbnZlcnRlci5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1jb252ZXJ0ZXIubW9kdWxlJztcbiJdfQ==

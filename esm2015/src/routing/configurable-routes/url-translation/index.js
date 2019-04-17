@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { UrlTranslationModule } from './url-translation.module';
+export { TranslateUrlPipe } from './translate-url.pipe';
+export {} from './translate-url-options';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcm91dGluZy9jb25maWd1cmFibGUtcm91dGVzL3VybC10cmFuc2xhdGlvbi9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEscUNBQWMsMEJBQTBCLENBQUM7QUFDekMsaUNBQWMsc0JBQXNCLENBQUM7QUFDckMsZUFBYyx5QkFBeUIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vdXJsLXRyYW5zbGF0aW9uLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL3RyYW5zbGF0ZS11cmwucGlwZSc7XG5leHBvcnQgKiBmcm9tICcuL3RyYW5zbGF0ZS11cmwtb3B0aW9ucyc7XG4iXX0=

@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ProductLoaderService } from './product.service';
+export { ProductSearchLoaderService } from './product-search.service';
+export { ProductReviewsLoaderService } from './product-reviews.service';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9vY2MvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHFDQUFjLG1CQUFtQixDQUFDO0FBQ2xDLDJDQUFjLDBCQUEwQixDQUFDO0FBQ3pDLDRDQUFjLDJCQUEyQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9wcm9kdWN0LnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9wcm9kdWN0LXNlYXJjaC5zZXJ2aWNlJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1yZXZpZXdzLnNlcnZpY2UnO1xuIl19

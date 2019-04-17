@@ -1,0 +1,11 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { LanguagesEffects } from './languages.effect';
+import { CurrenciesEffects } from './currencies.effect';
+/** @type {?} */
+export const effects = [LanguagesEffects, CurrenciesEffects];
+export { LanguagesEffects } from './languages.effect';
+export { CurrenciesEffects } from './currencies.effect';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvc2l0ZS1jb250ZXh0L3N0b3JlL2VmZmVjdHMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxnQkFBZ0IsRUFBRSxNQUFNLG9CQUFvQixDQUFDO0FBQ3RELE9BQU8sRUFBRSxpQkFBaUIsRUFBRSxNQUFNLHFCQUFxQixDQUFDOztBQUV4RCxNQUFNLE9BQU8sT0FBTyxHQUFVLENBQUMsZ0JBQWdCLEVBQUUsaUJBQWlCLENBQUM7QUFFbkUsaUNBQWMsb0JBQW9CLENBQUM7QUFDbkMsa0NBQWMscUJBQXFCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBMYW5ndWFnZXNFZmZlY3RzIH0gZnJvbSAnLi9sYW5ndWFnZXMuZWZmZWN0JztcbmltcG9ydCB7IEN1cnJlbmNpZXNFZmZlY3RzIH0gZnJvbSAnLi9jdXJyZW5jaWVzLmVmZmVjdCc7XG5cbmV4cG9ydCBjb25zdCBlZmZlY3RzOiBhbnlbXSA9IFtMYW5ndWFnZXNFZmZlY3RzLCBDdXJyZW5jaWVzRWZmZWN0c107XG5cbmV4cG9ydCAqIGZyb20gJy4vbGFuZ3VhZ2VzLmVmZmVjdCc7XG5leHBvcnQgKiBmcm9tICcuL2N1cnJlbmNpZXMuZWZmZWN0JztcbiJdfQ==
