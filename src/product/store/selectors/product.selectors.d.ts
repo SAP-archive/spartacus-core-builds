@@ -1,12 +1,12 @@
 import { MemoizedSelector } from '@ngrx/store';
 import { StateWithProduct } from '../product-state';
-import { Product } from '../../../occ/occ-models/occ.models';
 import { EntityLoaderState } from '../../../state/utils/entity-loader/entity-loader-state';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
-export declare const getProductState: MemoizedSelector<StateWithProduct, EntityLoaderState<Product>>;
-export declare const getSelectedProductsFactory: (codes: string[]) => MemoizedSelector<StateWithProduct, Product[]>;
-export declare const getSelectedProductStateFactory: (code: string) => MemoizedSelector<StateWithProduct, LoaderState<Product>>;
-export declare const getSelectedProductFactory: (code: string) => MemoizedSelector<StateWithProduct, Product>;
+import { UIProduct } from '../../model/product';
+export declare const getProductState: MemoizedSelector<StateWithProduct, EntityLoaderState<UIProduct>>;
+export declare const getSelectedProductsFactory: (codes: string[]) => MemoizedSelector<StateWithProduct, UIProduct[]>;
+export declare const getSelectedProductStateFactory: (code: string) => MemoizedSelector<StateWithProduct, LoaderState<UIProduct>>;
+export declare const getSelectedProductFactory: (code: string) => MemoizedSelector<StateWithProduct, UIProduct>;
 export declare const getSelectedProductLoadingFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean>;
 export declare const getSelectedProductSuccessFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean>;
 export declare const getSelectedProductErrorFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean>;

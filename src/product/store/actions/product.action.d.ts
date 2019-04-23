@@ -1,5 +1,5 @@
-import { Product } from '../../../occ/occ-models/occ.models';
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { UIProduct } from '../../model/product';
 export declare const LOAD_PRODUCT = "[Product] Load Product Data";
 export declare const LOAD_PRODUCT_FAIL = "[Product] Load Product Data Fail";
 export declare const LOAD_PRODUCT_SUCCESS = "[Product] Load Product Data Success";
@@ -14,8 +14,8 @@ export declare class LoadProductFail extends EntityFailAction {
     constructor(productCode: string, payload: any);
 }
 export declare class LoadProductSuccess extends EntitySuccessAction {
-    payload: Product;
+    payload: UIProduct;
     readonly type = "[Product] Load Product Data Success";
-    constructor(payload: Product);
+    constructor(payload: UIProduct);
 }
 export declare type ProductAction = LoadProduct | LoadProductFail | LoadProductSuccess;

@@ -1542,48 +1542,7 @@
                 var router$$1 = this.injector.get(router.Router);
                 /** @type {?} */
                 var translatedRoutes = this.translateRoutes(router$$1.config, this.currentRoutesTranslations);
-                translatedRoutes = this.moveWildcardRouteToEnd(translatedRoutes);
                 router$$1.resetConfig(translatedRoutes);
-            };
-        /**
-         * Move the Route with double asterisk (**) to the end of the list.
-         * If there are more Routes with **, only the first will be left and other removed.
-         *
-         * Reason: When some custom Routes are injected after Spartacus' ones,
-         *          then the Spartacus' wildcard Route needs being moved to the end -
-         *          even after custom Routes - to make custom Routes discoverable.
-         *          More than one wildcard Route is a sign of bad config, so redundant copies are removed.
-         */
-        /**
-         * Move the Route with double asterisk (**) to the end of the list.
-         * If there are more Routes with **, only the first will be left and other removed.
-         *
-         * Reason: When some custom Routes are injected after Spartacus' ones,
-         *          then the Spartacus' wildcard Route needs being moved to the end -
-         *          even after custom Routes - to make custom Routes discoverable.
-         *          More than one wildcard Route is a sign of bad config, so redundant copies are removed.
-         * @private
-         * @param {?} routes
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.moveWildcardRouteToEnd = /**
-         * Move the Route with double asterisk (**) to the end of the list.
-         * If there are more Routes with **, only the first will be left and other removed.
-         *
-         * Reason: When some custom Routes are injected after Spartacus' ones,
-         *          then the Spartacus' wildcard Route needs being moved to the end -
-         *          even after custom Routes - to make custom Routes discoverable.
-         *          More than one wildcard Route is a sign of bad config, so redundant copies are removed.
-         * @private
-         * @param {?} routes
-         * @return {?}
-         */
-            function (routes) {
-                /** @type {?} */
-                var firstWildcardRoute = routes.find(function (route) { return route.path === '**'; });
-                return firstWildcardRoute
-                    ? routes.filter(function (route) { return route.path !== '**'; }).concat(firstWildcardRoute)
-                    : routes;
             };
         /**
          * Returns the list of routes translations for given list of nested routes
@@ -2559,6 +2518,7 @@
             paymentManagement: { paths: ['my-account/payment-details'] },
             updateEmail: { paths: ['my-account/update-email'] },
             updateProfile: { paths: ['my-account/update-profile'] },
+            closeAccount: { paths: ['my-account/close-account'] },
         },
         en: ( /** @type {?} */({})),
     };
@@ -6163,6 +6123,41 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var defaultOccProductConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                    productReviews: 'products/${productCode}/reviews',
+                    // tslint:disable:max-line-length
+                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                    // tslint:enable
+                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ ProductReviewsAdapter = /** @class */ (function () {
+        function ProductReviewsAdapter() {
+        }
+        return ProductReviewsAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ConverterService = /** @class */ (function () {
         function ConverterService(injector) {
             this.injector = injector;
@@ -6299,166 +6294,6 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var PRODUCT_NORMALIZER = new i0.InjectionToken('ProductNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OccProductAdapter = /** @class */ (function () {
-        function OccProductAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @param {?} productCode
-         * @return {?}
-         */
-        OccProductAdapter.prototype.load = /**
-         * @param {?} productCode
-         * @return {?}
-         */
-            function (productCode) {
-                return this.http
-                    .get(this.getEndpoint(productCode))
-                    .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
-            };
-        /**
-         * @protected
-         * @param {?} code
-         * @return {?}
-         */
-        OccProductAdapter.prototype.getEndpoint = /**
-         * @protected
-         * @param {?} code
-         * @return {?}
-         */
-            function (code) {
-                return this.occEndpoints.getUrl('product', {
-                    productCode: code,
-                });
-            };
-        OccProductAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccProductAdapter.ctorParameters = function () {
-            return [
-                { type: i1$1.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccProductAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var DEFAULT_SEARCH_CONFIG = {
-        pageSize: 20,
-    };
-    var ProductSearchLoaderService = /** @class */ (function () {
-        function ProductSearchLoaderService(http, occEndpoints) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-        }
-        /**
-         * @param {?} fullQuery
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchLoaderService.prototype.loadSearch = /**
-         * @param {?} fullQuery
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (fullQuery, searchConfig) {
-                if (searchConfig === void 0) {
-                    searchConfig = DEFAULT_SEARCH_CONFIG;
-                }
-                return this.http
-                    .get(this.getSearchEndpoint(fullQuery, searchConfig))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-        ProductSearchLoaderService.prototype.loadSuggestions = /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-            function (term, pageSize) {
-                if (pageSize === void 0) {
-                    pageSize = 3;
-                }
-                return this.http
-                    .get(this.getSuggestionEndpoint(term, pageSize.toString()))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @return {?}
-         */
-        ProductSearchLoaderService.prototype.getSearchEndpoint = /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                return this.occEndpoints.getUrl('productSearch', {
-                    query: query,
-                }, {
-                    pageSize: searchConfig.pageSize,
-                    currentPage: searchConfig.currentPage,
-                    sort: searchConfig.sortCode,
-                });
-            };
-        /**
-         * @protected
-         * @param {?} term
-         * @param {?} max
-         * @return {?}
-         */
-        ProductSearchLoaderService.prototype.getSuggestionEndpoint = /**
-         * @protected
-         * @param {?} term
-         * @param {?} max
-         * @return {?}
-         */
-            function (term, max) {
-                return this.occEndpoints.getUrl('productSuggestions', {
-                    term: term,
-                    max: max,
-                });
-            };
-        ProductSearchLoaderService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        ProductSearchLoaderService.ctorParameters = function () {
-            return [
-                { type: i1$1.HttpClient },
-                { type: OccEndpointsService }
-            ];
-        };
-        return ProductSearchLoaderService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var PRODUCT_REVIEWS_NORMALIZER = new i0.InjectionToken('ProductReviewsListNormalizer');
     /** @type {?} */
     var PRODUCT_REVIEW_SERIALIZER = new i0.InjectionToken('ProductReviewsAddSerializer');
@@ -6484,9 +6319,7 @@
          * @return {?}
          */
             function (productCode, maxCount) {
-                return this.http
-                    .get(this.getEndpoint(productCode, maxCount))
-                    .pipe(this.converter.pipeable(PRODUCT_REVIEWS_NORMALIZER));
+                return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(operators.pluck('reviews'), this.converter.pipeable(PRODUCT_REVIEWS_NORMALIZER));
             };
         /**
          * @param {?} productCode
@@ -6549,175 +6382,75 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccProductReviewsListNormalizer = /** @class */ (function () {
-        function OccProductReviewsListNormalizer() {
-        }
-        /**
-         * @param {?} sources
-         * @param {?=} targets
-         * @return {?}
-         */
-        OccProductReviewsListNormalizer.prototype.convert = /**
-         * @param {?} sources
-         * @param {?=} targets
-         * @return {?}
-         */
-            function (sources, targets) {
-                if (targets === void 0) {
-                    targets = [];
-                }
-                return sources.reviews.map(function (review, index) { return (__assign({}, targets[index], review)); });
-            };
-        return OccProductReviewsListNormalizer;
-    }());
+    /** @type {?} */
+    var PRODUCT_NORMALIZER = new i0.InjectionToken('ProductNormalizer');
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var SERVER_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
-    /** @type {?} */
-    var SERVER_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
-    /**
-     * @param {?} meta
-     * @return {?}
-     */
-    function serverConfigFromMetaTagFactory(meta) {
-        /** @type {?} */
-        var baseUrl = getMetaTagContent(SERVER_BASE_URL_META_TAG_NAME, meta);
-        return baseUrl && baseUrl !== SERVER_BASE_URL_META_TAG_PLACEHOLDER
-            ? { backend: { occ: { baseUrl: baseUrl } } }
-            : {};
-    }
-    /**
-     * @param {?} name
-     * @param {?} meta
-     * @return {?}
-     */
-    function getMetaTagContent(name, meta) {
-        /** @type {?} */
-        var metaTag = meta.getTag("name=\"" + name + "\"");
-        return metaTag && metaTag.content;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ENDPOINT_COUNTRIES = 'countries';
-    /** @type {?} */
-    var ENDPOINT_TITLES = 'titles';
-    /** @type {?} */
-    var ENDPOINT_CARD_TYPES = 'cardtypes';
-    /** @type {?} */
-    var ENDPOINT_REGIONS = 'regions';
-    /** @type {?} */
-    var COUNTRIES_TYPE_SHIPPING = 'SHIPPING';
-    /** @type {?} */
-    var COUNTRIES_TYPE_BILLING = 'BILLING';
-    var OccMiscsService = /** @class */ (function () {
-        function OccMiscsService(http, occEndpoints) {
+    var OccProductAdapter = /** @class */ (function () {
+        function OccProductAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
         /**
+         * @param {?} productCode
          * @return {?}
          */
-        OccMiscsService.prototype.loadDeliveryCountries = /**
+        OccProductAdapter.prototype.load = /**
+         * @param {?} productCode
          * @return {?}
          */
-            function () {
+            function (productCode) {
                 return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                    .get(this.getEndpoint(productCode))
+                    .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
             };
         /**
+         * @protected
+         * @param {?} code
          * @return {?}
          */
-        OccMiscsService.prototype.loadBillingCountries = /**
+        OccProductAdapter.prototype.getEndpoint = /**
+         * @protected
+         * @param {?} code
          * @return {?}
          */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            function (code) {
+                return this.occEndpoints.getUrl('product', {
+                    productCode: code,
+                });
             };
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadTitles = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_TITLES))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadCardTypes = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadRegions = /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(this.buildRegionsUrl(countryIsoCode)))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @private
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        OccMiscsService.prototype.buildRegionsUrl = /**
-         * @private
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                return ENDPOINT_COUNTRIES + "/" + countryIsoCode + "/" + ENDPOINT_REGIONS;
-            };
-        OccMiscsService.decorators = [
+        OccProductAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccMiscsService.ctorParameters = function () {
+        OccProductAdapter.ctorParameters = function () {
             return [
                 { type: i1$1.HttpClient },
-                { type: OccEndpointsService }
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return OccMiscsService;
+        return OccProductAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
     /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     * @abstract
      */
+    var /**
+     * @abstract
+     */ ProductAdapter = /** @class */ (function () {
+        function ProductAdapter() {
+        }
+        return ProductAdapter;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -6995,60 +6728,170 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultOccProductConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
-                    productReviews: 'products/${productCode}/reviews',
-                    // tslint:disable:max-line-length
-                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
-                    // tslint:enable
-                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
-                },
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @abstract
      */
     var /**
      * @abstract
-     */ ProductReviewsAdapter = /** @class */ (function () {
-        function ProductReviewsAdapter() {
+     */ ProductSearchAdapter = /** @class */ (function () {
+        function ProductSearchAdapter() {
         }
-        return ProductReviewsAdapter;
+        return ProductSearchAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var PRODUCT_SEARCH_NORMALIZER = new i0.InjectionToken('ProductSearchNormalizer');
+    /** @type {?} */
+    var PRODUCT_SUGGESTIONS_LIST_NORMALIZER = new i0.InjectionToken('ProductSuggestionsListNormalizer');
+
     /**
-     * @abstract
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var /**
-     * @abstract
-     */ ProductAdapter = /** @class */ (function () {
-        function ProductAdapter() {
+    /** @type {?} */
+    var DEFAULT_SEARCH_CONFIG = {
+        pageSize: 20,
+    };
+    var OccProductSearchAdapter = /** @class */ (function () {
+        function OccProductSearchAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
-        return ProductAdapter;
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.search = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                if (searchConfig === void 0) {
+                    searchConfig = DEFAULT_SEARCH_CONFIG;
+                }
+                return this.http
+                    .get(this.getSearchEndpoint(query, searchConfig))
+                    .pipe(this.converter.pipeable(PRODUCT_SEARCH_NORMALIZER));
+            };
+        /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.loadSuggestions = /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (term, pageSize) {
+                if (pageSize === void 0) {
+                    pageSize = 3;
+                }
+                return this.http
+                    .get(this.getSuggestionEndpoint(term, pageSize.toString()))
+                    .pipe(this.converter.pipeable(PRODUCT_SUGGESTIONS_LIST_NORMALIZER));
+            };
+        /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.getSearchEndpoint = /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                return this.occEndpoints.getUrl('productSearch', {
+                    query: query,
+                }, {
+                    pageSize: searchConfig.pageSize,
+                    currentPage: searchConfig.currentPage,
+                    sort: searchConfig.sortCode,
+                });
+            };
+        /**
+         * @protected
+         * @param {?} term
+         * @param {?} max
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.getSuggestionEndpoint = /**
+         * @protected
+         * @param {?} term
+         * @param {?} max
+         * @return {?}
+         */
+            function (term, max) {
+                return this.occEndpoints.getUrl('productSuggestions', {
+                    term: term,
+                    max: max,
+                });
+            };
+        OccProductSearchAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccProductSearchAdapter.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccProductSearchAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccProductSearchNormalizer = /** @class */ (function () {
+        function OccProductSearchNormalizer(converterService) {
+            this.converterService = converterService;
+        }
+        /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        OccProductSearchNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+            function (source, target) {
+                var _this = this;
+                if (target === void 0) {
+                    target = {};
+                }
+                target = __assign({}, target, (( /** @type {?} */(source))));
+                if (source.products) {
+                    target.products = source.products.map(function (product) {
+                        return _this.converterService.convert(product, PRODUCT_NORMALIZER);
+                    });
+                }
+                return target;
+            };
+        OccProductSearchNormalizer.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccProductSearchNormalizer.ctorParameters = function () {
+            return [
+                { type: ConverterService }
+            ];
+        };
+        return OccProductSearchNormalizer;
     }());
 
     /**
@@ -7067,7 +6910,6 @@
                             ConfigModule.withConfig(defaultOccProductConfig),
                         ],
                         providers: [
-                            ProductSearchLoaderService,
                             {
                                 provide: ProductAdapter,
                                 useClass: OccProductAdapter,
@@ -7083,19 +6925,33 @@
                                 multi: true,
                             },
                             {
-                                provide: ProductReviewsAdapter,
-                                useClass: OccProductReviewsAdapter,
+                                provide: ProductSearchAdapter,
+                                useClass: OccProductSearchAdapter,
                             },
                             {
-                                provide: PRODUCT_REVIEWS_NORMALIZER,
-                                useClass: OccProductReviewsListNormalizer,
+                                provide: PRODUCT_SEARCH_NORMALIZER,
+                                useClass: OccProductSearchNormalizer,
                                 multi: true,
+                            },
+                            {
+                                provide: ProductReviewsAdapter,
+                                useClass: OccProductReviewsAdapter,
                             },
                         ],
                     },] }
         ];
         return ProductOccModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -9154,25 +9010,72 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductSearchConnector = /** @class */ (function () {
+        function ProductSearchConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        ProductSearchConnector.prototype.search = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                return this.adapter.search(query, searchConfig);
+            };
+        /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        ProductSearchConnector.prototype.getSuggestions = /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (term, pageSize) {
+                return this.adapter.loadSuggestions(term, pageSize);
+            };
+        ProductSearchConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductSearchConnector.ctorParameters = function () {
+            return [
+                { type: ProductSearchAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductSearchConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.inject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+        return ProductSearchConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductsSearchEffects = /** @class */ (function () {
-        function ProductsSearchEffects(actions$, occProductSearchService, productImageConverter) {
+        function ProductsSearchEffects(actions$, productSearchConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occProductSearchService = occProductSearchService;
-            this.productImageConverter = productImageConverter;
+            this.productSearchConnector = productSearchConnector;
             this.searchProducts$ = this.actions$.pipe(effects.ofType(SEARCH_PRODUCTS), operators.switchMap(function (action) {
-                return _this.occProductSearchService
-                    .loadSearch(action.payload.queryText, action.payload.searchConfig)
+                return _this.productSearchConnector
+                    .search(action.payload.queryText, action.payload.searchConfig)
                     .pipe(operators.map(function (data) {
-                    _this.productImageConverter.convertList(data.products);
                     return new SearchProductsSuccess(data, action.auxiliary);
                 }), operators.catchError(function (error) {
                     return rxjs.of(new SearchProductsFail(error, action.auxiliary));
                 }));
             }));
             this.getProductSuggestions$ = this.actions$.pipe(effects.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.occProductSearchService
-                    .loadSuggestions(payload.term, payload.searchConfig.pageSize)
+                return _this.productSearchConnector
+                    .getSuggestions(payload.term, payload.searchConfig.pageSize)
                     .pipe(operators.map(function (data) {
                     if (data.suggestions === undefined) {
                         return new GetProductSuggestionsSuccess([]);
@@ -9190,8 +9093,7 @@
         ProductsSearchEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: ProductSearchLoaderService },
-                { type: ProductImageNormalizer }
+                { type: ProductSearchConnector }
             ];
         };
         __decorate([
@@ -9739,6 +9641,154 @@
     var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
     /** @type {?} */
     var COMPONENT_ENTITY = '[Cms[ Component Entity';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var SERVER_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
+    /** @type {?} */
+    var SERVER_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
+    /**
+     * @param {?} meta
+     * @return {?}
+     */
+    function serverConfigFromMetaTagFactory(meta) {
+        /** @type {?} */
+        var baseUrl = getMetaTagContent(SERVER_BASE_URL_META_TAG_NAME, meta);
+        return baseUrl && baseUrl !== SERVER_BASE_URL_META_TAG_PLACEHOLDER
+            ? { backend: { occ: { baseUrl: baseUrl } } }
+            : {};
+    }
+    /**
+     * @param {?} name
+     * @param {?} meta
+     * @return {?}
+     */
+    function getMetaTagContent(name, meta) {
+        /** @type {?} */
+        var metaTag = meta.getTag("name=\"" + name + "\"");
+        return metaTag && metaTag.content;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ENDPOINT_COUNTRIES = 'countries';
+    /** @type {?} */
+    var ENDPOINT_TITLES = 'titles';
+    /** @type {?} */
+    var ENDPOINT_CARD_TYPES = 'cardtypes';
+    /** @type {?} */
+    var ENDPOINT_REGIONS = 'regions';
+    /** @type {?} */
+    var COUNTRIES_TYPE_SHIPPING = 'SHIPPING';
+    /** @type {?} */
+    var COUNTRIES_TYPE_BILLING = 'BILLING';
+    var OccMiscsService = /** @class */ (function () {
+        function OccMiscsService(http, occEndpoints) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+        }
+        /**
+         * @return {?}
+         */
+        OccMiscsService.prototype.loadDeliveryCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
+                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @return {?}
+         */
+        OccMiscsService.prototype.loadBillingCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
+                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @return {?}
+         */
+        OccMiscsService.prototype.loadTitles = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_TITLES))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @return {?}
+         */
+        OccMiscsService.prototype.loadCardTypes = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        OccMiscsService.prototype.loadRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(this.buildRegionsUrl(countryIsoCode)))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @private
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        OccMiscsService.prototype.buildRegionsUrl = /**
+         * @private
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                return ENDPOINT_COUNTRIES + "/" + countryIsoCode + "/" + ENDPOINT_REGIONS;
+            };
+        OccMiscsService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccMiscsService.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService }
+            ];
+        };
+        return OccMiscsService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -12583,6 +12633,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CartEffects = /** @class */ (function () {
         function CartEffects(actions$, productImageConverter, occCartService, cartData) {
             var _this = this;
@@ -14234,6 +14289,21 @@
             };
         /**
          * @param {?} userId
+         * @return {?}
+         */
+        OccUserService.prototype.removeUser = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId;
+                return this.http
+                    .delete(url)
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @param {?} userId
          * @param {?} currentPassword
          * @param {?} newUserId
          * @return {?}
@@ -14598,6 +14668,8 @@
     var UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
     /** @type {?} */
     var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
+    /** @type {?} */
+    var REMOVE_USER_PROCESS_ID = 'removeUser';
     /** @type {?} */
     var USER_PAYMENT_METHODS = '[User] User Payment Methods';
     /** @type {?} */
@@ -15218,6 +15290,14 @@
     var REGISTER_USER_FAIL = '[User] Register User Fail';
     /** @type {?} */
     var REGISTER_USER_SUCCESS = '[User] Register User Success';
+    /** @type {?} */
+    var REMOVE_USER = '[User] Remove User';
+    /** @type {?} */
+    var REMOVE_USER_FAIL = '[User] Remove User Fail';
+    /** @type {?} */
+    var REMOVE_USER_SUCCESS = '[User] Remove User Success';
+    /** @type {?} */
+    var REMOVE_USER_RESET = '[User] Reset Remove User Process State';
     var RegisterUser = /** @class */ (function () {
         function RegisterUser(payload) {
             this.payload = payload;
@@ -15238,6 +15318,44 @@
         }
         return RegisterUserSuccess;
     }());
+    var RemoveUser = /** @class */ (function (_super) {
+        __extends(RemoveUser, _super);
+        function RemoveUser(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_USER;
+            return _this;
+        }
+        return RemoveUser;
+    }(EntityLoadAction));
+    var RemoveUserFail = /** @class */ (function (_super) {
+        __extends(RemoveUserFail, _super);
+        function RemoveUserFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_USER_FAIL;
+            return _this;
+        }
+        return RemoveUserFail;
+    }(EntityFailAction));
+    var RemoveUserSuccess = /** @class */ (function (_super) {
+        __extends(RemoveUserSuccess, _super);
+        function RemoveUserSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.type = REMOVE_USER_SUCCESS;
+            return _this;
+        }
+        return RemoveUserSuccess;
+    }(EntitySuccessAction));
+    var RemoveUserReset = /** @class */ (function (_super) {
+        __extends(RemoveUserReset, _super);
+        function RemoveUserReset() {
+            var _this = _super.call(this, PROCESS_FEATURE, REMOVE_USER_PROCESS_ID) || this;
+            _this.type = REMOVE_USER_RESET;
+            return _this;
+        }
+        return RemoveUserReset;
+    }(EntityResetAction));
 
     /**
      * @fileoverview added by tsickle
@@ -15832,6 +15950,85 @@
          */
             function (userRegisterFormData) {
                 this.store.dispatch(new RegisterUser(userRegisterFormData));
+            };
+        /**
+         * Remove user account, that's also called close user's account
+         *
+         * @param userId
+         */
+        /**
+         * Remove user account, that's also called close user's account
+         *
+         * @param {?} userId
+         * @return {?}
+         */
+        UserService.prototype.remove = /**
+         * Remove user account, that's also called close user's account
+         *
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                this.store.dispatch(new RemoveUser(userId));
+            };
+        /**
+         * Returns the remove user loading flag
+         */
+        /**
+         * Returns the remove user loading flag
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultLoading = /**
+         * Returns the remove user loading flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+            };
+        /**
+         * Returns the remove user failure outcome.
+         */
+        /**
+         * Returns the remove user failure outcome.
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultError = /**
+         * Returns the remove user failure outcome.
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+            };
+        /**
+         * Returns the remove user process success outcome.
+         */
+        /**
+         * Returns the remove user process success outcome.
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultSuccess = /**
+         * Returns the remove user process success outcome.
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+            };
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+        UserService.prototype.resetRemoveUserProcessState = /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new RemoveUserReset());
             };
         /**
          * Returns an order's detail
@@ -17382,6 +17579,14 @@
                     ];
                 }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(error)); }));
             }));
+            this.removeUser$ = this.actions$.pipe(effects.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
+                return _this.userService.removeUser(userId).pipe(operators.switchMap(function (_result) {
+                    return [
+                        new RemoveUserSuccess(),
+                        new Logout(),
+                    ];
+                }), operators.catchError(function (error) { return rxjs.of(new RemoveUserFail(error)); }));
+            }));
         }
         UserRegisterEffects.decorators = [
             { type: i0.Injectable }
@@ -17397,6 +17602,10 @@
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "registerUser$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserRegisterEffects.prototype, "removeUser$", void 0);
         return UserRegisterEffects;
     }());
 
@@ -18766,8 +18975,8 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var TranslationNamespaceService = /** @class */ (function () {
-        function TranslationNamespaceService(config) {
+    var TranslationChunkService = /** @class */ (function () {
+        function TranslationChunkService(config) {
             this.config = config;
             this.KEY_SEPARATOR = '.';
         }
@@ -18775,7 +18984,7 @@
          * @param {?} key
          * @return {?}
          */
-        TranslationNamespaceService.prototype.getNamespace = /**
+        TranslationChunkService.prototype.getChunkNameForKey = /**
          * @param {?} key
          * @return {?}
          */
@@ -18783,55 +18992,37 @@
                 /** @type {?} */
                 var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
                 /** @type {?} */
-                var namespace = this.getNamespaceFromMapping(mainKey);
-                if (!namespace) {
-                    this.reportMissingNamespaceMapping(key, mainKey);
-                    return mainKey; // fallback to main key as a namespace
+                var chunk = this.getChunkFromConfig(mainKey);
+                if (!chunk) {
+                    return mainKey; // fallback to main key as a chunk
                 }
-                return namespace;
+                return chunk;
             };
         /**
          * @private
          * @param {?} mainKey
          * @return {?}
          */
-        TranslationNamespaceService.prototype.getNamespaceFromMapping = /**
+        TranslationChunkService.prototype.getChunkFromConfig = /**
          * @private
          * @param {?} mainKey
          * @return {?}
          */
             function (mainKey) {
                 return (this.config.i18n &&
-                    this.config.i18n.namespaceMapping &&
-                    this.config.i18n.namespaceMapping[mainKey]);
+                    this.config.i18n.chunks &&
+                    this.config.i18n.chunks[mainKey]);
             };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} fallbackNamespace
-         * @return {?}
-         */
-        TranslationNamespaceService.prototype.reportMissingNamespaceMapping = /**
-         * @private
-         * @param {?} key
-         * @param {?} fallbackNamespace
-         * @return {?}
-         */
-            function (key, fallbackNamespace) {
-                if (!this.config.production) {
-                    console.warn("No namespace mapping configured for key '" + key + "'. Used '" + fallbackNamespace + "' as fallback namespace.");
-                }
-            };
-        TranslationNamespaceService.decorators = [
+        TranslationChunkService.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        TranslationNamespaceService.ctorParameters = function () {
+        TranslationChunkService.ctorParameters = function () {
             return [
                 { type: I18nConfig }
             ];
         };
-        return TranslationNamespaceService;
+        return TranslationChunkService;
     }());
 
     /**
@@ -18873,8 +19064,8 @@
             resources = {};
         }
         Object.keys(resources).forEach(function (lang) {
-            Object.keys(resources[lang]).forEach(function (namespace) {
-                i18next.addResourceBundle(lang, namespace, resources[lang][namespace], true, true);
+            Object.keys(resources[lang]).forEach(function (chunkName) {
+                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
             });
         });
     }
@@ -18910,32 +19101,41 @@
         i18n: {
             fallbackLang: false,
             debug: false,
-            namespaceMapping: {
-                addToCart: 'addToCart',
-                address: 'address',
-                addressBook: 'addressBook',
-                cart: 'cart',
-                cartItems: 'cartItems',
-                checkout: 'checkout',
-                checkoutAddress: 'checkoutAddress',
-                checkoutOrderConfirmation: 'checkoutOrderConfirmation',
-                checkoutReview: 'checkoutReview',
-                checkoutShipping: 'checkoutShipping',
+            chunks: {
                 common: 'common',
-                forgottenPassword: 'forgottenPassword',
-                login: 'login',
-                orderCost: 'orderCost',
-                orderDetails: 'orderDetails',
-                orderHistory: 'orderHistory',
-                orderReview: 'orderReview',
-                payment: 'payment',
-                paymentMethods: 'paymentMethods',
-                productDetails: 'productDetails',
-                productList: 'productList',
-                productReview: 'productReview',
-                pwa: 'pwa',
-                register: 'register',
+                spinner: 'common',
+                header: 'common',
+                searchBox: 'common',
+                cartDetails: 'cart',
+                cartItems: 'cart',
+                orderCost: 'cart',
+                addressForm: 'address',
+                addressBook: 'address',
+                addressCard: 'address',
+                paymentForm: 'payment',
+                paymentMethods: 'payment',
+                checkout: 'checkout',
+                checkoutAddress: 'checkout',
+                checkoutOrderConfirmation: 'checkout',
+                checkoutReview: 'checkout',
+                checkoutShipping: 'checkout',
+                orderDetails: 'myAccount',
+                orderHistory: 'myAccount',
+                productDetails: 'product',
+                productList: 'product',
+                productFacetNavigation: 'product',
+                productSummary: 'product',
+                productReview: 'product',
+                addToCart: 'product',
+                forgottenPassword: 'user',
+                loginForm: 'user',
+                login: 'user',
+                register: 'user',
+                updateEmailForm: 'user',
+                updatePasswordForm: 'user',
+                updateProfileForm: 'user',
                 storeFinder: 'storeFinder',
+                pwa: 'pwa',
             },
         },
     };
@@ -18945,9 +19145,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var I18nextTranslationService = /** @class */ (function () {
-        function I18nextTranslationService(config, translationNamespace) {
+        function I18nextTranslationService(config, translationChunk) {
             this.config = config;
-            this.translationNamespace = translationNamespace;
+            this.translationChunk = translationChunk;
             this.NON_BREAKING_SPACE = String.fromCharCode(160);
             this.NAMESPACE_SEPARATOR = ':';
         }
@@ -18964,7 +19164,7 @@
          * @return {?}
          */
             function (key, options, whitespaceUntilLoaded) {
-                // If we've already loaded the namespace (or failed to load), we should immediately emit the value
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
                 // (or the fallback value in case the key is missing).
                 var _this = this;
                 if (options === void 0) {
@@ -18973,15 +19173,15 @@
                 if (whitespaceUntilLoaded === void 0) {
                     whitespaceUntilLoaded = false;
                 }
-                // If we've already loaded the namespace (or failed to load), we should immediately emit the value
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
                 // (or the fallback value in case the key is missing).
                 // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
                 // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
                 // which together with `switchMap` operator may lead to an infinite loop.
                 /** @type {?} */
-                var namespace = this.translationNamespace.getNamespace(key);
+                var chunkName = this.translationChunk.getChunkNameForKey(key);
                 /** @type {?} */
-                var namespacedKey = this.getNamespacedKey(key, namespace);
+                var namespacedKey = this.getNamespacedKey(key, chunkName);
                 return new rxjs.Observable(function (subscriber) {
                     /** @type {?} */
                     var translate = function () {
@@ -18992,9 +19192,9 @@
                             if (whitespaceUntilLoaded) {
                                 subscriber.next(_this.NON_BREAKING_SPACE);
                             }
-                            i18next.loadNamespaces(namespace, function () {
+                            i18next.loadNamespaces(chunkName, function () {
                                 if (!i18next.exists(namespacedKey, options)) {
-                                    _this.reportMissingKey(namespacedKey);
+                                    _this.reportMissingKey(key, chunkName);
                                     subscriber.next(_this.getFallbackValue(namespacedKey));
                                 }
                                 else {
@@ -19009,15 +19209,15 @@
                 });
             };
         /**
-         * @param {?} namespaces
+         * @param {?} chunkNames
          * @return {?}
          */
-        I18nextTranslationService.prototype.loadNamespaces = /**
-         * @param {?} namespaces
+        I18nextTranslationService.prototype.loadChunks = /**
+         * @param {?} chunkNames
          * @return {?}
          */
-            function (namespaces) {
-                return i18next.loadNamespaces(namespaces);
+            function (chunkNames) {
+                return i18next.loadNamespaces(chunkNames);
             };
         /**
          * Returns a fallback value in case when the given key is missing
@@ -19041,32 +19241,34 @@
         /**
          * @private
          * @param {?} key
+         * @param {?} chunkName
          * @return {?}
          */
         I18nextTranslationService.prototype.reportMissingKey = /**
          * @private
          * @param {?} key
+         * @param {?} chunkName
          * @return {?}
          */
-            function (key) {
+            function (key, chunkName) {
                 if (!this.config.production) {
-                    console.warn("Translation key missing '" + key + "'");
+                    console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
                 }
             };
         /**
          * @private
          * @param {?} key
-         * @param {?} namespace
+         * @param {?} chunk
          * @return {?}
          */
         I18nextTranslationService.prototype.getNamespacedKey = /**
          * @private
          * @param {?} key
-         * @param {?} namespace
+         * @param {?} chunk
          * @return {?}
          */
-            function (key, namespace) {
-                return namespace + this.NAMESPACE_SEPARATOR + key;
+            function (key, chunk) {
+                return chunk + this.NAMESPACE_SEPARATOR + key;
             };
         I18nextTranslationService.decorators = [
             { type: i0.Injectable }
@@ -19075,7 +19277,7 @@
         I18nextTranslationService.ctorParameters = function () {
             return [
                 { type: I18nConfig },
-                { type: TranslationNamespaceService }
+                { type: TranslationChunkService }
             ];
         };
         return I18nextTranslationService;
@@ -19101,7 +19303,7 @@
                         provideConfig(defaultI18nConfig),
                         { provide: I18nConfig, useExisting: Config },
                         { provide: TranslationService, useClass: I18nextTranslationService },
-                        TranslationNamespaceService
+                        TranslationChunkService
                     ], i18nextProviders),
                 };
             };
@@ -19203,14 +19405,14 @@
                 });
             };
         /**
-         * @param {?} _namespaces
+         * @param {?} _chunks
          * @return {?}
          */
-        MockTranslationService.prototype.loadNamespaces = /**
-         * @param {?} _namespaces
+        MockTranslationService.prototype.loadChunks = /**
+         * @param {?} _chunks
          * @return {?}
          */
-            function (_namespaces) {
+            function (_chunks) {
                 return Promise.resolve();
             };
         MockTranslationService.decorators = [
@@ -21124,7 +21326,7 @@
     exports.DatePipe = DatePipe;
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationService = TranslationService;
-    exports.TranslationNamespaceService = TranslationNamespaceService;
+    exports.TranslationChunkService = TranslationChunkService;
     exports.I18nModule = I18nModule;
     exports.I18nConfig = I18nConfig;
     exports.I18nextTranslationService = I18nextTranslationService;
@@ -21208,13 +21410,13 @@
     exports.OccEndpointsService = OccEndpointsService;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.InterceptorUtil = InterceptorUtil;
+    exports.ProductOccModule = ProductOccModule;
     exports.OccProductAdapter = OccProductAdapter;
-    exports.ProductSearchLoaderService = ProductSearchLoaderService;
+    exports.OccProductSearchAdapter = OccProductSearchAdapter;
     exports.OccProductReviewsAdapter = OccProductReviewsAdapter;
-    exports.OccProductReviewsListNormalizer = OccProductReviewsListNormalizer;
     exports.ProductImageNormalizer = ProductImageNormalizer;
     exports.ProductReferenceNormalizer = ProductReferenceNormalizer;
-    exports.ProductOccModule = ProductOccModule;
+    exports.OccProductSearchNormalizer = OccProductSearchNormalizer;
     exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
     exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
     exports.SEARCH_PRODUCTS = SEARCH_PRODUCTS;
@@ -21271,6 +21473,10 @@
     exports.ProductConnector = ProductConnector;
     exports.ProductAdapter = ProductAdapter;
     exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
+    exports.ProductSearchConnector = ProductSearchConnector;
+    exports.ProductSearchAdapter = ProductSearchAdapter;
+    exports.PRODUCT_SEARCH_NORMALIZER = PRODUCT_SEARCH_NORMALIZER;
+    exports.PRODUCT_SUGGESTIONS_LIST_NORMALIZER = PRODUCT_SUGGESTIONS_LIST_NORMALIZER;
     exports.ProductReviewsConnector = ProductReviewsConnector;
     exports.ProductReviewsAdapter = ProductReviewsAdapter;
     exports.PRODUCT_REVIEWS_NORMALIZER = PRODUCT_REVIEWS_NORMALIZER;
@@ -21565,9 +21771,17 @@
     exports.REGISTER_USER = REGISTER_USER;
     exports.REGISTER_USER_FAIL = REGISTER_USER_FAIL;
     exports.REGISTER_USER_SUCCESS = REGISTER_USER_SUCCESS;
+    exports.REMOVE_USER = REMOVE_USER;
+    exports.REMOVE_USER_FAIL = REMOVE_USER_FAIL;
+    exports.REMOVE_USER_SUCCESS = REMOVE_USER_SUCCESS;
+    exports.REMOVE_USER_RESET = REMOVE_USER_RESET;
     exports.RegisterUser = RegisterUser;
     exports.RegisterUserFail = RegisterUserFail;
     exports.RegisterUserSuccess = RegisterUserSuccess;
+    exports.RemoveUser = RemoveUser;
+    exports.RemoveUserFail = RemoveUserFail;
+    exports.RemoveUserSuccess = RemoveUserSuccess;
+    exports.RemoveUserReset = RemoveUserReset;
     exports.getReducers = getReducers$8;
     exports.clearUserState = clearUserState;
     exports.reducerToken = reducerToken$8;
@@ -21605,6 +21819,7 @@
     exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
     exports.UPDATE_USER_DETAILS_PROCESS_ID = UPDATE_USER_DETAILS_PROCESS_ID;
+    exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
     exports.USER_ORDERS = USER_ORDERS;
     exports.USER_ADDRESSES = USER_ADDRESSES;
@@ -21640,93 +21855,92 @@
     exports.ɵbw = CartEntryEffects;
     exports.ɵbv = CartEffects;
     exports.ɵbu = effects$6;
-    exports.ɵby = reducer$2;
+    exports.ɵbx = reducer$2;
     exports.ɵbs = clearCartState;
     exports.ɵbp = getReducers$2;
     exports.ɵbt = metaReducers$1;
     exports.ɵbr = reducerProvider$2;
     exports.ɵbq = reducerToken$2;
-    exports.ɵcs = CheckoutStoreModule;
-    exports.ɵcr = AddressVerificationEffect;
-    exports.ɵcq = CardTypesEffects;
-    exports.ɵcp = CheckoutEffects;
-    exports.ɵco = effects$8;
-    exports.ɵcn = getAddressVerificationResults;
-    exports.ɵcm = reducer$c;
-    exports.ɵcl = getCardTypesEntites;
-    exports.ɵck = reducer$d;
-    exports.ɵcg = getDeliveryAddress;
-    exports.ɵch = getDeliveryMode;
-    exports.ɵcj = getOrderDetails;
-    exports.ɵci = getPaymentDetails;
-    exports.ɵcf = reducer$b;
-    exports.ɵcd = clearCheckoutState;
-    exports.ɵcc = getCheckoutState;
-    exports.ɵbz = getReducers$6;
-    exports.ɵce = metaReducers$4;
-    exports.ɵcb = reducerProvider$6;
-    exports.ɵca = reducerToken$6;
-    exports.ɵcy = CmsStoreModule;
-    exports.ɵcx = cmsStoreConfigFactory;
-    exports.ɵdg = ComponentEffects;
-    exports.ɵde = effects$5;
-    exports.ɵdh = NavigationEntryItemEffects;
-    exports.ɵdf = PageEffects;
-    exports.ɵdc = clearCmsState;
-    exports.ɵcz = getReducers$5;
-    exports.ɵdd = metaReducers$3;
-    exports.ɵdb = reducerProvider$5;
-    exports.ɵda = reducerToken$5;
-    exports.ɵdl = reducer$8;
-    exports.ɵdi = reducer$9;
-    exports.ɵdk = reducer$a;
-    exports.ɵft = ConfigModule;
-    exports.ɵeo = ServerConfig;
+    exports.ɵcr = CheckoutStoreModule;
+    exports.ɵcq = AddressVerificationEffect;
+    exports.ɵcp = CardTypesEffects;
+    exports.ɵco = CheckoutEffects;
+    exports.ɵcn = effects$8;
+    exports.ɵcm = getAddressVerificationResults;
+    exports.ɵcl = reducer$c;
+    exports.ɵck = getCardTypesEntites;
+    exports.ɵcj = reducer$d;
+    exports.ɵcf = getDeliveryAddress;
+    exports.ɵcg = getDeliveryMode;
+    exports.ɵci = getOrderDetails;
+    exports.ɵch = getPaymentDetails;
+    exports.ɵce = reducer$b;
+    exports.ɵcc = clearCheckoutState;
+    exports.ɵcb = getCheckoutState;
+    exports.ɵby = getReducers$6;
+    exports.ɵcd = metaReducers$4;
+    exports.ɵca = reducerProvider$6;
+    exports.ɵbz = reducerToken$6;
+    exports.ɵcx = CmsStoreModule;
+    exports.ɵcw = cmsStoreConfigFactory;
+    exports.ɵdf = ComponentEffects;
+    exports.ɵdd = effects$5;
+    exports.ɵdg = NavigationEntryItemEffects;
+    exports.ɵde = PageEffects;
+    exports.ɵdb = clearCmsState;
+    exports.ɵcy = getReducers$5;
+    exports.ɵdc = metaReducers$3;
+    exports.ɵda = reducerProvider$5;
+    exports.ɵcz = reducerToken$5;
+    exports.ɵdk = reducer$8;
+    exports.ɵdh = reducer$9;
+    exports.ɵdj = reducer$a;
+    exports.ɵfr = ConfigModule;
+    exports.ɵen = ServerConfig;
     exports.ɵbn = provideConfigValidator;
-    exports.ɵeh = BadGatewayHandler;
-    exports.ɵei = BadRequestHandler;
-    exports.ɵej = ConflictHandler;
-    exports.ɵek = ForbiddenHandler;
-    exports.ɵel = GatewayTimeoutHandler;
-    exports.ɵef = HttpErrorHandler;
-    exports.ɵem = NotFoundHandler;
-    exports.ɵeg = UnknownErrorHandler;
-    exports.ɵen = HttpErrorInterceptor;
-    exports.ɵee = reducer$e;
-    exports.ɵeb = getReducers$7;
-    exports.ɵed = reducerProvider$7;
-    exports.ɵec = reducerToken$7;
-    exports.ɵep = defaultI18nConfig;
-    exports.ɵer = i18nextInit;
-    exports.ɵeq = i18nextProviders;
-    exports.ɵes = MockDatePipe;
-    exports.ɵet = MockTranslationService;
-    exports.ɵbx = OccConfig;
-    exports.ɵdj = PageType;
-    exports.ɵcu = PageType;
-    exports.ɵhe = ProcessModule;
-    exports.ɵhg = PROCESS_FEATURE;
-    exports.ɵhf = ProcessStoreModule;
-    exports.ɵhh = getReducers$9;
-    exports.ɵhj = reducerProvider$9;
-    exports.ɵhi = reducerToken$9;
-    exports.ɵeu = defaultOccProductConfig;
-    exports.ɵdx = effects$4;
-    exports.ɵea = ProductReviewsEffects;
-    exports.ɵdy = ProductsSearchEffects;
-    exports.ɵdz = ProductEffects;
-    exports.ɵfe = ProductStoreModule;
-    exports.ɵfd = productStoreConfigFactory;
-    exports.ɵdv = clearProductsState;
-    exports.ɵds = getReducers$4;
-    exports.ɵdw = metaReducers$2;
-    exports.ɵdu = reducerProvider$4;
-    exports.ɵdt = reducerToken$4;
-    exports.ɵff = reducer$4;
-    exports.ɵfb = getAuxSearchResults;
-    exports.ɵfc = getProductSuggestions;
-    exports.ɵfa = getSearchResults;
-    exports.ɵez = reducer$3;
+    exports.ɵeg = BadGatewayHandler;
+    exports.ɵeh = BadRequestHandler;
+    exports.ɵei = ConflictHandler;
+    exports.ɵej = ForbiddenHandler;
+    exports.ɵek = GatewayTimeoutHandler;
+    exports.ɵee = HttpErrorHandler;
+    exports.ɵel = NotFoundHandler;
+    exports.ɵef = UnknownErrorHandler;
+    exports.ɵem = HttpErrorInterceptor;
+    exports.ɵed = reducer$e;
+    exports.ɵea = getReducers$7;
+    exports.ɵec = reducerProvider$7;
+    exports.ɵeb = reducerToken$7;
+    exports.ɵeo = defaultI18nConfig;
+    exports.ɵeq = i18nextInit;
+    exports.ɵep = i18nextProviders;
+    exports.ɵer = MockDatePipe;
+    exports.ɵes = MockTranslationService;
+    exports.ɵdi = PageType;
+    exports.ɵct = PageType;
+    exports.ɵhc = ProcessModule;
+    exports.ɵhe = PROCESS_FEATURE;
+    exports.ɵhd = ProcessStoreModule;
+    exports.ɵhf = getReducers$9;
+    exports.ɵhh = reducerProvider$9;
+    exports.ɵhg = reducerToken$9;
+    exports.ɵet = defaultOccProductConfig;
+    exports.ɵdw = effects$4;
+    exports.ɵdz = ProductReviewsEffects;
+    exports.ɵdx = ProductsSearchEffects;
+    exports.ɵdy = ProductEffects;
+    exports.ɵfc = ProductStoreModule;
+    exports.ɵfb = productStoreConfigFactory;
+    exports.ɵdu = clearProductsState;
+    exports.ɵdr = getReducers$4;
+    exports.ɵdv = metaReducers$2;
+    exports.ɵdt = reducerProvider$4;
+    exports.ɵds = reducerToken$4;
+    exports.ɵfd = reducer$4;
+    exports.ɵez = getAuxSearchResults;
+    exports.ɵfa = getProductSuggestions;
+    exports.ɵey = getSearchResults;
+    exports.ɵex = reducer$3;
     exports.ɵa = defaultConfigurableRoutesConfig;
     exports.ɵb = defaultStorefrontRoutesTranslations;
     exports.ɵd = UrlParsingService;
@@ -21739,69 +21953,69 @@
     exports.ɵg = reducer;
     exports.ɵi = reducerProvider;
     exports.ɵh = reducerToken;
-    exports.ɵfg = defaultSiteContextConfigFactory;
+    exports.ɵfe = defaultSiteContextConfigFactory;
     exports.ɵbk = BaseSiteService;
-    exports.ɵfm = SiteContextParamsService;
-    exports.ɵfo = SiteContextRoutesHandler;
-    exports.ɵfn = SiteContextUrlSerializer;
-    exports.ɵdr = CurrenciesEffects;
-    exports.ɵdp = effects$3;
-    exports.ɵdq = LanguagesEffects;
-    exports.ɵfl = reducer$7;
-    exports.ɵfk = reducer$6;
-    exports.ɵdm = getReducers$3;
-    exports.ɵdo = reducerProvider$3;
-    exports.ɵdn = reducerToken$3;
-    exports.ɵfj = reducer$5;
-    exports.ɵfi = SiteContextStoreModule;
-    exports.ɵfh = siteContextStoreConfigFactory;
-    exports.ɵfq = CmsTicketInterceptor;
-    exports.ɵfp = interceptors$2;
-    exports.ɵfr = SmartEditService;
-    exports.ɵcv = EntityFailAction;
-    exports.ɵct = EntityLoadAction;
-    exports.ɵgd = EntityResetAction;
-    exports.ɵcw = EntitySuccessAction;
+    exports.ɵfk = SiteContextParamsService;
+    exports.ɵfm = SiteContextRoutesHandler;
+    exports.ɵfl = SiteContextUrlSerializer;
+    exports.ɵdq = CurrenciesEffects;
+    exports.ɵdo = effects$3;
+    exports.ɵdp = LanguagesEffects;
+    exports.ɵfj = reducer$7;
+    exports.ɵfi = reducer$6;
+    exports.ɵdl = getReducers$3;
+    exports.ɵdn = reducerProvider$3;
+    exports.ɵdm = reducerToken$3;
+    exports.ɵfh = reducer$5;
+    exports.ɵfg = SiteContextStoreModule;
+    exports.ɵff = siteContextStoreConfigFactory;
+    exports.ɵfo = CmsTicketInterceptor;
+    exports.ɵfn = interceptors$2;
+    exports.ɵfp = SmartEditService;
+    exports.ɵcu = EntityFailAction;
+    exports.ɵcs = EntityLoadAction;
+    exports.ɵgb = EntityResetAction;
+    exports.ɵcv = EntitySuccessAction;
     exports.ɵp = defaultStateConfig;
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfu = defaultStoreFinderConfig;
-    exports.ɵga = FindStoresEffect;
-    exports.ɵfz = effects$9;
-    exports.ɵgb = ViewAllStoresEffect;
-    exports.ɵfw = getReducers$a;
-    exports.ɵfy = reducerProvider$a;
-    exports.ɵfx = reducerToken$a;
-    exports.ɵfs = getStoreFinderState;
-    exports.ɵfv = StoreFinderStoreModule;
-    exports.ɵgq = BillingCountriesEffect;
-    exports.ɵgr = DeliveryCountriesEffects;
-    exports.ɵhb = ForgotPasswordEffects;
-    exports.ɵgp = effects$7;
-    exports.ɵgs = OrderDetailsEffect;
-    exports.ɵgt = UserPaymentMethodsEffects;
-    exports.ɵgu = RegionsEffects;
-    exports.ɵgv = ResetPasswordEffects;
-    exports.ɵgw = TitlesEffects;
-    exports.ɵhc = UpdateEmailEffects;
-    exports.ɵhd = UpdatePasswordEffects;
-    exports.ɵgx = UserAddressesEffects;
-    exports.ɵgy = UserDetailsEffects;
-    exports.ɵgz = UserOrdersEffect;
-    exports.ɵha = UserRegisterEffects;
-    exports.ɵgg = reducer$f;
-    exports.ɵgk = reducer$g;
-    exports.ɵgj = reducer$h;
-    exports.ɵgh = reducer$i;
-    exports.ɵgm = reducer$j;
-    exports.ɵgn = reducer$k;
-    exports.ɵgl = reducer$l;
-    exports.ɵgf = reducer$m;
-    exports.ɵge = reducer$n;
-    exports.ɵgi = reducer$o;
-    exports.ɵgo = UserStoreModule;
-    exports.ɵhk = StripHtmlPipe;
+    exports.ɵfs = defaultStoreFinderConfig;
+    exports.ɵfy = FindStoresEffect;
+    exports.ɵfx = effects$9;
+    exports.ɵfz = ViewAllStoresEffect;
+    exports.ɵfu = getReducers$a;
+    exports.ɵfw = reducerProvider$a;
+    exports.ɵfv = reducerToken$a;
+    exports.ɵfq = getStoreFinderState;
+    exports.ɵft = StoreFinderStoreModule;
+    exports.ɵgo = BillingCountriesEffect;
+    exports.ɵgp = DeliveryCountriesEffects;
+    exports.ɵgz = ForgotPasswordEffects;
+    exports.ɵgn = effects$7;
+    exports.ɵgq = OrderDetailsEffect;
+    exports.ɵgr = UserPaymentMethodsEffects;
+    exports.ɵgs = RegionsEffects;
+    exports.ɵgt = ResetPasswordEffects;
+    exports.ɵgu = TitlesEffects;
+    exports.ɵha = UpdateEmailEffects;
+    exports.ɵhb = UpdatePasswordEffects;
+    exports.ɵgv = UserAddressesEffects;
+    exports.ɵgw = UserDetailsEffects;
+    exports.ɵgx = UserOrdersEffect;
+    exports.ɵgy = UserRegisterEffects;
+    exports.ɵge = reducer$f;
+    exports.ɵgi = reducer$g;
+    exports.ɵgh = reducer$h;
+    exports.ɵgf = reducer$i;
+    exports.ɵgk = reducer$j;
+    exports.ɵgl = reducer$k;
+    exports.ɵgj = reducer$l;
+    exports.ɵgd = reducer$m;
+    exports.ɵgc = reducer$n;
+    exports.ɵgg = reducer$o;
+    exports.ɵgm = UserStoreModule;
+    exports.ɵhi = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

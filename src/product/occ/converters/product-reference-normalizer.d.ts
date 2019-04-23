@@ -1,6 +1,6 @@
 import { Product, ProductReference } from '../../../occ/occ-models/occ.models';
 import { Converter } from '../../../util/converter.service';
-import { UIProduct, UIProductReferences } from '../../model/product-model';
+import { UIProduct, UIProductReferences } from '../../model/product';
 export declare class ProductReferenceNormalizer implements Converter<Product, UIProduct> {
     convert(source: Product, target?: UIProduct): UIProduct;
     /**

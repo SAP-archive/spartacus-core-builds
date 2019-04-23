@@ -22,6 +22,29 @@ export declare class UserService {
      */
     register(userRegisterFormData: UserRegisterFormData): void;
     /**
+     * Remove user account, that's also called close user's account
+     *
+     * @param userId
+     */
+    remove(userId: string): void;
+    /**
+     * Returns the remove user loading flag
+     */
+    getRemoveUserResultLoading(): Observable<boolean>;
+    /**
+     * Returns the remove user failure outcome.
+     */
+    getRemoveUserResultError(): Observable<boolean>;
+    /**
+     * Returns the remove user process success outcome.
+     */
+    getRemoveUserResultSuccess(): Observable<boolean>;
+    /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    resetRemoveUserProcessState(): void;
+    /**
      * Returns an order's detail
      */
     getOrderDetails(): Observable<Order>;

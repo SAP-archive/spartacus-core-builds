@@ -17,16 +17,6 @@ export declare class ConfigurableRoutesService {
     init(): Promise<void>;
     private translateRouterConfig;
     /**
-     * Move the Route with double asterisk (**) to the end of the list.
-     * If there are more Routes with **, only the first will be left and other removed.
-     *
-     * Reason: When some custom Routes are injected after Spartacus' ones,
-     *          then the Spartacus' wildcard Route needs being moved to the end -
-     *          even after custom Routes - to make custom Routes discoverable.
-     *          More than one wildcard Route is a sign of bad config, so redundant copies are removed.
-     */
-    private moveWildcardRouteToEnd;
-    /**
      * Returns the list of routes translations for given list of nested routes
      * using given object of routes translations.
      */

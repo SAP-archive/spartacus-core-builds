@@ -1,15 +1,15 @@
 import { Observable } from 'rxjs';
 import { TranslationService } from '../translation.service';
 import { I18nConfig } from '../config/i18n-config';
-import { TranslationNamespaceService } from '../translation-namespace.service';
+import { TranslationChunkService } from '../translation-chunk.service';
 export declare class I18nextTranslationService implements TranslationService {
     protected config: I18nConfig;
-    protected translationNamespace: TranslationNamespaceService;
+    protected translationChunk: TranslationChunkService;
     private readonly NON_BREAKING_SPACE;
     protected readonly NAMESPACE_SEPARATOR = ":";
-    constructor(config: I18nConfig, translationNamespace: TranslationNamespaceService);
+    constructor(config: I18nConfig, translationChunk: TranslationChunkService);
     translate(key: string, options?: any, whitespaceUntilLoaded?: boolean): Observable<string>;
-    loadNamespaces(namespaces: string | string[]): Promise<any>;
+    loadChunks(chunkNames: string | string[]): Promise<any>;
     /**
      * Returns a fallback value in case when the given key is missing
      * @param key
