@@ -1,5 +1,5 @@
 import { InjectionToken, Provider } from '@angular/core';
-import { ActionReducer, ActionReducerMap, MetaReducer, Action } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { AuthState } from '../auth-state';
 export declare function getReducers(): ActionReducerMap<AuthState>;
 export declare const reducerToken: InjectionToken<ActionReducerMap<AuthState>>;

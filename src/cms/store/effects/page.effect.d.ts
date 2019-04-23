@@ -2,12 +2,12 @@ import { Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { RoutingService } from '../../../routing/index';
-import { CmsPageLoader } from '../../services/cms-page.loader';
+import { CmsPageConnector } from '../../connectors/page/cms-page.connector';
 export declare class PageEffects {
     private actions$;
-    private cmsPageLoader;
+    private cmsPageConnector;
     private routingService;
     refreshPage$: Observable<Action>;
     loadPageData$: Observable<Action>;
-    constructor(actions$: Actions, cmsPageLoader: CmsPageLoader<any>, routingService: RoutingService);
+    constructor(actions$: Actions, cmsPageConnector: CmsPageConnector, routingService: RoutingService);
 }

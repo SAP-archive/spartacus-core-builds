@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import * as fromActions from '../actions/index';
 import { OccCartService } from '../../../cart/index';
 import { AddMessage } from '../../../global-message/index';
-import { ProductImageConverterService } from '../../../product/index';
+import { ProductImageNormalizer } from '../../../product/index';
 import { OccOrderService } from '../../../user/index';
 import * as fromUserActions from '../../../user/store/actions/index';
 export declare class CheckoutEffects {
@@ -19,7 +19,7 @@ export declare class CheckoutEffects {
     setPaymentDetails$: Observable<fromActions.SetPaymentDetailsSuccess | fromActions.SetPaymentDetailsFail>;
     placeOrder$: Observable<fromActions.PlaceOrderSuccess | AddMessage | fromActions.PlaceOrderFail>;
     private domparser;
-    constructor(actions$: Actions, occCartService: OccCartService, occOrderService: OccOrderService, productImageConverter: ProductImageConverterService);
+    constructor(actions$: Actions, occCartService: OccCartService, occOrderService: OccOrderService, productImageConverter: ProductImageNormalizer);
     private getPaymentSopResponseParams;
     private getParamsForPaymentProvider;
     private extractPaymentDetailsFromHtml;

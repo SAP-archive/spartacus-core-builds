@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('ngrx-store-localstorage'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('rxjs/operators'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('@angular/common'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', 'ngrx-store-localstorage', '@angular/platform-browser', '@angular/forms', '@angular/router', 'rxjs/operators', '@angular/common/http', '@ngrx/store', '@ngrx/effects', 'i18next-xhr-backend', 'i18next', 'rxjs', '@angular/common', '@angular/core'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ngrxStoreLocalstorage,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.rxjs.operators,global.ng.common.http,global.store,global.effects,global.i18nextXhrBackend,global.i18next,global.rxjs,global.ng.common,global.ng.core));
-}(this, (function (exports,fromNgrxRouter,ngrxStoreLocalstorage,platformBrowser,forms,router,operators,i1,i1$1,effects,i18nextXhrBackend,i18next,rxjs,i1$2,i0) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('ngrx-store-localstorage'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', 'ngrx-store-localstorage', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@ngrx/store', '@ngrx/effects', '@angular/core'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ngrxStoreLocalstorage,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.rxjs.operators,global.ng.common,global.ng.common.http,global.store,global.effects,global.ng.core));
+}(this, (function (exports,fromNgrxRouter,ngrxStoreLocalstorage,platformBrowser,forms,router,i18nextXhrBackend,i18next,rxjs,operators,i1,i1$1,i1$2,effects,i0) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -194,402 +194,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
-    /** @type {?} */
-    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
-    /** @type {?} */
-    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
-    /** @type {?} */
-    var LOADER_RESET_ACTION = '[LOADER] RESET';
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function loadMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                load: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @param {?=} error
-     * @return {?}
-     */
-    function failMeta(entityType, error) {
-        return {
-            entityType: entityType,
-            loader: {
-                error: error ? error : true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function successMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                success: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function resetMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {},
-        };
-    }
-    var LoaderLoadAction = /** @class */ (function () {
-        function LoaderLoadAction(entityType) {
-            this.type = LOADER_LOAD_ACTION;
-            this.meta = loadMeta(entityType);
-        }
-        return LoaderLoadAction;
-    }());
-    var LoaderFailAction = /** @class */ (function () {
-        function LoaderFailAction(entityType, error) {
-            this.type = LOADER_FAIL_ACTION;
-            this.meta = failMeta(entityType, error);
-        }
-        return LoaderFailAction;
-    }());
-    var LoaderSuccessAction = /** @class */ (function () {
-        function LoaderSuccessAction(entityType) {
-            this.type = LOADER_SUCCESS_ACTION;
-            this.meta = successMeta(entityType);
-        }
-        return LoaderSuccessAction;
-    }());
-    var LoaderResetAction = /** @class */ (function () {
-        function LoaderResetAction(entityType) {
-            this.type = LOADER_RESET_ACTION;
-            this.meta = resetMeta(entityType);
-        }
-        return LoaderResetAction;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CART_FEATURE = 'cart';
-    /** @type {?} */
-    var CART_DATA = '[Cart] Cart Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CREATE_CART = '[Cart] Create Cart';
-    /** @type {?} */
-    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-    /** @type {?} */
-    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-    /** @type {?} */
-    var LOAD_CART = '[Cart] Load Cart';
-    /** @type {?} */
-    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-    /** @type {?} */
-    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-    /** @type {?} */
-    var MERGE_CART = '[Cart] Merge Cart';
-    /** @type {?} */
-    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-    var CreateCart = /** @class */ (function (_super) {
-        __extends(CreateCart, _super);
-        function CreateCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART;
-            return _this;
-        }
-        return CreateCart;
-    }(LoaderLoadAction));
-    var CreateCartFail = /** @class */ (function (_super) {
-        __extends(CreateCartFail, _super);
-        function CreateCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_FAIL;
-            return _this;
-        }
-        return CreateCartFail;
-    }(LoaderFailAction));
-    var CreateCartSuccess = /** @class */ (function (_super) {
-        __extends(CreateCartSuccess, _super);
-        function CreateCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_SUCCESS;
-            return _this;
-        }
-        return CreateCartSuccess;
-    }(LoaderSuccessAction));
-    var LoadCart = /** @class */ (function (_super) {
-        __extends(LoadCart, _super);
-        function LoadCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART;
-            return _this;
-        }
-        return LoadCart;
-    }(LoaderLoadAction));
-    var LoadCartFail = /** @class */ (function (_super) {
-        __extends(LoadCartFail, _super);
-        function LoadCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_FAIL;
-            return _this;
-        }
-        return LoadCartFail;
-    }(LoaderFailAction));
-    var LoadCartSuccess = /** @class */ (function (_super) {
-        __extends(LoadCartSuccess, _super);
-        function LoadCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_SUCCESS;
-            return _this;
-        }
-        return LoadCartSuccess;
-    }(LoaderSuccessAction));
-    var MergeCart = /** @class */ (function () {
-        function MergeCart(payload) {
-            this.payload = payload;
-            this.type = MERGE_CART;
-        }
-        return MergeCart;
-    }());
-    var MergeCartSuccess = /** @class */ (function () {
-        function MergeCartSuccess() {
-            this.type = MERGE_CART_SUCCESS;
-        }
-        return MergeCartSuccess;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ADD_ENTRY = '[Cart-entry] Add Entry';
-    /** @type {?} */
-    var ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-    /** @type {?} */
-    var ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-    /** @type {?} */
-    var REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-    /** @type {?} */
-    var REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-    /** @type {?} */
-    var REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-    /** @type {?} */
-    var UPDATE_ENTRY = '[Cart-entry] Update Entry';
-    /** @type {?} */
-    var UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-    /** @type {?} */
-    var UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-    var AddEntry = /** @class */ (function (_super) {
-        __extends(AddEntry, _super);
-        function AddEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY;
-            return _this;
-        }
-        return AddEntry;
-    }(LoaderLoadAction));
-    var AddEntrySuccess = /** @class */ (function (_super) {
-        __extends(AddEntrySuccess, _super);
-        function AddEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY_SUCCESS;
-            return _this;
-        }
-        return AddEntrySuccess;
-    }(LoaderSuccessAction));
-    var AddEntryFail = /** @class */ (function (_super) {
-        __extends(AddEntryFail, _super);
-        function AddEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY_FAIL;
-            return _this;
-        }
-        return AddEntryFail;
-    }(LoaderFailAction));
-    var RemoveEntry = /** @class */ (function (_super) {
-        __extends(RemoveEntry, _super);
-        function RemoveEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_ENTRY;
-            return _this;
-        }
-        return RemoveEntry;
-    }(LoaderLoadAction));
-    var RemoveEntrySuccess = /** @class */ (function (_super) {
-        __extends(RemoveEntrySuccess, _super);
-        function RemoveEntrySuccess() {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.type = REMOVE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return RemoveEntrySuccess;
-    }(LoaderSuccessAction));
-    var RemoveEntryFail = /** @class */ (function (_super) {
-        __extends(RemoveEntryFail, _super);
-        function RemoveEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_ENTRY_FAIL;
-            return _this;
-        }
-        return RemoveEntryFail;
-    }(LoaderFailAction));
-    var UpdateEntry = /** @class */ (function (_super) {
-        __extends(UpdateEntry, _super);
-        function UpdateEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_ENTRY;
-            return _this;
-        }
-        return UpdateEntry;
-    }(LoaderLoadAction));
-    var UpdateEntrySuccess = /** @class */ (function (_super) {
-        __extends(UpdateEntrySuccess, _super);
-        function UpdateEntrySuccess() {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.type = UPDATE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return UpdateEntrySuccess;
-    }(LoaderSuccessAction));
-    var UpdateEntryFail = /** @class */ (function (_super) {
-        __extends(UpdateEntryFail, _super);
-        function UpdateEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_ENTRY_FAIL;
-            return _this;
-        }
-        return UpdateEntryFail;
-    }(LoaderFailAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderValueSelector(state) {
-        return state.value;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderLoadingSelector(state) {
-        return state.loading;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderErrorSelector(state) {
-        return state.error;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderSuccessSelector(state) {
-        return state.success;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getCartContentSelector = function (state) { return state.content; };
-    /** @type {?} */
-    var getRefreshSelector = function (state) { return state.refresh; };
-    /** @type {?} */
-    var getEntriesSelector = function (state) { return state.entries; };
-    /** @type {?} */
-    var getCartMergeCompleteSelector = function (state) {
-        return state.cartMergeComplete;
-    };
-    /** @type {?} */
-    var getCartsState = i1$1.createFeatureSelector(CART_FEATURE);
-    /** @type {?} */
-    var getActiveCartState = i1$1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
-    /** @type {?} */
-    var getCartState = i1$1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
-    /** @type {?} */
-    var getCartContent = i1$1.createSelector(getCartState, getCartContentSelector);
-    /** @type {?} */
-    var getRefresh = i1$1.createSelector(getCartState, getRefreshSelector);
-    /** @type {?} */
-    var getLoaded = i1$1.createSelector(getActiveCartState, function (state) {
-        return loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state) &&
-            !loaderValueSelector(state).refresh;
-    });
-    /** @type {?} */
-    var getCartMergeComplete = i1$1.createSelector(getCartState, getCartMergeCompleteSelector);
-    /** @type {?} */
-    var getEntriesMap = i1$1.createSelector(getCartState, getEntriesSelector);
-    /** @type {?} */
-    var getEntrySelectorFactory = function (productCode) {
-        return i1$1.createSelector(getEntriesMap, function (entries) {
-            if (entries) {
-                return entries[productCode];
-            }
-        });
-    };
-    /** @type {?} */
-    var getEntries = i1$1.createSelector(getEntriesMap, function (entities) {
-        return Object.keys(entities).map(function (code) { return entities[code]; });
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @abstract
      */
@@ -656,6 +260,8 @@
     /** @type {?} */
     var ConfigValidatorToken = new i0.InjectionToken('ConfigurationValidator');
     /**
+     * Use to probide config validation at app bootstrap (when all config chunks are merged)
+     *
      * @param {?} configValidator
      * @return {?}
      */
@@ -702,12 +308,21 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
+    /**
+     * Global Configuration injection token, can be used to inject configuration to any part of the app
+     * @type {?}
+     */
     var Config = new i0.InjectionToken('Configuration');
-    /** @type {?} */
+    /**
+     * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
+     * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
+     * @type {?}
+     */
     var ConfigChunk = new i0.InjectionToken('ConfigurationChunk');
     /**
-     * @param {?=} config
+     * Helper function to provide configuration chunk using ConfigChunk token
+     *
+     * @param {?=} config Config object to merge with the global configuration
      * @return {?}
      */
     function provideConfig(config) {
@@ -717,8 +332,10 @@
         return { provide: ConfigChunk, useValue: config, multi: true };
     }
     /**
-     * @param {?} configFactory
-     * @param {?=} deps
+     * Helper function to provide configuration with factory function, using ConfigChunk token
+     *
+     * @param {?} configFactory Factory Function that will generate config object
+     * @param {?=} deps Optional dependencies to a factory function
      * @return {?}
      */
     function provideConfigFactory(configFactory, deps) {
@@ -730,6 +347,8 @@
         };
     }
     /**
+     * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
+     *
      * @param {?} configChunks
      * @param {?} configValidators
      * @return {?}
@@ -746,11 +365,20 @@
         function ConfigModule() {
         }
         /**
-         * @param {?} config
+         * Import ConfigModule and contribute config to the global configuration
+         *
+         * @param config Config object to merge with the global configuration
+         */
+        /**
+         * Import ConfigModule and contribute config to the global configuration
+         *
+         * @param {?} config Config object to merge with the global configuration
          * @return {?}
          */
         ConfigModule.withConfig = /**
-         * @param {?} config
+         * Import ConfigModule and contribute config to the global configuration
+         *
+         * @param {?} config Config object to merge with the global configuration
          * @return {?}
          */
             function (config) {
@@ -760,13 +388,23 @@
                 };
             };
         /**
-         * @param {?} configFactory
-         * @param {?=} deps
+         * Import ConfigModule and contribute config to the global configuration using factory function
+         *
+         * @param configFactory Factory function that will generate configuration
+         * @param deps Optional dependencies to factory function
+         */
+        /**
+         * Import ConfigModule and contribute config to the global configuration using factory function
+         *
+         * @param {?} configFactory Factory function that will generate configuration
+         * @param {?=} deps Optional dependencies to factory function
          * @return {?}
          */
         ConfigModule.withConfigFactory = /**
-         * @param {?} configFactory
-         * @param {?=} deps
+         * Import ConfigModule and contribute config to the global configuration using factory function
+         *
+         * @param {?} configFactory Factory function that will generate configuration
+         * @param {?=} deps Optional dependencies to factory function
          * @return {?}
          */
             function (configFactory, deps) {
@@ -776,10 +414,19 @@
                 };
             };
         /**
+         * Module with providers, should be imported only once, if possible, at the root of the app.
+         *
+         * @param config
+         */
+        /**
+         * Module with providers, should be imported only once, if possible, at the root of the app.
+         *
          * @param {?=} config
          * @return {?}
          */
         ConfigModule.forRoot = /**
+         * Module with providers, should be imported only once, if possible, at the root of the app.
+         *
          * @param {?=} config
          * @return {?}
          */
@@ -803,7 +450,7 @@
             };
         ConfigModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
+                        imports: [i1.CommonModule],
                         declarations: [],
                     },] }
         ];
@@ -1371,13 +1018,13 @@
         useFactory: getReducers,
     };
     /** @type {?} */
-    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
+    var getRouterFeatureState = i1$2.createFeatureSelector(ROUTING_FEATURE);
     /** @type {?} */
-    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
+    var getRouterState = i1$2.createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
     /** @type {?} */
-    var getPageContext = i1$1.createSelector(getRouterState, function (routingState) { return routingState.state.context; });
+    var getPageContext = i1$2.createSelector(getRouterState, function (routingState) { return routingState.state.context; });
     /** @type {?} */
-    var getRedirectUrl = i1$1.createSelector(getRouterState, function (state) { return state.redirectUrl; });
+    var getRedirectUrl = i1$2.createSelector(getRouterState, function (state) { return state.redirectUrl; });
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
      */
@@ -1569,7 +1216,7 @@
             return [
                 { type: effects.Actions },
                 { type: router.Router },
-                { type: i1$2.Location }
+                { type: i1.Location }
             ];
         };
         __decorate([
@@ -1657,10 +1304,10 @@
         /** @nocollapse */
         WindowRef.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
             ];
         };
-        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$2.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
         return WindowRef;
     }());
 
@@ -1818,7 +1465,7 @@
         /** @nocollapse */
         RoutesConfigLoader.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccConfig },
                 { type: ConfigurableRoutesConfig }
             ];
@@ -2308,162 +1955,14 @@
     var isParam = function (segment) { return segment.startsWith(':'); };
     /** @type {?} */
     var getParamName = function (segment) { return segment.slice(1); };
-    /** @type {?} */
-    var removeLeadingSlash = function (path) {
-        return path.startsWith('/') ? path.slice(1) : path;
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var RouteRecognizerService = /** @class */ (function () {
-        function RouteRecognizerService(routesConfigLoader, urlParser) {
-            this.routesConfigLoader = routesConfigLoader;
-            this.urlParser = urlParser;
-        }
-        /**
-         * @param {?} url
-         * @return {?}
-         */
-        RouteRecognizerService.prototype.recognizeByDefaultUrl = /**
-         * @param {?} url
-         * @return {?}
-         */
-            function (url) {
-                url = removeLeadingSlash(url); // url will be compared with paths translations which do not have leading slash
-                // url will be compared with paths translations which do not have leading slash
-                /** @type {?} */
-                var routesTranslations = this.defaultRoutesTranslations;
-                /** @type {?} */
-                var urlSegments = this.urlParser.getPrimarySegments(url);
-                /** @type {?} */
-                var recognizedNestedRoutes = this.getNestedRoutesRecursive(urlSegments, routesTranslations, []);
-                return recognizedNestedRoutes;
-            };
-        /**
-         * @private
-         * @param {?} remainingUrlSegments
-         * @param {?} routesTranslations
-         * @param {?} accResult
-         * @return {?}
-         */
-        RouteRecognizerService.prototype.getNestedRoutesRecursive = /**
-         * @private
-         * @param {?} remainingUrlSegments
-         * @param {?} routesTranslations
-         * @param {?} accResult
-         * @return {?}
-         */
-            function (remainingUrlSegments, routesTranslations, accResult) {
-                if (!routesTranslations) {
-                    return remainingUrlSegments.length ? null : accResult;
-                }
-                /** @type {?} */
-                var routeNames = Object.keys(routesTranslations);
-                /** @type {?} */
-                var routeNamesLength = routeNames.length;
-                for (var i = 0; i < routeNamesLength; i++) {
-                    /** @type {?} */
-                    var routeName = routeNames[i];
-                    /** @type {?} */
-                    var routeTranslation = routesTranslations && routesTranslations[routeName];
-                    /** @type {?} */
-                    var paths = routeTranslation.paths || [];
-                    /** @type {?} */
-                    var pathsLength = paths.length;
-                    for (var j = 0; j < pathsLength; j++) {
-                        /** @type {?} */
-                        var path = paths[j];
-                        /** @type {?} */
-                        var pathSegments = this.urlParser.getPrimarySegments(path);
-                        /** @type {?} */
-                        var params = this.extractParamsIfPathMatchesUrlPrefix(remainingUrlSegments, pathSegments);
-                        // if some path is matching, try to recognize remaining segments
-                        if (params) {
-                            /** @type {?} */
-                            var result = this.getNestedRoutesRecursive(remainingUrlSegments.slice(pathSegments.length), routeTranslation.children, accResult.concat({ name: routeName, params: params }));
-                            // if remaining segments were successfuly matched, return result. otherwise continue loop for other paths and routes
-                            if (result) {
-                                return result;
-                            }
-                        }
-                    }
-                }
-                return remainingUrlSegments.length ? null : accResult;
-            };
-        /**
-         * @private
-         * @param {?} urlSegments
-         * @param {?} pathSegments
-         * @return {?}
-         */
-        RouteRecognizerService.prototype.extractParamsIfPathMatchesUrlPrefix = /**
-         * @private
-         * @param {?} urlSegments
-         * @param {?} pathSegments
-         * @return {?}
-         */
-            function (urlSegments, pathSegments) {
-                /** @type {?} */
-                var params = {};
-                /** @type {?} */
-                var pathSegmentsLength = pathSegments.length;
-                /** @type {?} */
-                var urlSegmentsLength = urlSegments.length;
-                if (urlSegmentsLength < pathSegmentsLength) {
-                    return null;
-                }
-                for (var i = 0; i < pathSegmentsLength; i++) {
-                    /** @type {?} */
-                    var pathSegment = pathSegments[i];
-                    /** @type {?} */
-                    var urlSegment = urlSegments[i];
-                    if (isParam(pathSegment)) {
-                        /** @type {?} */
-                        var paramName = getParamName(pathSegment);
-                        params[paramName] = urlSegment;
-                    }
-                    else {
-                        if (pathSegment !== urlSegment) {
-                            return null;
-                        }
-                    }
-                }
-                return params;
-            };
-        Object.defineProperty(RouteRecognizerService.prototype, "defaultRoutesTranslations", {
-            get: /**
-             * @private
-             * @return {?}
-             */ function () {
-                return ( /** @type {?} */(this.routesConfigLoader.routesConfig.translations
-                    .default));
-            },
-            enumerable: true,
-            configurable: true
-        });
-        RouteRecognizerService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        RouteRecognizerService.ctorParameters = function () {
-            return [
-                { type: RoutesConfigLoader },
-                { type: UrlParsingService }
-            ];
-        };
-        return RouteRecognizerService;
-    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UrlTranslationService = /** @class */ (function () {
-        function UrlTranslationService(configurableRoutesService, routeRecognizer, urlParser, config) {
+        function UrlTranslationService(configurableRoutesService, urlParser, config) {
             this.configurableRoutesService = configurableRoutesService;
-            this.routeRecognizer = routeRecognizer;
             this.urlParser = urlParser;
             this.config = config;
             this.ROOT_URL = ['/'];
@@ -2480,11 +1979,6 @@
                 // if options are invalid, return the root url
                 if (!this.validateOptions(options)) {
                     return this.ROOT_URL;
-                }
-                if (typeof options.url === 'string') {
-                    /** @type {?} */
-                    var recognizedRoute = this.routeRecognizer.recognizeByDefaultUrl(options.url);
-                    return recognizedRoute ? this.generateUrl(recognizedRoute) : options.url;
                 }
                 return this.generateUrl(options.route);
             };
@@ -2504,39 +1998,13 @@
                     return false;
                 }
                 /** @type {?} */
-                var urlDefined = Boolean(options.url) || options.url === '';
-                /** @type {?} */
                 var routeDefined = Boolean(options.route);
-                if (!urlDefined && !routeDefined) {
-                    this.warn("Incorrect options for translating url. Options must have 'url' string or 'route' array property. Options: ", options);
+                if (!routeDefined) {
+                    this.warn("Incorrect options for translating url. Options must have 'route' array property. Options: ", options);
                     return false;
-                }
-                if (urlDefined && routeDefined) {
-                    this.warn("Incorrect options for translating url. Options cannot have both 'url' and 'route' property. Options: ", options);
-                    return false;
-                }
-                if (urlDefined) {
-                    return this.validateOptionsUrl(options.url);
                 }
                 if (routeDefined) {
                     return this.validateOptionsRoute(options.route);
-                }
-                return true;
-            };
-        /**
-         * @private
-         * @param {?} url
-         * @return {?}
-         */
-        UrlTranslationService.prototype.validateOptionsUrl = /**
-         * @private
-         * @param {?} url
-         * @return {?}
-         */
-            function (url) {
-                if (typeof url !== 'string') {
-                    this.warn("Incorrect options for translating url.", "'url' property should be a string. Url: ", url);
-                    return false;
                 }
                 return true;
             };
@@ -2832,7 +2300,6 @@
         UrlTranslationService.ctorParameters = function () {
             return [
                 { type: ConfigurableRoutesService },
-                { type: RouteRecognizerService },
                 { type: UrlParsingService },
                 { type: ServerConfig }
             ];
@@ -2862,7 +2329,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getRouterState));
+                return this.store.pipe(i1$2.select(getRouterState));
             };
         /**
          * Get the `PageContext` from the state
@@ -2876,7 +2343,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPageContext));
+                return this.store.pipe(i1$2.select(getPageContext));
             };
         /**
          * Navigation with a new state into history
@@ -2977,7 +2444,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getRedirectUrl));
+                return this.store.pipe(i1$2.select(getRedirectUrl));
             };
         /**
          * Remove the redirect url from store
@@ -3047,12 +2514,12 @@
         /** @nocollapse */
         RoutingService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: WindowRef },
                 { type: UrlTranslationService }
             ];
         };
-        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(UrlTranslationService)); }, token: RoutingService, providedIn: "root" });
+        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$2.Store), i0.inject(WindowRef), i0.inject(UrlTranslationService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
     }());
 
@@ -3090,6 +2557,7 @@
             addressBook: { paths: ['my-account/address-book'] },
             updatePassword: { paths: ['my-account/update-password'] },
             paymentManagement: { paths: ['my-account/payment-details'] },
+            updateEmail: { paths: ['my-account/update-email'] },
             updateProfile: { paths: ['my-account/update-profile'] },
         },
         en: ( /** @type {?} */({})),
@@ -3126,7 +2594,7 @@
         ConfigurableRoutesModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1.CommonModule,
                             ConfigModule.withConfig(defaultConfigurableRoutesConfig),
                         ],
                         declarations: [],
@@ -3135,7 +2603,6 @@
                             ConfigurableRoutesService,
                             RoutesConfigLoader,
                             UrlTranslationService,
-                            RouteRecognizerService,
                             UrlParsingService,
                             {
                                 provide: i0.APP_INITIALIZER,
@@ -3165,7 +2632,7 @@
                                 scrollPositionRestoration: 'enabled',
                                 anchorScrolling: 'enabled',
                             }),
-                            i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                            i1$2.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                             effects.EffectsModule.forFeature(effects$1),
                             fromNgrxRouter.StoreRouterConnectingModule.forRoot({
                                 stateKey: ROUTING_FEATURE,
@@ -3221,6 +2688,94 @@
     var AUTH_FEATURE = 'auth';
     /** @type {?} */
     var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
+    /** @type {?} */
+    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
+    /** @type {?} */
+    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
+    /** @type {?} */
+    var LOADER_RESET_ACTION = '[LOADER] RESET';
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function loadMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                load: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @param {?=} error
+     * @return {?}
+     */
+    function failMeta(entityType, error) {
+        return {
+            entityType: entityType,
+            loader: {
+                error: error ? error : true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function successMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                success: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function resetMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {},
+        };
+    }
+    var LoaderLoadAction = /** @class */ (function () {
+        function LoaderLoadAction(entityType) {
+            this.type = LOADER_LOAD_ACTION;
+            this.meta = loadMeta(entityType);
+        }
+        return LoaderLoadAction;
+    }());
+    var LoaderFailAction = /** @class */ (function () {
+        function LoaderFailAction(entityType, error) {
+            this.type = LOADER_FAIL_ACTION;
+            this.meta = failMeta(entityType, error);
+        }
+        return LoaderFailAction;
+    }());
+    var LoaderSuccessAction = /** @class */ (function () {
+        function LoaderSuccessAction(entityType) {
+            this.type = LOADER_SUCCESS_ACTION;
+            this.meta = successMeta(entityType);
+        }
+        return LoaderSuccessAction;
+    }());
+    var LoaderResetAction = /** @class */ (function () {
+        function LoaderResetAction(entityType) {
+            this.type = LOADER_RESET_ACTION;
+            this.meta = resetMeta(entityType);
+        }
+        return LoaderResetAction;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -3326,14 +2881,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
+    var getAuthState = i1$2.createFeatureSelector(AUTH_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
+    var getClientTokenState = i1$2.createSelector(getAuthState, function (state) { return state.clientToken; });
 
     /**
      * @fileoverview added by tsickle
@@ -3342,9 +2897,9 @@
     /** @type {?} */
     var getUserTokenSelector = function (state) { return state.token; };
     /** @type {?} */
-    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
+    var getUserTokenState = i1$2.createSelector(getAuthState, function (state) { return state.userToken; });
     /** @type {?} */
-    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
+    var getUserToken = i1$2.createSelector(getUserTokenState, getUserTokenSelector);
 
     /**
      * @fileoverview added by tsickle
@@ -3389,7 +2944,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getUserToken));
+                return this.store.pipe(i1$2.select(getUserToken));
             };
         /**
          * Refreshes the user token
@@ -3471,7 +3026,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$2.select(getClientTokenState), operators.filter(function (state) {
                     if (_this.isClientTokenLoaded(state)) {
                         return true;
                     }
@@ -3500,7 +3055,7 @@
             function () {
                 var _this = this;
                 this.store.dispatch(new LoadClientToken());
-                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$2.select(getClientTokenState), operators.filter(function (state) {
                     return _this.isClientTokenLoaded(state);
                 }), operators.map(function (state) { return state.value; }));
             };
@@ -3525,10 +3080,10 @@
         /** @nocollapse */
         AuthService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
-        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
+        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$2.Store)); }, token: AuthService, providedIn: "root" });
         return AuthService;
     }());
 
@@ -3705,7 +3260,7 @@
                 if (headers) {
                     return headers.append(headerName, JSON.stringify(interceptorParam));
                 }
-                headers = new i1.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+                headers = new i1$1.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
                 return headers;
             };
         /**
@@ -3776,7 +3331,7 @@
                     request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
                 }
                 return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                    if (errResponse instanceof i1.HttpErrorResponse) {
+                    if (errResponse instanceof i1$1.HttpErrorResponse) {
                         switch (errResponse.status) {
                             case 401: // Unauthorized
                                 if (isClientTokenRequest) {
@@ -3873,14 +3428,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1$2.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, function (state) { return state.baseSite; });
+    var getActiveBaseSite = i1$2.createSelector(getSiteContextState, function (state) { return state.baseSite; });
 
     /**
      * @fileoverview added by tsickle
@@ -3924,7 +3479,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(Boolean));
+                return this.store.pipe(i1$2.select(getActiveBaseSite), operators.filter(Boolean));
             };
         /**
          * We currently don't support switching baseSite at run time
@@ -3951,7 +3506,7 @@
             function (baseSite) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
+                    .pipe(i1$2.select(getActiveBaseSite), operators.take(1))
                     .subscribe(function (activeBaseSite) {
                     if (activeBaseSite !== baseSite) {
                         _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -3980,7 +3535,7 @@
         /** @nocollapse */
         BaseSiteService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
         return BaseSiteService;
@@ -4092,7 +3647,7 @@
                         httpParamsOptions = { fromString: queryParamsFromEndpoint };
                     }
                     /** @type {?} */
-                    var httpParams_1 = new i1.HttpParams(httpParamsOptions);
+                    var httpParams_1 = new i1$1.HttpParams(httpParamsOptions);
                     Object.keys(queryParams).forEach(function (key) {
                         /** @type {?} */
                         var value = queryParams[key];
@@ -4259,17 +3814,17 @@
     /** @type {?} */
     var interceptors = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$1.HTTP_INTERCEPTORS,
             useClass: ClientTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$1.HTTP_INTERCEPTORS,
             useClass: UserTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$1.HTTP_INTERCEPTORS,
             useClass: AuthErrorInterceptor,
             multi: true,
         },
@@ -4296,12 +3851,12 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1.HttpParams()
+                var params = new i1$1.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('grant_type', 'client_credentials');
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -4326,7 +3881,7 @@
         ClientAuthenticationTokenService.ctorParameters = function () {
             return [
                 { type: AuthConfig },
-                { type: i1.HttpClient }
+                { type: i1$1.HttpClient }
             ];
         };
         return ClientAuthenticationTokenService;
@@ -4357,14 +3912,14 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1.HttpParams()
+                var params = new i1$1.HttpParams()
                     .set('client_id', this.config.authentication.client_id)
                     .set('client_secret', this.config.authentication.client_secret)
                     .set('grant_type', 'password') // authorization_code, client_credentials, password
                     .set('username', userId)
                     .set('password', password);
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -4383,13 +3938,13 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1.HttpParams()
+                var params = new i1$1.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('refresh_token', encodeURI(refreshToken))
                     .set('grant_type', 'refresh_token');
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -4413,7 +3968,7 @@
         /** @nocollapse */
         UserAuthenticationTokenService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: AuthConfig }
             ];
         };
@@ -4495,9 +4050,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$1 = {
-        token: ( /** @type {?} */({})),
-    };
+    var initialState$1 = ( /** @type {?} */({}));
     /**
      * @param {?=} state
      * @param {?=} action
@@ -4514,9 +4067,7 @@
             }
             case LOAD_USER_TOKEN_SUCCESS:
             case REFRESH_USER_TOKEN_SUCCESS: {
-                /** @type {?} */
-                var token = action.payload;
-                return __assign({}, state, { token: token });
+                return __assign({}, state, action.payload);
             }
             case LOAD_USER_TOKEN_FAIL:
             case REFRESH_USER_TOKEN_FAIL: {
@@ -4535,7 +4086,7 @@
      */
     function getReducers$1() {
         return {
-            userToken: reducer$1,
+            userToken: i1$2.combineReducers({ token: reducer$1 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
@@ -4790,10 +4341,10 @@
             config.state &&
             config.state.ssrTransfer &&
             config.state.ssrTransfer.keys) {
-            if (i1$2.isPlatformBrowser(platformId)) {
+            if (i1.isPlatformBrowser(platformId)) {
                 return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
-            else if (i1$2.isPlatformServer(platformId)) {
+            else if (i1.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -4882,13 +4433,13 @@
         StateModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.StoreModule.forRoot({}),
+                            i1$2.StoreModule.forRoot({}),
                             effects.EffectsModule.forRoot([]),
                             ConfigModule.withConfig(defaultStateConfig),
                         ],
                         providers: __spread(stateMetaReducers, [
                             {
-                                provide: i1$1.META_REDUCERS,
+                                provide: i1$2.META_REDUCERS,
                                 useFactory: ɵ0,
                                 deps: [[new i0.Optional(), META_REDUCER]],
                             },
@@ -4924,10 +4475,10 @@
         AuthStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
+                            i1$2.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
                             effects.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
@@ -4959,8 +4510,8 @@
         AuthModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
                             RoutingModule,
                             AuthStoreModule,
                             ConfigModule.withConfig(defaultAuthConfig),
@@ -5078,6 +4629,314 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var CART_FEATURE = 'cart';
+    /** @type {?} */
+    var CART_DATA = '[Cart] Cart Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CREATE_CART = '[Cart] Create Cart';
+    /** @type {?} */
+    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+    /** @type {?} */
+    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+    /** @type {?} */
+    var LOAD_CART = '[Cart] Load Cart';
+    /** @type {?} */
+    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+    /** @type {?} */
+    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+    /** @type {?} */
+    var MERGE_CART = '[Cart] Merge Cart';
+    /** @type {?} */
+    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+    var CreateCart = /** @class */ (function (_super) {
+        __extends(CreateCart, _super);
+        function CreateCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART;
+            return _this;
+        }
+        return CreateCart;
+    }(LoaderLoadAction));
+    var CreateCartFail = /** @class */ (function (_super) {
+        __extends(CreateCartFail, _super);
+        function CreateCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_FAIL;
+            return _this;
+        }
+        return CreateCartFail;
+    }(LoaderFailAction));
+    var CreateCartSuccess = /** @class */ (function (_super) {
+        __extends(CreateCartSuccess, _super);
+        function CreateCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_SUCCESS;
+            return _this;
+        }
+        return CreateCartSuccess;
+    }(LoaderSuccessAction));
+    var LoadCart = /** @class */ (function (_super) {
+        __extends(LoadCart, _super);
+        function LoadCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART;
+            return _this;
+        }
+        return LoadCart;
+    }(LoaderLoadAction));
+    var LoadCartFail = /** @class */ (function (_super) {
+        __extends(LoadCartFail, _super);
+        function LoadCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_FAIL;
+            return _this;
+        }
+        return LoadCartFail;
+    }(LoaderFailAction));
+    var LoadCartSuccess = /** @class */ (function (_super) {
+        __extends(LoadCartSuccess, _super);
+        function LoadCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_SUCCESS;
+            return _this;
+        }
+        return LoadCartSuccess;
+    }(LoaderSuccessAction));
+    var MergeCart = /** @class */ (function () {
+        function MergeCart(payload) {
+            this.payload = payload;
+            this.type = MERGE_CART;
+        }
+        return MergeCart;
+    }());
+    var MergeCartSuccess = /** @class */ (function () {
+        function MergeCartSuccess() {
+            this.type = MERGE_CART_SUCCESS;
+        }
+        return MergeCartSuccess;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ADD_ENTRY = '[Cart-entry] Add Entry';
+    /** @type {?} */
+    var ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+    /** @type {?} */
+    var ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+    /** @type {?} */
+    var REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+    /** @type {?} */
+    var REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+    /** @type {?} */
+    var REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+    /** @type {?} */
+    var UPDATE_ENTRY = '[Cart-entry] Update Entry';
+    /** @type {?} */
+    var UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+    /** @type {?} */
+    var UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+    var AddEntry = /** @class */ (function (_super) {
+        __extends(AddEntry, _super);
+        function AddEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_ENTRY;
+            return _this;
+        }
+        return AddEntry;
+    }(LoaderLoadAction));
+    var AddEntrySuccess = /** @class */ (function (_super) {
+        __extends(AddEntrySuccess, _super);
+        function AddEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_ENTRY_SUCCESS;
+            return _this;
+        }
+        return AddEntrySuccess;
+    }(LoaderSuccessAction));
+    var AddEntryFail = /** @class */ (function (_super) {
+        __extends(AddEntryFail, _super);
+        function AddEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = ADD_ENTRY_FAIL;
+            return _this;
+        }
+        return AddEntryFail;
+    }(LoaderFailAction));
+    var RemoveEntry = /** @class */ (function (_super) {
+        __extends(RemoveEntry, _super);
+        function RemoveEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_ENTRY;
+            return _this;
+        }
+        return RemoveEntry;
+    }(LoaderLoadAction));
+    var RemoveEntrySuccess = /** @class */ (function (_super) {
+        __extends(RemoveEntrySuccess, _super);
+        function RemoveEntrySuccess() {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.type = REMOVE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return RemoveEntrySuccess;
+    }(LoaderSuccessAction));
+    var RemoveEntryFail = /** @class */ (function (_super) {
+        __extends(RemoveEntryFail, _super);
+        function RemoveEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = REMOVE_ENTRY_FAIL;
+            return _this;
+        }
+        return RemoveEntryFail;
+    }(LoaderFailAction));
+    var UpdateEntry = /** @class */ (function (_super) {
+        __extends(UpdateEntry, _super);
+        function UpdateEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_ENTRY;
+            return _this;
+        }
+        return UpdateEntry;
+    }(LoaderLoadAction));
+    var UpdateEntrySuccess = /** @class */ (function (_super) {
+        __extends(UpdateEntrySuccess, _super);
+        function UpdateEntrySuccess() {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.type = UPDATE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return UpdateEntrySuccess;
+    }(LoaderSuccessAction));
+    var UpdateEntryFail = /** @class */ (function (_super) {
+        __extends(UpdateEntryFail, _super);
+        function UpdateEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_ENTRY_FAIL;
+            return _this;
+        }
+        return UpdateEntryFail;
+    }(LoaderFailAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderValueSelector(state) {
+        return state.value;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderLoadingSelector(state) {
+        return state.loading;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderErrorSelector(state) {
+        return state.error;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderSuccessSelector(state) {
+        return state.success;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getCartContentSelector = function (state) { return state.content; };
+    /** @type {?} */
+    var getRefreshSelector = function (state) { return state.refresh; };
+    /** @type {?} */
+    var getEntriesSelector = function (state) { return state.entries; };
+    /** @type {?} */
+    var getCartMergeCompleteSelector = function (state) {
+        return state.cartMergeComplete;
+    };
+    /** @type {?} */
+    var getCartsState = i1$2.createFeatureSelector(CART_FEATURE);
+    /** @type {?} */
+    var getActiveCartState = i1$2.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
+    /** @type {?} */
+    var getCartState = i1$2.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
+    /** @type {?} */
+    var getCartContent = i1$2.createSelector(getCartState, getCartContentSelector);
+    /** @type {?} */
+    var getRefresh = i1$2.createSelector(getCartState, getRefreshSelector);
+    /** @type {?} */
+    var getLoaded = i1$2.createSelector(getActiveCartState, function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state) &&
+            !loaderValueSelector(state).refresh;
+    });
+    /** @type {?} */
+    var getCartMergeComplete = i1$2.createSelector(getCartState, getCartMergeCompleteSelector);
+    /** @type {?} */
+    var getEntriesMap = i1$2.createSelector(getCartState, getEntriesSelector);
+    /** @type {?} */
+    var getEntrySelectorFactory = function (productCode) {
+        return i1$2.createSelector(getEntriesMap, function (entries) {
+            if (entries) {
+                return entries[productCode];
+            }
+        });
+    };
+    /** @type {?} */
+    var getEntries = i1$2.createSelector(getEntriesMap, function (entities) {
+        return Object.keys(entities).map(function (code) { return entities[code]; });
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var ANONYMOUS_USERID = 'anonymous';
     var CartDataService = /** @class */ (function () {
         function CartDataService() {
@@ -5175,7 +5034,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getCartContent));
+                return this.store.pipe(i1$2.select(getCartContent));
             };
         /**
          * @return {?}
@@ -5184,7 +5043,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getEntries));
+                return this.store.pipe(i1$2.select(getEntries));
             };
         /**
          * @return {?}
@@ -5193,7 +5052,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getCartMergeComplete));
+                return this.store.pipe(i1$2.select(getCartMergeComplete));
             };
         /**
          * @return {?}
@@ -5202,7 +5061,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getLoaded));
+                return this.store.pipe(i1$2.select(getLoaded));
             };
         /**
          * @protected
@@ -5214,7 +5073,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$1.select(getCartContent)).subscribe(function (cart) {
+                this.store.pipe(i1$2.select(getCartContent)).subscribe(function (cart) {
                     _this.cartData.cart = cart;
                     if (_this.callback) {
                         _this.callback();
@@ -5285,7 +5144,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$1.select(getRefresh)).subscribe(function (refresh) {
+                this.store.pipe(i1$2.select(getRefresh)).subscribe(function (refresh) {
                     if (refresh) {
                         _this.store.dispatch(new LoadCart({
                             userId: _this.cartData.userId,
@@ -5400,7 +5259,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getEntrySelectorFactory(productCode)));
+                return this.store.pipe(i1$2.select(getEntrySelectorFactory(productCode)));
             };
         /**
          * @param {?} cart
@@ -5430,7 +5289,7 @@
         /** @nocollapse */
         CartService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: CartDataService },
                 { type: AuthService }
             ];
@@ -5549,10 +5408,10 @@
                 var url = this.getCartEndpoint(userId);
                 /** @type {?} */
                 var params = details
-                    ? new i1.HttpParams({
+                    ? new i1$1.HttpParams({
                         fromString: 'fields=carts(' + DETAILS_PARAMS + ',saveTime)',
                     })
-                    : new i1.HttpParams({
+                    : new i1$1.HttpParams({
                         fromString: 'fields=carts(' + BASIC_PARAMS + ',saveTime)',
                     });
                 return this.http
@@ -5576,10 +5435,10 @@
                 var url = this.getCartEndpoint(userId) + cartId;
                 /** @type {?} */
                 var params = details
-                    ? new i1.HttpParams({
+                    ? new i1$1.HttpParams({
                         fromString: 'fields=' + DETAILS_PARAMS,
                     })
-                    : new i1.HttpParams({
+                    : new i1$1.HttpParams({
                         fromString: 'fields=' + BASIC_PARAMS,
                     });
                 if (cartId === 'current') {
@@ -5628,7 +5487,7 @@
                     queryString = queryString + '&toMergeCartGuid=' + toMergeCartGuid;
                 }
                 /** @type {?} */
-                var params = new i1.HttpParams({
+                var params = new i1$1.HttpParams({
                     fromString: queryString,
                 });
                 return this.http
@@ -5658,11 +5517,11 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries';
                 /** @type {?} */
-                var params = new i1.HttpParams({
+                var params = new i1$1.HttpParams({
                     fromString: 'code=' + productCode + '&qty=' + quantity,
                 });
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5694,11 +5553,11 @@
                     queryString = queryString + '&pickupStore=' + pickupStore;
                 }
                 /** @type {?} */
-                var params = new i1.HttpParams({
+                var params = new i1$1.HttpParams({
                     fromString: queryString,
                 });
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5721,7 +5580,7 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5743,7 +5602,7 @@
             function (userId, cartId, address) {
                 return this.http
                     .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                    headers: new i1.HttpHeaders().set('Content-Type', 'application/json'),
+                    headers: new i1$1.HttpHeaders().set('Content-Type', 'application/json'),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
@@ -5844,12 +5703,12 @@
          */
             function (postUrl, parameters) {
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                     Accept: 'text/html',
                 });
                 /** @type {?} */
-                var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new i1$1.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
@@ -5872,12 +5731,12 @@
          */
             function (userId, cartId, parameters) {
                 /** @type {?} */
-                var httpParams = new i1.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new i1$1.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5909,7 +5768,7 @@
         /** @nocollapse */
         OccCartService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -5987,7 +5846,7 @@
         }
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, i1.HttpClientModule, OccModule],
+                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
                         providers: [OccCartService],
                     },] }
         ];
@@ -6304,30 +6163,173 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductLoaderService = /** @class */ (function () {
-        function ProductLoaderService(http, occEndpoints) {
+    var ConverterService = /** @class */ (function () {
+        function ConverterService(injector) {
+            this.injector = injector;
+            this.converters = new Map();
+        }
+        /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.getConverters = /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                if (!this.converters.has(injectionToken)) {
+                    /** @type {?} */
+                    var converters = this.injector.get(injectionToken, []);
+                    if (!Array.isArray(converters)) {
+                        console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+                    }
+                    this.converters.set(injectionToken, converters);
+                }
+                return this.converters.get(injectionToken);
+            };
+        /**
+         * Will return true if converters for specified token were provided
+         */
+        /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.hasConverters = /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                /** @type {?} */
+                var converters = this.getConverters(injectionToken);
+                return Array.isArray(converters) && converters.length > 0;
+            };
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         */
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.pipeable = /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                var _this = this;
+                if (this.hasConverters(injectionToken)) {
+                    return operators.map(function (model) { return _this.convertSource(model, injectionToken); });
+                }
+                else {
+                    return function (observable) { return ( /** @type {?} */(observable)); };
+                }
+            };
+        /**
+         * Apply converter logic specified by injection token to source data
+         */
+        /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convert = /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (source, injectionToken) {
+                if (this.hasConverters(injectionToken)) {
+                    return this.convertSource(source, injectionToken);
+                }
+                else {
+                    return ( /** @type {?} */(source));
+                }
+            };
+        /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convertSource = /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (source, injectionToken) {
+                return this.getConverters(injectionToken).reduce(function (target, converter) {
+                    return converter.convert(source, target);
+                }, ( /** @type {?} */(undefined)));
+            };
+        ConverterService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ConverterService.ctorParameters = function () {
+            return [
+                { type: i0.Injector }
+            ];
+        };
+        /** @nocollapse */ ConverterService.ngInjectableDef = i0.defineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.inject(i0.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+        return ConverterService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PRODUCT_NORMALIZER = new i0.InjectionToken('ProductNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccProductAdapter = /** @class */ (function () {
+        function OccProductAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
         /**
          * @param {?} productCode
          * @return {?}
          */
-        ProductLoaderService.prototype.load = /**
+        OccProductAdapter.prototype.load = /**
          * @param {?} productCode
          * @return {?}
          */
             function (productCode) {
                 return this.http
                     .get(this.getEndpoint(productCode))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                    .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
             };
         /**
          * @protected
          * @param {?} code
          * @return {?}
          */
-        ProductLoaderService.prototype.getEndpoint = /**
+        OccProductAdapter.prototype.getEndpoint = /**
          * @protected
          * @param {?} code
          * @return {?}
@@ -6337,17 +6339,18 @@
                     productCode: code,
                 });
             };
-        ProductLoaderService.decorators = [
+        OccProductAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        ProductLoaderService.ctorParameters = function () {
+        OccProductAdapter.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
-                { type: OccEndpointsService }
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return ProductLoaderService;
+        return OccProductAdapter;
     }());
 
     /**
@@ -6444,7 +6447,7 @@
         /** @nocollapse */
         ProductSearchLoaderService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -6455,17 +6458,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductReviewsLoaderService = /** @class */ (function () {
-        function ProductReviewsLoaderService(http, occEndpoints) {
+    /** @type {?} */
+    var PRODUCT_REVIEWS_NORMALIZER = new i0.InjectionToken('ProductReviewsListNormalizer');
+    /** @type {?} */
+    var PRODUCT_REVIEW_SERIALIZER = new i0.InjectionToken('ProductReviewsAddSerializer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccProductReviewsAdapter = /** @class */ (function () {
+        function OccProductReviewsAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
         /**
          * @param {?} productCode
          * @param {?=} maxCount
          * @return {?}
          */
-        ProductReviewsLoaderService.prototype.load = /**
+        OccProductReviewsAdapter.prototype.load = /**
          * @param {?} productCode
          * @param {?=} maxCount
          * @return {?}
@@ -6473,21 +6486,22 @@
             function (productCode, maxCount) {
                 return this.http
                     .get(this.getEndpoint(productCode, maxCount))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                    .pipe(this.converter.pipeable(PRODUCT_REVIEWS_NORMALIZER));
             };
         /**
          * @param {?} productCode
          * @param {?} review
          * @return {?}
          */
-        ProductReviewsLoaderService.prototype.post = /**
+        OccProductReviewsAdapter.prototype.post = /**
          * @param {?} productCode
          * @param {?} review
          * @return {?}
          */
             function (productCode, review) {
+                review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 /** @type {?} */
@@ -6496,9 +6510,9 @@
                 body.append('comment', review.comment);
                 body.append('rating', review.rating.toString());
                 body.append('alias', review.alias);
-                return this.http
-                    .post(this.getEndpoint(productCode), body.toString(), { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                return this.http.post(this.getEndpoint(productCode), body.toString(), {
+                    headers: headers,
+                });
             };
         /**
          * @protected
@@ -6506,7 +6520,7 @@
          * @param {?=} maxCount
          * @return {?}
          */
-        ProductReviewsLoaderService.prototype.getEndpoint = /**
+        OccProductReviewsAdapter.prototype.getEndpoint = /**
          * @protected
          * @param {?} code
          * @param {?=} maxCount
@@ -6517,77 +6531,45 @@
                     productCode: code,
                 }, { maxCount: maxCount });
             };
-        ProductReviewsLoaderService.decorators = [
+        OccProductReviewsAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        ProductReviewsLoaderService.ctorParameters = function () {
+        OccProductReviewsAdapter.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
-                { type: OccEndpointsService }
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return ProductReviewsLoaderService;
+        return OccProductReviewsAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultOccProductConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
-                    productReviews: 'products/${productCode}/reviews',
-                    // tslint:disable:max-line-length
-                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
-                    // tslint:enable
-                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
-                },
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductOccModule = /** @class */ (function () {
-        function ProductOccModule() {
+    var OccProductReviewsListNormalizer = /** @class */ (function () {
+        function OccProductReviewsListNormalizer() {
         }
-        ProductOccModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
-                            OccModule,
-                            ConfigModule.withConfig(defaultOccProductConfig),
-                        ],
-                        providers: [
-                            ProductLoaderService,
-                            ProductSearchLoaderService,
-                            ProductReviewsLoaderService,
-                        ],
-                    },] }
-        ];
-        return ProductOccModule;
+        /**
+         * @param {?} sources
+         * @param {?=} targets
+         * @return {?}
+         */
+        OccProductReviewsListNormalizer.prototype.convert = /**
+         * @param {?} sources
+         * @param {?=} targets
+         * @return {?}
+         */
+            function (sources, targets) {
+                if (targets === void 0) {
+                    targets = [];
+                }
+                return sources.reviews.map(function (review, index) { return (__assign({}, targets[index], review)); });
+            };
+        return OccProductReviewsListNormalizer;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PRODUCT_FEATURE = 'product';
-    /** @type {?} */
-    var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
 
     /**
      * @fileoverview added by tsickle
@@ -6649,7 +6631,7 @@
             function () {
                 return this.http
                     .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
+                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
@@ -6662,7 +6644,7 @@
             function () {
                 return this.http
                     .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
+                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
@@ -6720,7 +6702,7 @@
         /** @nocollapse */
         OccMiscsService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -6736,15 +6718,50 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductImageConverterService = /** @class */ (function () {
-        function ProductImageConverterService(config) {
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductImageNormalizer = /** @class */ (function () {
+        function ProductImageNormalizer(config) {
             this.config = config;
         }
         /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        ProductImageNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+            function (source, target) {
+                if (target === undefined) {
+                    target = __assign({}, (( /** @type {?} */(source))));
+                }
+                if (source.images) {
+                    target.images = this.normalize(source.images);
+                }
+                return target;
+            };
+        /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
+         */
+        /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
          * @param {?} list
          * @return {?}
          */
-        ProductImageConverterService.prototype.convertList = /**
+        ProductImageNormalizer.prototype.convertList = /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
          * @param {?} list
          * @return {?}
          */
@@ -6774,40 +6791,51 @@
                 }
             };
         /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
+         */
+        /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
          * @param {?} product
          * @return {?}
          */
-        ProductImageConverterService.prototype.convertProduct = /**
+        ProductImageNormalizer.prototype.convertProduct = /**
+         * @deprecated Use `convert(source, target?) => target` instead
+         *
+         * TODO: Should be removed when all use cases will be refactored
          * @param {?} product
          * @return {?}
          */
             function (product) {
                 if (product.images) {
-                    product.images = this.populate(product.images);
+                    product.images = this.normalize(product.images);
                 }
             };
         /**
          * @desc
-         * Creates the image structue we'd like to have. Instead of
-         * having a singel list with all images despite type and format
+         * Creates the image structure we'd like to have. Instead of
+         * having a single list with all images despite type and format
          * we create a proper structure. With that we can do:
          * - images.primary.thumnail.url
          * - images.GALLERY[0].thumnail.url
          */
         /**
          * @desc
-         * Creates the image structue we'd like to have. Instead of
-         * having a singel list with all images despite type and format
+         * Creates the image structure we'd like to have. Instead of
+         * having a single list with all images despite type and format
          * we create a proper structure. With that we can do:
          * - images.primary.thumnail.url
          * - images.GALLERY[0].thumnail.url
          * @param {?} source
          * @return {?}
          */
-        ProductImageConverterService.prototype.populate = /**
+        ProductImageNormalizer.prototype.normalize = /**
          * @desc
-         * Creates the image structue we'd like to have. Instead of
-         * having a singel list with all images despite type and format
+         * Creates the image structure we'd like to have. Instead of
+         * having a single list with all images despite type and format
          * we create a proper structure. With that we can do:
          * - images.primary.thumnail.url
          * - images.GALLERY[0].thumnail.url
@@ -6859,48 +6887,57 @@
                 }
                 return images;
             };
-        ProductImageConverterService.decorators = [
-            { type: i0.Injectable }
+        ProductImageNormalizer.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
         ];
         /** @nocollapse */
-        ProductImageConverterService.ctorParameters = function () {
+        ProductImageNormalizer.ctorParameters = function () {
             return [
                 { type: OccConfig }
             ];
         };
-        return ProductImageConverterService;
+        /** @nocollapse */ ProductImageNormalizer.ngInjectableDef = i0.defineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(i0.inject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
+        return ProductImageNormalizer;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductReferenceConverterService = /** @class */ (function () {
-        function ProductReferenceConverterService() {
+    var ProductReferenceNormalizer = /** @class */ (function () {
+        function ProductReferenceNormalizer() {
         }
         /**
-         * @param {?} product
+         * @param {?} source
+         * @param {?=} target
          * @return {?}
          */
-        ProductReferenceConverterService.prototype.convertProduct = /**
-         * @param {?} product
+        ProductReferenceNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
          * @return {?}
          */
-            function (product) {
-                if (product.productReferences) {
-                    product.productReferences = this.populate(product.productReferences);
+            function (source, target) {
+                if (target === undefined) {
+                    target = __assign({}, (( /** @type {?} */(source))));
                 }
+                if (source.productReferences) {
+                    target.productReferences = this.normalize(source.productReferences);
+                }
+                return target;
             };
         /**
          * @desc
-         * Creates the reference structue we'd like to have. Instead of
+         * Creates the reference structure we'd like to have. Instead of
          * having a single list with all references we create a proper structure.
          * With that we have a semantic API for the clients
          * - product.references.SIMILAR[0].code
          */
         /**
          * @desc
-         * Creates the reference structue we'd like to have. Instead of
+         * Creates the reference structure we'd like to have. Instead of
          * having a single list with all references we create a proper structure.
          * With that we have a semantic API for the clients
          * - product.references.SIMILAR[0].code
@@ -6908,9 +6945,9 @@
          * @param {?} source
          * @return {?}
          */
-        ProductReferenceConverterService.prototype.populate = /**
+        ProductReferenceNormalizer.prototype.normalize = /**
          * @desc
-         * Creates the reference structue we'd like to have. Instead of
+         * Creates the reference structure we'd like to have. Instead of
          * having a single list with all references we create a proper structure.
          * With that we have a semantic API for the clients
          * - product.references.SIMILAR[0].code
@@ -6948,32 +6985,126 @@
                 }
                 return references;
             };
-        ProductReferenceConverterService.decorators = [
+        ProductReferenceNormalizer.decorators = [
             { type: i0.Injectable }
         ];
-        return ProductReferenceConverterService;
+        return ProductReferenceNormalizer;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductConverterModule = /** @class */ (function () {
-        function ProductConverterModule() {
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultOccProductConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                    productReviews: 'products/${productCode}/reviews',
+                    // tslint:disable:max-line-length
+                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                    // tslint:enable
+                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ ProductReviewsAdapter = /** @class */ (function () {
+        function ProductReviewsAdapter() {
         }
-        ProductConverterModule.decorators = [
+        return ProductReviewsAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ ProductAdapter = /** @class */ (function () {
+        function ProductAdapter() {
+        }
+        return ProductAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductOccModule = /** @class */ (function () {
+        function ProductOccModule() {
+        }
+        ProductOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
-                        providers: [ProductImageConverterService, ProductReferenceConverterService],
+                        imports: [
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
+                            OccModule,
+                            ConfigModule.withConfig(defaultOccProductConfig),
+                        ],
+                        providers: [
+                            ProductSearchLoaderService,
+                            {
+                                provide: ProductAdapter,
+                                useClass: OccProductAdapter,
+                            },
+                            {
+                                provide: PRODUCT_NORMALIZER,
+                                useExisting: ProductImageNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: PRODUCT_NORMALIZER,
+                                useClass: ProductReferenceNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: ProductReviewsAdapter,
+                                useClass: OccProductReviewsAdapter,
+                            },
+                            {
+                                provide: PRODUCT_REVIEWS_NORMALIZER,
+                                useClass: OccProductReviewsListNormalizer,
+                                multi: true,
+                            },
+                        ],
                     },] }
         ];
-        return ProductConverterModule;
+        return ProductOccModule;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var PRODUCT_FEATURE = 'product';
+    /** @type {?} */
+    var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
 
     /**
      * @fileoverview added by tsickle
@@ -7287,7 +7418,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1$2.createFeatureSelector(PRODUCT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -7352,10 +7483,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
+    var getProductState = i1$2.createSelector(getProductsState, function (state) { return state.details; });
     /** @type {?} */
     var getSelectedProductsFactory = function (codes) {
-        return i1$1.createSelector(getProductState, function (details) {
+        return i1$2.createSelector(getProductState, function (details) {
             return codes
                 .map(function (code) {
                 return details.entities[code] ? details.entities[code].value : undefined;
@@ -7365,26 +7496,26 @@
     };
     /** @type {?} */
     var getSelectedProductStateFactory = function (code) {
-        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+        return i1$2.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
     };
     /** @type {?} */
     var getSelectedProductFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductLoadingFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductSuccessFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductErrorFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
     };
     /** @type {?} */
-    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
+    var getAllProductCodes = i1$2.createSelector(getProductState, function (details) {
         return Object.keys(details.entities);
     });
 
@@ -7438,23 +7569,23 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
+    var getProductsSearchState = i1$2.createSelector(getProductsState, function (state) { return state.search; });
     /** @type {?} */
-    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
+    var getSearchResults$1 = i1$2.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
-    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getAuxSearchResults$1 = i1$2.createSelector(getProductsSearchState, getAuxSearchResults);
     /** @type {?} */
-    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
+    var getProductSuggestions$1 = i1$2.createSelector(getProductsSearchState, getProductSuggestions);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
+    var getProductReviewsState = i1$2.createSelector(getProductsState, function (state) { return state.reviews; });
     /** @type {?} */
     var getSelectedProductReviewsFactory = function (productCode) {
-        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
+        return i1$2.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
@@ -7710,11 +7841,11 @@
         /** @nocollapse */
         OccSiteService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
-        /** @nocollapse */ OccSiteService.ngInjectableDef = i0.defineInjectable({ factory: function OccSiteService_Factory() { return new OccSiteService(i0.inject(i1.HttpClient), i0.inject(OccEndpointsService)); }, token: OccSiteService, providedIn: "root" });
+        /** @nocollapse */ OccSiteService.ngInjectableDef = i0.defineInjectable({ factory: function OccSiteService_Factory() { return new OccSiteService(i0.inject(i1$1.HttpClient), i0.inject(OccEndpointsService)); }, token: OccSiteService, providedIn: "root" });
         return OccSiteService;
     }());
 
@@ -7816,13 +7947,13 @@
     /** @type {?} */
     var languagesEntitiesSelector = function (state) { return state.entities; };
     /** @type {?} */
-    var getLanguagesState = i1$1.createSelector(getSiteContextState, function (state) { return state.languages; });
+    var getLanguagesState = i1$2.createSelector(getSiteContextState, function (state) { return state.languages; });
     /** @type {?} */
-    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getLanguagesEntities = i1$2.createSelector(getLanguagesState, languagesEntitiesSelector);
     /** @type {?} */
-    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
+    var getActiveLanguage = i1$2.createSelector(getLanguagesState, activeLanguageSelector);
     /** @type {?} */
-    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, function (entities) {
+    var getAllLanguages = i1$2.createSelector(getLanguagesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -7837,13 +7968,13 @@
     /** @type {?} */
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     /** @type {?} */
-    var getCurrenciesState = i1$1.createSelector(getSiteContextState, function (state) { return state.currencies; });
+    var getCurrenciesState = i1$2.createSelector(getSiteContextState, function (state) { return state.currencies; });
     /** @type {?} */
-    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getCurrenciesEntities = i1$2.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     /** @type {?} */
-    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getActiveCurrency = i1$2.createSelector(getCurrenciesState, activeCurrencySelector);
     /** @type {?} */
-    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, function (entities) {
+    var getAllCurrencies = i1$2.createSelector(getCurrenciesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -7884,7 +8015,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
+                return this.store.pipe(i1$2.select(getAllLanguages), operators.tap(function (languages) {
                     if (!languages) {
                         _this.store.dispatch(new LoadLanguages());
                     }
@@ -7902,7 +8033,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(Boolean));
+                return this.store.pipe(i1$2.select(getActiveLanguage), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -7920,7 +8051,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveLanguage), operators.take(1))
+                    .pipe(i1$2.select(getActiveLanguage), operators.take(1))
                     .subscribe(function (activeLanguage) {
                     if (activeLanguage !== isocode) {
                         _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -7960,7 +8091,7 @@
         /** @nocollapse */
         LanguageService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: WindowRef }
             ];
         };
@@ -7992,7 +8123,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
+                return this.store.pipe(i1$2.select(getAllCurrencies), operators.tap(function (currencies) {
                     if (!currencies) {
                         _this.store.dispatch(new LoadCurrencies());
                     }
@@ -8010,7 +8141,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(Boolean));
+                return this.store.pipe(i1$2.select(getActiveCurrency), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -8028,7 +8159,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveCurrency), operators.take(1))
+                    .pipe(i1$2.select(getActiveCurrency), operators.take(1))
                     .subscribe(function (activeCurrency) {
                     if (activeCurrency !== isocode) {
                         _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -8068,7 +8199,7 @@
         /** @nocollapse */
         CurrencyService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: WindowRef }
             ];
         };
@@ -8084,7 +8215,7 @@
         }
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [OccModule, i1$2.CommonModule, i1.HttpClientModule],
+                        imports: [OccModule, i1.CommonModule, i1$1.HttpClientModule],
                         providers: [OccModule, OccSiteService],
                     },] }
         ];
@@ -8113,9 +8244,9 @@
         SiteContextStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
-                            i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
+                            i1$2.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
                             effects.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
@@ -8738,7 +8869,7 @@
          */
             function () {
                 this.router = this.injector.get(router.Router);
-                this.location = this.injector.get(i1$2.Location);
+                this.location = this.injector.get(i1.Location);
                 /** @type {?} */
                 var routingParams = this.siteContextParams.getContextParameters('route');
                 if (routingParams.length) {
@@ -8934,7 +9065,7 @@
     /** @type {?} */
     var interceptors$1 = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$1.HTTP_INTERCEPTORS,
             useClass: SiteContextInterceptor,
             multi: true,
         },
@@ -9060,7 +9191,7 @@
             return [
                 { type: effects.Actions },
                 { type: ProductSearchLoaderService },
-                { type: ProductImageConverterService }
+                { type: ProductImageNormalizer }
             ];
         };
         __decorate([
@@ -9078,18 +9209,48 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductConnector = /** @class */ (function () {
+        function ProductConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        ProductConnector.prototype.get = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+            function (productCode) {
+                return this.adapter.load(productCode);
+            };
+        ProductConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductConnector.ctorParameters = function () {
+            return [
+                { type: ProductAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(i0.inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+        return ProductConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductEffects = /** @class */ (function () {
-        function ProductEffects(actions$, occProductService, productImageConverter, productReferenceConverterService) {
+        function ProductEffects(actions$, productConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occProductService = occProductService;
-            this.productImageConverter = productImageConverter;
-            this.productReferenceConverterService = productReferenceConverterService;
+            this.productConnector = productConnector;
             this.loadProduct$ = this.actions$.pipe(effects.ofType(LOAD_PRODUCT), operators.map(function (action) { return action.payload; }), operators.groupBy(function (productCode) { return productCode; }), operators.mergeMap(function (group) {
                 return group.pipe(operators.switchMap(function (productCode) {
-                    return _this.occProductService.load(productCode).pipe(operators.map(function (product) {
-                        _this.productImageConverter.convertProduct(product);
-                        _this.productReferenceConverterService.convertProduct(product);
+                    return _this.productConnector.get(productCode).pipe(operators.map(function (product) {
                         return new LoadProductSuccess(product);
                     }), operators.catchError(function (error) {
                         return rxjs.of(new LoadProductFail(productCode, error));
@@ -9104,9 +9265,7 @@
         ProductEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: ProductLoaderService },
-                { type: ProductImageConverterService },
-                { type: ProductReferenceConverterService }
+                { type: ProductConnector }
             ];
         };
         __decorate([
@@ -9120,16 +9279,65 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductReviewsConnector = /** @class */ (function () {
+        function ProductReviewsConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} productCode
+         * @param {?=} maxCount
+         * @return {?}
+         */
+        ProductReviewsConnector.prototype.get = /**
+         * @param {?} productCode
+         * @param {?=} maxCount
+         * @return {?}
+         */
+            function (productCode, maxCount) {
+                return this.adapter.load(productCode, maxCount);
+            };
+        /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+        ProductReviewsConnector.prototype.add = /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+            function (productCode, review) {
+                return this.adapter.post(productCode, review);
+            };
+        ProductReviewsConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductReviewsConnector.ctorParameters = function () {
+            return [
+                { type: ProductReviewsAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+        return ProductReviewsConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductReviewsEffects = /** @class */ (function () {
-        function ProductReviewsEffects(actions$, occProductReviewsService) {
+        function ProductReviewsEffects(actions$, productReviewsConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occProductReviewsService = occProductReviewsService;
+            this.productReviewsConnector = productReviewsConnector;
             this.loadProductReviews$ = this.actions$.pipe(effects.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
-                return _this.occProductReviewsService.load(productCode).pipe(operators.map(function (data) {
+                return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
                     return new LoadProductReviewsSuccess({
                         productCode: productCode,
-                        list: data.reviews,
+                        list: data,
                     });
                 }), operators.catchError(function (_error) {
                     return rxjs.of(new LoadProductReviewsFail(( /** @type {?} */({
@@ -9138,8 +9346,8 @@
                 }));
             }));
             this.postProductReview = this.actions$.pipe(effects.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occProductReviewsService
-                    .post(payload.productCode, payload.review)
+                return _this.productReviewsConnector
+                    .add(payload.productCode, payload.review)
                     .pipe(operators.map(function (reviewResponse) {
                     return new PostProductReviewSuccess(reviewResponse);
                 }), operators.catchError(function (_error) {
@@ -9154,7 +9362,7 @@
         ProductReviewsEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: ProductReviewsLoaderService }
+                { type: ProductReviewsConnector }
             ];
         };
         __decorate([
@@ -9221,7 +9429,7 @@
             function (productCode) {
                 var _this = this;
                 if (!this.products[productCode]) {
-                    this.products[productCode] = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
+                    this.products[productCode] = this.store.pipe(i1$2.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
                         /** @type {?} */
                         var attemptedLoad = productState.loading || productState.success || productState.error;
                         if (!attemptedLoad) {
@@ -9247,7 +9455,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode)));
+                return this.store.pipe(i1$2.select(getSelectedProductLoadingFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load success state
@@ -9263,7 +9471,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode)));
+                return this.store.pipe(i1$2.select(getSelectedProductSuccessFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load error state
@@ -9279,7 +9487,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode)));
+                return this.store.pipe(i1$2.select(getSelectedProductErrorFactory(productCode)));
             };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -9309,7 +9517,7 @@
         /** @nocollapse */
         ProductService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
         return ProductService;
@@ -9353,7 +9561,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getSearchResults$1));
+                return this.store.pipe(i1$2.select(getSearchResults$1));
             };
         /**
          * @return {?}
@@ -9371,7 +9579,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
+                return this.store.pipe(i1$2.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
             };
         /**
          * @return {?}
@@ -9380,7 +9588,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProductSuggestions$1));
+                return this.store.pipe(i1$2.select(getProductSuggestions$1));
             };
         /**
          * @param {?} query
@@ -9420,7 +9628,7 @@
         /** @nocollapse */
         ProductSearchService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: router.Router }
             ];
         };
@@ -9447,7 +9655,7 @@
                 var _this = this;
                 /** @type {?} */
                 var selector = getSelectedProductReviewsFactory(productCode);
-                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
+                return this.store.pipe(i1$2.select(selector), operators.tap(function (reviews) {
                     if (reviews === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReviews(productCode));
                     }
@@ -9475,7 +9683,7 @@
         /** @nocollapse */
         ProductReviewService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
         return ProductReviewService;
@@ -9508,11 +9716,10 @@
         ProductStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
                             ProductOccModule,
-                            ProductConverterModule,
-                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
+                            i1$2.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$4),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
@@ -9777,9 +9984,9 @@
      */
     function getReducers$5() {
         return {
-            page: i1$1.combineReducers({
+            page: i1$2.combineReducers({
                 pageData: reducer$9,
-                index: i1$1.combineReducers({
+                index: i1$2.combineReducers({
                     content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$a(PageType.CONTENT_PAGE)),
                     product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$a(PageType.PRODUCT_PAGE)),
                     category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$a(PageType.CATEGORY_PAGE)),
@@ -9871,7 +10078,7 @@
         }
         UrlTranslationModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
+                        imports: [i1.CommonModule],
                         declarations: [TranslateUrlPipe],
                         exports: [TranslateUrlPipe],
                     },] }
@@ -9899,15 +10106,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
+     * Abstract class that can be used to implement custom loader logic
+     * in order to load CMS structure from third-party CMS system.
      * @abstract
-     * @template S
      */
-    var CmsPageAdapter = /** @class */ (function () {
+    var /**
+     * Abstract class that can be used to implement custom loader logic
+     * in order to load CMS structure from third-party CMS system.
+     * @abstract
+     */ CmsPageAdapter = /** @class */ (function () {
         function CmsPageAdapter() {
         }
-        CmsPageAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
         return CmsPageAdapter;
     }());
 
@@ -10037,23 +10246,37 @@
                 return this.getPageFromConfig(pageId).pipe(operators.map(function (page) { return !!page && !!page.ignoreBackend; }));
             };
         /**
-         * returns an Obserable component data from the static configuration.
+         * returns an Observable component data from the static configuration.
          */
         /**
-         * returns an Obserable component data from the static configuration.
+         * returns an Observable component data from the static configuration.
          * @param {?} componentId
          * @return {?}
          */
         CmsStructureConfigService.prototype.getComponentFromConfig = /**
-         * returns an Obserable component data from the static configuration.
+         * returns an Observable component data from the static configuration.
          * @param {?} componentId
          * @return {?}
          */
             function (componentId) {
-                return rxjs.of(this.cmsDataConfig.cmsStructure &&
-                    this.cmsDataConfig.cmsStructure.components
-                    ? this.cmsDataConfig.cmsStructure.components[componentId]
-                    : null);
+                return rxjs.of(this.getComponentById(componentId));
+            };
+        /**
+         * returns an Observable components data from the static configuration.
+         */
+        /**
+         * returns an Observable components data from the static configuration.
+         * @param {?} ids
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentsFromConfig = /**
+         * returns an Observable components data from the static configuration.
+         * @param {?} ids
+         * @return {?}
+         */
+            function (ids) {
+                var _this = this;
+                return rxjs.of(ids.map(function (id) { return _this.getComponentById(id); }));
             };
         /**
          * returns an observable with the `PageConfig`.
@@ -10257,6 +10480,22 @@
                 }
                 return components;
             };
+        /**
+         * @private
+         * @param {?} componentId
+         * @return {?}
+         */
+        CmsStructureConfigService.prototype.getComponentById = /**
+         * @private
+         * @param {?} componentId
+         * @return {?}
+         */
+            function (componentId) {
+                return this.cmsDataConfig.cmsStructure &&
+                    this.cmsDataConfig.cmsStructure.components
+                    ? this.cmsDataConfig.cmsStructure.components[componentId]
+                    : undefined;
+            };
         CmsStructureConfigService.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
@@ -10276,16 +10515,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * Abstract class that can be used to implement custom loader logic
-     * in order to load CMS structure from third-party CMS system.
-     * @abstract
-     * @template T
-     */
-    var CmsPageLoader = /** @class */ (function () {
-        function CmsPageLoader(cmsStructureConfigService, adapter) {
+    var CmsPageConnector = /** @class */ (function () {
+        function CmsPageConnector(cmsPageAdapter, cmsStructureConfigService) {
+            this.cmsPageAdapter = cmsPageAdapter;
             this.cmsStructureConfigService = cmsStructureConfigService;
-            this.adapter = adapter;
         }
         /**
          * Returns an observable with the page structure. The page structure is
@@ -10299,7 +10532,7 @@
          * @param {?} pageContext
          * @return {?}
          */
-        CmsPageLoader.prototype.get = /**
+        CmsPageConnector.prototype.get = /**
          * Returns an observable with the page structure. The page structure is
          * typically loaded from a backend, but can also be returned from static
          * configuration (see `CmsStructureConfigService`).
@@ -10312,8 +10545,8 @@
                     .shouldIgnoreBackend(pageContext.id)
                     .pipe(operators.switchMap(function (loadFromConfig) {
                     if (!loadFromConfig) {
-                        return _this.load(pageContext).pipe(operators.map(function (page) { return _this.adapt(page); }), operators.catchError(function (error) {
-                            if (error instanceof i1.HttpErrorResponse &&
+                        return _this.cmsPageAdapter.load(pageContext).pipe(operators.catchError(function (error) {
+                            if (error instanceof i1$1.HttpErrorResponse &&
                                 error.status === 400) {
                                 return rxjs.of({});
                             }
@@ -10329,35 +10562,6 @@
             };
         /**
          *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param page the source that can be converted
-         */
-        /**
-         *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param {?} page the source that can be converted
-         * @return {?}
-         */
-        CmsPageLoader.prototype.adapt = /**
-         *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param {?} page the source that can be converted
-         * @return {?}
-         */
-            function (page) {
-                if (this.adapter) {
-                    return this.adapter.adapt(( /** @type {?} */(page)));
-                }
-                return ( /** @type {?} */(page));
-            };
-        /**
-         *
          * Merge default page structure inot the given `CmsStructureModel`.
          * This is benefitial for a fast setup of the UI without necessary
          * finegrained CMS setup.
@@ -10372,7 +10576,7 @@
          * @param {?} pageStructure
          * @return {?}
          */
-        CmsPageLoader.prototype.mergeDefaultPageStructure = /**
+        CmsPageConnector.prototype.mergeDefaultPageStructure = /**
          *
          * Merge default page structure inot the given `CmsStructureModel`.
          * This is benefitial for a fast setup of the UI without necessary
@@ -10385,20 +10589,20 @@
             function (pageContext, pageStructure) {
                 return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);
             };
-        CmsPageLoader.decorators = [
+        CmsPageConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        CmsPageLoader.ctorParameters = function () {
+        CmsPageConnector.ctorParameters = function () {
             return [
-                { type: CmsStructureConfigService },
-                { type: CmsPageAdapter, decorators: [{ type: i0.Optional }] }
+                { type: CmsPageAdapter },
+                { type: CmsStructureConfigService }
             ];
         };
-        /** @nocollapse */ CmsPageLoader.ngInjectableDef = i0.defineInjectable({ factory: function CmsPageLoader_Factory() { return new CmsPageLoader(i0.inject(CmsStructureConfigService), i0.inject(CmsPageAdapter, 8)); }, token: CmsPageLoader, providedIn: "root" });
-        return CmsPageLoader;
+        /** @nocollapse */ CmsPageConnector.ngInjectableDef = i0.defineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(i0.inject(CmsPageAdapter), i0.inject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+        return CmsPageConnector;
     }());
 
     /**
@@ -10406,10 +10610,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var PageEffects = /** @class */ (function () {
-        function PageEffects(actions$, cmsPageLoader, routingService) {
+        function PageEffects(actions$, cmsPageConnector, routingService) {
             var _this = this;
             this.actions$ = actions$;
-            this.cmsPageLoader = cmsPageLoader;
+            this.cmsPageConnector = cmsPageConnector;
             this.routingService = routingService;
             this.refreshPage$ = this.actions$.pipe(effects.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function (_) {
                 return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) {
@@ -10417,7 +10621,7 @@
                 }), operators.map(function (routerState) { return routerState.state.context; }), operators.take(1), operators.mergeMap(function (context) { return rxjs.of(new LoadPageData(context)); }));
             }));
             this.loadPageData$ = this.actions$.pipe(effects.ofType(LOAD_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.switchMap(function (pageContext) {
-                return _this.cmsPageLoader.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
+                return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
                     return [
                         new LoadPageDataSuccess(pageContext, cmsStructure.page),
                         new GetComponentFromPage(cmsStructure.components),
@@ -10434,7 +10638,7 @@
         PageEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: CmsPageLoader },
+                { type: CmsPageConnector },
                 { type: RoutingService }
             ];
         };
@@ -10455,14 +10659,12 @@
      */
     /**
      * @abstract
-     * @template T
      */
-    var CmsComponentAdapter = /** @class */ (function () {
+    var /**
+     * @abstract
+     */ CmsComponentAdapter = /** @class */ (function () {
         function CmsComponentAdapter() {
         }
-        CmsComponentAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
         return CmsComponentAdapter;
     }());
 
@@ -10470,27 +10672,19 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * Abstract class that can be used to implement custom loader logic
-     * in order to load CMS components from third-party CMS system.
-     * @abstract
-     * @template T
-     */
-    var CmsComponentLoader = /** @class */ (function () {
-        function CmsComponentLoader(cmsStructureConfigService, adapter) {
+    var CmsComponentConnector = /** @class */ (function () {
+        function CmsComponentConnector(cmsStructureConfigService, adapter) {
             this.cmsStructureConfigService = cmsStructureConfigService;
             this.adapter = adapter;
         }
         /**
-         */
-        /**
-         *
+         * @template T
          * @param {?} id
          * @param {?} pageContext
          * @return {?}
          */
-        CmsComponentLoader.prototype.get = /**
-         *
+        CmsComponentConnector.prototype.get = /**
+         * @template T
          * @param {?} id
          * @param {?} pageContext
          * @return {?}
@@ -10502,52 +10696,54 @@
                     .pipe(operators.switchMap(function (configuredComponent) {
                     return configuredComponent
                         ? rxjs.of(configuredComponent)
-                        : _this.load(id, pageContext).pipe(operators.map(function (component) { return _this.adapt(component); }));
+                        : _this.adapter.load(id, pageContext);
                 }));
             };
         /**
-         *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param component the source that can be converted
-         */
-        /**
-         *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param {?} component the source that can be converted
+         * @param {?} ids
+         * @param {?} pageContext
          * @return {?}
          */
-        CmsComponentLoader.prototype.adapt = /**
-         *
-         * An adapter can be injected to convert the backend reponse to
-         * the UI model.
-         *
-         * @param {?} component the source that can be converted
+        CmsComponentConnector.prototype.getList = /**
+         * @param {?} ids
+         * @param {?} pageContext
          * @return {?}
          */
-            function (component) {
-                if (this.adapter) {
-                    return this.adapter.adapt(( /** @type {?} */(component)));
-                }
-                return ( /** @type {?} */(component));
+            function (ids, pageContext) {
+                var _this = this;
+                return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(operators.switchMap(function (configuredComponents) {
+                    // check if we have some components that are not loaded from configuration
+                    /** @type {?} */
+                    var missingIds = configuredComponents.reduce(function (acc, component, index) {
+                        if (component === undefined) {
+                            acc.push(ids[index]);
+                        }
+                        return acc;
+                    }, []);
+                    if (missingIds.length > 0) {
+                        return _this.adapter
+                            .loadList(missingIds, pageContext)
+                            .pipe(operators.map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
+                    }
+                    else {
+                        return rxjs.of(configuredComponents);
+                    }
+                }));
             };
-        CmsComponentLoader.decorators = [
+        CmsComponentConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        CmsComponentLoader.ctorParameters = function () {
+        CmsComponentConnector.ctorParameters = function () {
             return [
                 { type: CmsStructureConfigService },
-                { type: CmsComponentAdapter, decorators: [{ type: i0.Optional }] }
+                { type: CmsComponentAdapter }
             ];
         };
-        /** @nocollapse */ CmsComponentLoader.ngInjectableDef = i0.defineInjectable({ factory: function CmsComponentLoader_Factory() { return new CmsComponentLoader(i0.inject(CmsStructureConfigService), i0.inject(CmsComponentAdapter, 8)); }, token: CmsComponentLoader, providedIn: "root" });
-        return CmsComponentLoader;
+        /** @nocollapse */ CmsComponentConnector.ngInjectableDef = i0.defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(i0.inject(CmsStructureConfigService), i0.inject(CmsComponentAdapter)); }, token: CmsComponentConnector, providedIn: "root" });
+        return CmsComponentConnector;
     }());
 
     /**
@@ -10577,7 +10773,7 @@
         ComponentEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: CmsComponentLoader },
+                { type: CmsComponentConnector },
                 { type: RoutingService }
             ];
         };
@@ -10592,164 +10788,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccCmsPageLoader = /** @class */ (function (_super) {
-        __extends(OccCmsPageLoader, _super);
-        function OccCmsPageLoader(http, config, cmsStructureConfigService, adapter, occEndpoints) {
-            var _this = _super.call(this, cmsStructureConfigService, adapter) || this;
-            _this.http = http;
-            _this.config = config;
-            _this.cmsStructureConfigService = cmsStructureConfigService;
-            _this.adapter = adapter;
-            _this.occEndpoints = occEndpoints;
-            _this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
-            return _this;
-        }
-        /**
-         * @protected
-         * @return {?}
-         */
-        OccCmsPageLoader.prototype.getBaseEndPoint = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                return this.occEndpoints.getEndpoint('cms');
-            };
-        /**
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @return {?}
-         */
-        OccCmsPageLoader.prototype.load = /**
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @return {?}
-         */
-            function (pageContext, fields) {
-                /** @type {?} */
-                var httpStringParams = '';
-                if (pageContext.id !== 'smartedit-preview') {
-                    httpStringParams = 'pageType=' + pageContext.type;
-                    if (pageContext.type === PageType.CONTENT_PAGE) {
-                        httpStringParams =
-                            httpStringParams + '&pageLabelOrId=' + pageContext.id;
-                    }
-                    else {
-                        httpStringParams = httpStringParams + '&code=' + pageContext.id;
-                    }
-                }
-                if (fields !== undefined) {
-                    httpStringParams = httpStringParams + '&fields=' + fields;
-                }
-                return this.http.get(this.getBaseEndPoint() + "/pages", {
-                    headers: this.headers,
-                    params: new i1.HttpParams({
-                        fromString: httpStringParams,
-                    }),
-                });
-            };
-        /**
-         * @param {?} idList
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @param {?=} currentPage
-         * @param {?=} pageSize
-         * @param {?=} sort
-         * @return {?}
-         */
-        OccCmsPageLoader.prototype.loadListComponents = /**
-         * @param {?} idList
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @param {?=} currentPage
-         * @param {?=} pageSize
-         * @param {?=} sort
-         * @return {?}
-         */
-            function (idList, pageContext, fields, currentPage, pageSize, sort) {
-                /** @type {?} */
-                var requestParams = this.getRequestParams(pageContext, fields);
-                if (currentPage !== undefined) {
-                    requestParams === ''
-                        ? (requestParams = requestParams + 'currentPage=' + currentPage)
-                        : (requestParams = requestParams + '&currentPage=' + currentPage);
-                }
-                if (pageSize !== undefined) {
-                    requestParams = requestParams + '&pageSize=' + pageSize;
-                }
-                if (sort !== undefined) {
-                    requestParams = requestParams + '&sort=' + sort;
-                }
-                return this.http
-                    .post(this.getBaseEndPoint() + "/components", idList, {
-                    headers: this.headers,
-                    params: new i1.HttpParams({
-                        fromString: requestParams,
-                    }),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @private
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @return {?}
-         */
-        OccCmsPageLoader.prototype.getRequestParams = /**
-         * @private
-         * @param {?} pageContext
-         * @param {?=} fields
-         * @return {?}
-         */
-            function (pageContext, fields) {
-                /** @type {?} */
-                var requestParams = '';
-                switch (pageContext.type) {
-                    case PageType.PRODUCT_PAGE: {
-                        requestParams = 'productCode=' + pageContext.id;
-                        break;
-                    }
-                    case PageType.CATEGORY_PAGE: {
-                        requestParams = 'categoryCode=' + pageContext.id;
-                        break;
-                    }
-                    case PageType.CATALOG_PAGE: {
-                        requestParams = 'catalogCode=' + pageContext.id;
-                        break;
-                    }
-                }
-                if (fields !== undefined) {
-                    requestParams === ''
-                        ? (requestParams = requestParams + 'fields=' + fields)
-                        : (requestParams = requestParams + '&fields=' + fields);
-                }
-                return requestParams;
-            };
-        OccCmsPageLoader.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccCmsPageLoader.ctorParameters = function () {
-            return [
-                { type: i1.HttpClient },
-                { type: CmsStructureConfig },
-                { type: CmsStructureConfigService },
-                { type: CmsPageAdapter, decorators: [{ type: i0.Optional }] },
-                { type: OccEndpointsService }
-            ];
-        };
-        return OccCmsPageLoader;
-    }(CmsPageLoader));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var NavigationEntryItemEffects = /** @class */ (function () {
-        function NavigationEntryItemEffects(actions$, occCmsService, routingService) {
+        function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
             var _this = this;
             this.actions$ = actions$;
-            this.occCmsService = occCmsService;
+            this.cmsComponentConnector = cmsComponentConnector;
             this.routingService = routingService;
             this.loadNavigationItems$ = this.actions$.pipe(effects.ofType(LOAD_NAVIGATION_ITEMS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return {
@@ -10757,23 +10800,23 @@
                     nodeId: payload.nodeId,
                 };
             }), operators.mergeMap(function (data) {
-                if (data.ids.componentIds.idList.length > 0) {
+                if (data.ids.componentIds.length > 0) {
                     return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) { return routerState !== undefined; }), operators.map(function (routerState) { return routerState.state.context; }), operators.take(1), operators.mergeMap(function (pageContext) {
                         // download all items in one request
-                        return _this.occCmsService
-                            .loadListComponents(data.ids.componentIds, pageContext, 'DEFAULT', 0, data.ids.componentIds.idList.length)
-                            .pipe(operators.map(function (res) {
+                        return _this.cmsComponentConnector
+                            .getList(data.ids.componentIds, pageContext)
+                            .pipe(operators.map(function (components) {
                             return new LoadNavigationItemsSuccess({
                                 nodeId: data.nodeId,
-                                components: res.component,
+                                components: components,
                             });
                         }), operators.catchError(function (error) {
                             return rxjs.of(new LoadNavigationItemsFail(data.nodeId, error));
                         }));
                     }));
                 }
-                else if (data.ids.pageIds.idList.length > 0) ;
-                else if (data.ids.mediaIds.idList.length > 0) ;
+                else if (data.ids.pageIds.length > 0) ;
+                else if (data.ids.mediaIds.length > 0) ;
                 else {
                     return rxjs.of(new LoadNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
                 }
@@ -10793,20 +10836,20 @@
              */
             function (itemList) {
                 /** @type {?} */
-                var pageIds = { idList: [] };
+                var pageIds = [];
                 /** @type {?} */
-                var componentIds = { idList: [] };
+                var componentIds = [];
                 /** @type {?} */
-                var mediaIds = { idList: [] };
+                var mediaIds = [];
                 itemList.forEach(function (item) {
                     if (item.superType === 'AbstractCMSComponent') {
-                        componentIds.idList.push(item.id);
+                        componentIds.push(item.id);
                     }
                     else if (item.superType === 'AbstractPage') {
-                        pageIds.idList.push(item.id);
+                        pageIds.push(item.id);
                     }
                     else if (item.superType === 'AbstractMedia') {
-                        mediaIds.idList.push(item.id);
+                        mediaIds.push(item.id);
                     }
                 });
                 return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
@@ -10818,7 +10861,7 @@
         NavigationEntryItemEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccCmsPageLoader },
+                { type: CmsComponentConnector },
                 { type: RoutingService }
             ];
         };
@@ -10845,7 +10888,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -10920,32 +10963,32 @@
         return Array.from(componentTypes);
     };
     /** @type {?} */
-    var getPageState = i1$1.createSelector(getCmsState, function (state) { return state.page; });
+    var getPageState = i1$2.createSelector(getCmsState, function (state) { return state.page; });
     /** @type {?} */
-    var getPageStateIndex = i1$1.createSelector(getPageState, function (page) { return page.index; });
+    var getPageStateIndex = i1$2.createSelector(getPageState, function (page) { return page.index; });
     /** @type {?} */
     var getIndex = function (pageContext) {
-        return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
+        return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
     };
     /** @type {?} */
     var getIndexEntity = function (pageContext) {
-        return i1$1.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
+        return i1$2.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
     };
     /** @type {?} */
-    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageEntities = i1$2.createSelector(getPageState, getPageEntitiesSelector);
     /** @type {?} */
     var getPageData = function (pageContext) {
-        return i1$1.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
+        return i1$2.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
             return entities[entity.value];
         });
     };
     /** @type {?} */
     var getPageComponentTypes = function (pageContext) {
-        return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
+        return i1$2.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
     };
     /** @type {?} */
     var currentSlotSelectorFactory = function (pageContext, position) {
-        return i1$1.createSelector(getPageData(pageContext), function (entity) {
+        return i1$2.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position];
             }
@@ -10964,16 +11007,16 @@
         }, {});
     };
     /** @type {?} */
-    var getComponentState = i1$1.createSelector(getCmsState, function (state) { return state.component; });
+    var getComponentState = i1$2.createSelector(getCmsState, function (state) { return state.component; });
     /** @type {?} */
-    var getComponentEntities = i1$1.createSelector(getComponentState, getComponentEntitiesSelector);
+    var getComponentEntities = i1$2.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
     var componentStateSelectorFactory = function (uid) {
-        return i1$1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
+        return i1$2.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
     };
     /** @type {?} */
     var componentSelectorFactory = function (uid) {
-        return i1$1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
+        return i1$2.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
     };
 
     /**
@@ -10981,14 +11024,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, function (state) { return state.navigation; });
+    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, function (state) { return state.navigation; });
     /** @type {?} */
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
+        return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
     };
     /** @type {?} */
     var itemsSelectorFactory = function (nodeId) {
-        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1$2.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     /**
@@ -11078,7 +11121,7 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.getCurrentPage()), operators.tap(function (_a) {
+                    this.components[uid] = this.store.pipe(i1$2.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.getCurrentPage()), operators.tap(function (_a) {
                         var _b = __read(_a, 2), componentState = _b[0], currentPage = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
@@ -11113,7 +11156,7 @@
             function (position) {
                 var _this = this;
                 return this.routingService.getPageContext().pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
+                    return _this.store.pipe(i1$2.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
                 }));
             };
         /**
@@ -11131,7 +11174,7 @@
          * @return {?}
          */
             function (navigationNodeUid) {
-                return this.store.pipe(i1$1.select(itemsSelectorFactory(navigationNodeUid)));
+                return this.store.pipe(i1$2.select(itemsSelectorFactory(navigationNodeUid)));
             };
         /**
          * Load navigation items data
@@ -11208,7 +11251,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$1.select(getPageData(pageContext)));
+                return this.store.pipe(i1$2.select(getPageData(pageContext)));
             };
         /**
          * Given pageContext, return the CMS page data
@@ -11225,7 +11268,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
+                return this.store.pipe(i1$2.select(getPageComponentTypes(pageContext)));
             };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -11243,7 +11286,7 @@
          */
             function (pageContext) {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
+                return this.store.pipe(i1$2.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
                     /** @type {?} */
                     var attemptedLoad = entity.loading || entity.success || entity.error;
                     if (!attemptedLoad) {
@@ -11259,11 +11302,11 @@
         /** @nocollapse */
         CmsService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: RoutingService }
             ];
         };
-        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
+        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$2.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
         return CmsService;
     }());
 
@@ -11402,10 +11445,10 @@
         CmsStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
+                            i1$2.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$5),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
@@ -11587,7 +11630,7 @@
                         _this.loadedWebComponents[path] = script;
                         script.setAttribute('src', path);
                         renderer.appendChild(_this.document.body, script);
-                        if (i1$2.isPlatformBrowser(_this.platform)) {
+                        if (i1.isPlatformBrowser(_this.platform)) {
                             script.onload = function () {
                                 script.onload = null;
                             };
@@ -11617,7 +11660,7 @@
             return [
                 { type: i0.ComponentFactoryResolver },
                 { type: CmsConfig },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] },
                 { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
             ];
         };
@@ -11628,23 +11671,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccCmsComponentLoader = /** @class */ (function (_super) {
-        __extends(OccCmsComponentLoader, _super);
-        function OccCmsComponentLoader(http, config, cmsStructureConfigService, adapter, occEndpoints) {
-            var _this = _super.call(this, cmsStructureConfigService, adapter) || this;
-            _this.http = http;
-            _this.config = config;
-            _this.cmsStructureConfigService = cmsStructureConfigService;
-            _this.adapter = adapter;
-            _this.occEndpoints = occEndpoints;
-            _this.headers = new i1.HttpHeaders().set('Content-Type', 'application/json');
-            return _this;
+    /** @type {?} */
+    var CMS_COMPONENT_NORMALIZER = new i0.InjectionToken('CmsComponentNormalizer');
+    /** @type {?} */
+    var CMS_COMPONENT_LIST_NORMALIZER = new i0.InjectionToken('CmsComponentListNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCmsComponentAdapter = /** @class */ (function () {
+        function OccCmsComponentAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
          * @protected
          * @return {?}
          */
-        OccCmsComponentLoader.prototype.getBaseEndPoint = /**
+        OccCmsComponentAdapter.prototype.getBaseEndPoint = /**
          * @protected
          * @return {?}
          */
@@ -11657,7 +11704,7 @@
          * @param {?} pageContext
          * @return {?}
          */
-        OccCmsComponentLoader.prototype.load = /**
+        OccCmsComponentAdapter.prototype.load = /**
          * @template T
          * @param {?} id
          * @param {?} pageContext
@@ -11667,23 +11714,77 @@
                 return this.http
                     .get(this.getBaseEndPoint() + ("/components/" + id), {
                     headers: this.headers,
-                    params: new i1.HttpParams({
+                    params: new i1$1.HttpParams({
                         fromString: this.getRequestParams(pageContext),
                     }),
                 })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                    .pipe(this.converter.pipeable(CMS_COMPONENT_NORMALIZER));
+            };
+        /**
+         * @param {?} ids
+         * @param {?} pageContext
+         * @param {?=} fields
+         * @param {?=} currentPage
+         * @param {?=} pageSize
+         * @param {?=} sort
+         * @return {?}
+         */
+        OccCmsComponentAdapter.prototype.loadList = /**
+         * @param {?} ids
+         * @param {?} pageContext
+         * @param {?=} fields
+         * @param {?=} currentPage
+         * @param {?=} pageSize
+         * @param {?=} sort
+         * @return {?}
+         */
+            function (ids, pageContext, fields, currentPage, pageSize, sort) {
+                if (fields === void 0) {
+                    fields = 'DEFAULT';
+                }
+                if (currentPage === void 0) {
+                    currentPage = 0;
+                }
+                if (pageSize === void 0) {
+                    pageSize = ids.length;
+                }
+                /** @type {?} */
+                var requestParams = this.getRequestParams(pageContext, fields);
+                if (currentPage !== undefined) {
+                    requestParams === ''
+                        ? (requestParams = requestParams + 'currentPage=' + currentPage)
+                        : (requestParams = requestParams + '&currentPage=' + currentPage);
+                }
+                if (pageSize !== undefined) {
+                    requestParams = requestParams + '&pageSize=' + pageSize;
+                }
+                if (sort !== undefined) {
+                    requestParams = requestParams + '&sort=' + sort;
+                }
+                /** @type {?} */
+                var idList = { idList: ids };
+                return this.http
+                    .post(this.getBaseEndPoint() + "/components", idList, {
+                    headers: this.headers,
+                    params: new i1$1.HttpParams({
+                        fromString: requestParams,
+                    }),
+                })
+                    .pipe(operators.pluck('component'), this.converter.pipeable(CMS_COMPONENT_LIST_NORMALIZER));
             };
         /**
          * @private
          * @param {?} pageContext
+         * @param {?=} fields
          * @return {?}
          */
-        OccCmsComponentLoader.prototype.getRequestParams = /**
+        OccCmsComponentAdapter.prototype.getRequestParams = /**
          * @private
          * @param {?} pageContext
+         * @param {?=} fields
          * @return {?}
          */
-            function (pageContext) {
+            function (pageContext, fields) {
                 /** @type {?} */
                 var requestParams = '';
                 switch (pageContext.type) {
@@ -11700,48 +11801,52 @@
                         break;
                     }
                 }
+                if (fields !== undefined) {
+                    requestParams === ''
+                        ? (requestParams = requestParams + 'fields=' + fields)
+                        : (requestParams = requestParams + '&fields=' + fields);
+                }
                 return requestParams;
             };
-        OccCmsComponentLoader.decorators = [
+        OccCmsComponentAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccCmsComponentLoader.ctorParameters = function () {
+        OccCmsComponentAdapter.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
-                { type: CmsStructureConfig },
-                { type: CmsStructureConfigService },
-                { type: CmsComponentAdapter, decorators: [{ type: i0.Optional }] },
-                { type: OccEndpointsService }
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return OccCmsComponentLoader;
-    }(CmsComponentLoader));
+        return OccCmsComponentAdapter;
+    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccCmsPageAdapter = /** @class */ (function (_super) {
-        __extends(OccCmsPageAdapter, _super);
-        function OccCmsPageAdapter() {
-            return _super !== null && _super.apply(this, arguments) || this;
+    var OccCmsPageNormalizer = /** @class */ (function () {
+        function OccCmsPageNormalizer() {
         }
         /**
          * @param {?} source
+         * @param {?=} target
          * @return {?}
          */
-        OccCmsPageAdapter.prototype.adapt = /**
+        OccCmsPageNormalizer.prototype.convert = /**
          * @param {?} source
+         * @param {?=} target
          * @return {?}
          */
-            function (source) {
-                /** @type {?} */
-                var target = {};
-                this.serializePageData(source, target);
-                this.serializePageSlotData(source, target);
-                this.serializePageComponentData(source, target);
-                this.serializeComponentData(source, target);
+            function (source, target) {
+                if (target === void 0) {
+                    target = {};
+                }
+                this.normalizePageData(source, target);
+                this.normalizePageSlotData(source, target);
+                this.normalizePageComponentData(source, target);
+                this.normalizeComponentData(source, target);
                 return target;
             };
         /**
@@ -11750,7 +11855,7 @@
          * @param {?} target
          * @return {?}
          */
-        OccCmsPageAdapter.prototype.serializePageData = /**
+        OccCmsPageNormalizer.prototype.normalizePageData = /**
          * @private
          * @param {?} source
          * @param {?} target
@@ -11774,7 +11879,7 @@
          * @param {?} target
          * @return {?}
          */
-        OccCmsPageAdapter.prototype.serializePageSlotData = /**
+        OccCmsPageNormalizer.prototype.normalizePageSlotData = /**
          * @private
          * @param {?} source
          * @param {?} target
@@ -11811,7 +11916,7 @@
          * @param {?} target
          * @return {?}
          */
-        OccCmsPageAdapter.prototype.serializePageComponentData = /**
+        OccCmsPageNormalizer.prototype.normalizePageComponentData = /**
          * @private
          * @param {?} source
          * @param {?} target
@@ -11881,7 +11986,7 @@
          * @param {?} target
          * @return {?}
          */
-        OccCmsPageAdapter.prototype.serializeComponentData = /**
+        OccCmsPageNormalizer.prototype.normalizeComponentData = /**
          * @private
          * @param {?} source
          * @param {?} target
@@ -11935,11 +12040,89 @@
                     }
                 }
             };
+        OccCmsPageNormalizer.decorators = [
+            { type: i0.Injectable }
+        ];
+        return OccCmsPageNormalizer;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CMS_PAGE_NORMALIZE = new i0.InjectionToken('CmsPageNormalize');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCmsPageAdapter = /** @class */ (function () {
+        function OccCmsPageAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
+        }
+        /**
+         * @protected
+         * @return {?}
+         */
+        OccCmsPageAdapter.prototype.getBaseEndPoint = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                return this.occEndpoints.getEndpoint('cms');
+            };
+        /**
+         * @param {?} pageContext
+         * @param {?=} fields
+         * @return {?}
+         */
+        OccCmsPageAdapter.prototype.load = /**
+         * @param {?} pageContext
+         * @param {?=} fields
+         * @return {?}
+         */
+            function (pageContext, fields) {
+                /** @type {?} */
+                var httpStringParams = '';
+                if (pageContext.id !== 'smartedit-preview') {
+                    httpStringParams = 'pageType=' + pageContext.type;
+                    if (pageContext.type === PageType.CONTENT_PAGE) {
+                        httpStringParams =
+                            httpStringParams + '&pageLabelOrId=' + pageContext.id;
+                    }
+                    else {
+                        httpStringParams = httpStringParams + '&code=' + pageContext.id;
+                    }
+                }
+                if (fields !== undefined) {
+                    httpStringParams = httpStringParams + '&fields=' + fields;
+                }
+                return this.http
+                    .get(this.getBaseEndPoint() + "/pages", {
+                    headers: this.headers,
+                    params: new i1$1.HttpParams({
+                        fromString: httpStringParams,
+                    }),
+                })
+                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+            };
         OccCmsPageAdapter.decorators = [
             { type: i0.Injectable }
         ];
+        /** @nocollapse */
+        OccCmsPageAdapter.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
         return OccCmsPageAdapter;
-    }(CmsPageAdapter));
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -11950,21 +12133,21 @@
         }
         CmsOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, i1.HttpClientModule],
+                        imports: [i1.CommonModule, i1$1.HttpClientModule],
                         providers: [
-                            OccCmsPageLoader,
                             ComponentMapperService,
-                            {
-                                provide: CmsPageLoader,
-                                useClass: OccCmsPageLoader,
-                            },
                             {
                                 provide: CmsPageAdapter,
                                 useClass: OccCmsPageAdapter,
                             },
                             {
-                                provide: CmsComponentLoader,
-                                useClass: OccCmsComponentLoader,
+                                provide: CMS_PAGE_NORMALIZE,
+                                useClass: OccCmsPageNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: CmsComponentAdapter,
+                                useClass: OccCmsComponentAdapter,
                             },
                         ],
                     },] }
@@ -12157,8 +12340,13 @@
          * @return {?}
          */
             function (product) {
-                return product.categories && product.categories.length > 0
-                    ? " | " + product.categories[0].code
+                /** @type {?} */
+                var firstCategory;
+                if (product.categories && product.categories.length > 0) {
+                    firstCategory = product.categories[0];
+                }
+                return firstCategory
+                    ? " | " + (firstCategory.name || firstCategory.code)
                     : '';
             };
         /**
@@ -12380,6 +12568,21 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CartEffects = /** @class */ (function () {
         function CartEffects(actions$, productImageConverter, occCartService, cartData) {
             var _this = this;
@@ -12492,7 +12695,7 @@
         CartEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: ProductImageConverterService },
+                { type: ProductImageNormalizer },
                 { type: OccCartService },
                 { type: CartDataService }
             ];
@@ -12583,10 +12786,10 @@
         CartStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
                             CartOccModule,
-                            i1$1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            i1$2.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
                             effects.EffectsModule.forFeature(effects$6),
                         ],
                         providers: [reducerProvider$2],
@@ -12907,7 +13110,7 @@
         useFactory: getReducers$6,
     };
     /** @type {?} */
-    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1$2.createFeatureSelector(CHECKOUT_FEATURE);
     /**
      * @param {?} reducer
      * @return {?}
@@ -12939,21 +13142,21 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, function (state) { return state.steps; });
+    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, function (state) { return state.steps; });
     /** @type {?} */
-    var getDeliveryAddress$1 = i1$1.createSelector(getCheckoutStepsState, getDeliveryAddress);
+    var getDeliveryAddress$1 = i1$2.createSelector(getCheckoutStepsState, getDeliveryAddress);
     /** @type {?} */
-    var getDeliveryMode$1 = i1$1.createSelector(getCheckoutStepsState, getDeliveryMode);
+    var getDeliveryMode$1 = i1$2.createSelector(getCheckoutStepsState, getDeliveryMode);
     /** @type {?} */
-    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode$1, function (deliveryMode) {
+    var getSupportedDeliveryModes = i1$2.createSelector(getDeliveryMode$1, function (deliveryMode) {
         return Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; });
     });
     /** @type {?} */
-    var getSelectedCode = i1$1.createSelector(getDeliveryMode$1, function (deliveryMode) {
+    var getSelectedCode = i1$2.createSelector(getDeliveryMode$1, function (deliveryMode) {
         return deliveryMode.selected;
     });
     /** @type {?} */
-    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode$1, function (deliveryMode) {
+    var getSelectedDeliveryMode = i1$2.createSelector(getDeliveryMode$1, function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
                 return null;
@@ -12962,20 +13165,20 @@
         }
     });
     /** @type {?} */
-    var getPaymentDetails$1 = i1$1.createSelector(getCheckoutStepsState, getPaymentDetails);
+    var getPaymentDetails$1 = i1$2.createSelector(getCheckoutStepsState, getPaymentDetails);
     /** @type {?} */
-    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutStepsState, getOrderDetails);
+    var getCheckoutOrderDetails = i1$2.createSelector(getCheckoutStepsState, getOrderDetails);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCardTypesState = i1$1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
+    var getCardTypesState = i1$2.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
     /** @type {?} */
-    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
+    var getCardTypesEntites$1 = i1$2.createSelector(getCardTypesState, getCardTypesEntites);
     /** @type {?} */
-    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, function (entites) {
+    var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     });
 
@@ -12984,9 +13187,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
+    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
     /** @type {?} */
-    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResults$1 = i1$2.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     /**
      * @fileoverview added by tsickle
@@ -13042,14 +13245,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+    var getGlobalMessageState = i1$2.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
+    var getGlobalMessageEntities = i1$2.createSelector(getGlobalMessageState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
@@ -13142,7 +13345,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             StateModule,
-                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$7),
+                            i1$2.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$7),
                         ],
                         providers: [reducerProvider$7],
                     },] }
@@ -13175,7 +13378,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+                return this.store.pipe(i1$2.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
             };
         /**
          * Add one message into store
@@ -13229,7 +13432,7 @@
         /** @nocollapse */
         GlobalMessageService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
         return GlobalMessageService;
@@ -13323,7 +13526,7 @@
             function (request, next) {
                 var _this = this;
                 return next.handle(request).pipe(operators.catchError(function (response) {
-                    if (response instanceof i1.HttpErrorResponse) {
+                    if (response instanceof i1$1.HttpErrorResponse) {
                         _this.handleErrorResponse(request, response);
                         return rxjs.throwError(response);
                     }
@@ -13700,7 +13903,7 @@
     /** @type {?} */
     var httpErrorInterceptors = [
         {
-            provide: i1.HTTP_INTERCEPTORS,
+            provide: i1$1.HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
             multi: true,
         },
@@ -13756,6 +13959,8 @@
     /** @type {?} */
     var RESET_PASSWORD_ENDPOINT = '/resetpassword';
     /** @type {?} */
+    var UPDATE_EMAIL_ENDPOINT = '/login';
+    /** @type {?} */
     var UPDATE_PASSWORD_ENDPOINT = '/password';
     var OccUserService = /** @class */ (function () {
         // some extending from baseservice is not working here...
@@ -13809,7 +14014,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_VERIFICATION_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13828,7 +14033,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13849,7 +14054,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13872,7 +14077,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13893,7 +14098,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13912,7 +14117,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "?saved=true";
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13933,7 +14138,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13954,7 +14159,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -13975,7 +14180,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint();
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -13995,9 +14200,9 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var httpParams = new i1.HttpParams().set('userId', userEmailAddress);
+                var httpParams = new i1$1.HttpParams().set('userId', userEmailAddress);
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -14019,12 +14224,39 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
                 return this.http
                     .post(url, { token: token, newPassword: newPassword }, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} currentPassword
+         * @param {?} newUserId
+         * @return {?}
+         */
+        OccUserService.prototype.updateEmail = /**
+         * @param {?} userId
+         * @param {?} currentPassword
+         * @param {?} newUserId
+         * @return {?}
+         */
+            function (userId, currentPassword, newUserId) {
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + UPDATE_EMAIL_ENDPOINT;
+                /** @type {?} */
+                var httpParams = new i1$1.HttpParams()
+                    .set('password', currentPassword)
+                    .set('newLogin', newUserId);
+                /** @type {?} */
+                var headers = new i1$1.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http
+                    .put(url, httpParams, { headers: headers })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
         /**
@@ -14054,11 +14286,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + UPDATE_PASSWORD_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1.HttpParams()
+                var httpParams = new i1$1.HttpParams()
                     .set('old', oldPassword)
                     .set('new', newPassword);
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -14071,7 +14303,7 @@
         /** @nocollapse */
         OccUserService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -14119,11 +14351,11 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1.HttpParams({
+                var params = new i1$1.HttpParams({
                     fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
                 });
                 /** @type {?} */
-                var headers = new i1.HttpHeaders({
+                var headers = new i1$1.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -14148,7 +14380,7 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1.HttpParams();
+                var params = new i1$1.HttpParams();
                 if (pageSize) {
                     params = params.set('pageSize', pageSize.toString());
                 }
@@ -14178,7 +14410,7 @@
                 /** @type {?} */
                 var orderUrl = url + '/' + orderCode;
                 /** @type {?} */
-                var params = new i1.HttpParams({
+                var params = new i1$1.HttpParams({
                     fromString: FULL_PARAMS,
                 });
                 return this.http
@@ -14193,7 +14425,7 @@
         /** @nocollapse */
         OccOrderService.ctorParameters = function () {
             return [
-                { type: i1.HttpClient },
+                { type: i1$1.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -14214,7 +14446,7 @@
         }
         UserOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, i1.HttpClientModule, OccModule],
+                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
                         providers: [OccUserService, OccOrderService],
                     },] }
         ];
@@ -14360,6 +14592,8 @@
      */
     /** @type {?} */
     var USER_FEATURE = 'user';
+    /** @type {?} */
+    var UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
     /** @type {?} */
     var UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
     /** @type {?} */
@@ -14584,6 +14818,58 @@
      */
     /** @type {?} */
     var PROCESS_FEATURE = 'process';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var UPDATE_EMAIL = '[User] Update Email';
+    /** @type {?} */
+    var UPDATE_EMAIL_ERROR = '[User] Update Email Error';
+    /** @type {?} */
+    var UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
+    /** @type {?} */
+    var RESET_EMAIL = '[User] Reset Email';
+    var UpdateEmailAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailAction, _super);
+        function UpdateEmailAction(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_EMAIL;
+            return _this;
+        }
+        return UpdateEmailAction;
+    }(EntityLoadAction));
+    var UpdateEmailSuccessAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailSuccessAction, _super);
+        function UpdateEmailSuccessAction(newUid) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.newUid = newUid;
+            _this.type = UPDATE_EMAIL_SUCCESS;
+            return _this;
+        }
+        return UpdateEmailSuccessAction;
+    }(EntitySuccessAction));
+    var UpdateEmailErrorAction = /** @class */ (function (_super) {
+        __extends(UpdateEmailErrorAction, _super);
+        function UpdateEmailErrorAction(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UPDATE_EMAIL_ERROR;
+            return _this;
+        }
+        return UpdateEmailErrorAction;
+    }(EntityFailAction));
+    var ResetUpdateEmailAction = /** @class */ (function (_super) {
+        __extends(ResetUpdateEmailAction, _super);
+        function ResetUpdateEmailAction() {
+            var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+            _this.type = RESET_EMAIL;
+            return _this;
+        }
+        return ResetUpdateEmailAction;
+    }(EntityResetAction));
 
     /**
      * @fileoverview added by tsickle
@@ -15279,7 +15565,7 @@
      */
     function getReducers$8() {
         return {
-            account: i1$1.combineReducers({
+            account: i1$2.combineReducers({
                 details: reducer$n,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$m),
@@ -15320,63 +15606,63 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1$2.createFeatureSelector(USER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
+    var getDetailsState = i1$2.createSelector(getUserState, function (state) { return state.account; });
     /** @type {?} */
-    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
+    var getDetails = i1$2.createSelector(getDetailsState, function (state) { return state.details; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
+    var getAddressesLoaderState = i1$2.createSelector(getUserState, function (state) { return state.addresses; });
     /** @type {?} */
-    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+    var getAddresses = i1$2.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
+    var getPaymentMethodsState = i1$2.createSelector(getUserState, function (state) { return state.payments; });
     /** @type {?} */
-    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
+    var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
+    var getOrdersState = i1$2.createSelector(getUserState, function (state) { return state.orders; });
     /** @type {?} */
-    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+    var getOrdersLoaded = i1$2.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
     /** @type {?} */
-    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
+    var getOrders = i1$2.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
+    var getTitlesState = i1$2.createSelector(getUserState, function (state) { return state.titles; });
     /** @type {?} */
-    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
+    var getTitlesEntites = i1$2.createSelector(getTitlesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+    var getAllTitles = i1$2.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
     /** @type {?} */
     var titleSelectorFactory = function (code) {
-        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+        return i1$2.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
     };
 
     /**
@@ -15384,14 +15670,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDeliveryCountriesState = i1$1.createSelector(getUserState, function (state) { return state.countries; });
+    var getDeliveryCountriesState = i1$2.createSelector(getUserState, function (state) { return state.countries; });
     /** @type {?} */
-    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
+    var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
     /** @type {?} */
     var countrySelectorFactory = function (isocode) {
-        return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
+        return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
     };
 
     /**
@@ -15399,36 +15685,36 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
+    var getRegionsState = i1$2.createSelector(getUserState, function (state) { return state.regions; });
     /** @type {?} */
-    var getAllRegions = i1$1.createSelector(getRegionsState, function (state) { return state.entities; });
+    var getAllRegions = i1$2.createSelector(getRegionsState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrderState = i1$1.createSelector(getUserState, function (state) { return state.order; });
+    var getOrderState = i1$2.createSelector(getUserState, function (state) { return state.order; });
     /** @type {?} */
-    var getOrderDetails$1 = i1$1.createSelector(getOrderState, function (state) { return state.order; });
+    var getOrderDetails$1 = i1$2.createSelector(getOrderState, function (state) { return state.order; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
+    var getBillingCountriesState = i1$2.createSelector(getUserState, function (state) { return state.billingCountries; });
     /** @type {?} */
-    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
+    var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getResetPassword = i1$1.createSelector(getUserState, function (state) { return state.resetPassword; });
+    var getResetPassword = i1$2.createSelector(getUserState, function (state) { return state.resetPassword; });
 
     /**
      * @fileoverview added by tsickle
@@ -15449,7 +15735,7 @@
      * @return {?}
      */
     function getProcessState() {
-        return i1$1.createFeatureSelector(PROCESS_FEATURE);
+        return i1$2.createFeatureSelector(PROCESS_FEATURE);
     }
 
     /**
@@ -15462,7 +15748,7 @@
      * @return {?}
      */
     function getProcessStateFactory(processId) {
-        return i1$1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
+        return i1$2.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
     }
     /**
      * @template T
@@ -15470,7 +15756,7 @@
      * @return {?}
      */
     function getProcessLoadingFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     /**
      * @template T
@@ -15478,7 +15764,7 @@
      * @return {?}
      */
     function getProcessSuccessFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     /**
      * @template T
@@ -15486,7 +15772,7 @@
      * @return {?}
      */
     function getProcessErrorFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     /**
@@ -15509,7 +15795,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getDetails));
+                return this.store.pipe(i1$2.select(getDetails));
             };
         /**
          * Loads the user's details
@@ -15559,7 +15845,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getOrderDetails$1));
+                return this.store.pipe(i1$2.select(getOrderDetails$1));
             };
         /**
          * Retrieves order's details
@@ -15618,7 +15904,7 @@
          */
             function (userId, pageSize) {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
+                return this.store.pipe(i1$2.select(getOrdersState), operators.tap(function (orderListState) {
                     /** @type {?} */
                     var attemptedLoad = orderListState.loading ||
                         orderListState.success ||
@@ -15640,7 +15926,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getOrdersLoaded));
+                return this.store.pipe(i1$2.select(getOrdersLoaded));
             };
         /**
          * Loads all user's payment methods.
@@ -15671,7 +15957,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPaymentMethods));
+                return this.store.pipe(i1$2.select(getPaymentMethods));
             };
         /**
          * Returns a loading flag for payment methods
@@ -15685,7 +15971,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
+                return this.store.pipe(i1$2.select(getPaymentMethodsLoading));
             };
         /**
          * Sets the payment as a default one
@@ -15893,7 +16179,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAddresses));
+                return this.store.pipe(i1$2.select(getAddresses));
             };
         /**
          * Returns a loading flag for addresses
@@ -15907,7 +16193,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAddressesLoading));
+                return this.store.pipe(i1$2.select(getAddressesLoading));
             };
         /**
          * Returns titles
@@ -15921,7 +16207,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllTitles));
+                return this.store.pipe(i1$2.select(getAllTitles));
             };
         /**
          * Retrieves titles
@@ -15963,7 +16249,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllDeliveryCountries));
+                return this.store.pipe(i1$2.select(getAllDeliveryCountries));
             };
         /**
          * Returns a country based on the provided `isocode`
@@ -15980,7 +16266,7 @@
          * @return {?}
          */
             function (isocode) {
-                return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
+                return this.store.pipe(i1$2.select(countrySelectorFactory(isocode)));
             };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -16011,7 +16297,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllRegions));
+                return this.store.pipe(i1$2.select(getAllRegions));
             };
         /**
          * Returns all billing countries
@@ -16025,7 +16311,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllBillingCountries));
+                return this.store.pipe(i1$2.select(getAllBillingCountries));
             };
         /**
          * Retrieves billing countries
@@ -16054,6 +16340,20 @@
          */
             function () {
                 this.store.dispatch(new ClearUserOrders());
+            };
+        /**
+         * Return whether user's password is successfully reset
+         */
+        /**
+         * Return whether user's password is successfully reset
+         * @return {?}
+         */
+        UserService.prototype.isPasswordReset = /**
+         * Return whether user's password is successfully reset
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getResetPassword));
             };
         /**
          * Updates the user's details
@@ -16086,7 +16386,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details error flag
@@ -16100,7 +16400,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details success flag
@@ -16114,7 +16414,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Resets the update user details processing state
@@ -16171,18 +16471,81 @@
                 this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
             };
         /**
-         * Return whether user's password is successfully reset.  Part of the forgot password flow.
+         * Updates the user's email
+         * @param uid to be updated
          */
         /**
-         * Return whether user's password is successfully reset.  Part of the forgot password flow.
+         * Updates the user's email
+         * @param {?} uid to be updated
+         * @param {?} password
+         * @param {?} newUid
          * @return {?}
          */
-        UserService.prototype.isPasswordReset = /**
-         * Return whether user's password is successfully reset.  Part of the forgot password flow.
+        UserService.prototype.updateEmail = /**
+         * Updates the user's email
+         * @param {?} uid to be updated
+         * @param {?} password
+         * @param {?} newUid
+         * @return {?}
+         */
+            function (uid, password, newUid) {
+                this.store.dispatch(new UpdateEmailAction({ uid: uid, password: password, newUid: newUid }));
+            };
+        /**
+         * Returns the update user's email success flag
+         */
+        /**
+         * Returns the update user's email success flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultSuccess = /**
+         * Returns the update user's email success flag
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getResetPassword));
+                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+            };
+        /**
+         * Returns the update user's email error flag
+         */
+        /**
+         * Returns the update user's email error flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultError = /**
+         * Returns the update user's email error flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+            };
+        /**
+         * Returns the update user's email loading flag
+         */
+        /**
+         * Returns the update user's email loading flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultLoading = /**
+         * Returns the update user's email loading flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+            };
+        /**
+         * Resets the update user's email processing state
+         */
+        /**
+         * Resets the update user's email processing state
+         * @return {?}
+         */
+        UserService.prototype.resetUpdateEmailResultState = /**
+         * Resets the update user's email processing state
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new ResetUpdateEmailAction());
             };
         /**
          * Updates the password for an authenticated user
@@ -16219,7 +16582,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password failure outcome.
@@ -16233,7 +16596,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password process success outcome.
@@ -16247,7 +16610,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Resets the update password process state. The state needs to be reset after the process
@@ -16272,7 +16635,7 @@
         /** @nocollapse */
         UserService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.Store }
             ];
         };
         return UserService;
@@ -16311,7 +16674,7 @@
         }
         ProcessStoreModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
+                        imports: [StateModule, i1$2.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
                         providers: [reducerProvider$9],
                     },] }
         ];
@@ -16477,7 +16840,7 @@
             return [
                 { type: effects.Actions },
                 { type: OccOrderService },
-                { type: ProductImageConverterService }
+                { type: ProductImageNormalizer }
             ];
         };
         __decorate([
@@ -16685,6 +17048,42 @@
             __metadata("design:type", rxjs.Observable)
         ], TitlesEffects.prototype, "loadTitles$", void 0);
         return TitlesEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UpdateEmailEffects = /** @class */ (function () {
+        function UpdateEmailEffects(actions$, occUserService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.occUserService = occUserService;
+            this.updateEmail$ = this.actions$.pipe(effects.ofType(UPDATE_EMAIL), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
+                return _this.occUserService
+                    .updateEmail(payload.uid, payload.password, payload.newUid)
+                    .pipe(operators.map(function () {
+                    return new UpdateEmailSuccessAction(payload.newUid);
+                }), operators.catchError(function (error) {
+                    return rxjs.of(new UpdateEmailErrorAction(error));
+                }));
+            }));
+        }
+        UpdateEmailEffects.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        UpdateEmailEffects.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: OccUserService }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
+        return UpdateEmailEffects;
     }());
 
     /**
@@ -17019,6 +17418,7 @@
         BillingCountriesEffect,
         ResetPasswordEffects,
         ForgotPasswordEffects,
+        UpdateEmailEffects,
         UpdatePasswordEffects,
     ];
 
@@ -17032,10 +17432,10 @@
         UserStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
+                            i1$2.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
                             effects.EffectsModule.forFeature(effects$7),
                             router.RouterModule,
                         ],
@@ -17358,7 +17758,7 @@
                 { type: effects.Actions },
                 { type: OccCartService },
                 { type: OccOrderService },
-                { type: ProductImageConverterService }
+                { type: ProductImageNormalizer }
             ];
         };
         __decorate([
@@ -17491,7 +17891,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes));
+                return this.checkoutStore.pipe(i1$2.select(getSupportedDeliveryModes));
             };
         /**
          * Get selected delivery mode
@@ -17505,7 +17905,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
+                return this.checkoutStore.pipe(i1$2.select(getSelectedDeliveryMode));
             };
         /**
          * Get selected delivery mode code
@@ -17519,7 +17919,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSelectedCode));
+                return this.checkoutStore.pipe(i1$2.select(getSelectedCode));
             };
         /**
          * Get card types
@@ -17533,7 +17933,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
+                return this.checkoutStore.pipe(i1$2.select(getAllCardTypes));
             };
         /**
          * Get delivery address
@@ -17547,7 +17947,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress$1));
+                return this.checkoutStore.pipe(i1$2.select(getDeliveryAddress$1));
             };
         /**
          * Get address verification results
@@ -17561,7 +17961,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+                return this.checkoutStore.pipe(i1$2.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
             };
         /**
          * Get payment details
@@ -17575,7 +17975,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getPaymentDetails$1));
+                return this.checkoutStore.pipe(i1$2.select(getPaymentDetails$1));
             };
         /**
          * Get order details
@@ -17589,7 +17989,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
+                return this.checkoutStore.pipe(i1$2.select(getCheckoutOrderDetails));
             };
         /**
          * Create and set a delivery address using the address param
@@ -17842,7 +18242,7 @@
         /** @nocollapse */
         CheckoutService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1$2.Store },
                 { type: CartDataService }
             ];
         };
@@ -17864,9 +18264,9 @@
         CheckoutStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
-                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$6, { metaReducers: metaReducers$4 }),
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
+                            i1$2.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$6, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$8),
                         ],
                         providers: [reducerProvider$6],
@@ -17902,6 +18302,26 @@
         FOLLOW: 'FOLLOW',
         NOFOLLOW: 'NOFOLLOW',
     };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -18097,1446 +18517,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var SmartEditService = /** @class */ (function () {
-        function SmartEditService(cmsService, routingService, winRef) {
-            var _this = this;
-            this.cmsService = cmsService;
-            this.routingService = routingService;
-            this.getPreviewPage = false;
-            this.getCmsTicket();
-            this.addPageContract();
-            if (winRef.nativeWindow) {
-                /** @type {?} */
-                var window_1 = ( /** @type {?} */(winRef.nativeWindow));
-                // rerender components and slots after editing
-                window_1.smartedit = window_1.smartedit || {};
-                window_1.smartedit.renderComponent = function (componentId, componentType, parentId) {
-                    return _this.renderComponent(componentId, componentType, parentId);
-                };
-                // reprocess page
-                window_1.smartedit.reprocessPage = this.reprocessPage;
-            }
-        }
-        Object.defineProperty(SmartEditService.prototype, "cmsTicketId", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._cmsTicketId;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @protected
-         * @return {?}
-         */
-        SmartEditService.prototype.getCmsTicket = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                rxjs.combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
-                    .pipe(operators.takeWhile(function (_a) {
-                    var _b = __read(_a, 1), cmsPage = _b[0];
-                    return cmsPage === undefined;
-                }))
-                    .subscribe(function (_a) {
-                    var _b = __read(_a, 2), routerState = _b[1];
-                    if (routerState.state && !_this._cmsTicketId) {
-                        _this._cmsTicketId = routerState.state.queryParams['cmsTicketId'];
-                        if (_this._cmsTicketId) {
-                            _this.cmsService.launchInSmartEdit = true;
-                        }
-                    }
-                });
-            };
-        /**
-         * @protected
-         * @return {?}
-         */
-        SmartEditService.prototype.addPageContract = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
-                    if (cmsPage && _this._cmsTicketId) {
-                        // before adding contract, we need redirect to preview page
-                        _this.goToPreviewPage(cmsPage);
-                        // remove old page contract
-                        /** @type {?} */
-                        var previousContract_1 = [];
-                        Array.from(document.body.classList).forEach(function (attr) {
-                            return previousContract_1.push(attr);
-                        });
-                        previousContract_1.forEach(function (attr) { return document.body.classList.remove(attr); });
-                        // add new page contract
-                        if (cmsPage.properties && cmsPage.properties.smartedit) {
-                            /** @type {?} */
-                            var seClasses = cmsPage.properties.smartedit.classes.split(' ');
-                            seClasses.forEach(function (classItem) {
-                                document.body.classList.add(classItem);
-                            });
-                        }
-                    }
-                });
-            };
-        /**
-         * @private
-         * @param {?} cmsPage
-         * @return {?}
-         */
-        SmartEditService.prototype.goToPreviewPage = /**
-         * @private
-         * @param {?} cmsPage
-         * @return {?}
-         */
-            function (cmsPage) {
-                // the first page is the smartedit preview page
-                if (!this.getPreviewPage) {
-                    this.getPreviewPage = true;
-                    if (cmsPage.type === PageType.PRODUCT_PAGE) {
-                        this.routingService.go({
-                            route: [{ name: 'product', params: { code: 2053367 } }],
-                        });
-                    }
-                    else if (cmsPage.type === PageType.CATEGORY_PAGE) {
-                        this.routingService.go({
-                            route: [{ name: 'category', params: { code: 575 } }],
-                        });
-                    }
-                }
-            };
-        /**
-         * @protected
-         * @param {?} componentId
-         * @param {?=} componentType
-         * @param {?=} parentId
-         * @return {?}
-         */
-        SmartEditService.prototype.renderComponent = /**
-         * @protected
-         * @param {?} componentId
-         * @param {?=} componentType
-         * @param {?=} parentId
-         * @return {?}
-         */
-            function (componentId, componentType, parentId) {
-                if (componentId) {
-                    // without parentId, it is slot
-                    if (!parentId) {
-                        this.cmsService.refreshLatestPage();
-                    }
-                    else if (componentType) {
-                        this.cmsService.refreshComponent(componentId);
-                    }
-                }
-                return true;
-            };
-        /**
-         * @protected
-         * @return {?}
-         */
-        SmartEditService.prototype.reprocessPage = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                // TODO: reprocess page API
-            };
-        SmartEditService.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        SmartEditService.ctorParameters = function () {
-            return [
-                { type: CmsService },
-                { type: RoutingService },
-                { type: WindowRef }
-            ];
-        };
-        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
-        return SmartEditService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CmsTicketInterceptor = /** @class */ (function () {
-        function CmsTicketInterceptor(service) {
-            this.service = service;
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        CmsTicketInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-            function (request, next) {
-                if (request.url.indexOf('/cms/') > -1 && this.service.cmsTicketId) {
-                    request = request.clone({
-                        setParams: {
-                            cmsTicketId: this.service.cmsTicketId,
-                        },
-                    });
-                }
-                return next.handle(request);
-            };
-        CmsTicketInterceptor.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        CmsTicketInterceptor.ctorParameters = function () {
-            return [
-                { type: SmartEditService }
-            ];
-        };
-        return CmsTicketInterceptor;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var interceptors$2 = [
-        {
-            provide: i1.HTTP_INTERCEPTORS,
-            useClass: CmsTicketInterceptor,
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var SmartEditModule = /** @class */ (function () {
-        function SmartEditModule() {
-        }
-        /**
-         * @return {?}
-         */
-        SmartEditModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: SmartEditModule,
-                    providers: __spread(interceptors$2),
-                };
-            };
-        SmartEditModule.decorators = [
-            { type: i0.NgModule, args: [{},] }
-        ];
-        return SmartEditModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var STORES_ENDPOINT = 'stores';
-    var OccStoreFinderService = /** @class */ (function () {
-        function OccStoreFinderService(http, occEndpoints) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-        }
-        /**
-         * @param {?} query
-         * @param {?} searchConfig
-         * @param {?=} longitudeLatitude
-         * @return {?}
-         */
-        OccStoreFinderService.prototype.findStores = /**
-         * @param {?} query
-         * @param {?} searchConfig
-         * @param {?=} longitudeLatitude
-         * @return {?}
-         */
-            function (query, searchConfig, longitudeLatitude) {
-                return this.callOccFindStores(query, searchConfig, longitudeLatitude);
-            };
-        /**
-         * @return {?}
-         */
-        OccStoreFinderService.prototype.storesCount = /**
-         * @return {?}
-         */
-            function () {
-                /** @type {?} */
-                var storeCountUrl = this.getStoresEndpoint('storescounts');
-                return this.http
-                    .get(storeCountUrl)
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} storeId
-         * @return {?}
-         */
-        OccStoreFinderService.prototype.findStoreById = /**
-         * @param {?} storeId
-         * @return {?}
-         */
-            function (storeId) {
-                /** @type {?} */
-                var storeDetailsUrl = this.getStoresEndpoint(storeId);
-                /** @type {?} */
-                var params = { fields: 'FULL' };
-                return this.http
-                    .get(storeDetailsUrl, { params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @param {?=} longitudeLatitude
-         * @return {?}
-         */
-        OccStoreFinderService.prototype.callOccFindStores = /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @param {?=} longitudeLatitude
-         * @return {?}
-         */
-            function (query, searchConfig, longitudeLatitude) {
-                /** @type {?} */
-                var url = this.getStoresEndpoint();
-                /** @type {?} */
-                var params = new i1.HttpParams({
-                    fromString: 'fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),' +
-                        'geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),' +
-                        'pagination(DEFAULT),' +
-                        'sorts(DEFAULT)',
-                });
-                if (longitudeLatitude) {
-                    params = params.set('longitude', String(longitudeLatitude.longitude));
-                    params = params.set('latitude', String(longitudeLatitude.latitude));
-                }
-                else {
-                    params = params.set('query', query);
-                }
-                if (searchConfig.pageSize) {
-                    params = params.set('pageSize', String(searchConfig.pageSize));
-                }
-                if (searchConfig.currentPage) {
-                    params = params.set('currentPage', String(searchConfig.currentPage));
-                }
-                if (searchConfig.sort) {
-                    params = params.set('sort', searchConfig.sort);
-                }
-                return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) {
-                    if (error.json) {
-                        return rxjs.throwError(error.json());
-                    }
-                    return rxjs.throwError(error);
-                }));
-            };
-        /**
-         * @protected
-         * @param {?=} url
-         * @return {?}
-         */
-        OccStoreFinderService.prototype.getStoresEndpoint = /**
-         * @protected
-         * @param {?=} url
-         * @return {?}
-         */
-            function (url) {
-                /** @type {?} */
-                var baseUrl = this.occEndpoints.getEndpoint(STORES_ENDPOINT);
-                return url ? baseUrl + '/' + url : baseUrl;
-            };
-        OccStoreFinderService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccStoreFinderService.ctorParameters = function () {
-            return [
-                { type: i1.HttpClient },
-                { type: OccEndpointsService }
-            ];
-        };
-        return OccStoreFinderService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StoreFinderOccModule = /** @class */ (function () {
-        function StoreFinderOccModule() {
-        }
-        StoreFinderOccModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, i1.HttpClientModule, OccModule],
-                        providers: [OccStoreFinderService],
-                    },] }
-        ];
-        return StoreFinderOccModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ StoreFinderConfig = /** @class */ (function () {
-        function StoreFinderConfig() {
-        }
-        return StoreFinderConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var STORE_FINDER_FEATURE = 'stores';
-    /** @type {?} */
-    var STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ON_HOLD = '[StoreFinder] On Hold';
-    /** @type {?} */
-    var FIND_STORES = '[StoreFinder] Find Stores';
-    /** @type {?} */
-    var FIND_STORES_FAIL = '[StoreFinder] Find Stores Fail';
-    /** @type {?} */
-    var FIND_STORES_SUCCESS = '[StoreFinder] Find Stores Success';
-    /** @type {?} */
-    var FIND_STORE_BY_ID = '[StoreFinder] Find a Store by Id';
-    /** @type {?} */
-    var FIND_STORE_BY_ID_FAIL = '[StoreFinder] Find a Store by Id Fail';
-    /** @type {?} */
-    var FIND_STORE_BY_ID_SUCCESS = '[StoreFinder] Find a Store by Id Success';
-    var OnHold = /** @class */ (function (_super) {
-        __extends(OnHold, _super);
-        function OnHold() {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.type = ON_HOLD;
-            return _this;
-        }
-        return OnHold;
-    }(LoaderLoadAction));
-    var FindStores = /** @class */ (function (_super) {
-        __extends(FindStores, _super);
-        function FindStores(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES;
-            return _this;
-        }
-        return FindStores;
-    }(LoaderLoadAction));
-    var FindStoresFail = /** @class */ (function (_super) {
-        __extends(FindStoresFail, _super);
-        function FindStoresFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES_FAIL;
-            return _this;
-        }
-        return FindStoresFail;
-    }(LoaderFailAction));
-    var FindStoresSuccess = /** @class */ (function (_super) {
-        __extends(FindStoresSuccess, _super);
-        function FindStoresSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORES_SUCCESS;
-            return _this;
-        }
-        return FindStoresSuccess;
-    }(LoaderSuccessAction));
-    var FindStoreById = /** @class */ (function (_super) {
-        __extends(FindStoreById, _super);
-        function FindStoreById(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID;
-            return _this;
-        }
-        return FindStoreById;
-    }(LoaderLoadAction));
-    var FindStoreByIdFail = /** @class */ (function (_super) {
-        __extends(FindStoreByIdFail, _super);
-        function FindStoreByIdFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID_FAIL;
-            return _this;
-        }
-        return FindStoreByIdFail;
-    }(LoaderFailAction));
-    var FindStoreByIdSuccess = /** @class */ (function (_super) {
-        __extends(FindStoreByIdSuccess, _super);
-        function FindStoreByIdSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = FIND_STORE_BY_ID_SUCCESS;
-            return _this;
-        }
-        return FindStoreByIdSuccess;
-    }(LoaderSuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var VIEW_ALL_STORES = '[StoreFinder] View All Stores';
-    /** @type {?} */
-    var VIEW_ALL_STORES_FAIL = '[StoreFinder] View All Stores Fail';
-    /** @type {?} */
-    var VIEW_ALL_STORES_SUCCESS = '[StoreFinder] View All Stores Success';
-    var ViewAllStores = /** @class */ (function (_super) {
-        __extends(ViewAllStores, _super);
-        function ViewAllStores() {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.type = VIEW_ALL_STORES;
-            return _this;
-        }
-        return ViewAllStores;
-    }(LoaderLoadAction));
-    var ViewAllStoresFail = /** @class */ (function (_super) {
-        __extends(ViewAllStoresFail, _super);
-        function ViewAllStoresFail(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = VIEW_ALL_STORES_FAIL;
-            return _this;
-        }
-        return ViewAllStoresFail;
-    }(LoaderFailAction));
-    var ViewAllStoresSuccess = /** @class */ (function (_super) {
-        __extends(ViewAllStoresSuccess, _super);
-        function ViewAllStoresSuccess(payload) {
-            var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.payload = payload;
-            _this.type = VIEW_ALL_STORES_SUCCESS;
-            return _this;
-        }
-        return ViewAllStoresSuccess;
-    }(LoaderSuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getFindStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
-    /** @type {?} */
-    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
-    /** @type {?} */
-    var getStoresLoading = i1$1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
-    /** @type {?} */
-    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
-    /** @type {?} */
-    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ExternalJsFileLoader = /** @class */ (function () {
-        function ExternalJsFileLoader(document) {
-            this.document = document;
-        }
-        /**
-         * Loads a javascript from an external URL
-         * @param src URL for the script to be loaded
-         * @param params additional parameters to be attached to the given URL
-         * @param callback a function to be invoked after the script has been loaded
-         */
-        /**
-         * Loads a javascript from an external URL
-         * @param {?} src URL for the script to be loaded
-         * @param {?=} params additional parameters to be attached to the given URL
-         * @param {?=} callback a function to be invoked after the script has been loaded
-         * @return {?}
-         */
-        ExternalJsFileLoader.prototype.load = /**
-         * Loads a javascript from an external URL
-         * @param {?} src URL for the script to be loaded
-         * @param {?=} params additional parameters to be attached to the given URL
-         * @param {?=} callback a function to be invoked after the script has been loaded
-         * @return {?}
-         */
-            function (src, params, callback) {
-                /** @type {?} */
-                var script = this.document.createElement('script');
-                script.type = 'text/javascript';
-                if (params) {
-                    script.src = src + this.parseParams(params);
-                }
-                else {
-                    script.src = src;
-                }
-                script.async = true;
-                script.defer = true;
-                if (callback) {
-                    script.addEventListener('load', callback);
-                }
-                document.head.appendChild(script);
-            };
-        /**
-         * Parses the given object with parameters to a string "param1=value1&param2=value2"
-         * @param params object containing parameters
-         */
-        /**
-         * Parses the given object with parameters to a string "param1=value1&param2=value2"
-         * @private
-         * @param {?} params object containing parameters
-         * @return {?}
-         */
-        ExternalJsFileLoader.prototype.parseParams = /**
-         * Parses the given object with parameters to a string "param1=value1&param2=value2"
-         * @private
-         * @param {?} params object containing parameters
-         * @return {?}
-         */
-            function (params) {
-                /** @type {?} */
-                var result = '';
-                /** @type {?} */
-                var keysArray = Object.keys(params);
-                if (keysArray.length > 0) {
-                    result =
-                        '?' +
-                            keysArray
-                                .map(function (key) { return encodeURI(key) + '=' + encodeURI(params[key]); })
-                                .join('&');
-                }
-                return result;
-            };
-        ExternalJsFileLoader.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        ExternalJsFileLoader.ctorParameters = function () {
-            return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
-            ];
-        };
-        return ExternalJsFileLoader;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StoreDataService = /** @class */ (function () {
-        function StoreDataService() {
-            this.weekDays = {
-                0: 'Sun',
-                1: 'Mon',
-                2: 'Tue',
-                3: 'Wed',
-                4: 'Thu',
-                5: 'Fri',
-                6: 'Sat',
-            };
-        }
-        /**
-         * Returns store latitude
-         * @param location store location
-         */
-        /**
-         * Returns store latitude
-         * @param {?} location store location
-         * @return {?}
-         */
-        StoreDataService.prototype.getStoreLatitude = /**
-         * Returns store latitude
-         * @param {?} location store location
-         * @return {?}
-         */
-            function (location) {
-                return location.geoPoint.latitude;
-            };
-        /**
-         * Returns store longitude
-         * @param location store location
-         */
-        /**
-         * Returns store longitude
-         * @param {?} location store location
-         * @return {?}
-         */
-        StoreDataService.prototype.getStoreLongitude = /**
-         * Returns store longitude
-         * @param {?} location store location
-         * @return {?}
-         */
-            function (location) {
-                return location.geoPoint.longitude;
-            };
-        /**
-         * Returns store closing time
-         * @param location store location
-         * @param date date to compare
-         */
-        /**
-         * Returns store closing time
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-        StoreDataService.prototype.getStoreClosingTime = /**
-         * Returns store closing time
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-            function (location, date) {
-                /** @type {?} */
-                var requestedDaySchedule = this.getSchedule(location, date);
-                /** @type {?} */
-                var result = null;
-                if (requestedDaySchedule.closed === false) {
-                    /** @type {?} */
-                    var closingHour = requestedDaySchedule.closingTime.formattedHour.split(':')[0];
-                    /** @type {?} */
-                    var closingMinute = requestedDaySchedule.closingTime.minute;
-                    result = new Date(date.valueOf());
-                    result.setHours(closingHour);
-                    result.setMinutes(closingMinute);
-                }
-                return result;
-            };
-        /**
-         * Returns store opening time
-         * @param location store location
-         * @param date date to compare
-         */
-        /**
-         * Returns store opening time
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-        StoreDataService.prototype.getStoreOpeningTime = /**
-         * Returns store opening time
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-            function (location, date) {
-                /** @type {?} */
-                var requestedDaySchedule = this.getSchedule(location, date);
-                /** @type {?} */
-                var result = null;
-                if (requestedDaySchedule.closed === false) {
-                    /** @type {?} */
-                    var openingHour = requestedDaySchedule.openingTime.formattedHour.split(':')[0];
-                    /** @type {?} */
-                    var openingMinutes = requestedDaySchedule.openingTime.minute;
-                    result = new Date(date.valueOf());
-                    result.setHours(openingHour);
-                    result.setMinutes(openingMinutes);
-                }
-                return result;
-            };
-        /**
-         * Returns information about store open status
-         * @param location store location
-         * @param date date to compare
-         */
-        /**
-         * Returns information about store open status
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-        StoreDataService.prototype.isStoreOpen = /**
-         * Returns information about store open status
-         * @param {?} location store location
-         * @param {?} date date to compare
-         * @return {?}
-         */
-            function (location, date) {
-                /** @type {?} */
-                var requestedDaySchedule = this.getSchedule(location, date);
-                /** @type {?} */
-                var result = false;
-                if (requestedDaySchedule.closed === false) {
-                    /** @type {?} */
-                    var openingDate = this.getStoreOpeningTime(location, date);
-                    /** @type {?} */
-                    var closingDate = this.getStoreClosingTime(location, date);
-                    result = date > openingDate && date < closingDate;
-                }
-                return result;
-            };
-        /**
-         * Extracts schedule from the given location for the given date
-         * @param location location
-         * @param date date
-         *
-         * @returns payload describing the store's schedule for the given day.
-         */
-        /**
-         * Extracts schedule from the given location for the given date
-         * @private
-         * @param {?} location location
-         * @param {?} date date
-         *
-         * @return {?} payload describing the store's schedule for the given day.
-         */
-        StoreDataService.prototype.getSchedule = /**
-         * Extracts schedule from the given location for the given date
-         * @private
-         * @param {?} location location
-         * @param {?} date date
-         *
-         * @return {?} payload describing the store's schedule for the given day.
-         */
-            function (location, date) {
-                /** @type {?} */
-                var weekday = this.weekDays[date.getDay()];
-                return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
-            };
-        StoreDataService.decorators = [
-            { type: i0.Injectable }
-        ];
-        return StoreDataService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GoogleMapRendererService = /** @class */ (function () {
-        function GoogleMapRendererService(config, externalJsFileLoader, storeDataService) {
-            this.config = config;
-            this.externalJsFileLoader = externalJsFileLoader;
-            this.storeDataService = storeDataService;
-            this.googleMap = null;
-        }
-        /**
-         * Renders google map on the given element and draws markers on it.
-         * If map already exists it will use an existing map otherwise it will create one
-         * @param mapElement HTML element inside of which the map will be displayed
-         * @param locations array containign geo data to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        /**
-         * Renders google map on the given element and draws markers on it.
-         * If map already exists it will use an existing map otherwise it will create one
-         * @param {?} mapElement HTML element inside of which the map will be displayed
-         * @param {?} locations array containign geo data to be displayed on the map
-         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.renderMap = /**
-         * Renders google map on the given element and draws markers on it.
-         * If map already exists it will use an existing map otherwise it will create one
-         * @param {?} mapElement HTML element inside of which the map will be displayed
-         * @param {?} locations array containign geo data to be displayed on the map
-         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-            function (mapElement, locations, selectMarkerHandler) {
-                var _this = this;
-                if (this.googleMap === null) {
-                    this.externalJsFileLoader.load(this.config.googleMaps.apiUrl, { key: this.config.googleMaps.apiKey }, function () {
-                        _this.drawMap(mapElement, locations, selectMarkerHandler);
-                    });
-                }
-                else {
-                    this.drawMap(mapElement, locations, selectMarkerHandler);
-                }
-            };
-        /**
-         * Centers the map to the given point
-         * @param latitute latitude of the new center
-         * @param longitude longitude of the new center
-         */
-        /**
-         * Centers the map to the given point
-         * @param {?} latitute latitude of the new center
-         * @param {?} longitude longitude of the new center
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.centerMap = /**
-         * Centers the map to the given point
-         * @param {?} latitute latitude of the new center
-         * @param {?} longitude longitude of the new center
-         * @return {?}
-         */
-            function (latitute, longitude) {
-                this.googleMap.panTo({ lat: latitute, lng: longitude });
-                this.googleMap.setZoom(this.config.googleMaps.selectedMarkerScale);
-            };
-        /**
-         * Defines and returns {@link google.maps.LatLng} representing a point where the map will be centered
-         * @param locations list of locations
-         */
-        /**
-         * Defines and returns {\@link google.maps.LatLng} representing a point where the map will be centered
-         * @private
-         * @param {?} locations list of locations
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.defineMapCenter = /**
-         * Defines and returns {\@link google.maps.LatLng} representing a point where the map will be centered
-         * @private
-         * @param {?} locations list of locations
-         * @return {?}
-         */
-            function (locations) {
-                return new google.maps.LatLng(this.storeDataService.getStoreLatitude(locations[0]), this.storeDataService.getStoreLongitude(locations[0]));
-            };
-        /**
-         * Creates google map inside if the given HTML element centered to the given point
-         * @param mapElement {@link HTMLElement} inside of which the map will be created
-         * @param mapCenter {@link google.maps.LatLng} the point where the map will be centered
-         */
-        /**
-         * Creates google map inside if the given HTML element centered to the given point
-         * @private
-         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be created
-         * @param {?} mapCenter {\@link google.maps.LatLng} the point where the map will be centered
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.initMap = /**
-         * Creates google map inside if the given HTML element centered to the given point
-         * @private
-         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be created
-         * @param {?} mapCenter {\@link google.maps.LatLng} the point where the map will be centered
-         * @return {?}
-         */
-            function (mapElement, mapCenter) {
-                /** @type {?} */
-                var mapProp = {
-                    center: mapCenter,
-                    zoom: this.config.googleMaps.scale,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP,
-                };
-                this.googleMap = new google.maps.Map(mapElement, mapProp);
-            };
-        /**
-         * Erases the current map's markers and create a new one based on the given locations
-         * @param locations array of locations to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        /**
-         * Erases the current map's markers and create a new one based on the given locations
-         * @private
-         * @param {?} locations array of locations to be displayed on the map
-         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.createMarkers = /**
-         * Erases the current map's markers and create a new one based on the given locations
-         * @private
-         * @param {?} locations array of locations to be displayed on the map
-         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-            function (locations, selectMarkerHandler) {
-                var _this = this;
-                this.markers = [];
-                locations.forEach(function (element, index) {
-                    /** @type {?} */
-                    var marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(_this.storeDataService.getStoreLatitude(element), _this.storeDataService.getStoreLongitude(element)),
-                        label: index + 1 + '',
-                    });
-                    _this.markers.push(marker);
-                    marker.setMap(_this.googleMap);
-                    marker.addListener('mouseover', function () {
-                        marker.setAnimation(google.maps.Animation.BOUNCE);
-                    });
-                    marker.addListener('mouseout', function () {
-                        marker.setAnimation(null);
-                    });
-                    if (selectMarkerHandler) {
-                        marker.addListener('click', function () {
-                            selectMarkerHandler(index);
-                        });
-                    }
-                });
-            };
-        /**
-         * Initialize and draw the map
-         * @param mapElement {@link HTMLElement} inside of which the map will be drawn
-         * @param locations array of locations to be displayed on the map
-         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
-         */
-        /**
-         * Initialize and draw the map
-         * @private
-         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be drawn
-         * @param {?} locations array of locations to be displayed on the map
-         * @param {?} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-        GoogleMapRendererService.prototype.drawMap = /**
-         * Initialize and draw the map
-         * @private
-         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be drawn
-         * @param {?} locations array of locations to be displayed on the map
-         * @param {?} selectMarkerHandler function to handle whenever a marker on a map is clicked
-         * @return {?}
-         */
-            function (mapElement, locations, selectMarkerHandler) {
-                this.initMap(mapElement, this.defineMapCenter(locations));
-                this.createMarkers(locations, selectMarkerHandler);
-            };
-        GoogleMapRendererService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        GoogleMapRendererService.ctorParameters = function () {
-            return [
-                { type: StoreFinderConfig },
-                { type: ExternalJsFileLoader },
-                { type: StoreDataService }
-            ];
-        };
-        return GoogleMapRendererService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FindStoresEffect = /** @class */ (function () {
-        function FindStoresEffect(actions$, occStoreFinderService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.occStoreFinderService = occStoreFinderService;
-            this.findStores$ = this.actions$.pipe(effects.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occStoreFinderService
-                    .findStores(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
-                    .pipe(operators.map(function (data) {
-                    data.geolocation = payload.longitudeLatitude;
-                    if (payload.countryIsoCode) {
-                        data.stores = data.stores.filter(function (store) {
-                            return store.address.country.isocode === payload.countryIsoCode;
-                        });
-                    }
-                    return new FindStoresSuccess(data);
-                }), operators.catchError(function (error) { return rxjs.of(new FindStoresFail(error)); }));
-            }));
-            this.findStoreById$ = this.actions$.pipe(effects.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.occStoreFinderService.findStoreById(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(error)); }));
-            }));
-        }
-        FindStoresEffect.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        FindStoresEffect.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: OccStoreFinderService }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], FindStoresEffect.prototype, "findStores$", void 0);
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], FindStoresEffect.prototype, "findStoreById$", void 0);
-        return FindStoresEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ViewAllStoresEffect = /** @class */ (function () {
-        function ViewAllStoresEffect(actions$, occStoreFinderService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.occStoreFinderService = occStoreFinderService;
-            this.viewAllStores$ = this.actions$.pipe(effects.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
-                return _this.occStoreFinderService.storesCount().pipe(operators.map(function (data) { return new ViewAllStoresSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(error)); }));
-            }));
-        }
-        ViewAllStoresEffect.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        ViewAllStoresEffect.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: OccStoreFinderService }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
-        return ViewAllStoresEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$a() {
-        return {
-            findStores: loaderReducer(STORE_FINDER_DATA),
-            viewAllStores: loaderReducer(STORE_FINDER_DATA),
-        };
-    }
-    /** @type {?} */
-    var reducerToken$a = new i0.InjectionToken('StoreFinderReducers');
-    /** @type {?} */
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StoreFinderService = /** @class */ (function () {
-        function StoreFinderService(store, winRef) {
-            this.store = store;
-            this.winRef = winRef;
-            this.geolocationWatchId = null;
-        }
-        /**
-         * Returns boolean observable for store's loading state
-         */
-        /**
-         * Returns boolean observable for store's loading state
-         * @return {?}
-         */
-        StoreFinderService.prototype.getStoresLoading = /**
-         * Returns boolean observable for store's loading state
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getStoresLoading));
-            };
-        /**
-         * Returns observable for store's entities
-         */
-        /**
-         * Returns observable for store's entities
-         * @return {?}
-         */
-        StoreFinderService.prototype.getFindStoresEntities = /**
-         * Returns observable for store's entities
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getFindStoresEntities));
-            };
-        /**
-         * Returns boolean observable for view all store's loading state
-         */
-        /**
-         * Returns boolean observable for view all store's loading state
-         * @return {?}
-         */
-        StoreFinderService.prototype.getViewAllStoresLoading = /**
-         * Returns boolean observable for view all store's loading state
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getViewAllStoresLoading));
-            };
-        /**
-         * Returns observable for view all store's entities
-         */
-        /**
-         * Returns observable for view all store's entities
-         * @return {?}
-         */
-        StoreFinderService.prototype.getViewAllStoresEntities = /**
-         * Returns observable for view all store's entities
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getViewAllStoresEntities));
-            };
-        /**
-         * Store finding action functionality
-         * @param queryText text query
-         * @param longitudeLatitude longitude and latitude coordinates
-         * @param searchConfig search configuration
-         * @param countryIsoCode country ISO code
-         */
-        /**
-         * Store finding action functionality
-         * @param {?} queryText text query
-         * @param {?} longitudeLatitude longitude and latitude coordinates
-         * @param {?} searchConfig search configuration
-         * @param {?=} countryIsoCode country ISO code
-         * @return {?}
-         */
-        StoreFinderService.prototype.findStoresAction = /**
-         * Store finding action functionality
-         * @param {?} queryText text query
-         * @param {?} longitudeLatitude longitude and latitude coordinates
-         * @param {?} searchConfig search configuration
-         * @param {?=} countryIsoCode country ISO code
-         * @return {?}
-         */
-            function (queryText, longitudeLatitude, searchConfig, countryIsoCode) {
-                this.store.dispatch(new FindStores({
-                    queryText: queryText,
-                    longitudeLatitude: longitudeLatitude,
-                    searchConfig: searchConfig,
-                    countryIsoCode: countryIsoCode,
-                }));
-            };
-        /**
-         * View all stores
-         */
-        /**
-         * View all stores
-         * @return {?}
-         */
-        StoreFinderService.prototype.viewAllStores = /**
-         * View all stores
-         * @return {?}
-         */
-            function () {
-                this.clearWatchGeolocation(new ViewAllStores());
-            };
-        /**
-         * View all stores by id
-         * @param storeId store id
-         */
-        /**
-         * View all stores by id
-         * @param {?} storeId store id
-         * @return {?}
-         */
-        StoreFinderService.prototype.viewStoreById = /**
-         * View all stores by id
-         * @param {?} storeId store id
-         * @return {?}
-         */
-            function (storeId) {
-                this.clearWatchGeolocation(new FindStoreById({ storeId: storeId }));
-            };
-        /**
-         * Find all stores
-         * @param queryText text query
-         * @param useMyLocation use current location
-         */
-        /**
-         * Find all stores
-         * @param {?} queryText text query
-         * @param {?=} useMyLocation use current location
-         * @return {?}
-         */
-        StoreFinderService.prototype.findStores = /**
-         * Find all stores
-         * @param {?} queryText text query
-         * @param {?=} useMyLocation use current location
-         * @return {?}
-         */
-            function (queryText, useMyLocation) {
-                var _this = this;
-                if (useMyLocation && this.winRef.nativeWindow) {
-                    this.clearWatchGeolocation(new OnHold());
-                    this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition(function (pos) {
-                        /** @type {?} */
-                        var longitudeLatitude = {
-                            longitude: pos.coords.longitude,
-                            latitude: pos.coords.latitude,
-                        };
-                        _this.clearWatchGeolocation(new FindStores({ queryText: queryText, longitudeLatitude: longitudeLatitude }));
-                    });
-                }
-                else {
-                    this.clearWatchGeolocation(new FindStores({ queryText: queryText }));
-                }
-            };
-        /**
-         * @private
-         * @param {?} callbackAction
-         * @return {?}
-         */
-        StoreFinderService.prototype.clearWatchGeolocation = /**
-         * @private
-         * @param {?} callbackAction
-         * @return {?}
-         */
-            function (callbackAction) {
-                if (this.geolocationWatchId !== null) {
-                    this.winRef.nativeWindow.navigator.geolocation.clearWatch(this.geolocationWatchId);
-                    this.geolocationWatchId = null;
-                }
-                this.store.dispatch(callbackAction);
-            };
-        StoreFinderService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        StoreFinderService.ctorParameters = function () {
-            return [
-                { type: i1$1.Store },
-                { type: WindowRef }
-            ];
-        };
-        return StoreFinderService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StoreFinderStoreModule = /** @class */ (function () {
-        function StoreFinderStoreModule() {
-        }
-        StoreFinderStoreModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            i1$2.CommonModule,
-                            i1.HttpClientModule,
-                            StoreFinderOccModule,
-                            i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
-                            effects.EffectsModule.forFeature(effects$9),
-                        ],
-                        providers: [reducerProvider$a],
-                    },] }
-        ];
-        return StoreFinderStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultStoreFinderConfig = {
-        googleMaps: {
-            apiUrl: 'https://maps.googleapis.com/maps/api/js',
-            apiKey: '',
-            scale: 12,
-            selectedMarkerScale: 16,
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$3 = defaultStoreFinderConfig;
-    var StoreFinderCoreModule = /** @class */ (function () {
-        function StoreFinderCoreModule() {
-        }
-        StoreFinderCoreModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            ConfigModule.withConfig(defaultStoreFinderConfig),
-                            StoreFinderStoreModule,
-                            StoreFinderOccModule,
-                        ],
-                        providers: [
-                            StoreFinderService,
-                            StoreDataService,
-                            GoogleMapRendererService,
-                            ExternalJsFileLoader,
-                            { provide: StoreFinderConfig, useValue: ɵ0$3 },
-                        ],
-                    },] }
-        ];
-        return StoreFinderCoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CxApiModule = /** @class */ (function () {
         function CxApiModule() {
         }
@@ -19602,7 +18582,7 @@
                 /** @type {?} */
                 var lang = this.getActiveLang();
                 try {
-                    i1$2.getLocaleId(lang);
+                    i1.getLocaleId(lang);
                     return lang;
                 }
                 catch (_a) {
@@ -19653,7 +18633,7 @@
             ];
         };
         return DatePipe;
-    }(i1$2.DatePipe));
+    }(i1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -20267,7 +19247,7 @@
             { type: i0.Pipe, args: [{ name: 'cxDate' },] }
         ];
         return MockDatePipe;
-    }(i1$2.DatePipe));
+    }(i1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -20338,6 +19318,1441 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SmartEditService = /** @class */ (function () {
+        function SmartEditService(cmsService, routingService, winRef) {
+            var _this = this;
+            this.cmsService = cmsService;
+            this.routingService = routingService;
+            this.getPreviewPage = false;
+            this.getCmsTicket();
+            this.addPageContract();
+            if (winRef.nativeWindow) {
+                /** @type {?} */
+                var window_1 = ( /** @type {?} */(winRef.nativeWindow));
+                // rerender components and slots after editing
+                window_1.smartedit = window_1.smartedit || {};
+                window_1.smartedit.renderComponent = function (componentId, componentType, parentId) {
+                    return _this.renderComponent(componentId, componentType, parentId);
+                };
+                // reprocess page
+                window_1.smartedit.reprocessPage = this.reprocessPage;
+            }
+        }
+        Object.defineProperty(SmartEditService.prototype, "cmsTicketId", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this._cmsTicketId;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @protected
+         * @return {?}
+         */
+        SmartEditService.prototype.getCmsTicket = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                rxjs.combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
+                    .pipe(operators.takeWhile(function (_a) {
+                    var _b = __read(_a, 1), cmsPage = _b[0];
+                    return cmsPage === undefined;
+                }))
+                    .subscribe(function (_a) {
+                    var _b = __read(_a, 2), routerState = _b[1];
+                    if (routerState.state && !_this._cmsTicketId) {
+                        _this._cmsTicketId = routerState.state.queryParams['cmsTicketId'];
+                        if (_this._cmsTicketId) {
+                            _this.cmsService.launchInSmartEdit = true;
+                        }
+                    }
+                });
+            };
+        /**
+         * @protected
+         * @return {?}
+         */
+        SmartEditService.prototype.addPageContract = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
+                    if (cmsPage && _this._cmsTicketId) {
+                        // before adding contract, we need redirect to preview page
+                        _this.goToPreviewPage(cmsPage);
+                        // remove old page contract
+                        /** @type {?} */
+                        var previousContract_1 = [];
+                        Array.from(document.body.classList).forEach(function (attr) {
+                            return previousContract_1.push(attr);
+                        });
+                        previousContract_1.forEach(function (attr) { return document.body.classList.remove(attr); });
+                        // add new page contract
+                        if (cmsPage.properties && cmsPage.properties.smartedit) {
+                            /** @type {?} */
+                            var seClasses = cmsPage.properties.smartedit.classes.split(' ');
+                            seClasses.forEach(function (classItem) {
+                                document.body.classList.add(classItem);
+                            });
+                        }
+                    }
+                });
+            };
+        /**
+         * @private
+         * @param {?} cmsPage
+         * @return {?}
+         */
+        SmartEditService.prototype.goToPreviewPage = /**
+         * @private
+         * @param {?} cmsPage
+         * @return {?}
+         */
+            function (cmsPage) {
+                // the first page is the smartedit preview page
+                if (!this.getPreviewPage) {
+                    this.getPreviewPage = true;
+                    if (cmsPage.type === PageType.PRODUCT_PAGE) {
+                        this.routingService.go({
+                            route: [{ name: 'product', params: { code: 2053367 } }],
+                        });
+                    }
+                    else if (cmsPage.type === PageType.CATEGORY_PAGE) {
+                        this.routingService.go({
+                            route: [{ name: 'category', params: { code: 575 } }],
+                        });
+                    }
+                }
+            };
+        /**
+         * @protected
+         * @param {?} componentId
+         * @param {?=} componentType
+         * @param {?=} parentId
+         * @return {?}
+         */
+        SmartEditService.prototype.renderComponent = /**
+         * @protected
+         * @param {?} componentId
+         * @param {?=} componentType
+         * @param {?=} parentId
+         * @return {?}
+         */
+            function (componentId, componentType, parentId) {
+                if (componentId) {
+                    // without parentId, it is slot
+                    if (!parentId) {
+                        this.cmsService.refreshLatestPage();
+                    }
+                    else if (componentType) {
+                        this.cmsService.refreshComponent(componentId);
+                    }
+                }
+                return true;
+            };
+        /**
+         * @protected
+         * @return {?}
+         */
+        SmartEditService.prototype.reprocessPage = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                // TODO: reprocess page API
+            };
+        SmartEditService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        SmartEditService.ctorParameters = function () {
+            return [
+                { type: CmsService },
+                { type: RoutingService },
+                { type: WindowRef }
+            ];
+        };
+        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+        return SmartEditService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CmsTicketInterceptor = /** @class */ (function () {
+        function CmsTicketInterceptor(service) {
+            this.service = service;
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        CmsTicketInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                if (request.url.indexOf('/cms/') > -1 && this.service.cmsTicketId) {
+                    request = request.clone({
+                        setParams: {
+                            cmsTicketId: this.service.cmsTicketId,
+                        },
+                    });
+                }
+                return next.handle(request);
+            };
+        CmsTicketInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        CmsTicketInterceptor.ctorParameters = function () {
+            return [
+                { type: SmartEditService }
+            ];
+        };
+        return CmsTicketInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var interceptors$2 = [
+        {
+            provide: i1$1.HTTP_INTERCEPTORS,
+            useClass: CmsTicketInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SmartEditModule = /** @class */ (function () {
+        function SmartEditModule() {
+        }
+        /**
+         * @return {?}
+         */
+        SmartEditModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: SmartEditModule,
+                    providers: __spread(interceptors$2),
+                };
+            };
+        SmartEditModule.decorators = [
+            { type: i0.NgModule, args: [{},] }
+        ];
+        return SmartEditModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var STORES_ENDPOINT = 'stores';
+    var OccStoreFinderService = /** @class */ (function () {
+        function OccStoreFinderService(http, occEndpoints) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+        }
+        /**
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+        OccStoreFinderService.prototype.findStores = /**
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+            function (query, searchConfig, longitudeLatitude) {
+                return this.callOccFindStores(query, searchConfig, longitudeLatitude);
+            };
+        /**
+         * @return {?}
+         */
+        OccStoreFinderService.prototype.storesCount = /**
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var storeCountUrl = this.getStoresEndpoint('storescounts');
+                return this.http
+                    .get(storeCountUrl)
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} storeId
+         * @return {?}
+         */
+        OccStoreFinderService.prototype.findStoreById = /**
+         * @param {?} storeId
+         * @return {?}
+         */
+            function (storeId) {
+                /** @type {?} */
+                var storeDetailsUrl = this.getStoresEndpoint(storeId);
+                /** @type {?} */
+                var params = { fields: 'FULL' };
+                return this.http
+                    .get(storeDetailsUrl, { params: params })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+        OccStoreFinderService.prototype.callOccFindStores = /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+            function (query, searchConfig, longitudeLatitude) {
+                /** @type {?} */
+                var url = this.getStoresEndpoint();
+                /** @type {?} */
+                var params = new i1$1.HttpParams({
+                    fromString: 'fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),' +
+                        'geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),' +
+                        'pagination(DEFAULT),' +
+                        'sorts(DEFAULT)',
+                });
+                if (longitudeLatitude) {
+                    params = params.set('longitude', String(longitudeLatitude.longitude));
+                    params = params.set('latitude', String(longitudeLatitude.latitude));
+                }
+                else {
+                    params = params.set('query', query);
+                }
+                if (searchConfig.pageSize) {
+                    params = params.set('pageSize', String(searchConfig.pageSize));
+                }
+                if (searchConfig.currentPage) {
+                    params = params.set('currentPage', String(searchConfig.currentPage));
+                }
+                if (searchConfig.sort) {
+                    params = params.set('sort', searchConfig.sort);
+                }
+                return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) {
+                    if (error.json) {
+                        return rxjs.throwError(error.json());
+                    }
+                    return rxjs.throwError(error);
+                }));
+            };
+        /**
+         * @protected
+         * @param {?=} url
+         * @return {?}
+         */
+        OccStoreFinderService.prototype.getStoresEndpoint = /**
+         * @protected
+         * @param {?=} url
+         * @return {?}
+         */
+            function (url) {
+                /** @type {?} */
+                var baseUrl = this.occEndpoints.getEndpoint(STORES_ENDPOINT);
+                return url ? baseUrl + '/' + url : baseUrl;
+            };
+        OccStoreFinderService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccStoreFinderService.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService }
+            ];
+        };
+        return OccStoreFinderService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StoreFinderOccModule = /** @class */ (function () {
+        function StoreFinderOccModule() {
+        }
+        StoreFinderOccModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
+                        providers: [OccStoreFinderService],
+                    },] }
+        ];
+        return StoreFinderOccModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ StoreFinderConfig = /** @class */ (function () {
+        function StoreFinderConfig() {
+        }
+        return StoreFinderConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var STORE_FINDER_FEATURE = 'stores';
+    /** @type {?} */
+    var STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ON_HOLD = '[StoreFinder] On Hold';
+    /** @type {?} */
+    var FIND_STORES = '[StoreFinder] Find Stores';
+    /** @type {?} */
+    var FIND_STORES_FAIL = '[StoreFinder] Find Stores Fail';
+    /** @type {?} */
+    var FIND_STORES_SUCCESS = '[StoreFinder] Find Stores Success';
+    /** @type {?} */
+    var FIND_STORE_BY_ID = '[StoreFinder] Find a Store by Id';
+    /** @type {?} */
+    var FIND_STORE_BY_ID_FAIL = '[StoreFinder] Find a Store by Id Fail';
+    /** @type {?} */
+    var FIND_STORE_BY_ID_SUCCESS = '[StoreFinder] Find a Store by Id Success';
+    var OnHold = /** @class */ (function (_super) {
+        __extends(OnHold, _super);
+        function OnHold() {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.type = ON_HOLD;
+            return _this;
+        }
+        return OnHold;
+    }(LoaderLoadAction));
+    var FindStores = /** @class */ (function (_super) {
+        __extends(FindStores, _super);
+        function FindStores(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORES;
+            return _this;
+        }
+        return FindStores;
+    }(LoaderLoadAction));
+    var FindStoresFail = /** @class */ (function (_super) {
+        __extends(FindStoresFail, _super);
+        function FindStoresFail(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORES_FAIL;
+            return _this;
+        }
+        return FindStoresFail;
+    }(LoaderFailAction));
+    var FindStoresSuccess = /** @class */ (function (_super) {
+        __extends(FindStoresSuccess, _super);
+        function FindStoresSuccess(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORES_SUCCESS;
+            return _this;
+        }
+        return FindStoresSuccess;
+    }(LoaderSuccessAction));
+    var FindStoreById = /** @class */ (function (_super) {
+        __extends(FindStoreById, _super);
+        function FindStoreById(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORE_BY_ID;
+            return _this;
+        }
+        return FindStoreById;
+    }(LoaderLoadAction));
+    var FindStoreByIdFail = /** @class */ (function (_super) {
+        __extends(FindStoreByIdFail, _super);
+        function FindStoreByIdFail(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORE_BY_ID_FAIL;
+            return _this;
+        }
+        return FindStoreByIdFail;
+    }(LoaderFailAction));
+    var FindStoreByIdSuccess = /** @class */ (function (_super) {
+        __extends(FindStoreByIdSuccess, _super);
+        function FindStoreByIdSuccess(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.payload = payload;
+            _this.type = FIND_STORE_BY_ID_SUCCESS;
+            return _this;
+        }
+        return FindStoreByIdSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var VIEW_ALL_STORES = '[StoreFinder] View All Stores';
+    /** @type {?} */
+    var VIEW_ALL_STORES_FAIL = '[StoreFinder] View All Stores Fail';
+    /** @type {?} */
+    var VIEW_ALL_STORES_SUCCESS = '[StoreFinder] View All Stores Success';
+    var ViewAllStores = /** @class */ (function (_super) {
+        __extends(ViewAllStores, _super);
+        function ViewAllStores() {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.type = VIEW_ALL_STORES;
+            return _this;
+        }
+        return ViewAllStores;
+    }(LoaderLoadAction));
+    var ViewAllStoresFail = /** @class */ (function (_super) {
+        __extends(ViewAllStoresFail, _super);
+        function ViewAllStoresFail(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = VIEW_ALL_STORES_FAIL;
+            return _this;
+        }
+        return ViewAllStoresFail;
+    }(LoaderFailAction));
+    var ViewAllStoresSuccess = /** @class */ (function (_super) {
+        __extends(ViewAllStoresSuccess, _super);
+        function ViewAllStoresSuccess(payload) {
+            var _this = _super.call(this, STORE_FINDER_DATA) || this;
+            _this.payload = payload;
+            _this.type = VIEW_ALL_STORES_SUCCESS;
+            return _this;
+        }
+        return ViewAllStoresSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getStoreFinderState = i1$2.createFeatureSelector(STORE_FINDER_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getFindStoresState = i1$2.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
+    /** @type {?} */
+    var getFindStoresEntities = i1$2.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
+    /** @type {?} */
+    var getStoresLoading = i1$2.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getViewAllStoresState = i1$2.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
+    /** @type {?} */
+    var getViewAllStoresEntities = i1$2.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
+    /** @type {?} */
+    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ExternalJsFileLoader = /** @class */ (function () {
+        function ExternalJsFileLoader(document) {
+            this.document = document;
+        }
+        /**
+         * Loads a javascript from an external URL
+         * @param src URL for the script to be loaded
+         * @param params additional parameters to be attached to the given URL
+         * @param callback a function to be invoked after the script has been loaded
+         */
+        /**
+         * Loads a javascript from an external URL
+         * @param {?} src URL for the script to be loaded
+         * @param {?=} params additional parameters to be attached to the given URL
+         * @param {?=} callback a function to be invoked after the script has been loaded
+         * @return {?}
+         */
+        ExternalJsFileLoader.prototype.load = /**
+         * Loads a javascript from an external URL
+         * @param {?} src URL for the script to be loaded
+         * @param {?=} params additional parameters to be attached to the given URL
+         * @param {?=} callback a function to be invoked after the script has been loaded
+         * @return {?}
+         */
+            function (src, params, callback) {
+                /** @type {?} */
+                var script = this.document.createElement('script');
+                script.type = 'text/javascript';
+                if (params) {
+                    script.src = src + this.parseParams(params);
+                }
+                else {
+                    script.src = src;
+                }
+                script.async = true;
+                script.defer = true;
+                if (callback) {
+                    script.addEventListener('load', callback);
+                }
+                document.head.appendChild(script);
+            };
+        /**
+         * Parses the given object with parameters to a string "param1=value1&param2=value2"
+         * @param params object containing parameters
+         */
+        /**
+         * Parses the given object with parameters to a string "param1=value1&param2=value2"
+         * @private
+         * @param {?} params object containing parameters
+         * @return {?}
+         */
+        ExternalJsFileLoader.prototype.parseParams = /**
+         * Parses the given object with parameters to a string "param1=value1&param2=value2"
+         * @private
+         * @param {?} params object containing parameters
+         * @return {?}
+         */
+            function (params) {
+                /** @type {?} */
+                var result = '';
+                /** @type {?} */
+                var keysArray = Object.keys(params);
+                if (keysArray.length > 0) {
+                    result =
+                        '?' +
+                            keysArray
+                                .map(function (key) { return encodeURI(key) + '=' + encodeURI(params[key]); })
+                                .join('&');
+                }
+                return result;
+            };
+        ExternalJsFileLoader.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ExternalJsFileLoader.ctorParameters = function () {
+            return [
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
+            ];
+        };
+        return ExternalJsFileLoader;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StoreDataService = /** @class */ (function () {
+        function StoreDataService() {
+            this.weekDays = {
+                0: 'Sun',
+                1: 'Mon',
+                2: 'Tue',
+                3: 'Wed',
+                4: 'Thu',
+                5: 'Fri',
+                6: 'Sat',
+            };
+        }
+        /**
+         * Returns store latitude
+         * @param location store location
+         */
+        /**
+         * Returns store latitude
+         * @param {?} location store location
+         * @return {?}
+         */
+        StoreDataService.prototype.getStoreLatitude = /**
+         * Returns store latitude
+         * @param {?} location store location
+         * @return {?}
+         */
+            function (location) {
+                return location.geoPoint.latitude;
+            };
+        /**
+         * Returns store longitude
+         * @param location store location
+         */
+        /**
+         * Returns store longitude
+         * @param {?} location store location
+         * @return {?}
+         */
+        StoreDataService.prototype.getStoreLongitude = /**
+         * Returns store longitude
+         * @param {?} location store location
+         * @return {?}
+         */
+            function (location) {
+                return location.geoPoint.longitude;
+            };
+        /**
+         * Returns store closing time
+         * @param location store location
+         * @param date date to compare
+         */
+        /**
+         * Returns store closing time
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+        StoreDataService.prototype.getStoreClosingTime = /**
+         * Returns store closing time
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+            function (location, date) {
+                /** @type {?} */
+                var requestedDaySchedule = this.getSchedule(location, date);
+                /** @type {?} */
+                var result = null;
+                if (requestedDaySchedule.closed === false) {
+                    /** @type {?} */
+                    var closingHour = requestedDaySchedule.closingTime.formattedHour.split(':')[0];
+                    /** @type {?} */
+                    var closingMinute = requestedDaySchedule.closingTime.minute;
+                    result = new Date(date.valueOf());
+                    result.setHours(closingHour);
+                    result.setMinutes(closingMinute);
+                }
+                return result;
+            };
+        /**
+         * Returns store opening time
+         * @param location store location
+         * @param date date to compare
+         */
+        /**
+         * Returns store opening time
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+        StoreDataService.prototype.getStoreOpeningTime = /**
+         * Returns store opening time
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+            function (location, date) {
+                /** @type {?} */
+                var requestedDaySchedule = this.getSchedule(location, date);
+                /** @type {?} */
+                var result = null;
+                if (requestedDaySchedule.closed === false) {
+                    /** @type {?} */
+                    var openingHour = requestedDaySchedule.openingTime.formattedHour.split(':')[0];
+                    /** @type {?} */
+                    var openingMinutes = requestedDaySchedule.openingTime.minute;
+                    result = new Date(date.valueOf());
+                    result.setHours(openingHour);
+                    result.setMinutes(openingMinutes);
+                }
+                return result;
+            };
+        /**
+         * Returns information about store open status
+         * @param location store location
+         * @param date date to compare
+         */
+        /**
+         * Returns information about store open status
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+        StoreDataService.prototype.isStoreOpen = /**
+         * Returns information about store open status
+         * @param {?} location store location
+         * @param {?} date date to compare
+         * @return {?}
+         */
+            function (location, date) {
+                /** @type {?} */
+                var requestedDaySchedule = this.getSchedule(location, date);
+                /** @type {?} */
+                var result = false;
+                if (requestedDaySchedule.closed === false) {
+                    /** @type {?} */
+                    var openingDate = this.getStoreOpeningTime(location, date);
+                    /** @type {?} */
+                    var closingDate = this.getStoreClosingTime(location, date);
+                    result = date > openingDate && date < closingDate;
+                }
+                return result;
+            };
+        /**
+         * Extracts schedule from the given location for the given date
+         * @param location location
+         * @param date date
+         *
+         * @returns payload describing the store's schedule for the given day.
+         */
+        /**
+         * Extracts schedule from the given location for the given date
+         * @private
+         * @param {?} location location
+         * @param {?} date date
+         *
+         * @return {?} payload describing the store's schedule for the given day.
+         */
+        StoreDataService.prototype.getSchedule = /**
+         * Extracts schedule from the given location for the given date
+         * @private
+         * @param {?} location location
+         * @param {?} date date
+         *
+         * @return {?} payload describing the store's schedule for the given day.
+         */
+            function (location, date) {
+                /** @type {?} */
+                var weekday = this.weekDays[date.getDay()];
+                return location.openingHours.weekDayOpeningList.find(function (weekDayOpeningListItem) { return weekDayOpeningListItem.weekDay === weekday; });
+            };
+        StoreDataService.decorators = [
+            { type: i0.Injectable }
+        ];
+        return StoreDataService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GoogleMapRendererService = /** @class */ (function () {
+        function GoogleMapRendererService(config, externalJsFileLoader, storeDataService) {
+            this.config = config;
+            this.externalJsFileLoader = externalJsFileLoader;
+            this.storeDataService = storeDataService;
+            this.googleMap = null;
+        }
+        /**
+         * Renders google map on the given element and draws markers on it.
+         * If map already exists it will use an existing map otherwise it will create one
+         * @param mapElement HTML element inside of which the map will be displayed
+         * @param locations array containign geo data to be displayed on the map
+         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
+         */
+        /**
+         * Renders google map on the given element and draws markers on it.
+         * If map already exists it will use an existing map otherwise it will create one
+         * @param {?} mapElement HTML element inside of which the map will be displayed
+         * @param {?} locations array containign geo data to be displayed on the map
+         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.renderMap = /**
+         * Renders google map on the given element and draws markers on it.
+         * If map already exists it will use an existing map otherwise it will create one
+         * @param {?} mapElement HTML element inside of which the map will be displayed
+         * @param {?} locations array containign geo data to be displayed on the map
+         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+            function (mapElement, locations, selectMarkerHandler) {
+                var _this = this;
+                if (this.googleMap === null) {
+                    this.externalJsFileLoader.load(this.config.googleMaps.apiUrl, { key: this.config.googleMaps.apiKey }, function () {
+                        _this.drawMap(mapElement, locations, selectMarkerHandler);
+                    });
+                }
+                else {
+                    this.drawMap(mapElement, locations, selectMarkerHandler);
+                }
+            };
+        /**
+         * Centers the map to the given point
+         * @param latitute latitude of the new center
+         * @param longitude longitude of the new center
+         */
+        /**
+         * Centers the map to the given point
+         * @param {?} latitute latitude of the new center
+         * @param {?} longitude longitude of the new center
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.centerMap = /**
+         * Centers the map to the given point
+         * @param {?} latitute latitude of the new center
+         * @param {?} longitude longitude of the new center
+         * @return {?}
+         */
+            function (latitute, longitude) {
+                this.googleMap.panTo({ lat: latitute, lng: longitude });
+                this.googleMap.setZoom(this.config.googleMaps.selectedMarkerScale);
+            };
+        /**
+         * Defines and returns {@link google.maps.LatLng} representing a point where the map will be centered
+         * @param locations list of locations
+         */
+        /**
+         * Defines and returns {\@link google.maps.LatLng} representing a point where the map will be centered
+         * @private
+         * @param {?} locations list of locations
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.defineMapCenter = /**
+         * Defines and returns {\@link google.maps.LatLng} representing a point where the map will be centered
+         * @private
+         * @param {?} locations list of locations
+         * @return {?}
+         */
+            function (locations) {
+                return new google.maps.LatLng(this.storeDataService.getStoreLatitude(locations[0]), this.storeDataService.getStoreLongitude(locations[0]));
+            };
+        /**
+         * Creates google map inside if the given HTML element centered to the given point
+         * @param mapElement {@link HTMLElement} inside of which the map will be created
+         * @param mapCenter {@link google.maps.LatLng} the point where the map will be centered
+         */
+        /**
+         * Creates google map inside if the given HTML element centered to the given point
+         * @private
+         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be created
+         * @param {?} mapCenter {\@link google.maps.LatLng} the point where the map will be centered
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.initMap = /**
+         * Creates google map inside if the given HTML element centered to the given point
+         * @private
+         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be created
+         * @param {?} mapCenter {\@link google.maps.LatLng} the point where the map will be centered
+         * @return {?}
+         */
+            function (mapElement, mapCenter) {
+                /** @type {?} */
+                var mapProp = {
+                    center: mapCenter,
+                    zoom: this.config.googleMaps.scale,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                };
+                this.googleMap = new google.maps.Map(mapElement, mapProp);
+            };
+        /**
+         * Erases the current map's markers and create a new one based on the given locations
+         * @param locations array of locations to be displayed on the map
+         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
+         */
+        /**
+         * Erases the current map's markers and create a new one based on the given locations
+         * @private
+         * @param {?} locations array of locations to be displayed on the map
+         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.createMarkers = /**
+         * Erases the current map's markers and create a new one based on the given locations
+         * @private
+         * @param {?} locations array of locations to be displayed on the map
+         * @param {?=} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+            function (locations, selectMarkerHandler) {
+                var _this = this;
+                this.markers = [];
+                locations.forEach(function (element, index) {
+                    /** @type {?} */
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(_this.storeDataService.getStoreLatitude(element), _this.storeDataService.getStoreLongitude(element)),
+                        label: index + 1 + '',
+                    });
+                    _this.markers.push(marker);
+                    marker.setMap(_this.googleMap);
+                    marker.addListener('mouseover', function () {
+                        marker.setAnimation(google.maps.Animation.BOUNCE);
+                    });
+                    marker.addListener('mouseout', function () {
+                        marker.setAnimation(null);
+                    });
+                    if (selectMarkerHandler) {
+                        marker.addListener('click', function () {
+                            selectMarkerHandler(index);
+                        });
+                    }
+                });
+            };
+        /**
+         * Initialize and draw the map
+         * @param mapElement {@link HTMLElement} inside of which the map will be drawn
+         * @param locations array of locations to be displayed on the map
+         * @param selectMarkerHandler function to handle whenever a marker on a map is clicked
+         */
+        /**
+         * Initialize and draw the map
+         * @private
+         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be drawn
+         * @param {?} locations array of locations to be displayed on the map
+         * @param {?} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+        GoogleMapRendererService.prototype.drawMap = /**
+         * Initialize and draw the map
+         * @private
+         * @param {?} mapElement {\@link HTMLElement} inside of which the map will be drawn
+         * @param {?} locations array of locations to be displayed on the map
+         * @param {?} selectMarkerHandler function to handle whenever a marker on a map is clicked
+         * @return {?}
+         */
+            function (mapElement, locations, selectMarkerHandler) {
+                this.initMap(mapElement, this.defineMapCenter(locations));
+                this.createMarkers(locations, selectMarkerHandler);
+            };
+        GoogleMapRendererService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        GoogleMapRendererService.ctorParameters = function () {
+            return [
+                { type: StoreFinderConfig },
+                { type: ExternalJsFileLoader },
+                { type: StoreDataService }
+            ];
+        };
+        return GoogleMapRendererService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FindStoresEffect = /** @class */ (function () {
+        function FindStoresEffect(actions$, occStoreFinderService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.occStoreFinderService = occStoreFinderService;
+            this.findStores$ = this.actions$.pipe(effects.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.occStoreFinderService
+                    .findStores(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
+                    .pipe(operators.map(function (data) {
+                    data.geolocation = payload.longitudeLatitude;
+                    if (payload.countryIsoCode) {
+                        data.stores = data.stores.filter(function (store) {
+                            return store.address.country.isocode === payload.countryIsoCode;
+                        });
+                    }
+                    return new FindStoresSuccess(data);
+                }), operators.catchError(function (error) { return rxjs.of(new FindStoresFail(error)); }));
+            }));
+            this.findStoreById$ = this.actions$.pipe(effects.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
+                return _this.occStoreFinderService.findStoreById(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(error)); }));
+            }));
+        }
+        FindStoresEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        FindStoresEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: OccStoreFinderService }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], FindStoresEffect.prototype, "findStores$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], FindStoresEffect.prototype, "findStoreById$", void 0);
+        return FindStoresEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ViewAllStoresEffect = /** @class */ (function () {
+        function ViewAllStoresEffect(actions$, occStoreFinderService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.occStoreFinderService = occStoreFinderService;
+            this.viewAllStores$ = this.actions$.pipe(effects.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
+                return _this.occStoreFinderService.storesCount().pipe(operators.map(function (data) { return new ViewAllStoresSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(error)); }));
+            }));
+        }
+        ViewAllStoresEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ViewAllStoresEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: OccStoreFinderService }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
+        return ViewAllStoresEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$a() {
+        return {
+            findStores: loaderReducer(STORE_FINDER_DATA),
+            viewAllStores: loaderReducer(STORE_FINDER_DATA),
+        };
+    }
+    /** @type {?} */
+    var reducerToken$a = new i0.InjectionToken('StoreFinderReducers');
+    /** @type {?} */
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StoreFinderService = /** @class */ (function () {
+        function StoreFinderService(store, winRef) {
+            this.store = store;
+            this.winRef = winRef;
+            this.geolocationWatchId = null;
+        }
+        /**
+         * Returns boolean observable for store's loading state
+         */
+        /**
+         * Returns boolean observable for store's loading state
+         * @return {?}
+         */
+        StoreFinderService.prototype.getStoresLoading = /**
+         * Returns boolean observable for store's loading state
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getStoresLoading));
+            };
+        /**
+         * Returns observable for store's entities
+         */
+        /**
+         * Returns observable for store's entities
+         * @return {?}
+         */
+        StoreFinderService.prototype.getFindStoresEntities = /**
+         * Returns observable for store's entities
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getFindStoresEntities));
+            };
+        /**
+         * Returns boolean observable for view all store's loading state
+         */
+        /**
+         * Returns boolean observable for view all store's loading state
+         * @return {?}
+         */
+        StoreFinderService.prototype.getViewAllStoresLoading = /**
+         * Returns boolean observable for view all store's loading state
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getViewAllStoresLoading));
+            };
+        /**
+         * Returns observable for view all store's entities
+         */
+        /**
+         * Returns observable for view all store's entities
+         * @return {?}
+         */
+        StoreFinderService.prototype.getViewAllStoresEntities = /**
+         * Returns observable for view all store's entities
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$2.select(getViewAllStoresEntities));
+            };
+        /**
+         * Store finding action functionality
+         * @param queryText text query
+         * @param longitudeLatitude longitude and latitude coordinates
+         * @param searchConfig search configuration
+         * @param countryIsoCode country ISO code
+         */
+        /**
+         * Store finding action functionality
+         * @param {?} queryText text query
+         * @param {?} longitudeLatitude longitude and latitude coordinates
+         * @param {?} searchConfig search configuration
+         * @param {?=} countryIsoCode country ISO code
+         * @return {?}
+         */
+        StoreFinderService.prototype.findStoresAction = /**
+         * Store finding action functionality
+         * @param {?} queryText text query
+         * @param {?} longitudeLatitude longitude and latitude coordinates
+         * @param {?} searchConfig search configuration
+         * @param {?=} countryIsoCode country ISO code
+         * @return {?}
+         */
+            function (queryText, longitudeLatitude, searchConfig, countryIsoCode) {
+                this.store.dispatch(new FindStores({
+                    queryText: queryText,
+                    longitudeLatitude: longitudeLatitude,
+                    searchConfig: searchConfig,
+                    countryIsoCode: countryIsoCode,
+                }));
+            };
+        /**
+         * View all stores
+         */
+        /**
+         * View all stores
+         * @return {?}
+         */
+        StoreFinderService.prototype.viewAllStores = /**
+         * View all stores
+         * @return {?}
+         */
+            function () {
+                this.clearWatchGeolocation(new ViewAllStores());
+            };
+        /**
+         * View all stores by id
+         * @param storeId store id
+         */
+        /**
+         * View all stores by id
+         * @param {?} storeId store id
+         * @return {?}
+         */
+        StoreFinderService.prototype.viewStoreById = /**
+         * View all stores by id
+         * @param {?} storeId store id
+         * @return {?}
+         */
+            function (storeId) {
+                this.clearWatchGeolocation(new FindStoreById({ storeId: storeId }));
+            };
+        /**
+         * Find all stores
+         * @param queryText text query
+         * @param useMyLocation use current location
+         */
+        /**
+         * Find all stores
+         * @param {?} queryText text query
+         * @param {?=} useMyLocation use current location
+         * @return {?}
+         */
+        StoreFinderService.prototype.findStores = /**
+         * Find all stores
+         * @param {?} queryText text query
+         * @param {?=} useMyLocation use current location
+         * @return {?}
+         */
+            function (queryText, useMyLocation) {
+                var _this = this;
+                if (useMyLocation && this.winRef.nativeWindow) {
+                    this.clearWatchGeolocation(new OnHold());
+                    this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition(function (pos) {
+                        /** @type {?} */
+                        var longitudeLatitude = {
+                            longitude: pos.coords.longitude,
+                            latitude: pos.coords.latitude,
+                        };
+                        _this.clearWatchGeolocation(new FindStores({ queryText: queryText, longitudeLatitude: longitudeLatitude }));
+                    });
+                }
+                else {
+                    this.clearWatchGeolocation(new FindStores({ queryText: queryText }));
+                }
+            };
+        /**
+         * @private
+         * @param {?} callbackAction
+         * @return {?}
+         */
+        StoreFinderService.prototype.clearWatchGeolocation = /**
+         * @private
+         * @param {?} callbackAction
+         * @return {?}
+         */
+            function (callbackAction) {
+                if (this.geolocationWatchId !== null) {
+                    this.winRef.nativeWindow.navigator.geolocation.clearWatch(this.geolocationWatchId);
+                    this.geolocationWatchId = null;
+                }
+                this.store.dispatch(callbackAction);
+            };
+        StoreFinderService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        StoreFinderService.ctorParameters = function () {
+            return [
+                { type: i1$2.Store },
+                { type: WindowRef }
+            ];
+        };
+        return StoreFinderService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StoreFinderStoreModule = /** @class */ (function () {
+        function StoreFinderStoreModule() {
+        }
+        StoreFinderStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1.CommonModule,
+                            i1$1.HttpClientModule,
+                            StoreFinderOccModule,
+                            i1$2.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
+                            effects.EffectsModule.forFeature(effects$9),
+                        ],
+                        providers: [reducerProvider$a],
+                    },] }
+        ];
+        return StoreFinderStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultStoreFinderConfig = {
+        googleMaps: {
+            apiUrl: 'https://maps.googleapis.com/maps/api/js',
+            apiKey: '',
+            scale: 12,
+            selectedMarkerScale: 16,
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$3 = defaultStoreFinderConfig;
+    var StoreFinderCoreModule = /** @class */ (function () {
+        function StoreFinderCoreModule() {
+        }
+        StoreFinderCoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            ConfigModule.withConfig(defaultStoreFinderConfig),
+                            StoreFinderStoreModule,
+                            StoreFinderOccModule,
+                        ],
+                        providers: [
+                            StoreFinderService,
+                            StoreDataService,
+                            GoogleMapRendererService,
+                            ExternalJsFileLoader,
+                            { provide: StoreFinderConfig, useValue: ɵ0$3 },
+                        ],
+                    },] }
+        ];
+        return StoreFinderCoreModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -20432,6 +20847,45 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    exports.AuthModule = AuthModule;
+    exports.AuthConfig = AuthConfig;
+    exports.AuthService = AuthService;
+    exports.AuthGuard = AuthGuard;
+    exports.NotAuthGuard = NotAuthGuard;
+    exports.LOAD_USER_TOKEN = LOAD_USER_TOKEN;
+    exports.LOAD_USER_TOKEN_FAIL = LOAD_USER_TOKEN_FAIL;
+    exports.LOAD_USER_TOKEN_SUCCESS = LOAD_USER_TOKEN_SUCCESS;
+    exports.REFRESH_USER_TOKEN = REFRESH_USER_TOKEN;
+    exports.REFRESH_USER_TOKEN_FAIL = REFRESH_USER_TOKEN_FAIL;
+    exports.REFRESH_USER_TOKEN_SUCCESS = REFRESH_USER_TOKEN_SUCCESS;
+    exports.LoadUserToken = LoadUserToken;
+    exports.LoadUserTokenFail = LoadUserTokenFail;
+    exports.LoadUserTokenSuccess = LoadUserTokenSuccess;
+    exports.RefreshUserToken = RefreshUserToken;
+    exports.RefreshUserTokenSuccess = RefreshUserTokenSuccess;
+    exports.RefreshUserTokenFail = RefreshUserTokenFail;
+    exports.LOAD_CLIENT_TOKEN = LOAD_CLIENT_TOKEN;
+    exports.LOAD_CLIENT_TOKEN_FAIL = LOAD_CLIENT_TOKEN_FAIL;
+    exports.LOAD_CLIENT_TOKEN_SUCCESS = LOAD_CLIENT_TOKEN_SUCCESS;
+    exports.LoadClientToken = LoadClientToken;
+    exports.LoadClientTokenFail = LoadClientTokenFail;
+    exports.LoadClientTokenSuccess = LoadClientTokenSuccess;
+    exports.LOGIN = LOGIN;
+    exports.LOGOUT = LOGOUT;
+    exports.Login = Login;
+    exports.Logout = Logout;
+    exports.getAuthState = getAuthState;
+    exports.getUserTokenSelector = getUserTokenSelector;
+    exports.getUserTokenState = getUserTokenState;
+    exports.getUserToken = getUserToken;
+    exports.getClientTokenState = getClientTokenState;
+    exports.AUTH_FEATURE = AUTH_FEATURE;
+    exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
     exports.CREATE_CART = CREATE_CART;
     exports.CREATE_CART_FAIL = CREATE_CART_FAIL;
     exports.CREATE_CART_SUCCESS = CREATE_CART_SUCCESS;
@@ -20489,275 +20943,6 @@
     exports.OccCartService = OccCartService;
     exports.CartOccModule = CartOccModule;
     exports.CartModule = CartModule;
-    exports.provideConfig = provideConfig;
-    exports.provideConfigFactory = provideConfigFactory;
-    exports.configurationFactory = configurationFactory;
-    exports.Config = Config;
-    exports.ConfigChunk = ConfigChunk;
-    exports.ConfigModule = ConfigModule;
-    exports.ServerConfig = ServerConfig;
-    exports.defaultServerConfig = defaultServerConfig;
-    exports.provideConfigValidator = provideConfigValidator;
-    exports.validateConfig = validateConfig;
-    exports.ConfigValidatorToken = ConfigValidatorToken;
-    exports.StateModule = StateModule;
-    exports.entityMeta = entityMeta;
-    exports.entityRemoveMeta = entityRemoveMeta;
-    exports.entityRemoveAllMeta = entityRemoveAllMeta;
-    exports.ENTITY_REMOVE_ACTION = ENTITY_REMOVE_ACTION;
-    exports.ENTITY_REMOVE_ALL_ACTION = ENTITY_REMOVE_ALL_ACTION;
-    exports.EntityRemoveAction = EntityRemoveAction;
-    exports.EntityRemoveAllAction = EntityRemoveAllAction;
-    exports.entityReducer = entityReducer;
-    exports.initialEntityState = initialEntityState;
-    exports.entitySelector = entitySelector;
-    exports.loadMeta = loadMeta;
-    exports.failMeta = failMeta;
-    exports.successMeta = successMeta;
-    exports.resetMeta = resetMeta;
-    exports.LOADER_LOAD_ACTION = LOADER_LOAD_ACTION;
-    exports.LOADER_FAIL_ACTION = LOADER_FAIL_ACTION;
-    exports.LOADER_SUCCESS_ACTION = LOADER_SUCCESS_ACTION;
-    exports.LOADER_RESET_ACTION = LOADER_RESET_ACTION;
-    exports.LoaderLoadAction = LoaderLoadAction;
-    exports.LoaderFailAction = LoaderFailAction;
-    exports.LoaderSuccessAction = LoaderSuccessAction;
-    exports.LoaderResetAction = LoaderResetAction;
-    exports.loaderReducer = loaderReducer;
-    exports.initialLoaderState = initialLoaderState;
-    exports.loaderValueSelector = loaderValueSelector;
-    exports.loaderLoadingSelector = loaderLoadingSelector;
-    exports.loaderErrorSelector = loaderErrorSelector;
-    exports.loaderSuccessSelector = loaderSuccessSelector;
-    exports.ofLoaderLoad = ofLoaderLoad;
-    exports.ofLoaderFail = ofLoaderFail;
-    exports.ofLoaderSuccess = ofLoaderSuccess;
-    exports.entityLoadMeta = entityLoadMeta;
-    exports.entityFailMeta = entityFailMeta;
-    exports.entitySuccessMeta = entitySuccessMeta;
-    exports.entityResetMeta = entityResetMeta;
-    exports.ENTITY_LOAD_ACTION = ENTITY_LOAD_ACTION;
-    exports.ENTITY_FAIL_ACTION = ENTITY_FAIL_ACTION;
-    exports.ENTITY_SUCCESS_ACTION = ENTITY_SUCCESS_ACTION;
-    exports.ENTITY_RESET_ACTION = ENTITY_RESET_ACTION;
-    exports.EntityLoadAction = EntityLoadAction;
-    exports.EntityFailAction = EntityFailAction;
-    exports.EntitySuccessAction = EntitySuccessAction;
-    exports.EntityResetAction = EntityResetAction;
-    exports.entityLoaderReducer = entityLoaderReducer;
-    exports.entityStateSelector = entityStateSelector;
-    exports.entityValueSelector = entityValueSelector;
-    exports.entityLoadingSelector = entityLoadingSelector;
-    exports.entityErrorSelector = entityErrorSelector;
-    exports.entitySuccessSelector = entitySuccessSelector;
-    exports.getStateSlice = getStateSlice;
-    exports.StorageSyncType = StorageSyncType;
-    exports.StateConfig = StateConfig;
-    exports.metaReducersFactory = metaReducersFactory;
-    exports.META_REDUCER = META_REDUCER;
-    exports.ProductLoaderService = ProductLoaderService;
-    exports.ProductSearchLoaderService = ProductSearchLoaderService;
-    exports.ProductReviewsLoaderService = ProductReviewsLoaderService;
-    exports.ProductOccModule = ProductOccModule;
-    exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
-    exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
-    exports.ProductImageConverterService = ProductImageConverterService;
-    exports.ProductReferenceConverterService = ProductReferenceConverterService;
-    exports.ProductConverterModule = ProductConverterModule;
-    exports.SEARCH_PRODUCTS = SEARCH_PRODUCTS;
-    exports.SEARCH_PRODUCTS_FAIL = SEARCH_PRODUCTS_FAIL;
-    exports.SEARCH_PRODUCTS_SUCCESS = SEARCH_PRODUCTS_SUCCESS;
-    exports.GET_PRODUCT_SUGGESTIONS = GET_PRODUCT_SUGGESTIONS;
-    exports.GET_PRODUCT_SUGGESTIONS_SUCCESS = GET_PRODUCT_SUGGESTIONS_SUCCESS;
-    exports.GET_PRODUCT_SUGGESTIONS_FAIL = GET_PRODUCT_SUGGESTIONS_FAIL;
-    exports.CLEAN_PRODUCT_SEARCH = CLEAN_PRODUCT_SEARCH;
-    exports.SearchProducts = SearchProducts;
-    exports.SearchProductsFail = SearchProductsFail;
-    exports.SearchProductsSuccess = SearchProductsSuccess;
-    exports.GetProductSuggestions = GetProductSuggestions;
-    exports.GetProductSuggestionsSuccess = GetProductSuggestionsSuccess;
-    exports.GetProductSuggestionsFail = GetProductSuggestionsFail;
-    exports.CleanProductSearchState = CleanProductSearchState;
-    exports.LOAD_PRODUCT = LOAD_PRODUCT;
-    exports.LOAD_PRODUCT_FAIL = LOAD_PRODUCT_FAIL;
-    exports.LOAD_PRODUCT_SUCCESS = LOAD_PRODUCT_SUCCESS;
-    exports.LoadProduct = LoadProduct;
-    exports.LoadProductFail = LoadProductFail;
-    exports.LoadProductSuccess = LoadProductSuccess;
-    exports.LOAD_PRODUCT_REVIEWS = LOAD_PRODUCT_REVIEWS;
-    exports.LOAD_PRODUCT_REVIEWS_FAIL = LOAD_PRODUCT_REVIEWS_FAIL;
-    exports.LOAD_PRODUCT_REVIEWS_SUCCESS = LOAD_PRODUCT_REVIEWS_SUCCESS;
-    exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
-    exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
-    exports.POST_PRODUCT_REVIEW_SUCCESS = POST_PRODUCT_REVIEW_SUCCESS;
-    exports.LoadProductReviews = LoadProductReviews;
-    exports.LoadProductReviewsFail = LoadProductReviewsFail;
-    exports.LoadProductReviewsSuccess = LoadProductReviewsSuccess;
-    exports.PostProductReview = PostProductReview;
-    exports.PostProductReviewFail = PostProductReviewFail;
-    exports.PostProductReviewSuccess = PostProductReviewSuccess;
-    exports.getProductsState = getProductsState;
-    exports.getProductState = getProductState;
-    exports.getSelectedProductsFactory = getSelectedProductsFactory;
-    exports.getSelectedProductStateFactory = getSelectedProductStateFactory;
-    exports.getSelectedProductFactory = getSelectedProductFactory;
-    exports.getSelectedProductLoadingFactory = getSelectedProductLoadingFactory;
-    exports.getSelectedProductSuccessFactory = getSelectedProductSuccessFactory;
-    exports.getSelectedProductErrorFactory = getSelectedProductErrorFactory;
-    exports.getAllProductCodes = getAllProductCodes;
-    exports.getProductsSearchState = getProductsSearchState;
-    exports.getSearchResults = getSearchResults$1;
-    exports.getAuxSearchResults = getAuxSearchResults$1;
-    exports.getProductSuggestions = getProductSuggestions$1;
-    exports.getProductReviewsState = getProductReviewsState;
-    exports.getSelectedProductReviewsFactory = getSelectedProductReviewsFactory;
-    exports.ProductService = ProductService;
-    exports.ProductSearchService = ProductSearchService;
-    exports.ProductReviewService = ProductReviewService;
-    exports.ProductModule = ProductModule;
-    exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
-    exports.ProductPageMetaResolver = ProductPageMetaResolver;
-    exports.SearchPageMetaResolver = SearchPageMetaResolver;
-    exports.LanguageService = LanguageService;
-    exports.CurrencyService = CurrencyService;
-    exports.SiteContextModule = SiteContextModule;
-    exports.interceptors = interceptors$1;
-    exports.OccSiteService = OccSiteService;
-    exports.SiteContextOccModule = SiteContextOccModule;
-    exports.SiteContextInterceptor = SiteContextInterceptor;
-    exports.SiteContextConfig = SiteContextConfig;
-    exports.serviceMapFactory = serviceMapFactory;
-    exports.ContextServiceMap = ContextServiceMap;
-    exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
-    exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
-    exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
-    exports.contextServiceMapProvider = contextServiceMapProvider;
-    exports.inititializeContext = inititializeContext;
-    exports.contextServiceProviders = contextServiceProviders;
-    exports.initSiteContextRoutesHandler = initSiteContextRoutesHandler;
-    exports.siteContextParamsProviders = siteContextParamsProviders;
-    exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
-    exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
-    exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;
-    exports.LOAD_LANGUAGES_SUCCESS = LOAD_LANGUAGES_SUCCESS;
-    exports.SET_ACTIVE_LANGUAGE = SET_ACTIVE_LANGUAGE;
-    exports.LANGUAGE_CHANGE = LANGUAGE_CHANGE;
-    exports.LoadLanguages = LoadLanguages;
-    exports.LoadLanguagesFail = LoadLanguagesFail;
-    exports.LoadLanguagesSuccess = LoadLanguagesSuccess;
-    exports.SetActiveLanguage = SetActiveLanguage;
-    exports.LanguageChange = LanguageChange;
-    exports.LOAD_CURRENCIES = LOAD_CURRENCIES;
-    exports.LOAD_CURRENCIES_FAIL = LOAD_CURRENCIES_FAIL;
-    exports.LOAD_CURRENCIES_SUCCESS = LOAD_CURRENCIES_SUCCESS;
-    exports.SET_ACTIVE_CURRENCY = SET_ACTIVE_CURRENCY;
-    exports.CURRENCY_CHANGE = CURRENCY_CHANGE;
-    exports.LoadCurrencies = LoadCurrencies;
-    exports.LoadCurrenciesFail = LoadCurrenciesFail;
-    exports.LoadCurrenciesSuccess = LoadCurrenciesSuccess;
-    exports.SetActiveCurrency = SetActiveCurrency;
-    exports.CurrencyChange = CurrencyChange;
-    exports.SET_ACTIVE_BASE_SITE = SET_ACTIVE_BASE_SITE;
-    exports.BASE_SITE_CHANGE = BASE_SITE_CHANGE;
-    exports.SetActiveBaseSite = SetActiveBaseSite;
-    exports.BaseSiteChange = BaseSiteChange;
-    exports.getSiteContextState = getSiteContextState;
-    exports.getLanguagesState = getLanguagesState;
-    exports.getLanguagesEntities = getLanguagesEntities;
-    exports.getActiveLanguage = getActiveLanguage;
-    exports.getAllLanguages = getAllLanguages;
-    exports.getCurrenciesState = getCurrenciesState;
-    exports.getCurrenciesEntities = getCurrenciesEntities;
-    exports.getActiveCurrency = getActiveCurrency;
-    exports.getAllCurrencies = getAllCurrencies;
-    exports.getActiveBaseSite = getActiveBaseSite;
-    exports.OccConfig = OccConfig;
-    exports.defaultOccConfig = defaultOccConfig;
-    exports.serverConfigFromMetaTagFactory = serverConfigFromMetaTagFactory;
-    exports.SERVER_BASE_URL_META_TAG_NAME = SERVER_BASE_URL_META_TAG_NAME;
-    exports.SERVER_BASE_URL_META_TAG_PLACEHOLDER = SERVER_BASE_URL_META_TAG_PLACEHOLDER;
-    exports.occConfigValidator = occConfigValidator;
-    exports.OccModule = OccModule;
-    exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
-    exports.InterceptorUtil = InterceptorUtil;
-    exports.OccMiscsService = OccMiscsService;
-    exports.PriceType = PriceType;
-    exports.ImageType = ImageType;
-    exports.Fields = Fields;
-    exports.Fields1 = Fields1;
-    exports.Fields2 = Fields2;
-    exports.Fields3 = Fields3;
-    exports.Fields4 = Fields4;
-    exports.Fields5 = Fields5;
-    exports.Fields6 = Fields6;
-    exports.PageType = PageType;
-    exports.Fields7 = Fields7;
-    exports.Fields8 = Fields8;
-    exports.Fields9 = Fields9;
-    exports.Fields10 = Fields10;
-    exports.Fields11 = Fields11;
-    exports.Fields12 = Fields12;
-    exports.Fields13 = Fields13;
-    exports.Fields14 = Fields14;
-    exports.Fields15 = Fields15;
-    exports.Fields16 = Fields16;
-    exports.SortEnum = SortEnum;
-    exports.Fields17 = Fields17;
-    exports.Fields18 = Fields18;
-    exports.Fields19 = Fields19;
-    exports.Fields20 = Fields20;
-    exports.Fields21 = Fields21;
-    exports.Fields22 = Fields22;
-    exports.Fields23 = Fields23;
-    exports.Fields24 = Fields24;
-    exports.Fields25 = Fields25;
-    exports.Fields26 = Fields26;
-    exports.Fields27 = Fields27;
-    exports.Fields28 = Fields28;
-    exports.Fields29 = Fields29;
-    exports.Fields30 = Fields30;
-    exports.Fields31 = Fields31;
-    exports.Fields32 = Fields32;
-    exports.Fields33 = Fields33;
-    exports.Fields34 = Fields34;
-    exports.Fields35 = Fields35;
-    exports.Fields36 = Fields36;
-    exports.Fields37 = Fields37;
-    exports.Fields38 = Fields38;
-    exports.Fields39 = Fields39;
-    exports.Fields40 = Fields40;
-    exports.Fields41 = Fields41;
-    exports.Fields42 = Fields42;
-    exports.Fields43 = Fields43;
-    exports.Fields44 = Fields44;
-    exports.Fields45 = Fields45;
-    exports.Fields46 = Fields46;
-    exports.Fields47 = Fields47;
-    exports.Fields48 = Fields48;
-    exports.Fields49 = Fields49;
-    exports.Fields50 = Fields50;
-    exports.Fields51 = Fields51;
-    exports.Fields52 = Fields52;
-    exports.Fields53 = Fields53;
-    exports.Fields54 = Fields54;
-    exports.Fields55 = Fields55;
-    exports.Fields56 = Fields56;
-    exports.Fields57 = Fields57;
-    exports.Fields58 = Fields58;
-    exports.Fields59 = Fields59;
-    exports.Fields60 = Fields60;
-    exports.Fields61 = Fields61;
-    exports.Type = Type;
-    exports.RoutingModule = RoutingModule;
-    exports.RoutingService = RoutingService;
-    exports.PageContext = PageContext;
-    exports.ConfigurableRoutesConfig = ConfigurableRoutesConfig;
-    exports.UrlTranslationModule = UrlTranslationModule;
-    exports.TranslateUrlPipe = TranslateUrlPipe;
-    exports.ConfigurableRoutesService = ConfigurableRoutesService;
-    exports.initConfigurableRoutes = initConfigurableRoutes;
-    exports.ConfigurableRoutesModule = ConfigurableRoutesModule;
-    exports.RoutesConfigLoader = RoutesConfigLoader;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
     exports.CHECKOUT_CLEAR_MISCS_DATA = CHECKOUT_CLEAR_MISCS_DATA;
     exports.CheckoutClearMiscsData = CheckoutClearMiscsData;
@@ -20839,6 +21024,415 @@
     exports.CheckoutService = CheckoutService;
     exports.CheckoutModule = CheckoutModule;
     exports.CheckoutPageMetaResolver = CheckoutPageMetaResolver;
+    exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
+    exports.CMS_FLEX_COMPONENT_TYPE = CMS_FLEX_COMPONENT_TYPE;
+    exports.CmsConfig = CmsConfig;
+    exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
+    exports.CmsStructureConfig = CmsStructureConfig;
+    exports.PageRobotsMeta = PageRobotsMeta;
+    exports.OccCmsPageAdapter = OccCmsPageAdapter;
+    exports.OccCmsPageNormalizer = OccCmsPageNormalizer;
+    exports.OccCmsComponentAdapter = OccCmsComponentAdapter;
+    exports.CmsOccModule = CmsOccModule;
+    exports.CmsPageAdapter = CmsPageAdapter;
+    exports.CmsPageConnector = CmsPageConnector;
+    exports.CMS_PAGE_NORMALIZE = CMS_PAGE_NORMALIZE;
+    exports.CmsComponentConnector = CmsComponentConnector;
+    exports.CmsComponentAdapter = CmsComponentAdapter;
+    exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
+    exports.CMS_COMPONENT_LIST_NORMALIZER = CMS_COMPONENT_LIST_NORMALIZER;
+    exports.CMS_FEATURE = CMS_FEATURE;
+    exports.NAVIGATION_DETAIL_ENTITY = NAVIGATION_DETAIL_ENTITY;
+    exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
+    exports.LOAD_PAGE_DATA = LOAD_PAGE_DATA;
+    exports.LOAD_PAGE_DATA_FAIL = LOAD_PAGE_DATA_FAIL;
+    exports.LOAD_PAGE_DATA_SUCCESS = LOAD_PAGE_DATA_SUCCESS;
+    exports.LoadPageData = LoadPageData;
+    exports.LoadPageDataFail = LoadPageDataFail;
+    exports.LoadPageDataSuccess = LoadPageDataSuccess;
+    exports.LOAD_COMPONENT = LOAD_COMPONENT;
+    exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
+    exports.LOAD_COMPONENT_SUCCESS = LOAD_COMPONENT_SUCCESS;
+    exports.GET_COMPONENET_FROM_PAGE = GET_COMPONENET_FROM_PAGE;
+    exports.LoadComponent = LoadComponent;
+    exports.LoadComponentFail = LoadComponentFail;
+    exports.LoadComponentSuccess = LoadComponentSuccess;
+    exports.GetComponentFromPage = GetComponentFromPage;
+    exports.LOAD_NAVIGATION_ITEMS = LOAD_NAVIGATION_ITEMS;
+    exports.LOAD_NAVIGATION_ITEMS_FAIL = LOAD_NAVIGATION_ITEMS_FAIL;
+    exports.LOAD_NAVIGATION_ITEMS_SUCCESS = LOAD_NAVIGATION_ITEMS_SUCCESS;
+    exports.LoadNavigationItems = LoadNavigationItems;
+    exports.LoadNavigationItemsFail = LoadNavigationItemsFail;
+    exports.LoadNavigationItemsSuccess = LoadNavigationItemsSuccess;
+    exports.getPageEntitiesSelector = getPageEntitiesSelector;
+    exports.getIndexByType = getIndexByType;
+    exports.getPageComponentTypesSelector = getPageComponentTypesSelector;
+    exports.getPageState = getPageState;
+    exports.getPageStateIndex = getPageStateIndex;
+    exports.getIndex = getIndex;
+    exports.getIndexEntity = getIndexEntity;
+    exports.getPageEntities = getPageEntities;
+    exports.getPageData = getPageData;
+    exports.getPageComponentTypes = getPageComponentTypes;
+    exports.currentSlotSelectorFactory = currentSlotSelectorFactory;
+    exports.getComponentEntitiesSelector = getComponentEntitiesSelector;
+    exports.getComponentState = getComponentState;
+    exports.getComponentEntities = getComponentEntities;
+    exports.componentStateSelectorFactory = componentStateSelectorFactory;
+    exports.componentSelectorFactory = componentSelectorFactory;
+    exports.getNavigationEntryItemState = getNavigationEntryItemState;
+    exports.getSelectedNavigationEntryItemState = getSelectedNavigationEntryItemState;
+    exports.itemsSelectorFactory = itemsSelectorFactory;
+    exports.getCmsState = getCmsState;
+    exports.CmsService = CmsService;
+    exports.PageMetaService = PageMetaService;
+    exports.CmsModule = CmsModule;
+    exports.ComponentMapperService = ComponentMapperService;
+    exports.CmsStructureConfigService = CmsStructureConfigService;
+    exports.DynamicAttributeService = DynamicAttributeService;
+    exports.PageMetaResolver = PageMetaResolver;
+    exports.ContentPageMetaResolver = ContentPageMetaResolver;
+    exports.CmsPageTitleModule = CmsPageTitleModule;
+    exports.provideConfig = provideConfig;
+    exports.provideConfigFactory = provideConfigFactory;
+    exports.configurationFactory = configurationFactory;
+    exports.Config = Config;
+    exports.ConfigChunk = ConfigChunk;
+    exports.ConfigModule = ConfigModule;
+    exports.ServerConfig = ServerConfig;
+    exports.defaultServerConfig = defaultServerConfig;
+    exports.provideConfigValidator = provideConfigValidator;
+    exports.validateConfig = validateConfig;
+    exports.ConfigValidatorToken = ConfigValidatorToken;
+    exports.CxApiModule = CxApiModule;
+    exports.CxApiService = CxApiService;
+    exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
+    exports.ADD_MESSAGE = ADD_MESSAGE;
+    exports.REMOVE_MESSAGE = REMOVE_MESSAGE;
+    exports.REMOVE_MESSAGES_BY_TYPE = REMOVE_MESSAGES_BY_TYPE;
+    exports.AddMessage = AddMessage;
+    exports.RemoveMessage = RemoveMessage;
+    exports.RemoveMessagesByType = RemoveMessagesByType;
+    exports.getGlobalMessageState = getGlobalMessageState;
+    exports.getGlobalMessageEntities = getGlobalMessageEntities;
+    exports.GlobalMessageStoreModule = GlobalMessageStoreModule;
+    exports.GlobalMessageService = GlobalMessageService;
+    exports.GlobalMessageType = GlobalMessageType;
+    exports.GlobalMessageModule = GlobalMessageModule;
+    exports.errorHandlers = errorHandlers;
+    exports.httpErrorInterceptors = httpErrorInterceptors;
+    exports.DatePipe = DatePipe;
+    exports.TranslatePipe = TranslatePipe;
+    exports.TranslationService = TranslationService;
+    exports.TranslationNamespaceService = TranslationNamespaceService;
+    exports.I18nModule = I18nModule;
+    exports.I18nConfig = I18nConfig;
+    exports.I18nextTranslationService = I18nextTranslationService;
+    exports.I18nTestingModule = I18nTestingModule;
+    exports.MockTranslatePipe = MockTranslatePipe;
+    exports.defaultOccConfig = defaultOccConfig;
+    exports.OccConfig = OccConfig;
+    exports.serverConfigFromMetaTagFactory = serverConfigFromMetaTagFactory;
+    exports.SERVER_BASE_URL_META_TAG_NAME = SERVER_BASE_URL_META_TAG_NAME;
+    exports.SERVER_BASE_URL_META_TAG_PLACEHOLDER = SERVER_BASE_URL_META_TAG_PLACEHOLDER;
+    exports.occConfigValidator = occConfigValidator;
+    exports.OccMiscsService = OccMiscsService;
+    exports.PriceType = PriceType;
+    exports.ImageType = ImageType;
+    exports.Fields = Fields;
+    exports.Fields1 = Fields1;
+    exports.Fields2 = Fields2;
+    exports.Fields3 = Fields3;
+    exports.Fields4 = Fields4;
+    exports.Fields5 = Fields5;
+    exports.Fields6 = Fields6;
+    exports.PageType = PageType;
+    exports.Fields7 = Fields7;
+    exports.Fields8 = Fields8;
+    exports.Fields9 = Fields9;
+    exports.Fields10 = Fields10;
+    exports.Fields11 = Fields11;
+    exports.Fields12 = Fields12;
+    exports.Fields13 = Fields13;
+    exports.Fields14 = Fields14;
+    exports.Fields15 = Fields15;
+    exports.Fields16 = Fields16;
+    exports.SortEnum = SortEnum;
+    exports.Fields17 = Fields17;
+    exports.Fields18 = Fields18;
+    exports.Fields19 = Fields19;
+    exports.Fields20 = Fields20;
+    exports.Fields21 = Fields21;
+    exports.Fields22 = Fields22;
+    exports.Fields23 = Fields23;
+    exports.Fields24 = Fields24;
+    exports.Fields25 = Fields25;
+    exports.Fields26 = Fields26;
+    exports.Fields27 = Fields27;
+    exports.Fields28 = Fields28;
+    exports.Fields29 = Fields29;
+    exports.Fields30 = Fields30;
+    exports.Fields31 = Fields31;
+    exports.Fields32 = Fields32;
+    exports.Fields33 = Fields33;
+    exports.Fields34 = Fields34;
+    exports.Fields35 = Fields35;
+    exports.Fields36 = Fields36;
+    exports.Fields37 = Fields37;
+    exports.Fields38 = Fields38;
+    exports.Fields39 = Fields39;
+    exports.Fields40 = Fields40;
+    exports.Fields41 = Fields41;
+    exports.Fields42 = Fields42;
+    exports.Fields43 = Fields43;
+    exports.Fields44 = Fields44;
+    exports.Fields45 = Fields45;
+    exports.Fields46 = Fields46;
+    exports.Fields47 = Fields47;
+    exports.Fields48 = Fields48;
+    exports.Fields49 = Fields49;
+    exports.Fields50 = Fields50;
+    exports.Fields51 = Fields51;
+    exports.Fields52 = Fields52;
+    exports.Fields53 = Fields53;
+    exports.Fields54 = Fields54;
+    exports.Fields55 = Fields55;
+    exports.Fields56 = Fields56;
+    exports.Fields57 = Fields57;
+    exports.Fields58 = Fields58;
+    exports.Fields59 = Fields59;
+    exports.Fields60 = Fields60;
+    exports.Fields61 = Fields61;
+    exports.Type = Type;
+    exports.OccModule = OccModule;
+    exports.OccEndpointsService = OccEndpointsService;
+    exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
+    exports.InterceptorUtil = InterceptorUtil;
+    exports.OccProductAdapter = OccProductAdapter;
+    exports.ProductSearchLoaderService = ProductSearchLoaderService;
+    exports.OccProductReviewsAdapter = OccProductReviewsAdapter;
+    exports.OccProductReviewsListNormalizer = OccProductReviewsListNormalizer;
+    exports.ProductImageNormalizer = ProductImageNormalizer;
+    exports.ProductReferenceNormalizer = ProductReferenceNormalizer;
+    exports.ProductOccModule = ProductOccModule;
+    exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
+    exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
+    exports.SEARCH_PRODUCTS = SEARCH_PRODUCTS;
+    exports.SEARCH_PRODUCTS_FAIL = SEARCH_PRODUCTS_FAIL;
+    exports.SEARCH_PRODUCTS_SUCCESS = SEARCH_PRODUCTS_SUCCESS;
+    exports.GET_PRODUCT_SUGGESTIONS = GET_PRODUCT_SUGGESTIONS;
+    exports.GET_PRODUCT_SUGGESTIONS_SUCCESS = GET_PRODUCT_SUGGESTIONS_SUCCESS;
+    exports.GET_PRODUCT_SUGGESTIONS_FAIL = GET_PRODUCT_SUGGESTIONS_FAIL;
+    exports.CLEAN_PRODUCT_SEARCH = CLEAN_PRODUCT_SEARCH;
+    exports.SearchProducts = SearchProducts;
+    exports.SearchProductsFail = SearchProductsFail;
+    exports.SearchProductsSuccess = SearchProductsSuccess;
+    exports.GetProductSuggestions = GetProductSuggestions;
+    exports.GetProductSuggestionsSuccess = GetProductSuggestionsSuccess;
+    exports.GetProductSuggestionsFail = GetProductSuggestionsFail;
+    exports.CleanProductSearchState = CleanProductSearchState;
+    exports.LOAD_PRODUCT = LOAD_PRODUCT;
+    exports.LOAD_PRODUCT_FAIL = LOAD_PRODUCT_FAIL;
+    exports.LOAD_PRODUCT_SUCCESS = LOAD_PRODUCT_SUCCESS;
+    exports.LoadProduct = LoadProduct;
+    exports.LoadProductFail = LoadProductFail;
+    exports.LoadProductSuccess = LoadProductSuccess;
+    exports.LOAD_PRODUCT_REVIEWS = LOAD_PRODUCT_REVIEWS;
+    exports.LOAD_PRODUCT_REVIEWS_FAIL = LOAD_PRODUCT_REVIEWS_FAIL;
+    exports.LOAD_PRODUCT_REVIEWS_SUCCESS = LOAD_PRODUCT_REVIEWS_SUCCESS;
+    exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
+    exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
+    exports.POST_PRODUCT_REVIEW_SUCCESS = POST_PRODUCT_REVIEW_SUCCESS;
+    exports.LoadProductReviews = LoadProductReviews;
+    exports.LoadProductReviewsFail = LoadProductReviewsFail;
+    exports.LoadProductReviewsSuccess = LoadProductReviewsSuccess;
+    exports.PostProductReview = PostProductReview;
+    exports.PostProductReviewFail = PostProductReviewFail;
+    exports.PostProductReviewSuccess = PostProductReviewSuccess;
+    exports.getProductsState = getProductsState;
+    exports.getProductState = getProductState;
+    exports.getSelectedProductsFactory = getSelectedProductsFactory;
+    exports.getSelectedProductStateFactory = getSelectedProductStateFactory;
+    exports.getSelectedProductFactory = getSelectedProductFactory;
+    exports.getSelectedProductLoadingFactory = getSelectedProductLoadingFactory;
+    exports.getSelectedProductSuccessFactory = getSelectedProductSuccessFactory;
+    exports.getSelectedProductErrorFactory = getSelectedProductErrorFactory;
+    exports.getAllProductCodes = getAllProductCodes;
+    exports.getProductsSearchState = getProductsSearchState;
+    exports.getSearchResults = getSearchResults$1;
+    exports.getAuxSearchResults = getAuxSearchResults$1;
+    exports.getProductSuggestions = getProductSuggestions$1;
+    exports.getProductReviewsState = getProductReviewsState;
+    exports.getSelectedProductReviewsFactory = getSelectedProductReviewsFactory;
+    exports.ProductService = ProductService;
+    exports.ProductSearchService = ProductSearchService;
+    exports.ProductReviewService = ProductReviewService;
+    exports.ProductModule = ProductModule;
+    exports.ProductConnector = ProductConnector;
+    exports.ProductAdapter = ProductAdapter;
+    exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
+    exports.ProductReviewsConnector = ProductReviewsConnector;
+    exports.ProductReviewsAdapter = ProductReviewsAdapter;
+    exports.PRODUCT_REVIEWS_NORMALIZER = PRODUCT_REVIEWS_NORMALIZER;
+    exports.PRODUCT_REVIEW_SERIALIZER = PRODUCT_REVIEW_SERIALIZER;
+    exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
+    exports.ProductPageMetaResolver = ProductPageMetaResolver;
+    exports.SearchPageMetaResolver = SearchPageMetaResolver;
+    exports.RoutingModule = RoutingModule;
+    exports.RoutingService = RoutingService;
+    exports.PageContext = PageContext;
+    exports.ConfigurableRoutesConfig = ConfigurableRoutesConfig;
+    exports.UrlTranslationModule = UrlTranslationModule;
+    exports.TranslateUrlPipe = TranslateUrlPipe;
+    exports.ConfigurableRoutesService = ConfigurableRoutesService;
+    exports.initConfigurableRoutes = initConfigurableRoutes;
+    exports.ConfigurableRoutesModule = ConfigurableRoutesModule;
+    exports.RoutesConfigLoader = RoutesConfigLoader;
+    exports.LanguageService = LanguageService;
+    exports.CurrencyService = CurrencyService;
+    exports.SiteContextModule = SiteContextModule;
+    exports.interceptors = interceptors$1;
+    exports.OccSiteService = OccSiteService;
+    exports.SiteContextOccModule = SiteContextOccModule;
+    exports.SiteContextInterceptor = SiteContextInterceptor;
+    exports.SiteContextConfig = SiteContextConfig;
+    exports.serviceMapFactory = serviceMapFactory;
+    exports.ContextServiceMap = ContextServiceMap;
+    exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
+    exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
+    exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
+    exports.contextServiceMapProvider = contextServiceMapProvider;
+    exports.inititializeContext = inititializeContext;
+    exports.contextServiceProviders = contextServiceProviders;
+    exports.initSiteContextRoutesHandler = initSiteContextRoutesHandler;
+    exports.siteContextParamsProviders = siteContextParamsProviders;
+    exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
+    exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
+    exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;
+    exports.LOAD_LANGUAGES_SUCCESS = LOAD_LANGUAGES_SUCCESS;
+    exports.SET_ACTIVE_LANGUAGE = SET_ACTIVE_LANGUAGE;
+    exports.LANGUAGE_CHANGE = LANGUAGE_CHANGE;
+    exports.LoadLanguages = LoadLanguages;
+    exports.LoadLanguagesFail = LoadLanguagesFail;
+    exports.LoadLanguagesSuccess = LoadLanguagesSuccess;
+    exports.SetActiveLanguage = SetActiveLanguage;
+    exports.LanguageChange = LanguageChange;
+    exports.LOAD_CURRENCIES = LOAD_CURRENCIES;
+    exports.LOAD_CURRENCIES_FAIL = LOAD_CURRENCIES_FAIL;
+    exports.LOAD_CURRENCIES_SUCCESS = LOAD_CURRENCIES_SUCCESS;
+    exports.SET_ACTIVE_CURRENCY = SET_ACTIVE_CURRENCY;
+    exports.CURRENCY_CHANGE = CURRENCY_CHANGE;
+    exports.LoadCurrencies = LoadCurrencies;
+    exports.LoadCurrenciesFail = LoadCurrenciesFail;
+    exports.LoadCurrenciesSuccess = LoadCurrenciesSuccess;
+    exports.SetActiveCurrency = SetActiveCurrency;
+    exports.CurrencyChange = CurrencyChange;
+    exports.SET_ACTIVE_BASE_SITE = SET_ACTIVE_BASE_SITE;
+    exports.BASE_SITE_CHANGE = BASE_SITE_CHANGE;
+    exports.SetActiveBaseSite = SetActiveBaseSite;
+    exports.BaseSiteChange = BaseSiteChange;
+    exports.getSiteContextState = getSiteContextState;
+    exports.getLanguagesState = getLanguagesState;
+    exports.getLanguagesEntities = getLanguagesEntities;
+    exports.getActiveLanguage = getActiveLanguage;
+    exports.getAllLanguages = getAllLanguages;
+    exports.getCurrenciesState = getCurrenciesState;
+    exports.getCurrenciesEntities = getCurrenciesEntities;
+    exports.getActiveCurrency = getActiveCurrency;
+    exports.getAllCurrencies = getAllCurrencies;
+    exports.getActiveBaseSite = getActiveBaseSite;
+    exports.SmartEditModule = SmartEditModule;
+    exports.StateModule = StateModule;
+    exports.entityMeta = entityMeta;
+    exports.entityRemoveMeta = entityRemoveMeta;
+    exports.entityRemoveAllMeta = entityRemoveAllMeta;
+    exports.ENTITY_REMOVE_ACTION = ENTITY_REMOVE_ACTION;
+    exports.ENTITY_REMOVE_ALL_ACTION = ENTITY_REMOVE_ALL_ACTION;
+    exports.EntityRemoveAction = EntityRemoveAction;
+    exports.EntityRemoveAllAction = EntityRemoveAllAction;
+    exports.entityReducer = entityReducer;
+    exports.initialEntityState = initialEntityState;
+    exports.entitySelector = entitySelector;
+    exports.loadMeta = loadMeta;
+    exports.failMeta = failMeta;
+    exports.successMeta = successMeta;
+    exports.resetMeta = resetMeta;
+    exports.LOADER_LOAD_ACTION = LOADER_LOAD_ACTION;
+    exports.LOADER_FAIL_ACTION = LOADER_FAIL_ACTION;
+    exports.LOADER_SUCCESS_ACTION = LOADER_SUCCESS_ACTION;
+    exports.LOADER_RESET_ACTION = LOADER_RESET_ACTION;
+    exports.LoaderLoadAction = LoaderLoadAction;
+    exports.LoaderFailAction = LoaderFailAction;
+    exports.LoaderSuccessAction = LoaderSuccessAction;
+    exports.LoaderResetAction = LoaderResetAction;
+    exports.loaderReducer = loaderReducer;
+    exports.initialLoaderState = initialLoaderState;
+    exports.loaderValueSelector = loaderValueSelector;
+    exports.loaderLoadingSelector = loaderLoadingSelector;
+    exports.loaderErrorSelector = loaderErrorSelector;
+    exports.loaderSuccessSelector = loaderSuccessSelector;
+    exports.ofLoaderLoad = ofLoaderLoad;
+    exports.ofLoaderFail = ofLoaderFail;
+    exports.ofLoaderSuccess = ofLoaderSuccess;
+    exports.entityLoadMeta = entityLoadMeta;
+    exports.entityFailMeta = entityFailMeta;
+    exports.entitySuccessMeta = entitySuccessMeta;
+    exports.entityResetMeta = entityResetMeta;
+    exports.ENTITY_LOAD_ACTION = ENTITY_LOAD_ACTION;
+    exports.ENTITY_FAIL_ACTION = ENTITY_FAIL_ACTION;
+    exports.ENTITY_SUCCESS_ACTION = ENTITY_SUCCESS_ACTION;
+    exports.ENTITY_RESET_ACTION = ENTITY_RESET_ACTION;
+    exports.EntityLoadAction = EntityLoadAction;
+    exports.EntityFailAction = EntityFailAction;
+    exports.EntitySuccessAction = EntitySuccessAction;
+    exports.EntityResetAction = EntityResetAction;
+    exports.entityLoaderReducer = entityLoaderReducer;
+    exports.entityStateSelector = entityStateSelector;
+    exports.entityValueSelector = entityValueSelector;
+    exports.entityLoadingSelector = entityLoadingSelector;
+    exports.entityErrorSelector = entityErrorSelector;
+    exports.entitySuccessSelector = entitySuccessSelector;
+    exports.getStateSlice = getStateSlice;
+    exports.StorageSyncType = StorageSyncType;
+    exports.StateConfig = StateConfig;
+    exports.metaReducersFactory = metaReducersFactory;
+    exports.META_REDUCER = META_REDUCER;
+    exports.OccStoreFinderService = OccStoreFinderService;
+    exports.StoreFinderOccModule = StoreFinderOccModule;
+    exports.StoreFinderConfig = StoreFinderConfig;
+    exports.ON_HOLD = ON_HOLD;
+    exports.FIND_STORES = FIND_STORES;
+    exports.FIND_STORES_FAIL = FIND_STORES_FAIL;
+    exports.FIND_STORES_SUCCESS = FIND_STORES_SUCCESS;
+    exports.FIND_STORE_BY_ID = FIND_STORE_BY_ID;
+    exports.FIND_STORE_BY_ID_FAIL = FIND_STORE_BY_ID_FAIL;
+    exports.FIND_STORE_BY_ID_SUCCESS = FIND_STORE_BY_ID_SUCCESS;
+    exports.OnHold = OnHold;
+    exports.FindStores = FindStores;
+    exports.FindStoresFail = FindStoresFail;
+    exports.FindStoresSuccess = FindStoresSuccess;
+    exports.FindStoreById = FindStoreById;
+    exports.FindStoreByIdFail = FindStoreByIdFail;
+    exports.FindStoreByIdSuccess = FindStoreByIdSuccess;
+    exports.VIEW_ALL_STORES = VIEW_ALL_STORES;
+    exports.VIEW_ALL_STORES_FAIL = VIEW_ALL_STORES_FAIL;
+    exports.VIEW_ALL_STORES_SUCCESS = VIEW_ALL_STORES_SUCCESS;
+    exports.ViewAllStores = ViewAllStores;
+    exports.ViewAllStoresFail = ViewAllStoresFail;
+    exports.ViewAllStoresSuccess = ViewAllStoresSuccess;
+    exports.getFindStoresState = getFindStoresState;
+    exports.getFindStoresEntities = getFindStoresEntities;
+    exports.getStoresLoading = getStoresLoading;
+    exports.getViewAllStoresState = getViewAllStoresState;
+    exports.getViewAllStoresEntities = getViewAllStoresEntities;
+    exports.getViewAllStoresLoading = getViewAllStoresLoading;
+    exports.STORE_FINDER_FEATURE = STORE_FINDER_FEATURE;
+    exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
+    exports.ExternalJsFileLoader = ExternalJsFileLoader;
+    exports.GoogleMapRendererService = GoogleMapRendererService;
+    exports.StoreFinderService = StoreFinderService;
+    exports.StoreDataService = StoreDataService;
+    exports.StoreFinderCoreModule = StoreFinderCoreModule;
     exports.OccUserService = OccUserService;
     exports.OccOrderService = OccOrderService;
     exports.UserOccModule = UserOccModule;
@@ -20906,6 +21500,14 @@
     exports.LoadTitles = LoadTitles;
     exports.LoadTitlesFail = LoadTitlesFail;
     exports.LoadTitlesSuccess = LoadTitlesSuccess;
+    exports.UPDATE_EMAIL = UPDATE_EMAIL;
+    exports.UPDATE_EMAIL_ERROR = UPDATE_EMAIL_ERROR;
+    exports.UPDATE_EMAIL_SUCCESS = UPDATE_EMAIL_SUCCESS;
+    exports.RESET_EMAIL = RESET_EMAIL;
+    exports.UpdateEmailAction = UpdateEmailAction;
+    exports.UpdateEmailSuccessAction = UpdateEmailSuccessAction;
+    exports.UpdateEmailErrorAction = UpdateEmailErrorAction;
+    exports.ResetUpdateEmailAction = ResetUpdateEmailAction;
     exports.UPDATE_PASSWORD = UPDATE_PASSWORD;
     exports.UPDATE_PASSWORD_FAIL = UPDATE_PASSWORD_FAIL;
     exports.UPDATE_PASSWORD_SUCCESS = UPDATE_PASSWORD_SUCCESS;
@@ -21000,6 +21602,7 @@
     exports.getAllBillingCountries = getAllBillingCountries;
     exports.getResetPassword = getResetPassword;
     exports.USER_FEATURE = USER_FEATURE;
+    exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
     exports.UPDATE_USER_DETAILS_PROCESS_ID = UPDATE_USER_DETAILS_PROCESS_ID;
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
@@ -21007,360 +21610,198 @@
     exports.USER_ADDRESSES = USER_ADDRESSES;
     exports.UserService = UserService;
     exports.UserModule = UserModule;
-    exports.AuthModule = AuthModule;
-    exports.AuthConfig = AuthConfig;
-    exports.AuthService = AuthService;
-    exports.AuthGuard = AuthGuard;
-    exports.NotAuthGuard = NotAuthGuard;
-    exports.LOAD_USER_TOKEN = LOAD_USER_TOKEN;
-    exports.LOAD_USER_TOKEN_FAIL = LOAD_USER_TOKEN_FAIL;
-    exports.LOAD_USER_TOKEN_SUCCESS = LOAD_USER_TOKEN_SUCCESS;
-    exports.REFRESH_USER_TOKEN = REFRESH_USER_TOKEN;
-    exports.REFRESH_USER_TOKEN_FAIL = REFRESH_USER_TOKEN_FAIL;
-    exports.REFRESH_USER_TOKEN_SUCCESS = REFRESH_USER_TOKEN_SUCCESS;
-    exports.LoadUserToken = LoadUserToken;
-    exports.LoadUserTokenFail = LoadUserTokenFail;
-    exports.LoadUserTokenSuccess = LoadUserTokenSuccess;
-    exports.RefreshUserToken = RefreshUserToken;
-    exports.RefreshUserTokenSuccess = RefreshUserTokenSuccess;
-    exports.RefreshUserTokenFail = RefreshUserTokenFail;
-    exports.LOAD_CLIENT_TOKEN = LOAD_CLIENT_TOKEN;
-    exports.LOAD_CLIENT_TOKEN_FAIL = LOAD_CLIENT_TOKEN_FAIL;
-    exports.LOAD_CLIENT_TOKEN_SUCCESS = LOAD_CLIENT_TOKEN_SUCCESS;
-    exports.LoadClientToken = LoadClientToken;
-    exports.LoadClientTokenFail = LoadClientTokenFail;
-    exports.LoadClientTokenSuccess = LoadClientTokenSuccess;
-    exports.LOGIN = LOGIN;
-    exports.LOGOUT = LOGOUT;
-    exports.Login = Login;
-    exports.Logout = Logout;
-    exports.getAuthState = getAuthState;
-    exports.getUserTokenSelector = getUserTokenSelector;
-    exports.getUserTokenState = getUserTokenState;
-    exports.getUserToken = getUserToken;
-    exports.getClientTokenState = getClientTokenState;
-    exports.AUTH_FEATURE = AUTH_FEATURE;
-    exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
-    exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
-    exports.ADD_MESSAGE = ADD_MESSAGE;
-    exports.REMOVE_MESSAGE = REMOVE_MESSAGE;
-    exports.REMOVE_MESSAGES_BY_TYPE = REMOVE_MESSAGES_BY_TYPE;
-    exports.AddMessage = AddMessage;
-    exports.RemoveMessage = RemoveMessage;
-    exports.RemoveMessagesByType = RemoveMessagesByType;
-    exports.getGlobalMessageState = getGlobalMessageState;
-    exports.getGlobalMessageEntities = getGlobalMessageEntities;
-    exports.GlobalMessageStoreModule = GlobalMessageStoreModule;
-    exports.GlobalMessageService = GlobalMessageService;
-    exports.GlobalMessageType = GlobalMessageType;
-    exports.GlobalMessageModule = GlobalMessageModule;
-    exports.errorHandlers = errorHandlers;
-    exports.httpErrorInterceptors = httpErrorInterceptors;
-    exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
-    exports.CMS_FLEX_COMPONENT_TYPE = CMS_FLEX_COMPONENT_TYPE;
-    exports.CmsConfig = CmsConfig;
-    exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
-    exports.CmsStructureConfig = CmsStructureConfig;
-    exports.PageRobotsMeta = PageRobotsMeta;
-    exports.OccCmsPageLoader = OccCmsPageLoader;
-    exports.OccCmsPageAdapter = OccCmsPageAdapter;
-    exports.CmsOccModule = CmsOccModule;
-    exports.CMS_FEATURE = CMS_FEATURE;
-    exports.NAVIGATION_DETAIL_ENTITY = NAVIGATION_DETAIL_ENTITY;
-    exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
-    exports.LOAD_PAGE_DATA = LOAD_PAGE_DATA;
-    exports.LOAD_PAGE_DATA_FAIL = LOAD_PAGE_DATA_FAIL;
-    exports.LOAD_PAGE_DATA_SUCCESS = LOAD_PAGE_DATA_SUCCESS;
-    exports.LoadPageData = LoadPageData;
-    exports.LoadPageDataFail = LoadPageDataFail;
-    exports.LoadPageDataSuccess = LoadPageDataSuccess;
-    exports.LOAD_COMPONENT = LOAD_COMPONENT;
-    exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
-    exports.LOAD_COMPONENT_SUCCESS = LOAD_COMPONENT_SUCCESS;
-    exports.GET_COMPONENET_FROM_PAGE = GET_COMPONENET_FROM_PAGE;
-    exports.LoadComponent = LoadComponent;
-    exports.LoadComponentFail = LoadComponentFail;
-    exports.LoadComponentSuccess = LoadComponentSuccess;
-    exports.GetComponentFromPage = GetComponentFromPage;
-    exports.LOAD_NAVIGATION_ITEMS = LOAD_NAVIGATION_ITEMS;
-    exports.LOAD_NAVIGATION_ITEMS_FAIL = LOAD_NAVIGATION_ITEMS_FAIL;
-    exports.LOAD_NAVIGATION_ITEMS_SUCCESS = LOAD_NAVIGATION_ITEMS_SUCCESS;
-    exports.LoadNavigationItems = LoadNavigationItems;
-    exports.LoadNavigationItemsFail = LoadNavigationItemsFail;
-    exports.LoadNavigationItemsSuccess = LoadNavigationItemsSuccess;
-    exports.getPageEntitiesSelector = getPageEntitiesSelector;
-    exports.getIndexByType = getIndexByType;
-    exports.getPageComponentTypesSelector = getPageComponentTypesSelector;
-    exports.getPageState = getPageState;
-    exports.getPageStateIndex = getPageStateIndex;
-    exports.getIndex = getIndex;
-    exports.getIndexEntity = getIndexEntity;
-    exports.getPageEntities = getPageEntities;
-    exports.getPageData = getPageData;
-    exports.getPageComponentTypes = getPageComponentTypes;
-    exports.currentSlotSelectorFactory = currentSlotSelectorFactory;
-    exports.getComponentEntitiesSelector = getComponentEntitiesSelector;
-    exports.getComponentState = getComponentState;
-    exports.getComponentEntities = getComponentEntities;
-    exports.componentStateSelectorFactory = componentStateSelectorFactory;
-    exports.componentSelectorFactory = componentSelectorFactory;
-    exports.getNavigationEntryItemState = getNavigationEntryItemState;
-    exports.getSelectedNavigationEntryItemState = getSelectedNavigationEntryItemState;
-    exports.itemsSelectorFactory = itemsSelectorFactory;
-    exports.getCmsState = getCmsState;
-    exports.CmsService = CmsService;
-    exports.PageMetaService = PageMetaService;
-    exports.CmsModule = CmsModule;
-    exports.ComponentMapperService = ComponentMapperService;
-    exports.CmsPageLoader = CmsPageLoader;
-    exports.CmsPageAdapter = CmsPageAdapter;
-    exports.CmsStructureConfigService = CmsStructureConfigService;
-    exports.DynamicAttributeService = DynamicAttributeService;
-    exports.PageMetaResolver = PageMetaResolver;
-    exports.ContentPageMetaResolver = ContentPageMetaResolver;
-    exports.CmsPageTitleModule = CmsPageTitleModule;
-    exports.SmartEditModule = SmartEditModule;
-    exports.OccStoreFinderService = OccStoreFinderService;
-    exports.StoreFinderOccModule = StoreFinderOccModule;
-    exports.StoreFinderConfig = StoreFinderConfig;
-    exports.ON_HOLD = ON_HOLD;
-    exports.FIND_STORES = FIND_STORES;
-    exports.FIND_STORES_FAIL = FIND_STORES_FAIL;
-    exports.FIND_STORES_SUCCESS = FIND_STORES_SUCCESS;
-    exports.FIND_STORE_BY_ID = FIND_STORE_BY_ID;
-    exports.FIND_STORE_BY_ID_FAIL = FIND_STORE_BY_ID_FAIL;
-    exports.FIND_STORE_BY_ID_SUCCESS = FIND_STORE_BY_ID_SUCCESS;
-    exports.OnHold = OnHold;
-    exports.FindStores = FindStores;
-    exports.FindStoresFail = FindStoresFail;
-    exports.FindStoresSuccess = FindStoresSuccess;
-    exports.FindStoreById = FindStoreById;
-    exports.FindStoreByIdFail = FindStoreByIdFail;
-    exports.FindStoreByIdSuccess = FindStoreByIdSuccess;
-    exports.VIEW_ALL_STORES = VIEW_ALL_STORES;
-    exports.VIEW_ALL_STORES_FAIL = VIEW_ALL_STORES_FAIL;
-    exports.VIEW_ALL_STORES_SUCCESS = VIEW_ALL_STORES_SUCCESS;
-    exports.ViewAllStores = ViewAllStores;
-    exports.ViewAllStoresFail = ViewAllStoresFail;
-    exports.ViewAllStoresSuccess = ViewAllStoresSuccess;
-    exports.getFindStoresState = getFindStoresState;
-    exports.getFindStoresEntities = getFindStoresEntities;
-    exports.getStoresLoading = getStoresLoading;
-    exports.getViewAllStoresState = getViewAllStoresState;
-    exports.getViewAllStoresEntities = getViewAllStoresEntities;
-    exports.getViewAllStoresLoading = getViewAllStoresLoading;
-    exports.STORE_FINDER_FEATURE = STORE_FINDER_FEATURE;
-    exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
-    exports.ExternalJsFileLoader = ExternalJsFileLoader;
-    exports.GoogleMapRendererService = GoogleMapRendererService;
-    exports.StoreFinderService = StoreFinderService;
-    exports.StoreDataService = StoreDataService;
-    exports.StoreFinderCoreModule = StoreFinderCoreModule;
-    exports.WindowRef = WindowRef;
-    exports.CxApiModule = CxApiModule;
-    exports.CxApiService = CxApiService;
-    exports.DatePipe = DatePipe;
-    exports.TranslatePipe = TranslatePipe;
-    exports.TranslationService = TranslationService;
-    exports.TranslationNamespaceService = TranslationNamespaceService;
-    exports.I18nModule = I18nModule;
-    exports.I18nConfig = I18nConfig;
-    exports.I18nextTranslationService = I18nextTranslationService;
-    exports.I18nTestingModule = I18nTestingModule;
-    exports.MockTranslatePipe = MockTranslatePipe;
     exports.PipeModule = PipeModule;
     exports.StripHtmlModule = StripHtmlModule;
+    exports.ConverterService = ConverterService;
     exports.UtilModule = UtilModule;
-    exports.ɵgc = defaultAuthConfig;
-    exports.ɵgj = AuthErrorInterceptor;
-    exports.ɵgh = ClientTokenInterceptor;
-    exports.ɵgg = interceptors;
-    exports.ɵgi = UserTokenInterceptor;
-    exports.ɵga = ClientAuthenticationTokenService;
-    exports.ɵge = ClientErrorHandlingService;
-    exports.ɵgd = services;
-    exports.ɵfz = UserAuthenticationTokenService;
-    exports.ɵgf = UserErrorHandlingService;
-    exports.ɵfq = AuthStoreModule;
-    exports.ɵfp = authStoreConfigFactory;
-    exports.ɵfy = ClientTokenEffect;
-    exports.ɵfw = effects$2;
-    exports.ɵfx = UserTokenEffects;
-    exports.ɵfu = clearAuthState;
-    exports.ɵfr = getReducers$1;
-    exports.ɵfv = metaReducers;
-    exports.ɵft = reducerProvider$1;
-    exports.ɵfs = reducerToken$1;
-    exports.ɵgb = reducer$1;
-    exports.ɵd = CartStoreModule;
-    exports.ɵl = CartEntryEffects;
-    exports.ɵk = CartEffects;
-    exports.ɵj = effects$6;
-    exports.ɵm = reducer$2;
-    exports.ɵh = clearCartState;
-    exports.ɵe = getReducers$2;
-    exports.ɵi = metaReducers$1;
-    exports.ɵg = reducerProvider$2;
-    exports.ɵf = reducerToken$2;
-    exports.ɵeb = CheckoutStoreModule;
-    exports.ɵea = AddressVerificationEffect;
-    exports.ɵdz = CardTypesEffects;
-    exports.ɵdy = CheckoutEffects;
-    exports.ɵdx = effects$8;
-    exports.ɵdw = getAddressVerificationResults;
-    exports.ɵdv = reducer$c;
-    exports.ɵdu = getCardTypesEntites;
-    exports.ɵdt = reducer$d;
-    exports.ɵdp = getDeliveryAddress;
-    exports.ɵdq = getDeliveryMode;
-    exports.ɵds = getOrderDetails;
-    exports.ɵdr = getPaymentDetails;
-    exports.ɵdo = reducer$b;
-    exports.ɵdm = clearCheckoutState;
-    exports.ɵdl = getCheckoutState;
-    exports.ɵdi = getReducers$6;
-    exports.ɵdn = metaReducers$4;
-    exports.ɵdk = reducerProvider$6;
-    exports.ɵdj = reducerToken$6;
-    exports.ɵbo = OccCmsComponentLoader;
-    exports.ɵbn = CmsComponentAdapter;
-    exports.ɵbm = CmsComponentLoader;
-    exports.ɵbq = CmsStoreModule;
-    exports.ɵbp = cmsStoreConfigFactory;
-    exports.ɵby = ComponentEffects;
-    exports.ɵbw = effects$5;
-    exports.ɵbz = NavigationEntryItemEffects;
-    exports.ɵbx = PageEffects;
-    exports.ɵbu = clearCmsState;
-    exports.ɵbr = getReducers$5;
-    exports.ɵbv = metaReducers$3;
-    exports.ɵbt = reducerProvider$5;
-    exports.ɵbs = reducerToken$5;
-    exports.ɵch = reducer$8;
-    exports.ɵce = reducer$9;
-    exports.ɵcg = reducer$a;
-    exports.ɵgy = ConfigModule;
-    exports.ɵhh = ServerConfig;
-    exports.ɵc = provideConfigValidator;
-    exports.ɵgn = BadGatewayHandler;
-    exports.ɵgo = BadRequestHandler;
-    exports.ɵgp = ConflictHandler;
-    exports.ɵgq = ForbiddenHandler;
-    exports.ɵgr = GatewayTimeoutHandler;
-    exports.ɵgl = HttpErrorHandler;
-    exports.ɵgs = NotFoundHandler;
-    exports.ɵgm = UnknownErrorHandler;
-    exports.ɵgt = HttpErrorInterceptor;
-    exports.ɵgk = reducer$e;
-    exports.ɵfe = getReducers$7;
-    exports.ɵfg = reducerProvider$7;
-    exports.ɵff = reducerToken$7;
-    exports.ɵhi = defaultI18nConfig;
-    exports.ɵhk = i18nextInit;
-    exports.ɵhj = i18nextProviders;
-    exports.ɵhl = MockDatePipe;
-    exports.ɵhm = MockTranslationService;
-    exports.ɵcf = PageType;
-    exports.ɵdh = PageType;
-    exports.ɵa = OccEndpointsService;
-    exports.ɵfj = ProcessModule;
-    exports.ɵfl = PROCESS_FEATURE;
-    exports.ɵfk = ProcessStoreModule;
-    exports.ɵfm = getReducers$9;
-    exports.ɵfo = reducerProvider$9;
-    exports.ɵfn = reducerToken$9;
-    exports.ɵr = defaultOccProductConfig;
-    exports.ɵbf = effects$4;
-    exports.ɵbi = ProductReviewsEffects;
-    exports.ɵbg = ProductsSearchEffects;
-    exports.ɵbh = ProductEffects;
-    exports.ɵbk = ProductStoreModule;
-    exports.ɵbj = productStoreConfigFactory;
-    exports.ɵbd = clearProductsState;
-    exports.ɵba = getReducers$4;
-    exports.ɵbe = metaReducers$2;
-    exports.ɵbc = reducerProvider$4;
-    exports.ɵbb = reducerToken$4;
-    exports.ɵbl = reducer$4;
-    exports.ɵy = getAuxSearchResults;
-    exports.ɵz = getProductSuggestions;
-    exports.ɵx = getSearchResults;
-    exports.ɵw = reducer$3;
-    exports.ɵcx = defaultConfigurableRoutesConfig;
-    exports.ɵcy = defaultStorefrontRoutesTranslations;
-    exports.ɵcc = RouteRecognizerService;
-    exports.ɵcd = UrlParsingService;
-    exports.ɵcb = UrlTranslationService;
-    exports.ɵcz = ROUTING_FEATURE;
-    exports.ɵdf = effects$1;
-    exports.ɵdg = RouterEffects;
-    exports.ɵde = CustomSerializer;
-    exports.ɵda = getReducers;
-    exports.ɵdb = reducer;
-    exports.ɵdd = reducerProvider;
-    exports.ɵdc = reducerToken;
-    exports.ɵco = defaultSiteContextConfigFactory;
-    exports.ɵb = BaseSiteService;
-    exports.ɵcu = SiteContextParamsService;
-    exports.ɵcw = SiteContextRoutesHandler;
-    exports.ɵcv = SiteContextUrlSerializer;
-    exports.ɵcn = CurrenciesEffects;
-    exports.ɵcl = effects$3;
-    exports.ɵcm = LanguagesEffects;
-    exports.ɵct = reducer$7;
-    exports.ɵcs = reducer$6;
-    exports.ɵci = getReducers$3;
-    exports.ɵck = reducerProvider$3;
-    exports.ɵcj = reducerToken$3;
-    exports.ɵcr = reducer$5;
-    exports.ɵcq = SiteContextStoreModule;
-    exports.ɵcp = siteContextStoreConfigFactory;
-    exports.ɵgv = CmsTicketInterceptor;
-    exports.ɵgu = interceptors$2;
-    exports.ɵgw = SmartEditService;
-    exports.ɵee = EntityFailAction;
-    exports.ɵed = EntityLoadAction;
-    exports.ɵeg = EntityResetAction;
-    exports.ɵef = EntitySuccessAction;
-    exports.ɵn = defaultStateConfig;
-    exports.ɵo = stateMetaReducers;
-    exports.ɵp = getStorageSyncReducer;
-    exports.ɵq = getTransferStateReducer;
-    exports.ɵgz = defaultStoreFinderConfig;
-    exports.ɵhf = FindStoresEffect;
-    exports.ɵhe = effects$9;
-    exports.ɵhg = ViewAllStoresEffect;
-    exports.ɵhb = getReducers$a;
-    exports.ɵhd = reducerProvider$a;
-    exports.ɵhc = reducerToken$a;
-    exports.ɵgx = getStoreFinderState;
-    exports.ɵha = StoreFinderStoreModule;
-    exports.ɵet = BillingCountriesEffect;
-    exports.ɵeu = DeliveryCountriesEffects;
-    exports.ɵfh = ForgotPasswordEffects;
-    exports.ɵes = effects$7;
-    exports.ɵev = OrderDetailsEffect;
-    exports.ɵew = UserPaymentMethodsEffects;
-    exports.ɵex = RegionsEffects;
-    exports.ɵey = ResetPasswordEffects;
-    exports.ɵez = TitlesEffects;
-    exports.ɵfi = UpdatePasswordEffects;
-    exports.ɵfa = UserAddressesEffects;
-    exports.ɵfb = UserDetailsEffects;
-    exports.ɵfc = UserOrdersEffect;
-    exports.ɵfd = UserRegisterEffects;
-    exports.ɵej = reducer$f;
-    exports.ɵen = reducer$g;
-    exports.ɵem = reducer$h;
-    exports.ɵek = reducer$i;
-    exports.ɵep = reducer$j;
-    exports.ɵeq = reducer$k;
-    exports.ɵeo = reducer$l;
-    exports.ɵei = reducer$m;
-    exports.ɵeh = reducer$n;
-    exports.ɵel = reducer$o;
-    exports.ɵer = UserStoreModule;
-    exports.ɵhn = StripHtmlPipe;
+    exports.WindowRef = WindowRef;
+    exports.ɵbe = defaultAuthConfig;
+    exports.ɵbm = AuthErrorInterceptor;
+    exports.ɵbj = ClientTokenInterceptor;
+    exports.ɵbi = interceptors;
+    exports.ɵbl = UserTokenInterceptor;
+    exports.ɵbc = ClientAuthenticationTokenService;
+    exports.ɵbg = ClientErrorHandlingService;
+    exports.ɵbf = services;
+    exports.ɵbb = UserAuthenticationTokenService;
+    exports.ɵbh = UserErrorHandlingService;
+    exports.ɵo = AuthStoreModule;
+    exports.ɵn = authStoreConfigFactory;
+    exports.ɵba = ClientTokenEffect;
+    exports.ɵy = effects$2;
+    exports.ɵz = UserTokenEffects;
+    exports.ɵw = clearAuthState;
+    exports.ɵt = getReducers$1;
+    exports.ɵx = metaReducers;
+    exports.ɵv = reducerProvider$1;
+    exports.ɵu = reducerToken$1;
+    exports.ɵbd = reducer$1;
+    exports.ɵbo = CartStoreModule;
+    exports.ɵbw = CartEntryEffects;
+    exports.ɵbv = CartEffects;
+    exports.ɵbu = effects$6;
+    exports.ɵby = reducer$2;
+    exports.ɵbs = clearCartState;
+    exports.ɵbp = getReducers$2;
+    exports.ɵbt = metaReducers$1;
+    exports.ɵbr = reducerProvider$2;
+    exports.ɵbq = reducerToken$2;
+    exports.ɵcs = CheckoutStoreModule;
+    exports.ɵcr = AddressVerificationEffect;
+    exports.ɵcq = CardTypesEffects;
+    exports.ɵcp = CheckoutEffects;
+    exports.ɵco = effects$8;
+    exports.ɵcn = getAddressVerificationResults;
+    exports.ɵcm = reducer$c;
+    exports.ɵcl = getCardTypesEntites;
+    exports.ɵck = reducer$d;
+    exports.ɵcg = getDeliveryAddress;
+    exports.ɵch = getDeliveryMode;
+    exports.ɵcj = getOrderDetails;
+    exports.ɵci = getPaymentDetails;
+    exports.ɵcf = reducer$b;
+    exports.ɵcd = clearCheckoutState;
+    exports.ɵcc = getCheckoutState;
+    exports.ɵbz = getReducers$6;
+    exports.ɵce = metaReducers$4;
+    exports.ɵcb = reducerProvider$6;
+    exports.ɵca = reducerToken$6;
+    exports.ɵcy = CmsStoreModule;
+    exports.ɵcx = cmsStoreConfigFactory;
+    exports.ɵdg = ComponentEffects;
+    exports.ɵde = effects$5;
+    exports.ɵdh = NavigationEntryItemEffects;
+    exports.ɵdf = PageEffects;
+    exports.ɵdc = clearCmsState;
+    exports.ɵcz = getReducers$5;
+    exports.ɵdd = metaReducers$3;
+    exports.ɵdb = reducerProvider$5;
+    exports.ɵda = reducerToken$5;
+    exports.ɵdl = reducer$8;
+    exports.ɵdi = reducer$9;
+    exports.ɵdk = reducer$a;
+    exports.ɵft = ConfigModule;
+    exports.ɵeo = ServerConfig;
+    exports.ɵbn = provideConfigValidator;
+    exports.ɵeh = BadGatewayHandler;
+    exports.ɵei = BadRequestHandler;
+    exports.ɵej = ConflictHandler;
+    exports.ɵek = ForbiddenHandler;
+    exports.ɵel = GatewayTimeoutHandler;
+    exports.ɵef = HttpErrorHandler;
+    exports.ɵem = NotFoundHandler;
+    exports.ɵeg = UnknownErrorHandler;
+    exports.ɵen = HttpErrorInterceptor;
+    exports.ɵee = reducer$e;
+    exports.ɵeb = getReducers$7;
+    exports.ɵed = reducerProvider$7;
+    exports.ɵec = reducerToken$7;
+    exports.ɵep = defaultI18nConfig;
+    exports.ɵer = i18nextInit;
+    exports.ɵeq = i18nextProviders;
+    exports.ɵes = MockDatePipe;
+    exports.ɵet = MockTranslationService;
+    exports.ɵbx = OccConfig;
+    exports.ɵdj = PageType;
+    exports.ɵcu = PageType;
+    exports.ɵhe = ProcessModule;
+    exports.ɵhg = PROCESS_FEATURE;
+    exports.ɵhf = ProcessStoreModule;
+    exports.ɵhh = getReducers$9;
+    exports.ɵhj = reducerProvider$9;
+    exports.ɵhi = reducerToken$9;
+    exports.ɵeu = defaultOccProductConfig;
+    exports.ɵdx = effects$4;
+    exports.ɵea = ProductReviewsEffects;
+    exports.ɵdy = ProductsSearchEffects;
+    exports.ɵdz = ProductEffects;
+    exports.ɵfe = ProductStoreModule;
+    exports.ɵfd = productStoreConfigFactory;
+    exports.ɵdv = clearProductsState;
+    exports.ɵds = getReducers$4;
+    exports.ɵdw = metaReducers$2;
+    exports.ɵdu = reducerProvider$4;
+    exports.ɵdt = reducerToken$4;
+    exports.ɵff = reducer$4;
+    exports.ɵfb = getAuxSearchResults;
+    exports.ɵfc = getProductSuggestions;
+    exports.ɵfa = getSearchResults;
+    exports.ɵez = reducer$3;
+    exports.ɵa = defaultConfigurableRoutesConfig;
+    exports.ɵb = defaultStorefrontRoutesTranslations;
+    exports.ɵd = UrlParsingService;
+    exports.ɵc = UrlTranslationService;
+    exports.ɵe = ROUTING_FEATURE;
+    exports.ɵk = effects$1;
+    exports.ɵl = RouterEffects;
+    exports.ɵj = CustomSerializer;
+    exports.ɵf = getReducers;
+    exports.ɵg = reducer;
+    exports.ɵi = reducerProvider;
+    exports.ɵh = reducerToken;
+    exports.ɵfg = defaultSiteContextConfigFactory;
+    exports.ɵbk = BaseSiteService;
+    exports.ɵfm = SiteContextParamsService;
+    exports.ɵfo = SiteContextRoutesHandler;
+    exports.ɵfn = SiteContextUrlSerializer;
+    exports.ɵdr = CurrenciesEffects;
+    exports.ɵdp = effects$3;
+    exports.ɵdq = LanguagesEffects;
+    exports.ɵfl = reducer$7;
+    exports.ɵfk = reducer$6;
+    exports.ɵdm = getReducers$3;
+    exports.ɵdo = reducerProvider$3;
+    exports.ɵdn = reducerToken$3;
+    exports.ɵfj = reducer$5;
+    exports.ɵfi = SiteContextStoreModule;
+    exports.ɵfh = siteContextStoreConfigFactory;
+    exports.ɵfq = CmsTicketInterceptor;
+    exports.ɵfp = interceptors$2;
+    exports.ɵfr = SmartEditService;
+    exports.ɵcv = EntityFailAction;
+    exports.ɵct = EntityLoadAction;
+    exports.ɵgd = EntityResetAction;
+    exports.ɵcw = EntitySuccessAction;
+    exports.ɵp = defaultStateConfig;
+    exports.ɵq = stateMetaReducers;
+    exports.ɵr = getStorageSyncReducer;
+    exports.ɵs = getTransferStateReducer;
+    exports.ɵfu = defaultStoreFinderConfig;
+    exports.ɵga = FindStoresEffect;
+    exports.ɵfz = effects$9;
+    exports.ɵgb = ViewAllStoresEffect;
+    exports.ɵfw = getReducers$a;
+    exports.ɵfy = reducerProvider$a;
+    exports.ɵfx = reducerToken$a;
+    exports.ɵfs = getStoreFinderState;
+    exports.ɵfv = StoreFinderStoreModule;
+    exports.ɵgq = BillingCountriesEffect;
+    exports.ɵgr = DeliveryCountriesEffects;
+    exports.ɵhb = ForgotPasswordEffects;
+    exports.ɵgp = effects$7;
+    exports.ɵgs = OrderDetailsEffect;
+    exports.ɵgt = UserPaymentMethodsEffects;
+    exports.ɵgu = RegionsEffects;
+    exports.ɵgv = ResetPasswordEffects;
+    exports.ɵgw = TitlesEffects;
+    exports.ɵhc = UpdateEmailEffects;
+    exports.ɵhd = UpdatePasswordEffects;
+    exports.ɵgx = UserAddressesEffects;
+    exports.ɵgy = UserDetailsEffects;
+    exports.ɵgz = UserOrdersEffect;
+    exports.ɵha = UserRegisterEffects;
+    exports.ɵgg = reducer$f;
+    exports.ɵgk = reducer$g;
+    exports.ɵgj = reducer$h;
+    exports.ɵgh = reducer$i;
+    exports.ɵgm = reducer$j;
+    exports.ɵgn = reducer$k;
+    exports.ɵgl = reducer$l;
+    exports.ɵgf = reducer$m;
+    exports.ɵge = reducer$n;
+    exports.ɵgi = reducer$o;
+    exports.ɵgo = UserStoreModule;
+    exports.ɵhk = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { OccProductReviewsListNormalizer } from './occ-product-reviews-list-normalizer';
+export { ProductImageNormalizer } from './product-image-normalizer';
+export { ProductReferenceNormalizer } from './product-reference-normalizer';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9vY2MvY29udmVydGVycy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsZ0RBQWMsdUNBQXVDLENBQUM7QUFDdEQsdUNBQWMsNEJBQTRCLENBQUM7QUFDM0MsMkNBQWMsZ0NBQWdDLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL29jYy1wcm9kdWN0LXJldmlld3MtbGlzdC1ub3JtYWxpemVyJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1pbWFnZS1ub3JtYWxpemVyJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1yZWZlcmVuY2Utbm9ybWFsaXplcic7XG4iXX0=

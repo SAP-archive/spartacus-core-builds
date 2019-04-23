@@ -31,9 +31,13 @@ export declare abstract class CmsStructureConfigService {
      */
     shouldIgnoreBackend(pageId: string): Observable<boolean>;
     /**
-     * returns an Obserable component data from the static configuration.
+     * returns an Observable component data from the static configuration.
      */
     getComponentFromConfig(componentId: string): Observable<ContentSlotComponentData | any>;
+    /**
+     * returns an Observable components data from the static configuration.
+     */
+    getComponentsFromConfig(ids: string[]): Observable<ContentSlotComponentData[]>;
     /**
      * returns an observable with the `PageConfig`.
      */
@@ -53,4 +57,5 @@ export declare abstract class CmsStructureConfigService {
      */
     private mergeSlots;
     private getComponentsByPosition;
+    private getComponentById;
 }

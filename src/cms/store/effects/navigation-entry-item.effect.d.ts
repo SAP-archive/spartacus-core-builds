@@ -1,12 +1,16 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { OccCmsPageLoader } from '../../occ/occ-cms-page.loader';
 import { RoutingService } from '../../../routing/index';
+import { CmsComponentConnector } from '../../connectors/component/cms-component.connector';
 export declare class NavigationEntryItemEffects {
     private actions$;
-    private occCmsService;
+    private cmsComponentConnector;
     private routingService;
     loadNavigationItems$: Observable<any>;
-    getIdListByItemType(itemList: any[]): any;
-    constructor(actions$: Actions, occCmsService: OccCmsPageLoader, routingService: RoutingService);
+    getIdListByItemType(itemList: any[]): {
+        pageIds: string[];
+        componentIds: string[];
+        mediaIds: string[];
+    };
+    constructor(actions$: Actions, cmsComponentConnector: CmsComponentConnector, routingService: RoutingService);
 }

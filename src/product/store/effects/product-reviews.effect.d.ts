@@ -1,11 +1,11 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
+import { ProductReviewsConnector } from '../../connectors/reviews/product-reviews.connector';
 import * as productReviewsActions from './../actions/product-reviews.action';
-import { ProductReviewsLoaderService } from '../../occ/product-reviews.service';
 export declare class ProductReviewsEffects {
     private actions$;
-    private occProductReviewsService;
+    private productReviewsConnector;
     loadProductReviews$: Observable<productReviewsActions.LoadProductReviewsSuccess | productReviewsActions.LoadProductReviewsFail>;
     postProductReview: Observable<productReviewsActions.PostProductReviewSuccess | productReviewsActions.PostProductReviewFail>;
-    constructor(actions$: Actions, occProductReviewsService: ProductReviewsLoaderService);
+    constructor(actions$: Actions, productReviewsConnector: ProductReviewsConnector);
 }

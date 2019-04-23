@@ -20,6 +20,7 @@ export declare class OccUserService {
     registerUser(user: UserRegisterFormData): Observable<User>;
     requestForgotPasswordEmail(userEmailAddress: string): Observable<{}>;
     resetPassword(token: string, newPassword: string): Observable<{}>;
+    updateEmail(userId: string, currentPassword: string, newUserId: string): Observable<{}>;
     protected getUserEndpoint(): string;
     updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<{}>;
 }

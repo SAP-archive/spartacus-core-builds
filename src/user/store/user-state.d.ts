@@ -1,6 +1,7 @@
 import { Address, Country, Order, OrderHistoryList, PaymentDetails, Region, Title, User } from '../../occ/occ-models/index';
 import { LoaderState } from '../../state';
 export declare const USER_FEATURE = "user";
+export declare const UPDATE_EMAIL_PROCESS_ID = "updateEmail";
 export declare const UPDATE_PASSWORD_PROCESS_ID = "updatePassword";
 export declare const UPDATE_USER_DETAILS_PROCESS_ID = "updateUserDetails";
 export declare const USER_PAYMENT_METHODS = "[User] User Payment Methods";

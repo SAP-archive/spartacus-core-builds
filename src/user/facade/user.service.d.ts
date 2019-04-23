@@ -159,6 +159,10 @@ export declare class UserService {
      */
     clearOrderList(): void;
     /**
+     * Return whether user's password is successfully reset
+     */
+    isPasswordReset(): Observable<boolean>;
+    /**
      * Updates the user's details
      * @param userDetails to be updated
      */
@@ -187,9 +191,26 @@ export declare class UserService {
     resetPassword(token: string, password: string): void;
     requestForgotPasswordEmail(userEmailAddress: string): void;
     /**
-     * Return whether user's password is successfully reset.  Part of the forgot password flow.
+     * Updates the user's email
+     * @param uid to be updated
      */
-    isPasswordReset(): Observable<boolean>;
+    updateEmail(uid: string, password: string, newUid: string): void;
+    /**
+     * Returns the update user's email success flag
+     */
+    getUpdateEmailResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the update user's email error flag
+     */
+    getUpdateEmailResultError(): Observable<boolean>;
+    /**
+     * Returns the update user's email loading flag
+     */
+    getUpdateEmailResultLoading(): Observable<boolean>;
+    /**
+     * Resets the update user's email processing state
+     */
+    resetUpdateEmailResultState(): void;
     /**
      * Updates the password for an authenticated user
      * @param userId the user id for which the password will be updated

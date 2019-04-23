@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ProductReviewsConnector } from './product-reviews.connector';
+export { ProductReviewsAdapter } from './product-reviews.adapter';
+export { PRODUCT_REVIEWS_NORMALIZER, PRODUCT_REVIEW_SERIALIZER } from './converters';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9jb25uZWN0b3JzL3Jldmlld3MvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHdDQUFjLDZCQUE2QixDQUFDO0FBQzVDLHNDQUFjLDJCQUEyQixDQUFDO0FBQzFDLHNFQUFjLGNBQWMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1yZXZpZXdzLmNvbm5lY3Rvcic7XG5leHBvcnQgKiBmcm9tICcuL3Byb2R1Y3QtcmV2aWV3cy5hZGFwdGVyJztcbmV4cG9ydCAqIGZyb20gJy4vY29udmVydGVycyc7XG4iXX0=

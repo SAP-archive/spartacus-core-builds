@@ -3,412 +3,16 @@ import { localStorageSync } from 'ngrx-store-localstorage';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, UrlSerializer } from '@angular/router';
-import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, groupBy, multicast, refCount, withLatestFrom, concatMap, takeWhile } from 'rxjs/operators';
+import i18nextXhrBackend from 'i18next-xhr-backend';
+import i18next from 'i18next';
+import { __decorate, __metadata, __assign, __extends, __spread, __values, __read, __awaiter, __generator } from 'tslib';
+import { Observable, of, throwError, Subscription, ReplaySubject, combineLatest } from 'rxjs';
+import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, groupBy, multicast, refCount, withLatestFrom, pluck, concatMap, takeWhile } from 'rxjs/operators';
+import { CommonModule, Location, DOCUMENT, DatePipe, isPlatformBrowser, isPlatformServer, getLocaleId } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { createSelector, createFeatureSelector, select, Store, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import i18nextXhrBackend from 'i18next-xhr-backend';
-import i18next from 'i18next';
-import { Observable, of, throwError, Subscription, ReplaySubject, combineLatest } from 'rxjs';
-import { __decorate, __metadata, __assign, __extends, __spread, __read, __values, __awaiter, __generator } from 'tslib';
-import { CommonModule, Location, DOCUMENT, DatePipe, isPlatformBrowser, isPlatformServer, getLocaleId } from '@angular/common';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, ChangeDetectorRef, defineInjectable, inject, INJECTOR, ComponentFactoryResolver } from '@angular/core';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var LOADER_LOAD_ACTION = '[LOADER] LOAD';
-/** @type {?} */
-var LOADER_FAIL_ACTION = '[LOADER] FAIL';
-/** @type {?} */
-var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
-/** @type {?} */
-var LOADER_RESET_ACTION = '[LOADER] RESET';
-/**
- * @param {?} entityType
- * @return {?}
- */
-function loadMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {
-            load: true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @param {?=} error
- * @return {?}
- */
-function failMeta(entityType, error) {
-    return {
-        entityType: entityType,
-        loader: {
-            error: error ? error : true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function successMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {
-            success: true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function resetMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {},
-    };
-}
-var LoaderLoadAction = /** @class */ (function () {
-    function LoaderLoadAction(entityType) {
-        this.type = LOADER_LOAD_ACTION;
-        this.meta = loadMeta(entityType);
-    }
-    return LoaderLoadAction;
-}());
-var LoaderFailAction = /** @class */ (function () {
-    function LoaderFailAction(entityType, error) {
-        this.type = LOADER_FAIL_ACTION;
-        this.meta = failMeta(entityType, error);
-    }
-    return LoaderFailAction;
-}());
-var LoaderSuccessAction = /** @class */ (function () {
-    function LoaderSuccessAction(entityType) {
-        this.type = LOADER_SUCCESS_ACTION;
-        this.meta = successMeta(entityType);
-    }
-    return LoaderSuccessAction;
-}());
-var LoaderResetAction = /** @class */ (function () {
-    function LoaderResetAction(entityType) {
-        this.type = LOADER_RESET_ACTION;
-        this.meta = resetMeta(entityType);
-    }
-    return LoaderResetAction;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var CART_FEATURE = 'cart';
-/** @type {?} */
-var CART_DATA = '[Cart] Cart Data';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var CREATE_CART = '[Cart] Create Cart';
-/** @type {?} */
-var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-/** @type {?} */
-var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-/** @type {?} */
-var LOAD_CART = '[Cart] Load Cart';
-/** @type {?} */
-var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-/** @type {?} */
-var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-/** @type {?} */
-var MERGE_CART = '[Cart] Merge Cart';
-/** @type {?} */
-var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-var CreateCart = /** @class */ (function (_super) {
-    __extends(CreateCart, _super);
-    function CreateCart(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART;
-        return _this;
-    }
-    return CreateCart;
-}(LoaderLoadAction));
-var CreateCartFail = /** @class */ (function (_super) {
-    __extends(CreateCartFail, _super);
-    function CreateCartFail(payload) {
-        var _this = _super.call(this, CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART_FAIL;
-        return _this;
-    }
-    return CreateCartFail;
-}(LoaderFailAction));
-var CreateCartSuccess = /** @class */ (function (_super) {
-    __extends(CreateCartSuccess, _super);
-    function CreateCartSuccess(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = CREATE_CART_SUCCESS;
-        return _this;
-    }
-    return CreateCartSuccess;
-}(LoaderSuccessAction));
-var LoadCart = /** @class */ (function (_super) {
-    __extends(LoadCart, _super);
-    function LoadCart(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART;
-        return _this;
-    }
-    return LoadCart;
-}(LoaderLoadAction));
-var LoadCartFail = /** @class */ (function (_super) {
-    __extends(LoadCartFail, _super);
-    function LoadCartFail(payload) {
-        var _this = _super.call(this, CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART_FAIL;
-        return _this;
-    }
-    return LoadCartFail;
-}(LoaderFailAction));
-var LoadCartSuccess = /** @class */ (function (_super) {
-    __extends(LoadCartSuccess, _super);
-    function LoadCartSuccess(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = LOAD_CART_SUCCESS;
-        return _this;
-    }
-    return LoadCartSuccess;
-}(LoaderSuccessAction));
-var MergeCart = /** @class */ (function () {
-    function MergeCart(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART;
-    }
-    return MergeCart;
-}());
-var MergeCartSuccess = /** @class */ (function () {
-    function MergeCartSuccess() {
-        this.type = MERGE_CART_SUCCESS;
-    }
-    return MergeCartSuccess;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var ADD_ENTRY = '[Cart-entry] Add Entry';
-/** @type {?} */
-var ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-/** @type {?} */
-var ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-/** @type {?} */
-var REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-/** @type {?} */
-var REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-/** @type {?} */
-var REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-/** @type {?} */
-var UPDATE_ENTRY = '[Cart-entry] Update Entry';
-/** @type {?} */
-var UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-/** @type {?} */
-var UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-var AddEntry = /** @class */ (function (_super) {
-    __extends(AddEntry, _super);
-    function AddEntry(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = ADD_ENTRY;
-        return _this;
-    }
-    return AddEntry;
-}(LoaderLoadAction));
-var AddEntrySuccess = /** @class */ (function (_super) {
-    __extends(AddEntrySuccess, _super);
-    function AddEntrySuccess(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = ADD_ENTRY_SUCCESS;
-        return _this;
-    }
-    return AddEntrySuccess;
-}(LoaderSuccessAction));
-var AddEntryFail = /** @class */ (function (_super) {
-    __extends(AddEntryFail, _super);
-    function AddEntryFail(payload) {
-        var _this = _super.call(this, CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = ADD_ENTRY_FAIL;
-        return _this;
-    }
-    return AddEntryFail;
-}(LoaderFailAction));
-var RemoveEntry = /** @class */ (function (_super) {
-    __extends(RemoveEntry, _super);
-    function RemoveEntry(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = REMOVE_ENTRY;
-        return _this;
-    }
-    return RemoveEntry;
-}(LoaderLoadAction));
-var RemoveEntrySuccess = /** @class */ (function (_super) {
-    __extends(RemoveEntrySuccess, _super);
-    function RemoveEntrySuccess() {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.type = REMOVE_ENTRY_SUCCESS;
-        return _this;
-    }
-    return RemoveEntrySuccess;
-}(LoaderSuccessAction));
-var RemoveEntryFail = /** @class */ (function (_super) {
-    __extends(RemoveEntryFail, _super);
-    function RemoveEntryFail(payload) {
-        var _this = _super.call(this, CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = REMOVE_ENTRY_FAIL;
-        return _this;
-    }
-    return RemoveEntryFail;
-}(LoaderFailAction));
-var UpdateEntry = /** @class */ (function (_super) {
-    __extends(UpdateEntry, _super);
-    function UpdateEntry(payload) {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.payload = payload;
-        _this.type = UPDATE_ENTRY;
-        return _this;
-    }
-    return UpdateEntry;
-}(LoaderLoadAction));
-var UpdateEntrySuccess = /** @class */ (function (_super) {
-    __extends(UpdateEntrySuccess, _super);
-    function UpdateEntrySuccess() {
-        var _this = _super.call(this, CART_DATA) || this;
-        _this.type = UPDATE_ENTRY_SUCCESS;
-        return _this;
-    }
-    return UpdateEntrySuccess;
-}(LoaderSuccessAction));
-var UpdateEntryFail = /** @class */ (function (_super) {
-    __extends(UpdateEntryFail, _super);
-    function UpdateEntryFail(payload) {
-        var _this = _super.call(this, CART_DATA, payload) || this;
-        _this.payload = payload;
-        _this.type = UPDATE_ENTRY_FAIL;
-        return _this;
-    }
-    return UpdateEntryFail;
-}(LoaderFailAction));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderValueSelector(state) {
-    return state.value;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderLoadingSelector(state) {
-    return state.loading;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderErrorSelector(state) {
-    return state.error;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderSuccessSelector(state) {
-    return state.success;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getCartContentSelector = function (state) { return state.content; };
-/** @type {?} */
-var getRefreshSelector = function (state) { return state.refresh; };
-/** @type {?} */
-var getEntriesSelector = function (state) { return state.entries; };
-/** @type {?} */
-var getCartMergeCompleteSelector = function (state) {
-    return state.cartMergeComplete;
-};
-/** @type {?} */
-var getCartsState = createFeatureSelector(CART_FEATURE);
-/** @type {?} */
-var getActiveCartState = createSelector(getCartsState, function (cartsState) { return cartsState.active; });
-/** @type {?} */
-var getCartState = createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
-/** @type {?} */
-var getCartContent = createSelector(getCartState, getCartContentSelector);
-/** @type {?} */
-var getRefresh = createSelector(getCartState, getRefreshSelector);
-/** @type {?} */
-var getLoaded = createSelector(getActiveCartState, function (state) {
-    return loaderSuccessSelector(state) &&
-        !loaderLoadingSelector(state) &&
-        !loaderValueSelector(state).refresh;
-});
-/** @type {?} */
-var getCartMergeComplete = createSelector(getCartState, getCartMergeCompleteSelector);
-/** @type {?} */
-var getEntriesMap = createSelector(getCartState, getEntriesSelector);
-/** @type {?} */
-var getEntrySelectorFactory = function (productCode) {
-    return createSelector(getEntriesMap, function (entries) {
-        if (entries) {
-            return entries[productCode];
-        }
-    });
-};
-/** @type {?} */
-var getEntries = createSelector(getEntriesMap, function (entities) {
-    return Object.keys(entities).map(function (code) { return entities[code]; });
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -479,6 +83,8 @@ function deepMerge(target) {
 /** @type {?} */
 var ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
 /**
+ * Use to probide config validation at app bootstrap (when all config chunks are merged)
+ *
  * @param {?} configValidator
  * @return {?}
  */
@@ -519,12 +125,21 @@ function validateConfig(config, configValidators) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
+/**
+ * Global Configuration injection token, can be used to inject configuration to any part of the app
+ * @type {?}
+ */
 var Config = new InjectionToken('Configuration');
-/** @type {?} */
+/**
+ * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
+ * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
+ * @type {?}
+ */
 var ConfigChunk = new InjectionToken('ConfigurationChunk');
 /**
- * @param {?=} config
+ * Helper function to provide configuration chunk using ConfigChunk token
+ *
+ * @param {?=} config Config object to merge with the global configuration
  * @return {?}
  */
 function provideConfig(config) {
@@ -532,8 +147,10 @@ function provideConfig(config) {
     return { provide: ConfigChunk, useValue: config, multi: true };
 }
 /**
- * @param {?} configFactory
- * @param {?=} deps
+ * Helper function to provide configuration with factory function, using ConfigChunk token
+ *
+ * @param {?} configFactory Factory Function that will generate config object
+ * @param {?=} deps Optional dependencies to a factory function
  * @return {?}
  */
 function provideConfigFactory(configFactory, deps) {
@@ -545,6 +162,8 @@ function provideConfigFactory(configFactory, deps) {
     };
 }
 /**
+ * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
+ *
  * @param {?} configChunks
  * @param {?} configValidators
  * @return {?}
@@ -561,11 +180,20 @@ var ConfigModule = /** @class */ (function () {
     function ConfigModule() {
     }
     /**
-     * @param {?} config
+     * Import ConfigModule and contribute config to the global configuration
+     *
+     * @param config Config object to merge with the global configuration
+     */
+    /**
+     * Import ConfigModule and contribute config to the global configuration
+     *
+     * @param {?} config Config object to merge with the global configuration
      * @return {?}
      */
     ConfigModule.withConfig = /**
-     * @param {?} config
+     * Import ConfigModule and contribute config to the global configuration
+     *
+     * @param {?} config Config object to merge with the global configuration
      * @return {?}
      */
     function (config) {
@@ -575,13 +203,23 @@ var ConfigModule = /** @class */ (function () {
         };
     };
     /**
-     * @param {?} configFactory
-     * @param {?=} deps
+     * Import ConfigModule and contribute config to the global configuration using factory function
+     *
+     * @param configFactory Factory function that will generate configuration
+     * @param deps Optional dependencies to factory function
+     */
+    /**
+     * Import ConfigModule and contribute config to the global configuration using factory function
+     *
+     * @param {?} configFactory Factory function that will generate configuration
+     * @param {?=} deps Optional dependencies to factory function
      * @return {?}
      */
     ConfigModule.withConfigFactory = /**
-     * @param {?} configFactory
-     * @param {?=} deps
+     * Import ConfigModule and contribute config to the global configuration using factory function
+     *
+     * @param {?} configFactory Factory function that will generate configuration
+     * @param {?=} deps Optional dependencies to factory function
      * @return {?}
      */
     function (configFactory, deps) {
@@ -591,10 +229,19 @@ var ConfigModule = /** @class */ (function () {
         };
     };
     /**
+     * Module with providers, should be imported only once, if possible, at the root of the app.
+     *
+     * @param config
+     */
+    /**
+     * Module with providers, should be imported only once, if possible, at the root of the app.
+     *
      * @param {?=} config
      * @return {?}
      */
     ConfigModule.forRoot = /**
+     * Module with providers, should be imported only once, if possible, at the root of the app.
+     *
      * @param {?=} config
      * @return {?}
      */
@@ -2119,161 +1766,14 @@ var UrlParsingService = /** @class */ (function () {
 var isParam = function (segment) { return segment.startsWith(':'); };
 /** @type {?} */
 var getParamName = function (segment) { return segment.slice(1); };
-/** @type {?} */
-var removeLeadingSlash = function (path) {
-    return path.startsWith('/') ? path.slice(1) : path;
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var RouteRecognizerService = /** @class */ (function () {
-    function RouteRecognizerService(routesConfigLoader, urlParser) {
-        this.routesConfigLoader = routesConfigLoader;
-        this.urlParser = urlParser;
-    }
-    /**
-     * @param {?} url
-     * @return {?}
-     */
-    RouteRecognizerService.prototype.recognizeByDefaultUrl = /**
-     * @param {?} url
-     * @return {?}
-     */
-    function (url) {
-        url = removeLeadingSlash(url); // url will be compared with paths translations which do not have leading slash
-        // url will be compared with paths translations which do not have leading slash
-        /** @type {?} */
-        var routesTranslations = this.defaultRoutesTranslations;
-        /** @type {?} */
-        var urlSegments = this.urlParser.getPrimarySegments(url);
-        /** @type {?} */
-        var recognizedNestedRoutes = this.getNestedRoutesRecursive(urlSegments, routesTranslations, []);
-        return recognizedNestedRoutes;
-    };
-    /**
-     * @private
-     * @param {?} remainingUrlSegments
-     * @param {?} routesTranslations
-     * @param {?} accResult
-     * @return {?}
-     */
-    RouteRecognizerService.prototype.getNestedRoutesRecursive = /**
-     * @private
-     * @param {?} remainingUrlSegments
-     * @param {?} routesTranslations
-     * @param {?} accResult
-     * @return {?}
-     */
-    function (remainingUrlSegments, routesTranslations, accResult) {
-        if (!routesTranslations) {
-            return remainingUrlSegments.length ? null : accResult;
-        }
-        /** @type {?} */
-        var routeNames = Object.keys(routesTranslations);
-        /** @type {?} */
-        var routeNamesLength = routeNames.length;
-        for (var i = 0; i < routeNamesLength; i++) {
-            /** @type {?} */
-            var routeName = routeNames[i];
-            /** @type {?} */
-            var routeTranslation = routesTranslations && routesTranslations[routeName];
-            /** @type {?} */
-            var paths = routeTranslation.paths || [];
-            /** @type {?} */
-            var pathsLength = paths.length;
-            for (var j = 0; j < pathsLength; j++) {
-                /** @type {?} */
-                var path = paths[j];
-                /** @type {?} */
-                var pathSegments = this.urlParser.getPrimarySegments(path);
-                /** @type {?} */
-                var params = this.extractParamsIfPathMatchesUrlPrefix(remainingUrlSegments, pathSegments);
-                // if some path is matching, try to recognize remaining segments
-                if (params) {
-                    /** @type {?} */
-                    var result = this.getNestedRoutesRecursive(remainingUrlSegments.slice(pathSegments.length), routeTranslation.children, accResult.concat({ name: routeName, params: params }));
-                    // if remaining segments were successfuly matched, return result. otherwise continue loop for other paths and routes
-                    if (result) {
-                        return result;
-                    }
-                }
-            }
-        }
-        return remainingUrlSegments.length ? null : accResult;
-    };
-    /**
-     * @private
-     * @param {?} urlSegments
-     * @param {?} pathSegments
-     * @return {?}
-     */
-    RouteRecognizerService.prototype.extractParamsIfPathMatchesUrlPrefix = /**
-     * @private
-     * @param {?} urlSegments
-     * @param {?} pathSegments
-     * @return {?}
-     */
-    function (urlSegments, pathSegments) {
-        /** @type {?} */
-        var params = {};
-        /** @type {?} */
-        var pathSegmentsLength = pathSegments.length;
-        /** @type {?} */
-        var urlSegmentsLength = urlSegments.length;
-        if (urlSegmentsLength < pathSegmentsLength) {
-            return null;
-        }
-        for (var i = 0; i < pathSegmentsLength; i++) {
-            /** @type {?} */
-            var pathSegment = pathSegments[i];
-            /** @type {?} */
-            var urlSegment = urlSegments[i];
-            if (isParam(pathSegment)) {
-                /** @type {?} */
-                var paramName = getParamName(pathSegment);
-                params[paramName] = urlSegment;
-            }
-            else {
-                if (pathSegment !== urlSegment) {
-                    return null;
-                }
-            }
-        }
-        return params;
-    };
-    Object.defineProperty(RouteRecognizerService.prototype, "defaultRoutesTranslations", {
-        get: /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            return (/** @type {?} */ (this.routesConfigLoader.routesConfig.translations
-                .default));
-        },
-        enumerable: true,
-        configurable: true
-    });
-    RouteRecognizerService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    RouteRecognizerService.ctorParameters = function () { return [
-        { type: RoutesConfigLoader },
-        { type: UrlParsingService }
-    ]; };
-    return RouteRecognizerService;
-}());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UrlTranslationService = /** @class */ (function () {
-    function UrlTranslationService(configurableRoutesService, routeRecognizer, urlParser, config) {
+    function UrlTranslationService(configurableRoutesService, urlParser, config) {
         this.configurableRoutesService = configurableRoutesService;
-        this.routeRecognizer = routeRecognizer;
         this.urlParser = urlParser;
         this.config = config;
         this.ROOT_URL = ['/'];
@@ -2290,11 +1790,6 @@ var UrlTranslationService = /** @class */ (function () {
         // if options are invalid, return the root url
         if (!this.validateOptions(options)) {
             return this.ROOT_URL;
-        }
-        if (typeof options.url === 'string') {
-            /** @type {?} */
-            var recognizedRoute = this.routeRecognizer.recognizeByDefaultUrl(options.url);
-            return recognizedRoute ? this.generateUrl(recognizedRoute) : options.url;
         }
         return this.generateUrl(options.route);
     };
@@ -2314,39 +1809,13 @@ var UrlTranslationService = /** @class */ (function () {
             return false;
         }
         /** @type {?} */
-        var urlDefined = Boolean(options.url) || options.url === '';
-        /** @type {?} */
         var routeDefined = Boolean(options.route);
-        if (!urlDefined && !routeDefined) {
-            this.warn("Incorrect options for translating url. Options must have 'url' string or 'route' array property. Options: ", options);
+        if (!routeDefined) {
+            this.warn("Incorrect options for translating url. Options must have 'route' array property. Options: ", options);
             return false;
-        }
-        if (urlDefined && routeDefined) {
-            this.warn("Incorrect options for translating url. Options cannot have both 'url' and 'route' property. Options: ", options);
-            return false;
-        }
-        if (urlDefined) {
-            return this.validateOptionsUrl(options.url);
         }
         if (routeDefined) {
             return this.validateOptionsRoute(options.route);
-        }
-        return true;
-    };
-    /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    UrlTranslationService.prototype.validateOptionsUrl = /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    function (url) {
-        if (typeof url !== 'string') {
-            this.warn("Incorrect options for translating url.", "'url' property should be a string. Url: ", url);
-            return false;
         }
         return true;
     };
@@ -2641,7 +2110,6 @@ var UrlTranslationService = /** @class */ (function () {
     /** @nocollapse */
     UrlTranslationService.ctorParameters = function () { return [
         { type: ConfigurableRoutesService },
-        { type: RouteRecognizerService },
         { type: UrlParsingService },
         { type: ServerConfig }
     ]; };
@@ -2896,6 +2364,7 @@ var defaultStorefrontRoutesTranslations = {
         addressBook: { paths: ['my-account/address-book'] },
         updatePassword: { paths: ['my-account/update-password'] },
         paymentManagement: { paths: ['my-account/payment-details'] },
+        updateEmail: { paths: ['my-account/update-email'] },
         updateProfile: { paths: ['my-account/update-profile'] },
     },
     en: (/** @type {?} */ ({})),
@@ -2941,7 +2410,6 @@ var ConfigurableRoutesModule = /** @class */ (function () {
                         ConfigurableRoutesService,
                         RoutesConfigLoader,
                         UrlTranslationService,
-                        RouteRecognizerService,
                         UrlParsingService,
                         {
                             provide: APP_INITIALIZER,
@@ -3028,6 +2496,94 @@ var defaultAuthConfig = {
 var AUTH_FEATURE = 'auth';
 /** @type {?} */
 var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var LOADER_LOAD_ACTION = '[LOADER] LOAD';
+/** @type {?} */
+var LOADER_FAIL_ACTION = '[LOADER] FAIL';
+/** @type {?} */
+var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
+/** @type {?} */
+var LOADER_RESET_ACTION = '[LOADER] RESET';
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function loadMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {
+            load: true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @param {?=} error
+ * @return {?}
+ */
+function failMeta(entityType, error) {
+    return {
+        entityType: entityType,
+        loader: {
+            error: error ? error : true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function successMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {
+            success: true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function resetMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {},
+    };
+}
+var LoaderLoadAction = /** @class */ (function () {
+    function LoaderLoadAction(entityType) {
+        this.type = LOADER_LOAD_ACTION;
+        this.meta = loadMeta(entityType);
+    }
+    return LoaderLoadAction;
+}());
+var LoaderFailAction = /** @class */ (function () {
+    function LoaderFailAction(entityType, error) {
+        this.type = LOADER_FAIL_ACTION;
+        this.meta = failMeta(entityType, error);
+    }
+    return LoaderFailAction;
+}());
+var LoaderSuccessAction = /** @class */ (function () {
+    function LoaderSuccessAction(entityType) {
+        this.type = LOADER_SUCCESS_ACTION;
+        this.meta = successMeta(entityType);
+    }
+    return LoaderSuccessAction;
+}());
+var LoaderResetAction = /** @class */ (function () {
+    function LoaderResetAction(entityType) {
+        this.type = LOADER_RESET_ACTION;
+        this.meta = resetMeta(entityType);
+    }
+    return LoaderResetAction;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -4280,9 +3836,7 @@ function loaderReducer(loadActionType, reducer) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$1 = {
-    token: (/** @type {?} */ ({})),
-};
+var initialState$1 = (/** @type {?} */ ({}));
 /**
  * @param {?=} state
  * @param {?=} action
@@ -4297,9 +3851,7 @@ function reducer$1(state, action) {
         }
         case LOAD_USER_TOKEN_SUCCESS:
         case REFRESH_USER_TOKEN_SUCCESS: {
-            /** @type {?} */
-            var token = action.payload;
-            return __assign({}, state, { token: token });
+            return __assign({}, state, action.payload);
         }
         case LOAD_USER_TOKEN_FAIL:
         case REFRESH_USER_TOKEN_FAIL: {
@@ -4318,7 +3870,7 @@ function reducer$1(state, action) {
  */
 function getReducers$1() {
     return {
-        userToken: reducer$1,
+        userToken: combineReducers({ token: reducer$1 }),
         clientToken: loaderReducer(CLIENT_TOKEN_DATA),
     };
 }
@@ -4848,6 +4400,314 @@ var NotAuthGuard = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CART_FEATURE = 'cart';
+/** @type {?} */
+var CART_DATA = '[Cart] Cart Data';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CREATE_CART = '[Cart] Create Cart';
+/** @type {?} */
+var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+/** @type {?} */
+var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+/** @type {?} */
+var LOAD_CART = '[Cart] Load Cart';
+/** @type {?} */
+var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+/** @type {?} */
+var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+/** @type {?} */
+var MERGE_CART = '[Cart] Merge Cart';
+/** @type {?} */
+var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+var CreateCart = /** @class */ (function (_super) {
+    __extends(CreateCart, _super);
+    function CreateCart(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART;
+        return _this;
+    }
+    return CreateCart;
+}(LoaderLoadAction));
+var CreateCartFail = /** @class */ (function (_super) {
+    __extends(CreateCartFail, _super);
+    function CreateCartFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_FAIL;
+        return _this;
+    }
+    return CreateCartFail;
+}(LoaderFailAction));
+var CreateCartSuccess = /** @class */ (function (_super) {
+    __extends(CreateCartSuccess, _super);
+    function CreateCartSuccess(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = CREATE_CART_SUCCESS;
+        return _this;
+    }
+    return CreateCartSuccess;
+}(LoaderSuccessAction));
+var LoadCart = /** @class */ (function (_super) {
+    __extends(LoadCart, _super);
+    function LoadCart(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART;
+        return _this;
+    }
+    return LoadCart;
+}(LoaderLoadAction));
+var LoadCartFail = /** @class */ (function (_super) {
+    __extends(LoadCartFail, _super);
+    function LoadCartFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART_FAIL;
+        return _this;
+    }
+    return LoadCartFail;
+}(LoaderFailAction));
+var LoadCartSuccess = /** @class */ (function (_super) {
+    __extends(LoadCartSuccess, _super);
+    function LoadCartSuccess(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = LOAD_CART_SUCCESS;
+        return _this;
+    }
+    return LoadCartSuccess;
+}(LoaderSuccessAction));
+var MergeCart = /** @class */ (function () {
+    function MergeCart(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART;
+    }
+    return MergeCart;
+}());
+var MergeCartSuccess = /** @class */ (function () {
+    function MergeCartSuccess() {
+        this.type = MERGE_CART_SUCCESS;
+    }
+    return MergeCartSuccess;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var ADD_ENTRY = '[Cart-entry] Add Entry';
+/** @type {?} */
+var ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+/** @type {?} */
+var ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+/** @type {?} */
+var REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+/** @type {?} */
+var REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+/** @type {?} */
+var REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+/** @type {?} */
+var UPDATE_ENTRY = '[Cart-entry] Update Entry';
+/** @type {?} */
+var UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+/** @type {?} */
+var UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+var AddEntry = /** @class */ (function (_super) {
+    __extends(AddEntry, _super);
+    function AddEntry(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = ADD_ENTRY;
+        return _this;
+    }
+    return AddEntry;
+}(LoaderLoadAction));
+var AddEntrySuccess = /** @class */ (function (_super) {
+    __extends(AddEntrySuccess, _super);
+    function AddEntrySuccess(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = ADD_ENTRY_SUCCESS;
+        return _this;
+    }
+    return AddEntrySuccess;
+}(LoaderSuccessAction));
+var AddEntryFail = /** @class */ (function (_super) {
+    __extends(AddEntryFail, _super);
+    function AddEntryFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = ADD_ENTRY_FAIL;
+        return _this;
+    }
+    return AddEntryFail;
+}(LoaderFailAction));
+var RemoveEntry = /** @class */ (function (_super) {
+    __extends(RemoveEntry, _super);
+    function RemoveEntry(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = REMOVE_ENTRY;
+        return _this;
+    }
+    return RemoveEntry;
+}(LoaderLoadAction));
+var RemoveEntrySuccess = /** @class */ (function (_super) {
+    __extends(RemoveEntrySuccess, _super);
+    function RemoveEntrySuccess() {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.type = REMOVE_ENTRY_SUCCESS;
+        return _this;
+    }
+    return RemoveEntrySuccess;
+}(LoaderSuccessAction));
+var RemoveEntryFail = /** @class */ (function (_super) {
+    __extends(RemoveEntryFail, _super);
+    function RemoveEntryFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = REMOVE_ENTRY_FAIL;
+        return _this;
+    }
+    return RemoveEntryFail;
+}(LoaderFailAction));
+var UpdateEntry = /** @class */ (function (_super) {
+    __extends(UpdateEntry, _super);
+    function UpdateEntry(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = UPDATE_ENTRY;
+        return _this;
+    }
+    return UpdateEntry;
+}(LoaderLoadAction));
+var UpdateEntrySuccess = /** @class */ (function (_super) {
+    __extends(UpdateEntrySuccess, _super);
+    function UpdateEntrySuccess() {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.type = UPDATE_ENTRY_SUCCESS;
+        return _this;
+    }
+    return UpdateEntrySuccess;
+}(LoaderSuccessAction));
+var UpdateEntryFail = /** @class */ (function (_super) {
+    __extends(UpdateEntryFail, _super);
+    function UpdateEntryFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = UPDATE_ENTRY_FAIL;
+        return _this;
+    }
+    return UpdateEntryFail;
+}(LoaderFailAction));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderValueSelector(state) {
+    return state.value;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderLoadingSelector(state) {
+    return state.loading;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderErrorSelector(state) {
+    return state.error;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderSuccessSelector(state) {
+    return state.success;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getCartContentSelector = function (state) { return state.content; };
+/** @type {?} */
+var getRefreshSelector = function (state) { return state.refresh; };
+/** @type {?} */
+var getEntriesSelector = function (state) { return state.entries; };
+/** @type {?} */
+var getCartMergeCompleteSelector = function (state) {
+    return state.cartMergeComplete;
+};
+/** @type {?} */
+var getCartsState = createFeatureSelector(CART_FEATURE);
+/** @type {?} */
+var getActiveCartState = createSelector(getCartsState, function (cartsState) { return cartsState.active; });
+/** @type {?} */
+var getCartState = createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
+/** @type {?} */
+var getCartContent = createSelector(getCartState, getCartContentSelector);
+/** @type {?} */
+var getRefresh = createSelector(getCartState, getRefreshSelector);
+/** @type {?} */
+var getLoaded = createSelector(getActiveCartState, function (state) {
+    return loaderSuccessSelector(state) &&
+        !loaderLoadingSelector(state) &&
+        !loaderValueSelector(state).refresh;
+});
+/** @type {?} */
+var getCartMergeComplete = createSelector(getCartState, getCartMergeCompleteSelector);
+/** @type {?} */
+var getEntriesMap = createSelector(getCartState, getEntriesSelector);
+/** @type {?} */
+var getEntrySelectorFactory = function (productCode) {
+    return createSelector(getEntriesMap, function (entries) {
+        if (entries) {
+            return entries[productCode];
+        }
+    });
+};
+/** @type {?} */
+var getEntries = createSelector(getEntriesMap, function (entities) {
+    return Object.keys(entities).map(function (code) { return entities[code]; });
+});
 
 /**
  * @fileoverview added by tsickle
@@ -6090,30 +5950,176 @@ var metaReducers$1 = [clearCartState];
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductLoaderService = /** @class */ (function () {
-    function ProductLoaderService(http, occEndpoints) {
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ConverterService = /** @class */ (function () {
+    function ConverterService(injector) {
+        this.injector = injector;
+        this.converters = new Map();
+    }
+    /**
+     * @private
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.getConverters = /**
+     * @private
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        if (!this.converters.has(injectionToken)) {
+            /** @type {?} */
+            var converters = this.injector.get(injectionToken, []);
+            if (!Array.isArray(converters)) {
+                console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+            }
+            this.converters.set(injectionToken, converters);
+        }
+        return this.converters.get(injectionToken);
+    };
+    /**
+     * Will return true if converters for specified token were provided
+     */
+    /**
+     * Will return true if converters for specified token were provided
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.hasConverters = /**
+     * Will return true if converters for specified token were provided
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        /** @type {?} */
+        var converters = this.getConverters(injectionToken);
+        return Array.isArray(converters) && converters.length > 0;
+    };
+    /**
+     * Pipeable operator to apply converter logic in a observable stream
+     */
+    /**
+     * Pipeable operator to apply converter logic in a observable stream
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.pipeable = /**
+     * Pipeable operator to apply converter logic in a observable stream
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        var _this = this;
+        if (this.hasConverters(injectionToken)) {
+            return map(function (model) { return _this.convertSource(model, injectionToken); });
+        }
+        else {
+            return function (observable) { return (/** @type {?} */ (observable)); };
+        }
+    };
+    /**
+     * Apply converter logic specified by injection token to source data
+     */
+    /**
+     * Apply converter logic specified by injection token to source data
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.convert = /**
+     * Apply converter logic specified by injection token to source data
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (source, injectionToken) {
+        if (this.hasConverters(injectionToken)) {
+            return this.convertSource(source, injectionToken);
+        }
+        else {
+            return (/** @type {?} */ (source));
+        }
+    };
+    /**
+     * @private
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.convertSource = /**
+     * @private
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (source, injectionToken) {
+        return this.getConverters(injectionToken).reduce(function (target, converter) {
+            return converter.convert(source, target);
+        }, (/** @type {?} */ (undefined)));
+    };
+    ConverterService.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ConverterService.ctorParameters = function () { return [
+        { type: Injector }
+    ]; };
+    /** @nocollapse */ ConverterService.ngInjectableDef = defineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(inject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
+    return ConverterService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccProductAdapter = /** @class */ (function () {
+    function OccProductAdapter(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
+        this.converter = converter;
     }
     /**
      * @param {?} productCode
      * @return {?}
      */
-    ProductLoaderService.prototype.load = /**
+    OccProductAdapter.prototype.load = /**
      * @param {?} productCode
      * @return {?}
      */
     function (productCode) {
         return this.http
             .get(this.getEndpoint(productCode))
-            .pipe(catchError(function (error) { return throwError(error.json()); }));
+            .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
     };
     /**
      * @protected
      * @param {?} code
      * @return {?}
      */
-    ProductLoaderService.prototype.getEndpoint = /**
+    OccProductAdapter.prototype.getEndpoint = /**
      * @protected
      * @param {?} code
      * @return {?}
@@ -6123,15 +6129,16 @@ var ProductLoaderService = /** @class */ (function () {
             productCode: code,
         });
     };
-    ProductLoaderService.decorators = [
+    OccProductAdapter.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    ProductLoaderService.ctorParameters = function () { return [
+    OccProductAdapter.ctorParameters = function () { return [
         { type: HttpClient },
-        { type: OccEndpointsService }
+        { type: OccEndpointsService },
+        { type: ConverterService }
     ]; };
-    return ProductLoaderService;
+    return OccProductAdapter;
 }());
 
 /**
@@ -6233,17 +6240,27 @@ var ProductSearchLoaderService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductReviewsLoaderService = /** @class */ (function () {
-    function ProductReviewsLoaderService(http, occEndpoints) {
+/** @type {?} */
+var PRODUCT_REVIEWS_NORMALIZER = new InjectionToken('ProductReviewsListNormalizer');
+/** @type {?} */
+var PRODUCT_REVIEW_SERIALIZER = new InjectionToken('ProductReviewsAddSerializer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccProductReviewsAdapter = /** @class */ (function () {
+    function OccProductReviewsAdapter(http, occEndpoints, converter) {
         this.http = http;
         this.occEndpoints = occEndpoints;
+        this.converter = converter;
     }
     /**
      * @param {?} productCode
      * @param {?=} maxCount
      * @return {?}
      */
-    ProductReviewsLoaderService.prototype.load = /**
+    OccProductReviewsAdapter.prototype.load = /**
      * @param {?} productCode
      * @param {?=} maxCount
      * @return {?}
@@ -6251,19 +6268,20 @@ var ProductReviewsLoaderService = /** @class */ (function () {
     function (productCode, maxCount) {
         return this.http
             .get(this.getEndpoint(productCode, maxCount))
-            .pipe(catchError(function (error) { return throwError(error.json()); }));
+            .pipe(this.converter.pipeable(PRODUCT_REVIEWS_NORMALIZER));
     };
     /**
      * @param {?} productCode
      * @param {?} review
      * @return {?}
      */
-    ProductReviewsLoaderService.prototype.post = /**
+    OccProductReviewsAdapter.prototype.post = /**
      * @param {?} productCode
      * @param {?} review
      * @return {?}
      */
     function (productCode, review) {
+        review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
         /** @type {?} */
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -6274,9 +6292,9 @@ var ProductReviewsLoaderService = /** @class */ (function () {
         body.append('comment', review.comment);
         body.append('rating', review.rating.toString());
         body.append('alias', review.alias);
-        return this.http
-            .post(this.getEndpoint(productCode), body.toString(), { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error.json()); }));
+        return this.http.post(this.getEndpoint(productCode), body.toString(), {
+            headers: headers,
+        });
     };
     /**
      * @protected
@@ -6284,7 +6302,7 @@ var ProductReviewsLoaderService = /** @class */ (function () {
      * @param {?=} maxCount
      * @return {?}
      */
-    ProductReviewsLoaderService.prototype.getEndpoint = /**
+    OccProductReviewsAdapter.prototype.getEndpoint = /**
      * @protected
      * @param {?} code
      * @param {?=} maxCount
@@ -6295,75 +6313,41 @@ var ProductReviewsLoaderService = /** @class */ (function () {
             productCode: code,
         }, { maxCount: maxCount });
     };
-    ProductReviewsLoaderService.decorators = [
+    OccProductReviewsAdapter.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    ProductReviewsLoaderService.ctorParameters = function () { return [
+    OccProductReviewsAdapter.ctorParameters = function () { return [
         { type: HttpClient },
-        { type: OccEndpointsService }
+        { type: OccEndpointsService },
+        { type: ConverterService }
     ]; };
-    return ProductReviewsLoaderService;
+    return OccProductReviewsAdapter;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var defaultOccProductConfig = {
-    backend: {
-        occ: {
-            endpoints: {
-                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
-                productReviews: 'products/${productCode}/reviews',
-                // tslint:disable:max-line-length
-                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
-                // tslint:enable
-                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
-            },
-        },
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ProductOccModule = /** @class */ (function () {
-    function ProductOccModule() {
+var OccProductReviewsListNormalizer = /** @class */ (function () {
+    function OccProductReviewsListNormalizer() {
     }
-    ProductOccModule.decorators = [
-        { type: NgModule, args: [{
-                    imports: [
-                        CommonModule,
-                        HttpClientModule,
-                        OccModule,
-                        ConfigModule.withConfig(defaultOccProductConfig),
-                    ],
-                    providers: [
-                        ProductLoaderService,
-                        ProductSearchLoaderService,
-                        ProductReviewsLoaderService,
-                    ],
-                },] }
-    ];
-    return ProductOccModule;
+    /**
+     * @param {?} sources
+     * @param {?=} targets
+     * @return {?}
+     */
+    OccProductReviewsListNormalizer.prototype.convert = /**
+     * @param {?} sources
+     * @param {?=} targets
+     * @return {?}
+     */
+    function (sources, targets) {
+        if (targets === void 0) { targets = []; }
+        return sources.reviews.map(function (review, index) { return (__assign({}, targets[index], review)); });
+    };
+    return OccProductReviewsListNormalizer;
 }());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var PRODUCT_FEATURE = 'product';
-/** @type {?} */
-var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
 
 /**
  * @fileoverview added by tsickle
@@ -6510,15 +6494,50 @@ var OccMiscsService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductImageConverterService = /** @class */ (function () {
-    function ProductImageConverterService(config) {
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductImageNormalizer = /** @class */ (function () {
+    function ProductImageNormalizer(config) {
         this.config = config;
     }
     /**
+     * @param {?} source
+     * @param {?=} target
+     * @return {?}
+     */
+    ProductImageNormalizer.prototype.convert = /**
+     * @param {?} source
+     * @param {?=} target
+     * @return {?}
+     */
+    function (source, target) {
+        if (target === undefined) {
+            target = __assign({}, ((/** @type {?} */ (source))));
+        }
+        if (source.images) {
+            target.images = this.normalize(source.images);
+        }
+        return target;
+    };
+    /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
+     */
+    /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
      * @param {?} list
      * @return {?}
      */
-    ProductImageConverterService.prototype.convertList = /**
+    ProductImageNormalizer.prototype.convertList = /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
      * @param {?} list
      * @return {?}
      */
@@ -6542,40 +6561,51 @@ var ProductImageConverterService = /** @class */ (function () {
         }
     };
     /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
+     */
+    /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
      * @param {?} product
      * @return {?}
      */
-    ProductImageConverterService.prototype.convertProduct = /**
+    ProductImageNormalizer.prototype.convertProduct = /**
+     * @deprecated Use `convert(source, target?) => target` instead
+     *
+     * TODO: Should be removed when all use cases will be refactored
      * @param {?} product
      * @return {?}
      */
     function (product) {
         if (product.images) {
-            product.images = this.populate(product.images);
+            product.images = this.normalize(product.images);
         }
     };
     /**
      * @desc
-     * Creates the image structue we'd like to have. Instead of
-     * having a singel list with all images despite type and format
+     * Creates the image structure we'd like to have. Instead of
+     * having a single list with all images despite type and format
      * we create a proper structure. With that we can do:
      * - images.primary.thumnail.url
      * - images.GALLERY[0].thumnail.url
      */
     /**
      * @desc
-     * Creates the image structue we'd like to have. Instead of
-     * having a singel list with all images despite type and format
+     * Creates the image structure we'd like to have. Instead of
+     * having a single list with all images despite type and format
      * we create a proper structure. With that we can do:
      * - images.primary.thumnail.url
      * - images.GALLERY[0].thumnail.url
      * @param {?} source
      * @return {?}
      */
-    ProductImageConverterService.prototype.populate = /**
+    ProductImageNormalizer.prototype.normalize = /**
      * @desc
-     * Creates the image structue we'd like to have. Instead of
-     * having a singel list with all images despite type and format
+     * Creates the image structure we'd like to have. Instead of
+     * having a single list with all images despite type and format
      * we create a proper structure. With that we can do:
      * - images.primary.thumnail.url
      * - images.GALLERY[0].thumnail.url
@@ -6621,46 +6651,55 @@ var ProductImageConverterService = /** @class */ (function () {
         }
         return images;
     };
-    ProductImageConverterService.decorators = [
-        { type: Injectable }
+    ProductImageNormalizer.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     /** @nocollapse */
-    ProductImageConverterService.ctorParameters = function () { return [
+    ProductImageNormalizer.ctorParameters = function () { return [
         { type: OccConfig }
     ]; };
-    return ProductImageConverterService;
+    /** @nocollapse */ ProductImageNormalizer.ngInjectableDef = defineInjectable({ factory: function ProductImageNormalizer_Factory() { return new ProductImageNormalizer(inject(OccConfig)); }, token: ProductImageNormalizer, providedIn: "root" });
+    return ProductImageNormalizer;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductReferenceConverterService = /** @class */ (function () {
-    function ProductReferenceConverterService() {
+var ProductReferenceNormalizer = /** @class */ (function () {
+    function ProductReferenceNormalizer() {
     }
     /**
-     * @param {?} product
+     * @param {?} source
+     * @param {?=} target
      * @return {?}
      */
-    ProductReferenceConverterService.prototype.convertProduct = /**
-     * @param {?} product
+    ProductReferenceNormalizer.prototype.convert = /**
+     * @param {?} source
+     * @param {?=} target
      * @return {?}
      */
-    function (product) {
-        if (product.productReferences) {
-            product.productReferences = this.populate(product.productReferences);
+    function (source, target) {
+        if (target === undefined) {
+            target = __assign({}, ((/** @type {?} */ (source))));
         }
+        if (source.productReferences) {
+            target.productReferences = this.normalize(source.productReferences);
+        }
+        return target;
     };
     /**
      * @desc
-     * Creates the reference structue we'd like to have. Instead of
+     * Creates the reference structure we'd like to have. Instead of
      * having a single list with all references we create a proper structure.
      * With that we have a semantic API for the clients
      * - product.references.SIMILAR[0].code
      */
     /**
      * @desc
-     * Creates the reference structue we'd like to have. Instead of
+     * Creates the reference structure we'd like to have. Instead of
      * having a single list with all references we create a proper structure.
      * With that we have a semantic API for the clients
      * - product.references.SIMILAR[0].code
@@ -6668,9 +6707,9 @@ var ProductReferenceConverterService = /** @class */ (function () {
      * @param {?} source
      * @return {?}
      */
-    ProductReferenceConverterService.prototype.populate = /**
+    ProductReferenceNormalizer.prototype.normalize = /**
      * @desc
-     * Creates the reference structue we'd like to have. Instead of
+     * Creates the reference structure we'd like to have. Instead of
      * having a single list with all references we create a proper structure.
      * With that we have a semantic API for the clients
      * - product.references.SIMILAR[0].code
@@ -6702,32 +6741,128 @@ var ProductReferenceConverterService = /** @class */ (function () {
         }
         return references;
     };
-    ProductReferenceConverterService.decorators = [
+    ProductReferenceNormalizer.decorators = [
         { type: Injectable }
     ];
-    return ProductReferenceConverterService;
+    return ProductReferenceNormalizer;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductConverterModule = /** @class */ (function () {
-    function ProductConverterModule() {
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var defaultOccProductConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                productReviews: 'products/${productCode}/reviews',
+                // tslint:disable:max-line-length
+                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                // tslint:enable
+                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
+            },
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ProductReviewsAdapter = /** @class */ (function () {
+    function ProductReviewsAdapter() {
     }
-    ProductConverterModule.decorators = [
+    return ProductReviewsAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ProductAdapter = /** @class */ (function () {
+    function ProductAdapter() {
+    }
+    return ProductAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductOccModule = /** @class */ (function () {
+    function ProductOccModule() {
+    }
+    ProductOccModule.decorators = [
         { type: NgModule, args: [{
-                    imports: [CommonModule],
-                    providers: [ProductImageConverterService, ProductReferenceConverterService],
+                    imports: [
+                        CommonModule,
+                        HttpClientModule,
+                        OccModule,
+                        ConfigModule.withConfig(defaultOccProductConfig),
+                    ],
+                    providers: [
+                        ProductSearchLoaderService,
+                        {
+                            provide: ProductAdapter,
+                            useClass: OccProductAdapter,
+                        },
+                        {
+                            provide: PRODUCT_NORMALIZER,
+                            useExisting: ProductImageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: PRODUCT_NORMALIZER,
+                            useClass: ProductReferenceNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductReviewsAdapter,
+                            useClass: OccProductReviewsAdapter,
+                        },
+                        {
+                            provide: PRODUCT_REVIEWS_NORMALIZER,
+                            useClass: OccProductReviewsListNormalizer,
+                            multi: true,
+                        },
+                    ],
                 },] }
     ];
-    return ProductConverterModule;
+    return ProductOccModule;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var PRODUCT_FEATURE = 'product';
+/** @type {?} */
+var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
 
 /**
  * @fileoverview added by tsickle
@@ -8826,7 +8961,7 @@ var ProductsSearchEffects = /** @class */ (function () {
     ProductsSearchEffects.ctorParameters = function () { return [
         { type: Actions },
         { type: ProductSearchLoaderService },
-        { type: ProductImageConverterService }
+        { type: ProductImageNormalizer }
     ]; };
     __decorate([
         Effect(),
@@ -8843,18 +8978,46 @@ var ProductsSearchEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var ProductConnector = /** @class */ (function () {
+    function ProductConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    ProductConnector.prototype.get = /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        return this.adapter.load(productCode);
+    };
+    ProductConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductConnector.ctorParameters = function () { return [
+        { type: ProductAdapter }
+    ]; };
+    /** @nocollapse */ ProductConnector.ngInjectableDef = defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+    return ProductConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var ProductEffects = /** @class */ (function () {
-    function ProductEffects(actions$, occProductService, productImageConverter, productReferenceConverterService) {
+    function ProductEffects(actions$, productConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occProductService = occProductService;
-        this.productImageConverter = productImageConverter;
-        this.productReferenceConverterService = productReferenceConverterService;
+        this.productConnector = productConnector;
         this.loadProduct$ = this.actions$.pipe(ofType(LOAD_PRODUCT), map(function (action) { return action.payload; }), groupBy(function (productCode) { return productCode; }), mergeMap(function (group) {
             return group.pipe(switchMap(function (productCode) {
-                return _this.occProductService.load(productCode).pipe(map(function (product) {
-                    _this.productImageConverter.convertProduct(product);
-                    _this.productReferenceConverterService.convertProduct(product);
+                return _this.productConnector.get(productCode).pipe(map(function (product) {
                     return new LoadProductSuccess(product);
                 }), catchError(function (error) {
                     return of(new LoadProductFail(productCode, error));
@@ -8868,9 +9031,7 @@ var ProductEffects = /** @class */ (function () {
     /** @nocollapse */
     ProductEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: ProductLoaderService },
-        { type: ProductImageConverterService },
-        { type: ProductReferenceConverterService }
+        { type: ProductConnector }
     ]; };
     __decorate([
         Effect(),
@@ -8883,16 +9044,63 @@ var ProductEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var ProductReviewsConnector = /** @class */ (function () {
+    function ProductReviewsConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} productCode
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    ProductReviewsConnector.prototype.get = /**
+     * @param {?} productCode
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    function (productCode, maxCount) {
+        return this.adapter.load(productCode, maxCount);
+    };
+    /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    ProductReviewsConnector.prototype.add = /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    function (productCode, review) {
+        return this.adapter.post(productCode, review);
+    };
+    ProductReviewsConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductReviewsConnector.ctorParameters = function () { return [
+        { type: ProductReviewsAdapter }
+    ]; };
+    /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+    return ProductReviewsConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var ProductReviewsEffects = /** @class */ (function () {
-    function ProductReviewsEffects(actions$, occProductReviewsService) {
+    function ProductReviewsEffects(actions$, productReviewsConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occProductReviewsService = occProductReviewsService;
+        this.productReviewsConnector = productReviewsConnector;
         this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map(function (action) { return action.payload; }), mergeMap(function (productCode) {
-            return _this.occProductReviewsService.load(productCode).pipe(map(function (data) {
+            return _this.productReviewsConnector.get(productCode).pipe(map(function (data) {
                 return new LoadProductReviewsSuccess({
                     productCode: productCode,
-                    list: data.reviews,
+                    list: data,
                 });
             }), catchError(function (_error) {
                 return of(new LoadProductReviewsFail((/** @type {?} */ ({
@@ -8901,8 +9109,8 @@ var ProductReviewsEffects = /** @class */ (function () {
             }));
         }));
         this.postProductReview = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occProductReviewsService
-                .post(payload.productCode, payload.review)
+            return _this.productReviewsConnector
+                .add(payload.productCode, payload.review)
                 .pipe(map(function (reviewResponse) {
                 return new PostProductReviewSuccess(reviewResponse);
             }), catchError(function (_error) {
@@ -8916,7 +9124,7 @@ var ProductReviewsEffects = /** @class */ (function () {
     /** @nocollapse */
     ProductReviewsEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: ProductReviewsLoaderService }
+        { type: ProductReviewsConnector }
     ]; };
     __decorate([
         Effect(),
@@ -9266,7 +9474,6 @@ var ProductStoreModule = /** @class */ (function () {
                         CommonModule,
                         HttpClientModule,
                         ProductOccModule,
-                        ProductConverterModule,
                         StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                         EffectsModule.forFeature(effects$3),
                         ConfigModule.withConfigFactory(productStoreConfigFactory),
@@ -9668,15 +9875,18 @@ var UrlTranslationModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
+ * Abstract class that can be used to implement custom loader logic
+ * in order to load CMS structure from third-party CMS system.
  * @abstract
- * @template S
  */
-var CmsPageAdapter = /** @class */ (function () {
+var  /**
+ * Abstract class that can be used to implement custom loader logic
+ * in order to load CMS structure from third-party CMS system.
+ * @abstract
+ */
+CmsPageAdapter = /** @class */ (function () {
     function CmsPageAdapter() {
     }
-    CmsPageAdapter.decorators = [
-        { type: Injectable }
-    ];
     return CmsPageAdapter;
 }());
 
@@ -9808,23 +10018,37 @@ var CmsStructureConfigService = /** @class */ (function () {
         return this.getPageFromConfig(pageId).pipe(map(function (page) { return !!page && !!page.ignoreBackend; }));
     };
     /**
-     * returns an Obserable component data from the static configuration.
+     * returns an Observable component data from the static configuration.
      */
     /**
-     * returns an Obserable component data from the static configuration.
+     * returns an Observable component data from the static configuration.
      * @param {?} componentId
      * @return {?}
      */
     CmsStructureConfigService.prototype.getComponentFromConfig = /**
-     * returns an Obserable component data from the static configuration.
+     * returns an Observable component data from the static configuration.
      * @param {?} componentId
      * @return {?}
      */
     function (componentId) {
-        return of(this.cmsDataConfig.cmsStructure &&
-            this.cmsDataConfig.cmsStructure.components
-            ? this.cmsDataConfig.cmsStructure.components[componentId]
-            : null);
+        return of(this.getComponentById(componentId));
+    };
+    /**
+     * returns an Observable components data from the static configuration.
+     */
+    /**
+     * returns an Observable components data from the static configuration.
+     * @param {?} ids
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentsFromConfig = /**
+     * returns an Observable components data from the static configuration.
+     * @param {?} ids
+     * @return {?}
+     */
+    function (ids) {
+        var _this = this;
+        return of(ids.map(function (id) { return _this.getComponentById(id); }));
     };
     /**
      * returns an observable with the `PageConfig`.
@@ -10010,6 +10234,22 @@ var CmsStructureConfigService = /** @class */ (function () {
         }
         return components;
     };
+    /**
+     * @private
+     * @param {?} componentId
+     * @return {?}
+     */
+    CmsStructureConfigService.prototype.getComponentById = /**
+     * @private
+     * @param {?} componentId
+     * @return {?}
+     */
+    function (componentId) {
+        return this.cmsDataConfig.cmsStructure &&
+            this.cmsDataConfig.cmsStructure.components
+            ? this.cmsDataConfig.cmsStructure.components[componentId]
+            : undefined;
+    };
     CmsStructureConfigService.decorators = [
         { type: Injectable, args: [{
                     providedIn: 'root',
@@ -10027,16 +10267,10 @@ var CmsStructureConfigService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * Abstract class that can be used to implement custom loader logic
- * in order to load CMS structure from third-party CMS system.
- * @abstract
- * @template T
- */
-var CmsPageLoader = /** @class */ (function () {
-    function CmsPageLoader(cmsStructureConfigService, adapter) {
+var CmsPageConnector = /** @class */ (function () {
+    function CmsPageConnector(cmsPageAdapter, cmsStructureConfigService) {
+        this.cmsPageAdapter = cmsPageAdapter;
         this.cmsStructureConfigService = cmsStructureConfigService;
-        this.adapter = adapter;
     }
     /**
      * Returns an observable with the page structure. The page structure is
@@ -10050,7 +10284,7 @@ var CmsPageLoader = /** @class */ (function () {
      * @param {?} pageContext
      * @return {?}
      */
-    CmsPageLoader.prototype.get = /**
+    CmsPageConnector.prototype.get = /**
      * Returns an observable with the page structure. The page structure is
      * typically loaded from a backend, but can also be returned from static
      * configuration (see `CmsStructureConfigService`).
@@ -10063,7 +10297,7 @@ var CmsPageLoader = /** @class */ (function () {
             .shouldIgnoreBackend(pageContext.id)
             .pipe(switchMap(function (loadFromConfig) {
             if (!loadFromConfig) {
-                return _this.load(pageContext).pipe(map(function (page) { return _this.adapt(page); }), catchError(function (error) {
+                return _this.cmsPageAdapter.load(pageContext).pipe(catchError(function (error) {
                     if (error instanceof HttpErrorResponse &&
                         error.status === 400) {
                         return of({});
@@ -10080,35 +10314,6 @@ var CmsPageLoader = /** @class */ (function () {
     };
     /**
      *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param page the source that can be converted
-     */
-    /**
-     *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param {?} page the source that can be converted
-     * @return {?}
-     */
-    CmsPageLoader.prototype.adapt = /**
-     *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param {?} page the source that can be converted
-     * @return {?}
-     */
-    function (page) {
-        if (this.adapter) {
-            return this.adapter.adapt((/** @type {?} */ (page)));
-        }
-        return (/** @type {?} */ (page));
-    };
-    /**
-     *
      * Merge default page structure inot the given `CmsStructureModel`.
      * This is benefitial for a fast setup of the UI without necessary
      * finegrained CMS setup.
@@ -10123,7 +10328,7 @@ var CmsPageLoader = /** @class */ (function () {
      * @param {?} pageStructure
      * @return {?}
      */
-    CmsPageLoader.prototype.mergeDefaultPageStructure = /**
+    CmsPageConnector.prototype.mergeDefaultPageStructure = /**
      *
      * Merge default page structure inot the given `CmsStructureModel`.
      * This is benefitial for a fast setup of the UI without necessary
@@ -10136,18 +10341,18 @@ var CmsPageLoader = /** @class */ (function () {
     function (pageContext, pageStructure) {
         return this.cmsStructureConfigService.mergePageStructure(pageContext.id, pageStructure);
     };
-    CmsPageLoader.decorators = [
+    CmsPageConnector.decorators = [
         { type: Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     /** @nocollapse */
-    CmsPageLoader.ctorParameters = function () { return [
-        { type: CmsStructureConfigService },
-        { type: CmsPageAdapter, decorators: [{ type: Optional }] }
+    CmsPageConnector.ctorParameters = function () { return [
+        { type: CmsPageAdapter },
+        { type: CmsStructureConfigService }
     ]; };
-    /** @nocollapse */ CmsPageLoader.ngInjectableDef = defineInjectable({ factory: function CmsPageLoader_Factory() { return new CmsPageLoader(inject(CmsStructureConfigService), inject(CmsPageAdapter, 8)); }, token: CmsPageLoader, providedIn: "root" });
-    return CmsPageLoader;
+    /** @nocollapse */ CmsPageConnector.ngInjectableDef = defineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(inject(CmsPageAdapter), inject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+    return CmsPageConnector;
 }());
 
 /**
@@ -10155,10 +10360,10 @@ var CmsPageLoader = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PageEffects = /** @class */ (function () {
-    function PageEffects(actions$, cmsPageLoader, routingService) {
+    function PageEffects(actions$, cmsPageConnector, routingService) {
         var _this = this;
         this.actions$ = actions$;
-        this.cmsPageLoader = cmsPageLoader;
+        this.cmsPageConnector = cmsPageConnector;
         this.routingService = routingService;
         this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(function (_) {
             return _this.routingService.getRouterState().pipe(filter(function (routerState) {
@@ -10166,7 +10371,7 @@ var PageEffects = /** @class */ (function () {
             }), map(function (routerState) { return routerState.state.context; }), take(1), mergeMap(function (context) { return of(new LoadPageData(context)); }));
         }));
         this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map(function (action) { return action.payload; }), switchMap(function (pageContext) {
-            return _this.cmsPageLoader.get(pageContext).pipe(mergeMap(function (cmsStructure) {
+            return _this.cmsPageConnector.get(pageContext).pipe(mergeMap(function (cmsStructure) {
                 return [
                     new LoadPageDataSuccess(pageContext, cmsStructure.page),
                     new GetComponentFromPage(cmsStructure.components),
@@ -10182,7 +10387,7 @@ var PageEffects = /** @class */ (function () {
     /** @nocollapse */
     PageEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: CmsPageLoader },
+        { type: CmsPageConnector },
         { type: RoutingService }
     ]; };
     __decorate([
@@ -10202,14 +10407,13 @@ var PageEffects = /** @class */ (function () {
  */
 /**
  * @abstract
- * @template T
  */
-var CmsComponentAdapter = /** @class */ (function () {
+var  /**
+ * @abstract
+ */
+CmsComponentAdapter = /** @class */ (function () {
     function CmsComponentAdapter() {
     }
-    CmsComponentAdapter.decorators = [
-        { type: Injectable }
-    ];
     return CmsComponentAdapter;
 }());
 
@@ -10217,27 +10421,19 @@ var CmsComponentAdapter = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * Abstract class that can be used to implement custom loader logic
- * in order to load CMS components from third-party CMS system.
- * @abstract
- * @template T
- */
-var CmsComponentLoader = /** @class */ (function () {
-    function CmsComponentLoader(cmsStructureConfigService, adapter) {
+var CmsComponentConnector = /** @class */ (function () {
+    function CmsComponentConnector(cmsStructureConfigService, adapter) {
         this.cmsStructureConfigService = cmsStructureConfigService;
         this.adapter = adapter;
     }
     /**
-     */
-    /**
-     *
+     * @template T
      * @param {?} id
      * @param {?} pageContext
      * @return {?}
      */
-    CmsComponentLoader.prototype.get = /**
-     *
+    CmsComponentConnector.prototype.get = /**
+     * @template T
      * @param {?} id
      * @param {?} pageContext
      * @return {?}
@@ -10249,50 +10445,52 @@ var CmsComponentLoader = /** @class */ (function () {
             .pipe(switchMap(function (configuredComponent) {
             return configuredComponent
                 ? of(configuredComponent)
-                : _this.load(id, pageContext).pipe(map(function (component) { return _this.adapt(component); }));
+                : _this.adapter.load(id, pageContext);
         }));
     };
     /**
-     *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param component the source that can be converted
-     */
-    /**
-     *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param {?} component the source that can be converted
+     * @param {?} ids
+     * @param {?} pageContext
      * @return {?}
      */
-    CmsComponentLoader.prototype.adapt = /**
-     *
-     * An adapter can be injected to convert the backend reponse to
-     * the UI model.
-     *
-     * @param {?} component the source that can be converted
+    CmsComponentConnector.prototype.getList = /**
+     * @param {?} ids
+     * @param {?} pageContext
      * @return {?}
      */
-    function (component) {
-        if (this.adapter) {
-            return this.adapter.adapt((/** @type {?} */ (component)));
-        }
-        return (/** @type {?} */ (component));
+    function (ids, pageContext) {
+        var _this = this;
+        return this.cmsStructureConfigService.getComponentsFromConfig(ids).pipe(switchMap(function (configuredComponents) {
+            // check if we have some components that are not loaded from configuration
+            /** @type {?} */
+            var missingIds = configuredComponents.reduce(function (acc, component, index) {
+                if (component === undefined) {
+                    acc.push(ids[index]);
+                }
+                return acc;
+            }, []);
+            if (missingIds.length > 0) {
+                return _this.adapter
+                    .loadList(missingIds, pageContext)
+                    .pipe(map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
+            }
+            else {
+                return of(configuredComponents);
+            }
+        }));
     };
-    CmsComponentLoader.decorators = [
+    CmsComponentConnector.decorators = [
         { type: Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
     /** @nocollapse */
-    CmsComponentLoader.ctorParameters = function () { return [
+    CmsComponentConnector.ctorParameters = function () { return [
         { type: CmsStructureConfigService },
-        { type: CmsComponentAdapter, decorators: [{ type: Optional }] }
+        { type: CmsComponentAdapter }
     ]; };
-    /** @nocollapse */ CmsComponentLoader.ngInjectableDef = defineInjectable({ factory: function CmsComponentLoader_Factory() { return new CmsComponentLoader(inject(CmsStructureConfigService), inject(CmsComponentAdapter, 8)); }, token: CmsComponentLoader, providedIn: "root" });
-    return CmsComponentLoader;
+    /** @nocollapse */ CmsComponentConnector.ngInjectableDef = defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(inject(CmsStructureConfigService), inject(CmsComponentAdapter)); }, token: CmsComponentConnector, providedIn: "root" });
+    return CmsComponentConnector;
 }());
 
 /**
@@ -10321,7 +10519,7 @@ var ComponentEffects = /** @class */ (function () {
     /** @nocollapse */
     ComponentEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: CmsComponentLoader },
+        { type: CmsComponentConnector },
         { type: RoutingService }
     ]; };
     __decorate([
@@ -10335,162 +10533,11 @@ var ComponentEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var OccCmsPageLoader = /** @class */ (function (_super) {
-    __extends(OccCmsPageLoader, _super);
-    function OccCmsPageLoader(http, config, cmsStructureConfigService, adapter, occEndpoints) {
-        var _this = _super.call(this, cmsStructureConfigService, adapter) || this;
-        _this.http = http;
-        _this.config = config;
-        _this.cmsStructureConfigService = cmsStructureConfigService;
-        _this.adapter = adapter;
-        _this.occEndpoints = occEndpoints;
-        _this.headers = new HttpHeaders().set('Content-Type', 'application/json');
-        return _this;
-    }
-    /**
-     * @protected
-     * @return {?}
-     */
-    OccCmsPageLoader.prototype.getBaseEndPoint = /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return this.occEndpoints.getEndpoint('cms');
-    };
-    /**
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @return {?}
-     */
-    OccCmsPageLoader.prototype.load = /**
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @return {?}
-     */
-    function (pageContext, fields) {
-        /** @type {?} */
-        var httpStringParams = '';
-        if (pageContext.id !== 'smartedit-preview') {
-            httpStringParams = 'pageType=' + pageContext.type;
-            if (pageContext.type === PageType.CONTENT_PAGE) {
-                httpStringParams =
-                    httpStringParams + '&pageLabelOrId=' + pageContext.id;
-            }
-            else {
-                httpStringParams = httpStringParams + '&code=' + pageContext.id;
-            }
-        }
-        if (fields !== undefined) {
-            httpStringParams = httpStringParams + '&fields=' + fields;
-        }
-        return this.http.get(this.getBaseEndPoint() + "/pages", {
-            headers: this.headers,
-            params: new HttpParams({
-                fromString: httpStringParams,
-            }),
-        });
-    };
-    /**
-     * @param {?} idList
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @param {?=} currentPage
-     * @param {?=} pageSize
-     * @param {?=} sort
-     * @return {?}
-     */
-    OccCmsPageLoader.prototype.loadListComponents = /**
-     * @param {?} idList
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @param {?=} currentPage
-     * @param {?=} pageSize
-     * @param {?=} sort
-     * @return {?}
-     */
-    function (idList, pageContext, fields, currentPage, pageSize, sort) {
-        /** @type {?} */
-        var requestParams = this.getRequestParams(pageContext, fields);
-        if (currentPage !== undefined) {
-            requestParams === ''
-                ? (requestParams = requestParams + 'currentPage=' + currentPage)
-                : (requestParams = requestParams + '&currentPage=' + currentPage);
-        }
-        if (pageSize !== undefined) {
-            requestParams = requestParams + '&pageSize=' + pageSize;
-        }
-        if (sort !== undefined) {
-            requestParams = requestParams + '&sort=' + sort;
-        }
-        return this.http
-            .post(this.getBaseEndPoint() + "/components", idList, {
-            headers: this.headers,
-            params: new HttpParams({
-                fromString: requestParams,
-            }),
-        })
-            .pipe(catchError(function (error) { return throwError(error.json()); }));
-    };
-    /**
-     * @private
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @return {?}
-     */
-    OccCmsPageLoader.prototype.getRequestParams = /**
-     * @private
-     * @param {?} pageContext
-     * @param {?=} fields
-     * @return {?}
-     */
-    function (pageContext, fields) {
-        /** @type {?} */
-        var requestParams = '';
-        switch (pageContext.type) {
-            case PageType.PRODUCT_PAGE: {
-                requestParams = 'productCode=' + pageContext.id;
-                break;
-            }
-            case PageType.CATEGORY_PAGE: {
-                requestParams = 'categoryCode=' + pageContext.id;
-                break;
-            }
-            case PageType.CATALOG_PAGE: {
-                requestParams = 'catalogCode=' + pageContext.id;
-                break;
-            }
-        }
-        if (fields !== undefined) {
-            requestParams === ''
-                ? (requestParams = requestParams + 'fields=' + fields)
-                : (requestParams = requestParams + '&fields=' + fields);
-        }
-        return requestParams;
-    };
-    OccCmsPageLoader.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    OccCmsPageLoader.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: CmsStructureConfig },
-        { type: CmsStructureConfigService },
-        { type: CmsPageAdapter, decorators: [{ type: Optional }] },
-        { type: OccEndpointsService }
-    ]; };
-    return OccCmsPageLoader;
-}(CmsPageLoader));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var NavigationEntryItemEffects = /** @class */ (function () {
-    function NavigationEntryItemEffects(actions$, occCmsService, routingService) {
+    function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
         var _this = this;
         this.actions$ = actions$;
-        this.occCmsService = occCmsService;
+        this.cmsComponentConnector = cmsComponentConnector;
         this.routingService = routingService;
         this.loadNavigationItems$ = this.actions$.pipe(ofType(LOAD_NAVIGATION_ITEMS), map(function (action) { return action.payload; }), map(function (payload) {
             return {
@@ -10498,23 +10545,23 @@ var NavigationEntryItemEffects = /** @class */ (function () {
                 nodeId: payload.nodeId,
             };
         }), mergeMap(function (data) {
-            if (data.ids.componentIds.idList.length > 0) {
+            if (data.ids.componentIds.length > 0) {
                 return _this.routingService.getRouterState().pipe(filter(function (routerState) { return routerState !== undefined; }), map(function (routerState) { return routerState.state.context; }), take(1), mergeMap(function (pageContext) {
                     // download all items in one request
-                    return _this.occCmsService
-                        .loadListComponents(data.ids.componentIds, pageContext, 'DEFAULT', 0, data.ids.componentIds.idList.length)
-                        .pipe(map(function (res) {
+                    return _this.cmsComponentConnector
+                        .getList(data.ids.componentIds, pageContext)
+                        .pipe(map(function (components) {
                         return new LoadNavigationItemsSuccess({
                             nodeId: data.nodeId,
-                            components: res.component,
+                            components: components,
                         });
                     }), catchError(function (error) {
                         return of(new LoadNavigationItemsFail(data.nodeId, error));
                     }));
                 }));
             }
-            else if (data.ids.pageIds.idList.length > 0) ;
-            else if (data.ids.mediaIds.idList.length > 0) ;
+            else if (data.ids.pageIds.length > 0) ;
+            else if (data.ids.mediaIds.length > 0) ;
             else {
                 return of(new LoadNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
             }
@@ -10534,20 +10581,20 @@ var NavigationEntryItemEffects = /** @class */ (function () {
      */
     function (itemList) {
         /** @type {?} */
-        var pageIds = { idList: [] };
+        var pageIds = [];
         /** @type {?} */
-        var componentIds = { idList: [] };
+        var componentIds = [];
         /** @type {?} */
-        var mediaIds = { idList: [] };
+        var mediaIds = [];
         itemList.forEach(function (item) {
             if (item.superType === 'AbstractCMSComponent') {
-                componentIds.idList.push(item.id);
+                componentIds.push(item.id);
             }
             else if (item.superType === 'AbstractPage') {
-                pageIds.idList.push(item.id);
+                pageIds.push(item.id);
             }
             else if (item.superType === 'AbstractMedia') {
-                mediaIds.idList.push(item.id);
+                mediaIds.push(item.id);
             }
         });
         return { pageIds: pageIds, componentIds: componentIds, mediaIds: mediaIds };
@@ -10558,7 +10605,7 @@ var NavigationEntryItemEffects = /** @class */ (function () {
     /** @nocollapse */
     NavigationEntryItemEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccCmsPageLoader },
+        { type: CmsComponentConnector },
         { type: RoutingService }
     ]; };
     __decorate([
@@ -11351,23 +11398,27 @@ var ComponentMapperService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var OccCmsComponentLoader = /** @class */ (function (_super) {
-    __extends(OccCmsComponentLoader, _super);
-    function OccCmsComponentLoader(http, config, cmsStructureConfigService, adapter, occEndpoints) {
-        var _this = _super.call(this, cmsStructureConfigService, adapter) || this;
-        _this.http = http;
-        _this.config = config;
-        _this.cmsStructureConfigService = cmsStructureConfigService;
-        _this.adapter = adapter;
-        _this.occEndpoints = occEndpoints;
-        _this.headers = new HttpHeaders().set('Content-Type', 'application/json');
-        return _this;
+/** @type {?} */
+var CMS_COMPONENT_NORMALIZER = new InjectionToken('CmsComponentNormalizer');
+/** @type {?} */
+var CMS_COMPONENT_LIST_NORMALIZER = new InjectionToken('CmsComponentListNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccCmsComponentAdapter = /** @class */ (function () {
+    function OccCmsComponentAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+        this.headers = new HttpHeaders().set('Content-Type', 'application/json');
     }
     /**
      * @protected
      * @return {?}
      */
-    OccCmsComponentLoader.prototype.getBaseEndPoint = /**
+    OccCmsComponentAdapter.prototype.getBaseEndPoint = /**
      * @protected
      * @return {?}
      */
@@ -11380,7 +11431,7 @@ var OccCmsComponentLoader = /** @class */ (function (_super) {
      * @param {?} pageContext
      * @return {?}
      */
-    OccCmsComponentLoader.prototype.load = /**
+    OccCmsComponentAdapter.prototype.load = /**
      * @template T
      * @param {?} id
      * @param {?} pageContext
@@ -11394,19 +11445,67 @@ var OccCmsComponentLoader = /** @class */ (function (_super) {
                 fromString: this.getRequestParams(pageContext),
             }),
         })
-            .pipe(catchError(function (error) { return throwError(error.json()); }));
+            .pipe(this.converter.pipeable(CMS_COMPONENT_NORMALIZER));
+    };
+    /**
+     * @param {?} ids
+     * @param {?} pageContext
+     * @param {?=} fields
+     * @param {?=} currentPage
+     * @param {?=} pageSize
+     * @param {?=} sort
+     * @return {?}
+     */
+    OccCmsComponentAdapter.prototype.loadList = /**
+     * @param {?} ids
+     * @param {?} pageContext
+     * @param {?=} fields
+     * @param {?=} currentPage
+     * @param {?=} pageSize
+     * @param {?=} sort
+     * @return {?}
+     */
+    function (ids, pageContext, fields, currentPage, pageSize, sort) {
+        if (fields === void 0) { fields = 'DEFAULT'; }
+        if (currentPage === void 0) { currentPage = 0; }
+        if (pageSize === void 0) { pageSize = ids.length; }
+        /** @type {?} */
+        var requestParams = this.getRequestParams(pageContext, fields);
+        if (currentPage !== undefined) {
+            requestParams === ''
+                ? (requestParams = requestParams + 'currentPage=' + currentPage)
+                : (requestParams = requestParams + '&currentPage=' + currentPage);
+        }
+        if (pageSize !== undefined) {
+            requestParams = requestParams + '&pageSize=' + pageSize;
+        }
+        if (sort !== undefined) {
+            requestParams = requestParams + '&sort=' + sort;
+        }
+        /** @type {?} */
+        var idList = { idList: ids };
+        return this.http
+            .post(this.getBaseEndPoint() + "/components", idList, {
+            headers: this.headers,
+            params: new HttpParams({
+                fromString: requestParams,
+            }),
+        })
+            .pipe(pluck('component'), this.converter.pipeable(CMS_COMPONENT_LIST_NORMALIZER));
     };
     /**
      * @private
      * @param {?} pageContext
+     * @param {?=} fields
      * @return {?}
      */
-    OccCmsComponentLoader.prototype.getRequestParams = /**
+    OccCmsComponentAdapter.prototype.getRequestParams = /**
      * @private
      * @param {?} pageContext
+     * @param {?=} fields
      * @return {?}
      */
-    function (pageContext) {
+    function (pageContext, fields) {
         /** @type {?} */
         var requestParams = '';
         switch (pageContext.type) {
@@ -11423,46 +11522,48 @@ var OccCmsComponentLoader = /** @class */ (function (_super) {
                 break;
             }
         }
+        if (fields !== undefined) {
+            requestParams === ''
+                ? (requestParams = requestParams + 'fields=' + fields)
+                : (requestParams = requestParams + '&fields=' + fields);
+        }
         return requestParams;
     };
-    OccCmsComponentLoader.decorators = [
+    OccCmsComponentAdapter.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    OccCmsComponentLoader.ctorParameters = function () { return [
+    OccCmsComponentAdapter.ctorParameters = function () { return [
         { type: HttpClient },
-        { type: CmsStructureConfig },
-        { type: CmsStructureConfigService },
-        { type: CmsComponentAdapter, decorators: [{ type: Optional }] },
-        { type: OccEndpointsService }
+        { type: OccEndpointsService },
+        { type: ConverterService }
     ]; };
-    return OccCmsComponentLoader;
-}(CmsComponentLoader));
+    return OccCmsComponentAdapter;
+}());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var OccCmsPageAdapter = /** @class */ (function (_super) {
-    __extends(OccCmsPageAdapter, _super);
-    function OccCmsPageAdapter() {
-        return _super !== null && _super.apply(this, arguments) || this;
+var OccCmsPageNormalizer = /** @class */ (function () {
+    function OccCmsPageNormalizer() {
     }
     /**
      * @param {?} source
+     * @param {?=} target
      * @return {?}
      */
-    OccCmsPageAdapter.prototype.adapt = /**
+    OccCmsPageNormalizer.prototype.convert = /**
      * @param {?} source
+     * @param {?=} target
      * @return {?}
      */
-    function (source) {
-        /** @type {?} */
-        var target = {};
-        this.serializePageData(source, target);
-        this.serializePageSlotData(source, target);
-        this.serializePageComponentData(source, target);
-        this.serializeComponentData(source, target);
+    function (source, target) {
+        if (target === void 0) { target = {}; }
+        this.normalizePageData(source, target);
+        this.normalizePageSlotData(source, target);
+        this.normalizePageComponentData(source, target);
+        this.normalizeComponentData(source, target);
         return target;
     };
     /**
@@ -11471,7 +11572,7 @@ var OccCmsPageAdapter = /** @class */ (function (_super) {
      * @param {?} target
      * @return {?}
      */
-    OccCmsPageAdapter.prototype.serializePageData = /**
+    OccCmsPageNormalizer.prototype.normalizePageData = /**
      * @private
      * @param {?} source
      * @param {?} target
@@ -11495,7 +11596,7 @@ var OccCmsPageAdapter = /** @class */ (function (_super) {
      * @param {?} target
      * @return {?}
      */
-    OccCmsPageAdapter.prototype.serializePageSlotData = /**
+    OccCmsPageNormalizer.prototype.normalizePageSlotData = /**
      * @private
      * @param {?} source
      * @param {?} target
@@ -11526,7 +11627,7 @@ var OccCmsPageAdapter = /** @class */ (function (_super) {
      * @param {?} target
      * @return {?}
      */
-    OccCmsPageAdapter.prototype.serializePageComponentData = /**
+    OccCmsPageNormalizer.prototype.normalizePageComponentData = /**
      * @private
      * @param {?} source
      * @param {?} target
@@ -11584,7 +11685,7 @@ var OccCmsPageAdapter = /** @class */ (function (_super) {
      * @param {?} target
      * @return {?}
      */
-    OccCmsPageAdapter.prototype.serializeComponentData = /**
+    OccCmsPageNormalizer.prototype.normalizeComponentData = /**
      * @private
      * @param {?} source
      * @param {?} target
@@ -11626,11 +11727,87 @@ var OccCmsPageAdapter = /** @class */ (function (_super) {
             finally { if (e_4) throw e_4.error; }
         }
     };
+    OccCmsPageNormalizer.decorators = [
+        { type: Injectable }
+    ];
+    return OccCmsPageNormalizer;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var CMS_PAGE_NORMALIZE = new InjectionToken('CmsPageNormalize');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccCmsPageAdapter = /** @class */ (function () {
+    function OccCmsPageAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+        this.headers = new HttpHeaders().set('Content-Type', 'application/json');
+    }
+    /**
+     * @protected
+     * @return {?}
+     */
+    OccCmsPageAdapter.prototype.getBaseEndPoint = /**
+     * @protected
+     * @return {?}
+     */
+    function () {
+        return this.occEndpoints.getEndpoint('cms');
+    };
+    /**
+     * @param {?} pageContext
+     * @param {?=} fields
+     * @return {?}
+     */
+    OccCmsPageAdapter.prototype.load = /**
+     * @param {?} pageContext
+     * @param {?=} fields
+     * @return {?}
+     */
+    function (pageContext, fields) {
+        /** @type {?} */
+        var httpStringParams = '';
+        if (pageContext.id !== 'smartedit-preview') {
+            httpStringParams = 'pageType=' + pageContext.type;
+            if (pageContext.type === PageType.CONTENT_PAGE) {
+                httpStringParams =
+                    httpStringParams + '&pageLabelOrId=' + pageContext.id;
+            }
+            else {
+                httpStringParams = httpStringParams + '&code=' + pageContext.id;
+            }
+        }
+        if (fields !== undefined) {
+            httpStringParams = httpStringParams + '&fields=' + fields;
+        }
+        return this.http
+            .get(this.getBaseEndPoint() + "/pages", {
+            headers: this.headers,
+            params: new HttpParams({
+                fromString: httpStringParams,
+            }),
+        })
+            .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+    };
     OccCmsPageAdapter.decorators = [
         { type: Injectable }
     ];
+    /** @nocollapse */
+    OccCmsPageAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
     return OccCmsPageAdapter;
-}(CmsPageAdapter));
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -11643,19 +11820,19 @@ var CmsOccModule = /** @class */ (function () {
         { type: NgModule, args: [{
                     imports: [CommonModule, HttpClientModule],
                     providers: [
-                        OccCmsPageLoader,
                         ComponentMapperService,
-                        {
-                            provide: CmsPageLoader,
-                            useClass: OccCmsPageLoader,
-                        },
                         {
                             provide: CmsPageAdapter,
                             useClass: OccCmsPageAdapter,
                         },
                         {
-                            provide: CmsComponentLoader,
-                            useClass: OccCmsComponentLoader,
+                            provide: CMS_PAGE_NORMALIZE,
+                            useClass: OccCmsPageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: CmsComponentAdapter,
+                            useClass: OccCmsComponentAdapter,
                         },
                     ],
                 },] }
@@ -11846,8 +12023,13 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (product) {
-        return product.categories && product.categories.length > 0
-            ? " | " + product.categories[0].code
+        /** @type {?} */
+        var firstCategory;
+        if (product.categories && product.categories.length > 0) {
+            firstCategory = product.categories[0];
+        }
+        return firstCategory
+            ? " | " + (firstCategory.name || firstCategory.code)
             : '';
     };
     /**
@@ -12068,6 +12250,21 @@ var ProductModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var CartEffects = /** @class */ (function () {
     function CartEffects(actions$, productImageConverter, occCartService, cartData) {
         var _this = this;
@@ -12167,7 +12364,7 @@ var CartEffects = /** @class */ (function () {
     /** @nocollapse */
     CartEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: ProductImageConverterService },
+        { type: ProductImageNormalizer },
         { type: OccCartService },
         { type: CartDataService }
     ]; };
@@ -13419,6 +13616,8 @@ var FORGOT_PASSWORD_ENDPOINT = '/forgottenpasswordtokens';
 /** @type {?} */
 var RESET_PASSWORD_ENDPOINT = '/resetpassword';
 /** @type {?} */
+var UPDATE_EMAIL_ENDPOINT = '/login';
+/** @type {?} */
 var UPDATE_PASSWORD_ENDPOINT = '/password';
 var OccUserService = /** @class */ (function () {
     // some extending from baseservice is not working here...
@@ -13688,6 +13887,33 @@ var OccUserService = /** @class */ (function () {
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
         return this.http
             .post(url, { token: token, newPassword: newPassword }, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    OccUserService.prototype.updateEmail = /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    function (userId, currentPassword, newUserId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint() + userId + UPDATE_EMAIL_ENDPOINT;
+        /** @type {?} */
+        var httpParams = new HttpParams()
+            .set('password', currentPassword)
+            .set('newLogin', newUserId);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http
+            .put(url, httpParams, { headers: headers })
             .pipe(catchError(function (error) { return throwError(error); }));
     };
     /**
@@ -14020,6 +14246,8 @@ var ClearOrderDetails = /** @class */ (function () {
 /** @type {?} */
 var USER_FEATURE = 'user';
 /** @type {?} */
+var UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
+/** @type {?} */
 var UPDATE_PASSWORD_PROCESS_ID = 'updatePassword';
 /** @type {?} */
 var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
@@ -14243,6 +14471,58 @@ var LoadTitlesSuccess = /** @class */ (function () {
  */
 /** @type {?} */
 var PROCESS_FEATURE = 'process';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var UPDATE_EMAIL = '[User] Update Email';
+/** @type {?} */
+var UPDATE_EMAIL_ERROR = '[User] Update Email Error';
+/** @type {?} */
+var UPDATE_EMAIL_SUCCESS = '[User] Update Email Success';
+/** @type {?} */
+var RESET_EMAIL = '[User] Reset Email';
+var UpdateEmailAction = /** @class */ (function (_super) {
+    __extends(UpdateEmailAction, _super);
+    function UpdateEmailAction(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+        _this.payload = payload;
+        _this.type = UPDATE_EMAIL;
+        return _this;
+    }
+    return UpdateEmailAction;
+}(EntityLoadAction));
+var UpdateEmailSuccessAction = /** @class */ (function (_super) {
+    __extends(UpdateEmailSuccessAction, _super);
+    function UpdateEmailSuccessAction(newUid) {
+        var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+        _this.newUid = newUid;
+        _this.type = UPDATE_EMAIL_SUCCESS;
+        return _this;
+    }
+    return UpdateEmailSuccessAction;
+}(EntitySuccessAction));
+var UpdateEmailErrorAction = /** @class */ (function (_super) {
+    __extends(UpdateEmailErrorAction, _super);
+    function UpdateEmailErrorAction(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID, payload) || this;
+        _this.payload = payload;
+        _this.type = UPDATE_EMAIL_ERROR;
+        return _this;
+    }
+    return UpdateEmailErrorAction;
+}(EntityFailAction));
+var ResetUpdateEmailAction = /** @class */ (function (_super) {
+    __extends(ResetUpdateEmailAction, _super);
+    function ResetUpdateEmailAction() {
+        var _this = _super.call(this, PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID) || this;
+        _this.type = RESET_EMAIL;
+        return _this;
+    }
+    return ResetUpdateEmailAction;
+}(EntityResetAction));
 
 /**
  * @fileoverview added by tsickle
@@ -15695,6 +15975,20 @@ var UserService = /** @class */ (function () {
         this.store.dispatch(new ClearUserOrders());
     };
     /**
+     * Return whether user's password is successfully reset
+     */
+    /**
+     * Return whether user's password is successfully reset
+     * @return {?}
+     */
+    UserService.prototype.isPasswordReset = /**
+     * Return whether user's password is successfully reset
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getResetPassword));
+    };
+    /**
      * Updates the user's details
      * @param userDetails to be updated
      */
@@ -15810,18 +16104,81 @@ var UserService = /** @class */ (function () {
         this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
     };
     /**
-     * Return whether user's password is successfully reset.  Part of the forgot password flow.
+     * Updates the user's email
+     * @param uid to be updated
      */
     /**
-     * Return whether user's password is successfully reset.  Part of the forgot password flow.
+     * Updates the user's email
+     * @param {?} uid to be updated
+     * @param {?} password
+     * @param {?} newUid
      * @return {?}
      */
-    UserService.prototype.isPasswordReset = /**
-     * Return whether user's password is successfully reset.  Part of the forgot password flow.
+    UserService.prototype.updateEmail = /**
+     * Updates the user's email
+     * @param {?} uid to be updated
+     * @param {?} password
+     * @param {?} newUid
+     * @return {?}
+     */
+    function (uid, password, newUid) {
+        this.store.dispatch(new UpdateEmailAction({ uid: uid, password: password, newUid: newUid }));
+    };
+    /**
+     * Returns the update user's email success flag
+     */
+    /**
+     * Returns the update user's email success flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultSuccess = /**
+     * Returns the update user's email success flag
      * @return {?}
      */
     function () {
-        return this.store.pipe(select(getResetPassword));
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email error flag
+     */
+    /**
+     * Returns the update user's email error flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultError = /**
+     * Returns the update user's email error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email loading flag
+     */
+    /**
+     * Returns the update user's email loading flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultLoading = /**
+     * Returns the update user's email loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Resets the update user's email processing state
+     */
+    /**
+     * Resets the update user's email processing state
+     * @return {?}
+     */
+    UserService.prototype.resetUpdateEmailResultState = /**
+     * Resets the update user's email processing state
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new ResetUpdateEmailAction());
     };
     /**
      * Updates the password for an authenticated user
@@ -16105,7 +16462,7 @@ var OrderDetailsEffect = /** @class */ (function () {
     OrderDetailsEffect.ctorParameters = function () { return [
         { type: Actions },
         { type: OccOrderService },
-        { type: ProductImageConverterService }
+        { type: ProductImageNormalizer }
     ]; };
     __decorate([
         Effect(),
@@ -16302,6 +16659,40 @@ var TitlesEffects = /** @class */ (function () {
         __metadata("design:type", Observable)
     ], TitlesEffects.prototype, "loadTitles$", void 0);
     return TitlesEffects;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var UpdateEmailEffects = /** @class */ (function () {
+    function UpdateEmailEffects(actions$, occUserService) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.occUserService = occUserService;
+        this.updateEmail$ = this.actions$.pipe(ofType(UPDATE_EMAIL), map(function (action) { return action.payload; }), concatMap(function (payload) {
+            return _this.occUserService
+                .updateEmail(payload.uid, payload.password, payload.newUid)
+                .pipe(map(function () {
+                return new UpdateEmailSuccessAction(payload.newUid);
+            }), catchError(function (error) {
+                return of(new UpdateEmailErrorAction(error));
+            }));
+        }));
+    }
+    UpdateEmailEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    UpdateEmailEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: OccUserService }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
+    return UpdateEmailEffects;
 }());
 
 /**
@@ -16624,6 +17015,7 @@ var effects$6 = [
     BillingCountriesEffect,
     ResetPasswordEffects,
     ForgotPasswordEffects,
+    UpdateEmailEffects,
     UpdatePasswordEffects,
 ];
 
@@ -16959,7 +17351,7 @@ var CheckoutEffects = /** @class */ (function () {
         { type: Actions },
         { type: OccCartService },
         { type: OccOrderService },
-        { type: ProductImageConverterService }
+        { type: ProductImageNormalizer }
     ]; };
     __decorate([
         Effect(),
@@ -17521,6 +17913,26 @@ var PageRobotsMeta = {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var DynamicAttributeService = /** @class */ (function () {
     function DynamicAttributeService() {
     }
@@ -17694,6 +18106,798 @@ var CheckoutModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var CxApiModule = /** @class */ (function () {
+    function CxApiModule() {
+    }
+    CxApiModule.decorators = [
+        { type: NgModule, args: [{},] }
+    ];
+    return CxApiModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+I18nConfig = /** @class */ (function (_super) {
+    __extends(I18nConfig, _super);
+    function I18nConfig() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return I18nConfig;
+}(ServerConfig));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var DatePipe$1 = /** @class */ (function (_super) {
+    __extends(DatePipe$$1, _super);
+    function DatePipe$$1(language, config) {
+        var _this = _super.call(this, null) || this;
+        _this.language = language;
+        _this.config = config;
+        return _this;
+    }
+    /**
+     * @param {?} value
+     * @param {?=} format
+     * @param {?=} timezone
+     * @return {?}
+     */
+    DatePipe$$1.prototype.transform = /**
+     * @param {?} value
+     * @param {?=} format
+     * @param {?=} timezone
+     * @return {?}
+     */
+    function (value, format, timezone) {
+        return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    DatePipe$$1.prototype.getLang = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var lang = this.getActiveLang();
+        try {
+            getLocaleId(lang);
+            return lang;
+        }
+        catch (_a) {
+            this.reportMissingLocaleData(lang);
+            return 'en';
+        }
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    DatePipe$$1.prototype.getActiveLang = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var result;
+        this.language
+            .getActive()
+            .subscribe(function (lang) { return (result = lang); })
+            .unsubscribe();
+        return result;
+    };
+    /**
+     * @private
+     * @param {?} lang
+     * @return {?}
+     */
+    DatePipe$$1.prototype.reportMissingLocaleData = /**
+     * @private
+     * @param {?} lang
+     * @return {?}
+     */
+    function (lang) {
+        if (!this.config.production) {
+            console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
+        }
+    };
+    DatePipe$$1.decorators = [
+        { type: Pipe, args: [{ name: 'cxDate' },] }
+    ];
+    /** @nocollapse */
+    DatePipe$$1.ctorParameters = function () { return [
+        { type: LanguageService },
+        { type: I18nConfig }
+    ]; };
+    return DatePipe$$1;
+}(DatePipe));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+TranslationService = /** @class */ (function () {
+    function TranslationService() {
+    }
+    return TranslationService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} objA
+ * @param {?} objB
+ * @return {?}
+ */
+function shallowEqualObjects(objA, objB) {
+    if (objA === objB) {
+        return true;
+    }
+    if (!objA || !objB) {
+        return false;
+    }
+    /** @type {?} */
+    var aKeys = Object.keys(objA);
+    /** @type {?} */
+    var bKeys = Object.keys(objB);
+    /** @type {?} */
+    var aKeysLen = aKeys.length;
+    /** @type {?} */
+    var bKeysLen = bKeys.length;
+    if (aKeysLen !== bKeysLen) {
+        return false;
+    }
+    for (var i = 0; i < aKeysLen; i++) {
+        /** @type {?} */
+        var key = aKeys[i];
+        if (objA[key] !== objB[key]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var TranslatePipe = /** @class */ (function () {
+    function TranslatePipe(service, cd) {
+        this.service = service;
+        this.cd = cd;
+    }
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    TranslatePipe.prototype.transform = /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    function (key, options) {
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        if (key !== this.lastKey ||
+            !shallowEqualObjects(options, this.lastOptions)) {
+            this.lastKey = key;
+            this.lastOptions = options;
+            if (this.sub) {
+                this.sub.unsubscribe();
+            }
+            this.sub = this.service
+                .translate(key, options, true)
+                .subscribe(function (val) { return _this.markForCheck(val); });
+        }
+        return this.value;
+    };
+    /**
+     * @private
+     * @param {?} value
+     * @return {?}
+     */
+    TranslatePipe.prototype.markForCheck = /**
+     * @private
+     * @param {?} value
+     * @return {?}
+     */
+    function (value) {
+        this.value = value;
+        this.cd.markForCheck();
+    };
+    /**
+     * @return {?}
+     */
+    TranslatePipe.prototype.ngOnDestroy = /**
+     * @return {?}
+     */
+    function () {
+        if (this.sub) {
+            this.sub.unsubscribe();
+        }
+    };
+    TranslatePipe.decorators = [
+        { type: Pipe, args: [{ name: 'cxTranslate', pure: false },] }
+    ];
+    /** @nocollapse */
+    TranslatePipe.ctorParameters = function () { return [
+        { type: TranslationService },
+        { type: ChangeDetectorRef }
+    ]; };
+    return TranslatePipe;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var TranslationNamespaceService = /** @class */ (function () {
+    function TranslationNamespaceService(config) {
+        this.config = config;
+        this.KEY_SEPARATOR = '.';
+    }
+    /**
+     * @param {?} key
+     * @return {?}
+     */
+    TranslationNamespaceService.prototype.getNamespace = /**
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        /** @type {?} */
+        var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
+        /** @type {?} */
+        var namespace = this.getNamespaceFromMapping(mainKey);
+        if (!namespace) {
+            this.reportMissingNamespaceMapping(key, mainKey);
+            return mainKey; // fallback to main key as a namespace
+        }
+        return namespace;
+    };
+    /**
+     * @private
+     * @param {?} mainKey
+     * @return {?}
+     */
+    TranslationNamespaceService.prototype.getNamespaceFromMapping = /**
+     * @private
+     * @param {?} mainKey
+     * @return {?}
+     */
+    function (mainKey) {
+        return (this.config.i18n &&
+            this.config.i18n.namespaceMapping &&
+            this.config.i18n.namespaceMapping[mainKey]);
+    };
+    /**
+     * @private
+     * @param {?} key
+     * @param {?} fallbackNamespace
+     * @return {?}
+     */
+    TranslationNamespaceService.prototype.reportMissingNamespaceMapping = /**
+     * @private
+     * @param {?} key
+     * @param {?} fallbackNamespace
+     * @return {?}
+     */
+    function (key, fallbackNamespace) {
+        if (!this.config.production) {
+            console.warn("No namespace mapping configured for key '" + key + "'. Used '" + fallbackNamespace + "' as fallback namespace.");
+        }
+    };
+    TranslationNamespaceService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    TranslationNamespaceService.ctorParameters = function () { return [
+        { type: I18nConfig }
+    ]; };
+    return TranslationNamespaceService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} config
+ * @param {?} languageService
+ * @return {?}
+ */
+function i18nextInit(config, languageService) {
+    return function () {
+        /** @type {?} */
+        var i18nextConfig = {
+            ns: [],
+            // don't preload any namespaces
+            fallbackLng: config.i18n.fallbackLang,
+            debug: config.i18n.debug,
+        };
+        if (config.i18n.backend) {
+            i18next.use(i18nextXhrBackend);
+            i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
+        }
+        return i18next.init(i18nextConfig, function () {
+            // Don't use i18next's 'resources' config key for adding static translations,
+            // because it will disable loading chunks from backend. We add resources here, in the init's callback.
+            i18nextAddTranslations(config.i18n.resources);
+            syncI18nextWithSiteContext(languageService);
+        });
+    };
+}
+/**
+ * @param {?=} resources
+ * @return {?}
+ */
+function i18nextAddTranslations(resources) {
+    if (resources === void 0) { resources = {}; }
+    Object.keys(resources).forEach(function (lang) {
+        Object.keys(resources[lang]).forEach(function (namespace) {
+            i18next.addResourceBundle(lang, namespace, resources[lang][namespace], true, true);
+        });
+    });
+}
+/**
+ * @param {?} language
+ * @return {?}
+ */
+function syncI18nextWithSiteContext(language) {
+    // always update language of i18next on site context (language) change
+    language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var i18nextProviders = [
+    {
+        provide: APP_INITIALIZER,
+        useFactory: i18nextInit,
+        deps: [I18nConfig, LanguageService],
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var defaultI18nConfig = {
+    i18n: {
+        fallbackLang: false,
+        debug: false,
+        namespaceMapping: {
+            addToCart: 'addToCart',
+            address: 'address',
+            addressBook: 'addressBook',
+            cart: 'cart',
+            cartItems: 'cartItems',
+            checkout: 'checkout',
+            checkoutAddress: 'checkoutAddress',
+            checkoutOrderConfirmation: 'checkoutOrderConfirmation',
+            checkoutReview: 'checkoutReview',
+            checkoutShipping: 'checkoutShipping',
+            common: 'common',
+            forgottenPassword: 'forgottenPassword',
+            login: 'login',
+            orderCost: 'orderCost',
+            orderDetails: 'orderDetails',
+            orderHistory: 'orderHistory',
+            orderReview: 'orderReview',
+            payment: 'payment',
+            paymentMethods: 'paymentMethods',
+            productDetails: 'productDetails',
+            productList: 'productList',
+            productReview: 'productReview',
+            pwa: 'pwa',
+            register: 'register',
+            storeFinder: 'storeFinder',
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var I18nextTranslationService = /** @class */ (function () {
+    function I18nextTranslationService(config, translationNamespace) {
+        this.config = config;
+        this.translationNamespace = translationNamespace;
+        this.NON_BREAKING_SPACE = String.fromCharCode(160);
+        this.NAMESPACE_SEPARATOR = ':';
+    }
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @param {?=} whitespaceUntilLoaded
+     * @return {?}
+     */
+    I18nextTranslationService.prototype.translate = /**
+     * @param {?} key
+     * @param {?=} options
+     * @param {?=} whitespaceUntilLoaded
+     * @return {?}
+     */
+    function (key, options, whitespaceUntilLoaded) {
+        // If we've already loaded the namespace (or failed to load), we should immediately emit the value
+        // (or the fallback value in case the key is missing).
+        var _this = this;
+        if (options === void 0) { options = {}; }
+        if (whitespaceUntilLoaded === void 0) { whitespaceUntilLoaded = false; }
+        // If we've already loaded the namespace (or failed to load), we should immediately emit the value
+        // (or the fallback value in case the key is missing).
+        // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
+        // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
+        // which together with `switchMap` operator may lead to an infinite loop.
+        /** @type {?} */
+        var namespace = this.translationNamespace.getNamespace(key);
+        /** @type {?} */
+        var namespacedKey = this.getNamespacedKey(key, namespace);
+        return new Observable(function (subscriber) {
+            /** @type {?} */
+            var translate = function () {
+                if (i18next.exists(namespacedKey, options)) {
+                    subscriber.next(i18next.t(namespacedKey, options));
+                }
+                else {
+                    if (whitespaceUntilLoaded) {
+                        subscriber.next(_this.NON_BREAKING_SPACE);
+                    }
+                    i18next.loadNamespaces(namespace, function () {
+                        if (!i18next.exists(namespacedKey, options)) {
+                            _this.reportMissingKey(namespacedKey);
+                            subscriber.next(_this.getFallbackValue(namespacedKey));
+                        }
+                        else {
+                            subscriber.next(i18next.t(namespacedKey, options));
+                        }
+                    });
+                }
+            };
+            translate();
+            i18next.on('languageChanged', translate);
+            return function () { return i18next.off('languageChanged', translate); };
+        });
+    };
+    /**
+     * @param {?} namespaces
+     * @return {?}
+     */
+    I18nextTranslationService.prototype.loadNamespaces = /**
+     * @param {?} namespaces
+     * @return {?}
+     */
+    function (namespaces) {
+        return i18next.loadNamespaces(namespaces);
+    };
+    /**
+     * Returns a fallback value in case when the given key is missing
+     * @param key
+     */
+    /**
+     * Returns a fallback value in case when the given key is missing
+     * @protected
+     * @param {?} key
+     * @return {?}
+     */
+    I18nextTranslationService.prototype.getFallbackValue = /**
+     * Returns a fallback value in case when the given key is missing
+     * @protected
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
+    };
+    /**
+     * @private
+     * @param {?} key
+     * @return {?}
+     */
+    I18nextTranslationService.prototype.reportMissingKey = /**
+     * @private
+     * @param {?} key
+     * @return {?}
+     */
+    function (key) {
+        if (!this.config.production) {
+            console.warn("Translation key missing '" + key + "'");
+        }
+    };
+    /**
+     * @private
+     * @param {?} key
+     * @param {?} namespace
+     * @return {?}
+     */
+    I18nextTranslationService.prototype.getNamespacedKey = /**
+     * @private
+     * @param {?} key
+     * @param {?} namespace
+     * @return {?}
+     */
+    function (key, namespace) {
+        return namespace + this.NAMESPACE_SEPARATOR + key;
+    };
+    I18nextTranslationService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    I18nextTranslationService.ctorParameters = function () { return [
+        { type: I18nConfig },
+        { type: TranslationNamespaceService }
+    ]; };
+    return I18nextTranslationService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var I18nModule = /** @class */ (function () {
+    function I18nModule() {
+    }
+    /**
+     * @return {?}
+     */
+    I18nModule.forRoot = /**
+     * @return {?}
+     */
+    function () {
+        return {
+            ngModule: I18nModule,
+            providers: __spread([
+                provideConfig(defaultI18nConfig),
+                { provide: I18nConfig, useExisting: Config },
+                { provide: TranslationService, useClass: I18nextTranslationService },
+                TranslationNamespaceService
+            ], i18nextProviders),
+        };
+    };
+    I18nModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [TranslatePipe, DatePipe$1],
+                    exports: [TranslatePipe, DatePipe$1],
+                },] }
+    ];
+    return I18nModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} key
+ * @param {?=} options
+ * @return {?}
+ */
+function mockTranslate(key, options) {
+    if (options === void 0) { options = {}; }
+    /** @type {?} */
+    var optionsString = Object.keys(options)
+        .sort()
+        .map(function (optionName) { return optionName + ":" + options[optionName]; })
+        .join(' ');
+    return optionsString ? key + " " + optionsString : key;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var MockTranslatePipe = /** @class */ (function () {
+    function MockTranslatePipe() {
+    }
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    MockTranslatePipe.prototype.transform = /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    function (key, options) {
+        if (options === void 0) { options = {}; }
+        return mockTranslate(key, options);
+    };
+    MockTranslatePipe.decorators = [
+        { type: Pipe, args: [{ name: 'cxTranslate' },] }
+    ];
+    return MockTranslatePipe;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var MockTranslationService = /** @class */ (function () {
+    function MockTranslationService() {
+    }
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @param {?=} _whitespaceUntilLoaded
+     * @return {?}
+     */
+    MockTranslationService.prototype.translate = /**
+     * @param {?} key
+     * @param {?=} options
+     * @param {?=} _whitespaceUntilLoaded
+     * @return {?}
+     */
+    function (key, options, _whitespaceUntilLoaded) {
+        if (options === void 0) { options = {}; }
+        if (_whitespaceUntilLoaded === void 0) { _whitespaceUntilLoaded = false; }
+        return new Observable(function (subscriber) {
+            /** @type {?} */
+            var value = mockTranslate(key, options);
+            subscriber.next(value);
+            subscriber.complete();
+        });
+    };
+    /**
+     * @param {?} _namespaces
+     * @return {?}
+     */
+    MockTranslationService.prototype.loadNamespaces = /**
+     * @param {?} _namespaces
+     * @return {?}
+     */
+    function (_namespaces) {
+        return Promise.resolve();
+    };
+    MockTranslationService.decorators = [
+        { type: Injectable }
+    ];
+    return MockTranslationService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var MockDatePipe = /** @class */ (function (_super) {
+    __extends(MockDatePipe, _super);
+    function MockDatePipe() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    /**
+     * @param {?} value
+     * @param {?=} format
+     * @param {?=} timezone
+     * @return {?}
+     */
+    MockDatePipe.prototype.transform = /**
+     * @param {?} value
+     * @param {?=} format
+     * @param {?=} timezone
+     * @return {?}
+     */
+    function (value, format, timezone) {
+        return _super.prototype.transform.call(this, value, format, timezone, 'en');
+    };
+    MockDatePipe.decorators = [
+        { type: Pipe, args: [{ name: 'cxDate' },] }
+    ];
+    return MockDatePipe;
+}(DatePipe));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var I18nTestingModule = /** @class */ (function () {
+    function I18nTestingModule() {
+    }
+    I18nTestingModule.decorators = [
+        { type: NgModule, args: [{
+                    declarations: [MockTranslatePipe, MockDatePipe],
+                    exports: [MockTranslatePipe, MockDatePipe],
+                    providers: [
+                        { provide: TranslationService, useClass: MockTranslationService },
+                    ],
+                },] }
+    ];
+    return I18nTestingModule;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var CxApiService = /** @class */ (function () {
+    function CxApiService(auth, cms, routing, currency, language, product, productSearch, productReview, user, translation) {
+        this.auth = auth;
+        this.cms = cms;
+        this.routing = routing;
+        this.currency = currency;
+        this.language = language;
+        this.product = product;
+        this.productSearch = productSearch;
+        this.productReview = productReview;
+        this.user = user;
+        this.translation = translation;
+    }
+    CxApiService.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    CxApiService.ctorParameters = function () { return [
+        { type: AuthService, decorators: [{ type: Optional }] },
+        { type: CmsService, decorators: [{ type: Optional }] },
+        { type: RoutingService, decorators: [{ type: Optional }] },
+        { type: CurrencyService, decorators: [{ type: Optional }] },
+        { type: LanguageService, decorators: [{ type: Optional }] },
+        { type: ProductService, decorators: [{ type: Optional }] },
+        { type: ProductSearchService, decorators: [{ type: Optional }] },
+        { type: ProductReviewService, decorators: [{ type: Optional }] },
+        { type: UserService, decorators: [{ type: Optional }] },
+        { type: TranslationService, decorators: [{ type: Optional }] }
+    ]; };
+    /** @nocollapse */ CxApiService.ngInjectableDef = defineInjectable({ factory: function CxApiService_Factory() { return new CxApiService(inject(AuthService, 8), inject(CmsService, 8), inject(RoutingService, 8), inject(CurrencyService, 8), inject(LanguageService, 8), inject(ProductService, 8), inject(ProductSearchService, 8), inject(ProductReviewService, 8), inject(UserService, 8), inject(TranslationService, 8)); }, token: CxApiService, providedIn: "root" });
+    return CxApiService;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -19170,803 +20374,6 @@ var StoreFinderCoreModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var CxApiModule = /** @class */ (function () {
-    function CxApiModule() {
-    }
-    CxApiModule.decorators = [
-        { type: NgModule, args: [{},] }
-    ];
-    return CxApiModule;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-I18nConfig = /** @class */ (function (_super) {
-    __extends(I18nConfig, _super);
-    function I18nConfig() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return I18nConfig;
-}(ServerConfig));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var DatePipe$1 = /** @class */ (function (_super) {
-    __extends(DatePipe$$1, _super);
-    function DatePipe$$1(language, config) {
-        var _this = _super.call(this, null) || this;
-        _this.language = language;
-        _this.config = config;
-        return _this;
-    }
-    /**
-     * @param {?} value
-     * @param {?=} format
-     * @param {?=} timezone
-     * @return {?}
-     */
-    DatePipe$$1.prototype.transform = /**
-     * @param {?} value
-     * @param {?=} format
-     * @param {?=} timezone
-     * @return {?}
-     */
-    function (value, format, timezone) {
-        return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    DatePipe$$1.prototype.getLang = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        /** @type {?} */
-        var lang = this.getActiveLang();
-        try {
-            getLocaleId(lang);
-            return lang;
-        }
-        catch (_a) {
-            this.reportMissingLocaleData(lang);
-            return 'en';
-        }
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    DatePipe$$1.prototype.getActiveLang = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        /** @type {?} */
-        var result;
-        this.language
-            .getActive()
-            .subscribe(function (lang) { return (result = lang); })
-            .unsubscribe();
-        return result;
-    };
-    /**
-     * @private
-     * @param {?} lang
-     * @return {?}
-     */
-    DatePipe$$1.prototype.reportMissingLocaleData = /**
-     * @private
-     * @param {?} lang
-     * @return {?}
-     */
-    function (lang) {
-        if (!this.config.production) {
-            console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
-        }
-    };
-    DatePipe$$1.decorators = [
-        { type: Pipe, args: [{ name: 'cxDate' },] }
-    ];
-    /** @nocollapse */
-    DatePipe$$1.ctorParameters = function () { return [
-        { type: LanguageService },
-        { type: I18nConfig }
-    ]; };
-    return DatePipe$$1;
-}(DatePipe));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-TranslationService = /** @class */ (function () {
-    function TranslationService() {
-    }
-    return TranslationService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} objA
- * @param {?} objB
- * @return {?}
- */
-function shallowEqualObjects(objA, objB) {
-    if (objA === objB) {
-        return true;
-    }
-    if (!objA || !objB) {
-        return false;
-    }
-    /** @type {?} */
-    var aKeys = Object.keys(objA);
-    /** @type {?} */
-    var bKeys = Object.keys(objB);
-    /** @type {?} */
-    var aKeysLen = aKeys.length;
-    /** @type {?} */
-    var bKeysLen = bKeys.length;
-    if (aKeysLen !== bKeysLen) {
-        return false;
-    }
-    for (var i = 0; i < aKeysLen; i++) {
-        /** @type {?} */
-        var key = aKeys[i];
-        if (objA[key] !== objB[key]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var TranslatePipe = /** @class */ (function () {
-    function TranslatePipe(service, cd) {
-        this.service = service;
-        this.cd = cd;
-    }
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    TranslatePipe.prototype.transform = /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    function (key, options) {
-        var _this = this;
-        if (options === void 0) { options = {}; }
-        if (key !== this.lastKey ||
-            !shallowEqualObjects(options, this.lastOptions)) {
-            this.lastKey = key;
-            this.lastOptions = options;
-            if (this.sub) {
-                this.sub.unsubscribe();
-            }
-            this.sub = this.service
-                .translate(key, options, true)
-                .subscribe(function (val) { return _this.markForCheck(val); });
-        }
-        return this.value;
-    };
-    /**
-     * @private
-     * @param {?} value
-     * @return {?}
-     */
-    TranslatePipe.prototype.markForCheck = /**
-     * @private
-     * @param {?} value
-     * @return {?}
-     */
-    function (value) {
-        this.value = value;
-        this.cd.markForCheck();
-    };
-    /**
-     * @return {?}
-     */
-    TranslatePipe.prototype.ngOnDestroy = /**
-     * @return {?}
-     */
-    function () {
-        if (this.sub) {
-            this.sub.unsubscribe();
-        }
-    };
-    TranslatePipe.decorators = [
-        { type: Pipe, args: [{ name: 'cxTranslate', pure: false },] }
-    ];
-    /** @nocollapse */
-    TranslatePipe.ctorParameters = function () { return [
-        { type: TranslationService },
-        { type: ChangeDetectorRef }
-    ]; };
-    return TranslatePipe;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var TranslationNamespaceService = /** @class */ (function () {
-    function TranslationNamespaceService(config) {
-        this.config = config;
-        this.KEY_SEPARATOR = '.';
-    }
-    /**
-     * @param {?} key
-     * @return {?}
-     */
-    TranslationNamespaceService.prototype.getNamespace = /**
-     * @param {?} key
-     * @return {?}
-     */
-    function (key) {
-        /** @type {?} */
-        var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
-        /** @type {?} */
-        var namespace = this.getNamespaceFromMapping(mainKey);
-        if (!namespace) {
-            this.reportMissingNamespaceMapping(key, mainKey);
-            return mainKey; // fallback to main key as a namespace
-        }
-        return namespace;
-    };
-    /**
-     * @private
-     * @param {?} mainKey
-     * @return {?}
-     */
-    TranslationNamespaceService.prototype.getNamespaceFromMapping = /**
-     * @private
-     * @param {?} mainKey
-     * @return {?}
-     */
-    function (mainKey) {
-        return (this.config.i18n &&
-            this.config.i18n.namespaceMapping &&
-            this.config.i18n.namespaceMapping[mainKey]);
-    };
-    /**
-     * @private
-     * @param {?} key
-     * @param {?} fallbackNamespace
-     * @return {?}
-     */
-    TranslationNamespaceService.prototype.reportMissingNamespaceMapping = /**
-     * @private
-     * @param {?} key
-     * @param {?} fallbackNamespace
-     * @return {?}
-     */
-    function (key, fallbackNamespace) {
-        if (!this.config.production) {
-            console.warn("No namespace mapping configured for key '" + key + "'. Used '" + fallbackNamespace + "' as fallback namespace.");
-        }
-    };
-    TranslationNamespaceService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    TranslationNamespaceService.ctorParameters = function () { return [
-        { type: I18nConfig }
-    ]; };
-    return TranslationNamespaceService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} config
- * @param {?} languageService
- * @return {?}
- */
-function i18nextInit(config, languageService) {
-    return function () {
-        /** @type {?} */
-        var i18nextConfig = {
-            ns: [],
-            // don't preload any namespaces
-            fallbackLng: config.i18n.fallbackLang,
-            debug: config.i18n.debug,
-        };
-        if (config.i18n.backend) {
-            i18next.use(i18nextXhrBackend);
-            i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
-        }
-        return i18next.init(i18nextConfig, function () {
-            // Don't use i18next's 'resources' config key for adding static translations,
-            // because it will disable loading chunks from backend. We add resources here, in the init's callback.
-            i18nextAddTranslations(config.i18n.resources);
-            syncI18nextWithSiteContext(languageService);
-        });
-    };
-}
-/**
- * @param {?=} resources
- * @return {?}
- */
-function i18nextAddTranslations(resources) {
-    if (resources === void 0) { resources = {}; }
-    Object.keys(resources).forEach(function (lang) {
-        Object.keys(resources[lang]).forEach(function (namespace) {
-            i18next.addResourceBundle(lang, namespace, resources[lang][namespace], true, true);
-        });
-    });
-}
-/**
- * @param {?} language
- * @return {?}
- */
-function syncI18nextWithSiteContext(language) {
-    // always update language of i18next on site context (language) change
-    language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var i18nextProviders = [
-    {
-        provide: APP_INITIALIZER,
-        useFactory: i18nextInit,
-        deps: [I18nConfig, LanguageService],
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var defaultI18nConfig = {
-    i18n: {
-        fallbackLang: false,
-        debug: false,
-        namespaceMapping: {
-            addToCart: 'addToCart',
-            address: 'address',
-            addressBook: 'addressBook',
-            cart: 'cart',
-            cartItems: 'cartItems',
-            checkout: 'checkout',
-            checkoutAddress: 'checkoutAddress',
-            checkoutOrderConfirmation: 'checkoutOrderConfirmation',
-            checkoutReview: 'checkoutReview',
-            checkoutShipping: 'checkoutShipping',
-            common: 'common',
-            forgottenPassword: 'forgottenPassword',
-            login: 'login',
-            orderCost: 'orderCost',
-            orderDetails: 'orderDetails',
-            orderHistory: 'orderHistory',
-            orderReview: 'orderReview',
-            payment: 'payment',
-            paymentMethods: 'paymentMethods',
-            productDetails: 'productDetails',
-            productList: 'productList',
-            productReview: 'productReview',
-            pwa: 'pwa',
-            register: 'register',
-            storeFinder: 'storeFinder',
-        },
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var I18nextTranslationService = /** @class */ (function () {
-    function I18nextTranslationService(config, translationNamespace) {
-        this.config = config;
-        this.translationNamespace = translationNamespace;
-        this.NON_BREAKING_SPACE = String.fromCharCode(160);
-        this.NAMESPACE_SEPARATOR = ':';
-    }
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @param {?=} whitespaceUntilLoaded
-     * @return {?}
-     */
-    I18nextTranslationService.prototype.translate = /**
-     * @param {?} key
-     * @param {?=} options
-     * @param {?=} whitespaceUntilLoaded
-     * @return {?}
-     */
-    function (key, options, whitespaceUntilLoaded) {
-        // If we've already loaded the namespace (or failed to load), we should immediately emit the value
-        // (or the fallback value in case the key is missing).
-        var _this = this;
-        if (options === void 0) { options = {}; }
-        if (whitespaceUntilLoaded === void 0) { whitespaceUntilLoaded = false; }
-        // If we've already loaded the namespace (or failed to load), we should immediately emit the value
-        // (or the fallback value in case the key is missing).
-        // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
-        // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
-        // which together with `switchMap` operator may lead to an infinite loop.
-        /** @type {?} */
-        var namespace = this.translationNamespace.getNamespace(key);
-        /** @type {?} */
-        var namespacedKey = this.getNamespacedKey(key, namespace);
-        return new Observable(function (subscriber) {
-            /** @type {?} */
-            var translate = function () {
-                if (i18next.exists(namespacedKey, options)) {
-                    subscriber.next(i18next.t(namespacedKey, options));
-                }
-                else {
-                    if (whitespaceUntilLoaded) {
-                        subscriber.next(_this.NON_BREAKING_SPACE);
-                    }
-                    i18next.loadNamespaces(namespace, function () {
-                        if (!i18next.exists(namespacedKey, options)) {
-                            _this.reportMissingKey(namespacedKey);
-                            subscriber.next(_this.getFallbackValue(namespacedKey));
-                        }
-                        else {
-                            subscriber.next(i18next.t(namespacedKey, options));
-                        }
-                    });
-                }
-            };
-            translate();
-            i18next.on('languageChanged', translate);
-            return function () { return i18next.off('languageChanged', translate); };
-        });
-    };
-    /**
-     * @param {?} namespaces
-     * @return {?}
-     */
-    I18nextTranslationService.prototype.loadNamespaces = /**
-     * @param {?} namespaces
-     * @return {?}
-     */
-    function (namespaces) {
-        return i18next.loadNamespaces(namespaces);
-    };
-    /**
-     * Returns a fallback value in case when the given key is missing
-     * @param key
-     */
-    /**
-     * Returns a fallback value in case when the given key is missing
-     * @protected
-     * @param {?} key
-     * @return {?}
-     */
-    I18nextTranslationService.prototype.getFallbackValue = /**
-     * Returns a fallback value in case when the given key is missing
-     * @protected
-     * @param {?} key
-     * @return {?}
-     */
-    function (key) {
-        return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
-    };
-    /**
-     * @private
-     * @param {?} key
-     * @return {?}
-     */
-    I18nextTranslationService.prototype.reportMissingKey = /**
-     * @private
-     * @param {?} key
-     * @return {?}
-     */
-    function (key) {
-        if (!this.config.production) {
-            console.warn("Translation key missing '" + key + "'");
-        }
-    };
-    /**
-     * @private
-     * @param {?} key
-     * @param {?} namespace
-     * @return {?}
-     */
-    I18nextTranslationService.prototype.getNamespacedKey = /**
-     * @private
-     * @param {?} key
-     * @param {?} namespace
-     * @return {?}
-     */
-    function (key, namespace) {
-        return namespace + this.NAMESPACE_SEPARATOR + key;
-    };
-    I18nextTranslationService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    I18nextTranslationService.ctorParameters = function () { return [
-        { type: I18nConfig },
-        { type: TranslationNamespaceService }
-    ]; };
-    return I18nextTranslationService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var I18nModule = /** @class */ (function () {
-    function I18nModule() {
-    }
-    /**
-     * @return {?}
-     */
-    I18nModule.forRoot = /**
-     * @return {?}
-     */
-    function () {
-        return {
-            ngModule: I18nModule,
-            providers: __spread([
-                provideConfig(defaultI18nConfig),
-                { provide: I18nConfig, useExisting: Config },
-                { provide: TranslationService, useClass: I18nextTranslationService },
-                TranslationNamespaceService
-            ], i18nextProviders),
-        };
-    };
-    I18nModule.decorators = [
-        { type: NgModule, args: [{
-                    declarations: [TranslatePipe, DatePipe$1],
-                    exports: [TranslatePipe, DatePipe$1],
-                },] }
-    ];
-    return I18nModule;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} key
- * @param {?=} options
- * @return {?}
- */
-function mockTranslate(key, options) {
-    if (options === void 0) { options = {}; }
-    /** @type {?} */
-    var optionsString = Object.keys(options)
-        .sort()
-        .map(function (optionName) { return optionName + ":" + options[optionName]; })
-        .join(' ');
-    return optionsString ? key + " " + optionsString : key;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var MockTranslatePipe = /** @class */ (function () {
-    function MockTranslatePipe() {
-    }
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    MockTranslatePipe.prototype.transform = /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    function (key, options) {
-        if (options === void 0) { options = {}; }
-        return mockTranslate(key, options);
-    };
-    MockTranslatePipe.decorators = [
-        { type: Pipe, args: [{ name: 'cxTranslate' },] }
-    ];
-    return MockTranslatePipe;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var MockTranslationService = /** @class */ (function () {
-    function MockTranslationService() {
-    }
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @param {?=} _whitespaceUntilLoaded
-     * @return {?}
-     */
-    MockTranslationService.prototype.translate = /**
-     * @param {?} key
-     * @param {?=} options
-     * @param {?=} _whitespaceUntilLoaded
-     * @return {?}
-     */
-    function (key, options, _whitespaceUntilLoaded) {
-        if (options === void 0) { options = {}; }
-        if (_whitespaceUntilLoaded === void 0) { _whitespaceUntilLoaded = false; }
-        return new Observable(function (subscriber) {
-            /** @type {?} */
-            var value = mockTranslate(key, options);
-            subscriber.next(value);
-            subscriber.complete();
-        });
-    };
-    /**
-     * @param {?} _namespaces
-     * @return {?}
-     */
-    MockTranslationService.prototype.loadNamespaces = /**
-     * @param {?} _namespaces
-     * @return {?}
-     */
-    function (_namespaces) {
-        return Promise.resolve();
-    };
-    MockTranslationService.decorators = [
-        { type: Injectable }
-    ];
-    return MockTranslationService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var MockDatePipe = /** @class */ (function (_super) {
-    __extends(MockDatePipe, _super);
-    function MockDatePipe() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    /**
-     * @param {?} value
-     * @param {?=} format
-     * @param {?=} timezone
-     * @return {?}
-     */
-    MockDatePipe.prototype.transform = /**
-     * @param {?} value
-     * @param {?=} format
-     * @param {?=} timezone
-     * @return {?}
-     */
-    function (value, format, timezone) {
-        return _super.prototype.transform.call(this, value, format, timezone, 'en');
-    };
-    MockDatePipe.decorators = [
-        { type: Pipe, args: [{ name: 'cxDate' },] }
-    ];
-    return MockDatePipe;
-}(DatePipe));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var I18nTestingModule = /** @class */ (function () {
-    function I18nTestingModule() {
-    }
-    I18nTestingModule.decorators = [
-        { type: NgModule, args: [{
-                    declarations: [MockTranslatePipe, MockDatePipe],
-                    exports: [MockTranslatePipe, MockDatePipe],
-                    providers: [
-                        { provide: TranslationService, useClass: MockTranslationService },
-                    ],
-                },] }
-    ];
-    return I18nTestingModule;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var CxApiService = /** @class */ (function () {
-    function CxApiService(auth, cms, routing, currency, language, product, productSearch, productReview, user, translation) {
-        this.auth = auth;
-        this.cms = cms;
-        this.routing = routing;
-        this.currency = currency;
-        this.language = language;
-        this.product = product;
-        this.productSearch = productSearch;
-        this.productReview = productReview;
-        this.user = user;
-        this.translation = translation;
-    }
-    CxApiService.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    CxApiService.ctorParameters = function () { return [
-        { type: AuthService, decorators: [{ type: Optional }] },
-        { type: CmsService, decorators: [{ type: Optional }] },
-        { type: RoutingService, decorators: [{ type: Optional }] },
-        { type: CurrencyService, decorators: [{ type: Optional }] },
-        { type: LanguageService, decorators: [{ type: Optional }] },
-        { type: ProductService, decorators: [{ type: Optional }] },
-        { type: ProductSearchService, decorators: [{ type: Optional }] },
-        { type: ProductReviewService, decorators: [{ type: Optional }] },
-        { type: UserService, decorators: [{ type: Optional }] },
-        { type: TranslationService, decorators: [{ type: Optional }] }
-    ]; };
-    /** @nocollapse */ CxApiService.ngInjectableDef = defineInjectable({ factory: function CxApiService_Factory() { return new CxApiService(inject(AuthService, 8), inject(CmsService, 8), inject(RoutingService, 8), inject(CurrencyService, 8), inject(LanguageService, 8), inject(ProductService, 8), inject(ProductSearchService, 8), inject(ProductReviewService, 8), inject(UserService, 8), inject(TranslationService, 8)); }, token: CxApiService, providedIn: "root" });
-    return CxApiService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var StripHtmlPipe = /** @class */ (function () {
     function StripHtmlPipe() {
     }
@@ -20056,6 +20463,11 @@ var UtilModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, OccCartService, CartOccModule, CartModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, StateModule, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, getStateSlice, StorageSyncType, StateConfig, metaReducersFactory, META_REDUCER, ProductLoaderService, ProductSearchLoaderService, ProductReviewsLoaderService, ProductOccModule, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, ProductImageConverterService, ProductReferenceConverterService, ProductConverterModule, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, OccConfig, defaultOccConfig, serverConfigFromMetaTagFactory, SERVER_BASE_URL_META_TAG_NAME, SERVER_BASE_URL_META_TAG_PLACEHOLDER, occConfigValidator, OccModule, USE_CLIENT_TOKEN, InterceptorUtil, OccMiscsService, PriceType, ImageType, Fields, Fields1, Fields2, Fields3, Fields4, Fields5, Fields6, PageType, Fields7, Fields8, Fields9, Fields10, Fields11, Fields12, Fields13, Fields14, Fields15, Fields16, SortEnum, Fields17, Fields18, Fields19, Fields20, Fields21, Fields22, Fields23, Fields24, Fields25, Fields26, Fields27, Fields28, Fields29, Fields30, Fields31, Fields32, Fields33, Fields34, Fields35, Fields36, Fields37, Fields38, Fields39, Fields40, Fields41, Fields42, Fields43, Fields44, Fields45, Fields46, Fields47, Fields48, Fields49, Fields50, Fields51, Fields52, Fields53, Fields54, Fields55, Fields56, Fields57, Fields58, Fields59, Fields60, Fields61, Type, RoutingModule, RoutingService, PageContext, ConfigurableRoutesConfig, UrlTranslationModule, TranslateUrlPipe, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutesConfigLoader, CHECKOUT_FEATURE, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getCheckoutStepsState, getDeliveryAddress$1 as getDeliveryAddress, getDeliveryMode$1 as getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails$1 as getPaymentDetails, getCheckoutOrderDetails, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CheckoutPageMetaResolver, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, RegisterUser, RegisterUserFail, RegisterUserSuccess, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails$1 as getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageLoader, OccCmsPageAdapter, CmsOccModule, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsPageLoader, CmsPageAdapter, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, SmartEditModule, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, WindowRef, CxApiModule, CxApiService, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationNamespaceService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, PipeModule, StripHtmlModule, UtilModule, defaultAuthConfig as ɵgc, AuthErrorInterceptor as ɵgj, ClientTokenInterceptor as ɵgh, interceptors as ɵgg, UserTokenInterceptor as ɵgi, ClientAuthenticationTokenService as ɵga, ClientErrorHandlingService as ɵge, services as ɵgd, UserAuthenticationTokenService as ɵfz, UserErrorHandlingService as ɵgf, AuthStoreModule as ɵfq, authStoreConfigFactory as ɵfp, ClientTokenEffect as ɵfy, effects$1 as ɵfw, UserTokenEffects as ɵfx, clearAuthState as ɵfu, getReducers$1 as ɵfr, metaReducers as ɵfv, reducerProvider$1 as ɵft, reducerToken$1 as ɵfs, reducer$1 as ɵgb, CartStoreModule as ɵd, CartEntryEffects as ɵl, CartEffects as ɵk, effects$5 as ɵj, reducer$2 as ɵm, clearCartState as ɵh, getReducers$2 as ɵe, metaReducers$1 as ɵi, reducerProvider$2 as ɵg, reducerToken$2 as ɵf, CheckoutStoreModule as ɵeb, AddressVerificationEffect as ɵea, CardTypesEffects as ɵdz, CheckoutEffects as ɵdy, effects$7 as ɵdx, getAddressVerificationResults as ɵdw, reducer$c as ɵdv, getCardTypesEntites as ɵdu, reducer$d as ɵdt, getDeliveryAddress as ɵdp, getDeliveryMode as ɵdq, getOrderDetails as ɵds, getPaymentDetails as ɵdr, reducer$b as ɵdo, clearCheckoutState as ɵdm, getCheckoutState as ɵdl, getReducers$6 as ɵdi, metaReducers$4 as ɵdn, reducerProvider$6 as ɵdk, reducerToken$6 as ɵdj, OccCmsComponentLoader as ɵbo, CmsComponentAdapter as ɵbn, CmsComponentLoader as ɵbm, CmsStoreModule as ɵbq, cmsStoreConfigFactory as ɵbp, ComponentEffects as ɵby, effects$4 as ɵbw, NavigationEntryItemEffects as ɵbz, PageEffects as ɵbx, clearCmsState as ɵbu, getReducers$5 as ɵbr, metaReducers$3 as ɵbv, reducerProvider$5 as ɵbt, reducerToken$5 as ɵbs, reducer$8 as ɵch, reducer$9 as ɵce, reducer$a as ɵcg, ConfigModule as ɵgy, ServerConfig as ɵhh, provideConfigValidator as ɵc, BadGatewayHandler as ɵgn, BadRequestHandler as ɵgo, ConflictHandler as ɵgp, ForbiddenHandler as ɵgq, GatewayTimeoutHandler as ɵgr, HttpErrorHandler as ɵgl, NotFoundHandler as ɵgs, UnknownErrorHandler as ɵgm, HttpErrorInterceptor as ɵgt, reducer$e as ɵgk, getReducers$7 as ɵfe, reducerProvider$7 as ɵfg, reducerToken$7 as ɵff, defaultI18nConfig as ɵhi, i18nextInit as ɵhk, i18nextProviders as ɵhj, MockDatePipe as ɵhl, MockTranslationService as ɵhm, PageType as ɵcf, PageType as ɵdh, OccEndpointsService as ɵa, ProcessModule as ɵfj, PROCESS_FEATURE as ɵfl, ProcessStoreModule as ɵfk, getReducers$9 as ɵfm, reducerProvider$9 as ɵfo, reducerToken$9 as ɵfn, defaultOccProductConfig as ɵr, effects$3 as ɵbf, ProductReviewsEffects as ɵbi, ProductsSearchEffects as ɵbg, ProductEffects as ɵbh, ProductStoreModule as ɵbk, productStoreConfigFactory as ɵbj, clearProductsState as ɵbd, getReducers$4 as ɵba, metaReducers$2 as ɵbe, reducerProvider$4 as ɵbc, reducerToken$4 as ɵbb, reducer$4 as ɵbl, getAuxSearchResults as ɵy, getProductSuggestions as ɵz, getSearchResults as ɵx, reducer$3 as ɵw, defaultConfigurableRoutesConfig as ɵcx, defaultStorefrontRoutesTranslations as ɵcy, RouteRecognizerService as ɵcc, UrlParsingService as ɵcd, UrlTranslationService as ɵcb, ROUTING_FEATURE as ɵcz, effects as ɵdf, RouterEffects as ɵdg, CustomSerializer as ɵde, getReducers as ɵda, reducer as ɵdb, reducerProvider as ɵdd, reducerToken as ɵdc, defaultSiteContextConfigFactory as ɵco, BaseSiteService as ɵb, SiteContextParamsService as ɵcu, SiteContextRoutesHandler as ɵcw, SiteContextUrlSerializer as ɵcv, CurrenciesEffects as ɵcn, effects$2 as ɵcl, LanguagesEffects as ɵcm, reducer$7 as ɵct, reducer$6 as ɵcs, getReducers$3 as ɵci, reducerProvider$3 as ɵck, reducerToken$3 as ɵcj, reducer$5 as ɵcr, SiteContextStoreModule as ɵcq, siteContextStoreConfigFactory as ɵcp, CmsTicketInterceptor as ɵgv, interceptors$2 as ɵgu, SmartEditService as ɵgw, EntityFailAction as ɵee, EntityLoadAction as ɵed, EntityResetAction as ɵeg, EntitySuccessAction as ɵef, defaultStateConfig as ɵn, stateMetaReducers as ɵo, getStorageSyncReducer as ɵp, getTransferStateReducer as ɵq, defaultStoreFinderConfig as ɵgz, FindStoresEffect as ɵhf, effects$8 as ɵhe, ViewAllStoresEffect as ɵhg, getReducers$a as ɵhb, reducerProvider$a as ɵhd, reducerToken$a as ɵhc, getStoreFinderState as ɵgx, StoreFinderStoreModule as ɵha, BillingCountriesEffect as ɵet, DeliveryCountriesEffects as ɵeu, ForgotPasswordEffects as ɵfh, effects$6 as ɵes, OrderDetailsEffect as ɵev, UserPaymentMethodsEffects as ɵew, RegionsEffects as ɵex, ResetPasswordEffects as ɵey, TitlesEffects as ɵez, UpdatePasswordEffects as ɵfi, UserAddressesEffects as ɵfa, UserDetailsEffects as ɵfb, UserOrdersEffect as ɵfc, UserRegisterEffects as ɵfd, reducer$f as ɵej, reducer$g as ɵen, reducer$h as ɵem, reducer$i as ɵek, reducer$j as ɵep, reducer$k as ɵeq, reducer$l as ɵeo, reducer$m as ɵei, reducer$n as ɵeh, reducer$o as ɵel, UserStoreModule as ɵer, StripHtmlPipe as ɵhn };
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, OccCartService, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getCheckoutStepsState, getDeliveryAddress$1 as getDeliveryAddress, getDeliveryMode$1 as getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails$1 as getPaymentDetails, getCheckoutOrderDetails, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_COMPONENT_LIST_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationNamespaceService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, defaultOccConfig, OccConfig, serverConfigFromMetaTagFactory, SERVER_BASE_URL_META_TAG_NAME, SERVER_BASE_URL_META_TAG_PLACEHOLDER, occConfigValidator, OccMiscsService, PriceType, ImageType, Fields, Fields1, Fields2, Fields3, Fields4, Fields5, Fields6, PageType, Fields7, Fields8, Fields9, Fields10, Fields11, Fields12, Fields13, Fields14, Fields15, Fields16, SortEnum, Fields17, Fields18, Fields19, Fields20, Fields21, Fields22, Fields23, Fields24, Fields25, Fields26, Fields27, Fields28, Fields29, Fields30, Fields31, Fields32, Fields33, Fields34, Fields35, Fields36, Fields37, Fields38, Fields39, Fields40, Fields41, Fields42, Fields43, Fields44, Fields45, Fields46, Fields47, Fields48, Fields49, Fields50, Fields51, Fields52, Fields53, Fields54, Fields55, Fields56, Fields57, Fields58, Fields59, Fields60, Fields61, Type, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, OccProductAdapter, ProductSearchLoaderService, OccProductReviewsAdapter, OccProductReviewsListNormalizer, ProductImageNormalizer, ProductReferenceNormalizer, ProductOccModule, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEWS_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, ConfigurableRoutesConfig, UrlTranslationModule, TranslateUrlPipe, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutesConfigLoader, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, getStateSlice, StorageSyncType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, RegisterUser, RegisterUserFail, RegisterUserSuccess, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails$1 as getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵo, authStoreConfigFactory as ɵn, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, CartStoreModule as ɵbo, CartEntryEffects as ɵbw, CartEffects as ɵbv, effects$5 as ɵbu, reducer$2 as ɵby, clearCartState as ɵbs, getReducers$2 as ɵbp, metaReducers$1 as ɵbt, reducerProvider$2 as ɵbr, reducerToken$2 as ɵbq, CheckoutStoreModule as ɵcs, AddressVerificationEffect as ɵcr, CardTypesEffects as ɵcq, CheckoutEffects as ɵcp, effects$7 as ɵco, getAddressVerificationResults as ɵcn, reducer$c as ɵcm, getCardTypesEntites as ɵcl, reducer$d as ɵck, getDeliveryAddress as ɵcg, getDeliveryMode as ɵch, getOrderDetails as ɵcj, getPaymentDetails as ɵci, reducer$b as ɵcf, clearCheckoutState as ɵcd, getCheckoutState as ɵcc, getReducers$6 as ɵbz, metaReducers$4 as ɵce, reducerProvider$6 as ɵcb, reducerToken$6 as ɵca, CmsStoreModule as ɵcy, cmsStoreConfigFactory as ɵcx, ComponentEffects as ɵdg, effects$4 as ɵde, NavigationEntryItemEffects as ɵdh, PageEffects as ɵdf, clearCmsState as ɵdc, getReducers$5 as ɵcz, metaReducers$3 as ɵdd, reducerProvider$5 as ɵdb, reducerToken$5 as ɵda, reducer$8 as ɵdl, reducer$9 as ɵdi, reducer$a as ɵdk, ConfigModule as ɵft, ServerConfig as ɵeo, provideConfigValidator as ɵbn, BadGatewayHandler as ɵeh, BadRequestHandler as ɵei, ConflictHandler as ɵej, ForbiddenHandler as ɵek, GatewayTimeoutHandler as ɵel, HttpErrorHandler as ɵef, NotFoundHandler as ɵem, UnknownErrorHandler as ɵeg, HttpErrorInterceptor as ɵen, reducer$e as ɵee, getReducers$7 as ɵeb, reducerProvider$7 as ɵed, reducerToken$7 as ɵec, defaultI18nConfig as ɵep, i18nextInit as ɵer, i18nextProviders as ɵeq, MockDatePipe as ɵes, MockTranslationService as ɵet, OccConfig as ɵbx, PageType as ɵdj, PageType as ɵcu, ProcessModule as ɵhe, PROCESS_FEATURE as ɵhg, ProcessStoreModule as ɵhf, getReducers$9 as ɵhh, reducerProvider$9 as ɵhj, reducerToken$9 as ɵhi, defaultOccProductConfig as ɵeu, effects$3 as ɵdx, ProductReviewsEffects as ɵea, ProductsSearchEffects as ɵdy, ProductEffects as ɵdz, ProductStoreModule as ɵfe, productStoreConfigFactory as ɵfd, clearProductsState as ɵdv, getReducers$4 as ɵds, metaReducers$2 as ɵdw, reducerProvider$4 as ɵdu, reducerToken$4 as ɵdt, reducer$4 as ɵff, getAuxSearchResults as ɵfb, getProductSuggestions as ɵfc, getSearchResults as ɵfa, reducer$3 as ɵez, defaultConfigurableRoutesConfig as ɵa, defaultStorefrontRoutesTranslations as ɵb, UrlParsingService as ɵd, UrlTranslationService as ɵc, ROUTING_FEATURE as ɵe, effects as ɵk, RouterEffects as ɵl, CustomSerializer as ɵj, getReducers as ɵf, reducer as ɵg, reducerProvider as ɵi, reducerToken as ɵh, defaultSiteContextConfigFactory as ɵfg, BaseSiteService as ɵbk, SiteContextParamsService as ɵfm, SiteContextRoutesHandler as ɵfo, SiteContextUrlSerializer as ɵfn, CurrenciesEffects as ɵdr, effects$2 as ɵdp, LanguagesEffects as ɵdq, reducer$7 as ɵfl, reducer$6 as ɵfk, getReducers$3 as ɵdm, reducerProvider$3 as ɵdo, reducerToken$3 as ɵdn, reducer$5 as ɵfj, SiteContextStoreModule as ɵfi, siteContextStoreConfigFactory as ɵfh, CmsTicketInterceptor as ɵfq, interceptors$2 as ɵfp, SmartEditService as ɵfr, EntityFailAction as ɵcv, EntityLoadAction as ɵct, EntityResetAction as ɵgd, EntitySuccessAction as ɵcw, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfu, FindStoresEffect as ɵga, effects$8 as ɵfz, ViewAllStoresEffect as ɵgb, getReducers$a as ɵfw, reducerProvider$a as ɵfy, reducerToken$a as ɵfx, getStoreFinderState as ɵfs, StoreFinderStoreModule as ɵfv, BillingCountriesEffect as ɵgq, DeliveryCountriesEffects as ɵgr, ForgotPasswordEffects as ɵhb, effects$6 as ɵgp, OrderDetailsEffect as ɵgs, UserPaymentMethodsEffects as ɵgt, RegionsEffects as ɵgu, ResetPasswordEffects as ɵgv, TitlesEffects as ɵgw, UpdateEmailEffects as ɵhc, UpdatePasswordEffects as ɵhd, UserAddressesEffects as ɵgx, UserDetailsEffects as ɵgy, UserOrdersEffect as ɵgz, UserRegisterEffects as ɵha, reducer$f as ɵgg, reducer$g as ɵgk, reducer$h as ɵgj, reducer$i as ɵgh, reducer$j as ɵgm, reducer$k as ɵgn, reducer$l as ɵgl, reducer$m as ɵgf, reducer$n as ɵge, reducer$o as ɵgi, UserStoreModule as ɵgo, StripHtmlPipe as ɵhk };
 
 //# sourceMappingURL=spartacus-core.js.map
