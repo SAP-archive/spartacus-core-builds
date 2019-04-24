@@ -32,8 +32,16 @@ export declare class ConverterService {
      */
     pipeable<S, T>(injectionToken: InjectionToken<Converter<S, T>>): OperatorFunction<S, T>;
     /**
+     * Pipeable operator to apply converter logic in a observable stream to collection of items
+     */
+    pipeableMany<S, T>(injectionToken: InjectionToken<Converter<S, T>>): OperatorFunction<S[], T[]>;
+    /**
      * Apply converter logic specified by injection token to source data
      */
     convert<S, T>(source: S, injectionToken: InjectionToken<Converter<S, T>>): T;
+    /**
+     * Apply converter logic specified by injection token to a collection
+     */
+    convertMany<S, T>(sources: S[], injectionToken: InjectionToken<Converter<S, T>>): T[];
     private convertSource;
 }

@@ -1,6 +1,6 @@
 import { CheckoutStepsState } from '../checkout-state';
 import * as fromAction from './../actions/index';
-import { Address, Order, DeliveryMode } from '../../../occ/occ-models/index';
+import { Address, DeliveryMode, Order } from '../../../occ/occ-models/index';
 export declare const initialState: CheckoutStepsState;
 export declare function reducer(state: CheckoutStepsState, action: fromAction.CheckoutAction | fromAction.CheckoutClearMiscsData): CheckoutStepsState;
 export declare const getDeliveryAddress: (state: CheckoutStepsState) => Address;

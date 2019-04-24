@@ -5268,6 +5268,1001 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CartAdapter = /** @class */ (function () {
+        function CartAdapter() {
+        }
+        return CartAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartConnector = /** @class */ (function () {
+        function CartConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+        CartConnector.prototype.loadAll = /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+            function (userId, details) {
+                return this.adapter.loadAll(userId, details);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+        CartConnector.prototype.load = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+            function (userId, cartId, details) {
+                return this.adapter.load(userId, cartId, details);
+            };
+        /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        CartConnector.prototype.create = /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+            function (userId, oldCartId, toMergeCartGuid) {
+                return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+            };
+        CartConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartConnector.ctorParameters = function () {
+            return [
+                { type: CartAdapter }
+            ];
+        };
+        /** @nocollapse */ CartConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(i0.inject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+        return CartConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_NORMALIZER = new i0.InjectionToken('CartNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CartDeliveryAdapter = /** @class */ (function () {
+        function CartDeliveryAdapter() {
+        }
+        return CartDeliveryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartDeliveryConnector = /** @class */ (function () {
+        function CartDeliveryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+        CartDeliveryConnector.prototype.createAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+            function (userId, cartId, address) {
+                return this.adapter.createAddress(userId, cartId, address);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+        CartDeliveryConnector.prototype.setAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+            function (userId, cartId, addressId) {
+                return this.adapter.setAddress(userId, cartId, addressId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+        CartDeliveryConnector.prototype.setMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+            function (userId, cartId, deliveryModeId) {
+                return this.adapter.setMode(userId, cartId, deliveryModeId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartDeliveryConnector.prototype.getMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.getMode(userId, cartId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartDeliveryConnector.prototype.getSupportedModes = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.getSupportedModes(userId, cartId);
+            };
+        CartDeliveryConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartDeliveryConnector.ctorParameters = function () {
+            return [
+                { type: CartDeliveryAdapter }
+            ];
+        };
+        /** @nocollapse */ CartDeliveryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartDeliveryConnector_Factory() { return new CartDeliveryConnector(i0.inject(CartDeliveryAdapter)); }, token: CartDeliveryConnector, providedIn: "root" });
+        return CartDeliveryConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var DELIVERY_ADDRESS_NORMALIZER = new i0.InjectionToken('DeliveryAddressNormalizer');
+    /** @type {?} */
+    var DELIVERY_ADDRESS_SERIALIZER = new i0.InjectionToken('DeliveryAddressSerializer');
+    /** @type {?} */
+    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CartEntryAdapter = /** @class */ (function () {
+        function CartEntryAdapter() {
+        }
+        return CartEntryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartEntryConnector = /** @class */ (function () {
+        function CartEntryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        CartEntryConnector.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+            function (userId, cartId, productCode, quantity) {
+                return this.adapter.add(userId, cartId, productCode, quantity);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        CartEntryConnector.prototype.update = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+            function (userId, cartId, entryNumber, qty, pickupStore) {
+                return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        CartEntryConnector.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+            function (userId, cartId, entryNumber) {
+                return this.adapter.remove(userId, cartId, entryNumber);
+            };
+        CartEntryConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartEntryConnector.ctorParameters = function () {
+            return [
+                { type: CartEntryAdapter }
+            ];
+        };
+        /** @nocollapse */ CartEntryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(i0.inject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+        return CartEntryConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_MODIFICATION_NORMALIZER = new i0.InjectionToken('CartModificationNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CartPaymentAdapter = /** @class */ (function () {
+        function CartPaymentAdapter() {
+        }
+        return CartPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartPaymentConnector = /** @class */ (function () {
+        function CartPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        CartPaymentConnector.prototype.create = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetails) {
+                return this.adapter.create(userId, cartId, paymentDetails);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+        CartPaymentConnector.prototype.set = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetailsId) {
+                return this.adapter.set(userId, cartId, paymentDetailsId);
+            };
+        CartPaymentConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartPaymentConnector.ctorParameters = function () {
+            return [
+                { type: CartPaymentAdapter }
+            ];
+        };
+        /** @nocollapse */ CartPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartPaymentConnector_Factory() { return new CartPaymentConnector(i0.inject(CartPaymentAdapter)); }, token: CartPaymentConnector, providedIn: "root" });
+        return CartPaymentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
+    /** @type {?} */
+    var CART_PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ConverterService = /** @class */ (function () {
+        function ConverterService(injector) {
+            this.injector = injector;
+            this.converters = new Map();
+        }
+        /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.getConverters = /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                if (!this.converters.has(injectionToken)) {
+                    /** @type {?} */
+                    var converters = this.injector.get(injectionToken, []);
+                    if (!Array.isArray(converters)) {
+                        console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+                    }
+                    this.converters.set(injectionToken, converters);
+                }
+                return this.converters.get(injectionToken);
+            };
+        /**
+         * Will return true if converters for specified token were provided
+         */
+        /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.hasConverters = /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                /** @type {?} */
+                var converters = this.getConverters(injectionToken);
+                return Array.isArray(converters) && converters.length > 0;
+            };
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         */
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.pipeable = /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                var _this = this;
+                if (this.hasConverters(injectionToken)) {
+                    return operators.map(function (model) { return _this.convertSource(model, injectionToken); });
+                }
+                else {
+                    return function (observable) { return ( /** @type {?} */(observable)); };
+                }
+            };
+        /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         */
+        /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.pipeableMany = /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (injectionToken) {
+                var _this = this;
+                if (this.hasConverters(injectionToken)) {
+                    return operators.map(function (model) { return _this.convertMany(model, injectionToken); });
+                }
+                else {
+                    return function (observable) { return ( /** @type {?} */(observable)); };
+                }
+            };
+        /**
+         * Apply converter logic specified by injection token to source data
+         */
+        /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convert = /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (source, injectionToken) {
+                if (this.hasConverters(injectionToken)) {
+                    return this.convertSource(source, injectionToken);
+                }
+                else {
+                    return ( /** @type {?} */(source));
+                }
+            };
+        /**
+         * Apply converter logic specified by injection token to a collection
+         */
+        /**
+         * Apply converter logic specified by injection token to a collection
+         * @template S, T
+         * @param {?} sources
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convertMany = /**
+         * Apply converter logic specified by injection token to a collection
+         * @template S, T
+         * @param {?} sources
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (sources, injectionToken) {
+                var _this = this;
+                if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
+                    return sources.map(function (source) { return _this.convertSource(source, injectionToken); });
+                }
+                else {
+                    return ( /** @type {?} */(sources));
+                }
+            };
+        /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convertSource = /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+            function (source, injectionToken) {
+                return this.getConverters(injectionToken).reduce(function (target, converter) {
+                    return converter.convert(source, target);
+                }, ( /** @type {?} */(undefined)));
+            };
+        ConverterService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ConverterService.ctorParameters = function () {
+            return [
+                { type: i0.Injector }
+            ];
+        };
+        /** @nocollapse */ ConverterService.ngInjectableDef = i0.defineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.inject(i0.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+        return ConverterService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // for mini cart
+    /** @type {?} */
+    var BASIC_PARAMS = 'DEFAULT,deliveryItemsQuantity,totalPrice(formattedValue),' +
+        'entries(totalPrice(formattedValue),product(images(FULL)))';
+    // for cart details page
+    /** @type {?} */
+    var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
+        'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue)),' +
+        'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(formattedValue),subTotal(formattedValue),' +
+        'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
+        'appliedVouchers,productDiscounts(formattedValue)';
+    var OccCartAdapter = /** @class */ (function () {
+        function OccCartAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.getCartEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var cartEndpoint = 'users/' + userId + '/carts/';
+                return this.occEndpoints.getEndpoint(cartEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+        OccCartAdapter.prototype.loadAll = /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+            function (userId, details) {
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId);
+                /** @type {?} */
+                var params = details
+                    ? new i1$1.HttpParams({
+                        fromString: 'fields=carts(' + DETAILS_PARAMS + ',saveTime)',
+                    })
+                    : new i1$1.HttpParams({
+                        fromString: 'fields=carts(' + BASIC_PARAMS + ',saveTime)',
+                    });
+                return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+        OccCartAdapter.prototype.load = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+            function (userId, cartId, details) {
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId) + cartId;
+                /** @type {?} */
+                var params = details
+                    ? new i1$1.HttpParams({
+                        fromString: 'fields=' + DETAILS_PARAMS,
+                    })
+                    : new i1$1.HttpParams({
+                        fromString: 'fields=' + BASIC_PARAMS,
+                    });
+                if (cartId === 'current') {
+                    return this.loadAll(userId, details).pipe(operators.map(function (carts) {
+                        if (carts) {
+                            /** @type {?} */
+                            var activeCart = carts.find(function (cart) {
+                                return cart['saveTime'] === undefined;
+                            });
+                            return activeCart;
+                        }
+                        else {
+                            return null;
+                        }
+                    }));
+                }
+                else {
+                    return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CART_NORMALIZER));
+                }
+            };
+        /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        OccCartAdapter.prototype.create = /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+            function (userId, oldCartId, toMergeCartGuid) {
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId);
+                /** @type {?} */
+                var toAdd = JSON.stringify({});
+                /** @type {?} */
+                var queryString = 'fields=' + BASIC_PARAMS;
+                if (oldCartId) {
+                    queryString = queryString + '&oldCartId=' + oldCartId;
+                }
+                if (toMergeCartGuid) {
+                    queryString = queryString + '&toMergeCartGuid=' + toMergeCartGuid;
+                }
+                /** @type {?} */
+                var params = new i1$1.HttpParams({
+                    fromString: queryString,
+                });
+                return this.http
+                    .post(url, toAdd, { params: params })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        OccCartAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartAdapter.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCartAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCartDeliveryAdapter = /** @class */ (function () {
+        function OccCartDeliveryAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.getCartEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var cartEndpoint = 'users/' + userId + '/carts/';
+                return this.occEndpoints.getEndpoint(cartEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.createAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+            function (userId, cartId, address) {
+                address = this.converter.convert(address, DELIVERY_ADDRESS_SERIALIZER);
+                return this.http
+                    .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
+                    headers: new i1$1.HttpHeaders().set('Content-Type', 'application/json'),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_ADDRESS_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.setAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+            function (userId, cartId, addressId) {
+                return this.http
+                    .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
+                    params: { addressId: addressId },
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.setMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+            function (userId, cartId, deliveryModeId) {
+                return this.http
+                    .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
+                    params: { deliveryModeId: deliveryModeId },
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.getMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.http
+                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartDeliveryAdapter.prototype.getSupportedModes = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.http
+                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
+            };
+        OccCartDeliveryAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartDeliveryAdapter.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCartDeliveryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCartEntryAdapter = /** @class */ (function () {
+        function OccCartEntryAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.getCartEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var cartEndpoint = 'users/' + userId + '/carts/';
+                return this.occEndpoints.getEndpoint(cartEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+            function (userId, cartId, productCode, quantity) {
+                if (quantity === void 0) {
+                    quantity = 1;
+                }
+                /** @type {?} */
+                var toAdd = JSON.stringify({});
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId) + cartId + '/entries';
+                /** @type {?} */
+                var params = new i1$1.HttpParams({
+                    fromString: 'code=' + productCode + '&qty=' + quantity,
+                });
+                /** @type {?} */
+                var headers = new i1$1.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http
+                    .post(url, toAdd, { headers: headers, params: params })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.update = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+            function (userId, cartId, entryNumber, qty, pickupStore) {
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
+                /** @type {?} */
+                var queryString = 'qty=' + qty;
+                if (pickupStore) {
+                    queryString = queryString + '&pickupStore=' + pickupStore;
+                }
+                /** @type {?} */
+                var params = new i1$1.HttpParams({
+                    fromString: queryString,
+                });
+                /** @type {?} */
+                var headers = new i1$1.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http.patch(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+            function (userId, cartId, entryNumber) {
+                /** @type {?} */
+                var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
+                /** @type {?} */
+                var headers = new i1$1.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http
+                    .delete(url, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        OccCartEntryAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartEntryAdapter.ctorParameters = function () {
+            return [
+                { type: i1$1.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCartEntryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CustomEncoder = /** @class */ (function () {
         function CustomEncoder() {
         }
@@ -5322,28 +6317,21 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    // for mini cart
-    /** @type {?} */
-    var BASIC_PARAMS = 'DEFAULT,deliveryItemsQuantity,totalPrice(formattedValue),' +
-        'entries(totalPrice(formattedValue),product(images(FULL)))';
-    // for cart details page
-    /** @type {?} */
-    var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
-        'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue)),' +
-        'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(formattedValue),subTotal(formattedValue),' +
-        'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-        'appliedVouchers,productDiscounts(formattedValue)';
-    var OccCartService = /** @class */ (function () {
-        function OccCartService(http, occEndpoints) {
+    var OccCartPaymentAdapter = /** @class */ (function () {
+        function OccCartPaymentAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            if (typeof DOMParser !== 'undefined') {
+                this.domparser = new DOMParser();
+            }
         }
         /**
          * @protected
          * @param {?} userId
          * @return {?}
          */
-        OccCartService.prototype.getCartEndpoint = /**
+        OccCartPaymentAdapter.prototype.getCartEndpoint = /**
          * @protected
          * @param {?} userId
          * @return {?}
@@ -5355,291 +6343,67 @@
             };
         /**
          * @param {?} userId
-         * @param {?=} details
+         * @param {?} cartId
+         * @param {?} paymentDetails
          * @return {?}
          */
-        OccCartService.prototype.loadAllCarts = /**
-         * @param {?} userId
-         * @param {?=} details
-         * @return {?}
-         */
-            function (userId, details) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId);
-                /** @type {?} */
-                var params = details
-                    ? new i1$1.HttpParams({
-                        fromString: 'fields=carts(' + DETAILS_PARAMS + ',saveTime)',
-                    })
-                    : new i1$1.HttpParams({
-                        fromString: 'fields=carts(' + BASIC_PARAMS + ',saveTime)',
-                    });
-                return this.http
-                    .get(url, { params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
+        OccCartPaymentAdapter.prototype.create = /**
          * @param {?} userId
          * @param {?} cartId
-         * @param {?=} details
+         * @param {?} paymentDetails
          * @return {?}
          */
-        OccCartService.prototype.loadCart = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?=} details
-         * @return {?}
-         */
-            function (userId, cartId, details) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId) + cartId;
-                /** @type {?} */
-                var params = details
-                    ? new i1$1.HttpParams({
-                        fromString: 'fields=' + DETAILS_PARAMS,
-                    })
-                    : new i1$1.HttpParams({
-                        fromString: 'fields=' + BASIC_PARAMS,
-                    });
-                if (cartId === 'current') {
-                    return this.loadAllCarts(userId, details).pipe(operators.map(function (cartsData) {
-                        if (cartsData && cartsData.carts) {
-                            /** @type {?} */
-                            var activeCart = cartsData.carts.find(function (cart) {
-                                return cart['saveTime'] === undefined;
-                            });
-                            return activeCart;
+            function (userId, cartId, paymentDetails) {
+                var _this = this;
+                paymentDetails = this.converter.convert(paymentDetails, CART_PAYMENT_DETAILS_SERIALIZER);
+                return this.getProviderSubInfo(userId, cartId).pipe(operators.map(function (data) {
+                    /** @type {?} */
+                    var labelsMap = _this.convertToMap(data.mappingLabels.entry);
+                    return {
+                        url: data.postUrl,
+                        parameters: _this.getParamsForPaymentProvider(paymentDetails, data.parameters.entry, labelsMap),
+                        mappingLabels: labelsMap,
+                    };
+                }), operators.mergeMap(function (sub) {
+                    // create a subscription directly with payment provider
+                    return _this.createSubWithProvider(sub.url, sub.parameters).pipe(operators.map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), operators.mergeMap(function (fromPaymentProvider) {
+                        if (!fromPaymentProvider['hasError']) {
+                            // consume response from payment provider and creates payment details
+                            return _this.createDetailsWithParameters(userId, cartId, _this.getPaymentSopResponseParams(paymentDetails, fromPaymentProvider, sub.mappingLabels)).pipe(_this.converter.pipeable(CART_PAYMENT_DETAILS_NORMALIZER));
                         }
                         else {
-                            return null;
+                            return rxjs.throwError(fromPaymentProvider);
                         }
                     }));
-                }
-                else {
-                    return this.http
-                        .get(url, { params: params })
-                        .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-                }
-            };
-        /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-        OccCartService.prototype.createCart = /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-            function (userId, oldCartId, toMergeCartGuid) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId);
-                /** @type {?} */
-                var toAdd = JSON.stringify({});
-                /** @type {?} */
-                var queryString = 'fields=' + BASIC_PARAMS;
-                if (oldCartId) {
-                    queryString = queryString + '&oldCartId=' + oldCartId;
-                }
-                if (toMergeCartGuid) {
-                    queryString = queryString + '&toMergeCartGuid=' + toMergeCartGuid;
-                }
-                /** @type {?} */
-                var params = new i1$1.HttpParams({
-                    fromString: queryString,
-                });
-                return this.http
-                    .post(url, toAdd, { params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                }));
             };
         /**
          * @param {?} userId
          * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
+         * @param {?} paymentDetailsId
          * @return {?}
          */
-        OccCartService.prototype.addEntry = /**
+        OccCartPaymentAdapter.prototype.set = /**
          * @param {?} userId
          * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
+         * @param {?} paymentDetailsId
          * @return {?}
          */
-            function (userId, cartId, productCode, quantity) {
-                if (quantity === void 0) {
-                    quantity = 1;
-                }
-                /** @type {?} */
-                var toAdd = JSON.stringify({});
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId) + cartId + '/entries';
-                /** @type {?} */
-                var params = new i1$1.HttpParams({
-                    fromString: 'code=' + productCode + '&qty=' + quantity,
-                });
-                /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
+            function (userId, cartId, paymentDetailsId) {
                 return this.http
-                    .post(url, toAdd, { headers: headers, params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        OccCartService.prototype.updateEntry = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-            function (userId, cartId, entryNumber, qty, pickupStore) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-                /** @type {?} */
-                var queryString = 'qty=' + qty;
-                if (pickupStore) {
-                    queryString = queryString + '&pickupStore=' + pickupStore;
-                }
-                /** @type {?} */
-                var params = new i1$1.HttpParams({
-                    fromString: queryString,
-                });
-                /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                return this.http
-                    .patch(url, {}, { headers: headers, params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        OccCartService.prototype.removeEntry = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-            function (userId, cartId, entryNumber) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-                /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                return this.http
-                    .delete(url, { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-        OccCartService.prototype.createAddressOnCart = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-            function (userId, cartId, address) {
-                return this.http
-                    .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                    headers: new i1$1.HttpHeaders().set('Content-Type', 'application/json'),
+                    .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
+                    params: { paymentDetailsId: paymentDetailsId },
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
         /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-        OccCartService.prototype.setDeliveryAddress = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-            function (userId, cartId, addressId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
-                    params: { addressId: addressId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-        OccCartService.prototype.setDeliveryMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-            function (userId, cartId, deliveryModeId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
-                    params: { deliveryModeId: deliveryModeId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
+         * @protected
          * @param {?} userId
          * @param {?} cartId
          * @return {?}
          */
-        OccCartService.prototype.getDeliveryMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.http
-                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartService.prototype.getSupportedDeliveryModes = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.http
-                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartService.prototype.getPaymentProviderSubInfo = /**
+        OccCartPaymentAdapter.prototype.getProviderSubInfo = /**
+         * @protected
          * @param {?} userId
          * @param {?} cartId
          * @return {?}
@@ -5652,11 +6416,13 @@
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
         /**
+         * @private
          * @param {?} postUrl
          * @param {?} parameters
          * @return {?}
          */
-        OccCartService.prototype.createSubWithPaymentProvider = /**
+        OccCartPaymentAdapter.prototype.createSubWithProvider = /**
+         * @private
          * @param {?} postUrl
          * @param {?} parameters
          * @return {?}
@@ -5678,12 +6444,14 @@
                 });
             };
         /**
+         * @protected
          * @param {?} userId
          * @param {?} cartId
          * @param {?} parameters
          * @return {?}
          */
-        OccCartService.prototype.createPaymentDetails = /**
+        OccCartPaymentAdapter.prototype.createDetailsWithParameters = /**
+         * @protected
          * @param {?} userId
          * @param {?} cartId
          * @param {?} parameters
@@ -5704,35 +6472,178 @@
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
         /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} fromPaymentProvider
+         * @param {?} mappingLabels
          * @return {?}
          */
-        OccCartService.prototype.setPaymentDetails = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
+        OccCartPaymentAdapter.prototype.getPaymentSopResponseParams = /**
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} fromPaymentProvider
+         * @param {?} mappingLabels
          * @return {?}
          */
-            function (userId, cartId, paymentDetailsId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
-                    params: { paymentDetailsId: paymentDetailsId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            function (paymentDetails, fromPaymentProvider, mappingLabels) {
+                /** @type {?} */
+                var sopResponseParams = {};
+                sopResponseParams['decision'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_decision']];
+                sopResponseParams['amount'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_amount']];
+                sopResponseParams['currency'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_currency']];
+                sopResponseParams['billTo_country'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_country']];
+                sopResponseParams['billTo_firstName'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_firstname']];
+                sopResponseParams['billTo_lastName'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_lastname']];
+                sopResponseParams['billTo_street1'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_street1']];
+                sopResponseParams['billTo_city'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_city']];
+                sopResponseParams['billTo_postalCode'] =
+                    fromPaymentProvider[mappingLabels['hybris_billTo_postalcode']];
+                sopResponseParams['card_cardType'] = paymentDetails.cardType.code;
+                sopResponseParams['card_accountNumber'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_card_number']];
+                sopResponseParams['card_expirationMonth'] = paymentDetails.expiryMonth;
+                sopResponseParams['card_expirationYear'] = paymentDetails.expiryYear;
+                sopResponseParams['card_nameOnCard'] = paymentDetails.accountHolderName;
+                sopResponseParams['defaultPayment'] = paymentDetails.defaultPayment;
+                sopResponseParams['savePaymentInfo'] = true;
+                sopResponseParams['reasonCode'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_reason_code']];
+                sopResponseParams['paySubscriptionCreateReply_subscriptionID'] =
+                    fromPaymentProvider[mappingLabels['hybris_sop_subscriptionID']];
+                if (mappingLabels['hybris_sop_uses_public_signature'] === 'true') {
+                    sopResponseParams['paySubscriptionCreateReply_subscriptionIDPublicSignature'] = fromPaymentProvider[mappingLabels['hybris_sop_public_signature']];
+                }
+                return sopResponseParams;
             };
-        OccCartService.decorators = [
+        /**
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} parameters
+         * @param {?} mappingLabels
+         * @return {?}
+         */
+        OccCartPaymentAdapter.prototype.getParamsForPaymentProvider = /**
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} parameters
+         * @param {?} mappingLabels
+         * @return {?}
+         */
+            function (paymentDetails, parameters, mappingLabels) {
+                /** @type {?} */
+                var params = this.convertToMap(parameters);
+                params[mappingLabels['hybris_account_holder_name']] =
+                    paymentDetails.accountHolderName;
+                params[mappingLabels['hybris_card_type']] = paymentDetails.cardType.code;
+                params[mappingLabels['hybris_card_number']] = paymentDetails.cardNumber;
+                if (mappingLabels['hybris_combined_expiry_date'] === 'true') {
+                    params[mappingLabels['hybris_card_expiry_date']] =
+                        paymentDetails.expiryMonth +
+                            mappingLabels['hybris_separator_expiry_date'] +
+                            paymentDetails.expiryYear;
+                }
+                else {
+                    params[mappingLabels['hybris_card_expiration_month']] =
+                        paymentDetails.expiryMonth;
+                    params[mappingLabels['hybris_card_expiration_year']] =
+                        paymentDetails.expiryYear;
+                }
+                params[mappingLabels['hybris_card_cvn']] = paymentDetails.cvn;
+                // billing address
+                params[mappingLabels['hybris_billTo_country']] =
+                    paymentDetails.billingAddress.country.isocode;
+                params[mappingLabels['hybris_billTo_firstname']] =
+                    paymentDetails.billingAddress.firstName;
+                params[mappingLabels['hybris_billTo_lastname']] =
+                    paymentDetails.billingAddress.lastName;
+                params[mappingLabels['hybris_billTo_street1']] =
+                    paymentDetails.billingAddress.line1 +
+                        ' ' +
+                        paymentDetails.billingAddress.line2;
+                params[mappingLabels['hybris_billTo_city']] =
+                    paymentDetails.billingAddress.town;
+                params[mappingLabels['hybris_billTo_postalcode']] =
+                    paymentDetails.billingAddress.postalCode;
+                return params;
+            };
+        /**
+         * @private
+         * @param {?} html
+         * @return {?}
+         */
+        OccCartPaymentAdapter.prototype.extractPaymentDetailsFromHtml = /**
+         * @private
+         * @param {?} html
+         * @return {?}
+         */
+            function (html) {
+                /** @type {?} */
+                var domdoc = this.domparser.parseFromString(html, 'text/xml');
+                /** @type {?} */
+                var responseForm = domdoc.getElementsByTagName('form')[0];
+                /** @type {?} */
+                var inputs = responseForm.getElementsByTagName('input');
+                /** @type {?} */
+                var values = {};
+                for (var i = 0; inputs[i]; i++) {
+                    /** @type {?} */
+                    var input = inputs[i];
+                    if (input.getAttribute('name') !== '{}' &&
+                        input.getAttribute('value') !== '') {
+                        values[input.getAttribute('name')] = input.getAttribute('value');
+                    }
+                }
+                // rejected for some reason
+                if (values['decision'] !== 'ACCEPT') {
+                    /** @type {?} */
+                    var reason_1 = { hasError: true };
+                    Object.keys(values).forEach(function (name) {
+                        if (name === 'reasonCode' || name.startsWith('InvalidField')) {
+                            reason_1[name] = values[name];
+                        }
+                    });
+                    return reason_1;
+                }
+                return values;
+            };
+        /**
+         * @private
+         * @param {?} paramList
+         * @return {?}
+         */
+        OccCartPaymentAdapter.prototype.convertToMap = /**
+         * @private
+         * @param {?} paramList
+         * @return {?}
+         */
+            function (paramList) {
+                return paramList.reduce(function (result, item) {
+                    /** @type {?} */
+                    var key = item.key;
+                    result[key] = item.value;
+                    return result;
+                }, {});
+            };
+        OccCartPaymentAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccCartService.ctorParameters = function () {
+        OccCartPaymentAdapter.ctorParameters = function () {
             return [
                 { type: i1$1.HttpClient },
-                { type: OccEndpointsService }
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return OccCartService;
+        return OccCartPaymentAdapter;
     }());
 
     /**
@@ -5807,7 +6718,24 @@
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
-                        providers: [OccCartService],
+                        providers: [
+                            {
+                                provide: CartAdapter,
+                                useClass: OccCartAdapter,
+                            },
+                            {
+                                provide: CartDeliveryAdapter,
+                                useClass: OccCartDeliveryAdapter,
+                            },
+                            {
+                                provide: CartEntryAdapter,
+                                useClass: OccCartEntryAdapter,
+                            },
+                            {
+                                provide: CartPaymentAdapter,
+                                useClass: OccCartPaymentAdapter,
+                            },
+                        ],
                     },] }
         ];
         return CartOccModule;
@@ -6152,141 +7080,6 @@
         function ProductReviewsAdapter() {
         }
         return ProductReviewsAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ConverterService = /** @class */ (function () {
-        function ConverterService(injector) {
-            this.injector = injector;
-            this.converters = new Map();
-        }
-        /**
-         * @private
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.getConverters = /**
-         * @private
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-            function (injectionToken) {
-                if (!this.converters.has(injectionToken)) {
-                    /** @type {?} */
-                    var converters = this.injector.get(injectionToken, []);
-                    if (!Array.isArray(converters)) {
-                        console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
-                    }
-                    this.converters.set(injectionToken, converters);
-                }
-                return this.converters.get(injectionToken);
-            };
-        /**
-         * Will return true if converters for specified token were provided
-         */
-        /**
-         * Will return true if converters for specified token were provided
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.hasConverters = /**
-         * Will return true if converters for specified token were provided
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-            function (injectionToken) {
-                /** @type {?} */
-                var converters = this.getConverters(injectionToken);
-                return Array.isArray(converters) && converters.length > 0;
-            };
-        /**
-         * Pipeable operator to apply converter logic in a observable stream
-         */
-        /**
-         * Pipeable operator to apply converter logic in a observable stream
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.pipeable = /**
-         * Pipeable operator to apply converter logic in a observable stream
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-            function (injectionToken) {
-                var _this = this;
-                if (this.hasConverters(injectionToken)) {
-                    return operators.map(function (model) { return _this.convertSource(model, injectionToken); });
-                }
-                else {
-                    return function (observable) { return ( /** @type {?} */(observable)); };
-                }
-            };
-        /**
-         * Apply converter logic specified by injection token to source data
-         */
-        /**
-         * Apply converter logic specified by injection token to source data
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.convert = /**
-         * Apply converter logic specified by injection token to source data
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-            function (source, injectionToken) {
-                if (this.hasConverters(injectionToken)) {
-                    return this.convertSource(source, injectionToken);
-                }
-                else {
-                    return ( /** @type {?} */(source));
-                }
-            };
-        /**
-         * @private
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.convertSource = /**
-         * @private
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-            function (source, injectionToken) {
-                return this.getConverters(injectionToken).reduce(function (target, converter) {
-                    return converter.convert(source, target);
-                }, ( /** @type {?} */(undefined)));
-            };
-        ConverterService.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        ConverterService.ctorParameters = function () {
-            return [
-                { type: i0.Injector }
-            ];
-        };
-        /** @nocollapse */ ConverterService.ngInjectableDef = i0.defineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(i0.inject(i0.INJECTOR)); }, token: ConverterService, providedIn: "root" });
-        return ConverterService;
     }());
 
     /**
@@ -12639,11 +13432,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CartEffects = /** @class */ (function () {
-        function CartEffects(actions$, productImageConverter, occCartService, cartData) {
+        function CartEffects(actions$, productImageConverter, cartConnector, cartData) {
             var _this = this;
             this.actions$ = actions$;
             this.productImageConverter = productImageConverter;
-            this.occCartService = occCartService;
+            this.cartConnector = cartConnector;
             this.cartData = cartData;
             this.loadCart$ = this.actions$.pipe(effects.ofType(LOAD_CART, LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 /** @type {?} */
@@ -12657,8 +13450,8 @@
                 if (_this.isMissingData(loadCartParams)) {
                     return rxjs.of(new LoadCartFail({}));
                 }
-                return _this.occCartService
-                    .loadCart(loadCartParams.userId, loadCartParams.cartId, loadCartParams.details)
+                return _this.cartConnector
+                    .load(loadCartParams.userId, loadCartParams.cartId, loadCartParams.details)
                     .pipe(operators.map(function (cart) {
                     var e_1, _a;
                     if (cart && cart.entries) {
@@ -12686,8 +13479,8 @@
                 }), operators.catchError(function (error) { return rxjs.of(new LoadCartFail(error)); }));
             }));
             this.createCart$ = this.actions$.pipe(effects.ofType(CREATE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .createCart(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
+                return _this.cartConnector
+                    .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
                     .pipe(operators.switchMap(function (cart) {
                     var e_2, _a;
                     if (cart.entries) {
@@ -12721,7 +13514,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new CreateCartFail(error)); }));
             }));
             this.mergeCart$ = this.actions$.pipe(effects.ofType(MERGE_CART), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService.loadCart(payload.userId, 'current').pipe(operators.map(function (currentCart) {
+                return _this.cartConnector.load(payload.userId, 'current').pipe(operators.map(function (currentCart) {
                     return new CreateCart({
                         userId: payload.userId,
                         oldCartId: payload.cartId,
@@ -12751,7 +13544,7 @@
             return [
                 { type: effects.Actions },
                 { type: ProductImageNormalizer },
-                { type: OccCartService },
+                { type: CartConnector },
                 { type: CartDataService }
             ];
         };
@@ -12775,25 +13568,25 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CartEntryEffects = /** @class */ (function () {
-        function CartEntryEffects(actions$, cartService) {
+        function CartEntryEffects(actions$, cartEntryConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.cartService = cartService;
+            this.cartEntryConnector = cartEntryConnector;
             this.addEntry$ = this.actions$.pipe(effects.ofType(ADD_ENTRY), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartService
-                    .addEntry(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+                return _this.cartEntryConnector
+                    .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
                     .pipe(operators.map(function (entry) { return new AddEntrySuccess(entry); }), operators.catchError(function (error) { return rxjs.of(new AddEntryFail(error)); }));
             }));
             this.removeEntry$ = this.actions$.pipe(effects.ofType(REMOVE_ENTRY), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartService
-                    .removeEntry(payload.userId, payload.cartId, payload.entry)
+                return _this.cartEntryConnector
+                    .remove(payload.userId, payload.cartId, payload.entry)
                     .pipe(operators.map(function () {
                     return new RemoveEntrySuccess();
                 }), operators.catchError(function (error) { return rxjs.of(new RemoveEntryFail(error)); }));
             }));
             this.updateEntry$ = this.actions$.pipe(effects.ofType(UPDATE_ENTRY), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartService
-                    .updateEntry(payload.userId, payload.cartId, payload.entry, payload.qty)
+                return _this.cartEntryConnector
+                    .update(payload.userId, payload.cartId, payload.entry, payload.qty)
                     .pipe(operators.map(function () {
                     return new UpdateEntrySuccess();
                 }), operators.catchError(function (error) { return rxjs.of(new UpdateEntryFail(error)); }));
@@ -12806,7 +13599,7 @@
         CartEntryEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccCartService }
+                { type: CartEntryConnector }
             ];
         };
         __decorate([
@@ -12997,7 +13790,7 @@
             }
             case LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: {
                 /** @type {?} */
-                var supportedModes = action.payload.deliveryModes;
+                var supportedModes = action.payload;
                 if (!supportedModes) {
                     return state;
                 }
@@ -17675,15 +18468,16 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CheckoutEffects = /** @class */ (function () {
-        function CheckoutEffects(actions$, occCartService, occOrderService, productImageConverter) {
+        function CheckoutEffects(actions$, cartDeliveryConnector, cartPaymentConnector, occOrderService, productImageConverter) {
             var _this = this;
             this.actions$ = actions$;
-            this.occCartService = occCartService;
+            this.cartDeliveryConnector = cartDeliveryConnector;
+            this.cartPaymentConnector = cartPaymentConnector;
             this.occOrderService = occOrderService;
             this.productImageConverter = productImageConverter;
             this.addDeliveryAddress$ = this.actions$.pipe(effects.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .createAddressOnCart(payload.userId, payload.cartId, payload.address)
+                return _this.cartDeliveryConnector
+                    .createAddress(payload.userId, payload.cartId, payload.address)
                     .pipe(operators.mergeMap(function (address) {
                     address['titleCode'] = payload.address.titleCode;
                     return [
@@ -17697,13 +18491,13 @@
                 }), operators.catchError(function (error) { return rxjs.of(new AddDeliveryAddressFail(error)); }));
             }));
             this.setDeliveryAddress$ = this.actions$.pipe(effects.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .setDeliveryAddress(payload.userId, payload.cartId, payload.address.id)
+                return _this.cartDeliveryConnector
+                    .setAddress(payload.userId, payload.cartId, payload.address.id)
                     .pipe(operators.map(function () { return new SetDeliveryAddressSuccess(payload.address); }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryAddressFail(error)); }));
             }));
             this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .getSupportedDeliveryModes(payload.userId, payload.cartId)
+                return _this.cartDeliveryConnector
+                    .getSupportedModes(payload.userId, payload.cartId)
                     .pipe(operators.map(function (data) {
                     return new LoadSupportedDeliveryModesSuccess(data);
                 }), operators.catchError(function (error) {
@@ -17711,49 +18505,26 @@
                 }));
             }));
             this.setDeliveryMode$ = this.actions$.pipe(effects.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .setDeliveryMode(payload.userId, payload.cartId, payload.selectedModeId)
+                return _this.cartDeliveryConnector
+                    .setMode(payload.userId, payload.cartId, payload.selectedModeId)
                     .pipe(operators.map(function () { return new SetDeliveryModeSuccess(payload.selectedModeId); }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryModeFail(error)); }));
             }));
             this.createPaymentDetails$ = this.actions$.pipe(effects.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 // get information for creating a subscription directly with payment provider
-                return _this.occCartService
-                    .getPaymentProviderSubInfo(payload.userId, payload.cartId)
-                    .pipe(operators.map(function (data) {
-                    /** @type {?} */
-                    var labelsMap = _this.convertToMap(data.mappingLabels.entry);
-                    return {
-                        url: data.postUrl,
-                        parameters: _this.getParamsForPaymentProvider(payload.paymentDetails, data.parameters.entry, labelsMap),
-                        mappingLabels: labelsMap,
-                    };
-                }), operators.mergeMap(function (sub) {
-                    // create a subscription directly with payment provider
-                    return _this.occCartService
-                        .createSubWithPaymentProvider(sub.url, sub.parameters)
-                        .pipe(operators.map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), operators.mergeMap(function (fromPaymentProvider) {
-                        if (!fromPaymentProvider['hasError']) {
-                            // consume response from payment provider and creates payment details
-                            return _this.occCartService
-                                .createPaymentDetails(payload.userId, payload.cartId, _this.getPaymentSopResponseParams(payload.paymentDetails, fromPaymentProvider, sub.mappingLabels))
-                                .pipe(operators.mergeMap(function (details) {
-                                return [
-                                    new LoadUserPaymentMethods(payload.userId),
-                                    new CreatePaymentDetailsSuccess(details),
-                                ];
-                            }), operators.catchError(function (error) {
-                                return rxjs.of(new CreatePaymentDetailsFail(error));
-                            }));
-                        }
-                        else {
-                            return rxjs.of(new CreatePaymentDetailsFail(fromPaymentProvider));
-                        }
-                    }));
+                return _this.cartPaymentConnector
+                    .create(payload.userId, payload.cartId, payload.paymentDetails)
+                    .pipe(operators.mergeMap(function (details) {
+                    return [
+                        new LoadUserPaymentMethods(payload.userId),
+                        new CreatePaymentDetailsSuccess(details),
+                    ];
+                }), operators.catchError(function (error) {
+                    return rxjs.of(new CreatePaymentDetailsFail(error));
                 }));
             }));
             this.setPaymentDetails$ = this.actions$.pipe(effects.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occCartService
-                    .setPaymentDetails(payload.userId, payload.cartId, payload.paymentDetails.id)
+                return _this.cartPaymentConnector
+                    .set(payload.userId, payload.cartId, payload.paymentDetails.id)
                     .pipe(operators.map(function () {
                     return new SetPaymentDetailsSuccess(payload.paymentDetails);
                 }), operators.catchError(function (error) { return rxjs.of(new SetPaymentDetailsFail(error)); }));
@@ -17793,171 +18564,7 @@
                     ];
                 }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(error)); }));
             }));
-            if (typeof DOMParser !== 'undefined') {
-                this.domparser = new DOMParser();
-            }
         }
-        /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} fromPaymentProvider
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-        CheckoutEffects.prototype.getPaymentSopResponseParams = /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} fromPaymentProvider
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-            function (paymentDetails, fromPaymentProvider, mappingLabels) {
-                /** @type {?} */
-                var sopResponseParams = {};
-                sopResponseParams['decision'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_decision']];
-                sopResponseParams['amount'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_amount']];
-                sopResponseParams['currency'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_currency']];
-                sopResponseParams['billTo_country'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_country']];
-                sopResponseParams['billTo_firstName'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_firstname']];
-                sopResponseParams['billTo_lastName'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_lastname']];
-                sopResponseParams['billTo_street1'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_street1']];
-                sopResponseParams['billTo_city'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_city']];
-                sopResponseParams['billTo_postalCode'] =
-                    fromPaymentProvider[mappingLabels['hybris_billTo_postalcode']];
-                sopResponseParams['card_cardType'] = paymentDetails.cardType.code;
-                sopResponseParams['card_accountNumber'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_card_number']];
-                sopResponseParams['card_expirationMonth'] = paymentDetails.expiryMonth;
-                sopResponseParams['card_expirationYear'] = paymentDetails.expiryYear;
-                sopResponseParams['card_nameOnCard'] = paymentDetails.accountHolderName;
-                sopResponseParams['defaultPayment'] = paymentDetails.defaultPayment;
-                sopResponseParams['savePaymentInfo'] = true;
-                sopResponseParams['reasonCode'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_reason_code']];
-                sopResponseParams['paySubscriptionCreateReply_subscriptionID'] =
-                    fromPaymentProvider[mappingLabels['hybris_sop_subscriptionID']];
-                if (mappingLabels['hybris_sop_uses_public_signature'] === 'true') {
-                    sopResponseParams['paySubscriptionCreateReply_subscriptionIDPublicSignature'] = fromPaymentProvider[mappingLabels['hybris_sop_public_signature']];
-                }
-                return sopResponseParams;
-            };
-        /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} parameters
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-        CheckoutEffects.prototype.getParamsForPaymentProvider = /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} parameters
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-            function (paymentDetails, parameters, mappingLabels) {
-                /** @type {?} */
-                var params = this.convertToMap(parameters);
-                params[mappingLabels['hybris_account_holder_name']] =
-                    paymentDetails.accountHolderName;
-                params[mappingLabels['hybris_card_type']] = paymentDetails.cardType.code;
-                params[mappingLabels['hybris_card_number']] = paymentDetails.cardNumber;
-                if (mappingLabels['hybris_combined_expiry_date'] === 'true') {
-                    params[mappingLabels['hybris_card_expiry_date']] =
-                        paymentDetails.expiryMonth +
-                            mappingLabels['hybris_separator_expiry_date'] +
-                            paymentDetails.expiryYear;
-                }
-                else {
-                    params[mappingLabels['hybris_card_expiration_month']] =
-                        paymentDetails.expiryMonth;
-                    params[mappingLabels['hybris_card_expiration_year']] =
-                        paymentDetails.expiryYear;
-                }
-                params[mappingLabels['hybris_card_cvn']] = paymentDetails.cvn;
-                // billing address
-                params[mappingLabels['hybris_billTo_country']] =
-                    paymentDetails.billingAddress.country.isocode;
-                params[mappingLabels['hybris_billTo_firstname']] =
-                    paymentDetails.billingAddress.firstName;
-                params[mappingLabels['hybris_billTo_lastname']] =
-                    paymentDetails.billingAddress.lastName;
-                params[mappingLabels['hybris_billTo_street1']] =
-                    paymentDetails.billingAddress.line1 +
-                        ' ' +
-                        paymentDetails.billingAddress.line2;
-                params[mappingLabels['hybris_billTo_city']] =
-                    paymentDetails.billingAddress.town;
-                params[mappingLabels['hybris_billTo_postalcode']] =
-                    paymentDetails.billingAddress.postalCode;
-                return params;
-            };
-        /**
-         * @private
-         * @param {?} html
-         * @return {?}
-         */
-        CheckoutEffects.prototype.extractPaymentDetailsFromHtml = /**
-         * @private
-         * @param {?} html
-         * @return {?}
-         */
-            function (html) {
-                /** @type {?} */
-                var domdoc = this.domparser.parseFromString(html, 'text/xml');
-                /** @type {?} */
-                var responseForm = domdoc.getElementsByTagName('form')[0];
-                /** @type {?} */
-                var inputs = responseForm.getElementsByTagName('input');
-                /** @type {?} */
-                var values = {};
-                for (var i = 0; inputs[i]; i++) {
-                    /** @type {?} */
-                    var input = inputs[i];
-                    if (input.getAttribute('name') !== '{}' &&
-                        input.getAttribute('value') !== '') {
-                        values[input.getAttribute('name')] = input.getAttribute('value');
-                    }
-                }
-                // rejected for some reason
-                if (values['decision'] !== 'ACCEPT') {
-                    /** @type {?} */
-                    var reason_1 = { hasError: true };
-                    Object.keys(values).forEach(function (name) {
-                        if (name === 'reasonCode' || name.startsWith('InvalidField')) {
-                            reason_1[name] = values[name];
-                        }
-                    });
-                    return reason_1;
-                }
-                return values;
-            };
-        /**
-         * @private
-         * @param {?} paramList
-         * @return {?}
-         */
-        CheckoutEffects.prototype.convertToMap = /**
-         * @private
-         * @param {?} paramList
-         * @return {?}
-         */
-            function (paramList) {
-                return paramList.reduce(function (result, item) {
-                    /** @type {?} */
-                    var key = item.key;
-                    result[key] = item.value;
-                    return result;
-                }, {});
-            };
         CheckoutEffects.decorators = [
             { type: i0.Injectable }
         ];
@@ -17965,7 +18572,8 @@
         CheckoutEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccCartService },
+                { type: CartDeliveryConnector },
+                { type: CartPaymentConnector },
                 { type: OccOrderService },
                 { type: ProductImageNormalizer }
             ];
@@ -21142,7 +21750,25 @@
     exports.CartService = CartService;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.CartDataService = CartDataService;
-    exports.OccCartService = OccCartService;
+    exports.CartConnector = CartConnector;
+    exports.CartAdapter = CartAdapter;
+    exports.CART_NORMALIZER = CART_NORMALIZER;
+    exports.CartDeliveryConnector = CartDeliveryConnector;
+    exports.CartDeliveryAdapter = CartDeliveryAdapter;
+    exports.DELIVERY_ADDRESS_NORMALIZER = DELIVERY_ADDRESS_NORMALIZER;
+    exports.DELIVERY_ADDRESS_SERIALIZER = DELIVERY_ADDRESS_SERIALIZER;
+    exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.CartEntryConnector = CartEntryConnector;
+    exports.CartEntryAdapter = CartEntryAdapter;
+    exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
+    exports.CartPaymentConnector = CartPaymentConnector;
+    exports.CartPaymentAdapter = CartPaymentAdapter;
+    exports.CART_PAYMENT_DETAILS_NORMALIZER = CART_PAYMENT_DETAILS_NORMALIZER;
+    exports.CART_PAYMENT_DETAILS_SERIALIZER = CART_PAYMENT_DETAILS_SERIALIZER;
+    exports.OccCartAdapter = OccCartAdapter;
+    exports.OccCartDeliveryAdapter = OccCartDeliveryAdapter;
+    exports.OccCartEntryAdapter = OccCartEntryAdapter;
+    exports.OccCartPaymentAdapter = OccCartPaymentAdapter;
     exports.CartOccModule = CartOccModule;
     exports.CartModule = CartModule;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;

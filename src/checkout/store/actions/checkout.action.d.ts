@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Address, DeliveryModeList, PaymentDetails, Order } from '../../../occ/occ-models/index';
+import { Address, DeliveryMode, Order, PaymentDetails } from '../../../occ/occ-models/index';
 export declare const ADD_DELIVERY_ADDRESS = "[Checkout] Add Delivery Address";
 export declare const ADD_DELIVERY_ADDRESS_FAIL = "[Checkout] Add Delivery Address Fail";
 export declare const ADD_DELIVERY_ADDRESS_SUCCESS = "[Checkout] Add Delivery Address Success";
@@ -87,9 +87,9 @@ export declare class LoadSupportedDeliveryModesFail implements Action {
     constructor(payload: any);
 }
 export declare class LoadSupportedDeliveryModesSuccess implements Action {
-    payload: DeliveryModeList;
+    payload: DeliveryMode[];
     readonly type = "[Checkout] Load Supported Delivery Modes Success";
-    constructor(payload: DeliveryModeList);
+    constructor(payload: DeliveryMode[]);
 }
 export declare class SetDeliveryMode implements Action {
     payload: {
