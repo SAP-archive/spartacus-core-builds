@@ -1,8 +1,8 @@
 import { PipeTransform } from '@angular/core';
 import { UrlTranslationService } from './url-translation.service';
-import { TranslateUrlOptions } from './translate-url-options';
+import { TranslateUrlCommands, TranslateUrlOptions } from './translate-url-commands';
 export declare class TranslateUrlPipe implements PipeTransform {
     private urlTranslator;
     constructor(urlTranslator: UrlTranslationService);
-    transform(options: TranslateUrlOptions): string | string[];
+    transform(commands: TranslateUrlCommands, options?: TranslateUrlOptions): any[];
 }

@@ -1217,53 +1217,18 @@ class ConfigurableRoutesService {
         router.resetConfig(translatedRoutes);
     }
     /**
-     * Returns the list of routes translations for given list of nested routes
-     * using given object of routes translations.
-     * @param {?} nestedRouteNames
-     * @param {?=} routesTranslations
-     * @return {?}
-     */
-    getNestedRoutesTranslations(nestedRouteNames, routesTranslations = this.currentRoutesTranslations) {
-        return this.getNestedRoutesTranslationsRecursive(nestedRouteNames, routesTranslations, []);
-    }
-    /**
-     * @private
-     * @param {?} nestedRoutesNames
-     * @param {?} routesTranslations
-     * @param {?} accResult
-     * @return {?}
-     */
-    getNestedRoutesTranslationsRecursive(nestedRoutesNames, routesTranslations, accResult) {
-        if (!nestedRoutesNames.length) {
-            return accResult;
-        }
-        const [routeName, ...remainingRouteNames] = nestedRoutesNames;
-        /** @type {?} */
-        const translation = this.getRouteTranslation(routeName, routesTranslations);
-        if (!translation) {
-            return null;
-        }
-        if (remainingRouteNames.length) {
-            /** @type {?} */
-            const childrenTranslations = this.getChildrenRoutesTranslations(routeName, routesTranslations);
-            if (!childrenTranslations) {
-                this.warn(`No children routes translations were configured for page '${routeName}' in language '${this.currentLanguageCode}'!`);
-                return null;
-            }
-            return this.getNestedRoutesTranslationsRecursive(remainingRouteNames, childrenTranslations, accResult.concat(translation));
-        }
-        return accResult.concat(translation);
-    }
-    /**
-     * @private
      * @param {?} routeName
-     * @param {?} routesTranslations
      * @return {?}
      */
-    getChildrenRoutesTranslations(routeName, routesTranslations) {
+    getRouteTranslation(routeName) {
         /** @type {?} */
-        const routeTranslation = this.getRouteTranslation(routeName, routesTranslations);
-        return routeTranslation && routeTranslation.children;
+        const routesTranslations = this.currentRoutesTranslations;
+        /** @type {?} */
+        const result = routesTranslations && routesTranslations[routeName];
+        if (!routesTranslations || result === undefined) {
+            this.warn(`No route translation was configured for page '${routeName}' in language '${this.currentLanguageCode}'!`);
+        }
+        return result;
     }
     /**
      * @private
@@ -1279,7 +1244,7 @@ class ConfigurableRoutesService {
             const translatedRouteAliases = this.translateRoute(route, routesTranslations);
             if (route.children && route.children.length) {
                 /** @type {?} */
-                const translatedChildrenRoutes = this.translateChildrenRoutes(route, routesTranslations);
+                const translatedChildrenRoutes = this.translateRoutes(route.children, routesTranslations);
                 translatedRouteAliases.forEach(translatedRouteAlias => {
                     translatedRouteAlias.children = translatedChildrenRoutes;
                 });
@@ -1287,30 +1252,6 @@ class ConfigurableRoutesService {
             result.push(...translatedRouteAliases);
         });
         return result;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    translateChildrenRoutes(route, routesTranslations) {
-        if (this.isConfigurable(route, 'cxPath')) {
-            /** @type {?} */
-            const routeName = this.getConfigurable(route, 'cxPath');
-            /** @type {?} */
-            const childrenTranslations = this.getChildrenRoutesTranslations(routeName, routesTranslations);
-            if (childrenTranslations === undefined) {
-                this.warn(`Could not translate children routes of route '${routeName}'`, route, `due to undefined 'children' key for '${routeName}' route in routes translations`, routesTranslations);
-                return [];
-            }
-            // null switches off the children routes:
-            if (childrenTranslations === null) {
-                return [];
-            }
-            return this.translateRoutes(route.children, childrenTranslations);
-        }
-        return route.children;
     }
     /**
      * @private
@@ -1375,20 +1316,6 @@ class ConfigurableRoutesService {
     }
     /**
      * @private
-     * @param {?} routeName
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    getRouteTranslation(routeName, routesTranslations) {
-        /** @type {?} */
-        const result = routesTranslations && routesTranslations[routeName];
-        if (!routesTranslations || result === undefined) {
-            this.warn(`No route translation was configured for page '${routeName}' in language '${this.currentLanguageCode}'!`);
-        }
-        return result;
-    }
-    /**
-     * @private
      * @param {?} route
      * @param {?} key
      * @param {?} routesTranslations
@@ -1398,7 +1325,7 @@ class ConfigurableRoutesService {
         /** @type {?} */
         const routeName = this.getConfigurable(route, key);
         /** @type {?} */
-        const translation = this.getRouteTranslation(routeName, routesTranslations);
+        const translation = this.getRouteTranslation(routeName);
         if (translation === undefined) {
             this.warn(`Could not translate key '${key}' of route '${routeName}'`, route, `due to undefined key '${routeName}' in routes translations`, routesTranslations);
             return [];
@@ -1500,145 +1427,70 @@ class UrlTranslationService {
         this.ROOT_URL = ['/'];
     }
     /**
-     * @param {?} options
+     * @param {?} commands
+     * @param {?=} options
      * @return {?}
      */
-    translate(options) {
-        // if options are invalid, return the root url
-        if (!this.validateOptions(options)) {
-            return this.ROOT_URL;
+    translate(commands, options = {}) {
+        if (!Array.isArray(commands)) {
+            commands = [commands];
         }
-        return this.generateUrl(options.route);
-    }
-    /**
-     * @private
-     * @param {?} options
-     * @return {?}
-     */
-    validateOptions(options) {
-        if (!options || typeof options !== 'object') {
-            this.warn(`Incorrect options for translating url. Options have to be an object. Options: `, options);
-            return false;
-        }
-        /** @type {?} */
-        const routeDefined = Boolean(options.route);
-        if (!routeDefined) {
-            this.warn(`Incorrect options for translating url. Options must have 'route' array property. Options: `, options);
-            return false;
-        }
-        if (routeDefined) {
-            return this.validateOptionsRoute(options.route);
-        }
-        return true;
-    }
-    /**
-     * @private
-     * @param {?} nestedRoutes
-     * @return {?}
-     */
-    validateOptionsRoute(nestedRoutes) {
-        if (!Array.isArray(nestedRoutes)) {
-            this.warn(`Incorrect options for translating url.`, `'route' property should be an array. Route: `, nestedRoutes);
-            return false;
-        }
-        /** @type {?} */
-        const length = nestedRoutes.length;
-        if (!length) {
-            this.warn(`Incorrect options for translating url.`, `'route' array should not be empty. Route: `, nestedRoutes);
-            return false;
-        }
-        for (let i = 0; i < length; i++) {
-            /** @type {?} */
-            const nestedRoute = nestedRoutes[i];
-            if (typeof nestedRoute !== 'string' && !nestedRoute.name) {
-                this.warn(`Incorrect options for translating url.`, `'route' array can contain only elements which are string or object with 'name' property. Route: `, nestedRoutes);
-                return false;
-            }
-        }
-        return true;
-    }
-    /**
-     * @private
-     * @param {?} nestedRoutes
-     * @return {?}
-     */
-    generateUrl(nestedRoutes) {
-        /** @type {?} */
-        const standarizedNestedRoutes = this.standarizeNestedRoutes(nestedRoutes);
-        // if no routes given, return root url
-        if (!standarizedNestedRoutes.length) {
-            return this.ROOT_URL;
-        }
-        const { nestedRoutesNames, nestedRoutesParams, } = this.splitRoutesNamesAndParams(standarizedNestedRoutes);
-        /** @type {?} */
-        const nestedRoutesTranslations = this.configurableRoutesService.getNestedRoutesTranslations(nestedRoutesNames);
-        // if no routes translations were configured, return root url:
-        if (!nestedRoutesTranslations) {
-            return this.ROOT_URL;
-        }
-        const [leafNestedRouteTranslation] = nestedRoutesTranslations.slice(-1);
-        // if leaf route was disabled in config (set to null), return root url:
-        if (!leafNestedRouteTranslation.paths) {
-            return this.ROOT_URL;
-        }
-        // find first path for every nested route that can satisfy it's parameters with given parameters
-        /** @type {?} */
-        const nestedRoutesPaths = this.findPathsWithFillableParams(nestedRoutesTranslations, nestedRoutesParams);
-        // if not every nested route had configured path that can be satisfied with given params, return root url
-        if (!nestedRoutesPaths) {
-            return this.ROOT_URL;
-        }
-        /** @type {?} */
-        const result = this.provideParamsValues(nestedRoutesPaths, nestedRoutesParams, nestedRoutesTranslations.map(routTranslation => routTranslation.paramsMapping));
-        result.unshift(''); // ensure absolute path ( leading '' in path array is equvalent to leading '/' in string)
-        return result;
-    }
-    /**
-     * Converts all elements to objects
-     * @private
-     * @param {?} nestedRoutes
-     * @return {?}
-     */
-    standarizeNestedRoutes(nestedRoutes) {
-        return (nestedRoutes || []).map(route => typeof route === 'string'
-            ? { name: route, params: {} }
-            : { name: route.name, params: route.params || {} });
-    }
-    /**
-     * @private
-     * @param {?} nestedRoutes
-     * @return {?}
-     */
-    splitRoutesNamesAndParams(nestedRoutes) {
-        return (nestedRoutes || []).reduce(({ nestedRoutesNames, nestedRoutesParams }, route) => ({
-            nestedRoutesNames: [...nestedRoutesNames, route.name],
-            nestedRoutesParams: [...nestedRoutesParams, route.params],
-        }), { nestedRoutesNames: [], nestedRoutesParams: [] });
-    }
-    /**
-     * @private
-     * @param {?} nestedRoutesPaths
-     * @param {?} nestedRoutesParams
-     * @param {?} nestedRoutesParamsMappings
-     * @return {?}
-     */
-    provideParamsValues(nestedRoutesPaths, nestedRoutesParams, nestedRoutesParamsMappings) {
-        /** @type {?} */
-        const length = nestedRoutesPaths.length;
         /** @type {?} */
         const result = [];
-        for (let i = 0; i < length; i++) {
-            /** @type {?} */
-            const path = nestedRoutesPaths[i];
-            /** @type {?} */
-            const paramsObject = nestedRoutesParams[i];
-            /** @type {?} */
-            const paramsMapping = nestedRoutesParamsMappings[i];
-            /** @type {?} */
-            const pathSegments = this.provideParamsValuesForSingleRoute(path, paramsObject, paramsMapping);
-            result.push(...pathSegments);
+        for (const command of commands) {
+            if (!command || !command.route) {
+                // don't modify segment that is not route command:
+                result.push(command);
+            }
+            else {
+                // generate array with url segments for given options object:
+                /** @type {?} */
+                const partialResult = this.generateUrl(command);
+                if (partialResult === null) {
+                    return this.ROOT_URL;
+                }
+                result.push(...partialResult);
+            }
+        }
+        if (!options.relative) {
+            result.unshift(''); // ensure absolute path ( leading '' in path array is equivalent to leading '/' in string)
         }
         return result;
+    }
+    /**
+     * @private
+     * @param {?} command
+     * @return {?}
+     */
+    generateUrl(command) {
+        this.standarizeRouteCommand(command);
+        if (!command.route) {
+            return null;
+        }
+        /** @type {?} */
+        const routeTranslation = this.configurableRoutesService.getRouteTranslation(command.route);
+        // if no route translation was configured, return null:
+        if (!routeTranslation || !routeTranslation.paths) {
+            return null;
+        }
+        // find first path that can satisfy it's parameters with given parameters
+        /** @type {?} */
+        const path = this.findPathWithFillableParams(routeTranslation, command.params);
+        // if there is no configured path that can be satisfied with given params, return null
+        if (!path) {
+            return null;
+        }
+        /** @type {?} */
+        const result = this.provideParamsValues(path, command.params, routeTranslation.paramsMapping);
+        return result;
+    }
+    /**
+     * @private
+     * @param {?} command
+     * @return {?}
+     */
+    standarizeRouteCommand(command) {
+        command.params = command.params || {};
     }
     /**
      * @private
@@ -1647,7 +1499,7 @@ class UrlTranslationService {
      * @param {?} paramsMapping
      * @return {?}
      */
-    provideParamsValuesForSingleRoute(path, params, paramsMapping) {
+    provideParamsValues(path, params, paramsMapping) {
         return this.urlParser.getPrimarySegments(path).map(segment => {
             if (isParam(segment)) {
                 /** @type {?} */
@@ -1661,44 +1513,22 @@ class UrlTranslationService {
     }
     /**
      * @private
-     * @param {?} nestedRoutesTranslations
-     * @param {?} nestedRoutesParams
-     * @return {?}
-     */
-    findPathsWithFillableParams(nestedRoutesTranslations, nestedRoutesParams) {
-        /** @type {?} */
-        const length = nestedRoutesTranslations.length;
-        /** @type {?} */
-        const result = [];
-        for (let i = 0; i < length; i++) {
-            /** @type {?} */
-            const routeTranslation = nestedRoutesTranslations[i];
-            /** @type {?} */
-            const paramsObject = nestedRoutesParams[i];
-            /** @type {?} */
-            const path = this.findPartialPathWithFillableParams(routeTranslation.paths, paramsObject, routeTranslation.paramsMapping);
-            if (path === undefined || path === null) {
-                this.warn(`No configured path matches all its params to given object. `, `Route translation: `, routeTranslation, `(in nested routes translations list`, nestedRoutesTranslations, `). Params object: `, paramsObject, `(in params objects list`, nestedRoutesParams, `)`);
-                return null;
-            }
-            result.push(path);
-        }
-        return result;
-    }
-    // find first path that can fill all its params with values from given object
-    /**
-     * @private
-     * @param {?} paths
+     * @param {?} routeTranslation
      * @param {?} params
-     * @param {?} paramsMapping
      * @return {?}
      */
-    findPartialPathWithFillableParams(paths, params, paramsMapping) {
-        return paths.find(path => this.getParams(path).every(paramName => {
+    findPathWithFillableParams(routeTranslation, params) {
+        /** @type {?} */
+        const foundPath = routeTranslation.paths.find(path => this.getParams(path).every(paramName => {
             /** @type {?} */
-            const mappedParamName = this.getMappedParamName(paramName, paramsMapping);
+            const mappedParamName = this.getMappedParamName(paramName, routeTranslation.paramsMapping);
             return params[mappedParamName] !== undefined;
         }));
+        if (foundPath === undefined || foundPath === null) {
+            this.warn(`No configured path matches all its params to given object. `, `Route translation: `, routeTranslation, `Params object: `, params);
+            return null;
+        }
+        return foundPath;
     }
     /**
      * @private
@@ -1775,24 +1605,14 @@ class RoutingService {
     }
     /**
      * Navigation with a new state into history
-     * @param {?} pathOrTranslateUrlOptions
+     * @param {?} commands
      * @param {?=} query
      * @param {?=} extras
      * @return {?}
      */
-    go(pathOrTranslateUrlOptions, query, extras) {
+    go(commands, query, extras) {
         /** @type {?} */
-        let path;
-        if (Array.isArray(pathOrTranslateUrlOptions)) {
-            path = pathOrTranslateUrlOptions;
-        }
-        else {
-            /** @type {?} */
-            const translateUrlOptions = pathOrTranslateUrlOptions;
-            /** @type {?} */
-            const translatedPath = this.urlTranslator.translate(translateUrlOptions);
-            path = Array.isArray(translatedPath) ? translatedPath : [translatedPath];
-        }
+        const path = this.urlTranslator.translate(commands, { relative: true });
         return this.navigate(path, query, extras);
     }
     /**
@@ -2455,7 +2275,7 @@ class UserErrorHandlingService {
                 this.authService.refreshUserToken(token);
             }
             else if (!token.access_token && !token.refresh_token) {
-                this.routingService.go({ route: ['login'] });
+                this.routingService.go({ route: 'login' });
             }
             oldToken = oldToken || token;
         }), filter((token) => oldToken.access_token !== token.access_token), take(1));
@@ -3653,7 +3473,7 @@ class AuthGuard {
     canActivate(_route, state) {
         return this.authService.getUserToken().pipe(map((token) => {
             if (!token.access_token) {
-                this.routingService.go({ route: ['login'] });
+                this.routingService.go({ route: 'login' });
                 this.routingService.saveRedirectUrl(state.url);
             }
             return !!token.access_token;
@@ -3692,7 +3512,7 @@ class NotAuthGuard {
     canActivate() {
         return this.authService.getUserToken().pipe(map(token => {
             if (token.access_token) {
-                this.routingService.go({ route: ['home'] });
+                this.routingService.go({ route: 'home' });
             }
             return !token.access_token;
         }));
@@ -9223,11 +9043,12 @@ class TranslateUrlPipe {
         this.urlTranslator = urlTranslator;
     }
     /**
-     * @param {?} options
+     * @param {?} commands
+     * @param {?=} options
      * @return {?}
      */
-    transform(options) {
-        return this.urlTranslator.translate(options);
+    transform(commands, options = {}) {
+        return this.urlTranslator.translate(commands, options);
     }
 }
 TranslateUrlPipe.decorators = [
@@ -16648,12 +16469,14 @@ class SmartEditService {
             this.getPreviewPage = true;
             if (cmsPage.type === PageType.PRODUCT_PAGE) {
                 this.routingService.go({
-                    route: [{ name: 'product', params: { code: 2053367 } }],
+                    route: 'product',
+                    params: { code: 2053367 },
                 });
             }
             else if (cmsPage.type === PageType.CATEGORY_PAGE) {
                 this.routingService.go({
-                    route: [{ name: 'category', params: { code: 575 } }],
+                    route: 'category',
+                    params: { code: 575 },
                 });
             }
         }

@@ -1545,80 +1545,22 @@
                 router$$1.resetConfig(translatedRoutes);
             };
         /**
-         * Returns the list of routes translations for given list of nested routes
-         * using given object of routes translations.
-         */
-        /**
-         * Returns the list of routes translations for given list of nested routes
-         * using given object of routes translations.
-         * @param {?} nestedRouteNames
-         * @param {?=} routesTranslations
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.getNestedRoutesTranslations = /**
-         * Returns the list of routes translations for given list of nested routes
-         * using given object of routes translations.
-         * @param {?} nestedRouteNames
-         * @param {?=} routesTranslations
-         * @return {?}
-         */
-            function (nestedRouteNames, routesTranslations) {
-                if (routesTranslations === void 0) {
-                    routesTranslations = this.currentRoutesTranslations;
-                }
-                return this.getNestedRoutesTranslationsRecursive(nestedRouteNames, routesTranslations, []);
-            };
-        /**
-         * @private
-         * @param {?} nestedRoutesNames
-         * @param {?} routesTranslations
-         * @param {?} accResult
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.getNestedRoutesTranslationsRecursive = /**
-         * @private
-         * @param {?} nestedRoutesNames
-         * @param {?} routesTranslations
-         * @param {?} accResult
-         * @return {?}
-         */
-            function (nestedRoutesNames, routesTranslations, accResult) {
-                if (!nestedRoutesNames.length) {
-                    return accResult;
-                }
-                var _a = __read(nestedRoutesNames), routeName = _a[0], remainingRouteNames = _a.slice(1);
-                /** @type {?} */
-                var translation = this.getRouteTranslation(routeName, routesTranslations);
-                if (!translation) {
-                    return null;
-                }
-                if (remainingRouteNames.length) {
-                    /** @type {?} */
-                    var childrenTranslations = this.getChildrenRoutesTranslations(routeName, routesTranslations);
-                    if (!childrenTranslations) {
-                        this.warn("No children routes translations were configured for page '" + routeName + "' in language '" + this.currentLanguageCode + "'!");
-                        return null;
-                    }
-                    return this.getNestedRoutesTranslationsRecursive(remainingRouteNames, childrenTranslations, accResult.concat(translation));
-                }
-                return accResult.concat(translation);
-            };
-        /**
-         * @private
          * @param {?} routeName
-         * @param {?} routesTranslations
          * @return {?}
          */
-        ConfigurableRoutesService.prototype.getChildrenRoutesTranslations = /**
-         * @private
+        ConfigurableRoutesService.prototype.getRouteTranslation = /**
          * @param {?} routeName
-         * @param {?} routesTranslations
          * @return {?}
          */
-            function (routeName, routesTranslations) {
+            function (routeName) {
                 /** @type {?} */
-                var routeTranslation = this.getRouteTranslation(routeName, routesTranslations);
-                return routeTranslation && routeTranslation.children;
+                var routesTranslations = this.currentRoutesTranslations;
+                /** @type {?} */
+                var result = routesTranslations && routesTranslations[routeName];
+                if (!routesTranslations || result === undefined) {
+                    this.warn("No route translation was configured for page '" + routeName + "' in language '" + this.currentLanguageCode + "'!");
+                }
+                return result;
             };
         /**
          * @private
@@ -1641,7 +1583,7 @@
                     var translatedRouteAliases = _this.translateRoute(route, routesTranslations);
                     if (route.children && route.children.length) {
                         /** @type {?} */
-                        var translatedChildrenRoutes_1 = _this.translateChildrenRoutes(route, routesTranslations);
+                        var translatedChildrenRoutes_1 = _this.translateRoutes(route.children, routesTranslations);
                         translatedRouteAliases.forEach(function (translatedRouteAlias) {
                             translatedRouteAlias.children = translatedChildrenRoutes_1;
                         });
@@ -1649,36 +1591,6 @@
                     result.push.apply(result, __spread(translatedRouteAliases));
                 });
                 return result;
-            };
-        /**
-         * @private
-         * @param {?} route
-         * @param {?} routesTranslations
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.translateChildrenRoutes = /**
-         * @private
-         * @param {?} route
-         * @param {?} routesTranslations
-         * @return {?}
-         */
-            function (route, routesTranslations) {
-                if (this.isConfigurable(route, 'cxPath')) {
-                    /** @type {?} */
-                    var routeName = this.getConfigurable(route, 'cxPath');
-                    /** @type {?} */
-                    var childrenTranslations = this.getChildrenRoutesTranslations(routeName, routesTranslations);
-                    if (childrenTranslations === undefined) {
-                        this.warn("Could not translate children routes of route '" + routeName + "'", route, "due to undefined 'children' key for '" + routeName + "' route in routes translations", routesTranslations);
-                        return [];
-                    }
-                    // null switches off the children routes:
-                    if (childrenTranslations === null) {
-                        return [];
-                    }
-                    return this.translateRoutes(route.children, childrenTranslations);
-                }
-                return route.children;
             };
         /**
          * @private
@@ -1773,26 +1685,6 @@
             };
         /**
          * @private
-         * @param {?} routeName
-         * @param {?} routesTranslations
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.getRouteTranslation = /**
-         * @private
-         * @param {?} routeName
-         * @param {?} routesTranslations
-         * @return {?}
-         */
-            function (routeName, routesTranslations) {
-                /** @type {?} */
-                var result = routesTranslations && routesTranslations[routeName];
-                if (!routesTranslations || result === undefined) {
-                    this.warn("No route translation was configured for page '" + routeName + "' in language '" + this.currentLanguageCode + "'!");
-                }
-                return result;
-            };
-        /**
-         * @private
          * @param {?} route
          * @param {?} key
          * @param {?} routesTranslations
@@ -1809,7 +1701,7 @@
                 /** @type {?} */
                 var routeName = this.getConfigurable(route, key);
                 /** @type {?} */
-                var translation = this.getRouteTranslation(routeName, routesTranslations);
+                var translation = this.getRouteTranslation(routeName);
                 if (translation === undefined) {
                     this.warn("Could not translate key '" + key + "' of route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in routes translations", routesTranslations);
                     return [];
@@ -1927,190 +1819,105 @@
             this.ROOT_URL = ['/'];
         }
         /**
-         * @param {?} options
+         * @param {?} commands
+         * @param {?=} options
          * @return {?}
          */
         UrlTranslationService.prototype.translate = /**
-         * @param {?} options
+         * @param {?} commands
+         * @param {?=} options
          * @return {?}
          */
-            function (options) {
-                // if options are invalid, return the root url
-                if (!this.validateOptions(options)) {
-                    return this.ROOT_URL;
+            function (commands, options) {
+                if (options === void 0) {
+                    options = {};
                 }
-                return this.generateUrl(options.route);
-            };
-        /**
-         * @private
-         * @param {?} options
-         * @return {?}
-         */
-        UrlTranslationService.prototype.validateOptions = /**
-         * @private
-         * @param {?} options
-         * @return {?}
-         */
-            function (options) {
-                if (!options || typeof options !== 'object') {
-                    this.warn("Incorrect options for translating url. Options have to be an object. Options: ", options);
-                    return false;
+                var e_1, _a;
+                if (!Array.isArray(commands)) {
+                    commands = [commands];
                 }
                 /** @type {?} */
-                var routeDefined = Boolean(options.route);
-                if (!routeDefined) {
-                    this.warn("Incorrect options for translating url. Options must have 'route' array property. Options: ", options);
-                    return false;
-                }
-                if (routeDefined) {
-                    return this.validateOptionsRoute(options.route);
-                }
-                return true;
-            };
-        /**
-         * @private
-         * @param {?} nestedRoutes
-         * @return {?}
-         */
-        UrlTranslationService.prototype.validateOptionsRoute = /**
-         * @private
-         * @param {?} nestedRoutes
-         * @return {?}
-         */
-            function (nestedRoutes) {
-                if (!Array.isArray(nestedRoutes)) {
-                    this.warn("Incorrect options for translating url.", "'route' property should be an array. Route: ", nestedRoutes);
-                    return false;
-                }
-                /** @type {?} */
-                var length = nestedRoutes.length;
-                if (!length) {
-                    this.warn("Incorrect options for translating url.", "'route' array should not be empty. Route: ", nestedRoutes);
-                    return false;
-                }
-                for (var i = 0; i < length; i++) {
-                    /** @type {?} */
-                    var nestedRoute = nestedRoutes[i];
-                    if (typeof nestedRoute !== 'string' && !nestedRoute.name) {
-                        this.warn("Incorrect options for translating url.", "'route' array can contain only elements which are string or object with 'name' property. Route: ", nestedRoutes);
-                        return false;
+                var result = [];
+                try {
+                    for (var commands_1 = __values(commands), commands_1_1 = commands_1.next(); !commands_1_1.done; commands_1_1 = commands_1.next()) {
+                        var command = commands_1_1.value;
+                        if (!command || !command.route) {
+                            // don't modify segment that is not route command:
+                            result.push(command);
+                        }
+                        else {
+                            // generate array with url segments for given options object:
+                            /** @type {?} */
+                            var partialResult = this.generateUrl(command);
+                            if (partialResult === null) {
+                                return this.ROOT_URL;
+                            }
+                            result.push.apply(result, __spread(partialResult));
+                        }
                     }
                 }
-                return true;
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (commands_1_1 && !commands_1_1.done && (_a = commands_1.return))
+                            _a.call(commands_1);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                if (!options.relative) {
+                    result.unshift(''); // ensure absolute path ( leading '' in path array is equivalent to leading '/' in string)
+                }
+                return result;
             };
         /**
          * @private
-         * @param {?} nestedRoutes
+         * @param {?} command
          * @return {?}
          */
         UrlTranslationService.prototype.generateUrl = /**
          * @private
-         * @param {?} nestedRoutes
+         * @param {?} command
          * @return {?}
          */
-            function (nestedRoutes) {
-                /** @type {?} */
-                var standarizedNestedRoutes = this.standarizeNestedRoutes(nestedRoutes);
-                // if no routes given, return root url
-                if (!standarizedNestedRoutes.length) {
-                    return this.ROOT_URL;
-                }
-                var _a = this.splitRoutesNamesAndParams(standarizedNestedRoutes), nestedRoutesNames = _a.nestedRoutesNames, nestedRoutesParams = _a.nestedRoutesParams;
-                /** @type {?} */
-                var nestedRoutesTranslations = this.configurableRoutesService.getNestedRoutesTranslations(nestedRoutesNames);
-                // if no routes translations were configured, return root url:
-                if (!nestedRoutesTranslations) {
-                    return this.ROOT_URL;
-                }
-                var _b = __read(nestedRoutesTranslations.slice(-1), 1), leafNestedRouteTranslation = _b[0];
-                // if leaf route was disabled in config (set to null), return root url:
-                if (!leafNestedRouteTranslation.paths) {
-                    return this.ROOT_URL;
-                }
-                // find first path for every nested route that can satisfy it's parameters with given parameters
-                /** @type {?} */
-                var nestedRoutesPaths = this.findPathsWithFillableParams(nestedRoutesTranslations, nestedRoutesParams);
-                // if not every nested route had configured path that can be satisfied with given params, return root url
-                if (!nestedRoutesPaths) {
-                    return this.ROOT_URL;
+            function (command) {
+                this.standarizeRouteCommand(command);
+                if (!command.route) {
+                    return null;
                 }
                 /** @type {?} */
-                var result = this.provideParamsValues(nestedRoutesPaths, nestedRoutesParams, nestedRoutesTranslations.map(function (routTranslation) { return routTranslation.paramsMapping; }));
-                result.unshift(''); // ensure absolute path ( leading '' in path array is equvalent to leading '/' in string)
+                var routeTranslation = this.configurableRoutesService.getRouteTranslation(command.route);
+                // if no route translation was configured, return null:
+                if (!routeTranslation || !routeTranslation.paths) {
+                    return null;
+                }
+                // find first path that can satisfy it's parameters with given parameters
+                /** @type {?} */
+                var path = this.findPathWithFillableParams(routeTranslation, command.params);
+                // if there is no configured path that can be satisfied with given params, return null
+                if (!path) {
+                    return null;
+                }
+                /** @type {?} */
+                var result = this.provideParamsValues(path, command.params, routeTranslation.paramsMapping);
                 return result;
             };
         /**
-         * Converts all elements to objects
-         */
-        /**
-         * Converts all elements to objects
          * @private
-         * @param {?} nestedRoutes
+         * @param {?} command
          * @return {?}
          */
-        UrlTranslationService.prototype.standarizeNestedRoutes = /**
-         * Converts all elements to objects
+        UrlTranslationService.prototype.standarizeRouteCommand = /**
          * @private
-         * @param {?} nestedRoutes
+         * @param {?} command
          * @return {?}
          */
-            function (nestedRoutes) {
-                return (nestedRoutes || []).map(function (route) {
-                    return typeof route === 'string'
-                        ? { name: route, params: {} }
-                        : { name: route.name, params: route.params || {} };
-                });
-            };
-        /**
-         * @private
-         * @param {?} nestedRoutes
-         * @return {?}
-         */
-        UrlTranslationService.prototype.splitRoutesNamesAndParams = /**
-         * @private
-         * @param {?} nestedRoutes
-         * @return {?}
-         */
-            function (nestedRoutes) {
-                return (nestedRoutes || []).reduce(function (_a, route) {
-                    var nestedRoutesNames = _a.nestedRoutesNames, nestedRoutesParams = _a.nestedRoutesParams;
-                    return ({
-                        nestedRoutesNames: __spread(nestedRoutesNames, [route.name]),
-                        nestedRoutesParams: __spread(nestedRoutesParams, [route.params]),
-                    });
-                }, { nestedRoutesNames: [], nestedRoutesParams: [] });
-            };
-        /**
-         * @private
-         * @param {?} nestedRoutesPaths
-         * @param {?} nestedRoutesParams
-         * @param {?} nestedRoutesParamsMappings
-         * @return {?}
-         */
-        UrlTranslationService.prototype.provideParamsValues = /**
-         * @private
-         * @param {?} nestedRoutesPaths
-         * @param {?} nestedRoutesParams
-         * @param {?} nestedRoutesParamsMappings
-         * @return {?}
-         */
-            function (nestedRoutesPaths, nestedRoutesParams, nestedRoutesParamsMappings) {
-                /** @type {?} */
-                var length = nestedRoutesPaths.length;
-                /** @type {?} */
-                var result = [];
-                for (var i = 0; i < length; i++) {
-                    /** @type {?} */
-                    var path = nestedRoutesPaths[i];
-                    /** @type {?} */
-                    var paramsObject = nestedRoutesParams[i];
-                    /** @type {?} */
-                    var paramsMapping = nestedRoutesParamsMappings[i];
-                    /** @type {?} */
-                    var pathSegments = this.provideParamsValuesForSingleRoute(path, paramsObject, paramsMapping);
-                    result.push.apply(result, __spread(pathSegments));
-                }
-                return result;
+            function (command) {
+                command.params = command.params || {};
             };
         /**
          * @private
@@ -2119,7 +1926,7 @@
          * @param {?} paramsMapping
          * @return {?}
          */
-        UrlTranslationService.prototype.provideParamsValuesForSingleRoute = /**
+        UrlTranslationService.prototype.provideParamsValues = /**
          * @private
          * @param {?} path
          * @param {?} params
@@ -2141,63 +1948,31 @@
             };
         /**
          * @private
-         * @param {?} nestedRoutesTranslations
-         * @param {?} nestedRoutesParams
-         * @return {?}
-         */
-        UrlTranslationService.prototype.findPathsWithFillableParams = /**
-         * @private
-         * @param {?} nestedRoutesTranslations
-         * @param {?} nestedRoutesParams
-         * @return {?}
-         */
-            function (nestedRoutesTranslations, nestedRoutesParams) {
-                /** @type {?} */
-                var length = nestedRoutesTranslations.length;
-                /** @type {?} */
-                var result = [];
-                for (var i = 0; i < length; i++) {
-                    /** @type {?} */
-                    var routeTranslation = nestedRoutesTranslations[i];
-                    /** @type {?} */
-                    var paramsObject = nestedRoutesParams[i];
-                    /** @type {?} */
-                    var path = this.findPartialPathWithFillableParams(routeTranslation.paths, paramsObject, routeTranslation.paramsMapping);
-                    if (path === undefined || path === null) {
-                        this.warn("No configured path matches all its params to given object. ", "Route translation: ", routeTranslation, "(in nested routes translations list", nestedRoutesTranslations, "). Params object: ", paramsObject, "(in params objects list", nestedRoutesParams, ")");
-                        return null;
-                    }
-                    result.push(path);
-                }
-                return result;
-            };
-        // find first path that can fill all its params with values from given object
-        // find first path that can fill all its params with values from given object
-        /**
-         * @private
-         * @param {?} paths
+         * @param {?} routeTranslation
          * @param {?} params
-         * @param {?} paramsMapping
          * @return {?}
          */
-        UrlTranslationService.prototype.findPartialPathWithFillableParams =
-            // find first path that can fill all its params with values from given object
-            /**
-             * @private
-             * @param {?} paths
-             * @param {?} params
-             * @param {?} paramsMapping
-             * @return {?}
-             */
-            function (paths, params, paramsMapping) {
+        UrlTranslationService.prototype.findPathWithFillableParams = /**
+         * @private
+         * @param {?} routeTranslation
+         * @param {?} params
+         * @return {?}
+         */
+            function (routeTranslation, params) {
                 var _this = this;
-                return paths.find(function (path) {
+                /** @type {?} */
+                var foundPath = routeTranslation.paths.find(function (path) {
                     return _this.getParams(path).every(function (paramName) {
                         /** @type {?} */
-                        var mappedParamName = _this.getMappedParamName(paramName, paramsMapping);
+                        var mappedParamName = _this.getMappedParamName(paramName, routeTranslation.paramsMapping);
                         return params[mappedParamName] !== undefined;
                     });
                 });
+                if (foundPath === undefined || foundPath === null) {
+                    this.warn("No configured path matches all its params to given object. ", "Route translation: ", routeTranslation, "Params object: ", params);
+                    return null;
+                }
+                return foundPath;
             };
         /**
          * @private
@@ -2306,37 +2081,27 @@
             };
         /**
          * Navigation with a new state into history
-         * @param pathOrTranslateUrlOptions: Path or options to translate url
+         * @param commands: url commands
          * @param query
          * @param extras: Represents the extra options used during navigation.
          */
         /**
          * Navigation with a new state into history
-         * @param {?} pathOrTranslateUrlOptions
+         * @param {?} commands
          * @param {?=} query
          * @param {?=} extras
          * @return {?}
          */
         RoutingService.prototype.go = /**
          * Navigation with a new state into history
-         * @param {?} pathOrTranslateUrlOptions
+         * @param {?} commands
          * @param {?=} query
          * @param {?=} extras
          * @return {?}
          */
-            function (pathOrTranslateUrlOptions, query, extras) {
+            function (commands, query, extras) {
                 /** @type {?} */
-                var path;
-                if (Array.isArray(pathOrTranslateUrlOptions)) {
-                    path = pathOrTranslateUrlOptions;
-                }
-                else {
-                    /** @type {?} */
-                    var translateUrlOptions = pathOrTranslateUrlOptions;
-                    /** @type {?} */
-                    var translatedPath = this.urlTranslator.translate(translateUrlOptions);
-                    path = Array.isArray(translatedPath) ? translatedPath : [translatedPath];
-                }
+                var path = this.urlTranslator.translate(commands, { relative: true });
                 return this.navigate(path, query, extras);
             };
         /**
@@ -3155,7 +2920,7 @@
                         _this.authService.refreshUserToken(token);
                     }
                     else if (!token.access_token && !token.refresh_token) {
-                        _this.routingService.go({ route: ['login'] });
+                        _this.routingService.go({ route: 'login' });
                     }
                     oldToken = oldToken || token;
                 }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
@@ -4505,7 +4270,7 @@
                 var _this = this;
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (!token.access_token) {
-                        _this.routingService.go({ route: ['login'] });
+                        _this.routingService.go({ route: 'login' });
                         _this.routingService.saveRedirectUrl(state.url);
                     }
                     return !!token.access_token;
@@ -4547,7 +4312,7 @@
                 var _this = this;
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (token.access_token) {
-                        _this.routingService.go({ route: ['home'] });
+                        _this.routingService.go({ route: 'home' });
                     }
                     return !token.access_token;
                 }));
@@ -10888,15 +10653,20 @@
             this.urlTranslator = urlTranslator;
         }
         /**
-         * @param {?} options
+         * @param {?} commands
+         * @param {?=} options
          * @return {?}
          */
         TranslateUrlPipe.prototype.transform = /**
-         * @param {?} options
+         * @param {?} commands
+         * @param {?=} options
          * @return {?}
          */
-            function (options) {
-                return this.urlTranslator.translate(options);
+            function (commands, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                return this.urlTranslator.translate(commands, options);
             };
         TranslateUrlPipe.decorators = [
             { type: i0.Pipe, args: [{
@@ -20235,12 +20005,14 @@
                     this.getPreviewPage = true;
                     if (cmsPage.type === PageType.PRODUCT_PAGE) {
                         this.routingService.go({
-                            route: [{ name: 'product', params: { code: 2053367 } }],
+                            route: 'product',
+                            params: { code: 2053367 },
                         });
                     }
                     else if (cmsPage.type === PageType.CATEGORY_PAGE) {
                         this.routingService.go({
-                            route: [{ name: 'category', params: { code: 575 } }],
+                            route: 'category',
+                            params: { code: 575 },
                         });
                     }
                 }

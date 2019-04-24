@@ -1,26 +1,18 @@
 import { ConfigurableRoutesService } from '../configurable-routes.service';
 import { UrlParsingService } from './url-parsing.service';
 import { ServerConfig } from '../../../config/server-config/server-config';
-import { TranslateUrlOptions } from './translate-url-options';
+import { TranslateUrlCommands, TranslateUrlOptions } from './translate-url-commands';
 export declare class UrlTranslationService {
     private configurableRoutesService;
     private urlParser;
     private config;
     readonly ROOT_URL: string[];
     constructor(configurableRoutesService: ConfigurableRoutesService, urlParser: UrlParsingService, config: ServerConfig);
-    translate(options: TranslateUrlOptions): string | string[];
-    private validateOptions;
-    private validateOptionsRoute;
+    translate(commands: TranslateUrlCommands, options?: TranslateUrlOptions): any[];
     private generateUrl;
-    /**
-     * Converts all elements to objects
-     */
-    private standarizeNestedRoutes;
-    private splitRoutesNamesAndParams;
+    private standarizeRouteCommand;
     private provideParamsValues;
-    private provideParamsValuesForSingleRoute;
-    private findPathsWithFillableParams;
-    private findPartialPathWithFillableParams;
+    private findPathWithFillableParams;
     private getParams;
     private getMappedParamName;
     private warn;
