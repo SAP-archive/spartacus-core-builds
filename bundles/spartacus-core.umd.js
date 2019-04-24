@@ -12301,17 +12301,6 @@
             this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
-         * @protected
-         * @return {?}
-         */
-        OccCmsComponentAdapter.prototype.getBaseEndPoint = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                return this.occEndpoints.getEndpoint('cms');
-            };
-        /**
          * @template T
          * @param {?} id
          * @param {?} pageContext
@@ -12325,11 +12314,8 @@
          */
             function (id, pageContext) {
                 return this.http
-                    .get(this.getBaseEndPoint() + ("/components/" + id), {
+                    .get(this.getComponentEndPoint(id, pageContext), {
                     headers: this.headers,
-                    params: new i1$1.HttpParams({
-                        fromString: this.getRequestParams(pageContext),
-                    }),
                 })
                     .pipe(this.converter.pipeable(CMS_COMPONENT_NORMALIZER));
             };
@@ -12362,62 +12348,101 @@
                     pageSize = ids.length;
                 }
                 /** @type {?} */
-                var requestParams = this.getRequestParams(pageContext, fields);
-                if (currentPage !== undefined) {
-                    requestParams === ''
-                        ? (requestParams = requestParams + 'currentPage=' + currentPage)
-                        : (requestParams = requestParams + '&currentPage=' + currentPage);
-                }
-                if (pageSize !== undefined) {
-                    requestParams = requestParams + '&pageSize=' + pageSize;
-                }
-                if (sort !== undefined) {
-                    requestParams = requestParams + '&sort=' + sort;
-                }
+                var requestParams = this.getComponentsRequestParams(pageContext, currentPage, pageSize, sort);
                 /** @type {?} */
                 var idList = { idList: ids };
                 return this.http
-                    .post(this.getBaseEndPoint() + "/components", idList, {
+                    .post(this.getComponentsEndpoint(requestParams, fields), idList, {
                     headers: this.headers,
-                    params: new i1$1.HttpParams({
-                        fromString: requestParams,
-                    }),
                 })
                     .pipe(operators.pluck('component'), this.converter.pipeable(CMS_COMPONENT_LIST_NORMALIZER));
             };
         /**
-         * @private
+         * @protected
+         * @param {?} id
          * @param {?} pageContext
-         * @param {?=} fields
          * @return {?}
          */
-        OccCmsComponentAdapter.prototype.getRequestParams = /**
-         * @private
+        OccCmsComponentAdapter.prototype.getComponentEndPoint = /**
+         * @protected
+         * @param {?} id
          * @param {?} pageContext
-         * @param {?=} fields
          * @return {?}
          */
-            function (pageContext, fields) {
+            function (id, pageContext) {
+                return this.occEndpoints.getUrl('component', { id: id }, this.getComponentRequestParams(pageContext));
+            };
+        /**
+         * @protected
+         * @param {?} requestParams
+         * @param {?} fields
+         * @return {?}
+         */
+        OccCmsComponentAdapter.prototype.getComponentsEndpoint = /**
+         * @protected
+         * @param {?} requestParams
+         * @param {?} fields
+         * @return {?}
+         */
+            function (requestParams, fields) {
+                return this.occEndpoints.getUrl('components', { fields: fields }, requestParams);
+            };
+        /**
+         * @private
+         * @param {?} pageContext
+         * @param {?=} currentPage
+         * @param {?=} pageSize
+         * @param {?=} sort
+         * @return {?}
+         */
+        OccCmsComponentAdapter.prototype.getComponentsRequestParams = /**
+         * @private
+         * @param {?} pageContext
+         * @param {?=} currentPage
+         * @param {?=} pageSize
+         * @param {?=} sort
+         * @return {?}
+         */
+            function (pageContext, currentPage, pageSize, sort) {
                 /** @type {?} */
-                var requestParams = '';
+                var requestParams = this.getComponentRequestParams(pageContext);
+                if (currentPage !== undefined) {
+                    requestParams['currentPage'] = currentPage.toString();
+                }
+                if (pageSize !== undefined) {
+                    requestParams['pageSize'] = pageSize.toString();
+                }
+                if (sort !== undefined) {
+                    requestParams['sort'] = sort;
+                }
+                return requestParams;
+            };
+        /**
+         * @private
+         * @param {?} pageContext
+         * @return {?}
+         */
+        OccCmsComponentAdapter.prototype.getComponentRequestParams = /**
+         * @private
+         * @param {?} pageContext
+         * @return {?}
+         */
+            function (pageContext) {
+                /** @type {?} */
+                var requestParams = {};
                 switch (pageContext.type) {
                     case PageType.PRODUCT_PAGE: {
-                        requestParams = 'productCode=' + pageContext.id;
+                        requestParams = { productCode: pageContext.id };
                         break;
                     }
                     case PageType.CATEGORY_PAGE: {
-                        requestParams = 'categoryCode=' + pageContext.id;
+                        requestParams = { categoryCode: pageContext.id };
                         break;
                     }
                     case PageType.CATALOG_PAGE: {
-                        requestParams = 'catalogCode=' + pageContext.id;
+                        requestParams = { catalogCode: pageContext.id };
                         break;
                     }
-                }
-                if (fields !== undefined) {
-                    requestParams === ''
-                        ? (requestParams = requestParams + 'fields=' + fields)
-                        : (requestParams = requestParams + '&fields=' + fields);
                 }
                 return requestParams;
             };
@@ -12678,17 +12703,6 @@
             this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
-         * @protected
-         * @return {?}
-         */
-        OccCmsPageAdapter.prototype.getBaseEndPoint = /**
-         * @protected
-         * @return {?}
-         */
-            function () {
-                return this.occEndpoints.getEndpoint('cms');
-            };
-        /**
          * @param {?} pageContext
          * @param {?=} fields
          * @return {?}
@@ -12700,28 +12714,52 @@
          */
             function (pageContext, fields) {
                 /** @type {?} */
-                var httpStringParams = '';
-                if (pageContext.id !== 'smartedit-preview') {
-                    httpStringParams = 'pageType=' + pageContext.type;
-                    if (pageContext.type === PageType.CONTENT_PAGE) {
-                        httpStringParams =
-                            httpStringParams + '&pageLabelOrId=' + pageContext.id;
-                    }
-                    else {
-                        httpStringParams = httpStringParams + '&code=' + pageContext.id;
-                    }
-                }
-                if (fields !== undefined) {
-                    httpStringParams = httpStringParams + '&fields=' + fields;
-                }
+                var httpParams = this.getPagesRequestParams(pageContext);
                 return this.http
-                    .get(this.getBaseEndPoint() + "/pages", {
+                    .get(this.getPagesEndpoint(httpParams, fields), {
                     headers: this.headers,
-                    params: new i1$1.HttpParams({
-                        fromString: httpStringParams,
-                    }),
                 })
                     .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+            };
+        /**
+         * @private
+         * @param {?} params
+         * @param {?=} fields
+         * @return {?}
+         */
+        OccCmsPageAdapter.prototype.getPagesEndpoint = /**
+         * @private
+         * @param {?} params
+         * @param {?=} fields
+         * @return {?}
+         */
+            function (params, fields) {
+                fields = fields ? fields : 'DEFAULT';
+                return this.occEndpoints.getUrl('pages', { fields: fields }, params);
+            };
+        /**
+         * @private
+         * @param {?} pageContext
+         * @return {?}
+         */
+        OccCmsPageAdapter.prototype.getPagesRequestParams = /**
+         * @private
+         * @param {?} pageContext
+         * @return {?}
+         */
+            function (pageContext) {
+                /** @type {?} */
+                var httpParams = {};
+                if (pageContext.id !== 'smartedit-preview') {
+                    httpParams = { pageType: pageContext.type };
+                    if (pageContext.type === PageType.CONTENT_PAGE) {
+                        httpParams['pageLabelOrId'] = pageContext.id;
+                    }
+                    else {
+                        httpParams['code'] = pageContext.id;
+                    }
+                }
+                return httpParams;
             };
         OccCmsPageAdapter.decorators = [
             { type: i0.Injectable }
@@ -18870,6 +18908,15 @@
     var defaultCmsModuleConfig = {
         cmsComponents: {
             CMSTabParagraphComponent: { selector: 'cx-paragraph' },
+        },
+        backend: {
+            occ: {
+                endpoints: {
+                    component: 'cms/components/${id}',
+                    components: 'cms/components?fields=${fields}',
+                    pages: 'cms/pages?fields=${fields}',
+                },
+            },
         },
     };
 

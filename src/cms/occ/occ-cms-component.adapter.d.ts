@@ -11,8 +11,10 @@ export declare class OccCmsComponentAdapter implements CmsComponentAdapter {
     protected converter: ConverterService;
     protected headers: HttpHeaders;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
-    protected getBaseEndPoint(): string;
     load<T extends CmsComponent>(id: string, pageContext: PageContext): Observable<T>;
     loadList(ids: string[], pageContext: PageContext, fields?: string, currentPage?: number, pageSize?: number, sort?: string): Observable<CmsComponent[]>;
-    private getRequestParams;
+    protected getComponentEndPoint(id: string, pageContext: PageContext): string;
+    protected getComponentsEndpoint(requestParams: any, fields: string): string;
+    private getComponentsRequestParams;
+    private getComponentRequestParams;
 }

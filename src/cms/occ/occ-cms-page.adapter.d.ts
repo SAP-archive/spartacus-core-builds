@@ -11,6 +11,7 @@ export declare class OccCmsPageAdapter implements CmsPageAdapter {
     protected converter: ConverterService;
     protected headers: HttpHeaders;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
-    protected getBaseEndPoint(): string;
     load(pageContext: PageContext, fields?: string): Observable<CmsStructureModel>;
+    private getPagesEndpoint;
+    private getPagesRequestParams;
 }
