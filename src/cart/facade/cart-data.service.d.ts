@@ -1,4 +1,4 @@
-import { Cart } from '../../occ/occ-models/index';
+import { UICart } from '../model';
 export declare const ANONYMOUS_USERID = "anonymous";
 export declare class CartDataService {
     private _userId;
@@ -7,7 +7,7 @@ export declare class CartDataService {
     constructor();
     readonly hasCart: boolean;
     userId: string;
-    cart: Cart;
+    cart: UICart;
     getDetails: any;
     readonly cartId: string;
 }
