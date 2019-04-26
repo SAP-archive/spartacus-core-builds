@@ -1,8 +1,10 @@
+import { Observable } from 'rxjs';
+import { PageRobotsMeta } from '../model/page.model';
 /**
  * Resolves the page heading which is used in the UI.
  */
 export interface PageHeadingResolver {
-    resolveHeading(...args: any[]): any;
+    resolveHeading(...args: any[]): Observable<string>;
 }
 /**
  * Resolves the page title which is first and foremost
@@ -10,21 +12,21 @@ export interface PageHeadingResolver {
  * page heading in the UI.
  */
 export interface PageTitleResolver {
-    resolveTitle(...args: any[]): any;
+    resolveTitle(...args: any[]): Observable<string>;
 }
 /**
  * Resolves the page description. The page description is used
  * in the Search Engine Result Page (SERP).
  */
 export interface PageDescriptionResolver {
-    resolveDescription(...args: any[]): any;
+    resolveDescription(...args: any[]): Observable<string>;
 }
 /**
  * Resolves the main image for the page. This is typically used
  * for social sharing (using `og:image` metatag)
  */
 export interface PageImageResolver {
-    resolveImage(...args: any[]): string;
+    resolveImage(...args: any[]): Observable<string>;
 }
 /**
  * Resolves the robot information for the page. This is used by
@@ -33,5 +35,5 @@ export interface PageImageResolver {
  *
  */
 export interface PageRobotsResolver {
-    resolveRobots(...args: any[]): any;
+    resolveRobots(...args: any[]): Observable<PageRobotsMeta[]>;
 }

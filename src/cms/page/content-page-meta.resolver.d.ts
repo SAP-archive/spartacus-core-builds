@@ -7,5 +7,5 @@ export declare class ContentPageMetaResolver extends PageMetaResolver implements
     protected cms: CmsService;
     constructor(cms: CmsService);
     resolve(): Observable<PageMeta>;
-    resolveTitle(page: Page): string;
+    resolveTitle(page: Page): Observable<string>;
 }

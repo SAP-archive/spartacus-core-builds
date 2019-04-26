@@ -10,6 +10,6 @@ export declare class CheckoutPageMetaResolver extends PageMetaResolver implement
     protected cartService: CartService;
     constructor(routingService: RoutingService, cartService: CartService);
     resolve(): Observable<PageMeta>;
-    resolveTitle(cart: UICart): string;
-    resolveRobots(): PageRobotsMeta[];
+    resolveTitle(cart: UICart): Observable<string>;
+    resolveRobots(): Observable<PageRobotsMeta[]>;
 }

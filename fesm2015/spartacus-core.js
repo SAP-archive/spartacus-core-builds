@@ -13880,18 +13880,14 @@ class ContentPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return this.cms.getCurrentPage().pipe(filter(Boolean), map(page => {
-            return {
-                title: this.resolveTitle(page),
-            };
-        }));
+        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(page => this.resolveTitle(page)), map((title) => ({ title })));
     }
     /**
      * @param {?} page
      * @return {?}
      */
     resolveTitle(page) {
-        return page.title;
+        return of(page.title);
     }
 }
 ContentPageMetaResolver.decorators = [
@@ -14023,25 +14019,20 @@ class CheckoutPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return this.cartService.getActive().pipe(map(cart => {
-            return {
-                title: this.resolveTitle(cart),
-                robots: this.resolveRobots(),
-            };
-        }));
+        return this.cartService.getActive().pipe(switchMap(cart => combineLatest([this.resolveTitle(cart), this.resolveRobots()])), map(([title, robots]) => ({ title, robots })));
     }
     /**
      * @param {?} cart
      * @return {?}
      */
     resolveTitle(cart) {
-        return `Checkout ${cart.totalItems} items`;
+        return of(`Checkout ${cart.totalItems} items`);
     }
     /**
      * @return {?}
      */
     resolveRobots() {
-        return [PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX];
+        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     }
 }
 CheckoutPageMetaResolver.decorators = [
@@ -15490,21 +15481,24 @@ class ProductPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return this.routingService.getRouterState().pipe(map(state => state.state.params['productCode']), filter(Boolean), switchMap(code => this.productService.get(code).pipe(filter(Boolean), map((p) => {
-            return (/** @type {?} */ ({
-                heading: this.resolveHeading(p),
-                title: this.resolveTitle(p),
-                description: this.resolveDescription(p),
-                image: this.resolveImage(p),
-            }));
-        }))));
+        return this.routingService.getRouterState().pipe(map(state => state.state.params['productCode']), filter(Boolean), switchMap(code => this.productService.get(code)), filter(Boolean), switchMap((p) => combineLatest([
+            this.resolveHeading(p),
+            this.resolveTitle(p),
+            this.resolveDescription(p),
+            this.resolveImage(p),
+        ])), map(([heading, title, description, image]) => ({
+            heading,
+            title,
+            description,
+            image,
+        })));
     }
     /**
      * @param {?} product
      * @return {?}
      */
     resolveHeading(product) {
-        return product.name;
+        return of(product.name);
     }
     /**
      * @param {?} product
@@ -15514,27 +15508,30 @@ class ProductPageMetaResolver extends PageMetaResolver {
         /** @type {?} */
         let title = product.name;
         title += this.resolveFirstCategory(product);
-        title += this.resolveManufactorer(product);
-        return title;
+        title += this.resolveManufacturer(product);
+        return of(title);
     }
     /**
      * @param {?} product
      * @return {?}
      */
     resolveDescription(product) {
-        return product.summary;
+        return of(product.summary);
     }
     /**
      * @param {?} product
      * @return {?}
      */
     resolveImage(product) {
+        /** @type {?} */
+        let result;
         if (product.images &&
             product.images.PRIMARY &&
             product.images.PRIMARY.zoom &&
             product.images.PRIMARY.zoom.url) {
-            return product.images.PRIMARY.zoom.url;
+            result = product.images.PRIMARY.zoom.url;
         }
+        return of(result);
     }
     /**
      * @private
@@ -15556,7 +15553,7 @@ class ProductPageMetaResolver extends PageMetaResolver {
      * @param {?} product
      * @return {?}
      */
-    resolveManufactorer(product) {
+    resolveManufacturer(product) {
         return product.manufacturer ? ` | ${product.manufacturer}` : '';
     }
 }
@@ -15592,19 +15589,19 @@ class SearchPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return combineLatest(this.productSearchService.getSearchResults().pipe(filter(data => !!(data && data.pagination)), map(results => results.pagination.totalResults)), this.routingService.getRouterState().pipe(map(state => state.state.params['query']), filter(Boolean))).pipe(map(([t, q]) => {
-            return {
-                title: this.resolveTitle(t, q),
-            };
-        }));
+        /** @type {?} */
+        const total$ = this.productSearchService.getSearchResults().pipe(filter(data => !!(data && data.pagination)), map(results => results.pagination.totalResults));
+        /** @type {?} */
+        const query$ = this.routingService.getRouterState().pipe(map(state => state.state.params['query']), filter(Boolean));
+        return combineLatest([total$, query$]).pipe(switchMap(([total, query]) => this.resolveTitle(total, query)), map(title => ({ title })));
     }
     /**
      * @param {?} total
-     * @param {?} part
+     * @param {?} query
      * @return {?}
      */
-    resolveTitle(total, part) {
-        return `${total} results for "${part}"`;
+    resolveTitle(total, query) {
+        return of(`${total} results for "${query}"`);
     }
 }
 SearchPageMetaResolver.decorators = [
@@ -15644,12 +15641,8 @@ class CategoryPageMetaResolver extends PageMetaResolver {
             // only the existence of a plp component tells us if products
             // are rendered or if this is an ordinary content page
             if (this.hasProductListComponent(page)) {
-                return this.productSearchService.getSearchResults().pipe(map(data => {
-                    if (data.breadcrumbs && data.breadcrumbs.length > 0) {
-                        return {
-                            title: this.resolveTitle(data),
-                        };
-                    }
+                return this.productSearchService.getSearchResults().pipe(filter(data => data.breadcrumbs && data.breadcrumbs.length > 0), switchMap(data => {
+                    return this.resolveTitle(data).pipe(map(title => ({ title })));
                 }));
             }
             else {
@@ -15664,7 +15657,7 @@ class CategoryPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolveTitle(data) {
-        return `${data.pagination.totalResults} results for ${data.breadcrumbs[0].facetValueName}`;
+        return of(`${data.pagination.totalResults} results for ${data.breadcrumbs[0].facetValueName}`);
     }
     /**
      * @protected

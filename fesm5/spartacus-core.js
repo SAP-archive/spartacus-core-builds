@@ -16498,11 +16498,7 @@ var ContentPageMetaResolver = /** @class */ (function (_super) {
      */
     function () {
         var _this = this;
-        return this.cms.getCurrentPage().pipe(filter(Boolean), map(function (page) {
-            return {
-                title: _this.resolveTitle(page),
-            };
-        }));
+        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(function (page) { return _this.resolveTitle(page); }), map(function (title) { return ({ title: title }); }));
     };
     /**
      * @param {?} page
@@ -16513,7 +16509,7 @@ var ContentPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (page) {
-        return page.title;
+        return of(page.title);
     };
     ContentPageMetaResolver.decorators = [
         { type: Injectable, args: [{
@@ -16674,11 +16670,11 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
      */
     function () {
         var _this = this;
-        return this.cartService.getActive().pipe(map(function (cart) {
-            return {
-                title: _this.resolveTitle(cart),
-                robots: _this.resolveRobots(),
-            };
+        return this.cartService.getActive().pipe(switchMap(function (cart) {
+            return combineLatest([_this.resolveTitle(cart), _this.resolveRobots()]);
+        }), map(function (_a) {
+            var _b = __read(_a, 2), title = _b[0], robots = _b[1];
+            return ({ title: title, robots: robots });
         }));
     };
     /**
@@ -16690,7 +16686,7 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (cart) {
-        return "Checkout " + cart.totalItems + " items";
+        return of("Checkout " + cart.totalItems + " items");
     };
     /**
      * @return {?}
@@ -16699,7 +16695,7 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function () {
-        return [PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX];
+        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
     };
     CheckoutPageMetaResolver.decorators = [
         { type: Injectable, args: [{
@@ -18378,15 +18374,21 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      */
     function () {
         var _this = this;
-        return this.routingService.getRouterState().pipe(map(function (state) { return state.state.params['productCode']; }), filter(Boolean), switchMap(function (code) {
-            return _this.productService.get(code).pipe(filter(Boolean), map(function (p) {
-                return (/** @type {?} */ ({
-                    heading: _this.resolveHeading(p),
-                    title: _this.resolveTitle(p),
-                    description: _this.resolveDescription(p),
-                    image: _this.resolveImage(p),
-                }));
-            }));
+        return this.routingService.getRouterState().pipe(map(function (state) { return state.state.params['productCode']; }), filter(Boolean), switchMap(function (code) { return _this.productService.get(code); }), filter(Boolean), switchMap(function (p) {
+            return combineLatest([
+                _this.resolveHeading(p),
+                _this.resolveTitle(p),
+                _this.resolveDescription(p),
+                _this.resolveImage(p),
+            ]);
+        }), map(function (_a) {
+            var _b = __read(_a, 4), heading = _b[0], title = _b[1], description = _b[2], image = _b[3];
+            return ({
+                heading: heading,
+                title: title,
+                description: description,
+                image: image,
+            });
         }));
     };
     /**
@@ -18398,7 +18400,7 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (product) {
-        return product.name;
+        return of(product.name);
     };
     /**
      * @param {?} product
@@ -18412,8 +18414,8 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
         /** @type {?} */
         var title = product.name;
         title += this.resolveFirstCategory(product);
-        title += this.resolveManufactorer(product);
-        return title;
+        title += this.resolveManufacturer(product);
+        return of(title);
     };
     /**
      * @param {?} product
@@ -18424,7 +18426,7 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (product) {
-        return product.summary;
+        return of(product.summary);
     };
     /**
      * @param {?} product
@@ -18435,12 +18437,15 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (product) {
+        /** @type {?} */
+        var result;
         if (product.images &&
             product.images.PRIMARY &&
             product.images.PRIMARY.zoom &&
             product.images.PRIMARY.zoom.url) {
-            return product.images.PRIMARY.zoom.url;
+            result = product.images.PRIMARY.zoom.url;
         }
+        return of(result);
     };
     /**
      * @private
@@ -18467,7 +18472,7 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
      * @param {?} product
      * @return {?}
      */
-    ProductPageMetaResolver.prototype.resolveManufactorer = /**
+    ProductPageMetaResolver.prototype.resolveManufacturer = /**
      * @private
      * @param {?} product
      * @return {?}
@@ -18511,25 +18516,27 @@ var SearchPageMetaResolver = /** @class */ (function (_super) {
      */
     function () {
         var _this = this;
-        return combineLatest(this.productSearchService.getSearchResults().pipe(filter(function (data) { return !!(data && data.pagination); }), map(function (results) { return results.pagination.totalResults; })), this.routingService.getRouterState().pipe(map(function (state) { return state.state.params['query']; }), filter(Boolean))).pipe(map(function (_a) {
-            var _b = __read(_a, 2), t = _b[0], q = _b[1];
-            return {
-                title: _this.resolveTitle(t, q),
-            };
-        }));
+        /** @type {?} */
+        var total$ = this.productSearchService.getSearchResults().pipe(filter(function (data) { return !!(data && data.pagination); }), map(function (results) { return results.pagination.totalResults; }));
+        /** @type {?} */
+        var query$ = this.routingService.getRouterState().pipe(map(function (state) { return state.state.params['query']; }), filter(Boolean));
+        return combineLatest([total$, query$]).pipe(switchMap(function (_a) {
+            var _b = __read(_a, 2), total = _b[0], query = _b[1];
+            return _this.resolveTitle(total, query);
+        }), map(function (title) { return ({ title: title }); }));
     };
     /**
      * @param {?} total
-     * @param {?} part
+     * @param {?} query
      * @return {?}
      */
     SearchPageMetaResolver.prototype.resolveTitle = /**
      * @param {?} total
-     * @param {?} part
+     * @param {?} query
      * @return {?}
      */
-    function (total, part) {
-        return total + " results for \"" + part + "\"";
+    function (total, query) {
+        return of(total + " results for \"" + query + "\"");
     };
     SearchPageMetaResolver.decorators = [
         { type: Injectable, args: [{
@@ -18571,12 +18578,8 @@ var CategoryPageMetaResolver = /** @class */ (function (_super) {
             // only the existence of a plp component tells us if products
             // are rendered or if this is an ordinary content page
             if (_this.hasProductListComponent(page)) {
-                return _this.productSearchService.getSearchResults().pipe(map(function (data) {
-                    if (data.breadcrumbs && data.breadcrumbs.length > 0) {
-                        return {
-                            title: _this.resolveTitle(data),
-                        };
-                    }
+                return _this.productSearchService.getSearchResults().pipe(filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), switchMap(function (data) {
+                    return _this.resolveTitle(data).pipe(map(function (title) { return ({ title: title }); }));
                 }));
             }
             else {
@@ -18595,7 +18598,7 @@ var CategoryPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (data) {
-        return data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName;
+        return of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
     };
     /**
      * @protected

@@ -12,6 +12,6 @@ export declare class CategoryPageMetaResolver extends PageMetaResolver implement
     protected cms: CmsService;
     constructor(routingService: RoutingService, productSearchService: ProductSearchService, cms: CmsService);
     resolve(): Observable<PageMeta>;
-    resolveTitle(data: UIProductSearchPage): string;
+    resolveTitle(data: UIProductSearchPage): Observable<string>;
     protected hasProductListComponent(page: Page): boolean;
 }

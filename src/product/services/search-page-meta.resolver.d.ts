@@ -8,5 +8,5 @@ export declare class SearchPageMetaResolver extends PageMetaResolver implements 
     protected productSearchService: ProductSearchService;
     constructor(routingService: RoutingService, productSearchService: ProductSearchService);
     resolve(): Observable<PageMeta>;
-    resolveTitle(total: number, part: string): string;
+    resolveTitle(total: number, query: string): Observable<string>;
 }
