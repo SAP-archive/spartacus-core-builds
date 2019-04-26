@@ -1477,11 +1477,113 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var UrlMatcherFactoryService = /** @class */ (function () {
+        function UrlMatcherFactoryService() {
+        }
+        /**
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = /**
+         * @return {?}
+         */
+            function () {
+                return function falsyUrlMatcher() {
+                    return null;
+                };
+            };
+        /**
+         * @param {?} paths
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = /**
+         * @param {?} paths
+         * @return {?}
+         */
+            function (paths) {
+                /** @type {?} */
+                var self = this;
+                /** @type {?} */
+                var matcher = function multiplePathsUrlMatcher(segments, segmentGroup, route) {
+                    for (var i = 0; i < paths.length; i++) {
+                        /** @type {?} */
+                        var result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+                        if (result) {
+                            return result;
+                        }
+                    }
+                    return null;
+                };
+                matcher.paths = paths; // property added for easier debugging of routes
+                return matcher;
+            };
+        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+        /**
+         * @private
+         * @param {?=} path
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getPathUrlMatcher =
+            // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+            /**
+             * @private
+             * @param {?=} path
+             * @return {?}
+             */
+            function (path) {
+                if (path === void 0) {
+                    path = '';
+                }
+                return function (segments, segmentGroup, route) {
+                    /** @type {?} */
+                    var parts = path.split('/');
+                    if (parts.length > segments.length) {
+                        // The actual URL is shorter than the config, no match
+                        return null;
+                    }
+                    if (route.pathMatch === 'full' &&
+                        (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                        // The config is longer than the actual URL but we are looking for a full match, return null
+                        return null;
+                    }
+                    /** @type {?} */
+                    var posParams = {};
+                    // Check each config part against the actual URL
+                    for (var index = 0; index < parts.length; index++) {
+                        /** @type {?} */
+                        var part = parts[index];
+                        /** @type {?} */
+                        var segment = segments[index];
+                        /** @type {?} */
+                        var isParameter = part.startsWith(':');
+                        if (isParameter) {
+                            posParams[part.substring(1)] = segment;
+                        }
+                        else if (part !== segment.path) {
+                            // The actual URL part does not match the config, no match
+                            return null;
+                        }
+                    }
+                    return { consumed: segments.slice(0, parts.length), posParams: posParams };
+                };
+            };
+        UrlMatcherFactoryService.decorators = [
+            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = i0.defineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+        return UrlMatcherFactoryService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ConfigurableRoutesService = /** @class */ (function () {
-        function ConfigurableRoutesService(config, injector, routesConfigLoader) {
+        function ConfigurableRoutesService(config, injector, routesConfigLoader, urlMatcherFactory) {
             this.config = config;
             this.injector = injector;
             this.routesConfigLoader = routesConfigLoader;
+            this.urlMatcherFactory = urlMatcherFactory;
             this.currentLanguageCode = 'en'; // TODO: hardcoded! should be removed when more languages are supported by localized routes
             this.initCalled = false; // guard not to call init() more than once
         }
@@ -1580,15 +1682,13 @@
                 var result = [];
                 routes.forEach(function (route) {
                     /** @type {?} */
-                    var translatedRouteAliases = _this.translateRoute(route, routesTranslations);
+                    var translatedRoute = _this.translateRoute(route, routesTranslations);
                     if (route.children && route.children.length) {
                         /** @type {?} */
-                        var translatedChildrenRoutes_1 = _this.translateRoutes(route.children, routesTranslations);
-                        translatedRouteAliases.forEach(function (translatedRouteAlias) {
-                            translatedRouteAlias.children = translatedChildrenRoutes_1;
-                        });
+                        var translatedChildrenRoutes = _this.translateRoutes(route.children, routesTranslations);
+                        translatedRoute.children = translatedChildrenRoutes;
                     }
-                    result.push.apply(result, __spread(translatedRouteAliases));
+                    result.push(translatedRoute);
                 });
                 return result;
             };
@@ -1615,7 +1715,7 @@
                 if (this.isConfigurable(route, 'cxRedirectTo')) {
                     return this.translateRouteRedirectTo(route, routesTranslations);
                 }
-                return [route]; // if nothing is configurable, just pass the original route
+                return route; // if nothing is configurable, just pass the original route
             };
         /**
          * @private
@@ -1660,9 +1760,19 @@
          * @return {?}
          */
             function (route, routesTranslations) {
-                return this.getTranslatedPaths(route, 'cxPath', routesTranslations).map(function (translatedPath) {
-                    return __assign({}, route, { path: translatedPath });
-                });
+                /** @type {?} */
+                var paths = this.getTranslatedPaths(route, 'cxPath', routesTranslations);
+                switch (paths.length) {
+                    case 0:
+                        delete route.path;
+                        return __assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                    case 1:
+                        delete route.matcher;
+                        return __assign({}, route, { path: paths[0] });
+                    default:
+                        delete route.path;
+                        return __assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+                }
             };
         /**
          * @private
@@ -1680,8 +1790,7 @@
                 /** @type {?} */
                 var translatedPaths = this.getTranslatedPaths(route, 'cxRedirectTo', translations);
                 return translatedPaths.length
-                    ? [__assign({}, route, { redirectTo: translatedPaths[0] })] // take the first path from list by convention
-                    : [];
+                    ? __assign({}, route, { redirectTo: translatedPaths[0] }) : route;
             };
         /**
          * @private
@@ -1740,7 +1849,8 @@
             return [
                 { type: ServerConfig },
                 { type: i0.Injector },
-                { type: RoutesConfigLoader }
+                { type: RoutesConfigLoader },
+                { type: UrlMatcherFactoryService }
             ];
         };
         return ConfigurableRoutesService;
@@ -22361,195 +22471,196 @@
     exports.ConverterService = ConverterService;
     exports.UtilModule = UtilModule;
     exports.WindowRef = WindowRef;
-    exports.ɵbg = defaultAuthConfig;
-    exports.ɵbo = AuthErrorInterceptor;
-    exports.ɵbl = ClientTokenInterceptor;
-    exports.ɵbk = interceptors;
-    exports.ɵbn = UserTokenInterceptor;
-    exports.ɵbe = ClientAuthenticationTokenService;
-    exports.ɵbi = ClientErrorHandlingService;
-    exports.ɵbh = services;
-    exports.ɵbd = UserAuthenticationTokenService;
-    exports.ɵbj = UserErrorHandlingService;
-    exports.ɵo = AuthStoreModule;
-    exports.ɵn = authStoreConfigFactory;
-    exports.ɵbc = ClientTokenEffect;
-    exports.ɵba = effects$2;
-    exports.ɵbb = UserTokenEffects;
-    exports.ɵy = clearAuthState;
-    exports.ɵv = getReducers$1;
-    exports.ɵz = metaReducers;
-    exports.ɵx = reducerProvider$1;
-    exports.ɵw = reducerToken$1;
-    exports.ɵbf = reducer$1;
-    exports.ɵbq = OccCartNormalizer;
-    exports.ɵbr = CartStoreModule;
-    exports.ɵbz = CartEntryEffects;
-    exports.ɵby = CartEffects;
-    exports.ɵbx = effects$4;
-    exports.ɵca = reducer$2;
-    exports.ɵbv = clearCartState;
-    exports.ɵbs = getReducers$2;
-    exports.ɵbw = metaReducers$1;
-    exports.ɵbu = reducerProvider$2;
-    exports.ɵbt = reducerToken$2;
-    exports.ɵcu = CheckoutStoreModule;
-    exports.ɵct = AddressVerificationEffect;
-    exports.ɵcs = CardTypesEffects;
-    exports.ɵcr = CheckoutEffects;
-    exports.ɵcq = effects$6;
-    exports.ɵcp = getAddressVerificationResults;
-    exports.ɵco = reducer$7;
-    exports.ɵcn = getCardTypesEntites;
-    exports.ɵcm = reducer$8;
-    exports.ɵci = getDeliveryAddress;
-    exports.ɵcj = getDeliveryMode;
-    exports.ɵcl = getOrderDetails;
-    exports.ɵck = getPaymentDetails;
-    exports.ɵch = reducer$6;
-    exports.ɵcf = clearCheckoutState;
-    exports.ɵce = getCheckoutState;
-    exports.ɵcb = getReducers$4;
-    exports.ɵcg = metaReducers$2;
-    exports.ɵcd = reducerProvider$4;
-    exports.ɵcc = reducerToken$4;
-    exports.ɵda = CmsStoreModule;
-    exports.ɵcz = cmsStoreConfigFactory;
-    exports.ɵdi = ComponentEffects;
-    exports.ɵdg = effects$7;
-    exports.ɵdj = NavigationEntryItemEffects;
-    exports.ɵdh = PageEffects;
-    exports.ɵde = clearCmsState;
-    exports.ɵdb = getReducers$8;
-    exports.ɵdf = metaReducers$4;
-    exports.ɵdd = reducerProvider$8;
-    exports.ɵdc = reducerToken$8;
-    exports.ɵdn = reducer$k;
-    exports.ɵdk = reducer$l;
-    exports.ɵdm = reducer$m;
-    exports.ɵfu = ConfigModule;
-    exports.ɵeq = ServerConfig;
-    exports.ɵbp = provideConfigValidator;
-    exports.ɵej = BadGatewayHandler;
-    exports.ɵek = BadRequestHandler;
-    exports.ɵel = ConflictHandler;
-    exports.ɵem = ForbiddenHandler;
-    exports.ɵen = GatewayTimeoutHandler;
-    exports.ɵeh = HttpErrorHandler;
-    exports.ɵeo = NotFoundHandler;
-    exports.ɵei = UnknownErrorHandler;
-    exports.ɵep = HttpErrorInterceptor;
-    exports.ɵeg = reducer$9;
-    exports.ɵed = getReducers$5;
-    exports.ɵef = reducerProvider$5;
-    exports.ɵee = reducerToken$5;
-    exports.ɵer = defaultI18nConfig;
-    exports.ɵet = i18nextInit;
-    exports.ɵes = i18nextProviders;
-    exports.ɵeu = MockDatePipe;
-    exports.ɵev = MockTranslationService;
-    exports.ɵdl = PageType;
-    exports.ɵcw = PageType;
-    exports.ɵhf = ProcessModule;
-    exports.ɵhh = PROCESS_FEATURE;
-    exports.ɵhg = ProcessStoreModule;
-    exports.ɵhi = getReducers$7;
-    exports.ɵhk = reducerProvider$7;
-    exports.ɵhj = reducerToken$7;
-    exports.ɵew = defaultOccProductConfig;
-    exports.ɵdz = effects$8;
-    exports.ɵec = ProductReviewsEffects;
-    exports.ɵea = ProductsSearchEffects;
-    exports.ɵeb = ProductEffects;
-    exports.ɵff = ProductStoreModule;
-    exports.ɵfe = productStoreConfigFactory;
-    exports.ɵdx = clearProductsState;
-    exports.ɵdu = getReducers$9;
-    exports.ɵdy = metaReducers$5;
-    exports.ɵdw = reducerProvider$9;
-    exports.ɵdv = reducerToken$9;
-    exports.ɵfg = reducer$o;
-    exports.ɵfc = getAuxSearchResults;
-    exports.ɵfd = getProductSuggestions;
-    exports.ɵfb = getSearchResults;
-    exports.ɵfa = reducer$n;
+    exports.ɵbh = defaultAuthConfig;
+    exports.ɵbp = AuthErrorInterceptor;
+    exports.ɵbm = ClientTokenInterceptor;
+    exports.ɵbl = interceptors;
+    exports.ɵbo = UserTokenInterceptor;
+    exports.ɵbf = ClientAuthenticationTokenService;
+    exports.ɵbj = ClientErrorHandlingService;
+    exports.ɵbi = services;
+    exports.ɵbe = UserAuthenticationTokenService;
+    exports.ɵbk = UserErrorHandlingService;
+    exports.ɵp = AuthStoreModule;
+    exports.ɵo = authStoreConfigFactory;
+    exports.ɵbd = ClientTokenEffect;
+    exports.ɵbb = effects$2;
+    exports.ɵbc = UserTokenEffects;
+    exports.ɵz = clearAuthState;
+    exports.ɵw = getReducers$1;
+    exports.ɵba = metaReducers;
+    exports.ɵy = reducerProvider$1;
+    exports.ɵx = reducerToken$1;
+    exports.ɵbg = reducer$1;
+    exports.ɵbr = OccCartNormalizer;
+    exports.ɵbs = CartStoreModule;
+    exports.ɵca = CartEntryEffects;
+    exports.ɵbz = CartEffects;
+    exports.ɵby = effects$4;
+    exports.ɵcb = reducer$2;
+    exports.ɵbw = clearCartState;
+    exports.ɵbt = getReducers$2;
+    exports.ɵbx = metaReducers$1;
+    exports.ɵbv = reducerProvider$2;
+    exports.ɵbu = reducerToken$2;
+    exports.ɵcv = CheckoutStoreModule;
+    exports.ɵcu = AddressVerificationEffect;
+    exports.ɵct = CardTypesEffects;
+    exports.ɵcs = CheckoutEffects;
+    exports.ɵcr = effects$6;
+    exports.ɵcq = getAddressVerificationResults;
+    exports.ɵcp = reducer$7;
+    exports.ɵco = getCardTypesEntites;
+    exports.ɵcn = reducer$8;
+    exports.ɵcj = getDeliveryAddress;
+    exports.ɵck = getDeliveryMode;
+    exports.ɵcm = getOrderDetails;
+    exports.ɵcl = getPaymentDetails;
+    exports.ɵci = reducer$6;
+    exports.ɵcg = clearCheckoutState;
+    exports.ɵcf = getCheckoutState;
+    exports.ɵcc = getReducers$4;
+    exports.ɵch = metaReducers$2;
+    exports.ɵce = reducerProvider$4;
+    exports.ɵcd = reducerToken$4;
+    exports.ɵdb = CmsStoreModule;
+    exports.ɵda = cmsStoreConfigFactory;
+    exports.ɵdj = ComponentEffects;
+    exports.ɵdh = effects$7;
+    exports.ɵdk = NavigationEntryItemEffects;
+    exports.ɵdi = PageEffects;
+    exports.ɵdf = clearCmsState;
+    exports.ɵdc = getReducers$8;
+    exports.ɵdg = metaReducers$4;
+    exports.ɵde = reducerProvider$8;
+    exports.ɵdd = reducerToken$8;
+    exports.ɵdo = reducer$k;
+    exports.ɵdl = reducer$l;
+    exports.ɵdn = reducer$m;
+    exports.ɵfv = ConfigModule;
+    exports.ɵer = ServerConfig;
+    exports.ɵbq = provideConfigValidator;
+    exports.ɵek = BadGatewayHandler;
+    exports.ɵel = BadRequestHandler;
+    exports.ɵem = ConflictHandler;
+    exports.ɵen = ForbiddenHandler;
+    exports.ɵeo = GatewayTimeoutHandler;
+    exports.ɵei = HttpErrorHandler;
+    exports.ɵep = NotFoundHandler;
+    exports.ɵej = UnknownErrorHandler;
+    exports.ɵeq = HttpErrorInterceptor;
+    exports.ɵeh = reducer$9;
+    exports.ɵee = getReducers$5;
+    exports.ɵeg = reducerProvider$5;
+    exports.ɵef = reducerToken$5;
+    exports.ɵes = defaultI18nConfig;
+    exports.ɵeu = i18nextInit;
+    exports.ɵet = i18nextProviders;
+    exports.ɵev = MockDatePipe;
+    exports.ɵew = MockTranslationService;
+    exports.ɵdm = PageType;
+    exports.ɵcx = PageType;
+    exports.ɵhg = ProcessModule;
+    exports.ɵhi = PROCESS_FEATURE;
+    exports.ɵhh = ProcessStoreModule;
+    exports.ɵhj = getReducers$7;
+    exports.ɵhl = reducerProvider$7;
+    exports.ɵhk = reducerToken$7;
+    exports.ɵex = defaultOccProductConfig;
+    exports.ɵea = effects$8;
+    exports.ɵed = ProductReviewsEffects;
+    exports.ɵeb = ProductsSearchEffects;
+    exports.ɵec = ProductEffects;
+    exports.ɵfg = ProductStoreModule;
+    exports.ɵff = productStoreConfigFactory;
+    exports.ɵdy = clearProductsState;
+    exports.ɵdv = getReducers$9;
+    exports.ɵdz = metaReducers$5;
+    exports.ɵdx = reducerProvider$9;
+    exports.ɵdw = reducerToken$9;
+    exports.ɵfh = reducer$o;
+    exports.ɵfd = getAuxSearchResults;
+    exports.ɵfe = getProductSuggestions;
+    exports.ɵfc = getSearchResults;
+    exports.ɵfb = reducer$n;
     exports.ɵa = defaultConfigurableRoutesConfig;
     exports.ɵb = defaultStorefrontRoutesTranslations;
-    exports.ɵd = UrlParsingService;
-    exports.ɵc = UrlTranslationService;
-    exports.ɵe = ROUTING_FEATURE;
-    exports.ɵk = effects$1;
-    exports.ɵl = RouterEffects;
-    exports.ɵj = CustomSerializer;
-    exports.ɵf = getReducers;
-    exports.ɵg = reducer;
-    exports.ɵi = reducerProvider;
-    exports.ɵh = reducerToken;
-    exports.ɵfh = defaultSiteContextConfigFactory;
-    exports.ɵbm = BaseSiteService;
-    exports.ɵfn = SiteContextParamsService;
-    exports.ɵfp = SiteContextRoutesHandler;
-    exports.ɵfo = SiteContextUrlSerializer;
-    exports.ɵdt = CurrenciesEffects;
-    exports.ɵdr = effects$3;
-    exports.ɵds = LanguagesEffects;
-    exports.ɵfm = reducer$5;
-    exports.ɵfl = reducer$4;
-    exports.ɵdo = getReducers$3;
-    exports.ɵdq = reducerProvider$3;
-    exports.ɵdp = reducerToken$3;
-    exports.ɵfk = reducer$3;
-    exports.ɵfj = SiteContextStoreModule;
-    exports.ɵfi = siteContextStoreConfigFactory;
-    exports.ɵfr = CmsTicketInterceptor;
-    exports.ɵfq = interceptors$2;
-    exports.ɵfs = SmartEditService;
-    exports.ɵcx = EntityFailAction;
-    exports.ɵcv = EntityLoadAction;
-    exports.ɵge = EntityResetAction;
-    exports.ɵcy = EntitySuccessAction;
-    exports.ɵp = DEFAULT_LOCAL_STORAGE_KEY;
-    exports.ɵq = DEFAULT_SESSION_STORAGE_KEY;
-    exports.ɵr = defaultStateConfig;
-    exports.ɵs = stateMetaReducers;
-    exports.ɵt = getStorageSyncReducer;
-    exports.ɵu = getTransferStateReducer;
-    exports.ɵfv = defaultStoreFinderConfig;
-    exports.ɵgb = FindStoresEffect;
-    exports.ɵga = effects$9;
-    exports.ɵgc = ViewAllStoresEffect;
-    exports.ɵfx = getReducers$a;
-    exports.ɵfz = reducerProvider$a;
-    exports.ɵfy = reducerToken$a;
-    exports.ɵft = getStoreFinderState;
-    exports.ɵfw = StoreFinderStoreModule;
-    exports.ɵgr = BillingCountriesEffect;
-    exports.ɵgs = DeliveryCountriesEffects;
-    exports.ɵhc = ForgotPasswordEffects;
-    exports.ɵgq = effects$5;
-    exports.ɵgt = OrderDetailsEffect;
-    exports.ɵgu = UserPaymentMethodsEffects;
-    exports.ɵgv = RegionsEffects;
-    exports.ɵgw = ResetPasswordEffects;
-    exports.ɵgx = TitlesEffects;
-    exports.ɵhd = UpdateEmailEffects;
-    exports.ɵhe = UpdatePasswordEffects;
-    exports.ɵgy = UserAddressesEffects;
-    exports.ɵgz = UserDetailsEffects;
-    exports.ɵha = UserOrdersEffect;
-    exports.ɵhb = UserRegisterEffects;
-    exports.ɵgh = reducer$a;
-    exports.ɵgl = reducer$b;
-    exports.ɵgk = reducer$c;
-    exports.ɵgi = reducer$d;
-    exports.ɵgn = reducer$e;
-    exports.ɵgo = reducer$f;
-    exports.ɵgm = reducer$g;
-    exports.ɵgg = reducer$h;
-    exports.ɵgf = reducer$i;
-    exports.ɵgj = reducer$j;
-    exports.ɵgp = UserStoreModule;
-    exports.ɵhl = StripHtmlPipe;
+    exports.ɵc = UrlMatcherFactoryService;
+    exports.ɵe = UrlParsingService;
+    exports.ɵd = UrlTranslationService;
+    exports.ɵf = ROUTING_FEATURE;
+    exports.ɵl = effects$1;
+    exports.ɵm = RouterEffects;
+    exports.ɵk = CustomSerializer;
+    exports.ɵg = getReducers;
+    exports.ɵh = reducer;
+    exports.ɵj = reducerProvider;
+    exports.ɵi = reducerToken;
+    exports.ɵfi = defaultSiteContextConfigFactory;
+    exports.ɵbn = BaseSiteService;
+    exports.ɵfo = SiteContextParamsService;
+    exports.ɵfq = SiteContextRoutesHandler;
+    exports.ɵfp = SiteContextUrlSerializer;
+    exports.ɵdu = CurrenciesEffects;
+    exports.ɵds = effects$3;
+    exports.ɵdt = LanguagesEffects;
+    exports.ɵfn = reducer$5;
+    exports.ɵfm = reducer$4;
+    exports.ɵdp = getReducers$3;
+    exports.ɵdr = reducerProvider$3;
+    exports.ɵdq = reducerToken$3;
+    exports.ɵfl = reducer$3;
+    exports.ɵfk = SiteContextStoreModule;
+    exports.ɵfj = siteContextStoreConfigFactory;
+    exports.ɵfs = CmsTicketInterceptor;
+    exports.ɵfr = interceptors$2;
+    exports.ɵft = SmartEditService;
+    exports.ɵcy = EntityFailAction;
+    exports.ɵcw = EntityLoadAction;
+    exports.ɵgf = EntityResetAction;
+    exports.ɵcz = EntitySuccessAction;
+    exports.ɵq = DEFAULT_LOCAL_STORAGE_KEY;
+    exports.ɵr = DEFAULT_SESSION_STORAGE_KEY;
+    exports.ɵs = defaultStateConfig;
+    exports.ɵt = stateMetaReducers;
+    exports.ɵu = getStorageSyncReducer;
+    exports.ɵv = getTransferStateReducer;
+    exports.ɵfw = defaultStoreFinderConfig;
+    exports.ɵgc = FindStoresEffect;
+    exports.ɵgb = effects$9;
+    exports.ɵgd = ViewAllStoresEffect;
+    exports.ɵfy = getReducers$a;
+    exports.ɵga = reducerProvider$a;
+    exports.ɵfz = reducerToken$a;
+    exports.ɵfu = getStoreFinderState;
+    exports.ɵfx = StoreFinderStoreModule;
+    exports.ɵgs = BillingCountriesEffect;
+    exports.ɵgt = DeliveryCountriesEffects;
+    exports.ɵhd = ForgotPasswordEffects;
+    exports.ɵgr = effects$5;
+    exports.ɵgu = OrderDetailsEffect;
+    exports.ɵgv = UserPaymentMethodsEffects;
+    exports.ɵgw = RegionsEffects;
+    exports.ɵgx = ResetPasswordEffects;
+    exports.ɵgy = TitlesEffects;
+    exports.ɵhe = UpdateEmailEffects;
+    exports.ɵhf = UpdatePasswordEffects;
+    exports.ɵgz = UserAddressesEffects;
+    exports.ɵha = UserDetailsEffects;
+    exports.ɵhb = UserOrdersEffect;
+    exports.ɵhc = UserRegisterEffects;
+    exports.ɵgi = reducer$a;
+    exports.ɵgm = reducer$b;
+    exports.ɵgl = reducer$c;
+    exports.ɵgj = reducer$d;
+    exports.ɵgo = reducer$e;
+    exports.ɵgp = reducer$f;
+    exports.ɵgn = reducer$g;
+    exports.ɵgh = reducer$h;
+    exports.ɵgg = reducer$i;
+    exports.ɵgk = reducer$j;
+    exports.ɵgq = UserStoreModule;
+    exports.ɵhm = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -2,11 +2,13 @@ import { Injector } from '@angular/core';
 import { ServerConfig } from '../../config/server-config/server-config';
 import { RouteTranslation } from './routes-config';
 import { RoutesConfigLoader } from './routes-config-loader';
+import { UrlMatcherFactoryService } from './url-matcher-factory.service';
 export declare class ConfigurableRoutesService {
     private config;
     private injector;
     private routesConfigLoader;
-    constructor(config: ServerConfig, injector: Injector, routesConfigLoader: RoutesConfigLoader);
+    private urlMatcherFactory;
+    constructor(config: ServerConfig, injector: Injector, routesConfigLoader: RoutesConfigLoader, urlMatcherFactory: UrlMatcherFactoryService);
     private readonly currentLanguageCode;
     private allRoutesTranslations;
     private readonly currentRoutesTranslations;
