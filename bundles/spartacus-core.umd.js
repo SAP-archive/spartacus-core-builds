@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('ngrx-store-localstorage'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', 'ngrx-store-localstorage', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@ngrx/store', '@ngrx/effects', '@angular/core'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ngrxStoreLocalstorage,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.rxjs.operators,global.ng.common,global.ng.common.http,global.store,global.effects,global.ng.core));
-}(this, (function (exports,fromNgrxRouter,ngrxStoreLocalstorage,platformBrowser,forms,router,i18nextXhrBackend,i18next,rxjs,operators,i1,i1$1,i1$2,effects,i0) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@ngrx/store', '@ngrx/effects', '@angular/core'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.rxjs.operators,global.ng.common,global.ng.common.http,global.store,global.effects,global.ng.core));
+}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,router,i18nextXhrBackend,i18next,rxjs,operators,i1,i1$1,i1$2,effects,i0) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -3716,6 +3716,489 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @enum {string} */
+    var StorageSyncType = {
+        NO_STORAGE: 'NO_STORAGE',
+        LOCAL_STORAGE: 'LOCAL_STORAGE',
+        SESSION_STORAGE: 'SESSION_STORAGE',
+    };
+    /** @enum {string} */
+    var StateTransferType = {
+        TRANSFER_STATE: 'SSR',
+    };
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ StateConfig = /** @class */ (function () {
+        function StateConfig() {
+        }
+        return StateConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var META_REDUCER = new i0.InjectionToken('metaReducer');
+    /**
+     * @param {?} metaReducers
+     * @return {?}
+     */
+    function metaReducersFactory(metaReducers) {
+        return (metaReducers || []).filter(Boolean);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSliceValue(keys, state) {
+        return keys
+            .split('.')
+            .reduce(function (previous, current) { return (previous ? previous[current] : undefined); }, state);
+    }
+    /**
+     * @template T, E
+     * @param {?} key
+     * @param {?} value
+     * @return {?}
+     */
+    function createShellObject(key, value) {
+        if (!key || !value || Object.keys(value).length === 0) {
+            return ( /** @type {?} */({}));
+        }
+        /** @type {?} */
+        var keySplit = key.split('.');
+        /** @type {?} */
+        var newObject = {};
+        /** @type {?} */
+        var tempNewObject = newObject;
+        for (var i = 0; i < keySplit.length; i++) {
+            /** @type {?} */
+            var currentKey = keySplit[i];
+            // last iteration
+            if (i === keySplit.length - 1) {
+                tempNewObject = tempNewObject[currentKey] = value;
+            }
+            else {
+                tempNewObject = tempNewObject[currentKey] = {};
+            }
+        }
+        return ( /** @type {?} */(newObject));
+    }
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSlice(keys, state) {
+        var e_1, _a;
+        if (keys && keys.length === 0) {
+            return ( /** @type {?} */({}));
+        }
+        /** @type {?} */
+        var stateSlices = {};
+        try {
+            for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
+                var currentKey = keys_1_1.value;
+                /** @type {?} */
+                var stateValue = getStateSliceValue(currentKey, state);
+                /** @type {?} */
+                var shell = createShellObject(currentKey, stateValue);
+                stateSlices = deepMerge(stateSlices, shell);
+            }
+        }
+        catch (e_1_1) {
+            e_1 = { error: e_1_1 };
+        }
+        finally {
+            try {
+                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return))
+                    _a.call(keys_1);
+            }
+            finally {
+                if (e_1)
+                    throw e_1.error;
+            }
+        }
+        return ( /** @type {?} */(stateSlices));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} winRef
+     * @param {?=} config
+     * @return {?}
+     */
+    function getStorageSyncReducer(winRef, config) {
+        if (!winRef.nativeWindow ||
+            !config ||
+            !config.state ||
+            !config.state.storageSync ||
+            !config.state.storageSync.keys) {
+            return undefined;
+        }
+        /** @type {?} */
+        var storageSyncConfig = config.state.storageSync;
+        return function (reducer) {
+            return function (state, action) {
+                /** @type {?} */
+                var newState = __assign({}, state);
+                if (action.type === i1$2.INIT && !exists(newState)) {
+                    newState = reducer(state, action);
+                }
+                if (action.type === i1$2.INIT || action.type === i1$2.UPDATE) {
+                    /** @type {?} */
+                    var rehydratedState = rehydrate(config, winRef);
+                    return deepMerge(newState, rehydratedState);
+                }
+                newState = reducer(newState, action);
+                if (action.type !== i1$2.INIT) {
+                    // handle local storage
+                    /** @type {?} */
+                    var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                    /** @type {?} */
+                    var localStorageStateSlices = getStateSlice(localStorageKeys, state);
+                    persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                    // handle session storage
+                    /** @type {?} */
+                    var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                    /** @type {?} */
+                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
+                    persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+                }
+                return newState;
+            };
+        };
+    }
+    /**
+     * @param {?} keys
+     * @param {?} storageType
+     * @return {?}
+     */
+    function getKeysForStorage(keys, storageType) {
+        return Object.keys(keys).filter(function (key) { return keys[key] === storageType; });
+    }
+    /**
+     * @template T
+     * @param {?} config
+     * @param {?} winRef
+     * @return {?}
+     */
+    function rehydrate(config, winRef) {
+        /** @type {?} */
+        var localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+        /** @type {?} */
+        var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+        return deepMerge(localStorageValue, sessionStorageValue);
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    function exists(value) {
+        if (value != null) {
+            if (typeof value === 'object') {
+                return Object.keys(value).length !== 0;
+            }
+            else if (value === '') {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * @param {?} configKey
+     * @param {?} value
+     * @param {?} storage
+     * @return {?}
+     */
+    function persistToStorage(configKey, value, storage) {
+        if (!isSsr(storage) && value) {
+            storage.setItem(configKey, JSON.stringify(value));
+        }
+    }
+    /**
+     * @param {?} storage
+     * @param {?} key
+     * @return {?}
+     */
+    function readFromStorage(storage, key) {
+        if (isSsr(storage)) {
+            return;
+        }
+        /** @type {?} */
+        var storageValue = storage.getItem(key);
+        if (!storageValue) {
+            return;
+        }
+        return JSON.parse(storageValue);
+    }
+    /**
+     * @param {?} storage
+     * @return {?}
+     */
+    function isSsr(storage) {
+        return !Boolean(storage);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CX_KEY = platformBrowser.makeStateKey('cx-state');
+    /**
+     * @param {?} platformId
+     * @param {?=} transferState
+     * @param {?=} config
+     * @return {?}
+     */
+    function getTransferStateReducer(platformId, transferState, config) {
+        if (transferState &&
+            config &&
+            config.state &&
+            config.state.ssrTransfer &&
+            config.state.ssrTransfer.keys) {
+            if (i1.isPlatformBrowser(platformId)) {
+                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+            else if (i1.isPlatformServer(platformId)) {
+                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+        }
+        return undefined;
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getServerTransferStateReducer(transferState, keys) {
+        return function (reducer) {
+            return function (state, action) {
+                /** @type {?} */
+                var newState = reducer(state, action);
+                if (newState) {
+                    /** @type {?} */
+                    var stateSlice = getStateSlice(Object.keys(keys), newState);
+                    transferState.set(CX_KEY, stateSlice);
+                }
+                return newState;
+            };
+        };
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getBrowserTransferStateReducer(transferState, keys) {
+        return function (reducer) {
+            return function (state, action) {
+                if (action.type === i1$2.INIT && transferState.hasKey(CX_KEY)) {
+                    /** @type {?} */
+                    var cxKey = transferState.get(CX_KEY, {});
+                    /** @type {?} */
+                    var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return reducer(state, action);
+            };
+        };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var stateMetaReducers = [
+        {
+            provide: META_REDUCER,
+            useFactory: getStorageSyncReducer,
+            deps: [WindowRef, [new i0.Optional(), Config]],
+            multi: true,
+        },
+        {
+            provide: META_REDUCER,
+            useFactory: getTransferStateReducer,
+            deps: [
+                i0.PLATFORM_ID,
+                [new i0.Optional(), platformBrowser.TransferState],
+                [new i0.Optional(), Config],
+            ],
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+    /** @type {?} */
+    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+    /** @type {?} */
+    var defaultStateConfig = {
+        state: {
+            storageSync: {
+                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+                keys: {},
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0 = metaReducersFactory;
+    var StateModule = /** @class */ (function () {
+        function StateModule() {
+        }
+        StateModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1$2.StoreModule.forRoot({}),
+                            effects.EffectsModule.forRoot([]),
+                            ConfigModule.withConfig(defaultStateConfig),
+                        ],
+                        providers: __spread(stateMetaReducers, [
+                            {
+                                provide: i1$2.META_REDUCERS,
+                                useFactory: ɵ0,
+                                deps: [[new i0.Optional(), META_REDUCER]],
+                            },
+                        ]),
+                    },] }
+        ];
+        return StateModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserTokenEffects = /** @class */ (function () {
+        function UserTokenEffects(actions$, userTokenService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userTokenService = userTokenService;
+            this.loadUserToken$ = this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
+                var userId = _a.userId, password = _a.password;
+                return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
+                    /** @type {?} */
+                    var date = new Date();
+                    date.setSeconds(date.getSeconds() + token.expires_in);
+                    token.userId = userId;
+                    token.expiration_time = date;
+                    return new LoadUserTokenSuccess(token);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(error)); }));
+            }));
+            this.refreshUserToken$ = this.actions$.pipe(effects.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
+                var userId = _a.userId, refreshToken = _a.refreshToken;
+                return _this.userTokenService.refreshToken(refreshToken).pipe(operators.map(function (token) {
+                    token.userId = userId;
+                    /** @type {?} */
+                    var date = new Date();
+                    date.setSeconds(date.getSeconds() + token.expires_in);
+                    token.userId = userId;
+                    token.expiration_time = date;
+                    return new RefreshUserTokenSuccess(token);
+                }, operators.catchError(function (error) { return rxjs.of(new RefreshUserTokenFail(error)); })));
+            }));
+        }
+        UserTokenEffects.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        UserTokenEffects.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: UserAuthenticationTokenService }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserTokenEffects.prototype, "loadUserToken$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
+        return UserTokenEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ClientTokenEffect = /** @class */ (function () {
+        function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.clientAuthenticationTokenService = clientAuthenticationTokenService;
+            this.loadClientToken$ = this.actions$.pipe(effects.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap(function () {
+                return _this.clientAuthenticationTokenService
+                    .loadClientAuthenticationToken()
+                    .pipe(operators.map(function (token) {
+                    return new LoadClientTokenSuccess(token);
+                }), operators.catchError(function (error) { return rxjs.of(new LoadClientTokenFail(error)); }));
+            }));
+        }
+        ClientTokenEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ClientTokenEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: ClientAuthenticationTokenService }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
+        return ClientTokenEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$2 = [UserTokenEffects, ClientTokenEffect];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var initialLoaderState = {
         loading: false,
@@ -3841,354 +4324,18 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UserTokenEffects = /** @class */ (function () {
-        function UserTokenEffects(actions$, userTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userTokenService = userTokenService;
-            this.loadUserToken$ = this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (_a) {
-                var userId = _a.userId, password = _a.password;
-                return _this.userTokenService.loadToken(userId, password).pipe(operators.map(function (token) {
-                    /** @type {?} */
-                    var date = new Date();
-                    date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.userId = userId;
-                    token.expiration_time = date;
-                    return new LoadUserTokenSuccess(token);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(error)); }));
-            }));
-            this.refreshUserToken$ = this.actions$.pipe(effects.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
-                var userId = _a.userId, refreshToken = _a.refreshToken;
-                return _this.userTokenService.refreshToken(refreshToken).pipe(operators.map(function (token) {
-                    token.userId = userId;
-                    /** @type {?} */
-                    var date = new Date();
-                    date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.userId = userId;
-                    token.expiration_time = date;
-                    return new RefreshUserTokenSuccess(token);
-                }, operators.catchError(function (error) { return rxjs.of(new RefreshUserTokenFail(error)); })));
-            }));
-        }
-        UserTokenEffects.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        UserTokenEffects.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: UserAuthenticationTokenService }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserTokenEffects.prototype, "loadUserToken$", void 0);
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
-        return UserTokenEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ClientTokenEffect = /** @class */ (function () {
-        function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.clientAuthenticationTokenService = clientAuthenticationTokenService;
-            this.loadClientToken$ = this.actions$.pipe(effects.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap(function () {
-                return _this.clientAuthenticationTokenService
-                    .loadClientAuthenticationToken()
-                    .pipe(operators.map(function (token) {
-                    return new LoadClientTokenSuccess(token);
-                }), operators.catchError(function (error) { return rxjs.of(new LoadClientTokenFail(error)); }));
-            }));
-        }
-        ClientTokenEffect.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        ClientTokenEffect.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: ClientAuthenticationTokenService }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
-        return ClientTokenEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$2 = [UserTokenEffects, ClientTokenEffect];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var StorageSyncType = {
-        NO_STORAGE: 'NO_STORAGE',
-        LOCAL_STORAGE: 'LOCAL_STORAGE',
-        SESSION_STORAGE: 'SESSION_STORAGE',
-    };
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ StateConfig = /** @class */ (function () {
-        function StateConfig() {
-        }
-        return StateConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} config
-     * @param {?} winRef
-     * @return {?}
-     */
-    function storageConfig(config, winRef) {
-        /** @type {?} */
-        var storage;
-        switch (config.state.storageSync.type) {
-            case StorageSyncType.LOCAL_STORAGE: {
-                storage = winRef.localStorage;
-                break;
-            }
-            case StorageSyncType.SESSION_STORAGE: {
-                storage = winRef.sessionStorage;
-                break;
-            }
-        }
-        return {
-            keys: config.state.storageSync.keys,
-            rehydrate: true,
-            storage: storage ? storage : winRef.sessionStorage,
-        };
-    }
-    /**
-     * @param {?} winRef
-     * @param {?=} config
-     * @return {?}
-     */
-    function getStorageSyncReducer(winRef, config) {
-        if (!winRef.nativeWindow ||
-            !config ||
-            !config.state ||
-            !config.state.storageSync ||
-            config.state.storageSync.type === StorageSyncType.NO_STORAGE ||
-            !config.state.storageSync.keys) {
-            return undefined;
-        }
-        /** @type {?} */
-        var storage = storageConfig(config, winRef);
-        return function (reducer) {
-            return ngrxStoreLocalstorage.localStorageSync(storage)(reducer);
-        };
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var META_REDUCER = new i0.InjectionToken('metaReducer');
-    /**
-     * @param {?} metaReducers
-     * @return {?}
-     */
-    function metaReducersFactory(metaReducers) {
-        return (metaReducers || []).filter(Boolean);
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} state
-     * @param {?} keys
-     * @return {?}
-     */
-    function getStateSlice(state, keys) {
-        return Object.keys(keys).reduce(function (acc, key) {
-            /** @type {?} */
-            var keyValue = keys[key];
-            if (state.hasOwnProperty(key)) {
-                if (typeof keyValue === 'object') {
-                    acc[key] = getStateSlice(state[key], keyValue);
-                }
-                else if (keyValue) {
-                    acc[key] = state[key];
-                }
-            }
-            return acc;
-        }, {});
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var INIT_ACTION = '@ngrx/store/init';
-    /** @type {?} */
-    var CX_KEY = platformBrowser.makeStateKey('cx-state');
-    /**
-     * @param {?} platformId
-     * @param {?=} transferState
-     * @param {?=} config
-     * @return {?}
-     */
-    function getTransferStateReducer(platformId, transferState, config) {
-        if (transferState &&
-            config &&
-            config.state &&
-            config.state.ssrTransfer &&
-            config.state.ssrTransfer.keys) {
-            if (i1.isPlatformBrowser(platformId)) {
-                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-            else if (i1.isPlatformServer(platformId)) {
-                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-        }
-        return undefined;
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getServerTransferStateReducer(transferState, keys) {
-        return function (reducer) {
-            return function (state, action) {
-                /** @type {?} */
-                var newState = reducer(state, action);
-                if (newState) {
-                    transferState.set(CX_KEY, getStateSlice(newState, keys));
-                }
-                return newState;
-            };
-        };
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getBrowserTransferStateReducer(transferState, keys) {
-        return function (reducer) {
-            return function (state, action) {
-                if (action.type === INIT_ACTION && transferState.hasKey(CX_KEY)) {
-                    /** @type {?} */
-                    var transferedState = getStateSlice(transferState.get(CX_KEY, {}), keys);
-                    state = deepMerge({}, state, transferedState);
-                }
-                return reducer(state, action);
-            };
-        };
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var stateMetaReducers = [
-        {
-            provide: META_REDUCER,
-            useFactory: getStorageSyncReducer,
-            deps: [WindowRef, [new i0.Optional(), Config]],
-            multi: true,
-        },
-        {
-            provide: META_REDUCER,
-            useFactory: getTransferStateReducer,
-            deps: [
-                i0.PLATFORM_ID,
-                [new i0.Optional(), platformBrowser.TransferState],
-                [new i0.Optional(), Config],
-            ],
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultStateConfig = {
-        state: {
-            storageSync: {
-                type: StorageSyncType.SESSION_STORAGE,
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0 = metaReducersFactory;
-    var StateModule = /** @class */ (function () {
-        function StateModule() {
-        }
-        StateModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            i1$2.StoreModule.forRoot({}),
-                            effects.EffectsModule.forRoot([]),
-                            ConfigModule.withConfig(defaultStateConfig),
-                        ],
-                        providers: __spread(stateMetaReducers, [
-                            {
-                                provide: i1$2.META_REDUCERS,
-                                useFactory: ɵ0,
-                                deps: [[new i0.Optional(), META_REDUCER]],
-                            },
-                        ]),
-                    },] }
-        ];
-        return StateModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @return {?}
      */
     function authStoreConfigFactory() {
-        var _a;
         // if we want to reuse AUTH_FEATURE const in config, we have to use factory instead of plain object
         /** @type {?} */
         var config = {
             state: {
                 storageSync: {
-                    keys: [(_a = {}, _a[AUTH_FEATURE] = ['userToken', 'clientToken'], _a)],
+                    keys: {
+                        'auth.userToken.token': StorageSyncType.LOCAL_STORAGE,
+                    },
                 },
             },
         };
@@ -7468,7 +7615,11 @@
         // if we want to reuse SITE_CONTEXT_FEATURE const in config, we have to use factory instead of plain object
         /** @type {?} */
         var config = {
-            state: { ssrTransfer: { keys: (_a = {}, _a[SITE_CONTEXT_FEATURE] = true, _a) } },
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[SITE_CONTEXT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
         };
         return config;
     }
@@ -7552,6 +7703,81 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
+    /** @type {?} */
+    var ENTITY_FAIL_ACTION = '[ENTITY] LOAD FAIL';
+    /** @type {?} */
+    var ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
+    /** @type {?} */
+    var ENTITY_RESET_ACTION = '[ENTITY] RESET';
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @return {?}
+     */
+    function entityLoadMeta(entityType, id) {
+        return __assign({}, loadMeta(entityType), entityMeta(entityType, id));
+    }
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @param {?=} error
+     * @return {?}
+     */
+    function entityFailMeta(entityType, id, error) {
+        return __assign({}, failMeta(entityType, error), entityMeta(entityType, id));
+    }
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @return {?}
+     */
+    function entitySuccessMeta(entityType, id) {
+        return __assign({}, successMeta(entityType), entityMeta(entityType, id));
+    }
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @return {?}
+     */
+    function entityResetMeta(entityType, id) {
+        return __assign({}, resetMeta(entityType), entityMeta(entityType, id));
+    }
+    var EntityLoadAction = /** @class */ (function () {
+        function EntityLoadAction(entityType, id) {
+            this.type = ENTITY_LOAD_ACTION;
+            this.meta = entityLoadMeta(entityType, id);
+        }
+        return EntityLoadAction;
+    }());
+    var EntityFailAction = /** @class */ (function () {
+        function EntityFailAction(entityType, id, error) {
+            this.type = ENTITY_FAIL_ACTION;
+            this.meta = entityFailMeta(entityType, id, error);
+        }
+        return EntityFailAction;
+    }());
+    var EntitySuccessAction = /** @class */ (function () {
+        function EntitySuccessAction(entityType, id, payload) {
+            this.payload = payload;
+            this.type = ENTITY_SUCCESS_ACTION;
+            this.meta = entitySuccessMeta(entityType, id);
+        }
+        return EntitySuccessAction;
+    }());
+    var EntityResetAction = /** @class */ (function () {
+        function EntityResetAction(entityType, id) {
+            this.type = ENTITY_RESET_ACTION;
+            this.meta = entityResetMeta(entityType, id);
+        }
+        return EntityResetAction;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var initialEntityState = { entities: {} };
     /**
      * Higher order reducer for reusing reducer logic for multiple entities
@@ -7628,137 +7854,6 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entitySelector(state, id) {
-        return state.entities[id] || undefined;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function ofLoaderLoad(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                action.meta.loader.load;
-        });
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function ofLoaderFail(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                action.meta.loader.error;
-        });
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function ofLoaderSuccess(entityType) {
-        return operators.filter(function (action) {
-            return action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === entityType &&
-                !action.meta.loader.load &&
-                !action.meta.loader.error;
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
-    /** @type {?} */
-    var ENTITY_FAIL_ACTION = '[ENTITY] LOAD FAIL';
-    /** @type {?} */
-    var ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
-    /** @type {?} */
-    var ENTITY_RESET_ACTION = '[ENTITY] RESET';
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @return {?}
-     */
-    function entityLoadMeta(entityType, id) {
-        return __assign({}, loadMeta(entityType), entityMeta(entityType, id));
-    }
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @param {?=} error
-     * @return {?}
-     */
-    function entityFailMeta(entityType, id, error) {
-        return __assign({}, failMeta(entityType, error), entityMeta(entityType, id));
-    }
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @return {?}
-     */
-    function entitySuccessMeta(entityType, id) {
-        return __assign({}, successMeta(entityType), entityMeta(entityType, id));
-    }
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @return {?}
-     */
-    function entityResetMeta(entityType, id) {
-        return __assign({}, resetMeta(entityType), entityMeta(entityType, id));
-    }
-    var EntityLoadAction = /** @class */ (function () {
-        function EntityLoadAction(entityType, id) {
-            this.type = ENTITY_LOAD_ACTION;
-            this.meta = entityLoadMeta(entityType, id);
-        }
-        return EntityLoadAction;
-    }());
-    var EntityFailAction = /** @class */ (function () {
-        function EntityFailAction(entityType, id, error) {
-            this.type = ENTITY_FAIL_ACTION;
-            this.meta = entityFailMeta(entityType, id, error);
-        }
-        return EntityFailAction;
-    }());
-    var EntitySuccessAction = /** @class */ (function () {
-        function EntitySuccessAction(entityType, id, payload) {
-            this.payload = payload;
-            this.type = ENTITY_SUCCESS_ACTION;
-            this.meta = entitySuccessMeta(entityType, id);
-        }
-        return EntitySuccessAction;
-    }());
-    var EntityResetAction = /** @class */ (function () {
-        function EntityResetAction(entityType, id) {
-            this.type = ENTITY_RESET_ACTION;
-            this.meta = entityResetMeta(entityType, id);
-        }
-        return EntityResetAction;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
      * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
      * single state reducer to support multiple entities with generic loading flags
      * @template T
@@ -7826,6 +7921,62 @@
         /** @type {?} */
         var entityState = entityStateSelector(state, id);
         return entityState.success;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entitySelector(state, id) {
+        return state.entities[id] || undefined;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function ofLoaderLoad(entityType) {
+        return operators.filter(function (action) {
+            return action.meta &&
+                action.meta.loader &&
+                action.meta.entityType === entityType &&
+                action.meta.loader.load;
+        });
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function ofLoaderFail(entityType) {
+        return operators.filter(function (action) {
+            return action.meta &&
+                action.meta.loader &&
+                action.meta.entityType === entityType &&
+                action.meta.loader.error;
+        });
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function ofLoaderSuccess(entityType) {
+        return operators.filter(function (action) {
+            return action.meta &&
+                action.meta.loader &&
+                action.meta.entityType === entityType &&
+                !action.meta.loader.load &&
+                !action.meta.loader.error;
+        });
     }
 
     /**
@@ -16811,7 +16962,11 @@
         // if we want to reuse CMS_FEATURE const in config, we have to use factory instead of plain object
         /** @type {?} */
         var config = {
-            state: { ssrTransfer: { keys: (_a = {}, _a[CMS_FEATURE] = true, _a) } },
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[CMS_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
         };
         return config;
     }
@@ -18717,7 +18872,11 @@
         // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
         /** @type {?} */
         var config = {
-            state: { ssrTransfer: { keys: (_a = {}, _a[PRODUCT_FEATURE] = true, _a) } },
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[PRODUCT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
         };
         return config;
     }
@@ -21920,6 +22079,25 @@
     exports.getActiveBaseSite = getActiveBaseSite;
     exports.SmartEditModule = SmartEditModule;
     exports.StateModule = StateModule;
+    exports.getStateSlice = getStateSlice;
+    exports.entityLoadMeta = entityLoadMeta;
+    exports.entityFailMeta = entityFailMeta;
+    exports.entitySuccessMeta = entitySuccessMeta;
+    exports.entityResetMeta = entityResetMeta;
+    exports.ENTITY_LOAD_ACTION = ENTITY_LOAD_ACTION;
+    exports.ENTITY_FAIL_ACTION = ENTITY_FAIL_ACTION;
+    exports.ENTITY_SUCCESS_ACTION = ENTITY_SUCCESS_ACTION;
+    exports.ENTITY_RESET_ACTION = ENTITY_RESET_ACTION;
+    exports.EntityLoadAction = EntityLoadAction;
+    exports.EntityFailAction = EntityFailAction;
+    exports.EntitySuccessAction = EntitySuccessAction;
+    exports.EntityResetAction = EntityResetAction;
+    exports.entityLoaderReducer = entityLoaderReducer;
+    exports.entityStateSelector = entityStateSelector;
+    exports.entityValueSelector = entityValueSelector;
+    exports.entityLoadingSelector = entityLoadingSelector;
+    exports.entityErrorSelector = entityErrorSelector;
+    exports.entitySuccessSelector = entitySuccessSelector;
     exports.entityMeta = entityMeta;
     exports.entityRemoveMeta = entityRemoveMeta;
     exports.entityRemoveAllMeta = entityRemoveAllMeta;
@@ -21951,26 +22129,8 @@
     exports.ofLoaderLoad = ofLoaderLoad;
     exports.ofLoaderFail = ofLoaderFail;
     exports.ofLoaderSuccess = ofLoaderSuccess;
-    exports.entityLoadMeta = entityLoadMeta;
-    exports.entityFailMeta = entityFailMeta;
-    exports.entitySuccessMeta = entitySuccessMeta;
-    exports.entityResetMeta = entityResetMeta;
-    exports.ENTITY_LOAD_ACTION = ENTITY_LOAD_ACTION;
-    exports.ENTITY_FAIL_ACTION = ENTITY_FAIL_ACTION;
-    exports.ENTITY_SUCCESS_ACTION = ENTITY_SUCCESS_ACTION;
-    exports.ENTITY_RESET_ACTION = ENTITY_RESET_ACTION;
-    exports.EntityLoadAction = EntityLoadAction;
-    exports.EntityFailAction = EntityFailAction;
-    exports.EntitySuccessAction = EntitySuccessAction;
-    exports.EntityResetAction = EntityResetAction;
-    exports.entityLoaderReducer = entityLoaderReducer;
-    exports.entityStateSelector = entityStateSelector;
-    exports.entityValueSelector = entityValueSelector;
-    exports.entityLoadingSelector = entityLoadingSelector;
-    exports.entityErrorSelector = entityErrorSelector;
-    exports.entitySuccessSelector = entitySuccessSelector;
-    exports.getStateSlice = getStateSlice;
     exports.StorageSyncType = StorageSyncType;
+    exports.StateTransferType = StateTransferType;
     exports.StateConfig = StateConfig;
     exports.metaReducersFactory = metaReducersFactory;
     exports.META_REDUCER = META_REDUCER;
@@ -22201,118 +22361,118 @@
     exports.ConverterService = ConverterService;
     exports.UtilModule = UtilModule;
     exports.WindowRef = WindowRef;
-    exports.ɵbe = defaultAuthConfig;
-    exports.ɵbm = AuthErrorInterceptor;
-    exports.ɵbj = ClientTokenInterceptor;
-    exports.ɵbi = interceptors;
-    exports.ɵbl = UserTokenInterceptor;
-    exports.ɵbc = ClientAuthenticationTokenService;
-    exports.ɵbg = ClientErrorHandlingService;
-    exports.ɵbf = services;
-    exports.ɵbb = UserAuthenticationTokenService;
-    exports.ɵbh = UserErrorHandlingService;
+    exports.ɵbg = defaultAuthConfig;
+    exports.ɵbo = AuthErrorInterceptor;
+    exports.ɵbl = ClientTokenInterceptor;
+    exports.ɵbk = interceptors;
+    exports.ɵbn = UserTokenInterceptor;
+    exports.ɵbe = ClientAuthenticationTokenService;
+    exports.ɵbi = ClientErrorHandlingService;
+    exports.ɵbh = services;
+    exports.ɵbd = UserAuthenticationTokenService;
+    exports.ɵbj = UserErrorHandlingService;
     exports.ɵo = AuthStoreModule;
     exports.ɵn = authStoreConfigFactory;
-    exports.ɵba = ClientTokenEffect;
-    exports.ɵy = effects$2;
-    exports.ɵz = UserTokenEffects;
-    exports.ɵw = clearAuthState;
-    exports.ɵt = getReducers$1;
-    exports.ɵx = metaReducers;
-    exports.ɵv = reducerProvider$1;
-    exports.ɵu = reducerToken$1;
-    exports.ɵbd = reducer$1;
-    exports.ɵbo = OccCartNormalizer;
-    exports.ɵbp = CartStoreModule;
-    exports.ɵbx = CartEntryEffects;
-    exports.ɵbw = CartEffects;
-    exports.ɵbv = effects$4;
-    exports.ɵby = reducer$2;
-    exports.ɵbt = clearCartState;
-    exports.ɵbq = getReducers$2;
-    exports.ɵbu = metaReducers$1;
-    exports.ɵbs = reducerProvider$2;
-    exports.ɵbr = reducerToken$2;
-    exports.ɵcs = CheckoutStoreModule;
-    exports.ɵcr = AddressVerificationEffect;
-    exports.ɵcq = CardTypesEffects;
-    exports.ɵcp = CheckoutEffects;
-    exports.ɵco = effects$6;
-    exports.ɵcn = getAddressVerificationResults;
-    exports.ɵcm = reducer$7;
-    exports.ɵcl = getCardTypesEntites;
-    exports.ɵck = reducer$8;
-    exports.ɵcg = getDeliveryAddress;
-    exports.ɵch = getDeliveryMode;
-    exports.ɵcj = getOrderDetails;
-    exports.ɵci = getPaymentDetails;
-    exports.ɵcf = reducer$6;
-    exports.ɵcd = clearCheckoutState;
-    exports.ɵcc = getCheckoutState;
-    exports.ɵbz = getReducers$4;
-    exports.ɵce = metaReducers$2;
-    exports.ɵcb = reducerProvider$4;
-    exports.ɵca = reducerToken$4;
-    exports.ɵcy = CmsStoreModule;
-    exports.ɵcx = cmsStoreConfigFactory;
-    exports.ɵdg = ComponentEffects;
-    exports.ɵde = effects$7;
-    exports.ɵdh = NavigationEntryItemEffects;
-    exports.ɵdf = PageEffects;
-    exports.ɵdc = clearCmsState;
-    exports.ɵcz = getReducers$8;
-    exports.ɵdd = metaReducers$4;
-    exports.ɵdb = reducerProvider$8;
-    exports.ɵda = reducerToken$8;
-    exports.ɵdl = reducer$k;
-    exports.ɵdi = reducer$l;
-    exports.ɵdk = reducer$m;
-    exports.ɵfs = ConfigModule;
-    exports.ɵeo = ServerConfig;
-    exports.ɵbn = provideConfigValidator;
-    exports.ɵeh = BadGatewayHandler;
-    exports.ɵei = BadRequestHandler;
-    exports.ɵej = ConflictHandler;
-    exports.ɵek = ForbiddenHandler;
-    exports.ɵel = GatewayTimeoutHandler;
-    exports.ɵef = HttpErrorHandler;
-    exports.ɵem = NotFoundHandler;
-    exports.ɵeg = UnknownErrorHandler;
-    exports.ɵen = HttpErrorInterceptor;
-    exports.ɵee = reducer$9;
-    exports.ɵeb = getReducers$5;
-    exports.ɵed = reducerProvider$5;
-    exports.ɵec = reducerToken$5;
-    exports.ɵep = defaultI18nConfig;
-    exports.ɵer = i18nextInit;
-    exports.ɵeq = i18nextProviders;
-    exports.ɵes = MockDatePipe;
-    exports.ɵet = MockTranslationService;
-    exports.ɵdj = PageType;
-    exports.ɵcu = PageType;
-    exports.ɵhd = ProcessModule;
-    exports.ɵhf = PROCESS_FEATURE;
-    exports.ɵhe = ProcessStoreModule;
-    exports.ɵhg = getReducers$7;
-    exports.ɵhi = reducerProvider$7;
-    exports.ɵhh = reducerToken$7;
-    exports.ɵeu = defaultOccProductConfig;
-    exports.ɵdx = effects$8;
-    exports.ɵea = ProductReviewsEffects;
-    exports.ɵdy = ProductsSearchEffects;
-    exports.ɵdz = ProductEffects;
-    exports.ɵfd = ProductStoreModule;
-    exports.ɵfc = productStoreConfigFactory;
-    exports.ɵdv = clearProductsState;
-    exports.ɵds = getReducers$9;
-    exports.ɵdw = metaReducers$5;
-    exports.ɵdu = reducerProvider$9;
-    exports.ɵdt = reducerToken$9;
-    exports.ɵfe = reducer$o;
-    exports.ɵfa = getAuxSearchResults;
-    exports.ɵfb = getProductSuggestions;
-    exports.ɵez = getSearchResults;
-    exports.ɵey = reducer$n;
+    exports.ɵbc = ClientTokenEffect;
+    exports.ɵba = effects$2;
+    exports.ɵbb = UserTokenEffects;
+    exports.ɵy = clearAuthState;
+    exports.ɵv = getReducers$1;
+    exports.ɵz = metaReducers;
+    exports.ɵx = reducerProvider$1;
+    exports.ɵw = reducerToken$1;
+    exports.ɵbf = reducer$1;
+    exports.ɵbq = OccCartNormalizer;
+    exports.ɵbr = CartStoreModule;
+    exports.ɵbz = CartEntryEffects;
+    exports.ɵby = CartEffects;
+    exports.ɵbx = effects$4;
+    exports.ɵca = reducer$2;
+    exports.ɵbv = clearCartState;
+    exports.ɵbs = getReducers$2;
+    exports.ɵbw = metaReducers$1;
+    exports.ɵbu = reducerProvider$2;
+    exports.ɵbt = reducerToken$2;
+    exports.ɵcu = CheckoutStoreModule;
+    exports.ɵct = AddressVerificationEffect;
+    exports.ɵcs = CardTypesEffects;
+    exports.ɵcr = CheckoutEffects;
+    exports.ɵcq = effects$6;
+    exports.ɵcp = getAddressVerificationResults;
+    exports.ɵco = reducer$7;
+    exports.ɵcn = getCardTypesEntites;
+    exports.ɵcm = reducer$8;
+    exports.ɵci = getDeliveryAddress;
+    exports.ɵcj = getDeliveryMode;
+    exports.ɵcl = getOrderDetails;
+    exports.ɵck = getPaymentDetails;
+    exports.ɵch = reducer$6;
+    exports.ɵcf = clearCheckoutState;
+    exports.ɵce = getCheckoutState;
+    exports.ɵcb = getReducers$4;
+    exports.ɵcg = metaReducers$2;
+    exports.ɵcd = reducerProvider$4;
+    exports.ɵcc = reducerToken$4;
+    exports.ɵda = CmsStoreModule;
+    exports.ɵcz = cmsStoreConfigFactory;
+    exports.ɵdi = ComponentEffects;
+    exports.ɵdg = effects$7;
+    exports.ɵdj = NavigationEntryItemEffects;
+    exports.ɵdh = PageEffects;
+    exports.ɵde = clearCmsState;
+    exports.ɵdb = getReducers$8;
+    exports.ɵdf = metaReducers$4;
+    exports.ɵdd = reducerProvider$8;
+    exports.ɵdc = reducerToken$8;
+    exports.ɵdn = reducer$k;
+    exports.ɵdk = reducer$l;
+    exports.ɵdm = reducer$m;
+    exports.ɵfu = ConfigModule;
+    exports.ɵeq = ServerConfig;
+    exports.ɵbp = provideConfigValidator;
+    exports.ɵej = BadGatewayHandler;
+    exports.ɵek = BadRequestHandler;
+    exports.ɵel = ConflictHandler;
+    exports.ɵem = ForbiddenHandler;
+    exports.ɵen = GatewayTimeoutHandler;
+    exports.ɵeh = HttpErrorHandler;
+    exports.ɵeo = NotFoundHandler;
+    exports.ɵei = UnknownErrorHandler;
+    exports.ɵep = HttpErrorInterceptor;
+    exports.ɵeg = reducer$9;
+    exports.ɵed = getReducers$5;
+    exports.ɵef = reducerProvider$5;
+    exports.ɵee = reducerToken$5;
+    exports.ɵer = defaultI18nConfig;
+    exports.ɵet = i18nextInit;
+    exports.ɵes = i18nextProviders;
+    exports.ɵeu = MockDatePipe;
+    exports.ɵev = MockTranslationService;
+    exports.ɵdl = PageType;
+    exports.ɵcw = PageType;
+    exports.ɵhf = ProcessModule;
+    exports.ɵhh = PROCESS_FEATURE;
+    exports.ɵhg = ProcessStoreModule;
+    exports.ɵhi = getReducers$7;
+    exports.ɵhk = reducerProvider$7;
+    exports.ɵhj = reducerToken$7;
+    exports.ɵew = defaultOccProductConfig;
+    exports.ɵdz = effects$8;
+    exports.ɵec = ProductReviewsEffects;
+    exports.ɵea = ProductsSearchEffects;
+    exports.ɵeb = ProductEffects;
+    exports.ɵff = ProductStoreModule;
+    exports.ɵfe = productStoreConfigFactory;
+    exports.ɵdx = clearProductsState;
+    exports.ɵdu = getReducers$9;
+    exports.ɵdy = metaReducers$5;
+    exports.ɵdw = reducerProvider$9;
+    exports.ɵdv = reducerToken$9;
+    exports.ɵfg = reducer$o;
+    exports.ɵfc = getAuxSearchResults;
+    exports.ɵfd = getProductSuggestions;
+    exports.ɵfb = getSearchResults;
+    exports.ɵfa = reducer$n;
     exports.ɵa = defaultConfigurableRoutesConfig;
     exports.ɵb = defaultStorefrontRoutesTranslations;
     exports.ɵd = UrlParsingService;
@@ -22325,69 +22485,71 @@
     exports.ɵg = reducer;
     exports.ɵi = reducerProvider;
     exports.ɵh = reducerToken;
-    exports.ɵff = defaultSiteContextConfigFactory;
-    exports.ɵbk = BaseSiteService;
-    exports.ɵfl = SiteContextParamsService;
-    exports.ɵfn = SiteContextRoutesHandler;
-    exports.ɵfm = SiteContextUrlSerializer;
-    exports.ɵdr = CurrenciesEffects;
-    exports.ɵdp = effects$3;
-    exports.ɵdq = LanguagesEffects;
-    exports.ɵfk = reducer$5;
-    exports.ɵfj = reducer$4;
-    exports.ɵdm = getReducers$3;
-    exports.ɵdo = reducerProvider$3;
-    exports.ɵdn = reducerToken$3;
-    exports.ɵfi = reducer$3;
-    exports.ɵfh = SiteContextStoreModule;
-    exports.ɵfg = siteContextStoreConfigFactory;
-    exports.ɵfp = CmsTicketInterceptor;
-    exports.ɵfo = interceptors$2;
-    exports.ɵfq = SmartEditService;
-    exports.ɵcv = EntityFailAction;
-    exports.ɵct = EntityLoadAction;
-    exports.ɵgc = EntityResetAction;
-    exports.ɵcw = EntitySuccessAction;
-    exports.ɵp = defaultStateConfig;
-    exports.ɵq = stateMetaReducers;
-    exports.ɵr = getStorageSyncReducer;
-    exports.ɵs = getTransferStateReducer;
-    exports.ɵft = defaultStoreFinderConfig;
-    exports.ɵfz = FindStoresEffect;
-    exports.ɵfy = effects$9;
-    exports.ɵga = ViewAllStoresEffect;
-    exports.ɵfv = getReducers$a;
-    exports.ɵfx = reducerProvider$a;
-    exports.ɵfw = reducerToken$a;
-    exports.ɵfr = getStoreFinderState;
-    exports.ɵfu = StoreFinderStoreModule;
-    exports.ɵgp = BillingCountriesEffect;
-    exports.ɵgq = DeliveryCountriesEffects;
-    exports.ɵha = ForgotPasswordEffects;
-    exports.ɵgo = effects$5;
-    exports.ɵgr = OrderDetailsEffect;
-    exports.ɵgs = UserPaymentMethodsEffects;
-    exports.ɵgt = RegionsEffects;
-    exports.ɵgu = ResetPasswordEffects;
-    exports.ɵgv = TitlesEffects;
-    exports.ɵhb = UpdateEmailEffects;
-    exports.ɵhc = UpdatePasswordEffects;
-    exports.ɵgw = UserAddressesEffects;
-    exports.ɵgx = UserDetailsEffects;
-    exports.ɵgy = UserOrdersEffect;
-    exports.ɵgz = UserRegisterEffects;
-    exports.ɵgf = reducer$a;
-    exports.ɵgj = reducer$b;
-    exports.ɵgi = reducer$c;
-    exports.ɵgg = reducer$d;
-    exports.ɵgl = reducer$e;
-    exports.ɵgm = reducer$f;
-    exports.ɵgk = reducer$g;
-    exports.ɵge = reducer$h;
-    exports.ɵgd = reducer$i;
-    exports.ɵgh = reducer$j;
-    exports.ɵgn = UserStoreModule;
-    exports.ɵhj = StripHtmlPipe;
+    exports.ɵfh = defaultSiteContextConfigFactory;
+    exports.ɵbm = BaseSiteService;
+    exports.ɵfn = SiteContextParamsService;
+    exports.ɵfp = SiteContextRoutesHandler;
+    exports.ɵfo = SiteContextUrlSerializer;
+    exports.ɵdt = CurrenciesEffects;
+    exports.ɵdr = effects$3;
+    exports.ɵds = LanguagesEffects;
+    exports.ɵfm = reducer$5;
+    exports.ɵfl = reducer$4;
+    exports.ɵdo = getReducers$3;
+    exports.ɵdq = reducerProvider$3;
+    exports.ɵdp = reducerToken$3;
+    exports.ɵfk = reducer$3;
+    exports.ɵfj = SiteContextStoreModule;
+    exports.ɵfi = siteContextStoreConfigFactory;
+    exports.ɵfr = CmsTicketInterceptor;
+    exports.ɵfq = interceptors$2;
+    exports.ɵfs = SmartEditService;
+    exports.ɵcx = EntityFailAction;
+    exports.ɵcv = EntityLoadAction;
+    exports.ɵge = EntityResetAction;
+    exports.ɵcy = EntitySuccessAction;
+    exports.ɵp = DEFAULT_LOCAL_STORAGE_KEY;
+    exports.ɵq = DEFAULT_SESSION_STORAGE_KEY;
+    exports.ɵr = defaultStateConfig;
+    exports.ɵs = stateMetaReducers;
+    exports.ɵt = getStorageSyncReducer;
+    exports.ɵu = getTransferStateReducer;
+    exports.ɵfv = defaultStoreFinderConfig;
+    exports.ɵgb = FindStoresEffect;
+    exports.ɵga = effects$9;
+    exports.ɵgc = ViewAllStoresEffect;
+    exports.ɵfx = getReducers$a;
+    exports.ɵfz = reducerProvider$a;
+    exports.ɵfy = reducerToken$a;
+    exports.ɵft = getStoreFinderState;
+    exports.ɵfw = StoreFinderStoreModule;
+    exports.ɵgr = BillingCountriesEffect;
+    exports.ɵgs = DeliveryCountriesEffects;
+    exports.ɵhc = ForgotPasswordEffects;
+    exports.ɵgq = effects$5;
+    exports.ɵgt = OrderDetailsEffect;
+    exports.ɵgu = UserPaymentMethodsEffects;
+    exports.ɵgv = RegionsEffects;
+    exports.ɵgw = ResetPasswordEffects;
+    exports.ɵgx = TitlesEffects;
+    exports.ɵhd = UpdateEmailEffects;
+    exports.ɵhe = UpdatePasswordEffects;
+    exports.ɵgy = UserAddressesEffects;
+    exports.ɵgz = UserDetailsEffects;
+    exports.ɵha = UserOrdersEffect;
+    exports.ɵhb = UserRegisterEffects;
+    exports.ɵgh = reducer$a;
+    exports.ɵgl = reducer$b;
+    exports.ɵgk = reducer$c;
+    exports.ɵgi = reducer$d;
+    exports.ɵgn = reducer$e;
+    exports.ɵgo = reducer$f;
+    exports.ɵgm = reducer$g;
+    exports.ɵgg = reducer$h;
+    exports.ɵgf = reducer$i;
+    exports.ɵgj = reducer$j;
+    exports.ɵgp = UserStoreModule;
+    exports.ɵhl = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
