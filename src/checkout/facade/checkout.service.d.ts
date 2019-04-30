@@ -6,7 +6,7 @@ import { PaymentDetails, CardType, Order, DeliveryMode, AddressValidation, Addre
 export declare class CheckoutService {
     private checkoutStore;
     private cartData;
-    constructor(checkoutStore: Store<fromCheckoutStore.CheckoutState>, cartData: CartDataService);
+    constructor(checkoutStore: Store<fromCheckoutStore.StateWithCheckout>, cartData: CartDataService);
     /**
      * Get supported delivery modes
      */
@@ -94,5 +94,7 @@ export declare class CheckoutService {
      * @param stepNumber : the step number to be cleared
      */
     clearCheckoutStep(stepNumber: number): void;
+    loadCheckoutDetails(userId: string, cartId: string): void;
+    getCheckoutDetailsLoaded(): Observable<boolean>;
     private actionAllowed;
 }
