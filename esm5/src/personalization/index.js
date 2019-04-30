@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { PersonalizationModule } from './personalization.module';
+export { PersonalizationConfig } from './config/personalization-config';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcGVyc29uYWxpemF0aW9uL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxzQ0FBYywwQkFBMEIsQ0FBQztBQUN6QyxzQ0FBYyxpQ0FBaUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vcGVyc29uYWxpemF0aW9uLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZy9wZXJzb25hbGl6YXRpb24tY29uZmlnJztcbiJdfQ==

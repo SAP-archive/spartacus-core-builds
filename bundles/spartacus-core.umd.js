@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('rxjs/operators'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', 'rxjs/operators', '@angular/common', '@angular/common/http', '@ngrx/store', '@ngrx/effects', '@angular/core'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.rxjs.operators,global.ng.common,global.ng.common.http,global.store,global.effects,global.ng.core));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,router,i18nextXhrBackend,i18next,rxjs,operators,i1,i1$1,i1$2,effects,i0) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('@angular/common'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', '@angular/common', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.ng.common,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators));
+}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,router,i18nextXhrBackend,i18next,rxjs,i1,i1$1,effects,i0,i1$2,operators) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -1018,13 +1018,13 @@
         useFactory: getReducers,
     };
     /** @type {?} */
-    var getRouterFeatureState = i1$2.createFeatureSelector(ROUTING_FEATURE);
+    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
     /** @type {?} */
-    var getRouterState = i1$2.createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
+    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
     /** @type {?} */
-    var getPageContext = i1$2.createSelector(getRouterState, function (routingState) { return routingState.state.context; });
+    var getPageContext = i1$1.createSelector(getRouterState, function (routingState) { return routingState.state.context; });
     /** @type {?} */
-    var getRedirectUrl = i1$2.createSelector(getRouterState, function (state) { return state.redirectUrl; });
+    var getRedirectUrl = i1$1.createSelector(getRouterState, function (state) { return state.redirectUrl; });
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
      */
@@ -1465,7 +1465,7 @@
         /** @nocollapse */
         RoutesConfigLoader.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccConfig },
                 { type: ConfigurableRoutesConfig }
             ];
@@ -2173,7 +2173,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getRouterState));
+                return this.store.pipe(i1$1.select(getRouterState));
             };
         /**
          * Get the `PageContext` from the state
@@ -2187,7 +2187,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getPageContext));
+                return this.store.pipe(i1$1.select(getPageContext));
             };
         /**
          * Navigation with a new state into history
@@ -2278,7 +2278,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getRedirectUrl));
+                return this.store.pipe(i1$1.select(getRedirectUrl));
             };
         /**
          * Remove the redirect url from store
@@ -2348,12 +2348,12 @@
         /** @nocollapse */
         RoutingService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: WindowRef },
                 { type: UrlTranslationService }
             ];
         };
-        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$2.Store), i0.inject(WindowRef), i0.inject(UrlTranslationService)); }, token: RoutingService, providedIn: "root" });
+        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(UrlTranslationService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
     }());
 
@@ -2467,7 +2467,7 @@
                                 scrollPositionRestoration: 'enabled',
                                 anchorScrolling: 'enabled',
                             }),
-                            i1$2.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                            i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                             effects.EffectsModule.forFeature(effects$1),
                             fromNgrxRouter.StoreRouterConnectingModule.forRoot({
                                 stateKey: ROUTING_FEATURE,
@@ -2716,14 +2716,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAuthState = i1$2.createFeatureSelector(AUTH_FEATURE);
+    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getClientTokenState = i1$2.createSelector(getAuthState, function (state) { return state.clientToken; });
+    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
 
     /**
      * @fileoverview added by tsickle
@@ -2732,9 +2732,9 @@
     /** @type {?} */
     var getUserTokenSelector = function (state) { return state.token; };
     /** @type {?} */
-    var getUserTokenState = i1$2.createSelector(getAuthState, function (state) { return state.userToken; });
+    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
     /** @type {?} */
-    var getUserToken = i1$2.createSelector(getUserTokenState, getUserTokenSelector);
+    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
 
     /**
      * @fileoverview added by tsickle
@@ -2779,7 +2779,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getUserToken));
+                return this.store.pipe(i1$1.select(getUserToken));
             };
         /**
          * Refreshes the user token
@@ -2861,7 +2861,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$2.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
                     if (_this.isClientTokenLoaded(state)) {
                         return true;
                     }
@@ -2890,7 +2890,7 @@
             function () {
                 var _this = this;
                 this.store.dispatch(new LoadClientToken());
-                return this.store.pipe(i1$2.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
                     return _this.isClientTokenLoaded(state);
                 }), operators.map(function (state) { return state.value; }));
             };
@@ -2915,10 +2915,10 @@
         /** @nocollapse */
         AuthService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
-        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$2.Store)); }, token: AuthService, providedIn: "root" });
+        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
         return AuthService;
     }());
 
@@ -3095,7 +3095,7 @@
                 if (headers) {
                     return headers.append(headerName, JSON.stringify(interceptorParam));
                 }
-                headers = new i1$1.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+                headers = new i1$2.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
                 return headers;
             };
         /**
@@ -3166,7 +3166,7 @@
                     request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
                 }
                 return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                    if (errResponse instanceof i1$1.HttpErrorResponse) {
+                    if (errResponse instanceof i1$2.HttpErrorResponse) {
                         switch (errResponse.status) {
                             case 401: // Unauthorized
                                 if (isClientTokenRequest) {
@@ -3263,14 +3263,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getSiteContextState = i1$2.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getActiveBaseSite = i1$2.createSelector(getSiteContextState, function (state) { return state.baseSite; });
+    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, function (state) { return state.baseSite; });
 
     /**
      * @fileoverview added by tsickle
@@ -3314,7 +3314,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getActiveBaseSite), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(Boolean));
             };
         /**
          * We currently don't support switching baseSite at run time
@@ -3341,7 +3341,7 @@
             function (baseSite) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$2.select(getActiveBaseSite), operators.take(1))
+                    .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
                     .subscribe(function (activeBaseSite) {
                     if (activeBaseSite !== baseSite) {
                         _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -3370,7 +3370,7 @@
         /** @nocollapse */
         BaseSiteService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
         return BaseSiteService;
@@ -3482,7 +3482,7 @@
                         httpParamsOptions = { fromString: queryParamsFromEndpoint };
                     }
                     /** @type {?} */
-                    var httpParams_1 = new i1$1.HttpParams(httpParamsOptions);
+                    var httpParams_1 = new i1$2.HttpParams(httpParamsOptions);
                     Object.keys(queryParams).forEach(function (key) {
                         /** @type {?} */
                         var value = queryParams[key];
@@ -3649,17 +3649,17 @@
     /** @type {?} */
     var interceptors = [
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: ClientTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: UserTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: AuthErrorInterceptor,
             multi: true,
         },
@@ -3686,12 +3686,12 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$1.HttpParams()
+                var params = new i1$2.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('grant_type', 'client_credentials');
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3716,7 +3716,7 @@
         ClientAuthenticationTokenService.ctorParameters = function () {
             return [
                 { type: AuthConfig },
-                { type: i1$1.HttpClient }
+                { type: i1$2.HttpClient }
             ];
         };
         return ClientAuthenticationTokenService;
@@ -3747,14 +3747,14 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$1.HttpParams()
+                var params = new i1$2.HttpParams()
                     .set('client_id', this.config.authentication.client_id)
                     .set('client_secret', this.config.authentication.client_secret)
                     .set('grant_type', 'password') // authorization_code, client_credentials, password
                     .set('username', userId)
                     .set('password', password);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3773,13 +3773,13 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$1.HttpParams()
+                var params = new i1$2.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('refresh_token', encodeURI(refreshToken))
                     .set('grant_type', 'refresh_token');
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3803,7 +3803,7 @@
         /** @nocollapse */
         UserAuthenticationTokenService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: AuthConfig }
             ];
         };
@@ -3968,16 +3968,16 @@
             return function (state, action) {
                 /** @type {?} */
                 var newState = __assign({}, state);
-                if (action.type === i1$2.INIT && !exists(newState)) {
+                if (action.type === i1$1.INIT && !exists(newState)) {
                     newState = reducer(state, action);
                 }
-                if (action.type === i1$2.INIT || action.type === i1$2.UPDATE) {
+                if (action.type === i1$1.INIT || action.type === i1$1.UPDATE) {
                     /** @type {?} */
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge(newState, rehydratedState);
                 }
                 newState = reducer(newState, action);
-                if (action.type !== i1$2.INIT) {
+                if (action.type !== i1$1.INIT) {
                     // handle local storage
                     /** @type {?} */
                     var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
@@ -4123,7 +4123,7 @@
     function getBrowserTransferStateReducer(transferState, keys) {
         return function (reducer) {
             return function (state, action) {
-                if (action.type === i1$2.INIT && transferState.hasKey(CX_KEY)) {
+                if (action.type === i1$1.INIT && transferState.hasKey(CX_KEY)) {
                     /** @type {?} */
                     var cxKey = transferState.get(CX_KEY, {});
                     /** @type {?} */
@@ -4189,13 +4189,13 @@
         StateModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.StoreModule.forRoot({}),
+                            i1$1.StoreModule.forRoot({}),
                             effects.EffectsModule.forRoot([]),
                             ConfigModule.withConfig(defaultStateConfig),
                         ],
                         providers: __spread(stateMetaReducers, [
                             {
-                                provide: i1$2.META_REDUCERS,
+                                provide: i1$1.META_REDUCERS,
                                 useFactory: ɵ0,
                                 deps: [[new i0.Optional(), META_REDUCER]],
                             },
@@ -4404,7 +4404,7 @@
      */
     function getReducers$1() {
         return {
-            userToken: i1$2.combineReducers({ token: reducer$1 }),
+            userToken: i1$1.combineReducers({ token: reducer$1 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
@@ -4458,9 +4458,9 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             StateModule,
-                            i1$2.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
+                            i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
                             effects.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
@@ -4493,7 +4493,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             RoutingModule,
                             AuthStoreModule,
                             ConfigModule.withConfig(defaultAuthConfig),
@@ -4877,35 +4877,35 @@
         return state.cartMergeComplete;
     };
     /** @type {?} */
-    var getCartsState = i1$2.createFeatureSelector(CART_FEATURE);
+    var getCartsState = i1$1.createFeatureSelector(CART_FEATURE);
     /** @type {?} */
-    var getActiveCartState = i1$2.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
+    var getActiveCartState = i1$1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
     /** @type {?} */
-    var getCartState = i1$2.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
+    var getCartState = i1$1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getCartContent = i1$2.createSelector(getCartState, getCartContentSelector);
+    var getCartContent = i1$1.createSelector(getCartState, getCartContentSelector);
     /** @type {?} */
-    var getRefresh = i1$2.createSelector(getCartState, getRefreshSelector);
+    var getRefresh = i1$1.createSelector(getCartState, getRefreshSelector);
     /** @type {?} */
-    var getLoaded = i1$2.createSelector(getActiveCartState, function (state) {
+    var getLoaded = i1$1.createSelector(getActiveCartState, function (state) {
         return loaderSuccessSelector(state) &&
             !loaderLoadingSelector(state) &&
             !loaderValueSelector(state).refresh;
     });
     /** @type {?} */
-    var getCartMergeComplete = i1$2.createSelector(getCartState, getCartMergeCompleteSelector);
+    var getCartMergeComplete = i1$1.createSelector(getCartState, getCartMergeCompleteSelector);
     /** @type {?} */
-    var getEntriesMap = i1$2.createSelector(getCartState, getEntriesSelector);
+    var getEntriesMap = i1$1.createSelector(getCartState, getEntriesSelector);
     /** @type {?} */
     var getEntrySelectorFactory = function (productCode) {
-        return i1$2.createSelector(getEntriesMap, function (entries) {
+        return i1$1.createSelector(getEntriesMap, function (entries) {
             if (entries) {
                 return entries[productCode];
             }
         });
     };
     /** @type {?} */
-    var getEntries = i1$2.createSelector(getEntriesMap, function (entities) {
+    var getEntries = i1$1.createSelector(getEntriesMap, function (entities) {
         return Object.keys(entities).map(function (code) { return entities[code]; });
     });
 
@@ -5016,7 +5016,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getCartContent));
+                return this.store.pipe(i1$1.select(getCartContent));
             };
         /**
          * @return {?}
@@ -5025,7 +5025,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getEntries));
+                return this.store.pipe(i1$1.select(getEntries));
             };
         /**
          * @return {?}
@@ -5034,7 +5034,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getCartMergeComplete));
+                return this.store.pipe(i1$1.select(getCartMergeComplete));
             };
         /**
          * @return {?}
@@ -5043,7 +5043,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getLoaded));
+                return this.store.pipe(i1$1.select(getLoaded));
             };
         /**
          * @protected
@@ -5055,7 +5055,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$2.select(getCartContent)).subscribe(function (cart) {
+                this.store.pipe(i1$1.select(getCartContent)).subscribe(function (cart) {
                     _this.cartData.cart = cart;
                     if (_this.callback) {
                         _this.callback();
@@ -5126,7 +5126,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$2.select(getRefresh)).subscribe(function (refresh) {
+                this.store.pipe(i1$1.select(getRefresh)).subscribe(function (refresh) {
                     if (refresh) {
                         _this.store.dispatch(new LoadCart({
                             userId: _this.cartData.userId,
@@ -5241,7 +5241,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$2.select(getEntrySelectorFactory(productCode)));
+                return this.store.pipe(i1$1.select(getEntrySelectorFactory(productCode)));
             };
         /**
          * @param {?} cart
@@ -5271,7 +5271,7 @@
         /** @nocollapse */
         CartService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: CartDataService },
                 { type: AuthService }
             ];
@@ -5943,10 +5943,10 @@
                 var url = this.getCartEndpoint(userId);
                 /** @type {?} */
                 var params = details
-                    ? new i1$1.HttpParams({
+                    ? new i1$2.HttpParams({
                         fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
                     })
-                    : new i1$1.HttpParams({
+                    : new i1$2.HttpParams({
                         fromString: "fields=carts(" + BASIC_PARAMS + ",saveTime)",
                     });
                 return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
@@ -5968,10 +5968,10 @@
                 var url = this.getCartEndpoint(userId) + cartId;
                 /** @type {?} */
                 var params = details
-                    ? new i1$1.HttpParams({
+                    ? new i1$2.HttpParams({
                         fromString: "fields=" + DETAILS_PARAMS,
                     })
-                    : new i1$1.HttpParams({
+                    : new i1$2.HttpParams({
                         fromString: "fields=" + BASIC_PARAMS,
                     });
                 if (cartId === 'current') {
@@ -6006,7 +6006,7 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId;
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: "fields=" + CHECKOUT_PARAMS,
                 });
                 return this.http
@@ -6039,7 +6039,7 @@
                     queryString = queryString + "&toMergeCartGuid=" + toMergeCartGuid;
                 }
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: queryString,
                 });
                 return this.http.post(url, toAdd, { params: params }).pipe(this.converter.pipeable(CART_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
@@ -6050,7 +6050,7 @@
         /** @nocollapse */
         OccCartAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -6099,7 +6099,7 @@
                 address = this.converter.convert(address, DELIVERY_ADDRESS_SERIALIZER);
                 return this.http
                     .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                    headers: new i1$1.HttpHeaders().set('Content-Type', 'application/json'),
+                    headers: new i1$2.HttpHeaders().set('Content-Type', 'application/json'),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_ADDRESS_NORMALIZER));
             };
@@ -6177,7 +6177,7 @@
         /** @nocollapse */
         OccCartDeliveryAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -6233,11 +6233,11 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries';
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: 'code=' + productCode + '&qty=' + quantity,
                 });
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -6269,11 +6269,11 @@
                     queryString = queryString + '&pickupStore=' + pickupStore;
                 }
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: queryString,
                 });
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http.patch(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -6294,7 +6294,7 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -6307,7 +6307,7 @@
         /** @nocollapse */
         OccCartEntryAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -6485,12 +6485,12 @@
          */
             function (postUrl, parameters) {
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                     Accept: 'text/html',
                 });
                 /** @type {?} */
-                var httpParams = new i1$1.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new i1$2.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
@@ -6515,12 +6515,12 @@
          */
             function (userId, cartId, parameters) {
                 /** @type {?} */
-                var httpParams = new i1$1.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new i1$2.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -6694,7 +6694,7 @@
         /** @nocollapse */
         OccCartPaymentAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -6820,7 +6820,7 @@
         }
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
+                        imports: [i1.CommonModule, i1$2.HttpClientModule, OccModule],
                         providers: [
                             {
                                 provide: CartAdapter,
@@ -7413,11 +7413,11 @@
         /** @nocollapse */
         OccSiteService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
-        /** @nocollapse */ OccSiteService.ngInjectableDef = i0.defineInjectable({ factory: function OccSiteService_Factory() { return new OccSiteService(i0.inject(i1$1.HttpClient), i0.inject(OccEndpointsService)); }, token: OccSiteService, providedIn: "root" });
+        /** @nocollapse */ OccSiteService.ngInjectableDef = i0.defineInjectable({ factory: function OccSiteService_Factory() { return new OccSiteService(i0.inject(i1$2.HttpClient), i0.inject(OccEndpointsService)); }, token: OccSiteService, providedIn: "root" });
         return OccSiteService;
     }());
 
@@ -7519,13 +7519,13 @@
     /** @type {?} */
     var languagesEntitiesSelector = function (state) { return state.entities; };
     /** @type {?} */
-    var getLanguagesState = i1$2.createSelector(getSiteContextState, function (state) { return state.languages; });
+    var getLanguagesState = i1$1.createSelector(getSiteContextState, function (state) { return state.languages; });
     /** @type {?} */
-    var getLanguagesEntities = i1$2.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
     /** @type {?} */
-    var getActiveLanguage = i1$2.createSelector(getLanguagesState, activeLanguageSelector);
+    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
     /** @type {?} */
-    var getAllLanguages = i1$2.createSelector(getLanguagesEntities, function (entities) {
+    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -7540,13 +7540,13 @@
     /** @type {?} */
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     /** @type {?} */
-    var getCurrenciesState = i1$2.createSelector(getSiteContextState, function (state) { return state.currencies; });
+    var getCurrenciesState = i1$1.createSelector(getSiteContextState, function (state) { return state.currencies; });
     /** @type {?} */
-    var getCurrenciesEntities = i1$2.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     /** @type {?} */
-    var getActiveCurrency = i1$2.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
     /** @type {?} */
-    var getAllCurrencies = i1$2.createSelector(getCurrenciesEntities, function (entities) {
+    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -7587,7 +7587,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$2.select(getAllLanguages), operators.tap(function (languages) {
+                return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
                     if (!languages) {
                         _this.store.dispatch(new LoadLanguages());
                     }
@@ -7605,7 +7605,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getActiveLanguage), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -7623,7 +7623,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$2.select(getActiveLanguage), operators.take(1))
+                    .pipe(i1$1.select(getActiveLanguage), operators.take(1))
                     .subscribe(function (activeLanguage) {
                     if (activeLanguage !== isocode) {
                         _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -7663,7 +7663,7 @@
         /** @nocollapse */
         LanguageService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -7695,7 +7695,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$2.select(getAllCurrencies), operators.tap(function (currencies) {
+                return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
                     if (!currencies) {
                         _this.store.dispatch(new LoadCurrencies());
                     }
@@ -7713,7 +7713,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getActiveCurrency), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -7731,7 +7731,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$2.select(getActiveCurrency), operators.take(1))
+                    .pipe(i1$1.select(getActiveCurrency), operators.take(1))
                     .subscribe(function (activeCurrency) {
                     if (activeCurrency !== isocode) {
                         _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -7771,7 +7771,7 @@
         /** @nocollapse */
         CurrencyService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -7787,7 +7787,7 @@
         }
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [OccModule, i1.CommonModule, i1$1.HttpClientModule],
+                        imports: [OccModule, i1.CommonModule, i1$2.HttpClientModule],
                         providers: [OccModule, OccSiteService],
                     },] }
         ];
@@ -7821,8 +7821,8 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
-                            i1$2.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            i1$2.HttpClientModule,
+                            i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
                             effects.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
@@ -8831,7 +8831,7 @@
     /** @type {?} */
     var interceptors$1 = [
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: SiteContextInterceptor,
             multi: true,
         },
@@ -9042,9 +9042,9 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             CartOccModule,
-                            i1$2.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            i1$1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
                             effects.EffectsModule.forFeature(effects$4),
                         ],
                         providers: [reducerProvider$2],
@@ -9179,25 +9179,25 @@
         return state.orderDetails;
     };
     /** @type {?} */
-    var getCheckoutState = i1$2.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
     /** @type {?} */
-    var getCheckoutStepsState = i1$2.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
+    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
     /** @type {?} */
-    var getCheckoutSteps = i1$2.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
+    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getDeliveryAddress = i1$2.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     /** @type {?} */
-    var getDeliveryMode = i1$2.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
     /** @type {?} */
-    var getSupportedDeliveryModes = i1$2.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         return Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; });
     });
     /** @type {?} */
-    var getSelectedCode = i1$2.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedCode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         return deliveryMode.selected;
     });
     /** @type {?} */
-    var getSelectedDeliveryMode = i1$2.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
                 return null;
@@ -9206,11 +9206,11 @@
         }
     });
     /** @type {?} */
-    var getPaymentDetails = i1$2.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
     /** @type {?} */
-    var getCheckoutOrderDetails = i1$2.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
     /** @type {?} */
-    var getCheckoutDetailsLoaded = i1$2.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
+    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -9254,11 +9254,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCardTypesState = i1$2.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
+    var getCardTypesState = i1$1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
     /** @type {?} */
-    var getCardTypesEntites$1 = i1$2.createSelector(getCardTypesState, getCardTypesEntites);
+    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
     /** @type {?} */
-    var getAllCardTypes = i1$2.createSelector(getCardTypesEntites$1, function (entites) {
+    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     });
 
@@ -9302,9 +9302,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressVerificationResultsState = i1$2.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
+    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
     /** @type {?} */
-    var getAddressVerificationResults$1 = i1$2.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     /**
      * @fileoverview added by tsickle
@@ -9360,14 +9360,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageState = i1$2.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageEntities = i1$2.createSelector(getGlobalMessageState, function (state) { return state.entities; });
+    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
@@ -9460,7 +9460,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             StateModule,
-                            i1$2.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
                         ],
                         providers: [reducerProvider$4],
                     },] }
@@ -9493,7 +9493,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+                return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
             };
         /**
          * Add one message into store
@@ -9547,7 +9547,7 @@
         /** @nocollapse */
         GlobalMessageService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
         return GlobalMessageService;
@@ -9641,7 +9641,7 @@
             function (request, next) {
                 var _this = this;
                 return next.handle(request).pipe(operators.catchError(function (response) {
-                    if (response instanceof i1$1.HttpErrorResponse) {
+                    if (response instanceof i1$2.HttpErrorResponse) {
                         _this.handleErrorResponse(request, response);
                         return rxjs.throwError(response);
                     }
@@ -10018,7 +10018,7 @@
     /** @type {?} */
     var httpErrorInterceptors = [
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
             multi: true,
         },
@@ -10129,7 +10129,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_VERIFICATION_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10148,7 +10148,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10169,7 +10169,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10192,7 +10192,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10213,7 +10213,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10232,7 +10232,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "?saved=true";
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10253,7 +10253,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10274,7 +10274,7 @@
                 /** @type {?} */
                 var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -10295,7 +10295,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint();
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -10315,9 +10315,9 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var httpParams = new i1$1.HttpParams().set('userId', userEmailAddress);
+                var httpParams = new i1$2.HttpParams().set('userId', userEmailAddress);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -10339,7 +10339,7 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -10378,11 +10378,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + UPDATE_EMAIL_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1$1.HttpParams()
+                var httpParams = new i1$2.HttpParams()
                     .set('password', currentPassword)
                     .set('newLogin', newUserId);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -10416,11 +10416,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + UPDATE_PASSWORD_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1$1.HttpParams()
+                var httpParams = new i1$2.HttpParams()
                     .set('old', oldPassword)
                     .set('new', newPassword);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -10433,7 +10433,7 @@
         /** @nocollapse */
         OccUserService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -10481,11 +10481,11 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
                 });
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -10510,7 +10510,7 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1$1.HttpParams();
+                var params = new i1$2.HttpParams();
                 if (pageSize) {
                     params = params.set('pageSize', pageSize.toString());
                 }
@@ -10540,7 +10540,7 @@
                 /** @type {?} */
                 var orderUrl = url + '/' + orderCode;
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: FULL_PARAMS,
                 });
                 return this.http
@@ -10555,7 +10555,7 @@
         /** @nocollapse */
         OccOrderService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -10576,7 +10576,7 @@
         }
         UserOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
+                        imports: [i1.CommonModule, i1$2.HttpClientModule, OccModule],
                         providers: [OccUserService, OccOrderService],
                     },] }
         ];
@@ -11743,7 +11743,7 @@
      */
     function getReducers$5() {
         return {
-            account: i1$2.combineReducers({
+            account: i1$1.combineReducers({
                 details: reducer$h,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$g),
@@ -11784,63 +11784,63 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getUserState = i1$2.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDetailsState = i1$2.createSelector(getUserState, function (state) { return state.account; });
+    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
     /** @type {?} */
-    var getDetails = i1$2.createSelector(getDetailsState, function (state) { return state.details; });
+    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressesLoaderState = i1$2.createSelector(getUserState, function (state) { return state.addresses; });
+    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
     /** @type {?} */
-    var getAddresses = i1$2.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getAddressesLoading = i1$2.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getPaymentMethodsState = i1$2.createSelector(getUserState, function (state) { return state.payments; });
+    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
     /** @type {?} */
-    var getPaymentMethods = i1$2.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
+    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getPaymentMethodsLoading = i1$2.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrdersState = i1$2.createSelector(getUserState, function (state) { return state.orders; });
+    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
     /** @type {?} */
-    var getOrdersLoaded = i1$2.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
     /** @type {?} */
-    var getOrders = i1$2.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
+    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getTitlesState = i1$2.createSelector(getUserState, function (state) { return state.titles; });
+    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
     /** @type {?} */
-    var getTitlesEntites = i1$2.createSelector(getTitlesState, function (state) { return state.entities; });
+    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllTitles = i1$2.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
     /** @type {?} */
     var titleSelectorFactory = function (code) {
-        return i1$2.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
     };
 
     /**
@@ -11848,14 +11848,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDeliveryCountriesState = i1$2.createSelector(getUserState, function (state) { return state.countries; });
+    var getDeliveryCountriesState = i1$1.createSelector(getUserState, function (state) { return state.countries; });
     /** @type {?} */
-    var getDeliveryCountriesEntites = i1$2.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
+    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllDeliveryCountries = i1$2.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
     /** @type {?} */
     var countrySelectorFactory = function (isocode) {
-        return i1$2.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
+        return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
     };
 
     /**
@@ -11863,36 +11863,36 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsState = i1$2.createSelector(getUserState, function (state) { return state.regions; });
+    var getRegionsState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
     /** @type {?} */
-    var getAllRegions = i1$2.createSelector(getRegionsState, function (state) { return state.entities; });
+    var getAllRegions = i1$1.createSelector(getRegionsState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrderState = i1$2.createSelector(getUserState, function (state) { return state.order; });
+    var getOrderState = i1$1.createSelector(getUserState, function (state) { return state.order; });
     /** @type {?} */
-    var getOrderDetails = i1$2.createSelector(getOrderState, function (state) { return state.order; });
+    var getOrderDetails = i1$1.createSelector(getOrderState, function (state) { return state.order; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getBillingCountriesState = i1$2.createSelector(getUserState, function (state) { return state.billingCountries; });
+    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
     /** @type {?} */
-    var getBillingCountriesEntites = i1$2.createSelector(getBillingCountriesState, function (state) { return state.entities; });
+    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllBillingCountries = i1$2.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getResetPassword = i1$2.createSelector(getUserState, function (state) { return state.resetPassword; });
+    var getResetPassword = i1$1.createSelector(getUserState, function (state) { return state.resetPassword; });
 
     /**
      * @fileoverview added by tsickle
@@ -11913,7 +11913,7 @@
      * @return {?}
      */
     function getProcessState() {
-        return i1$2.createFeatureSelector(PROCESS_FEATURE);
+        return i1$1.createFeatureSelector(PROCESS_FEATURE);
     }
 
     /**
@@ -11926,7 +11926,7 @@
      * @return {?}
      */
     function getProcessStateFactory(processId) {
-        return i1$2.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
+        return i1$1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
     }
     /**
      * @template T
@@ -11934,7 +11934,7 @@
      * @return {?}
      */
     function getProcessLoadingFactory(processId) {
-        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     /**
      * @template T
@@ -11942,7 +11942,7 @@
      * @return {?}
      */
     function getProcessSuccessFactory(processId) {
-        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     /**
      * @template T
@@ -11950,7 +11950,7 @@
      * @return {?}
      */
     function getProcessErrorFactory(processId) {
-        return i1$2.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     /**
@@ -11973,7 +11973,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getDetails));
+                return this.store.pipe(i1$1.select(getDetails));
             };
         /**
          * Loads the user's details
@@ -12043,7 +12043,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user failure outcome.
@@ -12057,7 +12057,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user process success outcome.
@@ -12071,7 +12071,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Resets the remove user process state. The state needs to be reset after the process
@@ -12102,7 +12102,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getOrderDetails));
+                return this.store.pipe(i1$1.select(getOrderDetails));
             };
         /**
          * Retrieves order's details
@@ -12161,7 +12161,7 @@
          */
             function (userId, pageSize) {
                 var _this = this;
-                return this.store.pipe(i1$2.select(getOrdersState), operators.tap(function (orderListState) {
+                return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
                     /** @type {?} */
                     var attemptedLoad = orderListState.loading ||
                         orderListState.success ||
@@ -12183,7 +12183,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getOrdersLoaded));
+                return this.store.pipe(i1$1.select(getOrdersLoaded));
             };
         /**
          * Loads all user's payment methods.
@@ -12214,7 +12214,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getPaymentMethods));
+                return this.store.pipe(i1$1.select(getPaymentMethods));
             };
         /**
          * Returns a loading flag for payment methods
@@ -12228,7 +12228,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getPaymentMethodsLoading));
+                return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
             };
         /**
          * Sets the payment as a default one
@@ -12436,7 +12436,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAddresses));
+                return this.store.pipe(i1$1.select(getAddresses));
             };
         /**
          * Returns a loading flag for addresses
@@ -12450,7 +12450,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAddressesLoading));
+                return this.store.pipe(i1$1.select(getAddressesLoading));
             };
         /**
          * Returns titles
@@ -12464,7 +12464,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAllTitles));
+                return this.store.pipe(i1$1.select(getAllTitles));
             };
         /**
          * Retrieves titles
@@ -12506,7 +12506,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAllDeliveryCountries));
+                return this.store.pipe(i1$1.select(getAllDeliveryCountries));
             };
         /**
          * Returns a country based on the provided `isocode`
@@ -12523,7 +12523,7 @@
          * @return {?}
          */
             function (isocode) {
-                return this.store.pipe(i1$2.select(countrySelectorFactory(isocode)));
+                return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
             };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -12554,7 +12554,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAllRegions));
+                return this.store.pipe(i1$1.select(getAllRegions));
             };
         /**
          * Returns all billing countries
@@ -12568,7 +12568,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAllBillingCountries));
+                return this.store.pipe(i1$1.select(getAllBillingCountries));
             };
         /**
          * Retrieves billing countries
@@ -12610,7 +12610,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getResetPassword));
+                return this.store.pipe(i1$1.select(getResetPassword));
             };
         /**
          * Updates the user's details
@@ -12643,7 +12643,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details error flag
@@ -12657,7 +12657,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details success flag
@@ -12671,7 +12671,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Resets the update user details processing state
@@ -12760,7 +12760,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email error flag
@@ -12774,7 +12774,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email loading flag
@@ -12788,7 +12788,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Resets the update user's email processing state
@@ -12839,7 +12839,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password failure outcome.
@@ -12853,7 +12853,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password process success outcome.
@@ -12867,7 +12867,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Resets the update password process state. The state needs to be reset after the process
@@ -12892,7 +12892,7 @@
         /** @nocollapse */
         UserService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
         return UserService;
@@ -12931,7 +12931,7 @@
         }
         ProcessStoreModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [StateModule, i1$2.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$6)],
+                        imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$6)],
                         providers: [reducerProvider$6],
                     },] }
         ];
@@ -12983,7 +12983,7 @@
             function () {
                 return this.http
                     .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
+                    params: new i1$2.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
@@ -12996,7 +12996,7 @@
             function () {
                 return this.http
                     .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$1.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
+                    params: new i1$2.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
@@ -13054,7 +13054,7 @@
         /** @nocollapse */
         OccMiscsService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -13812,7 +13812,7 @@
                             i1.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            i1$2.StoreModule.forFeature(USER_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
+                            i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$5),
                             router.RouterModule,
                         ],
@@ -14257,7 +14257,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getSupportedDeliveryModes));
+                return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes));
             };
         /**
          * Get selected delivery mode
@@ -14271,7 +14271,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getSelectedDeliveryMode));
+                return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
             };
         /**
          * Get selected delivery mode code
@@ -14285,7 +14285,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getSelectedCode));
+                return this.checkoutStore.pipe(i1$1.select(getSelectedCode));
             };
         /**
          * Get card types
@@ -14299,7 +14299,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getAllCardTypes));
+                return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
             };
         /**
          * Get delivery address
@@ -14313,7 +14313,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getDeliveryAddress));
+                return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
             };
         /**
          * Get address verification results
@@ -14327,7 +14327,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+                return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
             };
         /**
          * Get payment details
@@ -14341,7 +14341,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getPaymentDetails));
+                return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
             };
         /**
          * Get order details
@@ -14355,7 +14355,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getCheckoutOrderDetails));
+                return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
             };
         /**
          * Create and set a delivery address using the address param
@@ -14611,7 +14611,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$2.select(getCheckoutDetailsLoaded));
+                return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
             };
         /**
          * @private
@@ -14630,7 +14630,7 @@
         /** @nocollapse */
         CheckoutService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: CartDataService }
             ];
         };
@@ -14653,8 +14653,8 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
-                            i1$2.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                            i1$2.HttpClientModule,
+                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$6),
                         ],
                         providers: [reducerProvider$7],
@@ -14764,7 +14764,7 @@
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1$2.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
          * @param {?} pageContext
@@ -14831,7 +14831,7 @@
         /** @nocollapse */
         OccCmsPageAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -15084,7 +15084,7 @@
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1$1.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new i1$2.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
          * @template T
@@ -15238,7 +15238,7 @@
         /** @nocollapse */
         OccCmsComponentAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -15503,7 +15503,7 @@
         }
         CmsOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1.CommonModule, i1$1.HttpClientModule],
+                        imports: [i1.CommonModule, i1$2.HttpClientModule],
                         providers: [
                             ComponentMapperService,
                             {
@@ -15903,7 +15903,7 @@
                     .pipe(operators.switchMap(function (loadFromConfig) {
                     if (!loadFromConfig) {
                         return _this.cmsPageAdapter.load(pageContext).pipe(operators.catchError(function (error) {
-                            if (error instanceof i1$1.HttpErrorResponse &&
+                            if (error instanceof i1$2.HttpErrorResponse &&
                                 error.status === 400) {
                                 return rxjs.of({});
                             }
@@ -16219,7 +16219,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCmsState = i1$2.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -16294,32 +16294,32 @@
         return Array.from(componentTypes);
     };
     /** @type {?} */
-    var getPageState = i1$2.createSelector(getCmsState, function (state) { return state.page; });
+    var getPageState = i1$1.createSelector(getCmsState, function (state) { return state.page; });
     /** @type {?} */
-    var getPageStateIndex = i1$2.createSelector(getPageState, function (page) { return page.index; });
+    var getPageStateIndex = i1$1.createSelector(getPageState, function (page) { return page.index; });
     /** @type {?} */
     var getIndex = function (pageContext) {
-        return i1$2.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
+        return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
     };
     /** @type {?} */
     var getIndexEntity = function (pageContext) {
-        return i1$2.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
+        return i1$1.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
     };
     /** @type {?} */
-    var getPageEntities = i1$2.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
     /** @type {?} */
     var getPageData = function (pageContext) {
-        return i1$2.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
+        return i1$1.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
             return entities[entity.value];
         });
     };
     /** @type {?} */
     var getPageComponentTypes = function (pageContext) {
-        return i1$2.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
+        return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
     };
     /** @type {?} */
     var currentSlotSelectorFactory = function (pageContext, position) {
-        return i1$2.createSelector(getPageData(pageContext), function (entity) {
+        return i1$1.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position];
             }
@@ -16338,16 +16338,16 @@
         }, {});
     };
     /** @type {?} */
-    var getComponentState = i1$2.createSelector(getCmsState, function (state) { return state.component; });
+    var getComponentState = i1$1.createSelector(getCmsState, function (state) { return state.component; });
     /** @type {?} */
-    var getComponentEntities = i1$2.createSelector(getComponentState, getComponentEntitiesSelector);
+    var getComponentEntities = i1$1.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
     var componentStateSelectorFactory = function (uid) {
-        return i1$2.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
+        return i1$1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
     };
     /** @type {?} */
     var componentSelectorFactory = function (uid) {
-        return i1$2.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
+        return i1$1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
     };
 
     /**
@@ -16355,14 +16355,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getNavigationEntryItemState = i1$2.createSelector(getCmsState, function (state) { return state.navigation; });
+    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, function (state) { return state.navigation; });
     /** @type {?} */
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1$2.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
+        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
     };
     /** @type {?} */
     var itemsSelectorFactory = function (nodeId) {
-        return i1$2.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     /**
@@ -16506,9 +16506,9 @@
      */
     function getReducers$8() {
         return {
-            page: i1$2.combineReducers({
+            page: i1$1.combineReducers({
                 pageData: reducer$l,
-                index: i1$2.combineReducers({
+                index: i1$1.combineReducers({
                     content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$m(PageType.CONTENT_PAGE)),
                     product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$m(PageType.PRODUCT_PAGE)),
                     category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$m(PageType.CATEGORY_PAGE)),
@@ -16895,7 +16895,7 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = this.store.pipe(i1$2.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.getCurrentPage()), operators.tap(function (_a) {
+                    this.components[uid] = this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.getCurrentPage()), operators.tap(function (_a) {
                         var _b = __read(_a, 2), componentState = _b[0], currentPage = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
@@ -16930,7 +16930,7 @@
             function (position) {
                 var _this = this;
                 return this.routingService.getPageContext().pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1$2.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
+                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
                 }));
             };
         /**
@@ -16948,7 +16948,7 @@
          * @return {?}
          */
             function (navigationNodeUid) {
-                return this.store.pipe(i1$2.select(itemsSelectorFactory(navigationNodeUid)));
+                return this.store.pipe(i1$1.select(itemsSelectorFactory(navigationNodeUid)));
             };
         /**
          * Load navigation items data
@@ -17025,7 +17025,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$2.select(getPageData(pageContext)));
+                return this.store.pipe(i1$1.select(getPageData(pageContext)));
             };
         /**
          * Given pageContext, return the CMS page data
@@ -17042,7 +17042,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$2.select(getPageComponentTypes(pageContext)));
+                return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
             };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -17060,7 +17060,7 @@
          */
             function (pageContext) {
                 var _this = this;
-                return this.store.pipe(i1$2.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
+                return this.store.pipe(i1$1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
                     /** @type {?} */
                     var attemptedLoad = entity.loading || entity.success || entity.error;
                     if (!attemptedLoad) {
@@ -17076,11 +17076,11 @@
         /** @nocollapse */
         CmsService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: RoutingService }
             ];
         };
-        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$2.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
+        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
         return CmsService;
     }());
 
@@ -17224,9 +17224,9 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             StateModule,
-                            i1$2.StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
+                            i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$7),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
@@ -17599,7 +17599,7 @@
             function (productCode, review) {
                 review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
                 /** @type {?} */
-                var headers = new i1$1.HttpHeaders({
+                var headers = new i1$2.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 /** @type {?} */
@@ -17635,7 +17635,7 @@
         /** @nocollapse */
         OccProductReviewsAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17687,7 +17687,7 @@
         /** @nocollapse */
         OccProductAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -18030,7 +18030,7 @@
         /** @nocollapse */
         OccProductSearchAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -18092,7 +18092,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             OccModule,
                             ConfigModule.withConfig(defaultOccProductConfig),
                         ],
@@ -18329,17 +18329,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsState = i1$2.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductState = i1$2.createSelector(getProductsState, function (state) { return state.details; });
+    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
     /** @type {?} */
     var getSelectedProductsFactory = function (codes) {
-        return i1$2.createSelector(getProductState, function (details) {
+        return i1$1.createSelector(getProductState, function (details) {
             return codes
                 .map(function (code) {
                 return details.entities[code] ? details.entities[code].value : undefined;
@@ -18349,26 +18349,26 @@
     };
     /** @type {?} */
     var getSelectedProductStateFactory = function (code) {
-        return i1$2.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
     };
     /** @type {?} */
     var getSelectedProductFactory = function (code) {
-        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductLoadingFactory = function (code) {
-        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductSuccessFactory = function (code) {
-        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductErrorFactory = function (code) {
-        return i1$2.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
     };
     /** @type {?} */
-    var getAllProductCodes = i1$2.createSelector(getProductState, function (details) {
+    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
         return Object.keys(details.entities);
     });
 
@@ -18422,23 +18422,23 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsSearchState = i1$2.createSelector(getProductsState, function (state) { return state.search; });
+    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
     /** @type {?} */
-    var getSearchResults$1 = i1$2.createSelector(getProductsSearchState, getSearchResults);
+    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
-    var getAuxSearchResults$1 = i1$2.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
     /** @type {?} */
-    var getProductSuggestions$1 = i1$2.createSelector(getProductsSearchState, getProductSuggestions);
+    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReviewsState = i1$2.createSelector(getProductsState, function (state) { return state.reviews; });
+    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
     /** @type {?} */
     var getSelectedProductReviewsFactory = function (productCode) {
-        return i1$2.createSelector(getProductReviewsState, function (reviewData) {
+        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
@@ -18842,7 +18842,7 @@
             function (productCode) {
                 var _this = this;
                 if (!this.products[productCode]) {
-                    this.products[productCode] = this.store.pipe(i1$2.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
+                    this.products[productCode] = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
                         /** @type {?} */
                         var attemptedLoad = productState.loading || productState.success || productState.error;
                         if (!attemptedLoad) {
@@ -18868,7 +18868,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$2.select(getSelectedProductLoadingFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load success state
@@ -18884,7 +18884,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$2.select(getSelectedProductSuccessFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load error state
@@ -18900,7 +18900,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$2.select(getSelectedProductErrorFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode)));
             };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -18930,7 +18930,7 @@
         /** @nocollapse */
         ProductService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
         return ProductService;
@@ -18974,7 +18974,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getSearchResults$1));
+                return this.store.pipe(i1$1.select(getSearchResults$1));
             };
         /**
          * @return {?}
@@ -18992,7 +18992,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
+                return this.store.pipe(i1$1.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
             };
         /**
          * @return {?}
@@ -19001,7 +19001,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getProductSuggestions$1));
+                return this.store.pipe(i1$1.select(getProductSuggestions$1));
             };
         /**
          * @param {?} query
@@ -19041,7 +19041,7 @@
         /** @nocollapse */
         ProductSearchService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: router.Router }
             ];
         };
@@ -19068,7 +19068,7 @@
                 var _this = this;
                 /** @type {?} */
                 var selector = getSelectedProductReviewsFactory(productCode);
-                return this.store.pipe(i1$2.select(selector), operators.tap(function (reviews) {
+                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
                     if (reviews === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReviews(productCode));
                     }
@@ -19096,7 +19096,7 @@
         /** @nocollapse */
         ProductReviewService.ctorParameters = function () {
             return [
-                { type: i1$2.Store }
+                { type: i1$1.Store }
             ];
         };
         return ProductReviewService;
@@ -19134,9 +19134,9 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             ProductOccModule,
-                            i1$2.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
+                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
                             effects.EffectsModule.forFeature(effects$8),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
@@ -20498,7 +20498,7 @@
     /** @type {?} */
     var interceptors$2 = [
         {
-            provide: i1$1.HTTP_INTERCEPTORS,
+            provide: i1$2.HTTP_INTERCEPTORS,
             useClass: CmsTicketInterceptor,
             multi: true,
         },
@@ -20608,7 +20608,7 @@
                 /** @type {?} */
                 var url = this.getStoresEndpoint();
                 /** @type {?} */
-                var params = new i1$1.HttpParams({
+                var params = new i1$2.HttpParams({
                     fromString: 'fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),' +
                         'geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),' +
                         'pagination(DEFAULT),' +
@@ -20658,7 +20658,7 @@
         /** @nocollapse */
         OccStoreFinderService.ctorParameters = function () {
             return [
-                { type: i1$1.HttpClient },
+                { type: i1$2.HttpClient },
                 { type: OccEndpointsService }
             ];
         };
@@ -20674,7 +20674,7 @@
         }
         StoreFinderOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1.CommonModule, i1$1.HttpClientModule, OccModule],
+                        imports: [i1.CommonModule, i1$2.HttpClientModule, OccModule],
                         providers: [OccStoreFinderService],
                     },] }
         ];
@@ -20848,29 +20848,29 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getStoreFinderState = i1$2.createFeatureSelector(STORE_FINDER_FEATURE);
+    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getFindStoresState = i1$2.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
+    var getFindStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
     /** @type {?} */
-    var getFindStoresEntities = i1$2.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
+    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getStoresLoading = i1$2.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getStoresLoading = i1$1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getViewAllStoresState = i1$2.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
+    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
     /** @type {?} */
-    var getViewAllStoresEntities = i1$2.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
+    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getViewAllStoresLoading = i1$2.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -21478,7 +21478,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getStoresLoading));
+                return this.store.pipe(i1$1.select(getStoresLoading));
             };
         /**
          * Returns observable for store's entities
@@ -21492,7 +21492,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getFindStoresEntities));
+                return this.store.pipe(i1$1.select(getFindStoresEntities));
             };
         /**
          * Returns boolean observable for view all store's loading state
@@ -21506,7 +21506,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getViewAllStoresLoading));
+                return this.store.pipe(i1$1.select(getViewAllStoresLoading));
             };
         /**
          * Returns observable for view all store's entities
@@ -21520,7 +21520,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$2.select(getViewAllStoresEntities));
+                return this.store.pipe(i1$1.select(getViewAllStoresEntities));
             };
         /**
          * Store finding action functionality
@@ -21641,7 +21641,7 @@
         /** @nocollapse */
         StoreFinderService.ctorParameters = function () {
             return [
-                { type: i1$2.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -21664,9 +21664,9 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             i1.CommonModule,
-                            i1$1.HttpClientModule,
+                            i1$2.HttpClientModule,
                             StoreFinderOccModule,
-                            i1$2.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
+                            i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
                             effects.EffectsModule.forFeature(effects$9),
                         ],
                         providers: [reducerProvider$a],
@@ -21798,6 +21798,140 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ PersonalizationConfig = /** @class */ (function () {
+        function PersonalizationConfig() {
+        }
+        return PersonalizationConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultPersonalizationConfig = {
+        personalization: {
+            requestHeader: 'Occ-Personalization-Id',
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PERSONALIZATION_KEY = 'personalization-id';
+    var OccPersonalizationIdInterceptor = /** @class */ (function () {
+        function OccPersonalizationIdInterceptor(config, occEndpoints, winRef) {
+            this.config = config;
+            this.occEndpoints = occEndpoints;
+            this.winRef = winRef;
+            this.requestHeader = this.config.personalization.requestHeader.toLowerCase();
+            this.personalizationId = this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        OccPersonalizationIdInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                var _this = this;
+                var _a;
+                if (this.personalizationId &&
+                    request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+                    request = request.clone({
+                        setHeaders: (_a = {},
+                            _a[this.requestHeader] = this.personalizationId,
+                            _a),
+                    });
+                }
+                return next.handle(request).pipe(operators.tap(function (event) {
+                    if (event instanceof i1$2.HttpResponse) {
+                        if (event.headers.keys().indexOf(_this.requestHeader) > -1) {
+                            /** @type {?} */
+                            var receivedId = event.headers.get(_this.requestHeader);
+                            if (_this.personalizationId !== receivedId) {
+                                _this.personalizationId = receivedId;
+                                _this.winRef.localStorage.setItem(PERSONALIZATION_KEY, _this.personalizationId);
+                            }
+                        }
+                    }
+                }));
+            };
+        OccPersonalizationIdInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccPersonalizationIdInterceptor.ctorParameters = function () {
+            return [
+                { type: PersonalizationConfig },
+                { type: OccEndpointsService },
+                { type: WindowRef }
+            ];
+        };
+        return OccPersonalizationIdInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var interceptors$3 = [
+        {
+            provide: i1$2.HTTP_INTERCEPTORS,
+            useClass: OccPersonalizationIdInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var PersonalizationModule = /** @class */ (function () {
+        function PersonalizationModule() {
+        }
+        /**
+         * @return {?}
+         */
+        PersonalizationModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: PersonalizationModule,
+                    providers: __spread(interceptors$3),
+                };
+            };
+        PersonalizationModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
+                        providers: [{ provide: PersonalizationConfig, useExisting: Config }],
+                    },] }
+        ];
+        return PersonalizationModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -22622,6 +22756,8 @@
     exports.ConverterService = ConverterService;
     exports.UtilModule = UtilModule;
     exports.WindowRef = WindowRef;
+    exports.PersonalizationModule = PersonalizationModule;
+    exports.PersonalizationConfig = PersonalizationConfig;
     exports.ɵbh = defaultAuthConfig;
     exports.ɵbp = AuthErrorInterceptor;
     exports.ɵbm = ClientTokenInterceptor;
@@ -22706,6 +22842,9 @@
     exports.ɵer = MockTranslationService;
     exports.ɵdh = PageType;
     exports.ɵcs = PageType;
+    exports.ɵhi = defaultPersonalizationConfig;
+    exports.ɵhj = interceptors$3;
+    exports.ɵhk = OccPersonalizationIdInterceptor;
     exports.ɵhb = ProcessModule;
     exports.ɵhd = PROCESS_FEATURE;
     exports.ɵhc = ProcessStoreModule;
