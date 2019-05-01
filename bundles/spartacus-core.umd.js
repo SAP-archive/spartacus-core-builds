@@ -14700,6 +14700,7 @@
                     component: 'cms/components/${id}',
                     components: 'cms/components?fields=${fields}',
                     pages: 'cms/pages?fields=${fields}',
+                    page: 'cms/pages/${id}?fields=${fields}',
                 },
             },
         },
@@ -14778,6 +14779,18 @@
          * @return {?}
          */
             function (pageContext, fields) {
+                // load page by Id
+                if (pageContext.type === undefined) {
+                    return this.http
+                        .get(this.occEndpoints.getUrl('page', {
+                        id: pageContext.id,
+                        fields: fields ? fields : 'DEFAULT',
+                    }), {
+                        headers: this.headers,
+                    })
+                        .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+                }
+                // load page by PageContext
                 /** @type {?} */
                 var httpParams = this.getPagesRequestParams(pageContext);
                 return this.http
@@ -14815,6 +14828,7 @@
             function (pageContext) {
                 /** @type {?} */
                 var httpParams = {};
+                // smartedit preview page is loaded by previewToken which added by interceptor
                 if (pageContext.id !== 'smartedit-preview') {
                     httpParams = { pageType: pageContext.type };
                     if (pageContext.type === PageType.CONTENT_PAGE) {
@@ -16567,9 +16581,6 @@
         function PageContext(id, type) {
             this.id = id;
             this.type = type;
-            if (this.type == null) {
-                this.type = PageType.CONTENT_PAGE;
-            }
         }
         return PageContext;
     }());
@@ -17008,6 +17019,25 @@
                     .subscribe(function (pageContext) {
                     return _this.store.dispatch(new LoadPageData(pageContext));
                 });
+            };
+        /**
+         * Refresh the cms page content by page Id
+         * @param pageId
+         */
+        /**
+         * Refresh the cms page content by page Id
+         * @param {?} pageId
+         * @return {?}
+         */
+        CmsService.prototype.refreshPageById = /**
+         * Refresh the cms page content by page Id
+         * @param {?} pageId
+         * @return {?}
+         */
+            function (pageId) {
+                /** @type {?} */
+                var pageContext = { id: pageId };
+                this.store.dispatch(new LoadPageData(pageContext));
             };
         /**
          * Refresh cms component's content
@@ -20374,6 +20404,7 @@
                 var _this = this;
                 this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
                     if (cmsPage && _this._cmsTicketId) {
+                        _this._currentPageId = cmsPage.pageId;
                         // before adding contract, we need redirect to preview page
                         _this.goToPreviewPage(cmsPage);
                         // remove old page contract
@@ -20440,7 +20471,12 @@
                 if (componentId) {
                     // without parentId, it is slot
                     if (!parentId) {
-                        this.cmsService.refreshLatestPage();
+                        if (this._currentPageId) {
+                            this.cmsService.refreshPageById(this._currentPageId);
+                        }
+                        else {
+                            this.cmsService.refreshLatestPage();
+                        }
                     }
                     else if (componentType) {
                         this.cmsService.refreshComponent(componentId);

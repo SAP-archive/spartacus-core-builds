@@ -6,6 +6,7 @@ export declare class SmartEditService {
     private routingService;
     private _cmsTicketId;
     private getPreviewPage;
+    private _currentPageId;
     constructor(cmsService: CmsService, routingService: RoutingService, winRef: WindowRef);
     readonly cmsTicketId: string;
     protected getCmsTicket(): void;

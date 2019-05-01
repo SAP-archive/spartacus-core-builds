@@ -12324,6 +12324,7 @@ const defaultCmsModuleConfig = {
                 component: 'cms/components/${id}',
                 components: 'cms/components?fields=${fields}',
                 pages: 'cms/pages?fields=${fields}',
+                page: 'cms/pages/${id}?fields=${fields}',
             },
         },
     },
@@ -12405,6 +12406,18 @@ class OccCmsPageAdapter {
      * @return {?}
      */
     load(pageContext, fields) {
+        // load page by Id
+        if (pageContext.type === undefined) {
+            return this.http
+                .get(this.occEndpoints.getUrl('page', {
+                id: pageContext.id,
+                fields: fields ? fields : 'DEFAULT',
+            }), {
+                headers: this.headers,
+            })
+                .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+        }
+        // load page by PageContext
         /** @type {?} */
         const httpParams = this.getPagesRequestParams(pageContext);
         return this.http
@@ -12431,6 +12444,7 @@ class OccCmsPageAdapter {
     getPagesRequestParams(pageContext) {
         /** @type {?} */
         let httpParams = {};
+        // smartedit preview page is loaded by previewToken which added by interceptor
         if (pageContext.id !== 'smartedit-preview') {
             httpParams = { pageType: pageContext.type };
             if (pageContext.type === PageType.CONTENT_PAGE) {
@@ -13689,9 +13703,6 @@ class PageContext {
     constructor(id, type) {
         this.id = id;
         this.type = type;
-        if (this.type == null) {
-            this.type = PageType.CONTENT_PAGE;
-        }
     }
 }
 
@@ -14044,6 +14055,16 @@ class CmsService {
             .getPageContext()
             .pipe(take(1))
             .subscribe(pageContext => this.store.dispatch(new LoadPageData(pageContext)));
+    }
+    /**
+     * Refresh the cms page content by page Id
+     * @param {?} pageId
+     * @return {?}
+     */
+    refreshPageById(pageId) {
+        /** @type {?} */
+        const pageContext = { id: pageId };
+        this.store.dispatch(new LoadPageData(pageContext));
     }
     /**
      * Refresh cms component's content
@@ -16834,6 +16855,7 @@ class SmartEditService {
     addPageContract() {
         this.cmsService.getCurrentPage().subscribe(cmsPage => {
             if (cmsPage && this._cmsTicketId) {
+                this._currentPageId = cmsPage.pageId;
                 // before adding contract, we need redirect to preview page
                 this.goToPreviewPage(cmsPage);
                 // remove old page contract
@@ -16886,7 +16908,12 @@ class SmartEditService {
         if (componentId) {
             // without parentId, it is slot
             if (!parentId) {
-                this.cmsService.refreshLatestPage();
+                if (this._currentPageId) {
+                    this.cmsService.refreshPageById(this._currentPageId);
+                }
+                else {
+                    this.cmsService.refreshLatestPage();
+                }
             }
             else if (componentType) {
                 this.cmsService.refreshComponent(componentId);

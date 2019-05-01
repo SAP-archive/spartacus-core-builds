@@ -54,6 +54,11 @@ export declare class CmsService {
      */
     refreshLatestPage(): void;
     /**
+     * Refresh the cms page content by page Id
+     * @param pageId
+     */
+    refreshPageById(pageId: string): void;
+    /**
      * Refresh cms component's content
      * @param uid : component uid
      */
