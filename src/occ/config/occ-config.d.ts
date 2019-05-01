@@ -13,5 +13,13 @@ export declare abstract class OccConfig extends ServerConfig {
                 [endpoint: string]: string;
             };
         };
+        media?: {
+            /**
+             * Media URLs are typically relative, so that the host can be configured.
+             * Configurable media baseURLs are useful for SEO, multi-site,
+             * switching environments, etc.
+             */
+            baseUrl?: string;
+        };
     };
 }

@@ -6721,6 +6721,7 @@
             occ: {
                 prefix: '/rest/v2/',
             },
+            media: {},
         },
     };
 
@@ -16375,18 +16376,33 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var SERVER_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
+    var OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
     /** @type {?} */
-    var SERVER_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
+    var OCC_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
+    /** @type {?} */
+    var MEDIA_BASE_URL_META_TAG_NAME = 'media-backend-base-url';
+    /** @type {?} */
+    var MEDIA_BASE_URL_META_TAG_PLACEHOLDER = 'MEDIA_BACKEND_BASE_URL_VALUE';
     /**
      * @param {?} meta
      * @return {?}
      */
-    function serverConfigFromMetaTagFactory(meta) {
+    function occServerConfigFromMetaTagFactory(meta) {
         /** @type {?} */
-        var baseUrl = getMetaTagContent(SERVER_BASE_URL_META_TAG_NAME, meta);
-        return baseUrl && baseUrl !== SERVER_BASE_URL_META_TAG_PLACEHOLDER
+        var baseUrl = getMetaTagContent(OCC_BASE_URL_META_TAG_NAME, meta);
+        return baseUrl && baseUrl !== OCC_BASE_URL_META_TAG_PLACEHOLDER
             ? { backend: { occ: { baseUrl: baseUrl } } }
+            : {};
+    }
+    /**
+     * @param {?} meta
+     * @return {?}
+     */
+    function mediaServerConfigFromMetaTagFactory(meta) {
+        /** @type {?} */
+        var baseUrl = getMetaTagContent(MEDIA_BASE_URL_META_TAG_NAME, meta);
+        return baseUrl && baseUrl !== MEDIA_BASE_URL_META_TAG_PLACEHOLDER
+            ? { backend: { media: { baseUrl: baseUrl } } }
             : {};
     }
     /**
@@ -17789,8 +17805,17 @@
                             else {
                                 imageContainer = images[image.imageType];
                             }
-                            // set full image URL path
-                            image.url = (this.config.backend.occ.baseUrl || '') + image.url;
+                            /**
+                             * Traditionally, in an on-prem world, medias and other backend related calls
+                             * are hosted at the same platform, but in a cloud setup, applications are are
+                             * typically distributed cross different environments. For media, we use the
+                             * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
+                             * if none provided.
+                             */
+                            image.url =
+                                (this.config.backend.media.baseUrl ||
+                                    this.config.backend.occ.baseUrl ||
+                                    '') + image.url;
                             imageContainer[image.format] = image;
                         }
                     }
@@ -22257,11 +22282,14 @@
     exports.I18nextTranslationService = I18nextTranslationService;
     exports.I18nTestingModule = I18nTestingModule;
     exports.MockTranslatePipe = MockTranslatePipe;
+    exports.occServerConfigFromMetaTagFactory = occServerConfigFromMetaTagFactory;
+    exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
+    exports.OCC_BASE_URL_META_TAG_NAME = OCC_BASE_URL_META_TAG_NAME;
+    exports.OCC_BASE_URL_META_TAG_PLACEHOLDER = OCC_BASE_URL_META_TAG_PLACEHOLDER;
+    exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
+    exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.defaultOccConfig = defaultOccConfig;
     exports.OccConfig = OccConfig;
-    exports.serverConfigFromMetaTagFactory = serverConfigFromMetaTagFactory;
-    exports.SERVER_BASE_URL_META_TAG_NAME = SERVER_BASE_URL_META_TAG_NAME;
-    exports.SERVER_BASE_URL_META_TAG_PLACEHOLDER = SERVER_BASE_URL_META_TAG_PLACEHOLDER;
     exports.occConfigValidator = occConfigValidator;
     exports.OccMiscsService = OccMiscsService;
     exports.PriceType = PriceType;
