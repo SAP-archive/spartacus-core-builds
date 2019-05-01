@@ -9,7 +9,7 @@ import { Observable, of, throwError, Subscription, ReplaySubject, combineLatest 
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createSelector, createFeatureSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, withLatestFrom, multicast, refCount, takeWhile } from 'rxjs/operators';
 
@@ -16806,11 +16806,13 @@ class SmartEditService {
     /**
      * @param {?} cmsService
      * @param {?} routingService
+     * @param {?} zone
      * @param {?} winRef
      */
-    constructor(cmsService, routingService, winRef) {
+    constructor(cmsService, routingService, zone, winRef) {
         this.cmsService = cmsService;
         this.routingService = routingService;
+        this.zone = zone;
         this.getPreviewPage = false;
         this.getCmsTicket();
         this.addPageContract();
@@ -16906,18 +16908,20 @@ class SmartEditService {
      */
     renderComponent(componentId, componentType, parentId) {
         if (componentId) {
-            // without parentId, it is slot
-            if (!parentId) {
-                if (this._currentPageId) {
-                    this.cmsService.refreshPageById(this._currentPageId);
+            this.zone.run(() => {
+                // without parentId, it is slot
+                if (!parentId) {
+                    if (this._currentPageId) {
+                        this.cmsService.refreshPageById(this._currentPageId);
+                    }
+                    else {
+                        this.cmsService.refreshLatestPage();
+                    }
                 }
-                else {
-                    this.cmsService.refreshLatestPage();
+                else if (componentType) {
+                    this.cmsService.refreshComponent(componentId);
                 }
-            }
-            else if (componentType) {
-                this.cmsService.refreshComponent(componentId);
-            }
+            });
         }
         return true;
     }
@@ -16938,9 +16942,10 @@ SmartEditService.decorators = [
 SmartEditService.ctorParameters = () => [
     { type: CmsService },
     { type: RoutingService },
+    { type: NgZone },
     { type: WindowRef }
 ];
-/** @nocollapse */ SmartEditService.ngInjectableDef = defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(inject(CmsService), inject(RoutingService), inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+/** @nocollapse */ SmartEditService.ngInjectableDef = defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(inject(CmsService), inject(RoutingService), inject(NgZone), inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle

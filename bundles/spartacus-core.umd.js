@@ -20339,10 +20339,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var SmartEditService = /** @class */ (function () {
-        function SmartEditService(cmsService, routingService, winRef) {
+        function SmartEditService(cmsService, routingService, zone, winRef) {
             var _this = this;
             this.cmsService = cmsService;
             this.routingService = routingService;
+            this.zone = zone;
             this.getPreviewPage = false;
             this.getCmsTicket();
             this.addPageContract();
@@ -20468,19 +20469,22 @@
          * @return {?}
          */
             function (componentId, componentType, parentId) {
+                var _this = this;
                 if (componentId) {
-                    // without parentId, it is slot
-                    if (!parentId) {
-                        if (this._currentPageId) {
-                            this.cmsService.refreshPageById(this._currentPageId);
+                    this.zone.run(function () {
+                        // without parentId, it is slot
+                        if (!parentId) {
+                            if (_this._currentPageId) {
+                                _this.cmsService.refreshPageById(_this._currentPageId);
+                            }
+                            else {
+                                _this.cmsService.refreshLatestPage();
+                            }
                         }
-                        else {
-                            this.cmsService.refreshLatestPage();
+                        else if (componentType) {
+                            _this.cmsService.refreshComponent(componentId);
                         }
-                    }
-                    else if (componentType) {
-                        this.cmsService.refreshComponent(componentId);
-                    }
+                    });
                 }
                 return true;
             };
@@ -20505,10 +20509,11 @@
             return [
                 { type: CmsService },
                 { type: RoutingService },
+                { type: i0.NgZone },
                 { type: WindowRef }
             ];
         };
-        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(i0.NgZone), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
         return SmartEditService;
     }());
 

@@ -9,7 +9,7 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
 import { createSelector, createFeatureSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { __decorate, __metadata, __assign, __extends, __spread, __values, __read, __awaiter, __generator } from 'tslib';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, ChangeDetectorRef, defineInjectable, inject, INJECTOR, ComponentFactoryResolver } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, ChangeDetectorRef, defineInjectable, inject, INJECTOR, NgZone, ComponentFactoryResolver } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, withLatestFrom, multicast, refCount, takeWhile } from 'rxjs/operators';
 
@@ -19931,10 +19931,11 @@ var CxApiService = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SmartEditService = /** @class */ (function () {
-    function SmartEditService(cmsService, routingService, winRef) {
+    function SmartEditService(cmsService, routingService, zone, winRef) {
         var _this = this;
         this.cmsService = cmsService;
         this.routingService = routingService;
+        this.zone = zone;
         this.getPreviewPage = false;
         this.getCmsTicket();
         this.addPageContract();
@@ -20061,19 +20062,22 @@ var SmartEditService = /** @class */ (function () {
      * @return {?}
      */
     function (componentId, componentType, parentId) {
+        var _this = this;
         if (componentId) {
-            // without parentId, it is slot
-            if (!parentId) {
-                if (this._currentPageId) {
-                    this.cmsService.refreshPageById(this._currentPageId);
+            this.zone.run(function () {
+                // without parentId, it is slot
+                if (!parentId) {
+                    if (_this._currentPageId) {
+                        _this.cmsService.refreshPageById(_this._currentPageId);
+                    }
+                    else {
+                        _this.cmsService.refreshLatestPage();
+                    }
                 }
-                else {
-                    this.cmsService.refreshLatestPage();
+                else if (componentType) {
+                    _this.cmsService.refreshComponent(componentId);
                 }
-            }
-            else if (componentType) {
-                this.cmsService.refreshComponent(componentId);
-            }
+            });
         }
         return true;
     };
@@ -20097,9 +20101,10 @@ var SmartEditService = /** @class */ (function () {
     SmartEditService.ctorParameters = function () { return [
         { type: CmsService },
         { type: RoutingService },
+        { type: NgZone },
         { type: WindowRef }
     ]; };
-    /** @nocollapse */ SmartEditService.ngInjectableDef = defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(inject(CmsService), inject(RoutingService), inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+    /** @nocollapse */ SmartEditService.ngInjectableDef = defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(inject(CmsService), inject(RoutingService), inject(NgZone), inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
     return SmartEditService;
 }());
 
