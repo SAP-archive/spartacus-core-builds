@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
-import { RoutingService } from '../../routing/facade/routing.service';
 import { CmsService } from '../../cms/facade/cms.service';
-import { Page, PageMeta } from '../../cms/model/page.model';
+import { PageMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
-import { ProductSearchService } from '../facade/product-search.service';
 import { PageTitleResolver } from '../../cms/page/page.resolvers';
+import { RoutingService } from '../../routing/facade/routing.service';
+import { ProductSearchService } from '../facade/product-search.service';
 import { UIProductSearchPage } from '../model/product-search-page';
 export declare class CategoryPageMetaResolver extends PageMetaResolver implements PageTitleResolver {
     protected routingService: RoutingService;
@@ -13,5 +13,6 @@ export declare class CategoryPageMetaResolver extends PageMetaResolver implement
     constructor(routingService: RoutingService, productSearchService: ProductSearchService, cms: CmsService);
     resolve(): Observable<PageMeta>;
     resolveTitle(data: UIProductSearchPage): Observable<string>;
-    protected hasProductListComponent(page: Page): boolean;
+    resolveBreadcrumbs(data: UIProductSearchPage): Observable<any[]>;
+    private hasProductListComponent;
 }

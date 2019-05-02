@@ -14647,27 +14647,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CheckoutStoreModule = /** @class */ (function () {
-        function CheckoutStoreModule() {
-        }
-        CheckoutStoreModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            i1.CommonModule,
-                            i1$2.HttpClientModule,
-                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
-                            effects.EffectsModule.forFeature(effects$6),
-                        ],
-                        providers: [reducerProvider$7],
-                    },] }
-        ];
-        return CheckoutStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var JSP_INCLUDE_CMS_COMPONENT_TYPE = 'JspIncludeComponent';
     /** @type {?} */
@@ -17302,7 +17281,12 @@
          */
             function () {
                 var _this = this;
-                return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) { return _this.resolveTitle(page); }), operators.map(function (title) { return ({ title: title }); }));
+                return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
+                    return rxjs.combineLatest([_this.resolveTitle(page), _this.resolveBreadcrumbs(page)]);
+                }), operators.map(function (_a) {
+                    var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
+                    return ({ title: title, breadcrumbs: breadcrumbs });
+                }));
             };
         /**
          * @param {?} page
@@ -17314,6 +17298,19 @@
          */
             function (page) {
                 return rxjs.of(page.title);
+            };
+        /**
+         * @param {?} _page
+         * @return {?}
+         */
+        ContentPageMetaResolver.prototype.resolveBreadcrumbs = /**
+         * @param {?} _page
+         * @return {?}
+         */
+            function (_page) {
+                // as long as we do not have CMSX-8689 in place
+                // we need specific resolvers for nested pages
+                return rxjs.of([{ label: 'Home', link: '/' }]);
             };
         ContentPageMetaResolver.decorators = [
             { type: i0.Injectable, args: [{
@@ -17458,11 +17455,79 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CartPageMetaResolver = /** @class */ (function (_super) {
+        __extends(CartPageMetaResolver, _super);
+        function CartPageMetaResolver(cartService, cms) {
+            var _this = _super.call(this) || this;
+            _this.cartService = cartService;
+            _this.cms = cms;
+            _this.pageType = PageType.CONTENT_PAGE;
+            _this.pageTemplate = 'CartPageTemplate';
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        CartPageMetaResolver.prototype.resolve = /**
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                return this.cms.getCurrentPage().pipe(operators.switchMap(function (page) {
+                    return rxjs.combineLatest([_this.resolveTitle(page), _this.resolveRobots()]);
+                }), operators.map(function (_a) {
+                    var _b = __read(_a, 2), title = _b[0], robots = _b[1];
+                    return ({ title: title, robots: robots });
+                }));
+            };
+        /**
+         * @param {?} page
+         * @return {?}
+         */
+        CartPageMetaResolver.prototype.resolveTitle = /**
+         * @param {?} page
+         * @return {?}
+         */
+            function (page) {
+                return this.cartService
+                    .getActive()
+                    .pipe(operators.map(function (cart) {
+                    return cart && cart.code ? page.title + " (" + cart.code + ")" : page.title;
+                }));
+            };
+        /**
+         * @return {?}
+         */
+        CartPageMetaResolver.prototype.resolveRobots = /**
+         * @return {?}
+         */
+            function () {
+                return rxjs.of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
+            };
+        CartPageMetaResolver.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartPageMetaResolver.ctorParameters = function () {
+            return [
+                { type: CartService },
+                { type: CmsService }
+            ];
+        };
+        /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(i0.inject(CartService), i0.inject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+        return CartPageMetaResolver;
+    }(PageMetaResolver));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CheckoutPageMetaResolver = /** @class */ (function (_super) {
         __extends(CheckoutPageMetaResolver, _super);
-        function CheckoutPageMetaResolver(routingService, cartService) {
+        function CheckoutPageMetaResolver(cartService) {
             var _this = _super.call(this) || this;
-            _this.routingService = routingService;
             _this.cartService = cartService;
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
@@ -17511,13 +17576,33 @@
         /** @nocollapse */
         CheckoutPageMetaResolver.ctorParameters = function () {
             return [
-                { type: RoutingService },
                 { type: CartService }
             ];
         };
-        /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.inject(RoutingService), i0.inject(CartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.inject(CartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutStoreModule = /** @class */ (function () {
+        function CheckoutStoreModule() {
+        }
+        CheckoutStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1.CommonModule,
+                            i1$2.HttpClientModule,
+                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                            effects.EffectsModule.forFeature(effects$6),
+                        ],
+                        providers: [reducerProvider$7],
+                    },] }
+        ];
+        return CheckoutStoreModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -17531,6 +17616,11 @@
                         imports: [CheckoutStoreModule],
                         providers: [
                             CheckoutService,
+                            {
+                                provide: PageMetaResolver,
+                                useExisting: CartPageMetaResolver,
+                                multi: true,
+                            },
                             {
                                 provide: PageMetaResolver,
                                 useExisting: CheckoutPageMetaResolver,
@@ -19227,14 +19317,16 @@
                         _this.resolveHeading(p),
                         _this.resolveTitle(p),
                         _this.resolveDescription(p),
+                        _this.resolveBreadcrumbs(p),
                         _this.resolveImage(p),
                     ]);
                 }), operators.map(function (_a) {
-                    var _b = __read(_a, 4), heading = _b[0], title = _b[1], description = _b[2], image = _b[3];
+                    var _b = __read(_a, 5), heading = _b[0], title = _b[1], description = _b[2], breadcrumbs = _b[3], image = _b[4];
                     return ({
                         heading: heading,
                         title: title,
                         description: description,
+                        breadcrumbs: breadcrumbs,
                         image: image,
                     });
                 }));
@@ -19275,6 +19367,43 @@
          */
             function (product) {
                 return rxjs.of(product.summary);
+            };
+        /**
+         * @param {?} product
+         * @return {?}
+         */
+        ProductPageMetaResolver.prototype.resolveBreadcrumbs = /**
+         * @param {?} product
+         * @return {?}
+         */
+            function (product) {
+                var e_1, _a;
+                /** @type {?} */
+                var breadcrumbs = [];
+                breadcrumbs.push({ label: 'Home', link: '/' });
+                try {
+                    for (var _b = __values(product.categories), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var c = _c.value;
+                        breadcrumbs.push({
+                            label: c.name || c.code,
+                            link: '/c/' + c.code,
+                        });
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return))
+                            _a.call(_b);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                return rxjs.of(breadcrumbs);
             };
         /**
          * @param {?} product
@@ -19431,7 +19560,13 @@
                     // are rendered or if this is an ordinary content page
                     if (_this.hasProductListComponent(page)) {
                         return _this.productSearchService.getSearchResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
-                            return _this.resolveTitle(data).pipe(operators.map(function (title) { return ({ title: title }); }));
+                            return rxjs.combineLatest([
+                                _this.resolveTitle(data),
+                                _this.resolveBreadcrumbs(data),
+                            ]);
+                        }), operators.map(function (_a) {
+                            var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
+                            return ({ title: title, breadcrumbs: breadcrumbs });
                         }));
                     }
                     else {
@@ -19453,12 +19588,49 @@
                 return rxjs.of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
             };
         /**
-         * @protected
+         * @param {?} data
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
+         * @param {?} data
+         * @return {?}
+         */
+            function (data) {
+                var e_1, _a;
+                /** @type {?} */
+                var breadcrumbs = [];
+                breadcrumbs.push({ label: 'Home', link: '/' });
+                try {
+                    for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var br = _c.value;
+                        breadcrumbs.push({
+                            label: br.facetValueName,
+                            link: '/c/' + br.facetValueCode,
+                        });
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return))
+                            _a.call(_b);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                return rxjs.of(breadcrumbs);
+            };
+        /**
+         * @private
          * @param {?} page
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.hasProductListComponent = /**
-         * @protected
+         * @private
          * @param {?} page
          * @return {?}
          */
@@ -22217,6 +22389,7 @@
     exports.getAddressVerificationResults = getAddressVerificationResults$1;
     exports.CheckoutService = CheckoutService;
     exports.CheckoutModule = CheckoutModule;
+    exports.CartPageMetaResolver = CartPageMetaResolver;
     exports.CheckoutPageMetaResolver = CheckoutPageMetaResolver;
     exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
     exports.CMS_FLEX_COMPONENT_TYPE = CMS_FLEX_COMPONENT_TYPE;
@@ -22874,69 +23047,70 @@
     exports.ɵco = metaReducers$3;
     exports.ɵcm = reducerProvider$7;
     exports.ɵcl = reducerToken$7;
-    exports.ɵcw = CmsStoreModule;
-    exports.ɵcv = cmsStoreConfigFactory;
-    exports.ɵde = ComponentEffects;
-    exports.ɵdc = effects$7;
-    exports.ɵdf = NavigationEntryItemEffects;
-    exports.ɵdd = PageEffects;
-    exports.ɵda = clearCmsState;
-    exports.ɵcx = getReducers$8;
-    exports.ɵdb = metaReducers$4;
-    exports.ɵcz = reducerProvider$8;
-    exports.ɵcy = reducerToken$8;
-    exports.ɵdj = reducer$k;
-    exports.ɵdg = reducer$l;
-    exports.ɵdi = reducer$m;
-    exports.ɵfq = ConfigModule;
-    exports.ɵem = ServerConfig;
+    exports.ɵcr = CmsService;
+    exports.ɵcx = CmsStoreModule;
+    exports.ɵcw = cmsStoreConfigFactory;
+    exports.ɵdf = ComponentEffects;
+    exports.ɵdd = effects$7;
+    exports.ɵdg = NavigationEntryItemEffects;
+    exports.ɵde = PageEffects;
+    exports.ɵdb = clearCmsState;
+    exports.ɵcy = getReducers$8;
+    exports.ɵdc = metaReducers$4;
+    exports.ɵda = reducerProvider$8;
+    exports.ɵcz = reducerToken$8;
+    exports.ɵdk = reducer$k;
+    exports.ɵdh = reducer$l;
+    exports.ɵdj = reducer$m;
+    exports.ɵfr = ConfigModule;
+    exports.ɵen = ServerConfig;
     exports.ɵbq = provideConfigValidator;
-    exports.ɵef = BadGatewayHandler;
-    exports.ɵeg = BadRequestHandler;
-    exports.ɵeh = ConflictHandler;
-    exports.ɵei = ForbiddenHandler;
-    exports.ɵej = GatewayTimeoutHandler;
-    exports.ɵed = HttpErrorHandler;
-    exports.ɵek = NotFoundHandler;
-    exports.ɵee = UnknownErrorHandler;
-    exports.ɵel = HttpErrorInterceptor;
-    exports.ɵec = reducer$8;
-    exports.ɵdz = getReducers$4;
-    exports.ɵeb = reducerProvider$4;
-    exports.ɵea = reducerToken$4;
-    exports.ɵen = defaultI18nConfig;
-    exports.ɵep = i18nextInit;
-    exports.ɵeo = i18nextProviders;
-    exports.ɵeq = MockDatePipe;
-    exports.ɵer = MockTranslationService;
-    exports.ɵdh = PageType;
-    exports.ɵcs = PageType;
-    exports.ɵhi = defaultPersonalizationConfig;
-    exports.ɵhj = interceptors$3;
-    exports.ɵhk = OccPersonalizationIdInterceptor;
-    exports.ɵhb = ProcessModule;
-    exports.ɵhd = PROCESS_FEATURE;
-    exports.ɵhc = ProcessStoreModule;
-    exports.ɵhe = getReducers$6;
-    exports.ɵhg = reducerProvider$6;
-    exports.ɵhf = reducerToken$6;
-    exports.ɵes = defaultOccProductConfig;
-    exports.ɵdv = effects$8;
-    exports.ɵdy = ProductReviewsEffects;
-    exports.ɵdw = ProductsSearchEffects;
-    exports.ɵdx = ProductEffects;
-    exports.ɵfb = ProductStoreModule;
-    exports.ɵfa = productStoreConfigFactory;
-    exports.ɵdt = clearProductsState;
-    exports.ɵdq = getReducers$9;
-    exports.ɵdu = metaReducers$5;
-    exports.ɵds = reducerProvider$9;
-    exports.ɵdr = reducerToken$9;
-    exports.ɵfc = reducer$o;
-    exports.ɵey = getAuxSearchResults;
-    exports.ɵez = getProductSuggestions;
-    exports.ɵex = getSearchResults;
-    exports.ɵew = reducer$n;
+    exports.ɵeg = BadGatewayHandler;
+    exports.ɵeh = BadRequestHandler;
+    exports.ɵei = ConflictHandler;
+    exports.ɵej = ForbiddenHandler;
+    exports.ɵek = GatewayTimeoutHandler;
+    exports.ɵee = HttpErrorHandler;
+    exports.ɵel = NotFoundHandler;
+    exports.ɵef = UnknownErrorHandler;
+    exports.ɵem = HttpErrorInterceptor;
+    exports.ɵed = reducer$8;
+    exports.ɵea = getReducers$4;
+    exports.ɵec = reducerProvider$4;
+    exports.ɵeb = reducerToken$4;
+    exports.ɵeo = defaultI18nConfig;
+    exports.ɵeq = i18nextInit;
+    exports.ɵep = i18nextProviders;
+    exports.ɵer = MockDatePipe;
+    exports.ɵes = MockTranslationService;
+    exports.ɵdi = PageType;
+    exports.ɵct = PageType;
+    exports.ɵhj = defaultPersonalizationConfig;
+    exports.ɵhk = interceptors$3;
+    exports.ɵhl = OccPersonalizationIdInterceptor;
+    exports.ɵhc = ProcessModule;
+    exports.ɵhe = PROCESS_FEATURE;
+    exports.ɵhd = ProcessStoreModule;
+    exports.ɵhf = getReducers$6;
+    exports.ɵhh = reducerProvider$6;
+    exports.ɵhg = reducerToken$6;
+    exports.ɵet = defaultOccProductConfig;
+    exports.ɵdw = effects$8;
+    exports.ɵdz = ProductReviewsEffects;
+    exports.ɵdx = ProductsSearchEffects;
+    exports.ɵdy = ProductEffects;
+    exports.ɵfc = ProductStoreModule;
+    exports.ɵfb = productStoreConfigFactory;
+    exports.ɵdu = clearProductsState;
+    exports.ɵdr = getReducers$9;
+    exports.ɵdv = metaReducers$5;
+    exports.ɵdt = reducerProvider$9;
+    exports.ɵds = reducerToken$9;
+    exports.ɵfd = reducer$o;
+    exports.ɵez = getAuxSearchResults;
+    exports.ɵfa = getProductSuggestions;
+    exports.ɵey = getSearchResults;
+    exports.ɵex = reducer$n;
     exports.ɵa = defaultConfigurableRoutesConfig;
     exports.ɵb = defaultStorefrontRoutesTranslations;
     exports.ɵc = UrlMatcherFactoryService;
@@ -22950,71 +23124,71 @@
     exports.ɵh = reducer;
     exports.ɵj = reducerProvider;
     exports.ɵi = reducerToken;
-    exports.ɵfd = defaultSiteContextConfigFactory;
+    exports.ɵfe = defaultSiteContextConfigFactory;
     exports.ɵbn = BaseSiteService;
-    exports.ɵfj = SiteContextParamsService;
-    exports.ɵfl = SiteContextRoutesHandler;
-    exports.ɵfk = SiteContextUrlSerializer;
-    exports.ɵdp = CurrenciesEffects;
-    exports.ɵdn = effects$3;
-    exports.ɵdo = LanguagesEffects;
-    exports.ɵfi = reducer$5;
-    exports.ɵfh = reducer$4;
-    exports.ɵdk = getReducers$3;
-    exports.ɵdm = reducerProvider$3;
-    exports.ɵdl = reducerToken$3;
-    exports.ɵfg = reducer$3;
-    exports.ɵff = SiteContextStoreModule;
-    exports.ɵfe = siteContextStoreConfigFactory;
-    exports.ɵfn = CmsTicketInterceptor;
-    exports.ɵfm = interceptors$2;
-    exports.ɵfo = SmartEditService;
-    exports.ɵct = EntityFailAction;
-    exports.ɵcr = EntityLoadAction;
-    exports.ɵga = EntityResetAction;
-    exports.ɵcu = EntitySuccessAction;
+    exports.ɵfk = SiteContextParamsService;
+    exports.ɵfm = SiteContextRoutesHandler;
+    exports.ɵfl = SiteContextUrlSerializer;
+    exports.ɵdq = CurrenciesEffects;
+    exports.ɵdo = effects$3;
+    exports.ɵdp = LanguagesEffects;
+    exports.ɵfj = reducer$5;
+    exports.ɵfi = reducer$4;
+    exports.ɵdl = getReducers$3;
+    exports.ɵdn = reducerProvider$3;
+    exports.ɵdm = reducerToken$3;
+    exports.ɵfh = reducer$3;
+    exports.ɵfg = SiteContextStoreModule;
+    exports.ɵff = siteContextStoreConfigFactory;
+    exports.ɵfo = CmsTicketInterceptor;
+    exports.ɵfn = interceptors$2;
+    exports.ɵfp = SmartEditService;
+    exports.ɵcu = EntityFailAction;
+    exports.ɵcs = EntityLoadAction;
+    exports.ɵgb = EntityResetAction;
+    exports.ɵcv = EntitySuccessAction;
     exports.ɵq = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵr = DEFAULT_SESSION_STORAGE_KEY;
     exports.ɵs = defaultStateConfig;
     exports.ɵt = stateMetaReducers;
     exports.ɵu = getStorageSyncReducer;
     exports.ɵv = getTransferStateReducer;
-    exports.ɵfr = defaultStoreFinderConfig;
-    exports.ɵfx = FindStoresEffect;
-    exports.ɵfw = effects$9;
-    exports.ɵfy = ViewAllStoresEffect;
-    exports.ɵft = getReducers$a;
-    exports.ɵfv = reducerProvider$a;
-    exports.ɵfu = reducerToken$a;
-    exports.ɵfp = getStoreFinderState;
-    exports.ɵfs = StoreFinderStoreModule;
-    exports.ɵgn = BillingCountriesEffect;
-    exports.ɵgo = DeliveryCountriesEffects;
-    exports.ɵgy = ForgotPasswordEffects;
-    exports.ɵgm = effects$5;
-    exports.ɵgp = OrderDetailsEffect;
-    exports.ɵgq = UserPaymentMethodsEffects;
-    exports.ɵgr = RegionsEffects;
-    exports.ɵgs = ResetPasswordEffects;
-    exports.ɵgt = TitlesEffects;
-    exports.ɵgz = UpdateEmailEffects;
-    exports.ɵha = UpdatePasswordEffects;
-    exports.ɵgu = UserAddressesEffects;
-    exports.ɵgv = UserDetailsEffects;
-    exports.ɵgw = UserOrdersEffect;
-    exports.ɵgx = UserRegisterEffects;
-    exports.ɵgd = reducer$9;
-    exports.ɵgh = reducer$a;
-    exports.ɵgg = reducer$b;
-    exports.ɵge = reducer$c;
-    exports.ɵgj = reducer$d;
-    exports.ɵgk = reducer$e;
-    exports.ɵgi = reducer$f;
-    exports.ɵgc = reducer$g;
-    exports.ɵgb = reducer$h;
-    exports.ɵgf = reducer$i;
-    exports.ɵgl = UserStoreModule;
-    exports.ɵhh = StripHtmlPipe;
+    exports.ɵfs = defaultStoreFinderConfig;
+    exports.ɵfy = FindStoresEffect;
+    exports.ɵfx = effects$9;
+    exports.ɵfz = ViewAllStoresEffect;
+    exports.ɵfu = getReducers$a;
+    exports.ɵfw = reducerProvider$a;
+    exports.ɵfv = reducerToken$a;
+    exports.ɵfq = getStoreFinderState;
+    exports.ɵft = StoreFinderStoreModule;
+    exports.ɵgo = BillingCountriesEffect;
+    exports.ɵgp = DeliveryCountriesEffects;
+    exports.ɵgz = ForgotPasswordEffects;
+    exports.ɵgn = effects$5;
+    exports.ɵgq = OrderDetailsEffect;
+    exports.ɵgr = UserPaymentMethodsEffects;
+    exports.ɵgs = RegionsEffects;
+    exports.ɵgt = ResetPasswordEffects;
+    exports.ɵgu = TitlesEffects;
+    exports.ɵha = UpdateEmailEffects;
+    exports.ɵhb = UpdatePasswordEffects;
+    exports.ɵgv = UserAddressesEffects;
+    exports.ɵgw = UserDetailsEffects;
+    exports.ɵgx = UserOrdersEffect;
+    exports.ɵgy = UserRegisterEffects;
+    exports.ɵge = reducer$9;
+    exports.ɵgi = reducer$a;
+    exports.ɵgh = reducer$b;
+    exports.ɵgf = reducer$c;
+    exports.ɵgk = reducer$d;
+    exports.ɵgl = reducer$e;
+    exports.ɵgj = reducer$f;
+    exports.ɵgd = reducer$g;
+    exports.ɵgc = reducer$h;
+    exports.ɵgg = reducer$i;
+    exports.ɵgm = UserStoreModule;
+    exports.ɵhi = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
