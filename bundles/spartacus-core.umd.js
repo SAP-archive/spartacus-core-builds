@@ -953,6 +953,7 @@
             },
             cmsRequired: false,
         },
+        nextState: undefined,
     };
     /**
      * @return {?}
@@ -978,7 +979,10 @@
             case CLEAR_REDIRECT_URL: {
                 return __assign({}, state, { redirectUrl: '' });
             }
-            case fromNgrxRouter.ROUTER_NAVIGATION:
+            case fromNgrxRouter.ROUTER_NAVIGATION: {
+                return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+            }
+            case fromNgrxRouter.ROUTER_NAVIGATED:
             case fromNgrxRouter.ROUTER_ERROR:
             case fromNgrxRouter.ROUTER_CANCEL: {
                 /** @type {?} */
@@ -1003,6 +1007,7 @@
                     redirectUrl: redirectUrl,
                     state: action.payload.routerState,
                     navigationId: action.payload.event.id,
+                    nextState: undefined,
                 };
             }
             default: {
@@ -1020,9 +1025,15 @@
     /** @type {?} */
     var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
     /** @type {?} */
-    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
+    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state.router; });
     /** @type {?} */
     var getPageContext = i1$1.createSelector(getRouterState, function (routingState) { return routingState.state.context; });
+    /** @type {?} */
+    var getNextPageContext = i1$1.createSelector(getRouterState, function (routingState) {
+        return routingState.nextState && routingState.nextState.context;
+    });
+    /** @type {?} */
+    var isNavigating = i1$1.createSelector(getNextPageContext, function (context) { return !!context; });
     /** @type {?} */
     var getRedirectUrl = i1$1.createSelector(getRouterState, function (state) { return state.redirectUrl; });
     /* The serializer is there to parse the RouterStateSnapshot,
@@ -2188,6 +2199,34 @@
          */
             function () {
                 return this.store.pipe(i1$1.select(getPageContext));
+            };
+        /**
+         * Get the next `PageContext` from the state
+         */
+        /**
+         * Get the next `PageContext` from the state
+         * @return {?}
+         */
+        RoutingService.prototype.getNextPageContext = /**
+         * Get the next `PageContext` from the state
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getNextPageContext));
+            };
+        /**
+         * Get the `isNavigating` info from the state
+         */
+        /**
+         * Get the `isNavigating` info from the state
+         * @return {?}
+         */
+        RoutingService.prototype.isNavigating = /**
+         * Get the `isNavigating` info from the state
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(isNavigating));
             };
         /**
          * Navigation with a new state into history
@@ -16655,14 +16694,17 @@
             this.routingService = routingService;
             this.refreshPage$ = this.actions$.pipe(effects.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap(function (_) {
                 return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) {
-                    return routerState && routerState.state && routerState.state.cmsRequired;
+                    return routerState &&
+                        routerState.state &&
+                        routerState.state.cmsRequired &&
+                        !routerState.nextState;
                 }), operators.map(function (routerState) { return routerState.state.context; }), operators.take(1), operators.mergeMap(function (context) { return rxjs.of(new LoadPageData(context)); }));
             }));
             this.loadPageData$ = this.actions$.pipe(effects.ofType(LOAD_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.switchMap(function (pageContext) {
                 return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
                     return [
-                        new LoadPageDataSuccess(pageContext, cmsStructure.page),
                         new GetComponentFromPage(cmsStructure.components),
+                        new LoadPageDataSuccess(pageContext, cmsStructure.page),
                     ];
                 }), operators.catchError(function (error) {
                     return rxjs.of(new LoadPageDataFail(pageContext, error));
@@ -16910,21 +16952,22 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.getCurrentPage()), operators.tap(function (_a) {
-                        var _b = __read(_a, 2), componentState = _b[0], currentPage = _b[1];
+                    this.components[uid] = this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.routingService.isNavigating()), operators.tap(function (_a) {
+                        var _b = __read(_a, 2), componentState = _b[0], isNavigating = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
                             componentState.success ||
                             componentState.error;
-                        if (!attemptedLoad && currentPage) {
+                        if (!attemptedLoad && !isNavigating) {
                             _this.store.dispatch(new LoadComponent(uid));
                         }
+                    }), operators.filter(function (_a) {
+                        var _b = __read(_a, 1), componentState = _b[0];
+                        return componentState.success;
                     }), operators.map(function (_a) {
-                        var _b = __read(_a, 1), productState = _b[0];
-                        return productState.value;
-                    }), operators.filter(Boolean), 
-                    // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-                    operators.multicast(function () { return new rxjs.ReplaySubject(1); }), operators.refCount());
+                        var _b = __read(_a, 1), componentState = _b[0];
+                        return componentState.value;
+                    }), operators.shareReplay({ bufferSize: 1, refCount: true }));
                 }
                 return ( /** @type {?} */(this.components[uid]));
             };
@@ -16944,8 +16987,10 @@
          */
             function (position) {
                 var _this = this;
-                return this.routingService.getPageContext().pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
+                return this.routingService
+                    .getPageContext()
+                    .pipe(operators.switchMap(function (pageContext) {
+                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)));
                 }));
             };
         /**
@@ -17085,19 +17130,26 @@
         /**
          * Given pageContext, return whether the CMS page data exists or not
          * @param {?} pageContext
+         * @param {?=} forceReload
          * @return {?}
          */
         CmsService.prototype.hasPage = /**
          * Given pageContext, return whether the CMS page data exists or not
          * @param {?} pageContext
+         * @param {?=} forceReload
          * @return {?}
          */
-            function (pageContext) {
+            function (pageContext, forceReload) {
                 var _this = this;
+                if (forceReload === void 0) {
+                    forceReload = false;
+                }
                 return this.store.pipe(i1$1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
                     /** @type {?} */
                     var attemptedLoad = entity.loading || entity.success || entity.error;
-                    if (!attemptedLoad) {
+                    /** @type {?} */
+                    var shouldReload = forceReload && !entity.loading;
+                    if (!attemptedLoad || shouldReload) {
                         _this.store.dispatch(new LoadPageData(pageContext));
                     }
                 }), operators.filter(function (entity) { return entity.success || entity.error; }), operators.map(function (entity) { return entity.success; }), operators.catchError(function () { return rxjs.of(false); }));
@@ -18729,13 +18781,15 @@
             var _this = this;
             this.actions$ = actions$;
             this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(effects.ofType(SEARCH_PRODUCTS), operators.switchMap(function (action) {
-                return _this.productSearchConnector
-                    .search(action.payload.queryText, action.payload.searchConfig)
-                    .pipe(operators.map(function (data) {
-                    return new SearchProductsSuccess(data, action.auxiliary);
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new SearchProductsFail(error, action.auxiliary));
+            this.searchProducts$ = this.actions$.pipe(effects.ofType(SEARCH_PRODUCTS), operators.groupBy(function (action) { return action.auxiliary; }), operators.mergeMap(function (group) {
+                return group.pipe(operators.switchMap(function (action) {
+                    return _this.productSearchConnector
+                        .search(action.payload.queryText, action.payload.searchConfig)
+                        .pipe(operators.map(function (data) {
+                        return new SearchProductsSuccess(data, action.auxiliary);
+                    }), operators.catchError(function (error) {
+                        return rxjs.of(new SearchProductsFail(error, action.auxiliary));
+                    }));
                 }));
             }));
             this.getProductSuggestions$ = this.actions$.pipe(effects.ofType(GET_PRODUCT_SUGGESTIONS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
@@ -19002,9 +19056,7 @@
                         if (!attemptedLoad) {
                             _this.store.dispatch(new LoadProduct(productCode));
                         }
-                    }), operators.map(function (productState) { return productState.value; }), 
-                    // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-                    operators.multicast(function () { return new rxjs.ReplaySubject(1); }), operators.refCount());
+                    }), operators.map(function (productState) { return productState.value; }), operators.shareReplay({ bufferSize: 1, refCount: true }));
                 }
                 return this.products[productCode];
             };
@@ -20566,8 +20618,8 @@
                 }))
                     .subscribe(function (_a) {
                     var _b = __read(_a, 2), routerState = _b[1];
-                    if (routerState.state && !_this._cmsTicketId) {
-                        _this._cmsTicketId = routerState.state.queryParams['cmsTicketId'];
+                    if (routerState.nextState && !_this._cmsTicketId) {
+                        _this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
                         if (_this._cmsTicketId) {
                             _this.cmsService.launchInSmartEdit = true;
                         }

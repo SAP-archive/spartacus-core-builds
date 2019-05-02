@@ -6,6 +6,7 @@ import { PageContext } from '../models/page-context.model';
 import { WindowRef } from '../../window/window-ref';
 import { TranslateUrlCommands } from '../configurable-routes/url-translation/translate-url-commands';
 import { UrlTranslationService } from '../configurable-routes/url-translation/url-translation.service';
+import { RouterState } from '../store/reducers/router.reducer';
 export declare class RoutingService {
     private store;
     private winRef;
@@ -14,11 +15,19 @@ export declare class RoutingService {
     /**
      * Get the current router state
      */
-    getRouterState(): Observable<any>;
+    getRouterState(): Observable<RouterState>;
     /**
      * Get the `PageContext` from the state
      */
     getPageContext(): Observable<PageContext>;
+    /**
+     * Get the next `PageContext` from the state
+     */
+    getNextPageContext(): Observable<PageContext>;
+    /**
+     * Get the `isNavigating` info from the state
+     */
+    isNavigating(): Observable<boolean>;
     /**
      * Navigation with a new state into history
      * @param commands: url commands

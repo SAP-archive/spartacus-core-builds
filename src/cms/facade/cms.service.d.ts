@@ -77,5 +77,5 @@ export declare class CmsService {
      * Given pageContext, return whether the CMS page data exists or not
      * @param pageContext
      */
-    hasPage(pageContext: PageContext): Observable<boolean>;
+    hasPage(pageContext: PageContext, forceReload?: boolean): Observable<boolean>;
 }

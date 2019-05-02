@@ -1,17 +1,17 @@
-import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { __decorate, __metadata, __awaiter } from 'tslib';
-import { Observable, of, throwError, Subscription, ReplaySubject, combineLatest } from 'rxjs';
+import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
-import { createSelector, createFeatureSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
+import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, withLatestFrom, multicast, refCount, takeWhile } from 'rxjs/operators';
+import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 
 /**
  * @fileoverview added by tsickle
@@ -710,6 +710,7 @@ const initialState = {
         },
         cmsRequired: false,
     },
+    nextState: undefined,
 };
 /**
  * @return {?}
@@ -732,7 +733,10 @@ function reducer(state = initialState, action) {
         case CLEAR_REDIRECT_URL: {
             return Object.assign({}, state, { redirectUrl: '' });
         }
-        case ROUTER_NAVIGATION:
+        case ROUTER_NAVIGATION: {
+            return Object.assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+        }
+        case ROUTER_NAVIGATED:
         case ROUTER_ERROR:
         case ROUTER_CANCEL: {
             /** @type {?} */
@@ -757,6 +761,7 @@ function reducer(state = initialState, action) {
                 redirectUrl: redirectUrl,
                 state: action.payload.routerState,
                 navigationId: action.payload.event.id,
+                nextState: undefined,
             };
         }
         default: {
@@ -774,9 +779,13 @@ const reducerProvider = {
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (state) => state[ROUTING_FEATURE]);
+const getRouterState = createSelector(getRouterFeatureState, state => state.router);
 /** @type {?} */
 const getPageContext = createSelector(getRouterState, (routingState) => routingState.state.context);
+/** @type {?} */
+const getNextPageContext = createSelector(getRouterState, (routingState) => routingState.nextState && routingState.nextState.context);
+/** @type {?} */
+const isNavigating = createSelector(getNextPageContext, context => !!context);
 /** @type {?} */
 const getRedirectUrl = createSelector(getRouterState, state => state.redirectUrl);
 /* The serializer is there to parse the RouterStateSnapshot,
@@ -1691,6 +1700,20 @@ class RoutingService {
      */
     getPageContext() {
         return this.store.pipe(select(getPageContext));
+    }
+    /**
+     * Get the next `PageContext` from the state
+     * @return {?}
+     */
+    getNextPageContext() {
+        return this.store.pipe(select(getNextPageContext));
+    }
+    /**
+     * Get the `isNavigating` info from the state
+     * @return {?}
+     */
+    isNavigating() {
+        return this.store.pipe(select(isNavigating));
     }
     /**
      * Navigation with a new state into history
@@ -13790,12 +13813,15 @@ class PageEffects {
         this.actions$ = actions$;
         this.cmsPageConnector = cmsPageConnector;
         this.routingService = routingService;
-        this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(_ => this.routingService.getRouterState().pipe(filter(routerState => routerState && routerState.state && routerState.state.cmsRequired), map(routerState => routerState.state.context), take(1), mergeMap(context => of(new LoadPageData(context))))));
+        this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(_ => this.routingService.getRouterState().pipe(filter(routerState => routerState &&
+            routerState.state &&
+            routerState.state.cmsRequired &&
+            !routerState.nextState), map(routerState => routerState.state.context), take(1), mergeMap(context => of(new LoadPageData(context))))));
         this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map((action) => action.payload), switchMap(pageContext => {
             return this.cmsPageConnector.get(pageContext).pipe(mergeMap((cmsStructure) => {
                 return [
-                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
                     new GetComponentFromPage(cmsStructure.components),
+                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
                 ];
             }), catchError(error => {
                 return of(new LoadPageDataFail(pageContext, error));
@@ -13995,17 +14021,15 @@ class CmsService {
      */
     getComponentData(uid) {
         if (!this.components[uid]) {
-            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.getCurrentPage()), tap(([componentState, currentPage]) => {
+            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.routingService.isNavigating()), tap(([componentState, isNavigating]) => {
                 /** @type {?} */
                 const attemptedLoad = componentState.loading ||
                     componentState.success ||
                     componentState.error;
-                if (!attemptedLoad && currentPage) {
+                if (!attemptedLoad && !isNavigating) {
                     this.store.dispatch(new LoadComponent(uid));
                 }
-            }), map(([productState]) => productState.value), filter(Boolean), 
-            // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-            multicast(() => new ReplaySubject(1)), refCount());
+            }), filter(([componentState]) => componentState.success), map(([componentState]) => componentState.value), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     }
@@ -14015,7 +14039,9 @@ class CmsService {
      * @return {?}
      */
     getContentSlot(position) {
-        return this.routingService.getPageContext().pipe(switchMap(pageContext => this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
+        return this.routingService
+            .getPageContext()
+            .pipe(switchMap(pageContext => this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)))));
     }
     /**
      * Given navigation node uid, get items (with id and type) inside the navigation entries
@@ -14084,13 +14110,16 @@ class CmsService {
     /**
      * Given pageContext, return whether the CMS page data exists or not
      * @param {?} pageContext
+     * @param {?=} forceReload
      * @return {?}
      */
-    hasPage(pageContext) {
+    hasPage(pageContext, forceReload = false) {
         return this.store.pipe(select(getIndexEntity(pageContext)), tap((entity) => {
             /** @type {?} */
             const attemptedLoad = entity.loading || entity.success || entity.error;
-            if (!attemptedLoad) {
+            /** @type {?} */
+            const shouldReload = forceReload && !entity.loading;
+            if (!attemptedLoad || shouldReload) {
                 this.store.dispatch(new LoadPageData(pageContext));
             }
         }), filter(entity => entity.success || entity.error), map(entity => entity.success), catchError(() => of(false)));
@@ -15478,13 +15507,13 @@ class ProductsSearchEffects {
     constructor(actions$, productSearchConnector) {
         this.actions$ = actions$;
         this.productSearchConnector = productSearchConnector;
-        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), switchMap((action) => {
+        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), groupBy((action) => action.auxiliary), mergeMap(group => group.pipe(switchMap((action) => {
             return this.productSearchConnector
                 .search(action.payload.queryText, action.payload.searchConfig)
                 .pipe(map(data => {
                 return new SearchProductsSuccess(data, action.auxiliary);
             }), catchError(error => of(new SearchProductsFail(error, action.auxiliary))));
-        }));
+        }))));
         this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((action) => action.payload), switchMap(payload => {
             return this.productSearchConnector
                 .getSuggestions(payload.term, payload.searchConfig.pageSize)
@@ -15708,9 +15737,7 @@ class ProductService {
                 if (!attemptedLoad) {
                     this.store.dispatch(new LoadProduct(productCode));
                 }
-            }), map(productState => productState.value), 
-            // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-            multicast(() => new ReplaySubject(1)), refCount());
+            }), map(productState => productState.value), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return this.products[productCode];
     }
@@ -16947,8 +16974,8 @@ class SmartEditService {
         combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
             .pipe(takeWhile(([cmsPage]) => cmsPage === undefined))
             .subscribe(([, routerState]) => {
-            if (routerState.state && !this._cmsTicketId) {
-                this._cmsTicketId = routerState.state.queryParams['cmsTicketId'];
+            if (routerState.nextState && !this._cmsTicketId) {
+                this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
                 if (this._cmsTicketId) {
                     this.cmsService.launchInSmartEdit = true;
                 }

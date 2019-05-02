@@ -1,17 +1,17 @@
-import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
-import { Observable, of, throwError, Subscription, ReplaySubject, combineLatest } from 'rxjs';
+import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
-import { createSelector, createFeatureSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
+import { createFeatureSelector, createSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { __decorate, __metadata, __assign, __extends, __spread, __values, __read, __awaiter, __generator } from 'tslib';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, ChangeDetectorRef, defineInjectable, inject, INJECTOR, NgZone, ComponentFactoryResolver } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, withLatestFrom, multicast, refCount, takeWhile } from 'rxjs/operators';
+import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 
 /**
  * @fileoverview added by tsickle
@@ -770,6 +770,7 @@ var initialState = {
         },
         cmsRequired: false,
     },
+    nextState: undefined,
 };
 /**
  * @return {?}
@@ -793,7 +794,10 @@ function reducer(state, action) {
         case CLEAR_REDIRECT_URL: {
             return __assign({}, state, { redirectUrl: '' });
         }
-        case ROUTER_NAVIGATION:
+        case ROUTER_NAVIGATION: {
+            return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+        }
+        case ROUTER_NAVIGATED:
         case ROUTER_ERROR:
         case ROUTER_CANCEL: {
             /** @type {?} */
@@ -818,6 +822,7 @@ function reducer(state, action) {
                 redirectUrl: redirectUrl,
                 state: action.payload.routerState,
                 navigationId: action.payload.event.id,
+                nextState: undefined,
             };
         }
         default: {
@@ -835,9 +840,15 @@ var reducerProvider = {
 /** @type {?} */
 var getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
 /** @type {?} */
-var getRouterState = createSelector(getRouterFeatureState, function (state) { return state[ROUTING_FEATURE]; });
+var getRouterState = createSelector(getRouterFeatureState, function (state) { return state.router; });
 /** @type {?} */
 var getPageContext = createSelector(getRouterState, function (routingState) { return routingState.state.context; });
+/** @type {?} */
+var getNextPageContext = createSelector(getRouterState, function (routingState) {
+    return routingState.nextState && routingState.nextState.context;
+});
+/** @type {?} */
+var isNavigating = createSelector(getNextPageContext, function (context) { return !!context; });
 /** @type {?} */
 var getRedirectUrl = createSelector(getRouterState, function (state) { return state.redirectUrl; });
 /* The serializer is there to parse the RouterStateSnapshot,
@@ -1988,6 +1999,34 @@ var RoutingService = /** @class */ (function () {
      */
     function () {
         return this.store.pipe(select(getPageContext));
+    };
+    /**
+     * Get the next `PageContext` from the state
+     */
+    /**
+     * Get the next `PageContext` from the state
+     * @return {?}
+     */
+    RoutingService.prototype.getNextPageContext = /**
+     * Get the next `PageContext` from the state
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getNextPageContext));
+    };
+    /**
+     * Get the `isNavigating` info from the state
+     */
+    /**
+     * Get the `isNavigating` info from the state
+     * @return {?}
+     */
+    RoutingService.prototype.isNavigating = /**
+     * Get the `isNavigating` info from the state
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(isNavigating));
     };
     /**
      * Navigation with a new state into history
@@ -16296,14 +16335,17 @@ var PageEffects = /** @class */ (function () {
         this.routingService = routingService;
         this.refreshPage$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), switchMap(function (_) {
             return _this.routingService.getRouterState().pipe(filter(function (routerState) {
-                return routerState && routerState.state && routerState.state.cmsRequired;
+                return routerState &&
+                    routerState.state &&
+                    routerState.state.cmsRequired &&
+                    !routerState.nextState;
             }), map(function (routerState) { return routerState.state.context; }), take(1), mergeMap(function (context) { return of(new LoadPageData(context)); }));
         }));
         this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map(function (action) { return action.payload; }), switchMap(function (pageContext) {
             return _this.cmsPageConnector.get(pageContext).pipe(mergeMap(function (cmsStructure) {
                 return [
-                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
                     new GetComponentFromPage(cmsStructure.components),
+                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
                 ];
             }), catchError(function (error) {
                 return of(new LoadPageDataFail(pageContext, error));
@@ -16546,21 +16588,22 @@ var CmsService = /** @class */ (function () {
     function (uid) {
         var _this = this;
         if (!this.components[uid]) {
-            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.getCurrentPage()), tap(function (_a) {
-                var _b = __read(_a, 2), componentState = _b[0], currentPage = _b[1];
+            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.routingService.isNavigating()), tap(function (_a) {
+                var _b = __read(_a, 2), componentState = _b[0], isNavigating = _b[1];
                 /** @type {?} */
                 var attemptedLoad = componentState.loading ||
                     componentState.success ||
                     componentState.error;
-                if (!attemptedLoad && currentPage) {
+                if (!attemptedLoad && !isNavigating) {
                     _this.store.dispatch(new LoadComponent(uid));
                 }
+            }), filter(function (_a) {
+                var _b = __read(_a, 1), componentState = _b[0];
+                return componentState.success;
             }), map(function (_a) {
-                var _b = __read(_a, 1), productState = _b[0];
-                return productState.value;
-            }), filter(Boolean), 
-            // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-            multicast(function () { return new ReplaySubject(1); }), refCount());
+                var _b = __read(_a, 1), componentState = _b[0];
+                return componentState.value;
+            }), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     };
@@ -16580,8 +16623,10 @@ var CmsService = /** @class */ (function () {
      */
     function (position) {
         var _this = this;
-        return this.routingService.getPageContext().pipe(switchMap(function (pageContext) {
-            return _this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)), filter(Boolean));
+        return this.routingService
+            .getPageContext()
+            .pipe(switchMap(function (pageContext) {
+            return _this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)));
         }));
     };
     /**
@@ -16721,19 +16766,24 @@ var CmsService = /** @class */ (function () {
     /**
      * Given pageContext, return whether the CMS page data exists or not
      * @param {?} pageContext
+     * @param {?=} forceReload
      * @return {?}
      */
     CmsService.prototype.hasPage = /**
      * Given pageContext, return whether the CMS page data exists or not
      * @param {?} pageContext
+     * @param {?=} forceReload
      * @return {?}
      */
-    function (pageContext) {
+    function (pageContext, forceReload) {
         var _this = this;
+        if (forceReload === void 0) { forceReload = false; }
         return this.store.pipe(select(getIndexEntity(pageContext)), tap(function (entity) {
             /** @type {?} */
             var attemptedLoad = entity.loading || entity.success || entity.error;
-            if (!attemptedLoad) {
+            /** @type {?} */
+            var shouldReload = forceReload && !entity.loading;
+            if (!attemptedLoad || shouldReload) {
                 _this.store.dispatch(new LoadPageData(pageContext));
             }
         }), filter(function (entity) { return entity.success || entity.error; }), map(function (entity) { return entity.success; }), catchError(function () { return of(false); }));
@@ -18350,13 +18400,15 @@ var ProductsSearchEffects = /** @class */ (function () {
         var _this = this;
         this.actions$ = actions$;
         this.productSearchConnector = productSearchConnector;
-        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), switchMap(function (action) {
-            return _this.productSearchConnector
-                .search(action.payload.queryText, action.payload.searchConfig)
-                .pipe(map(function (data) {
-                return new SearchProductsSuccess(data, action.auxiliary);
-            }), catchError(function (error) {
-                return of(new SearchProductsFail(error, action.auxiliary));
+        this.searchProducts$ = this.actions$.pipe(ofType(SEARCH_PRODUCTS), groupBy(function (action) { return action.auxiliary; }), mergeMap(function (group) {
+            return group.pipe(switchMap(function (action) {
+                return _this.productSearchConnector
+                    .search(action.payload.queryText, action.payload.searchConfig)
+                    .pipe(map(function (data) {
+                    return new SearchProductsSuccess(data, action.auxiliary);
+                }), catchError(function (error) {
+                    return of(new SearchProductsFail(error, action.auxiliary));
+                }));
             }));
         }));
         this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map(function (action) { return action.payload; }), switchMap(function (payload) {
@@ -18613,9 +18665,7 @@ var ProductService = /** @class */ (function () {
                 if (!attemptedLoad) {
                     _this.store.dispatch(new LoadProduct(productCode));
                 }
-            }), map(function (productState) { return productState.value; }), 
-            // TODO: Replace next two lines with shareReplay(1, undefined, true) when RxJS 6.4 will be in use
-            multicast(function () { return new ReplaySubject(1); }), refCount());
+            }), map(function (productState) { return productState.value; }), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return this.products[productCode];
     };
@@ -20145,8 +20195,8 @@ var SmartEditService = /** @class */ (function () {
         }))
             .subscribe(function (_a) {
             var _b = __read(_a, 2), routerState = _b[1];
-            if (routerState.state && !_this._cmsTicketId) {
-                _this._cmsTicketId = routerState.state.queryParams['cmsTicketId'];
+            if (routerState.nextState && !_this._cmsTicketId) {
+                _this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
                 if (_this._cmsTicketId) {
                     _this.cmsService.launchInSmartEdit = true;
                 }
