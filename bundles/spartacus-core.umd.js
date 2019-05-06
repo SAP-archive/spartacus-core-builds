@@ -13098,7 +13098,9 @@
                 return ENDPOINT_COUNTRIES + "/" + countryIsoCode + "/" + ENDPOINT_REGIONS;
             };
         OccMiscsService.decorators = [
-            { type: i0.Injectable }
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
         ];
         /** @nocollapse */
         OccMiscsService.ctorParameters = function () {
@@ -13107,6 +13109,7 @@
                 { type: OccEndpointsService }
             ];
         };
+        /** @nocollapse */ OccMiscsService.ngInjectableDef = i0.defineInjectable({ factory: function OccMiscsService_Factory() { return new OccMiscsService(i0.inject(i1$2.HttpClient), i0.inject(OccEndpointsService)); }, token: OccMiscsService, providedIn: "root" });
         return OccMiscsService;
     }());
 

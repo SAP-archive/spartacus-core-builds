@@ -10989,13 +10989,16 @@ class OccMiscsService {
     }
 }
 OccMiscsService.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
 ];
 /** @nocollapse */
 OccMiscsService.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService }
 ];
+/** @nocollapse */ OccMiscsService.ngInjectableDef = defineInjectable({ factory: function OccMiscsService_Factory() { return new OccMiscsService(inject(HttpClient), inject(OccEndpointsService)); }, token: OccMiscsService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle

@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { CountryList, TitleList, CardTypeList, RegionList } from '../../occ/occ-models/index';
+import { Observable } from 'rxjs';
+import { CardTypeList, CountryList, RegionList, TitleList } from '../../occ/occ-models/index';
 import { OccEndpointsService } from '../services/occ-endpoints.service';
 export declare class OccMiscsService {
     private http;

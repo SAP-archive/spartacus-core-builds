@@ -12841,13 +12841,16 @@ var OccMiscsService = /** @class */ (function () {
         return ENDPOINT_COUNTRIES + "/" + countryIsoCode + "/" + ENDPOINT_REGIONS;
     };
     OccMiscsService.decorators = [
-        { type: Injectable }
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     /** @nocollapse */
     OccMiscsService.ctorParameters = function () { return [
         { type: HttpClient },
         { type: OccEndpointsService }
     ]; };
+    /** @nocollapse */ OccMiscsService.ngInjectableDef = defineInjectable({ factory: function OccMiscsService_Factory() { return new OccMiscsService(inject(HttpClient), inject(OccEndpointsService)); }, token: OccMiscsService, providedIn: "root" });
     return OccMiscsService;
 }());
 
