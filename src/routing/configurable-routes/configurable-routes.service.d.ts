@@ -1,30 +1,25 @@
 import { Injector } from '@angular/core';
 import { ServerConfig } from '../../config/server-config/server-config';
-import { RouteTranslation } from './routes-config';
-import { RoutesConfigLoader } from './routes-config-loader';
+import { RoutingConfigService } from './routing-config.service';
 import { UrlMatcherFactoryService } from './url-matcher-factory.service';
 export declare class ConfigurableRoutesService {
     private config;
     private injector;
-    private routesConfigLoader;
+    private routingConfigService;
     private urlMatcherFactory;
-    constructor(config: ServerConfig, injector: Injector, routesConfigLoader: RoutesConfigLoader, urlMatcherFactory: UrlMatcherFactoryService);
-    private readonly currentLanguageCode;
-    private allRoutesTranslations;
-    private readonly currentRoutesTranslations;
+    constructor(config: ServerConfig, injector: Injector, routingConfigService: RoutingConfigService, urlMatcherFactory: UrlMatcherFactoryService);
     private initCalled;
     /**
-     * Initializes service with given translations and translates all existing Routes in the Router.
+     * Configures all existing Routes in the Router
      */
-    init(): Promise<void>;
-    private translateRouterConfig;
-    getRouteTranslation(routeName: string): RouteTranslation;
-    private translateRoutes;
-    private translateRoute;
+    init(): void;
+    private configureRouter;
+    private configureRoutes;
+    private configureRoute;
     private isConfigurable;
     private getConfigurable;
-    private translateRoutePath;
-    private translateRouteRedirectTo;
-    private getTranslatedPaths;
+    private configureRoutePath;
+    private configureRouteRedirectTo;
+    private getConfiguredPaths;
     private warn;
 }

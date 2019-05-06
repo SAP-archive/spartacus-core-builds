@@ -1,13 +1,13 @@
-import { ConfigurableRoutesService } from '../configurable-routes.service';
 import { UrlParsingService } from './url-parsing.service';
 import { ServerConfig } from '../../../config/server-config/server-config';
 import { TranslateUrlCommands, TranslateUrlOptions } from './translate-url-commands';
+import { RoutingConfigService } from '../routing-config.service';
 export declare class UrlTranslationService {
-    private configurableRoutesService;
+    private routingConfigService;
     private urlParser;
     private config;
     readonly ROOT_URL: string[];
-    constructor(configurableRoutesService: ConfigurableRoutesService, urlParser: UrlParsingService, config: ServerConfig);
+    constructor(routingConfigService: RoutingConfigService, urlParser: UrlParsingService, config: ServerConfig);
     translate(commands: TranslateUrlCommands, options?: TranslateUrlOptions): any[];
     private generateUrl;
     private standarizeRouteCommand;

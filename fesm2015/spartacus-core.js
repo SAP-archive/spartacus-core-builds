@@ -1,17 +1,17 @@
 import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationCancel, NavigationEnd, NavigationError, NavigationStart, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
-import { __decorate, __metadata, __awaiter } from 'tslib';
+import { __decorate, __metadata } from 'tslib';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, retry, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
+import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 
 /**
  * @fileoverview added by tsickle
@@ -1062,404 +1062,6 @@ WindowRef.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @abstract
- */
-class ConfigurableRoutesConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class OccConfig extends ServerConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const ENDPOINT_ROUTES_CONFIG = 'routes-config';
-class RoutesConfigLoader {
-    /**
-     * @param {?} http
-     * @param {?} serverConfig
-     * @param {?} configurableRoutesConfig
-     */
-    constructor(http, serverConfig, configurableRoutesConfig) {
-        this.http = http;
-        this.serverConfig = serverConfig;
-        this.configurableRoutesConfig = configurableRoutesConfig;
-    }
-    /**
-     * @return {?}
-     */
-    get routesConfig() {
-        return this._routesConfig;
-    }
-    /**
-     * @return {?}
-     */
-    get endpoint() {
-        return ((this.serverConfig.backend.occ.baseUrl || '') +
-            '/' +
-            ENDPOINT_ROUTES_CONFIG);
-    }
-    /**
-     * @return {?}
-     */
-    load() {
-        return __awaiter(this, void 0, void 0, function* () {
-            /** @type {?} */
-            const shouldFetch = this.configurableRoutesConfig.routesConfig.fetch;
-            /** @type {?} */
-            const fetchedRoutesConfig = shouldFetch
-                ? yield this.fetch(this.endpoint)
-                : null;
-            this._routesConfig = this.extendStaticWith(fetchedRoutesConfig);
-        });
-    }
-    /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    fetch(url) {
-        return this.http
-            .get(url)
-            .pipe(retry(2))
-            .toPromise()
-            .catch(() => {
-            throw new Error(`Could not get routes configuration from url ${url}!`);
-        });
-    }
-    /**
-     * @private
-     * @param {?} routesConfig
-     * @return {?}
-     */
-    extendStaticWith(routesConfig) {
-        /** @type {?} */
-        const mergedRoutesConfig = deepMerge({}, this.configurableRoutesConfig.routesConfig, routesConfig);
-        return this.extendLanguagesTranslationsWithDefault(mergedRoutesConfig);
-    }
-    /**
-     * @private
-     * @param {?} routesConfig
-     * @return {?}
-     */
-    extendLanguagesTranslationsWithDefault(routesConfig) {
-        /** @type {?} */
-        const defaultTranslations = routesConfig.translations.default;
-        Object.keys(routesConfig.translations).forEach(languageCode => {
-            /** @type {?} */
-            const languageTranslations = routesConfig.translations[languageCode];
-            routesConfig.translations[languageCode] = deepMerge({}, defaultTranslations, languageTranslations);
-        });
-        return routesConfig;
-    }
-}
-RoutesConfigLoader.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-RoutesConfigLoader.ctorParameters = () => [
-    { type: HttpClient },
-    { type: OccConfig },
-    { type: ConfigurableRoutesConfig }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class UrlMatcherFactoryService {
-    /**
-     * @return {?}
-     */
-    getFalsyUrlMatcher() {
-        return function falsyUrlMatcher() {
-            return null;
-        };
-    }
-    /**
-     * @param {?} paths
-     * @return {?}
-     */
-    getMultiplePathsUrlMatcher(paths) {
-        /** @type {?} */
-        const self = this;
-        /** @type {?} */
-        const matcher = function multiplePathsUrlMatcher(segments, segmentGroup, route) {
-            for (let i = 0; i < paths.length; i++) {
-                /** @type {?} */
-                const result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
-                if (result) {
-                    return result;
-                }
-            }
-            return null;
-        };
-        matcher.paths = paths; // property added for easier debugging of routes
-        return matcher;
-    }
-    // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-    /**
-     * @private
-     * @param {?=} path
-     * @return {?}
-     */
-    getPathUrlMatcher(path = '') {
-        return (segments, segmentGroup, route) => {
-            /** @type {?} */
-            const parts = path.split('/');
-            if (parts.length > segments.length) {
-                // The actual URL is shorter than the config, no match
-                return null;
-            }
-            if (route.pathMatch === 'full' &&
-                (segmentGroup.hasChildren() || parts.length < segments.length)) {
-                // The config is longer than the actual URL but we are looking for a full match, return null
-                return null;
-            }
-            /** @type {?} */
-            const posParams = {};
-            // Check each config part against the actual URL
-            for (let index = 0; index < parts.length; index++) {
-                /** @type {?} */
-                const part = parts[index];
-                /** @type {?} */
-                const segment = segments[index];
-                /** @type {?} */
-                const isParameter = part.startsWith(':');
-                if (isParameter) {
-                    posParams[part.substring(1)] = segment;
-                }
-                else if (part !== segment.path) {
-                    // The actual URL part does not match the config, no match
-                    return null;
-                }
-            }
-            return { consumed: segments.slice(0, parts.length), posParams };
-        };
-    }
-}
-UrlMatcherFactoryService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = defineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ConfigurableRoutesService {
-    /**
-     * @param {?} config
-     * @param {?} injector
-     * @param {?} routesConfigLoader
-     * @param {?} urlMatcherFactory
-     */
-    constructor(config, injector, routesConfigLoader, urlMatcherFactory) {
-        this.config = config;
-        this.injector = injector;
-        this.routesConfigLoader = routesConfigLoader;
-        this.urlMatcherFactory = urlMatcherFactory;
-        this.currentLanguageCode = 'en'; // TODO: hardcoded! should be removed when more languages are supported by localized routes
-        this.initCalled = false; // guard not to call init() more than once
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    get currentRoutesTranslations() {
-        return (/** @type {?} */ (this.allRoutesTranslations[this.currentLanguageCode]));
-    }
-    // guard not to call init() more than once
-    /**
-     * Initializes service with given translations and translates all existing Routes in the Router.
-     * @return {?}
-     */
-    init() {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!this.initCalled) {
-                this.initCalled = true;
-                yield this.routesConfigLoader.load();
-                this.allRoutesTranslations = this.routesConfigLoader.routesConfig.translations;
-                this.translateRouterConfig();
-            }
-        });
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    translateRouterConfig() {
-        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-        /** @type {?} */
-        const router = this.injector.get(Router);
-        /** @type {?} */
-        const translatedRoutes = this.translateRoutes(router.config, this.currentRoutesTranslations);
-        router.resetConfig(translatedRoutes);
-    }
-    /**
-     * @param {?} routeName
-     * @return {?}
-     */
-    getRouteTranslation(routeName) {
-        /** @type {?} */
-        const routesTranslations = this.currentRoutesTranslations;
-        /** @type {?} */
-        const result = routesTranslations && routesTranslations[routeName];
-        if (!routesTranslations || result === undefined) {
-            this.warn(`No route translation was configured for page '${routeName}' in language '${this.currentLanguageCode}'!`);
-        }
-        return result;
-    }
-    /**
-     * @private
-     * @param {?} routes
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    translateRoutes(routes, routesTranslations) {
-        /** @type {?} */
-        const result = [];
-        routes.forEach(route => {
-            /** @type {?} */
-            const translatedRoute = this.translateRoute(route, routesTranslations);
-            if (route.children && route.children.length) {
-                /** @type {?} */
-                const translatedChildrenRoutes = this.translateRoutes(route.children, routesTranslations);
-                translatedRoute.children = translatedChildrenRoutes;
-            }
-            result.push(translatedRoute);
-        });
-        return result;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    translateRoute(route, routesTranslations) {
-        if (this.isConfigurable(route, 'cxPath')) {
-            // we assume that 'path' and 'redirectTo' cannot be both configured for one route
-            if (this.isConfigurable(route, 'cxRedirectTo')) {
-                this.warn(`A path should not have set both "cxPath" and "cxRedirectTo" properties! Route: '${route}`);
-            }
-            return this.translateRoutePath(route, routesTranslations);
-        }
-        if (this.isConfigurable(route, 'cxRedirectTo')) {
-            return this.translateRouteRedirectTo(route, routesTranslations);
-        }
-        return route; // if nothing is configurable, just pass the original route
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @return {?}
-     */
-    isConfigurable(route, key) {
-        return !!this.getConfigurable(route, key);
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @return {?}
-     */
-    getConfigurable(route, key) {
-        return route.data && route.data[key];
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    translateRoutePath(route, routesTranslations) {
-        /** @type {?} */
-        const paths = this.getTranslatedPaths(route, 'cxPath', routesTranslations);
-        switch (paths.length) {
-            case 0:
-                delete route.path;
-                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-            case 1:
-                delete route.matcher;
-                return Object.assign({}, route, { path: paths[0] });
-            default:
-                delete route.path;
-                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
-        }
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} translations
-     * @return {?}
-     */
-    translateRouteRedirectTo(route, translations) {
-        /** @type {?} */
-        const translatedPaths = this.getTranslatedPaths(route, 'cxRedirectTo', translations);
-        return translatedPaths.length
-            ? Object.assign({}, route, { redirectTo: translatedPaths[0] }) : route;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @param {?} routesTranslations
-     * @return {?}
-     */
-    getTranslatedPaths(route, key, routesTranslations) {
-        /** @type {?} */
-        const routeName = this.getConfigurable(route, key);
-        /** @type {?} */
-        const translation = this.getRouteTranslation(routeName);
-        if (translation === undefined) {
-            this.warn(`Could not translate key '${key}' of route '${routeName}'`, route, `due to undefined key '${routeName}' in routes translations`, routesTranslations);
-            return [];
-        }
-        if (translation && translation.paths === undefined) {
-            this.warn(`Could not translate key '${key}' of route '${routeName}'`, route, `due to undefined 'paths' key for '${routeName}' route in routes translations`, routesTranslations);
-            return [];
-        }
-        // translation or translation.paths can be null - which means switching off the route
-        return (translation && translation.paths) || [];
-    }
-    /**
-     * @private
-     * @param {...?} args
-     * @return {?}
-     */
-    warn(...args) {
-        if (!this.config.production) {
-            console.warn(...args);
-        }
-    }
-}
-ConfigurableRoutesService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-ConfigurableRoutesService.ctorParameters = () => [
-    { type: ServerConfig },
-    { type: Injector },
-    { type: RoutesConfigLoader },
-    { type: UrlMatcherFactoryService }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 class UrlParsingService {
     /**
      * @param {?} router
@@ -1492,12 +1094,13 @@ class UrlParsingService {
     }
 }
 UrlParsingService.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{ providedIn: 'root' },] }
 ];
 /** @nocollapse */
 UrlParsingService.ctorParameters = () => [
     { type: Router }
 ];
+/** @nocollapse */ UrlParsingService.ngInjectableDef = defineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(inject(Router)); }, token: UrlParsingService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -1512,14 +1115,69 @@ const getParamName = (segment) => segment.slice(1);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @abstract
+ */
+class RoutingConfig extends ServerConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class RoutingConfigService {
+    /**
+     * @param {?} config
+     */
+    constructor(config) {
+        this.config = config;
+    }
+    /**
+     * @param {?} routeName
+     * @return {?}
+     */
+    getRouteConfig(routeName) {
+        /** @type {?} */
+        const routesConfig = this.config.routing.routes;
+        /** @type {?} */
+        const result = routesConfig && routesConfig[routeName];
+        if (!routesConfig || result === undefined) {
+            this.warn(`No path was configured for the named route '${routeName}'!`);
+        }
+        return result;
+    }
+    /**
+     * @private
+     * @param {...?} args
+     * @return {?}
+     */
+    warn(...args) {
+        if (!this.config.production) {
+            console.warn(...args);
+        }
+    }
+}
+RoutingConfigService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */
+RoutingConfigService.ctorParameters = () => [
+    { type: RoutingConfig }
+];
+/** @nocollapse */ RoutingConfigService.ngInjectableDef = defineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(inject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UrlTranslationService {
     /**
-     * @param {?} configurableRoutesService
+     * @param {?} routingConfigService
      * @param {?} urlParser
      * @param {?} config
      */
-    constructor(configurableRoutesService, urlParser, config) {
-        this.configurableRoutesService = configurableRoutesService;
+    constructor(routingConfigService, urlParser, config) {
+        this.routingConfigService = routingConfigService;
         this.urlParser = urlParser;
         this.config = config;
         this.ROOT_URL = ['/'];
@@ -1566,20 +1224,20 @@ class UrlTranslationService {
             return null;
         }
         /** @type {?} */
-        const routeTranslation = this.configurableRoutesService.getRouteTranslation(command.route);
+        const routeConfig = this.routingConfigService.getRouteConfig(command.route);
         // if no route translation was configured, return null:
-        if (!routeTranslation || !routeTranslation.paths) {
+        if (!routeConfig || !routeConfig.paths) {
             return null;
         }
         // find first path that can satisfy it's parameters with given parameters
         /** @type {?} */
-        const path = this.findPathWithFillableParams(routeTranslation, command.params);
+        const path = this.findPathWithFillableParams(routeConfig, command.params);
         // if there is no configured path that can be satisfied with given params, return null
         if (!path) {
             return null;
         }
         /** @type {?} */
-        const result = this.provideParamsValues(path, command.params, routeTranslation.paramsMapping);
+        const result = this.provideParamsValues(path, command.params, routeConfig.paramsMapping);
         return result;
     }
     /**
@@ -1611,19 +1269,19 @@ class UrlTranslationService {
     }
     /**
      * @private
-     * @param {?} routeTranslation
+     * @param {?} routeConfig
      * @param {?} params
      * @return {?}
      */
-    findPathWithFillableParams(routeTranslation, params) {
+    findPathWithFillableParams(routeConfig, params) {
         /** @type {?} */
-        const foundPath = routeTranslation.paths.find(path => this.getParams(path).every(paramName => {
+        const foundPath = routeConfig.paths.find(path => this.getParams(path).every(paramName => {
             /** @type {?} */
-            const mappedParamName = this.getMappedParamName(paramName, routeTranslation.paramsMapping);
+            const mappedParamName = this.getMappedParamName(paramName, routeConfig.paramsMapping);
             return params[mappedParamName] !== undefined;
         }));
         if (foundPath === undefined || foundPath === null) {
-            this.warn(`No configured path matches all its params to given object. `, `Route translation: `, routeTranslation, `Params object: `, params);
+            this.warn(`No configured path matches all its params to given object. `, `Route config: `, routeConfig, `Params object: `, params);
             return null;
         }
         return foundPath;
@@ -1663,14 +1321,15 @@ class UrlTranslationService {
     }
 }
 UrlTranslationService.decorators = [
-    { type: Injectable }
+    { type: Injectable, args: [{ providedIn: 'root' },] }
 ];
 /** @nocollapse */
 UrlTranslationService.ctorParameters = () => [
-    { type: ConfigurableRoutesService },
+    { type: RoutingConfigService },
     { type: UrlParsingService },
     { type: ServerConfig }
 ];
+/** @nocollapse */ UrlTranslationService.ngInjectableDef = defineInjectable({ factory: function UrlTranslationService_Factory() { return new UrlTranslationService(inject(RoutingConfigService), inject(UrlParsingService), inject(ServerConfig)); }, token: UrlTranslationService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -1811,41 +1470,289 @@ RoutingService.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class UrlMatcherFactoryService {
+    /**
+     * @return {?}
+     */
+    getFalsyUrlMatcher() {
+        return function falsyUrlMatcher() {
+            return null;
+        };
+    }
+    /**
+     * @param {?} paths
+     * @return {?}
+     */
+    getMultiplePathsUrlMatcher(paths) {
+        /** @type {?} */
+        const self = this;
+        /** @type {?} */
+        const matcher = function multiplePathsUrlMatcher(segments, segmentGroup, route) {
+            for (let i = 0; i < paths.length; i++) {
+                /** @type {?} */
+                const result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        };
+        matcher.paths = paths; // property added for easier debugging of routes
+        return matcher;
+    }
+    // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+    /**
+     * @private
+     * @param {?=} path
+     * @return {?}
+     */
+    getPathUrlMatcher(path = '') {
+        return (segments, segmentGroup, route) => {
+            /** @type {?} */
+            const parts = path.split('/');
+            if (parts.length > segments.length) {
+                // The actual URL is shorter than the config, no match
+                return null;
+            }
+            if (route.pathMatch === 'full' &&
+                (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                // The config is longer than the actual URL but we are looking for a full match, return null
+                return null;
+            }
+            /** @type {?} */
+            const posParams = {};
+            // Check each config part against the actual URL
+            for (let index = 0; index < parts.length; index++) {
+                /** @type {?} */
+                const part = parts[index];
+                /** @type {?} */
+                const segment = segments[index];
+                /** @type {?} */
+                const isParameter = part.startsWith(':');
+                if (isParameter) {
+                    posParams[part.substring(1)] = segment;
+                }
+                else if (part !== segment.path) {
+                    // The actual URL part does not match the config, no match
+                    return null;
+                }
+            }
+            return { consumed: segments.slice(0, parts.length), posParams };
+        };
+    }
+}
+UrlMatcherFactoryService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = defineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ConfigurableRoutesService {
+    /**
+     * @param {?} config
+     * @param {?} injector
+     * @param {?} routingConfigService
+     * @param {?} urlMatcherFactory
+     */
+    constructor(config, injector, routingConfigService, urlMatcherFactory) {
+        this.config = config;
+        this.injector = injector;
+        this.routingConfigService = routingConfigService;
+        this.urlMatcherFactory = urlMatcherFactory;
+        this.initCalled = false; // guard not to call init() more than once
+    }
+    // guard not to call init() more than once
+    /**
+     * Configures all existing Routes in the Router
+     * @return {?}
+     */
+    init() {
+        if (!this.initCalled) {
+            this.initCalled = true;
+            this.configureRouter();
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    configureRouter() {
+        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
+        /** @type {?} */
+        const router = this.injector.get(Router);
+        /** @type {?} */
+        const configuredRoutes = this.configureRoutes(router.config);
+        router.resetConfig(configuredRoutes);
+    }
+    /**
+     * @private
+     * @param {?} routes
+     * @return {?}
+     */
+    configureRoutes(routes) {
+        /** @type {?} */
+        const result = [];
+        routes.forEach(route => {
+            /** @type {?} */
+            const configuredRoute = this.configureRoute(route);
+            if (route.children && route.children.length) {
+                configuredRoute.children = this.configureRoutes(route.children);
+            }
+            result.push(configuredRoute);
+        });
+        return result;
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    configureRoute(route) {
+        if (this.isConfigurable(route, 'cxPath')) {
+            // we assume that 'path' and 'redirectTo' cannot be both configured for one route
+            if (this.isConfigurable(route, 'cxRedirectTo')) {
+                this.warn(`A path should not have set both "cxPath" and "cxRedirectTo" properties! Route: '${route}`);
+            }
+            return this.configureRoutePath(route);
+        }
+        if (this.isConfigurable(route, 'cxRedirectTo')) {
+            return this.configureRouteRedirectTo(route);
+        }
+        return route; // if nothing is configurable, just pass the original route
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @param {?} key
+     * @return {?}
+     */
+    isConfigurable(route, key) {
+        return !!this.getConfigurable(route, key);
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @param {?} key
+     * @return {?}
+     */
+    getConfigurable(route, key) {
+        return route.data && route.data[key];
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    configureRoutePath(route) {
+        /** @type {?} */
+        const paths = this.getConfiguredPaths(route, 'cxPath');
+        switch (paths.length) {
+            case 0:
+                delete route.path;
+                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+            case 1:
+                delete route.matcher;
+                return Object.assign({}, route, { path: paths[0] });
+            default:
+                delete route.path;
+                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+        }
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    configureRouteRedirectTo(route) {
+        /** @type {?} */
+        const paths = this.getConfiguredPaths(route, 'cxRedirectTo');
+        return paths.length
+            ? Object.assign({}, route, { redirectTo: paths[0] }) : route;
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @param {?} key
+     * @return {?}
+     */
+    getConfiguredPaths(route, key) {
+        /** @type {?} */
+        const routeName = this.getConfigurable(route, key);
+        /** @type {?} */
+        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+        if (routeConfig === undefined) {
+            this.warn(`Could not configure the key '${key}' of the named route '${routeName}'`, route, `due to undefined key for named route '${routeName}' in config`);
+            return [];
+        }
+        if (routeConfig && routeConfig.paths === undefined) {
+            this.warn(`Could not configure the key '${key}' of the named route '${routeName}'`, route, `due to undefined 'paths' for the named route '${routeName}' in config`);
+            return [];
+        }
+        // routeConfig or routeConfig.paths can be null - which means switching off the route
+        return (routeConfig && routeConfig.paths) || [];
+    }
+    /**
+     * @private
+     * @param {...?} args
+     * @return {?}
+     */
+    warn(...args) {
+        if (!this.config.production) {
+            console.warn(...args);
+        }
+    }
+}
+ConfigurableRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */
+ConfigurableRoutesService.ctorParameters = () => [
+    { type: ServerConfig },
+    { type: Injector },
+    { type: RoutingConfigService },
+    { type: UrlMatcherFactoryService }
+];
+/** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = defineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(inject(ServerConfig), inject(INJECTOR), inject(RoutingConfigService), inject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
-const defaultStorefrontRoutesTranslations = {
-    default: {
-        home: { paths: [''] },
-        cart: { paths: ['cart'] },
-        search: { paths: ['search/:query'] },
-        login: { paths: ['login'] },
-        register: { paths: ['register'] },
-        resetPassword: { paths: ['login/pw/change'] },
-        forgotPassword: { paths: ['forgot-password'] },
-        checkout: { paths: ['checkout'] },
-        orderConfirmation: { paths: ['order-confirmation'] },
-        product: {
-            paths: ['product/:productCode'],
-            paramsMapping: { productCode: 'code' },
-        },
-        category: {
-            paths: ['category/:categoryCode'],
-            paramsMapping: { categoryCode: 'code' },
-        },
-        brand: { paths: ['Brands/:brandName/c/:brandCode'] },
-        termsAndConditions: { paths: ['termsAndConditions'] },
-        orders: { paths: ['my-account/orders'] },
-        orderDetails: {
-            paths: ['my-account/orders/:orderCode'],
-            paramsMapping: { orderCode: 'code' },
-        },
-        addressBook: { paths: ['my-account/address-book'] },
-        updatePassword: { paths: ['my-account/update-password'] },
-        paymentManagement: { paths: ['my-account/payment-details'] },
-        updateEmail: { paths: ['my-account/update-email'] },
-        updateProfile: { paths: ['my-account/update-profile'] },
-        closeAccount: { paths: ['my-account/close-account'] },
+const defaultStorefrontRoutesConfig = {
+    home: { paths: [''] },
+    cart: { paths: ['cart'] },
+    search: { paths: ['search/:query'] },
+    login: { paths: ['login'] },
+    register: { paths: ['register'] },
+    resetPassword: { paths: ['login/pw/change'] },
+    forgotPassword: { paths: ['forgot-password'] },
+    checkout: { paths: ['checkout'] },
+    orderConfirmation: { paths: ['order-confirmation'] },
+    product: {
+        paths: ['product/:productCode'],
+        paramsMapping: { productCode: 'code' },
     },
-    en: (/** @type {?} */ ({})),
+    category: {
+        paths: ['category/:categoryCode'],
+        paramsMapping: { categoryCode: 'code' },
+    },
+    brand: { paths: ['Brands/:brandName/c/:brandCode'] },
+    termsAndConditions: { paths: ['termsAndConditions'] },
+    orders: { paths: ['my-account/orders'] },
+    orderDetails: {
+        paths: ['my-account/orders/:orderCode'],
+        paramsMapping: { orderCode: 'code' },
+    },
+    addressBook: { paths: ['my-account/address-book'] },
+    updatePassword: { paths: ['my-account/update-password'] },
+    paymentManagement: { paths: ['my-account/payment-details'] },
+    updateEmail: { paths: ['my-account/update-email'] },
+    updateProfile: { paths: ['my-account/update-profile'] },
+    closeAccount: { paths: ['my-account/close-account'] },
 };
 
 /**
@@ -1853,10 +1760,9 @@ const defaultStorefrontRoutesTranslations = {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const defaultConfigurableRoutesConfig = {
-    routesConfig: {
-        translations: defaultStorefrontRoutesTranslations,
-        fetch: false,
+const defaultRoutingConfig = {
+    routing: {
+        routes: defaultStorefrontRoutesConfig,
     },
 };
 
@@ -1877,24 +1783,17 @@ class ConfigurableRoutesModule {
 }
 ConfigurableRoutesModule.decorators = [
     { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    ConfigModule.withConfig(defaultConfigurableRoutesConfig),
-                ],
+                imports: [CommonModule, ConfigModule.withConfig(defaultRoutingConfig)],
                 declarations: [],
                 exports: [],
                 providers: [
-                    ConfigurableRoutesService,
-                    RoutesConfigLoader,
-                    UrlTranslationService,
-                    UrlParsingService,
                     {
                         provide: APP_INITIALIZER,
                         useFactory: initConfigurableRoutes,
                         deps: [ConfigurableRoutesService],
                         multi: true,
                     },
-                    { provide: ConfigurableRoutesConfig, useExisting: Config },
+                    { provide: RoutingConfig, useExisting: Config },
                 ],
             },] }
 ];
@@ -1929,6 +1828,16 @@ RoutingModule.decorators = [
                 ],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class OccConfig extends ServerConfig {
+}
 
 /**
  * @fileoverview added by tsickle
@@ -13742,11 +13651,6 @@ class PageContext {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 class TranslateUrlPipe {
     /**
      * @param {?} urlTranslator
@@ -18302,6 +18206,6 @@ PersonalizationModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, PriceType, ImageType, Fields, Fields1, Fields2, Fields3, Fields4, Fields5, Fields6, PageType, Fields7, Fields8, Fields9, Fields10, Fields11, Fields12, Fields13, Fields14, Fields15, Fields16, SortEnum, Fields17, Fields18, Fields19, Fields20, Fields21, Fields22, Fields23, Fields24, Fields25, Fields26, Fields27, Fields28, Fields29, Fields30, Fields31, Fields32, Fields33, Fields34, Fields35, Fields36, Fields37, Fields38, Fields39, Fields40, Fields41, Fields42, Fields43, Fields44, Fields45, Fields46, Fields47, Fields48, Fields49, Fields50, Fields51, Fields52, Fields53, Fields54, Fields55, Fields56, Fields57, Fields58, Fields59, Fields60, Fields61, Type, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductOccModule, OccProductAdapter, OccProductSearchAdapter, OccProductReviewsAdapter, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, ConfigurableRoutesConfig, UrlTranslationModule, TranslateUrlPipe, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutesConfigLoader, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$5 as getReducers, clearUserState, reducerToken$5 as reducerToken, reducerProvider$5 as reducerProvider, metaReducers$2 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbh, AuthErrorInterceptor as ɵbp, ClientTokenInterceptor as ɵbm, interceptors as ɵbl, UserTokenInterceptor as ɵbo, ClientAuthenticationTokenService as ɵbf, ClientErrorHandlingService as ɵbj, services as ɵbi, UserAuthenticationTokenService as ɵbe, UserErrorHandlingService as ɵbk, AuthStoreModule as ɵp, authStoreConfigFactory as ɵo, ClientTokenEffect as ɵbd, effects$1 as ɵbb, UserTokenEffects as ɵbc, clearAuthState as ɵz, getReducers$1 as ɵw, metaReducers as ɵba, reducerProvider$1 as ɵy, reducerToken$1 as ɵx, reducer$1 as ɵbg, OccCartNormalizer as ɵbr, CartStoreModule as ɵbs, CartEntryEffects as ɵca, CartEffects as ɵbz, effects$3 as ɵby, reducer$2 as ɵcb, clearCartState as ɵbw, getReducers$2 as ɵbt, metaReducers$1 as ɵbx, reducerProvider$2 as ɵbv, reducerToken$2 as ɵbu, CheckoutStoreModule as ɵcp, AddressVerificationEffect as ɵcj, CardTypesEffects as ɵci, CheckoutEffects as ɵch, effects$5 as ɵcg, getAddressVerificationResults as ɵcf, reducer$7 as ɵce, getCardTypesEntites as ɵcd, reducer$6 as ɵcc, reducer$j as ɵcq, clearCheckoutState as ɵcn, getReducers$7 as ɵck, metaReducers$3 as ɵco, reducerProvider$7 as ɵcm, reducerToken$7 as ɵcl, CmsStoreModule as ɵcw, cmsStoreConfigFactory as ɵcv, ComponentEffects as ɵde, effects$6 as ɵdc, NavigationEntryItemEffects as ɵdf, PageEffects as ɵdd, clearCmsState as ɵda, getReducers$8 as ɵcx, metaReducers$4 as ɵdb, reducerProvider$8 as ɵcz, reducerToken$8 as ɵcy, reducer$k as ɵdj, reducer$l as ɵdg, reducer$m as ɵdi, ConfigModule as ɵfq, ServerConfig as ɵem, provideConfigValidator as ɵbq, BadGatewayHandler as ɵef, BadRequestHandler as ɵeg, ConflictHandler as ɵeh, ForbiddenHandler as ɵei, GatewayTimeoutHandler as ɵej, HttpErrorHandler as ɵed, NotFoundHandler as ɵek, UnknownErrorHandler as ɵee, HttpErrorInterceptor as ɵel, reducer$8 as ɵec, getReducers$4 as ɵdz, reducerProvider$4 as ɵeb, reducerToken$4 as ɵea, defaultI18nConfig as ɵen, i18nextInit as ɵep, i18nextProviders as ɵeo, MockDatePipe as ɵeq, MockTranslationService as ɵer, PageType as ɵdh, PageType as ɵcs, defaultPersonalizationConfig as ɵhi, interceptors$3 as ɵhj, OccPersonalizationIdInterceptor as ɵhk, ProcessModule as ɵhb, PROCESS_FEATURE as ɵhd, ProcessStoreModule as ɵhc, getReducers$6 as ɵhe, reducerProvider$6 as ɵhg, reducerToken$6 as ɵhf, defaultOccProductConfig as ɵes, effects$7 as ɵdv, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdw, ProductEffects as ɵdx, ProductStoreModule as ɵfb, productStoreConfigFactory as ɵfa, clearProductsState as ɵdt, getReducers$9 as ɵdq, metaReducers$5 as ɵdu, reducerProvider$9 as ɵds, reducerToken$9 as ɵdr, reducer$o as ɵfc, getAuxSearchResults as ɵey, getProductSuggestions as ɵez, getSearchResults as ɵex, reducer$n as ɵew, defaultConfigurableRoutesConfig as ɵa, defaultStorefrontRoutesTranslations as ɵb, UrlMatcherFactoryService as ɵc, UrlParsingService as ɵe, UrlTranslationService as ɵd, ROUTING_FEATURE as ɵf, effects as ɵl, RouterEffects as ɵm, CustomSerializer as ɵk, getReducers as ɵg, reducer as ɵh, reducerProvider as ɵj, reducerToken as ɵi, defaultSiteContextConfigFactory as ɵfd, BaseSiteService as ɵbn, SiteContextParamsService as ɵfj, SiteContextRoutesHandler as ɵfl, SiteContextUrlSerializer as ɵfk, CurrenciesEffects as ɵdp, effects$2 as ɵdn, LanguagesEffects as ɵdo, reducer$5 as ɵfi, reducer$4 as ɵfh, getReducers$3 as ɵdk, reducerProvider$3 as ɵdm, reducerToken$3 as ɵdl, reducer$3 as ɵfg, SiteContextStoreModule as ɵff, siteContextStoreConfigFactory as ɵfe, CmsTicketInterceptor as ɵfn, interceptors$2 as ɵfm, SmartEditService as ɵfo, EntityFailAction as ɵct, EntityLoadAction as ɵcr, EntityResetAction as ɵga, EntitySuccessAction as ɵcu, DEFAULT_LOCAL_STORAGE_KEY as ɵq, DEFAULT_SESSION_STORAGE_KEY as ɵr, defaultStateConfig as ɵs, stateMetaReducers as ɵt, getStorageSyncReducer as ɵu, getTransferStateReducer as ɵv, defaultStoreFinderConfig as ɵfr, FindStoresEffect as ɵfx, effects$8 as ɵfw, ViewAllStoresEffect as ɵfy, getReducers$a as ɵft, reducerProvider$a as ɵfv, reducerToken$a as ɵfu, getStoreFinderState as ɵfp, StoreFinderStoreModule as ɵfs, BillingCountriesEffect as ɵgn, DeliveryCountriesEffects as ɵgo, ForgotPasswordEffects as ɵgy, effects$4 as ɵgm, OrderDetailsEffect as ɵgp, UserPaymentMethodsEffects as ɵgq, RegionsEffects as ɵgr, ResetPasswordEffects as ɵgs, TitlesEffects as ɵgt, UpdateEmailEffects as ɵgz, UpdatePasswordEffects as ɵha, UserAddressesEffects as ɵgu, UserDetailsEffects as ɵgv, UserOrdersEffect as ɵgw, UserRegisterEffects as ɵgx, reducer$9 as ɵgd, reducer$a as ɵgh, reducer$b as ɵgg, reducer$c as ɵge, reducer$d as ɵgj, reducer$e as ɵgk, reducer$f as ɵgi, reducer$g as ɵgc, reducer$h as ɵgb, reducer$i as ɵgf, UserStoreModule as ɵgl, StripHtmlPipe as ɵhh };
+export { AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, PriceType, ImageType, Fields, Fields1, Fields2, Fields3, Fields4, Fields5, Fields6, PageType, Fields7, Fields8, Fields9, Fields10, Fields11, Fields12, Fields13, Fields14, Fields15, Fields16, SortEnum, Fields17, Fields18, Fields19, Fields20, Fields21, Fields22, Fields23, Fields24, Fields25, Fields26, Fields27, Fields28, Fields29, Fields30, Fields31, Fields32, Fields33, Fields34, Fields35, Fields36, Fields37, Fields38, Fields39, Fields40, Fields41, Fields42, Fields43, Fields44, Fields45, Fields46, Fields47, Fields48, Fields49, Fields50, Fields51, Fields52, Fields53, Fields54, Fields55, Fields56, Fields57, Fields58, Fields59, Fields60, Fields61, Type, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductOccModule, OccProductAdapter, OccProductSearchAdapter, OccProductReviewsAdapter, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlTranslationModule, TranslateUrlPipe, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$5 as getReducers, clearUserState, reducerToken$5 as reducerToken, reducerProvider$5 as reducerProvider, metaReducers$2 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbh, AuthErrorInterceptor as ɵbp, ClientTokenInterceptor as ɵbm, interceptors as ɵbl, UserTokenInterceptor as ɵbo, ClientAuthenticationTokenService as ɵbf, ClientErrorHandlingService as ɵbj, services as ɵbi, UserAuthenticationTokenService as ɵbe, UserErrorHandlingService as ɵbk, AuthStoreModule as ɵp, authStoreConfigFactory as ɵo, ClientTokenEffect as ɵbd, effects$1 as ɵbb, UserTokenEffects as ɵbc, clearAuthState as ɵz, getReducers$1 as ɵw, metaReducers as ɵba, reducerProvider$1 as ɵy, reducerToken$1 as ɵx, reducer$1 as ɵbg, OccCartNormalizer as ɵbr, CartStoreModule as ɵbs, CartEntryEffects as ɵca, CartEffects as ɵbz, effects$3 as ɵby, reducer$2 as ɵcb, clearCartState as ɵbw, getReducers$2 as ɵbt, metaReducers$1 as ɵbx, reducerProvider$2 as ɵbv, reducerToken$2 as ɵbu, CheckoutStoreModule as ɵcp, AddressVerificationEffect as ɵcj, CardTypesEffects as ɵci, CheckoutEffects as ɵch, effects$5 as ɵcg, getAddressVerificationResults as ɵcf, reducer$7 as ɵce, getCardTypesEntites as ɵcd, reducer$6 as ɵcc, reducer$j as ɵcq, clearCheckoutState as ɵcn, getReducers$7 as ɵck, metaReducers$3 as ɵco, reducerProvider$7 as ɵcm, reducerToken$7 as ɵcl, CmsStoreModule as ɵcw, cmsStoreConfigFactory as ɵcv, ComponentEffects as ɵde, effects$6 as ɵdc, NavigationEntryItemEffects as ɵdf, PageEffects as ɵdd, clearCmsState as ɵda, getReducers$8 as ɵcx, metaReducers$4 as ɵdb, reducerProvider$8 as ɵcz, reducerToken$8 as ɵcy, reducer$k as ɵdj, reducer$l as ɵdg, reducer$m as ɵdi, ConfigModule as ɵfq, ServerConfig as ɵem, provideConfigValidator as ɵbq, BadGatewayHandler as ɵef, BadRequestHandler as ɵeg, ConflictHandler as ɵeh, ForbiddenHandler as ɵei, GatewayTimeoutHandler as ɵej, HttpErrorHandler as ɵed, NotFoundHandler as ɵek, UnknownErrorHandler as ɵee, HttpErrorInterceptor as ɵel, reducer$8 as ɵec, getReducers$4 as ɵdz, reducerProvider$4 as ɵeb, reducerToken$4 as ɵea, defaultI18nConfig as ɵen, i18nextInit as ɵep, i18nextProviders as ɵeo, MockDatePipe as ɵeq, MockTranslationService as ɵer, PageType as ɵdh, PageType as ɵcs, defaultPersonalizationConfig as ɵhi, interceptors$3 as ɵhj, OccPersonalizationIdInterceptor as ɵhk, ProcessModule as ɵhb, PROCESS_FEATURE as ɵhd, ProcessStoreModule as ɵhc, getReducers$6 as ɵhe, reducerProvider$6 as ɵhg, reducerToken$6 as ɵhf, defaultOccProductConfig as ɵes, effects$7 as ɵdv, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdw, ProductEffects as ɵdx, ProductStoreModule as ɵfb, productStoreConfigFactory as ɵfa, clearProductsState as ɵdt, getReducers$9 as ɵdq, metaReducers$5 as ɵdu, reducerProvider$9 as ɵds, reducerToken$9 as ɵdr, reducer$o as ɵfc, getAuxSearchResults as ɵey, getProductSuggestions as ɵez, getSearchResults as ɵex, reducer$n as ɵew, defaultRoutingConfig as ɵa, defaultStorefrontRoutesConfig as ɵb, UrlMatcherFactoryService as ɵc, UrlParsingService as ɵn, UrlTranslationService as ɵm, ROUTING_FEATURE as ɵd, effects as ɵj, RouterEffects as ɵk, CustomSerializer as ɵi, getReducers as ɵe, reducer as ɵf, reducerProvider as ɵh, reducerToken as ɵg, defaultSiteContextConfigFactory as ɵfd, BaseSiteService as ɵbn, SiteContextParamsService as ɵfj, SiteContextRoutesHandler as ɵfl, SiteContextUrlSerializer as ɵfk, CurrenciesEffects as ɵdp, effects$2 as ɵdn, LanguagesEffects as ɵdo, reducer$5 as ɵfi, reducer$4 as ɵfh, getReducers$3 as ɵdk, reducerProvider$3 as ɵdm, reducerToken$3 as ɵdl, reducer$3 as ɵfg, SiteContextStoreModule as ɵff, siteContextStoreConfigFactory as ɵfe, CmsTicketInterceptor as ɵfn, interceptors$2 as ɵfm, SmartEditService as ɵfo, EntityFailAction as ɵct, EntityLoadAction as ɵcr, EntityResetAction as ɵga, EntitySuccessAction as ɵcu, DEFAULT_LOCAL_STORAGE_KEY as ɵq, DEFAULT_SESSION_STORAGE_KEY as ɵr, defaultStateConfig as ɵs, stateMetaReducers as ɵt, getStorageSyncReducer as ɵu, getTransferStateReducer as ɵv, defaultStoreFinderConfig as ɵfr, FindStoresEffect as ɵfx, effects$8 as ɵfw, ViewAllStoresEffect as ɵfy, getReducers$a as ɵft, reducerProvider$a as ɵfv, reducerToken$a as ɵfu, getStoreFinderState as ɵfp, StoreFinderStoreModule as ɵfs, BillingCountriesEffect as ɵgn, DeliveryCountriesEffects as ɵgo, ForgotPasswordEffects as ɵgy, effects$4 as ɵgm, OrderDetailsEffect as ɵgp, UserPaymentMethodsEffects as ɵgq, RegionsEffects as ɵgr, ResetPasswordEffects as ɵgs, TitlesEffects as ɵgt, UpdateEmailEffects as ɵgz, UpdatePasswordEffects as ɵha, UserAddressesEffects as ɵgu, UserDetailsEffects as ɵgv, UserOrdersEffect as ɵgw, UserRegisterEffects as ɵgx, reducer$9 as ɵgd, reducer$a as ɵgh, reducer$b as ɵgg, reducer$c as ɵge, reducer$d as ɵgj, reducer$e as ɵgk, reducer$f as ɵgi, reducer$g as ɵgc, reducer$h as ɵgb, reducer$i as ɵgf, UserStoreModule as ɵgl, StripHtmlPipe as ɵhh };
 
 //# sourceMappingURL=spartacus-core.js.map
