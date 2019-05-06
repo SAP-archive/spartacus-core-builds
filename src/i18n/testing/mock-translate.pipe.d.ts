@@ -1,4 +1,5 @@
 import { PipeTransform } from '@angular/core';
+import { Translatable } from '../translatable';
 export declare class MockTranslatePipe implements PipeTransform {
-    transform(key: any, options?: object): string;
+    transform(input: Translatable | string, options?: object): string;
 }

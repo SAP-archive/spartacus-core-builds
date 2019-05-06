@@ -8052,11 +8052,17 @@ class GlobalMessageService {
     }
     /**
      * Add one message into store
-     * @param {?} message
+     * @param {?} text
+     * @param {?} type
      * @return {?}
      */
-    add(message) {
-        this.store.dispatch(new AddMessage(message));
+    add(text, type) {
+        if (typeof text === 'string') {
+            this.store.dispatch(new AddMessage({ text: { raw: text }, type }));
+        }
+        else {
+            this.store.dispatch(new AddMessage({ text, type }));
+        }
     }
     /**
      * Remove message(s) from store
@@ -8227,10 +8233,7 @@ class UnknownErrorHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'An unknown error occured',
-        });
+        this.globalMessageService.add('An unknown error occured', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 UnknownErrorHandler.decorators = [
@@ -8253,10 +8256,7 @@ class BadGatewayHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'A server error occurred. Please try again later.',
-        });
+        this.globalMessageService.add('A server error occurred. Please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 BadGatewayHandler.decorators = [
@@ -8286,29 +8286,20 @@ class BadRequestHandler extends HttpErrorHandler {
         if (response.url.indexOf(OAUTH_ENDPOINT$3) !== -1 &&
             response.error.error === 'invalid_grant') {
             if (request.body.get('grant_type') === 'password') {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: this.getErrorMessage(response) + '. Please login again.',
-                });
+                this.globalMessageService.add(this.getErrorMessage(response) + '. Please login again.', GlobalMessageType.MSG_TYPE_ERROR);
                 this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }
         }
         else if (response.error.errors[0].type === 'PasswordMismatchError') {
             // uses en translation error message instead of backend exception error
             // @todo: this condition could be removed if backend gives better message
-            this.globalMessageService.add({
-                type: GlobalMessageType.MSG_TYPE_ERROR,
-                text: 'Old password incorrect.',
-            });
+            this.globalMessageService.add('Old password incorrect.', GlobalMessageType.MSG_TYPE_ERROR);
             // text: customError.customError.passwordMismatch,
         }
         else {
             // this is currently showing up in case we have a page not found. It should be a 404.
             // see https://jira.hybris.com/browse/CMSX-8516
-            this.globalMessageService.add({
-                type: GlobalMessageType.MSG_TYPE_ERROR,
-                text: this.getErrorMessage(response),
-            });
+            this.globalMessageService.add(this.getErrorMessage(response), GlobalMessageType.MSG_TYPE_ERROR);
         }
     }
     /**
@@ -8350,10 +8341,7 @@ class ConflictHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'Already exists',
-        });
+        this.globalMessageService.add('Already exists', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 ConflictHandler.decorators = [
@@ -8376,10 +8364,7 @@ class ForbiddenHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'You are not authorized to perform this action.',
-        });
+        this.globalMessageService.add('You are not authorized to perform this action.', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 ForbiddenHandler.decorators = [
@@ -8402,10 +8387,7 @@ class GatewayTimeoutHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'The server did not responded, please try again later.',
-        });
+        this.globalMessageService.add('The server did not responded, please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 GatewayTimeoutHandler.decorators = [
@@ -8428,10 +8410,7 @@ class NotFoundHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add({
-            type: GlobalMessageType.MSG_TYPE_ERROR,
-            text: 'The requested resource could not be found',
-        });
+        this.globalMessageService.add('The requested resource could not be found', GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 NotFoundHandler.decorators = [
@@ -10989,7 +10968,9 @@ class ForgotPasswordEffects {
                 .pipe(switchMap(() => [
                 new ForgotPasswordEmailRequestSuccess(),
                 new AddMessage({
-                    text: 'An email has been sent to you with information on how to reset your password.',
+                    text: {
+                        raw: 'An email has been sent to you with information on how to reset your password.',
+                    },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new ForgotPasswordEmailRequestFail(error))));
@@ -11168,7 +11149,9 @@ class ResetPasswordEffects {
             return this.occUserService.resetPassword(token, password).pipe(switchMap(() => [
                 new ResetPasswordSuccess(),
                 new AddMessage({
-                    text: 'Success! You can now login using your new password.',
+                    text: {
+                        raw: 'Success! You can now login using your new password.',
+                    },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new ResetPasswordFail(error))));
@@ -11374,10 +11357,7 @@ class UserAddressesEffects {
         this.messageService.remove(GlobalMessageType.MSG_TYPE_ERROR);
         this.messageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
         // ----------
-        this.messageService.add({
-            type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
-            text,
-        });
+        this.messageService.add(text, GlobalMessageType.MSG_TYPE_CONFIRMATION);
     }
     /**
      * @private
@@ -11709,7 +11689,7 @@ class CheckoutEffects {
             }), switchMap(data => [
                 new PlaceOrderSuccess(data),
                 new AddMessage({
-                    text: 'Order placed successfully',
+                    text: { raw: 'Order placed successfully' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new PlaceOrderFail(error))));
@@ -16201,6 +16181,11 @@ ProductModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @abstract
  */
@@ -16340,11 +16325,33 @@ class TranslatePipe {
         this.cd = cd;
     }
     /**
-     * @param {?} key
+     * @param {?} input
      * @param {?=} options
      * @return {?}
      */
-    transform(key, options = {}) {
+    transform(input, options = {}) {
+        if (((/** @type {?} */ (input))).raw) {
+            return ((/** @type {?} */ (input))).raw;
+        }
+        /** @type {?} */
+        let key;
+        if (typeof input === 'string') {
+            key = input;
+        }
+        else {
+            key = input.key;
+            options = Object.assign({}, options, input.params);
+        }
+        this.translate(key, options);
+        return this.translatedValue;
+    }
+    /**
+     * @private
+     * @param {?} key
+     * @param {?} options
+     * @return {?}
+     */
+    translate(key, options) {
         if (key !== this.lastKey ||
             !shallowEqualObjects(options, this.lastOptions)) {
             this.lastKey = key;
@@ -16356,7 +16363,6 @@ class TranslatePipe {
                 .translate(key, options, true)
                 .subscribe(val => this.markForCheck(val));
         }
-        return this.value;
     }
     /**
      * @private
@@ -16364,7 +16370,7 @@ class TranslatePipe {
      * @return {?}
      */
     markForCheck(value) {
-        this.value = value;
+        this.translatedValue = value;
         this.cd.markForCheck();
     }
     /**
@@ -16704,11 +16710,23 @@ function mockTranslate(key, options = {}) {
  */
 class MockTranslatePipe {
     /**
-     * @param {?} key
+     * @param {?} input
      * @param {?=} options
      * @return {?}
      */
-    transform(key, options = {}) {
+    transform(input, options = {}) {
+        if (((/** @type {?} */ (input))).raw) {
+            return ((/** @type {?} */ (input))).raw;
+        }
+        /** @type {?} */
+        let key;
+        if (typeof input === 'string') {
+            key = input;
+        }
+        else {
+            key = input.key;
+            options = Object.assign({}, options, input.params);
+        }
         return mockTranslate(key, options);
     }
 }

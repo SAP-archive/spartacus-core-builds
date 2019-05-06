@@ -9322,16 +9322,23 @@
          */
         /**
          * Add one message into store
-         * @param {?} message
+         * @param {?} text
+         * @param {?} type
          * @return {?}
          */
         GlobalMessageService.prototype.add = /**
          * Add one message into store
-         * @param {?} message
+         * @param {?} text
+         * @param {?} type
          * @return {?}
          */
-            function (message) {
-                this.store.dispatch(new AddMessage(message));
+            function (text, type) {
+                if (typeof text === 'string') {
+                    this.store.dispatch(new AddMessage({ text: { raw: text }, type: type }));
+                }
+                else {
+                    this.store.dispatch(new AddMessage({ text: text, type: type }));
+                }
             };
         /**
          * Remove message(s) from store
@@ -9545,10 +9552,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'An unknown error occured',
-                });
+                this.globalMessageService.add('An unknown error occured', GlobalMessageType.MSG_TYPE_ERROR);
             };
         UnknownErrorHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -9577,10 +9581,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'A server error occurred. Please try again later.',
-                });
+                this.globalMessageService.add('A server error occurred. Please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
             };
         BadGatewayHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -9618,29 +9619,20 @@
                 if (response.url.indexOf(OAUTH_ENDPOINT$3) !== -1 &&
                     response.error.error === 'invalid_grant') {
                     if (request.body.get('grant_type') === 'password') {
-                        this.globalMessageService.add({
-                            type: GlobalMessageType.MSG_TYPE_ERROR,
-                            text: this.getErrorMessage(response) + '. Please login again.',
-                        });
+                        this.globalMessageService.add(this.getErrorMessage(response) + '. Please login again.', GlobalMessageType.MSG_TYPE_ERROR);
                         this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
                     }
                 }
                 else if (response.error.errors[0].type === 'PasswordMismatchError') {
                     // uses en translation error message instead of backend exception error
                     // @todo: this condition could be removed if backend gives better message
-                    this.globalMessageService.add({
-                        type: GlobalMessageType.MSG_TYPE_ERROR,
-                        text: 'Old password incorrect.',
-                    });
+                    this.globalMessageService.add('Old password incorrect.', GlobalMessageType.MSG_TYPE_ERROR);
                     // text: customError.customError.passwordMismatch,
                 }
                 else {
                     // this is currently showing up in case we have a page not found. It should be a 404.
                     // see https://jira.hybris.com/browse/CMSX-8516
-                    this.globalMessageService.add({
-                        type: GlobalMessageType.MSG_TYPE_ERROR,
-                        text: this.getErrorMessage(response),
-                    });
+                    this.globalMessageService.add(this.getErrorMessage(response), GlobalMessageType.MSG_TYPE_ERROR);
                 }
             };
         /**
@@ -9693,10 +9685,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'Already exists',
-                });
+                this.globalMessageService.add('Already exists', GlobalMessageType.MSG_TYPE_ERROR);
             };
         ConflictHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -9725,10 +9714,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'You are not authorized to perform this action.',
-                });
+                this.globalMessageService.add('You are not authorized to perform this action.', GlobalMessageType.MSG_TYPE_ERROR);
             };
         ForbiddenHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -9757,10 +9743,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'The server did not responded, please try again later.',
-                });
+                this.globalMessageService.add('The server did not responded, please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
             };
         GatewayTimeoutHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -9789,10 +9772,7 @@
          * @return {?}
          */
             function () {
-                this.globalMessageService.add({
-                    type: GlobalMessageType.MSG_TYPE_ERROR,
-                    text: 'The requested resource could not be found',
-                });
+                this.globalMessageService.add('The requested resource could not be found', GlobalMessageType.MSG_TYPE_ERROR);
             };
         NotFoundHandler.decorators = [
             { type: i0.Injectable, args: [{
@@ -12972,7 +12952,9 @@
                     return [
                         new ForgotPasswordEmailRequestSuccess(),
                         new AddMessage({
-                            text: 'An email has been sent to you with information on how to reset your password.',
+                            text: {
+                                raw: 'An email has been sent to you with information on how to reset your password.',
+                            },
                             type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                         }),
                     ];
@@ -13169,7 +13151,9 @@
                     return [
                         new ResetPasswordSuccess(),
                         new AddMessage({
-                            text: 'Success! You can now login using your new password.',
+                            text: {
+                                raw: 'Success! You can now login using your new password.',
+                            },
                             type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                         }),
                     ];
@@ -13404,10 +13388,7 @@
                 this.messageService.remove(GlobalMessageType.MSG_TYPE_ERROR);
                 this.messageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
                 // ----------
-                this.messageService.add({
-                    type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
-                    text: text,
-                });
+                this.messageService.add(text, GlobalMessageType.MSG_TYPE_CONFIRMATION);
             };
         /**
          * @private
@@ -13784,7 +13765,7 @@
                     return [
                         new PlaceOrderSuccess(data),
                         new AddMessage({
-                            text: 'Order placed successfully',
+                            text: { raw: 'Order placed successfully' },
                             type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                         }),
                     ];
@@ -19746,20 +19727,48 @@
             this.cd = cd;
         }
         /**
-         * @param {?} key
+         * @param {?} input
          * @param {?=} options
          * @return {?}
          */
         TranslatePipe.prototype.transform = /**
-         * @param {?} key
+         * @param {?} input
          * @param {?=} options
+         * @return {?}
+         */
+            function (input, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key;
+                if (typeof input === 'string') {
+                    key = input;
+                }
+                else {
+                    key = input.key;
+                    options = __assign({}, options, input.params);
+                }
+                this.translate(key, options);
+                return this.translatedValue;
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} options
+         * @return {?}
+         */
+        TranslatePipe.prototype.translate = /**
+         * @private
+         * @param {?} key
+         * @param {?} options
          * @return {?}
          */
             function (key, options) {
                 var _this = this;
-                if (options === void 0) {
-                    options = {};
-                }
                 if (key !== this.lastKey ||
                     !shallowEqualObjects(options, this.lastOptions)) {
                     this.lastKey = key;
@@ -19771,7 +19780,6 @@
                         .translate(key, options, true)
                         .subscribe(function (val) { return _this.markForCheck(val); });
                 }
-                return this.value;
             };
         /**
          * @private
@@ -19784,7 +19792,7 @@
          * @return {?}
          */
             function (value) {
-                this.value = value;
+                this.translatedValue = value;
                 this.cd.markForCheck();
             };
         /**
@@ -20190,18 +20198,30 @@
         function MockTranslatePipe() {
         }
         /**
-         * @param {?} key
+         * @param {?} input
          * @param {?=} options
          * @return {?}
          */
         MockTranslatePipe.prototype.transform = /**
-         * @param {?} key
+         * @param {?} input
          * @param {?=} options
          * @return {?}
          */
-            function (key, options) {
+            function (input, options) {
                 if (options === void 0) {
                     options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key;
+                if (typeof input === 'string') {
+                    key = input;
+                }
+                else {
+                    key = input.key;
+                    options = __assign({}, options, input.params);
                 }
                 return mockTranslate(key, options);
             };
