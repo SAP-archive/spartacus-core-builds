@@ -11807,6 +11807,12 @@ class CheckoutEffects {
                 .loadCheckoutDetails(payload.userId, payload.cartId)
                 .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError(error => of(new LoadCheckoutDetailsFail(error))));
         }));
+        this.reloadDetailsOnCreateCart$ = this.actions$.pipe(ofType(CREATE_CART_SUCCESS), map((action) => action.payload), map(payload => {
+            return new LoadCheckoutDetails({
+                userId: payload.userId,
+                cartId: payload.toMergeCartGuid ? payload.toMergeCartGuid : 'current',
+            });
+        }));
     }
 }
 CheckoutEffects.decorators = [
@@ -11853,6 +11859,10 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CheckoutEffects.prototype, "reloadDetailsOnCreateCart$", void 0);
 
 /**
  * @fileoverview added by tsickle

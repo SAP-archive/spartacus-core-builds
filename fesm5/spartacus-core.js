@@ -13715,6 +13715,12 @@ var CheckoutEffects = /** @class */ (function () {
                 return of(new LoadCheckoutDetailsFail(error));
             }));
         }));
+        this.reloadDetailsOnCreateCart$ = this.actions$.pipe(ofType(CREATE_CART_SUCCESS), map(function (action) { return action.payload; }), map(function (payload) {
+            return new LoadCheckoutDetails({
+                userId: payload.userId,
+                cartId: payload.toMergeCartGuid ? payload.toMergeCartGuid : 'current',
+            });
+        }));
     }
     CheckoutEffects.decorators = [
         { type: Injectable }
@@ -13760,6 +13766,10 @@ var CheckoutEffects = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], CheckoutEffects.prototype, "reloadDetailsOnCreateCart$", void 0);
     return CheckoutEffects;
 }());
 

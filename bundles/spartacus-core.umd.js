@@ -14015,6 +14015,12 @@
                     return rxjs.of(new LoadCheckoutDetailsFail(error));
                 }));
             }));
+            this.reloadDetailsOnCreateCart$ = this.actions$.pipe(effects.ofType(CREATE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+                return new LoadCheckoutDetails({
+                    userId: payload.userId,
+                    cartId: payload.toMergeCartGuid ? payload.toMergeCartGuid : 'current',
+                });
+            }));
         }
         CheckoutEffects.decorators = [
             { type: i0.Injectable }
@@ -14062,6 +14068,10 @@
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CheckoutEffects.prototype, "reloadDetailsOnCreateCart$", void 0);
         return CheckoutEffects;
     }());
 
