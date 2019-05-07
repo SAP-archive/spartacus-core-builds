@@ -1385,18 +1385,13 @@
         }
         /**
          * @param {?} commands
-         * @param {?=} options
          * @return {?}
          */
         UrlService.prototype.generateUrl = /**
          * @param {?} commands
-         * @param {?=} options
          * @return {?}
          */
-            function (commands, options) {
-                if (options === void 0) {
-                    options = {};
-                }
+            function (commands) {
                 var e_1, _a;
                 if (!Array.isArray(commands)) {
                     commands = [commands];
@@ -1406,12 +1401,12 @@
                 try {
                     for (var commands_1 = __values(commands), commands_1_1 = commands_1.next(); !commands_1_1.done; commands_1_1 = commands_1.next()) {
                         var command = commands_1_1.value;
-                        if (!command || !command.route) {
+                        if (!this.isRouteCommand(command)) {
                             // don't modify segment that is not route command:
                             result.push(command);
                         }
                         else {
-                            // generate array with url segments for given options object:
+                            // generate array with url segments for given route command:
                             /** @type {?} */
                             var partialResult = this.generateUrlPart(command);
                             if (partialResult === null) {
@@ -1434,10 +1429,36 @@
                             throw e_1.error;
                     }
                 }
-                if (!options.relative) {
-                    result.unshift(''); // ensure absolute path ( leading '' in path array is equivalent to leading '/' in string)
+                if (this.shouldOutputAbsolute(commands)) {
+                    result.unshift('/');
                 }
                 return result;
+            };
+        /**
+         * @private
+         * @param {?} command
+         * @return {?}
+         */
+        UrlService.prototype.isRouteCommand = /**
+         * @private
+         * @param {?} command
+         * @return {?}
+         */
+            function (command) {
+                return command && Boolean(command.route);
+            };
+        /**
+         * @private
+         * @param {?} commands
+         * @return {?}
+         */
+        UrlService.prototype.shouldOutputAbsolute = /**
+         * @private
+         * @param {?} commands
+         * @return {?}
+         */
+            function (commands) {
+                return this.isRouteCommand(commands[0]);
             };
         /**
          * @private
@@ -1695,7 +1716,7 @@
          */
             function (commands, query, extras) {
                 /** @type {?} */
-                var path = this.urlService.generateUrl(commands, { relative: true });
+                var path = this.urlService.generateUrl(commands);
                 return this.navigate(path, query, extras);
             };
         /**
@@ -16401,19 +16422,14 @@
         }
         /**
          * @param {?} commands
-         * @param {?=} options
          * @return {?}
          */
         UrlPipe.prototype.transform = /**
          * @param {?} commands
-         * @param {?=} options
          * @return {?}
          */
-            function (commands, options) {
-                if (options === void 0) {
-                    options = {};
-                }
-                return this.urlService.generateUrl(commands, options);
+            function (commands) {
+                return this.urlService.generateUrl(commands);
             };
         UrlPipe.decorators = [
             { type: i0.Pipe, args: [{

@@ -1184,22 +1184,21 @@ class UrlService {
     }
     /**
      * @param {?} commands
-     * @param {?=} options
      * @return {?}
      */
-    generateUrl(commands, options = {}) {
+    generateUrl(commands) {
         if (!Array.isArray(commands)) {
             commands = [commands];
         }
         /** @type {?} */
         const result = [];
         for (const command of commands) {
-            if (!command || !command.route) {
+            if (!this.isRouteCommand(command)) {
                 // don't modify segment that is not route command:
                 result.push(command);
             }
             else {
-                // generate array with url segments for given options object:
+                // generate array with url segments for given route command:
                 /** @type {?} */
                 const partialResult = this.generateUrlPart(command);
                 if (partialResult === null) {
@@ -1208,10 +1207,26 @@ class UrlService {
                 result.push(...partialResult);
             }
         }
-        if (!options.relative) {
-            result.unshift(''); // ensure absolute path ( leading '' in path array is equivalent to leading '/' in string)
+        if (this.shouldOutputAbsolute(commands)) {
+            result.unshift('/');
         }
         return result;
+    }
+    /**
+     * @private
+     * @param {?} command
+     * @return {?}
+     */
+    isRouteCommand(command) {
+        return command && Boolean(command.route);
+    }
+    /**
+     * @private
+     * @param {?} commands
+     * @return {?}
+     */
+    shouldOutputAbsolute(commands) {
+        return this.isRouteCommand(commands[0]);
     }
     /**
      * @private
@@ -1383,7 +1398,7 @@ class RoutingService {
      */
     go(commands, query, extras) {
         /** @type {?} */
-        const path = this.urlService.generateUrl(commands, { relative: true });
+        const path = this.urlService.generateUrl(commands);
         return this.navigate(path, query, extras);
     }
     /**
@@ -13644,11 +13659,10 @@ class UrlPipe {
     }
     /**
      * @param {?} commands
-     * @param {?=} options
      * @return {?}
      */
-    transform(commands, options = {}) {
-        return this.urlService.generateUrl(commands, options);
+    transform(commands) {
+        return this.urlService.generateUrl(commands);
     }
 }
 UrlPipe.decorators = [
