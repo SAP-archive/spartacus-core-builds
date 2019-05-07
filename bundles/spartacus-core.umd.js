@@ -1749,7 +1749,7 @@
          */
             function () {
                 /** @type {?} */
-                var isLastPageInApp = this.winRef.document.referrer.indexOf(this.winRef.nativeWindow.location.origin) > -1;
+                var isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
                 if (isLastPageInApp) {
                     this.store.dispatch(new Back());
                     return;
@@ -3021,7 +3021,7 @@
                                     else if (
                                     // Refresh expired token
                                     // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                                    errResponse.url.indexOf(OAUTH_ENDPOINT) !== -1 &&
+                                    errResponse.url.includes(OAUTH_ENDPOINT) &&
                                         errResponse.error.error === 'invalid_token') {
                                         _this.userErrorHandlingService.handleExpiredRefreshToken();
                                         return rxjs.of();
@@ -3029,7 +3029,7 @@
                                 }
                                 break;
                             case 400: // Bad Request
-                                if (errResponse.url.indexOf(OAUTH_ENDPOINT) !== -1 &&
+                                if (errResponse.url.includes(OAUTH_ENDPOINT) &&
                                     errResponse.error.error === 'invalid_grant') {
                                     if (request.body.get('grant_type') === 'refresh_token') {
                                         // refresh token fail, force user logout
@@ -3314,7 +3314,7 @@
                 if (queryParams) {
                     /** @type {?} */
                     var httpParamsOptions = void 0;
-                    if (endpoint.indexOf('?') !== -1) {
+                    if (endpoint.includes('?')) {
                         /** @type {?} */
                         var queryParamsFromEndpoint = void 0;
                         _a = __read(endpoint.split('?'), 2), endpoint = _a[0], queryParamsFromEndpoint = _a[1];
@@ -3381,7 +3381,7 @@
                 var _this = this;
                 return this.getClientToken(request).pipe(operators.take(1), operators.switchMap(function (token) {
                     if (token &&
-                        request.url.indexOf(_this.occEndpoints.getBaseEndpoint()) > -1) {
+                        request.url.includes(_this.occEndpoints.getBaseEndpoint())) {
                         request = request.clone({
                             setHeaders: {
                                 Authorization: token.token_type + " " + token.access_token,
@@ -3466,7 +3466,7 @@
          * @return {?}
          */
             function (url) {
-                return url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1;
+                return url.includes(this.occEndpoints.getBaseEndpoint());
             };
         UserTokenInterceptor.decorators = [
             { type: i0.Injectable }
@@ -7843,7 +7843,7 @@
                         var removed_1 = false;
                         /** @type {?} */
                         var newEntities = Object.keys(state.entities).reduce(function (acc, cur) {
-                            if (ids.indexOf(cur) > -1) {
+                            if (ids.includes(cur)) {
                                 removed_1 = true;
                             }
                             else {
@@ -8366,7 +8366,7 @@
                     var paramName = this.urlEncodingParameters[paramId];
                     /** @type {?} */
                     var paramValues = this.siteContextParams.getParamValues(paramName);
-                    if (paramValues.indexOf(segments[segmentId]) > -1) {
+                    if (paramValues.includes(segments[segmentId])) {
                         params[paramName] = segments[segmentId];
                         segmentId++;
                     }
@@ -8640,7 +8640,7 @@
          * @return {?}
          */
             function (request, next) {
-                if (request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+                if (request.url.includes(this.occEndpoints.getBaseEndpoint())) {
                     request = request.clone({
                         setParams: {
                             lang: this.activeLang,
@@ -9246,7 +9246,7 @@
                 else {
                     /** @type {?} */
                     var msgs = state.entities[message.type];
-                    if (msgs.indexOf(message.text) === -1) {
+                    if (!msgs.includes(message.text)) {
                         return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(msgs, [message.text]), _b)) });
                     }
                 }
@@ -9639,7 +9639,7 @@
          * @return {?}
          */
             function (request, response) {
-                if (response.url.indexOf(OAUTH_ENDPOINT$3) !== -1 &&
+                if (response.url.includes(OAUTH_ENDPOINT$3) &&
                     response.error.error === 'invalid_grant') {
                     if (request.body.get('grant_type') === 'password') {
                         this.globalMessageService.add(this.getErrorMessage(response) + '. Please login again.', GlobalMessageType.MSG_TYPE_ERROR);
@@ -15193,7 +15193,7 @@
                 /** @type {?} */
                 var componentConfig = this.config.cmsComponents[typeCode];
                 if (!componentConfig) {
-                    if (this.missingComponents.indexOf(typeCode) === -1) {
+                    if (!this.missingComponents.includes(typeCode)) {
                         this.missingComponents.push(typeCode);
                         console.warn("No component implementation found for the CMS component type '" + typeCode + "'.\n", "Make sure you implement a component and register it in the mapper.");
                     }
@@ -15582,7 +15582,7 @@
                 try {
                     for (var _c = __values(Object.keys(slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
                         var position = _d.value;
-                        if (Object.keys(pageStructure.page.slots).indexOf(position) === -1) {
+                        if (!Object.keys(pageStructure.page.slots).includes(position)) {
                             // the global slot isn't yet part of the page structure
                             pageStructure.page.slots[position] = {};
                             try {
@@ -20623,7 +20623,7 @@
          * @return {?}
          */
             function (request, next) {
-                if (request.url.indexOf('/cms/') > -1 && this.service.cmsTicketId) {
+                if (request.url.includes('/cms/') && this.service.cmsTicketId) {
                     request = request.clone({
                         setParams: {
                             cmsTicketId: this.service.cmsTicketId,
@@ -22011,7 +22011,7 @@
                 var _this = this;
                 var _a;
                 if (this.personalizationId &&
-                    request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
                     request = request.clone({
                         setHeaders: (_a = {},
                             _a[this.requestHeader] = this.personalizationId,
@@ -22020,7 +22020,7 @@
                 }
                 return next.handle(request).pipe(operators.tap(function (event) {
                     if (event instanceof i1$3.HttpResponse) {
-                        if (event.headers.keys().indexOf(_this.requestHeader) > -1) {
+                        if (event.headers.keys().includes(_this.requestHeader)) {
                             /** @type {?} */
                             var receivedId = event.headers.get(_this.requestHeader);
                             if (_this.personalizationId !== receivedId) {

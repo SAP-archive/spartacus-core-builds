@@ -1,7 +1,7 @@
 import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, RouterModule, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { __decorate, __metadata } from 'tslib';
@@ -1415,7 +1415,7 @@ class RoutingService {
      */
     back() {
         /** @type {?} */
-        const isLastPageInApp = this.winRef.document.referrer.indexOf(this.winRef.nativeWindow.location.origin) > -1;
+        const isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
         if (isLastPageInApp) {
             this.store.dispatch(new Back());
             return;
@@ -2430,7 +2430,7 @@ class AuthErrorInterceptor {
                             else if (
                             // Refresh expired token
                             // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                            errResponse.url.indexOf(OAUTH_ENDPOINT) !== -1 &&
+                            errResponse.url.includes(OAUTH_ENDPOINT) &&
                                 errResponse.error.error === 'invalid_token') {
                                 this.userErrorHandlingService.handleExpiredRefreshToken();
                                 return of();
@@ -2438,7 +2438,7 @@ class AuthErrorInterceptor {
                         }
                         break;
                     case 400: // Bad Request
-                        if (errResponse.url.indexOf(OAUTH_ENDPOINT) !== -1 &&
+                        if (errResponse.url.includes(OAUTH_ENDPOINT) &&
                             errResponse.error.error === 'invalid_grant') {
                             if (request.body.get('grant_type') === 'refresh_token') {
                                 // refresh token fail, force user logout
@@ -2665,7 +2665,7 @@ class OccEndpointsService {
         if (queryParams) {
             /** @type {?} */
             let httpParamsOptions;
-            if (endpoint.indexOf('?') !== -1) {
+            if (endpoint.includes('?')) {
                 /** @type {?} */
                 let queryParamsFromEndpoint;
                 [endpoint, queryParamsFromEndpoint] = endpoint.split('?');
@@ -2727,7 +2727,7 @@ class ClientTokenInterceptor {
     intercept(request, next) {
         return this.getClientToken(request).pipe(take(1), switchMap((token) => {
             if (token &&
-                request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+                request.url.includes(this.occEndpoints.getBaseEndpoint())) {
                 request = request.clone({
                     setHeaders: {
                         Authorization: `${token.token_type} ${token.access_token}`,
@@ -2797,7 +2797,7 @@ class UserTokenInterceptor {
      * @return {?}
      */
     isOccUrl(url) {
-        return url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1;
+        return url.includes(this.occEndpoints.getBaseEndpoint());
     }
 }
 UserTokenInterceptor.decorators = [
@@ -6680,7 +6680,7 @@ function entityReducer(entityType, reducer) {
                     let removed = false;
                     /** @type {?} */
                     const newEntities = Object.keys(state.entities).reduce((acc, cur) => {
-                        if (ids.indexOf(cur) > -1) {
+                        if (ids.includes(cur)) {
                             removed = true;
                         }
                         else {
@@ -7178,7 +7178,7 @@ class SiteContextUrlSerializer extends DefaultUrlSerializer {
             const paramName = this.urlEncodingParameters[paramId];
             /** @type {?} */
             const paramValues = this.siteContextParams.getParamValues(paramName);
-            if (paramValues.indexOf(segments[segmentId]) > -1) {
+            if (paramValues.includes(segments[segmentId])) {
                 params[paramName] = segments[segmentId];
                 segmentId++;
             }
@@ -7403,7 +7403,7 @@ class SiteContextInterceptor {
      * @return {?}
      */
     intercept(request, next) {
-        if (request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+        if (request.url.includes(this.occEndpoints.getBaseEndpoint())) {
             request = request.clone({
                 setParams: {
                     lang: this.activeLang,
@@ -7984,7 +7984,7 @@ function reducer$8(state = initialState$8, action) {
             else {
                 /** @type {?} */
                 const msgs = state.entities[message.type];
-                if (msgs.indexOf(message.text) === -1) {
+                if (!msgs.includes(message.text)) {
                     return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...msgs, message.text] }) });
                 }
             }
@@ -8303,7 +8303,7 @@ class BadRequestHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError(request, response) {
-        if (response.url.indexOf(OAUTH_ENDPOINT$3) !== -1 &&
+        if (response.url.includes(OAUTH_ENDPOINT$3) &&
             response.error.error === 'invalid_grant') {
             if (request.body.get('grant_type') === 'password') {
                 this.globalMessageService.add(this.getErrorMessage(response) + '. Please login again.', GlobalMessageType.MSG_TYPE_ERROR);
@@ -12706,7 +12706,7 @@ class ComponentMapperService {
         /** @type {?} */
         const componentConfig = this.config.cmsComponents[typeCode];
         if (!componentConfig) {
-            if (this.missingComponents.indexOf(typeCode) === -1) {
+            if (!this.missingComponents.includes(typeCode)) {
                 this.missingComponents.push(typeCode);
                 console.warn(`No component implementation found for the CMS component type '${typeCode}'.\n`, `Make sure you implement a component and register it in the mapper.`);
             }
@@ -12966,7 +12966,7 @@ class CmsStructureConfigService {
             return of(pageStructure);
         }
         for (const position of Object.keys(slots)) {
-            if (Object.keys(pageStructure.page.slots).indexOf(position) === -1) {
+            if (!Object.keys(pageStructure.page.slots).includes(position)) {
                 // the global slot isn't yet part of the page structure
                 pageStructure.page.slots[position] = {};
                 for (const component of this.getComponentsByPosition(slots, position)) {
@@ -17067,7 +17067,7 @@ class CmsTicketInterceptor {
      * @return {?}
      */
     intercept(request, next) {
-        if (request.url.indexOf('/cms/') > -1 && this.service.cmsTicketId) {
+        if (request.url.includes('/cms/') && this.service.cmsTicketId) {
             request = request.clone({
                 setParams: {
                     cmsTicketId: this.service.cmsTicketId,
@@ -18179,7 +18179,7 @@ class OccPersonalizationIdInterceptor {
      */
     intercept(request, next) {
         if (this.personalizationId &&
-            request.url.indexOf(this.occEndpoints.getBaseEndpoint()) > -1) {
+            request.url.includes(this.occEndpoints.getBaseEndpoint())) {
             request = request.clone({
                 setHeaders: {
                     [this.requestHeader]: this.personalizationId,
@@ -18188,7 +18188,7 @@ class OccPersonalizationIdInterceptor {
         }
         return next.handle(request).pipe(tap(event => {
             if (event instanceof HttpResponse) {
-                if (event.headers.keys().indexOf(this.requestHeader) > -1) {
+                if (event.headers.keys().includes(this.requestHeader)) {
                     /** @type {?} */
                     const receivedId = event.headers.get(this.requestHeader);
                     if (this.personalizationId !== receivedId) {
