@@ -1,7 +1,7 @@
 import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, RouterModule, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { __decorate, __metadata } from 'tslib';
@@ -9,7 +9,7 @@ import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, Pipe, APP_INITIALIZER, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 
@@ -16407,7 +16407,25 @@ class TranslationChunkService {
      */
     constructor(config) {
         this.config = config;
+        this.duplicates = {};
+        this.chunks = {};
         this.KEY_SEPARATOR = '.';
+        Object.keys(config.i18n.chunks).forEach(chunk => {
+            config.i18n.chunks[chunk].forEach(key => {
+                if (this.chunks.hasOwnProperty(key)) {
+                    if (!this.duplicates[key]) {
+                        this.duplicates[key] = [this.chunks[key]];
+                    }
+                    this.duplicates[key].push(chunk);
+                }
+                else {
+                    this.chunks[key] = chunk;
+                }
+            });
+        });
+        if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
+            this.warnDuplicates(this.duplicates);
+        }
     }
     /**
      * @param {?} key
@@ -16417,7 +16435,7 @@ class TranslationChunkService {
         /** @type {?} */
         const mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
         /** @type {?} */
-        const chunk = this.getChunkFromConfig(mainKey);
+        const chunk = this.chunks && this.chunks[mainKey];
         if (!chunk) {
             return mainKey; // fallback to main key as a chunk
         }
@@ -16425,13 +16443,16 @@ class TranslationChunkService {
     }
     /**
      * @private
-     * @param {?} mainKey
+     * @param {?} items
      * @return {?}
      */
-    getChunkFromConfig(mainKey) {
-        return (this.config.i18n &&
-            this.config.i18n.chunks &&
-            this.config.i18n.chunks[mainKey]);
+    warnDuplicates(items) {
+        /** @type {?} */
+        const dupes = [];
+        Object.keys(items).forEach(key => {
+            dupes.push(`* '${key}' found in chunks: ${items[key].join(', ')}. Used '${this.chunks[key]}.${key}'.`);
+        });
+        console.warn(`Duplicated keys has been found in the config of i18n chunks:\n${dupes.join('\n')}`);
     }
 }
 TranslationChunkService.decorators = [
@@ -16516,40 +16537,37 @@ const defaultI18nConfig = {
         fallbackLang: false,
         debug: false,
         chunks: {
-            common: 'common',
-            spinner: 'common',
-            header: 'common',
-            searchBox: 'common',
-            cartDetails: 'cart',
-            cartItems: 'cart',
-            orderCost: 'cart',
-            addressForm: 'address',
-            addressBook: 'address',
-            addressCard: 'address',
-            paymentForm: 'payment',
-            paymentMethods: 'payment',
-            checkout: 'checkout',
-            checkoutAddress: 'checkout',
-            checkoutOrderConfirmation: 'checkout',
-            checkoutReview: 'checkout',
-            checkoutShipping: 'checkout',
-            orderDetails: 'myAccount',
-            orderHistory: 'myAccount',
-            productDetails: 'product',
-            productList: 'product',
-            productFacetNavigation: 'product',
-            productSummary: 'product',
-            productReview: 'product',
-            addToCart: 'product',
-            forgottenPassword: 'user',
-            loginForm: 'user',
-            login: 'user',
-            register: 'user',
-            updateEmailForm: 'user',
-            updatePasswordForm: 'user',
-            updateProfileForm: 'user',
-            storeFinder: 'storeFinder',
-            pwa: 'pwa',
+            common: ['common', 'spinner', 'header', 'searchBox'],
+            cart: ['cartDetails', 'cartItems', 'orderCost'],
+            address: ['addressForm', 'addressBook', 'addressCard'],
+            payment: ['paymentForm', 'paymentMethods'],
+            myAccount: ['orderDetails', 'orderHistory'],
+            storeFinder: ['storeFinder'],
+            pwa: ['pwa'],
+            checkout: [
+                'checkout',
+                'checkoutAddress',
+                'checkoutOrderConfirmation',
+                'checkoutReview',
+                'checkoutShipping',
+            ],
+            product: [
+                'productDetails',
+                'productList',
+                'productFacetNavigation',
+                'productSummary',
+                'productReview',
+                'addToCart',
+            ],
+            user: [
+                'forgottenPassword',
+                'loginForm',
+                'login',
+                'register',
+                'updateEmailForm',
+                'updatePasswordForm',
+                'updateProfileForm',
+            ],
         },
     },
 };

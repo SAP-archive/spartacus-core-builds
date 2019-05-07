@@ -19831,8 +19831,27 @@
      */
     var TranslationChunkService = /** @class */ (function () {
         function TranslationChunkService(config) {
+            var _this = this;
             this.config = config;
+            this.duplicates = {};
+            this.chunks = {};
             this.KEY_SEPARATOR = '.';
+            Object.keys(config.i18n.chunks).forEach(function (chunk) {
+                config.i18n.chunks[chunk].forEach(function (key) {
+                    if (_this.chunks.hasOwnProperty(key)) {
+                        if (!_this.duplicates[key]) {
+                            _this.duplicates[key] = [_this.chunks[key]];
+                        }
+                        _this.duplicates[key].push(chunk);
+                    }
+                    else {
+                        _this.chunks[key] = chunk;
+                    }
+                });
+            });
+            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
+                this.warnDuplicates(this.duplicates);
+            }
         }
         /**
          * @param {?} key
@@ -19846,7 +19865,7 @@
                 /** @type {?} */
                 var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
                 /** @type {?} */
-                var chunk = this.getChunkFromConfig(mainKey);
+                var chunk = this.chunks && this.chunks[mainKey];
                 if (!chunk) {
                     return mainKey; // fallback to main key as a chunk
                 }
@@ -19854,18 +19873,22 @@
             };
         /**
          * @private
-         * @param {?} mainKey
+         * @param {?} items
          * @return {?}
          */
-        TranslationChunkService.prototype.getChunkFromConfig = /**
+        TranslationChunkService.prototype.warnDuplicates = /**
          * @private
-         * @param {?} mainKey
+         * @param {?} items
          * @return {?}
          */
-            function (mainKey) {
-                return (this.config.i18n &&
-                    this.config.i18n.chunks &&
-                    this.config.i18n.chunks[mainKey]);
+            function (items) {
+                var _this = this;
+                /** @type {?} */
+                var dupes = [];
+                Object.keys(items).forEach(function (key) {
+                    dupes.push("* '" + key + "' found in chunks: " + items[key].join(', ') + ". Used '" + _this.chunks[key] + "." + key + "'.");
+                });
+                console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
             };
         TranslationChunkService.decorators = [
             { type: i0.Injectable }
@@ -19956,40 +19979,37 @@
             fallbackLang: false,
             debug: false,
             chunks: {
-                common: 'common',
-                spinner: 'common',
-                header: 'common',
-                searchBox: 'common',
-                cartDetails: 'cart',
-                cartItems: 'cart',
-                orderCost: 'cart',
-                addressForm: 'address',
-                addressBook: 'address',
-                addressCard: 'address',
-                paymentForm: 'payment',
-                paymentMethods: 'payment',
-                checkout: 'checkout',
-                checkoutAddress: 'checkout',
-                checkoutOrderConfirmation: 'checkout',
-                checkoutReview: 'checkout',
-                checkoutShipping: 'checkout',
-                orderDetails: 'myAccount',
-                orderHistory: 'myAccount',
-                productDetails: 'product',
-                productList: 'product',
-                productFacetNavigation: 'product',
-                productSummary: 'product',
-                productReview: 'product',
-                addToCart: 'product',
-                forgottenPassword: 'user',
-                loginForm: 'user',
-                login: 'user',
-                register: 'user',
-                updateEmailForm: 'user',
-                updatePasswordForm: 'user',
-                updateProfileForm: 'user',
-                storeFinder: 'storeFinder',
-                pwa: 'pwa',
+                common: ['common', 'spinner', 'header', 'searchBox'],
+                cart: ['cartDetails', 'cartItems', 'orderCost'],
+                address: ['addressForm', 'addressBook', 'addressCard'],
+                payment: ['paymentForm', 'paymentMethods'],
+                myAccount: ['orderDetails', 'orderHistory'],
+                storeFinder: ['storeFinder'],
+                pwa: ['pwa'],
+                checkout: [
+                    'checkout',
+                    'checkoutAddress',
+                    'checkoutOrderConfirmation',
+                    'checkoutReview',
+                    'checkoutShipping',
+                ],
+                product: [
+                    'productDetails',
+                    'productList',
+                    'productFacetNavigation',
+                    'productSummary',
+                    'productReview',
+                    'addToCart',
+                ],
+                user: [
+                    'forgottenPassword',
+                    'loginForm',
+                    'login',
+                    'register',
+                    'updateEmailForm',
+                    'updatePasswordForm',
+                    'updateProfileForm',
+                ],
             },
         },
     };
