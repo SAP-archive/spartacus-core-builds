@@ -24,6 +24,6 @@ export declare class CheckoutEffects {
     setPaymentDetails$: Observable<fromActions.SetPaymentDetailsSuccess | fromActions.SetPaymentDetailsFail>;
     placeOrder$: Observable<fromActions.PlaceOrderSuccess | AddMessage | fromActions.PlaceOrderFail>;
     loadCheckoutDetails$: Observable<fromActions.LoadCheckoutDetailsSuccess | fromActions.LoadCheckoutDetailsFail>;
-    reloadDetailsOnCreateCart$: Observable<fromActions.LoadCheckoutDetails>;
+    reloadDetailsOnMergeCart$: Observable<fromActions.LoadCheckoutDetails>;
     constructor(actions$: Actions, cartDeliveryConnector: CartDeliveryConnector, cartConnector: CartConnector, cartPaymentConnector: CartPaymentConnector, occOrderService: OccOrderService, converter: ConverterService);
 }

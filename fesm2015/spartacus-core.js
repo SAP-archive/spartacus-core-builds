@@ -3797,7 +3797,11 @@ class MergeCart {
     }
 }
 class MergeCartSuccess {
-    constructor() {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
         this.type = MERGE_CART_SUCCESS;
     }
 }
@@ -7503,7 +7507,10 @@ class CartEffects {
                 if (payload.oldCartId) {
                     return [
                         new CreateCartSuccess(cart),
-                        new MergeCartSuccess(),
+                        new MergeCartSuccess({
+                            userId: payload.userId,
+                            cartId: cart.code,
+                        }),
                     ];
                 }
                 return [new CreateCartSuccess(cart)];
@@ -11698,10 +11705,10 @@ class CheckoutEffects {
                 .loadCheckoutDetails(payload.userId, payload.cartId)
                 .pipe(map((data) => new LoadCheckoutDetailsSuccess(data)), catchError(error => of(new LoadCheckoutDetailsFail(error))));
         }));
-        this.reloadDetailsOnCreateCart$ = this.actions$.pipe(ofType(CREATE_CART_SUCCESS), map((action) => action.payload), map(payload => {
+        this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((action) => action.payload), map(payload => {
             return new LoadCheckoutDetails({
                 userId: payload.userId,
-                cartId: payload.toMergeCartGuid ? payload.toMergeCartGuid : 'current',
+                cartId: payload.cartId ? payload.cartId : 'current',
             });
         }));
     }
@@ -11753,7 +11760,7 @@ __decorate([
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
-], CheckoutEffects.prototype, "reloadDetailsOnCreateCart$", void 0);
+], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
 
 /**
  * @fileoverview added by tsickle

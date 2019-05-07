@@ -4523,7 +4523,8 @@
         return MergeCart;
     }());
     var MergeCartSuccess = /** @class */ (function () {
-        function MergeCartSuccess() {
+        function MergeCartSuccess(payload) {
+            this.payload = payload;
             this.type = MERGE_CART_SUCCESS;
         }
         return MergeCartSuccess;
@@ -8736,7 +8737,10 @@
                     if (payload.oldCartId) {
                         return [
                             new CreateCartSuccess(cart),
-                            new MergeCartSuccess(),
+                            new MergeCartSuccess({
+                                userId: payload.userId,
+                                cartId: cart.code,
+                            }),
                         ];
                     }
                     return [new CreateCartSuccess(cart)];
@@ -13782,10 +13786,10 @@
                     return rxjs.of(new LoadCheckoutDetailsFail(error));
                 }));
             }));
-            this.reloadDetailsOnCreateCart$ = this.actions$.pipe(effects.ofType(CREATE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
+            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects.ofType(MERGE_CART_SUCCESS), operators.map(function (action) { return action.payload; }), operators.map(function (payload) {
                 return new LoadCheckoutDetails({
                     userId: payload.userId,
-                    cartId: payload.toMergeCartGuid ? payload.toMergeCartGuid : 'current',
+                    cartId: payload.cartId ? payload.cartId : 'current',
                 });
             }));
         }
@@ -13838,7 +13842,7 @@
         __decorate([
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
-        ], CheckoutEffects.prototype, "reloadDetailsOnCreateCart$", void 0);
+        ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
         return CheckoutEffects;
     }());
 
