@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 import * as fromStore from '../store';
 import { PageContext } from '../models/page-context.model';
 import { WindowRef } from '../../window/window-ref';
-import { TranslateUrlCommands } from '../configurable-routes/url-translation/translate-url-commands';
-import { UrlTranslationService } from '../configurable-routes/url-translation/url-translation.service';
+import { UrlCommands } from '../configurable-routes/url-translation/url-command';
+import { UrlService } from '../configurable-routes/url-translation/url.service';
 import { RouterState } from '../store/reducers/router.reducer';
 export declare class RoutingService {
     private store;
     private winRef;
-    private urlTranslator;
-    constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, urlTranslator: UrlTranslationService);
+    private urlService;
+    constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, urlService: UrlService);
     /**
      * Get the current router state
      */
@@ -34,7 +34,7 @@ export declare class RoutingService {
      * @param query
      * @param extras: Represents the extra options used during navigation.
      */
-    go(commands: TranslateUrlCommands, query?: object, extras?: NavigationExtras): void;
+    go(commands: UrlCommands, query?: object, extras?: NavigationExtras): void;
     /**
      * Navigation using URL
      * @param url
