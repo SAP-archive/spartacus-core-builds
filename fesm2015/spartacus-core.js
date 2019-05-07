@@ -1,7 +1,7 @@
 import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, RouterModule, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { __decorate, __metadata } from 'tslib';
@@ -9,7 +9,7 @@ import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, Pipe, APP_INITIALIZER, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 
@@ -2163,13 +2163,6 @@ class AuthService {
         this.store.dispatch(new LoadUserTokenSuccess(token));
     }
     /**
-     * Login
-     * @return {?}
-     */
-    login() {
-        this.store.dispatch(new Login());
-    }
-    /**
      * Logout
      * @return {?}
      */
@@ -3352,6 +3345,7 @@ class UserTokenEffects {
                 return new LoadUserTokenSuccess(token);
             }), catchError(error => of(new LoadUserTokenFail(error))));
         }));
+        this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(() => new Login()));
         this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), switchMap(({ userId, refreshToken }) => {
             return this.userTokenService.refreshToken(refreshToken).pipe(map((token) => {
                 token.userId = userId;
@@ -3377,6 +3371,10 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserTokenEffects.prototype, "loadUserToken$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], UserTokenEffects.prototype, "login$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
@@ -13936,7 +13934,7 @@ class CmsService {
      */
     getComponentData(uid) {
         if (!this.components[uid]) {
-            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.routingService.isNavigating()), tap(([componentState, isNavigating]) => {
+            this.components[uid] = this.routingService.isNavigating().pipe(withLatestFrom(this.store.pipe(select(componentStateSelectorFactory(uid)))), tap(([isNavigating, componentState]) => {
                 /** @type {?} */
                 const attemptedLoad = componentState.loading ||
                     componentState.success ||
@@ -13944,7 +13942,7 @@ class CmsService {
                 if (!attemptedLoad && !isNavigating) {
                     this.store.dispatch(new LoadComponent(uid));
                 }
-            }), filter(([componentState]) => componentState.success), map(([componentState]) => componentState.value), shareReplay({ bufferSize: 1, refCount: true }));
+            }), filter(([_, componentState]) => componentState.success), map(([_, componentState]) => componentState.value), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     }

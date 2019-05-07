@@ -2544,20 +2544,6 @@ var AuthService = /** @class */ (function () {
         this.store.dispatch(new LoadUserTokenSuccess(token));
     };
     /**
-     * Login
-     */
-    /**
-     * Login
-     * @return {?}
-     */
-    AuthService.prototype.login = /**
-     * Login
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new Login());
-    };
-    /**
      * Logout
      */
     /**
@@ -3926,6 +3912,7 @@ var UserTokenEffects = /** @class */ (function () {
                 return new LoadUserTokenSuccess(token);
             }), catchError(function (error) { return of(new LoadUserTokenFail(error)); }));
         }));
+        this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(function () { return new Login(); }));
         this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map(function (action) { return action.payload; }), switchMap(function (_a) {
             var userId = _a.userId, refreshToken = _a.refreshToken;
             return _this.userTokenService.refreshToken(refreshToken).pipe(map(function (token) {
@@ -3951,6 +3938,10 @@ var UserTokenEffects = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], UserTokenEffects.prototype, "loadUserToken$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserTokenEffects.prototype, "login$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
@@ -16468,8 +16459,8 @@ var CmsService = /** @class */ (function () {
     function (uid) {
         var _this = this;
         if (!this.components[uid]) {
-            this.components[uid] = this.store.pipe(select(componentStateSelectorFactory(uid)), withLatestFrom(this.routingService.isNavigating()), tap(function (_a) {
-                var _b = __read(_a, 2), componentState = _b[0], isNavigating = _b[1];
+            this.components[uid] = this.routingService.isNavigating().pipe(withLatestFrom(this.store.pipe(select(componentStateSelectorFactory(uid)))), tap(function (_a) {
+                var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                 /** @type {?} */
                 var attemptedLoad = componentState.loading ||
                     componentState.success ||
@@ -16478,10 +16469,10 @@ var CmsService = /** @class */ (function () {
                     _this.store.dispatch(new LoadComponent(uid));
                 }
             }), filter(function (_a) {
-                var _b = __read(_a, 1), componentState = _b[0];
+                var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
                 return componentState.success;
             }), map(function (_a) {
-                var _b = __read(_a, 1), componentState = _b[0];
+                var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
                 return componentState.value;
             }), shareReplay({ bufferSize: 1, refCount: true }));
         }

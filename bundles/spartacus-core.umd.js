@@ -2657,20 +2657,6 @@
                 this.store.dispatch(new LoadUserTokenSuccess(token));
             };
         /**
-         * Login
-         */
-        /**
-         * Login
-         * @return {?}
-         */
-        AuthService.prototype.login = /**
-         * Login
-         * @return {?}
-         */
-            function () {
-                this.store.dispatch(new Login());
-            };
-        /**
          * Logout
          */
         /**
@@ -4064,6 +4050,7 @@
                     return new LoadUserTokenSuccess(token);
                 }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(error)); }));
             }));
+            this.login$ = this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map(function () { return new Login(); }));
             this.refreshUserToken$ = this.actions$.pipe(effects.ofType(REFRESH_USER_TOKEN), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
                 var userId = _a.userId, refreshToken = _a.refreshToken;
                 return _this.userTokenService.refreshToken(refreshToken).pipe(operators.map(function (token) {
@@ -4091,6 +4078,10 @@
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "loadUserToken$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserTokenEffects.prototype, "login$", void 0);
         __decorate([
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
@@ -16747,8 +16738,8 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = this.store.pipe(i1$2.select(componentStateSelectorFactory(uid)), operators.withLatestFrom(this.routingService.isNavigating()), operators.tap(function (_a) {
-                        var _b = __read(_a, 2), componentState = _b[0], isNavigating = _b[1];
+                    this.components[uid] = this.routingService.isNavigating().pipe(operators.withLatestFrom(this.store.pipe(i1$2.select(componentStateSelectorFactory(uid)))), operators.tap(function (_a) {
+                        var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
                             componentState.success ||
@@ -16757,10 +16748,10 @@
                             _this.store.dispatch(new LoadComponent(uid));
                         }
                     }), operators.filter(function (_a) {
-                        var _b = __read(_a, 1), componentState = _b[0];
+                        var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
                         return componentState.success;
                     }), operators.map(function (_a) {
-                        var _b = __read(_a, 1), componentState = _b[0];
+                        var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
                         return componentState.value;
                     }), operators.shareReplay({ bufferSize: 1, refCount: true }));
                 }
