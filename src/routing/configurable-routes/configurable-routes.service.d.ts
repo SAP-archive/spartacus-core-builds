@@ -16,10 +16,7 @@ export declare class ConfigurableRoutesService {
     private configureRouter;
     private configureRoutes;
     private configureRoute;
-    private isConfigurable;
-    private getConfigurable;
-    private configureRoutePath;
-    private configureRouteRedirectTo;
+    private getRouteName;
     private getConfiguredPaths;
     private warn;
 }

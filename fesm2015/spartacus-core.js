@@ -1626,84 +1626,47 @@ class ConfigurableRoutesService {
      * @return {?}
      */
     configureRoute(route) {
-        if (this.isConfigurable(route, 'cxPath')) {
-            // we assume that 'path' and 'redirectTo' cannot be both configured for one route
-            if (this.isConfigurable(route, 'cxRedirectTo')) {
-                this.warn(`A path should not have set both "cxPath" and "cxRedirectTo" properties! Route: '${route}`);
+        if (this.getRouteName(route)) {
+            /** @type {?} */
+            const paths = this.getConfiguredPaths(route);
+            switch (paths.length) {
+                case 0:
+                    delete route.path;
+                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                case 1:
+                    delete route.matcher;
+                    return Object.assign({}, route, { path: paths[0] });
+                default:
+                    delete route.path;
+                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
             }
-            return this.configureRoutePath(route);
         }
-        if (this.isConfigurable(route, 'cxRedirectTo')) {
-            return this.configureRouteRedirectTo(route);
-        }
-        return route; // if nothing is configurable, just pass the original route
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @return {?}
-     */
-    isConfigurable(route, key) {
-        return !!this.getConfigurable(route, key);
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @return {?}
-     */
-    getConfigurable(route, key) {
-        return route.data && route.data[key];
+        return route; // if route doesn't have a name, just pass the original route
     }
     /**
      * @private
      * @param {?} route
      * @return {?}
      */
-    configureRoutePath(route) {
+    getRouteName(route) {
+        return route.data && route.data.cxRoute;
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    getConfiguredPaths(route) {
         /** @type {?} */
-        const paths = this.getConfiguredPaths(route, 'cxPath');
-        switch (paths.length) {
-            case 0:
-                delete route.path;
-                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-            case 1:
-                delete route.matcher;
-                return Object.assign({}, route, { path: paths[0] });
-            default:
-                delete route.path;
-                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
-        }
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @return {?}
-     */
-    configureRouteRedirectTo(route) {
-        /** @type {?} */
-        const paths = this.getConfiguredPaths(route, 'cxRedirectTo');
-        return paths.length
-            ? Object.assign({}, route, { redirectTo: paths[0] }) : route;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @param {?} key
-     * @return {?}
-     */
-    getConfiguredPaths(route, key) {
-        /** @type {?} */
-        const routeName = this.getConfigurable(route, key);
+        const routeName = this.getRouteName(route);
         /** @type {?} */
         const routeConfig = this.routingConfigService.getRouteConfig(routeName);
         if (routeConfig === undefined) {
-            this.warn(`Could not configure the key '${key}' of the named route '${routeName}'`, route, `due to undefined key for named route '${routeName}' in config`);
+            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined key '${routeName}' in the routes config`);
             return [];
         }
         if (routeConfig && routeConfig.paths === undefined) {
-            this.warn(`Could not configure the key '${key}' of the named route '${routeName}'`, route, `due to undefined 'paths' for the named route '${routeName}' in config`);
+            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined 'paths' for the named route '${routeName}' in the routes config`);
             return [];
         }
         // routeConfig or routeConfig.paths can be null - which means switching off the route
