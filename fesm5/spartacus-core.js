@@ -5,13 +5,13 @@ import { Router, PRIMARY_OUTLET, RouterModule, NavigationStart, NavigationEnd, N
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
-import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { __decorate, __metadata, __assign, __extends, __spread, __read, __values } from 'tslib';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, defineInjectable, inject, INJECTOR, NgZone, ChangeDetectorRef, ComponentFactoryResolver } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 
 /**
  * @fileoverview added by tsickle
@@ -842,7 +842,9 @@ var getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
 /** @type {?} */
 var getRouterState = createSelector(getRouterFeatureState, function (state) { return state.router; });
 /** @type {?} */
-var getPageContext = createSelector(getRouterState, function (routingState) { return routingState.state.context; });
+var getPageContext = createSelector(getRouterState, function (routingState) {
+    return (routingState.state && routingState.state.context) || { id: '' };
+});
 /** @type {?} */
 var getNextPageContext = createSelector(getRouterState, function (routingState) {
     return routingState.nextState && routingState.nextState.context;
@@ -3755,12 +3757,23 @@ function getServerTransferStateReducer(transferState, keys) {
 function getBrowserTransferStateReducer(transferState, keys) {
     return function (reducer) {
         return function (state, action) {
-            if (action.type === INIT && transferState.hasKey(CX_KEY)) {
+            if (action.type === INIT) {
+                if (!state) {
+                    state = reducer(state, action);
+                }
+                // we should not utilize transfer state if user is logged in
                 /** @type {?} */
-                var cxKey = transferState.get(CX_KEY, {});
+                var authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
                 /** @type {?} */
-                var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
-                state = deepMerge({}, state, transferredStateSlice);
+                var isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                    /** @type {?} */
+                    var cxKey = transferState.get(CX_KEY, {});
+                    /** @type {?} */
+                    var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return state;
             }
             return reducer(state, action);
         };
@@ -3775,18 +3788,18 @@ function getBrowserTransferStateReducer(transferState, keys) {
 var stateMetaReducers = [
     {
         provide: META_REDUCER,
-        useFactory: getStorageSyncReducer,
-        deps: [WindowRef, [new Optional(), Config]],
-        multi: true,
-    },
-    {
-        provide: META_REDUCER,
         useFactory: getTransferStateReducer,
         deps: [
             PLATFORM_ID,
             [new Optional(), TransferState],
             [new Optional(), Config],
         ],
+        multi: true,
+    },
+    {
+        provide: META_REDUCER,
+        useFactory: getStorageSyncReducer,
+        deps: [WindowRef, [new Optional(), Config]],
         multi: true,
     },
 ];
@@ -21624,12 +21637,15 @@ var defaultPersonalizationConfig = {
 /** @type {?} */
 var PERSONALIZATION_KEY = 'personalization-id';
 var OccPersonalizationIdInterceptor = /** @class */ (function () {
-    function OccPersonalizationIdInterceptor(config, occEndpoints, winRef) {
+    function OccPersonalizationIdInterceptor(config, occEndpoints, winRef, platform) {
         this.config = config;
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
+        this.platform = platform;
         this.requestHeader = this.config.personalization.requestHeader.toLowerCase();
-        this.personalizationId = this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
+        this.personalizationId =
+            this.winRef.localStorage &&
+                this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
     }
     /**
      * @param {?} request
@@ -21644,6 +21660,9 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
     function (request, next) {
         var _this = this;
         var _a;
+        if (isPlatformServer(this.platform)) {
+            return next.handle(request);
+        }
         if (this.personalizationId &&
             request.url.includes(this.occEndpoints.getBaseEndpoint())) {
             request = request.clone({
@@ -21672,7 +21691,8 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
     OccPersonalizationIdInterceptor.ctorParameters = function () { return [
         { type: PersonalizationConfig },
         { type: OccEndpointsService },
-        { type: WindowRef }
+        { type: WindowRef },
+        { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
     ]; };
     return OccPersonalizationIdInterceptor;
 }());

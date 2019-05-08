@@ -1,17 +1,17 @@
 import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, RouterModule, UrlSerializer } from '@angular/router';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { __decorate, __metadata } from 'tslib';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
-import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 
 /**
  * @fileoverview added by tsickle
@@ -781,7 +781,7 @@ const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
 /** @type {?} */
 const getRouterState = createSelector(getRouterFeatureState, state => state.router);
 /** @type {?} */
-const getPageContext = createSelector(getRouterState, (routingState) => routingState.state.context);
+const getPageContext = createSelector(getRouterState, (routingState) => (routingState.state && routingState.state.context) || { id: '' });
 /** @type {?} */
 const getNextPageContext = createSelector(getRouterState, (routingState) => routingState.nextState && routingState.nextState.context);
 /** @type {?} */
@@ -3206,12 +3206,23 @@ function getServerTransferStateReducer(transferState, keys) {
 function getBrowserTransferStateReducer(transferState, keys) {
     return function (reducer) {
         return function (state, action) {
-            if (action.type === INIT && transferState.hasKey(CX_KEY)) {
+            if (action.type === INIT) {
+                if (!state) {
+                    state = reducer(state, action);
+                }
+                // we should not utilize transfer state if user is logged in
                 /** @type {?} */
-                const cxKey = transferState.get(CX_KEY, {});
+                const authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
                 /** @type {?} */
-                const transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
-                state = deepMerge({}, state, transferredStateSlice);
+                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                    /** @type {?} */
+                    const cxKey = transferState.get(CX_KEY, {});
+                    /** @type {?} */
+                    const transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return state;
             }
             return reducer(state, action);
         };
@@ -3226,18 +3237,18 @@ function getBrowserTransferStateReducer(transferState, keys) {
 const stateMetaReducers = [
     {
         provide: META_REDUCER,
-        useFactory: getStorageSyncReducer,
-        deps: [WindowRef, [new Optional(), Config]],
-        multi: true,
-    },
-    {
-        provide: META_REDUCER,
         useFactory: getTransferStateReducer,
         deps: [
             PLATFORM_ID,
             [new Optional(), TransferState],
             [new Optional(), Config],
         ],
+        multi: true,
+    },
+    {
+        provide: META_REDUCER,
+        useFactory: getStorageSyncReducer,
+        deps: [WindowRef, [new Optional(), Config]],
         multi: true,
     },
 ];
@@ -18125,13 +18136,17 @@ class OccPersonalizationIdInterceptor {
      * @param {?} config
      * @param {?} occEndpoints
      * @param {?} winRef
+     * @param {?} platform
      */
-    constructor(config, occEndpoints, winRef) {
+    constructor(config, occEndpoints, winRef, platform) {
         this.config = config;
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
+        this.platform = platform;
         this.requestHeader = this.config.personalization.requestHeader.toLowerCase();
-        this.personalizationId = this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
+        this.personalizationId =
+            this.winRef.localStorage &&
+                this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
     }
     /**
      * @param {?} request
@@ -18139,6 +18154,9 @@ class OccPersonalizationIdInterceptor {
      * @return {?}
      */
     intercept(request, next) {
+        if (isPlatformServer(this.platform)) {
+            return next.handle(request);
+        }
         if (this.personalizationId &&
             request.url.includes(this.occEndpoints.getBaseEndpoint())) {
             request = request.clone({
@@ -18168,7 +18186,8 @@ OccPersonalizationIdInterceptor.decorators = [
 OccPersonalizationIdInterceptor.ctorParameters = () => [
     { type: PersonalizationConfig },
     { type: OccEndpointsService },
-    { type: WindowRef }
+    { type: WindowRef },
+    { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
 
 /**
