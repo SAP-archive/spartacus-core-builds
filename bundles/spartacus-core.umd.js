@@ -2143,55 +2143,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var defaultStorefrontRoutesConfig = {
-        home: { paths: [''] },
-        cart: { paths: ['cart'] },
-        search: { paths: ['search/:query'] },
-        login: { paths: ['login'] },
-        register: { paths: ['register'] },
-        resetPassword: { paths: ['login/pw/change'] },
-        forgotPassword: { paths: ['forgot-password'] },
-        checkout: { paths: ['checkout'] },
-        orderConfirmation: { paths: ['order-confirmation'] },
-        product: {
-            paths: ['product/:productCode'],
-            paramsMapping: { productCode: 'code' },
-        },
-        category: {
-            paths: ['category/:categoryCode'],
-            paramsMapping: { categoryCode: 'code' },
-        },
-        brand: { paths: ['Brands/:brandName/c/:brandCode'] },
-        termsAndConditions: { paths: ['termsAndConditions'] },
-        orders: { paths: ['my-account/orders'] },
-        orderDetails: {
-            paths: ['my-account/orders/:orderCode'],
-            paramsMapping: { orderCode: 'code' },
-        },
-        addressBook: { paths: ['my-account/address-book'] },
-        updatePassword: { paths: ['my-account/update-password'] },
-        paymentManagement: { paths: ['my-account/payment-details'] },
-        updateEmail: { paths: ['my-account/update-email'] },
-        updateProfile: { paths: ['my-account/update-profile'] },
-        closeAccount: { paths: ['my-account/close-account'] },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultRoutingConfig = {
-        routing: {
-            routes: defaultStorefrontRoutesConfig,
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @param {?} service
      * @return {?}
@@ -2206,7 +2157,7 @@
         }
         ConfigurableRoutesModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule, ConfigModule.withConfig(defaultRoutingConfig)],
+                        imports: [i1$3.CommonModule],
                         providers: [
                             {
                                 provide: i0.APP_INITIALIZER,
@@ -22885,185 +22836,183 @@
     exports.WindowRef = WindowRef;
     exports.PersonalizationModule = PersonalizationModule;
     exports.PersonalizationConfig = PersonalizationConfig;
-    exports.ɵbg = defaultAuthConfig;
-    exports.ɵbo = AuthErrorInterceptor;
-    exports.ɵbl = ClientTokenInterceptor;
-    exports.ɵbk = interceptors;
-    exports.ɵbn = UserTokenInterceptor;
-    exports.ɵbe = ClientAuthenticationTokenService;
-    exports.ɵbi = ClientErrorHandlingService;
-    exports.ɵbh = services;
-    exports.ɵbd = UserAuthenticationTokenService;
-    exports.ɵbj = UserErrorHandlingService;
-    exports.ɵo = AuthStoreModule;
-    exports.ɵn = authStoreConfigFactory;
-    exports.ɵbc = ClientTokenEffect;
-    exports.ɵba = effects$2;
-    exports.ɵbb = UserTokenEffects;
-    exports.ɵy = clearAuthState;
-    exports.ɵv = getReducers$1;
-    exports.ɵz = metaReducers;
-    exports.ɵx = reducerProvider$1;
-    exports.ɵw = reducerToken$1;
-    exports.ɵbf = reducer$1;
-    exports.ɵbq = OccCartNormalizer;
-    exports.ɵbr = CartStoreModule;
-    exports.ɵbz = CartEntryEffects;
-    exports.ɵby = CartEffects;
-    exports.ɵbx = effects$4;
-    exports.ɵca = reducer$2;
-    exports.ɵbv = clearCartState;
-    exports.ɵbs = getReducers$2;
-    exports.ɵbw = metaReducers$1;
-    exports.ɵbu = reducerProvider$2;
-    exports.ɵbt = reducerToken$2;
-    exports.ɵco = CheckoutStoreModule;
-    exports.ɵci = AddressVerificationEffect;
-    exports.ɵch = CardTypesEffects;
-    exports.ɵcg = CheckoutEffects;
-    exports.ɵcf = effects$6;
-    exports.ɵce = getAddressVerificationResults;
-    exports.ɵcd = reducer$7;
-    exports.ɵcc = getCardTypesEntites;
-    exports.ɵcb = reducer$6;
-    exports.ɵcp = reducer$j;
-    exports.ɵcm = clearCheckoutState;
-    exports.ɵcj = getReducers$7;
-    exports.ɵcn = metaReducers$3;
-    exports.ɵcl = reducerProvider$7;
-    exports.ɵck = reducerToken$7;
-    exports.ɵcv = CmsStoreModule;
-    exports.ɵcu = cmsStoreConfigFactory;
-    exports.ɵdd = ComponentEffects;
-    exports.ɵdb = effects$7;
-    exports.ɵde = NavigationEntryItemEffects;
-    exports.ɵdc = PageEffects;
-    exports.ɵcz = clearCmsState;
-    exports.ɵcw = getReducers$8;
-    exports.ɵda = metaReducers$4;
-    exports.ɵcy = reducerProvider$8;
-    exports.ɵcx = reducerToken$8;
-    exports.ɵdi = reducer$k;
-    exports.ɵdf = reducer$l;
-    exports.ɵdh = reducer$m;
-    exports.ɵfh = ConfigModule;
-    exports.ɵed = ServerConfig;
-    exports.ɵbp = provideConfigValidator;
-    exports.ɵec = HttpErrorInterceptor;
-    exports.ɵeb = reducer$8;
-    exports.ɵdy = getReducers$4;
-    exports.ɵea = reducerProvider$4;
-    exports.ɵdz = reducerToken$4;
-    exports.ɵee = defaultI18nConfig;
-    exports.ɵeg = i18nextInit;
-    exports.ɵef = i18nextProviders;
-    exports.ɵeh = MockDatePipe;
-    exports.ɵei = MockTranslationService;
-    exports.ɵdg = PageType;
-    exports.ɵcr = PageType;
-    exports.ɵgz = defaultPersonalizationConfig;
-    exports.ɵha = interceptors$3;
-    exports.ɵhb = OccPersonalizationIdInterceptor;
-    exports.ɵgs = ProcessModule;
-    exports.ɵgu = PROCESS_FEATURE;
-    exports.ɵgt = ProcessStoreModule;
-    exports.ɵgv = getReducers$6;
-    exports.ɵgx = reducerProvider$6;
-    exports.ɵgw = reducerToken$6;
-    exports.ɵej = defaultOccProductConfig;
-    exports.ɵdu = effects$8;
-    exports.ɵdx = ProductReviewsEffects;
-    exports.ɵdv = ProductsSearchEffects;
-    exports.ɵdw = ProductEffects;
-    exports.ɵes = ProductStoreModule;
-    exports.ɵer = productStoreConfigFactory;
-    exports.ɵds = clearProductsState;
-    exports.ɵdp = getReducers$9;
-    exports.ɵdt = metaReducers$5;
-    exports.ɵdr = reducerProvider$9;
-    exports.ɵdq = reducerToken$9;
-    exports.ɵet = reducer$o;
-    exports.ɵep = getAuxSearchResults;
-    exports.ɵeq = getProductSuggestions;
-    exports.ɵeo = getSearchResults;
-    exports.ɵen = reducer$n;
-    exports.ɵa = defaultRoutingConfig;
-    exports.ɵb = defaultStorefrontRoutesConfig;
-    exports.ɵc = UrlMatcherFactoryService;
-    exports.ɵm = UrlParsingService;
-    exports.ɵd = ROUTING_FEATURE;
-    exports.ɵj = effects$1;
-    exports.ɵk = RouterEffects;
-    exports.ɵi = CustomSerializer;
-    exports.ɵe = getReducers;
-    exports.ɵf = reducer;
-    exports.ɵh = reducerProvider;
-    exports.ɵg = reducerToken;
-    exports.ɵeu = defaultSiteContextConfigFactory;
-    exports.ɵbm = BaseSiteService;
-    exports.ɵfa = SiteContextParamsService;
-    exports.ɵfc = SiteContextRoutesHandler;
-    exports.ɵfb = SiteContextUrlSerializer;
-    exports.ɵdo = CurrenciesEffects;
-    exports.ɵdm = effects$3;
-    exports.ɵdn = LanguagesEffects;
-    exports.ɵez = reducer$5;
-    exports.ɵey = reducer$4;
-    exports.ɵdj = getReducers$3;
-    exports.ɵdl = reducerProvider$3;
-    exports.ɵdk = reducerToken$3;
-    exports.ɵex = reducer$3;
-    exports.ɵew = SiteContextStoreModule;
-    exports.ɵev = siteContextStoreConfigFactory;
-    exports.ɵfe = CmsTicketInterceptor;
-    exports.ɵfd = interceptors$2;
-    exports.ɵff = SmartEditService;
-    exports.ɵcs = EntityFailAction;
-    exports.ɵcq = EntityLoadAction;
-    exports.ɵfr = EntityResetAction;
-    exports.ɵct = EntitySuccessAction;
-    exports.ɵp = DEFAULT_LOCAL_STORAGE_KEY;
-    exports.ɵq = DEFAULT_SESSION_STORAGE_KEY;
-    exports.ɵr = defaultStateConfig;
-    exports.ɵs = stateMetaReducers;
-    exports.ɵt = getStorageSyncReducer;
-    exports.ɵu = getTransferStateReducer;
-    exports.ɵfi = defaultStoreFinderConfig;
-    exports.ɵfo = FindStoresEffect;
-    exports.ɵfn = effects$9;
-    exports.ɵfp = ViewAllStoresEffect;
-    exports.ɵfk = getReducers$a;
-    exports.ɵfm = reducerProvider$a;
-    exports.ɵfl = reducerToken$a;
-    exports.ɵfg = getStoreFinderState;
-    exports.ɵfj = StoreFinderStoreModule;
-    exports.ɵge = BillingCountriesEffect;
-    exports.ɵgf = DeliveryCountriesEffects;
-    exports.ɵgp = ForgotPasswordEffects;
-    exports.ɵgd = effects$5;
-    exports.ɵgg = OrderDetailsEffect;
-    exports.ɵgh = UserPaymentMethodsEffects;
-    exports.ɵgi = RegionsEffects;
-    exports.ɵgj = ResetPasswordEffects;
-    exports.ɵgk = TitlesEffects;
-    exports.ɵgq = UpdateEmailEffects;
-    exports.ɵgr = UpdatePasswordEffects;
-    exports.ɵgl = UserAddressesEffects;
-    exports.ɵgm = UserDetailsEffects;
-    exports.ɵgn = UserOrdersEffect;
-    exports.ɵgo = UserRegisterEffects;
-    exports.ɵfu = reducer$9;
-    exports.ɵfy = reducer$a;
-    exports.ɵfx = reducer$b;
-    exports.ɵfv = reducer$c;
-    exports.ɵga = reducer$d;
-    exports.ɵgb = reducer$e;
-    exports.ɵfz = reducer$f;
-    exports.ɵft = reducer$g;
-    exports.ɵfs = reducer$h;
-    exports.ɵfw = reducer$i;
-    exports.ɵgc = UserStoreModule;
-    exports.ɵgy = StripHtmlPipe;
+    exports.ɵbe = defaultAuthConfig;
+    exports.ɵbm = AuthErrorInterceptor;
+    exports.ɵbj = ClientTokenInterceptor;
+    exports.ɵbi = interceptors;
+    exports.ɵbl = UserTokenInterceptor;
+    exports.ɵbc = ClientAuthenticationTokenService;
+    exports.ɵbg = ClientErrorHandlingService;
+    exports.ɵbf = services;
+    exports.ɵbb = UserAuthenticationTokenService;
+    exports.ɵbh = UserErrorHandlingService;
+    exports.ɵm = AuthStoreModule;
+    exports.ɵl = authStoreConfigFactory;
+    exports.ɵba = ClientTokenEffect;
+    exports.ɵy = effects$2;
+    exports.ɵz = UserTokenEffects;
+    exports.ɵw = clearAuthState;
+    exports.ɵt = getReducers$1;
+    exports.ɵx = metaReducers;
+    exports.ɵv = reducerProvider$1;
+    exports.ɵu = reducerToken$1;
+    exports.ɵbd = reducer$1;
+    exports.ɵbo = OccCartNormalizer;
+    exports.ɵbp = CartStoreModule;
+    exports.ɵbx = CartEntryEffects;
+    exports.ɵbw = CartEffects;
+    exports.ɵbv = effects$4;
+    exports.ɵby = reducer$2;
+    exports.ɵbt = clearCartState;
+    exports.ɵbq = getReducers$2;
+    exports.ɵbu = metaReducers$1;
+    exports.ɵbs = reducerProvider$2;
+    exports.ɵbr = reducerToken$2;
+    exports.ɵcm = CheckoutStoreModule;
+    exports.ɵcg = AddressVerificationEffect;
+    exports.ɵcf = CardTypesEffects;
+    exports.ɵce = CheckoutEffects;
+    exports.ɵcd = effects$6;
+    exports.ɵcc = getAddressVerificationResults;
+    exports.ɵcb = reducer$7;
+    exports.ɵca = getCardTypesEntites;
+    exports.ɵbz = reducer$6;
+    exports.ɵcn = reducer$j;
+    exports.ɵck = clearCheckoutState;
+    exports.ɵch = getReducers$7;
+    exports.ɵcl = metaReducers$3;
+    exports.ɵcj = reducerProvider$7;
+    exports.ɵci = reducerToken$7;
+    exports.ɵct = CmsStoreModule;
+    exports.ɵcs = cmsStoreConfigFactory;
+    exports.ɵdb = ComponentEffects;
+    exports.ɵcz = effects$7;
+    exports.ɵdc = NavigationEntryItemEffects;
+    exports.ɵda = PageEffects;
+    exports.ɵcx = clearCmsState;
+    exports.ɵcu = getReducers$8;
+    exports.ɵcy = metaReducers$4;
+    exports.ɵcw = reducerProvider$8;
+    exports.ɵcv = reducerToken$8;
+    exports.ɵdg = reducer$k;
+    exports.ɵdd = reducer$l;
+    exports.ɵdf = reducer$m;
+    exports.ɵff = ConfigModule;
+    exports.ɵeb = ServerConfig;
+    exports.ɵbn = provideConfigValidator;
+    exports.ɵea = HttpErrorInterceptor;
+    exports.ɵdz = reducer$8;
+    exports.ɵdw = getReducers$4;
+    exports.ɵdy = reducerProvider$4;
+    exports.ɵdx = reducerToken$4;
+    exports.ɵec = defaultI18nConfig;
+    exports.ɵee = i18nextInit;
+    exports.ɵed = i18nextProviders;
+    exports.ɵef = MockDatePipe;
+    exports.ɵeg = MockTranslationService;
+    exports.ɵde = PageType;
+    exports.ɵcp = PageType;
+    exports.ɵgx = defaultPersonalizationConfig;
+    exports.ɵgy = interceptors$3;
+    exports.ɵgz = OccPersonalizationIdInterceptor;
+    exports.ɵgq = ProcessModule;
+    exports.ɵgs = PROCESS_FEATURE;
+    exports.ɵgr = ProcessStoreModule;
+    exports.ɵgt = getReducers$6;
+    exports.ɵgv = reducerProvider$6;
+    exports.ɵgu = reducerToken$6;
+    exports.ɵeh = defaultOccProductConfig;
+    exports.ɵds = effects$8;
+    exports.ɵdv = ProductReviewsEffects;
+    exports.ɵdt = ProductsSearchEffects;
+    exports.ɵdu = ProductEffects;
+    exports.ɵeq = ProductStoreModule;
+    exports.ɵep = productStoreConfigFactory;
+    exports.ɵdq = clearProductsState;
+    exports.ɵdn = getReducers$9;
+    exports.ɵdr = metaReducers$5;
+    exports.ɵdp = reducerProvider$9;
+    exports.ɵdo = reducerToken$9;
+    exports.ɵer = reducer$o;
+    exports.ɵen = getAuxSearchResults;
+    exports.ɵeo = getProductSuggestions;
+    exports.ɵem = getSearchResults;
+    exports.ɵel = reducer$n;
+    exports.ɵa = UrlMatcherFactoryService;
+    exports.ɵk = UrlParsingService;
+    exports.ɵb = ROUTING_FEATURE;
+    exports.ɵh = effects$1;
+    exports.ɵi = RouterEffects;
+    exports.ɵg = CustomSerializer;
+    exports.ɵc = getReducers;
+    exports.ɵd = reducer;
+    exports.ɵf = reducerProvider;
+    exports.ɵe = reducerToken;
+    exports.ɵes = defaultSiteContextConfigFactory;
+    exports.ɵbk = BaseSiteService;
+    exports.ɵey = SiteContextParamsService;
+    exports.ɵfa = SiteContextRoutesHandler;
+    exports.ɵez = SiteContextUrlSerializer;
+    exports.ɵdm = CurrenciesEffects;
+    exports.ɵdk = effects$3;
+    exports.ɵdl = LanguagesEffects;
+    exports.ɵex = reducer$5;
+    exports.ɵew = reducer$4;
+    exports.ɵdh = getReducers$3;
+    exports.ɵdj = reducerProvider$3;
+    exports.ɵdi = reducerToken$3;
+    exports.ɵev = reducer$3;
+    exports.ɵeu = SiteContextStoreModule;
+    exports.ɵet = siteContextStoreConfigFactory;
+    exports.ɵfc = CmsTicketInterceptor;
+    exports.ɵfb = interceptors$2;
+    exports.ɵfd = SmartEditService;
+    exports.ɵcq = EntityFailAction;
+    exports.ɵco = EntityLoadAction;
+    exports.ɵfp = EntityResetAction;
+    exports.ɵcr = EntitySuccessAction;
+    exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
+    exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
+    exports.ɵp = defaultStateConfig;
+    exports.ɵq = stateMetaReducers;
+    exports.ɵr = getStorageSyncReducer;
+    exports.ɵs = getTransferStateReducer;
+    exports.ɵfg = defaultStoreFinderConfig;
+    exports.ɵfm = FindStoresEffect;
+    exports.ɵfl = effects$9;
+    exports.ɵfn = ViewAllStoresEffect;
+    exports.ɵfi = getReducers$a;
+    exports.ɵfk = reducerProvider$a;
+    exports.ɵfj = reducerToken$a;
+    exports.ɵfe = getStoreFinderState;
+    exports.ɵfh = StoreFinderStoreModule;
+    exports.ɵgc = BillingCountriesEffect;
+    exports.ɵgd = DeliveryCountriesEffects;
+    exports.ɵgn = ForgotPasswordEffects;
+    exports.ɵgb = effects$5;
+    exports.ɵge = OrderDetailsEffect;
+    exports.ɵgf = UserPaymentMethodsEffects;
+    exports.ɵgg = RegionsEffects;
+    exports.ɵgh = ResetPasswordEffects;
+    exports.ɵgi = TitlesEffects;
+    exports.ɵgo = UpdateEmailEffects;
+    exports.ɵgp = UpdatePasswordEffects;
+    exports.ɵgj = UserAddressesEffects;
+    exports.ɵgk = UserDetailsEffects;
+    exports.ɵgl = UserOrdersEffect;
+    exports.ɵgm = UserRegisterEffects;
+    exports.ɵfs = reducer$9;
+    exports.ɵfw = reducer$a;
+    exports.ɵfv = reducer$b;
+    exports.ɵft = reducer$c;
+    exports.ɵfy = reducer$d;
+    exports.ɵfz = reducer$e;
+    exports.ɵfx = reducer$f;
+    exports.ɵfr = reducer$g;
+    exports.ɵfq = reducer$h;
+    exports.ɵfu = reducer$i;
+    exports.ɵga = UserStoreModule;
+    exports.ɵgw = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
