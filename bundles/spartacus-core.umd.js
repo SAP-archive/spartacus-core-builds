@@ -19947,10 +19947,10 @@
             fallbackLang: false,
             debug: false,
             chunks: {
-                common: ['common', 'spinner', 'header', 'searchBox'],
+                common: ['common', 'spinner', 'header', 'searchBox', 'sorting'],
                 cart: ['cartDetails', 'cartItems', 'orderCost'],
                 address: ['addressForm', 'addressBook', 'addressCard'],
-                payment: ['paymentForm', 'paymentMethods'],
+                payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
                 myAccount: ['orderDetails', 'orderHistory'],
                 storeFinder: ['storeFinder'],
                 pwa: ['pwa'],
