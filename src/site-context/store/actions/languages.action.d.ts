@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Language } from '../../../occ/occ-models/occ.models';
+import { Language } from '../../../model/misc.model';
 export declare const LOAD_LANGUAGES = "[Site-context] Load Languages";
 export declare const LOAD_LANGUAGES_FAIL = "[Site-context] Load Languages Fail";
 export declare const LOAD_LANGUAGES_SUCCESS = "[Site-context] Load Languages Success";

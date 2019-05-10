@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { PaymentDetails } from '../../../occ/occ-models/occ.models';
 import { CartPaymentAdapter } from './cart-payment.adapter';
+import { PaymentDetails } from '../../../model/cart.model';
 export declare class CartPaymentConnector {
     private adapter;
     constructor(adapter: CartPaymentAdapter);

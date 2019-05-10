@@ -1,3 +1,4 @@
+export * from './src/model/index';
 export * from './src/auth/index';
 export * from './src/cart/index';
 export * from './src/checkout/index';

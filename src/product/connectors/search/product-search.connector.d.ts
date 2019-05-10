@@ -1,11 +1,10 @@
 import { ProductSearchAdapter } from './product-search.adapter';
-import { Suggestion } from '../../../occ/occ-models/occ.models';
 import { SearchConfig } from '../../model/search-config';
 import { Observable } from 'rxjs';
-import { UIProductSearchPage } from '../../model/product-search-page';
+import { Suggestion, ProductSearchPage } from '../../../model/product-search.model';
 export declare class ProductSearchConnector {
     protected adapter: ProductSearchAdapter;
     constructor(adapter: ProductSearchAdapter);
-    search(query: string, searchConfig?: SearchConfig): Observable<UIProductSearchPage>;
+    search(query: string, searchConfig?: SearchConfig): Observable<ProductSearchPage>;
     getSuggestions(term: string, pageSize?: number): Observable<Suggestion[]>;
 }

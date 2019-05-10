@@ -1,8 +1,8 @@
-import { Product, ProductReference } from '../../../occ/occ-models/occ.models';
+import { Occ } from '../../../occ/occ-models/occ.models';
 import { Converter } from '../../../util/converter.service';
-import { UIProduct, UIProductReferences } from '../../model/product';
-export declare class ProductReferenceNormalizer implements Converter<Product, UIProduct> {
-    convert(source: Product, target?: UIProduct): UIProduct;
+import { Product, ProductReferences } from '../../../model/product.model';
+export declare class ProductReferenceNormalizer implements Converter<Occ.Product, Product> {
+    convert(source: Occ.Product, target?: Product): Product;
     /**
      * @desc
      * Creates the reference structure we'd like to have. Instead of
@@ -10,5 +10,5 @@ export declare class ProductReferenceNormalizer implements Converter<Product, UI
      * With that we have a semantic API for the clients
      * - product.references.SIMILAR[0].code
      */
-    protected normalize(source: ProductReference[]): UIProductReferences;
+    protected normalize(source: Occ.ProductReference[]): ProductReferences;
 }

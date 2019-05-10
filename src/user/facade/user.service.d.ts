@@ -1,9 +1,12 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Address, Country, Order, OrderHistoryList, PaymentDetails, Region, Title, User } from '../../occ/occ-models/index';
 import * as fromProcessStore from '../../process/store/process-state';
 import { UserRegisterFormData } from '../model/user.model';
 import * as fromStore from '../store/index';
+import { Title, User } from '../../model/misc.model';
+import { Order, OrderHistoryList } from '../../model/order.model';
+import { PaymentDetails } from '../../model/cart.model';
+import { Address, Country, Region } from '../../model/address.model';
 export declare class UserService {
     private store;
     constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);

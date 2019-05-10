@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Region } from '../../../occ/occ-models/index';
+import { Region } from '../../../model/address.model';
 export declare const LOAD_REGIONS = "[User] Load Regions";
 export declare const LOAD_REGIONS_SUCCESS = "[User] Load Regions Success";
 export declare const LOAD_REGIONS_FAIL = "[User] Load Regions Fail";

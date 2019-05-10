@@ -1,4 +1,4 @@
-import { Component } from './occ.models';
+import { Component } from '../../model/cms.model';
 export declare type CmsComponent = Component;
 export interface CmsComponentList {
     component: CmsComponent[];

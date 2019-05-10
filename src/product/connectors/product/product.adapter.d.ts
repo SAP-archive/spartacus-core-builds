@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { UIProduct } from '../../model/product';
+import { Product } from '../../../model/product.model';
 export declare abstract class ProductAdapter {
     /**
      * Abstract method used to load product's details data.
@@ -8,5 +8,5 @@ export declare abstract class ProductAdapter {
      *
      * @param productCode The `productCode` for given product
      */
-    abstract load(productCode: string): Observable<UIProduct>;
+    abstract load(productCode: string): Observable<Product>;
 }

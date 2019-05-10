@@ -1,4 +1,4 @@
-import { UICart } from '../model';
+import { Cart } from '../../model/cart.model';
 export declare const ANONYMOUS_USERID = "anonymous";
 export declare class CartDataService {
     private _userId;
@@ -7,7 +7,7 @@ export declare class CartDataService {
     constructor();
     readonly hasCart: boolean;
     userId: string;
-    cart: UICart;
+    cart: Cart;
     getDetails: any;
     readonly cartId: string;
 }

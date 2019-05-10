@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Review } from '../../../occ/occ-models/occ.models';
+import { Review } from '../../../model/product.model';
 export declare abstract class ProductReviewsAdapter {
     /**
      * Abstract method used to load reviews for a given product.

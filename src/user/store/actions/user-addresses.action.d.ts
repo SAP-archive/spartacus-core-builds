@@ -1,5 +1,5 @@
-import { Address } from '../../../occ/occ-models/index';
 import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { Address } from '../../../model/address.model';
 export declare const LOAD_USER_ADDRESSES = "[User] Load User Addresses";
 export declare const LOAD_USER_ADDRESSES_FAIL = "[User] Load User Addresses Fail";
 export declare const LOAD_USER_ADDRESSES_SUCCESS = "[User] Load User Addresses Success";

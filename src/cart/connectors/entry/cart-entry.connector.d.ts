@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { CartModification } from '../../../occ/occ-models/occ.models';
 import { CartEntryAdapter } from './cart-entry.adapter';
+import { CartModification } from '../../../model/cart.model';
 export declare class CartEntryConnector {
     private adapter;
     constructor(adapter: CartEntryAdapter);

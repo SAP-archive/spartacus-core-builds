@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Address, AddressValidation } from '../../../occ/occ-models/index';
+import { Address, AddressValidation } from '../../../model/address.model';
 export declare const VERIFY_ADDRESS = "[Checkout] Verify Address";
 export declare const VERIFY_ADDRESS_FAIL = "[Checkout] Verify Address Fail";
 export declare const VERIFY_ADDRESS_SUCCESS = "[Checkout] Verify Address Success";

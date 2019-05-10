@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { StoreFinderSearchConfig, LongitudeLatitude } from './../model/index';
-import { StoreFinderSearchPage } from '../../occ/occ-models';
 import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
+import { StoreFinderSearchPage } from '../../model/store-finder.model';
 export declare class OccStoreFinderService {
     private http;
     private occEndpoints;

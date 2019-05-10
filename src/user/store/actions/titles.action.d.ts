@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Title } from '../../../occ/occ-models';
+import { Title } from '../../../model/misc.model';
 export declare const LOAD_TITLES = "[User] Load Tiltes";
 export declare const LOAD_TITLES_FAIL = "[User] Load Titles Fail";
 export declare const LOAD_TITLES_SUCCESS = "[User] Load Titles Success";

@@ -1,8 +1,7 @@
 import { SearchConfig } from '../../model/search-config';
-import { Suggestion } from '../../../occ/occ-models/occ.models';
-import { UIProductSearchPage } from '../../model/product-search-page';
 import { Observable } from 'rxjs';
+import { Suggestion, ProductSearchPage } from '../../../model/product-search.model';
 export declare abstract class ProductSearchAdapter {
-    abstract search(query: string, searchConfig?: SearchConfig): Observable<UIProductSearchPage>;
+    abstract search(query: string, searchConfig?: SearchConfig): Observable<ProductSearchPage>;
     abstract loadSuggestions(term: string, pageSize?: number): Observable<Suggestion[]>;
 }

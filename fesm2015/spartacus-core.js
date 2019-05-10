@@ -17,6 +17,80 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const PageType = {
+    CONTENT_PAGE: 'ContentPage',
+    PRODUCT_PAGE: 'ProductPage',
+    CATEGORY_PAGE: 'CategoryPage',
+    CATALOG_PAGE: 'CatalogPage',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const ImageType = {
+    PRIMARY: 'PRIMARY',
+    GALLERY: 'GALLERY',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const PriceType = {
+    BUY: 'BUY',
+    FROM: 'FROM',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const testestsd = 'sare';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @abstract
  */
@@ -276,422 +350,6 @@ class ClearRedirectUrl {
  */
 /** @type {?} */
 const ROUTING_FEATURE = 'router';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const PriceType = {
-    BUY: 'BUY',
-    FROM: 'FROM',
-};
-/** @enum {string} */
-const ImageType = {
-    PRIMARY: 'PRIMARY',
-    GALLERY: 'GALLERY',
-};
-/** @enum {string} */
-const Fields = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields1 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields2 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields3 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields4 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields5 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields6 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const PageType = {
-    CONTENT_PAGE: 'ContentPage',
-    PRODUCT_PAGE: 'ProductPage',
-    CATEGORY_PAGE: 'CategoryPage',
-    CATALOG_PAGE: 'CatalogPage',
-};
-/** @enum {string} */
-const Fields7 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields8 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields9 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields10 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields11 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields12 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields13 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields14 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields15 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields16 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const SortEnum = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields17 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields18 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields19 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields20 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields21 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields22 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields23 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields24 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields25 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields26 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields27 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields28 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields29 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields30 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields31 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields32 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields33 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields34 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields35 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields36 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields37 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields38 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields39 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields40 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields41 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields42 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields43 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields44 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields45 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields46 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields47 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields48 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields49 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields50 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields51 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields52 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields53 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields54 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields55 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields56 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields57 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields58 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields59 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields60 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Fields61 = {
-    BASIC: 'BASIC',
-    DEFAULT: 'DEFAULT',
-    FULL: 'FULL',
-};
-/** @enum {string} */
-const Type = {
-    All: 'all',
-    Product: 'product',
-    Order: 'order',
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -3931,16 +3589,6 @@ const getEntrySelectorFactory = (productCode) => {
 const getEntries = createSelector(getEntriesMap, entities => {
     return Object.keys(entities).map(code => entities[code]);
 });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -13382,61 +13030,6 @@ const itemsSelectorFactory = (nodeId) => {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
-/** @type {?} */
-const OCC_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
-/** @type {?} */
-const MEDIA_BASE_URL_META_TAG_NAME = 'media-backend-base-url';
-/** @type {?} */
-const MEDIA_BASE_URL_META_TAG_PLACEHOLDER = 'MEDIA_BACKEND_BASE_URL_VALUE';
-/**
- * @param {?} meta
- * @return {?}
- */
-function occServerConfigFromMetaTagFactory(meta) {
-    /** @type {?} */
-    const baseUrl = getMetaTagContent(OCC_BASE_URL_META_TAG_NAME, meta);
-    return baseUrl && baseUrl !== OCC_BASE_URL_META_TAG_PLACEHOLDER
-        ? { backend: { occ: { baseUrl } } }
-        : {};
-}
-/**
- * @param {?} meta
- * @return {?}
- */
-function mediaServerConfigFromMetaTagFactory(meta) {
-    /** @type {?} */
-    const baseUrl = getMetaTagContent(MEDIA_BASE_URL_META_TAG_NAME, meta);
-    return baseUrl && baseUrl !== MEDIA_BASE_URL_META_TAG_PLACEHOLDER
-        ? { backend: { media: { baseUrl } } }
-        : {};
-}
-/**
- * @param {?} name
- * @param {?} meta
- * @return {?}
- */
-function getMetaTagContent(name, meta) {
-    /** @type {?} */
-    const metaTag = meta.getTag(`name="${name}"`);
-    return metaTag && metaTag.content;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 const initialState$k = undefined;
 /**
  * @param {?=} state
@@ -14410,16 +14003,6 @@ class CxApiModule {
 CxApiModule.decorators = [
     { type: NgModule, args: [{},] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -16833,6 +16416,1908 @@ CxApiService.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
+/** @type {?} */
+const OCC_BASE_URL_META_TAG_PLACEHOLDER = 'OCC_BACKEND_BASE_URL_VALUE';
+/** @type {?} */
+const MEDIA_BASE_URL_META_TAG_NAME = 'media-backend-base-url';
+/** @type {?} */
+const MEDIA_BASE_URL_META_TAG_PLACEHOLDER = 'MEDIA_BACKEND_BASE_URL_VALUE';
+/**
+ * @param {?} meta
+ * @return {?}
+ */
+function occServerConfigFromMetaTagFactory(meta) {
+    /** @type {?} */
+    const baseUrl = getMetaTagContent(OCC_BASE_URL_META_TAG_NAME, meta);
+    return baseUrl && baseUrl !== OCC_BASE_URL_META_TAG_PLACEHOLDER
+        ? { backend: { occ: { baseUrl } } }
+        : {};
+}
+/**
+ * @param {?} meta
+ * @return {?}
+ */
+function mediaServerConfigFromMetaTagFactory(meta) {
+    /** @type {?} */
+    const baseUrl = getMetaTagContent(MEDIA_BASE_URL_META_TAG_NAME, meta);
+    return baseUrl && baseUrl !== MEDIA_BASE_URL_META_TAG_PLACEHOLDER
+        ? { backend: { media: { baseUrl } } }
+        : {};
+}
+/**
+ * @param {?} name
+ * @param {?} meta
+ * @return {?}
+ */
+function getMetaTagContent(name, meta) {
+    /** @type {?} */
+    const metaTag = meta.getTag(`name="${name}"`);
+    return metaTag && metaTag.content;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var Occ;
+(function (Occ) {
+    /**
+     *
+     * An interface representing Country.
+     * @record
+     */
+    function Country() { }
+    Occ.Country = Country;
+    /**
+     *
+     * An interface representing Region.
+     * @record
+     */
+    function Region() { }
+    Occ.Region = Region;
+    /**
+     *
+     * An interface representing RegionList.
+     * @record
+     */
+    function RegionList() { }
+    Occ.RegionList = RegionList;
+    /**
+     *
+     * An interface representing Address.
+     * @record
+     */
+    function Address() { }
+    Occ.Address = Address;
+    /**
+     *
+     * An interface representing AddressList.
+     * @record
+     */
+    function AddressList() { }
+    Occ.AddressList = AddressList;
+    /**
+     *
+     * An interface representing ErrorModel.
+     * Error message
+     *
+     * @record
+     */
+    function ErrorModel() { }
+    Occ.ErrorModel = ErrorModel;
+    /**
+     *
+     * An interface representing ErrorList.
+     * List of errors
+     *
+     * @record
+     */
+    function ErrorList() { }
+    Occ.ErrorList = ErrorList;
+    /**
+     *
+     * An interface representing AddressValidation.
+     * @record
+     */
+    function AddressValidation() { }
+    Occ.AddressValidation = AddressValidation;
+    /**
+     *
+     * An interface representing Price.
+     * @record
+     */
+    function Price() { }
+    Occ.Price = Price;
+    /**
+     *
+     * An interface representing Stock.
+     * @record
+     */
+    function Stock() { }
+    Occ.Stock = Stock;
+    /**
+     *
+     * An interface representing Image.
+     * @record
+     */
+    function Image() { }
+    Occ.Image = Image;
+    /**
+     *
+     * An interface representing VariantOptionQualifier.
+     * @record
+     */
+    function VariantOptionQualifier() { }
+    Occ.VariantOptionQualifier = VariantOptionQualifier;
+    /**
+     *
+     * An interface representing VariantOption.
+     * @record
+     */
+    function VariantOption() { }
+    Occ.VariantOption = VariantOption;
+    /**
+     *
+     * An interface representing BaseOption.
+     * @record
+     */
+    function BaseOption() { }
+    Occ.BaseOption = BaseOption;
+    /**
+     *
+     * An interface representing SearchQuery.
+     * @record
+     */
+    function SearchQuery() { }
+    Occ.SearchQuery = SearchQuery;
+    /**
+     *
+     * An interface representing SearchState.
+     * @record
+     */
+    function SearchState() { }
+    Occ.SearchState = SearchState;
+    /**
+     *
+     * An interface representing Breadcrumb.
+     * @record
+     */
+    function Breadcrumb() { }
+    Occ.Breadcrumb = Breadcrumb;
+    /**
+     *
+     * An interface representing Component.
+     * @record
+     */
+    function Component() { }
+    Occ.Component = Component;
+    /**
+     *
+     * An interface representing ComponentList.
+     * @record
+     */
+    function ComponentList() { }
+    Occ.ComponentList = ComponentList;
+    /**
+     *
+     * An interface representing ContentSlot.
+     * @record
+     */
+    function ContentSlot() { }
+    Occ.ContentSlot = ContentSlot;
+    /**
+     *
+     * An interface representing ContentSlotList.
+     * @record
+     */
+    function ContentSlotList() { }
+    Occ.ContentSlotList = ContentSlotList;
+    /**
+     *
+     * An interface representing CMSPage.
+     * @record
+     */
+    function CMSPage() { }
+    Occ.CMSPage = CMSPage;
+    /**
+     *
+     * An interface representing CardType.
+     * @record
+     */
+    function CardType() { }
+    Occ.CardType = CardType;
+    /**
+     *
+     * An interface representing CardTypeList.
+     * @record
+     */
+    function CardTypeList() { }
+    Occ.CardTypeList = CardTypeList;
+    /**
+     *
+     * An interface representing PromotionOrderEntryConsumed.
+     * @record
+     */
+    function PromotionOrderEntryConsumed() { }
+    Occ.PromotionOrderEntryConsumed = PromotionOrderEntryConsumed;
+    /**
+     *
+     * An interface representing PromotionRestriction.
+     * @record
+     */
+    function PromotionRestriction() { }
+    Occ.PromotionRestriction = PromotionRestriction;
+    /**
+     *
+     * An interface representing Promotion.
+     * @record
+     */
+    function Promotion() { }
+    Occ.Promotion = Promotion;
+    /**
+     *
+     * An interface representing PromotionResult.
+     * @record
+     */
+    function PromotionResult() { }
+    Occ.PromotionResult = PromotionResult;
+    /**
+     *
+     * An interface representing Currency.
+     * @record
+     */
+    function Currency() { }
+    Occ.Currency = Currency;
+    /**
+     *
+     * An interface representing Voucher.
+     * @record
+     */
+    function Voucher() { }
+    Occ.Voucher = Voucher;
+    /**
+     *
+     * An interface representing DeliveryMode.
+     * @record
+     */
+    function DeliveryMode() { }
+    Occ.DeliveryMode = DeliveryMode;
+    /**
+     *
+     * An interface representing GeoPoint.
+     * @record
+     */
+    function GeoPoint() { }
+    Occ.GeoPoint = GeoPoint;
+    /**
+     *
+     * An interface representing Time.
+     * @record
+     */
+    function Time() { }
+    Occ.Time = Time;
+    /**
+     *
+     * An interface representing SpecialOpeningDay.
+     * @record
+     */
+    function SpecialOpeningDay() { }
+    Occ.SpecialOpeningDay = SpecialOpeningDay;
+    /**
+     *
+     * An interface representing WeekdayOpeningDay.
+     * @record
+     */
+    function WeekdayOpeningDay() { }
+    Occ.WeekdayOpeningDay = WeekdayOpeningDay;
+    /**
+     *
+     * An interface representing OpeningSchedule.
+     * @record
+     */
+    function OpeningSchedule() { }
+    Occ.OpeningSchedule = OpeningSchedule;
+    /**
+     *
+     * An interface representing PointOfService.
+     * @record
+     */
+    function PointOfService() { }
+    Occ.PointOfService = PointOfService;
+    /**
+     *
+     * An interface representing Category.
+     * @record
+     */
+    function Category() { }
+    Occ.Category = Category;
+    /**
+     *
+     * An interface representing FeatureUnit.
+     * @record
+     */
+    function FeatureUnit() { }
+    Occ.FeatureUnit = FeatureUnit;
+    /**
+     *
+     * An interface representing FeatureValue.
+     * @record
+     */
+    function FeatureValue() { }
+    Occ.FeatureValue = FeatureValue;
+    /**
+     *
+     * An interface representing Feature.
+     * @record
+     */
+    function Feature() { }
+    Occ.Feature = Feature;
+    /**
+     *
+     * An interface representing Classification.
+     * @record
+     */
+    function Classification() { }
+    Occ.Classification = Classification;
+    /**
+     *
+     * An interface representing FutureStock.
+     * @record
+     */
+    function FutureStock() { }
+    Occ.FutureStock = FutureStock;
+    /**
+     *
+     * An interface representing PriceRange.
+     * @record
+     */
+    function PriceRange() { }
+    Occ.PriceRange = PriceRange;
+    /**
+     *
+     * An interface representing ProductReference.
+     * @record
+     */
+    function ProductReference() { }
+    Occ.ProductReference = ProductReference;
+    /**
+     *
+     * An interface representing Language.
+     * @record
+     */
+    function Language() { }
+    Occ.Language = Language;
+    /**
+     *
+     * An interface representing User.
+     * @record
+     */
+    function User() { }
+    Occ.User = User;
+    /**
+     *
+     * An interface representing Review.
+     * @record
+     */
+    function Review() { }
+    Occ.Review = Review;
+    /**
+     *
+     * An interface representing VariantCategory.
+     * @record
+     */
+    function VariantCategory() { }
+    Occ.VariantCategory = VariantCategory;
+    /**
+     *
+     * An interface representing VariantValueCategory.
+     * @record
+     */
+    function VariantValueCategory() { }
+    Occ.VariantValueCategory = VariantValueCategory;
+    /**
+     *
+     * An interface representing VariantMatrixElement.
+     * @record
+     */
+    function VariantMatrixElement() { }
+    Occ.VariantMatrixElement = VariantMatrixElement;
+    /**
+     *
+     * An interface representing Product.
+     * @record
+     */
+    function Product() { }
+    Occ.Product = Product;
+    /**
+     *
+     * An interface representing OrderEntry.
+     * @record
+     */
+    function OrderEntry() { }
+    Occ.OrderEntry = OrderEntry;
+    /**
+     *
+     * An interface representing DeliveryOrderEntryGroup.
+     * @record
+     */
+    function DeliveryOrderEntryGroup() { }
+    Occ.DeliveryOrderEntryGroup = DeliveryOrderEntryGroup;
+    /**
+     *
+     * An interface representing PaymentDetails.
+     * @record
+     */
+    function PaymentDetails() { }
+    Occ.PaymentDetails = PaymentDetails;
+    /**
+     *
+     * An interface representing PickupOrderEntryGroup.
+     * @record
+     */
+    function PickupOrderEntryGroup() { }
+    Occ.PickupOrderEntryGroup = PickupOrderEntryGroup;
+    /**
+     *
+     * An interface representing Principal.
+     * @record
+     */
+    function Principal() { }
+    Occ.Principal = Principal;
+    /**
+     *
+     * An interface representing Cart.
+     * @record
+     */
+    function Cart() { }
+    Occ.Cart = Cart;
+    /**
+     *
+     * An interface representing CartList.
+     * @record
+     */
+    function CartList() { }
+    Occ.CartList = CartList;
+    /**
+     *
+     * An interface representing CartModification.
+     * @record
+     */
+    function CartModification() { }
+    Occ.CartModification = CartModification;
+    /**
+     *
+     * An interface representing CategoryHierarchy.
+     * @record
+     */
+    function CategoryHierarchy() { }
+    Occ.CategoryHierarchy = CategoryHierarchy;
+    /**
+     *
+     * An interface representing CatalogVersion.
+     * @record
+     */
+    function CatalogVersion() { }
+    Occ.CatalogVersion = CatalogVersion;
+    /**
+     *
+     * An interface representing Catalog.
+     * @record
+     */
+    function Catalog() { }
+    Occ.Catalog = Catalog;
+    /**
+     *
+     * An interface representing CatalogList.
+     * @record
+     */
+    function CatalogList() { }
+    Occ.CatalogList = CatalogList;
+    /**
+     *
+     * An interface representing ComponentIDList.
+     * @record
+     */
+    function ComponentIDList() { }
+    Occ.ComponentIDList = ComponentIDList;
+    /**
+     *
+     * An interface representing ConsignmentEntry.
+     * @record
+     */
+    function ConsignmentEntry() { }
+    Occ.ConsignmentEntry = ConsignmentEntry;
+    /**
+     *
+     * An interface representing Consignment.
+     * @record
+     */
+    function Consignment() { }
+    Occ.Consignment = Consignment;
+    /**
+     *
+     * An interface representing CountryList.
+     * @record
+     */
+    function CountryList() { }
+    Occ.CountryList = CountryList;
+    /**
+     *
+     * An interface representing CurrencyList.
+     * @record
+     */
+    function CurrencyList() { }
+    Occ.CurrencyList = CurrencyList;
+    /**
+     *
+     * An interface representing DeliveryModeList.
+     * @record
+     */
+    function DeliveryModeList() { }
+    Occ.DeliveryModeList = DeliveryModeList;
+    /**
+     *
+     * An interface representing FacetValue.
+     * @record
+     */
+    function FacetValue() { }
+    Occ.FacetValue = FacetValue;
+    /**
+     *
+     * An interface representing Facet.
+     * @record
+     */
+    function Facet() { }
+    Occ.Facet = Facet;
+    /**
+     *
+     * An interface representing LanguageList.
+     * @record
+     */
+    function LanguageList() { }
+    Occ.LanguageList = LanguageList;
+    /**
+     *
+     * An interface representing Pagination.
+     * Pagination info
+     *
+     * @record
+     */
+    function Pagination() { }
+    Occ.Pagination = Pagination;
+    /**
+     *
+     * An interface representing Sort.
+     * Sort option
+     *
+     * @record
+     */
+    function Sort() { }
+    Occ.Sort = Sort;
+    /**
+     *
+     * An interface representing ListAdaptedComponents.
+     * @record
+     */
+    function ListAdaptedComponents() { }
+    Occ.ListAdaptedComponents = ListAdaptedComponents;
+    /**
+     *
+     * An interface representing MemberList.
+     * @record
+     */
+    function MemberList() { }
+    Occ.MemberList = MemberList;
+    /**
+     *
+     * An interface representing OrderEntryList.
+     * @record
+     */
+    function OrderEntryList() { }
+    Occ.OrderEntryList = OrderEntryList;
+    /**
+     *
+     * An interface representing OrderHistory.
+     * @record
+     */
+    function OrderHistory() { }
+    Occ.OrderHistory = OrderHistory;
+    /**
+     *
+     * An interface representing PaginationModel.
+     * @record
+     */
+    function PaginationModel() { }
+    Occ.PaginationModel = PaginationModel;
+    /**
+     *
+     * An interface representing SortModel.
+     * @record
+     */
+    function SortModel() { }
+    Occ.SortModel = SortModel;
+    /**
+     *
+     * An interface representing OrderHistoryList.
+     * @record
+     */
+    function OrderHistoryList() { }
+    Occ.OrderHistoryList = OrderHistoryList;
+    /**
+     *
+     * An interface representing OrderStatusUpdateElement.
+     * @record
+     */
+    function OrderStatusUpdateElement() { }
+    Occ.OrderStatusUpdateElement = OrderStatusUpdateElement;
+    /**
+     *
+     * An interface representing OrderStatusUpdateElementList.
+     * @record
+     */
+    function OrderStatusUpdateElementList() { }
+    Occ.OrderStatusUpdateElementList = OrderStatusUpdateElementList;
+    /**
+     *
+     * An interface representing Order.
+     * @record
+     */
+    function Order() { }
+    Occ.Order = Order;
+    /**
+     *
+     * An interface representing PaymentDetailsList.
+     * @record
+     */
+    function PaymentDetailsList() { }
+    Occ.PaymentDetailsList = PaymentDetailsList;
+    /**
+     *
+     * An interface representing PointOfServiceStock.
+     * @record
+     */
+    function PointOfServiceStock() { }
+    Occ.PointOfServiceStock = PointOfServiceStock;
+    /**
+     *
+     * An interface representing ProductExpressUpdateElement.
+     * @record
+     */
+    function ProductExpressUpdateElement() { }
+    Occ.ProductExpressUpdateElement = ProductExpressUpdateElement;
+    /**
+     *
+     * An interface representing ProductExpressUpdateElementList.
+     * @record
+     */
+    function ProductExpressUpdateElementList() { }
+    Occ.ProductExpressUpdateElementList = ProductExpressUpdateElementList;
+    /**
+     *
+     * An interface representing ProductList.
+     * @record
+     */
+    function ProductList() { }
+    Occ.ProductList = ProductList;
+    /**
+     *
+     * An interface representing ProductReferenceList.
+     * @record
+     */
+    function ProductReferenceList() { }
+    Occ.ProductReferenceList = ProductReferenceList;
+    /**
+     *
+     * An interface representing SpellingSuggestion.
+     * @record
+     */
+    function SpellingSuggestion() { }
+    Occ.SpellingSuggestion = SpellingSuggestion;
+    /**
+     *
+     * An interface representing ProductSearchPage.
+     * @record
+     */
+    function ProductSearchPage() { }
+    Occ.ProductSearchPage = ProductSearchPage;
+    /**
+     *
+     * An interface representing PromotionList.
+     * @record
+     */
+    function PromotionList() { }
+    Occ.PromotionList = PromotionList;
+    /**
+     *
+     * An interface representing PromotionResultList.
+     * @record
+     */
+    function PromotionResultList() { }
+    Occ.PromotionResultList = PromotionResultList;
+    /**
+     *
+     * An interface representing ReviewList.
+     * @record
+     */
+    function ReviewList() { }
+    Occ.ReviewList = ReviewList;
+    /**
+     *
+     * An interface representing SaveCartResult.
+     * @record
+     */
+    function SaveCartResult() { }
+    Occ.SaveCartResult = SaveCartResult;
+    /**
+     *
+     * An interface representing StoreFinderSearchPage.
+     * @record
+     */
+    function StoreFinderSearchPage() { }
+    Occ.StoreFinderSearchPage = StoreFinderSearchPage;
+    /**
+     *
+     * An interface representing StoreFinderStockSearchPage.
+     * @record
+     */
+    function StoreFinderStockSearchPage() { }
+    Occ.StoreFinderStockSearchPage = StoreFinderStockSearchPage;
+    /**
+     *
+     * An interface representing Suggestion.
+     * @record
+     */
+    function Suggestion() { }
+    Occ.Suggestion = Suggestion;
+    /**
+     *
+     * An interface representing SuggestionList.
+     * @record
+     */
+    function SuggestionList() { }
+    Occ.SuggestionList = SuggestionList;
+    /**
+     *
+     * An interface representing Title.
+     * @record
+     */
+    function Title() { }
+    Occ.Title = Title;
+    /**
+     *
+     * An interface representing TitleList.
+     * @record
+     */
+    function TitleList() { }
+    Occ.TitleList = TitleList;
+    /**
+     *
+     * An interface representing UserGroup.
+     * @record
+     */
+    function UserGroup() { }
+    Occ.UserGroup = UserGroup;
+    /**
+     *
+     * An interface representing UserGroupList.
+     * @record
+     */
+    function UserGroupList() { }
+    Occ.UserGroupList = UserGroupList;
+    /**
+     *
+     * An interface representing UserSignUp.
+     * @record
+     */
+    function UserSignUp() { }
+    Occ.UserSignUp = UserSignUp;
+    /**
+     *
+     * An interface representing VoucherList.
+     * @record
+     */
+    function VoucherList() { }
+    Occ.VoucherList = VoucherList;
+    /**
+     * Defines values for PriceType.
+     * Possible values include: 'BUY', 'FROM'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: PriceType = <PriceType>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let PriceType;
+    (function (PriceType) {
+        PriceType["BUY"] = "BUY";
+        PriceType["FROM"] = "FROM";
+    })(PriceType = Occ.PriceType || (Occ.PriceType = {}));
+    /**
+     * Defines values for ImageType.
+     * Possible values include: 'PRIMARY', 'GALLERY'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: ImageType = <ImageType>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let ImageType;
+    (function (ImageType) {
+        ImageType["PRIMARY"] = "PRIMARY";
+        ImageType["GALLERY"] = "GALLERY";
+    })(ImageType = Occ.ImageType || (Occ.ImageType = {}));
+    /**
+     * Defines values for Fields.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields = <Fields>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields;
+    (function (Fields) {
+        Fields["BASIC"] = "BASIC";
+        Fields["DEFAULT"] = "DEFAULT";
+        Fields["FULL"] = "FULL";
+    })(Fields = Occ.Fields || (Occ.Fields = {}));
+    /**
+     * Defines values for Fields1.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields1 = <Fields1>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields1;
+    (function (Fields1) {
+        Fields1["BASIC"] = "BASIC";
+        Fields1["DEFAULT"] = "DEFAULT";
+        Fields1["FULL"] = "FULL";
+    })(Fields1 = Occ.Fields1 || (Occ.Fields1 = {}));
+    /**
+     * Defines values for Fields2.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields2 = <Fields2>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields2;
+    (function (Fields2) {
+        Fields2["BASIC"] = "BASIC";
+        Fields2["DEFAULT"] = "DEFAULT";
+        Fields2["FULL"] = "FULL";
+    })(Fields2 = Occ.Fields2 || (Occ.Fields2 = {}));
+    /**
+     * Defines values for Fields3.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields3 = <Fields3>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields3;
+    (function (Fields3) {
+        Fields3["BASIC"] = "BASIC";
+        Fields3["DEFAULT"] = "DEFAULT";
+        Fields3["FULL"] = "FULL";
+    })(Fields3 = Occ.Fields3 || (Occ.Fields3 = {}));
+    /**
+     * Defines values for Fields4.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields4 = <Fields4>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields4;
+    (function (Fields4) {
+        Fields4["BASIC"] = "BASIC";
+        Fields4["DEFAULT"] = "DEFAULT";
+        Fields4["FULL"] = "FULL";
+    })(Fields4 = Occ.Fields4 || (Occ.Fields4 = {}));
+    /**
+     * Defines values for Fields5.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields5 = <Fields5>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields5;
+    (function (Fields5) {
+        Fields5["BASIC"] = "BASIC";
+        Fields5["DEFAULT"] = "DEFAULT";
+        Fields5["FULL"] = "FULL";
+    })(Fields5 = Occ.Fields5 || (Occ.Fields5 = {}));
+    /**
+     * Defines values for Fields6.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields6 = <Fields6>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields6;
+    (function (Fields6) {
+        Fields6["BASIC"] = "BASIC";
+        Fields6["DEFAULT"] = "DEFAULT";
+        Fields6["FULL"] = "FULL";
+    })(Fields6 = Occ.Fields6 || (Occ.Fields6 = {}));
+    /**
+     * Defines values for PageType.
+     * Possible values include: 'ContentPage', 'ProductPage', 'CategoryPage',
+     * 'CatalogPage'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: PageType = <PageType>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let PageType;
+    (function (PageType) {
+        PageType["CONTENT_PAGE"] = "ContentPage";
+        PageType["PRODUCT_PAGE"] = "ProductPage";
+        PageType["CATEGORY_PAGE"] = "CategoryPage";
+        PageType["CATALOG_PAGE"] = "CatalogPage";
+    })(PageType = Occ.PageType || (Occ.PageType = {}));
+    /**
+     * Defines values for Fields7.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields7 = <Fields7>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields7;
+    (function (Fields7) {
+        Fields7["BASIC"] = "BASIC";
+        Fields7["DEFAULT"] = "DEFAULT";
+        Fields7["FULL"] = "FULL";
+    })(Fields7 = Occ.Fields7 || (Occ.Fields7 = {}));
+    /**
+     * Defines values for Fields8.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields8 = <Fields8>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields8;
+    (function (Fields8) {
+        Fields8["BASIC"] = "BASIC";
+        Fields8["DEFAULT"] = "DEFAULT";
+        Fields8["FULL"] = "FULL";
+    })(Fields8 = Occ.Fields8 || (Occ.Fields8 = {}));
+    /**
+     * Defines values for Fields9.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields9 = <Fields9>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields9;
+    (function (Fields9) {
+        Fields9["BASIC"] = "BASIC";
+        Fields9["DEFAULT"] = "DEFAULT";
+        Fields9["FULL"] = "FULL";
+    })(Fields9 = Occ.Fields9 || (Occ.Fields9 = {}));
+    /**
+     * Defines values for Fields10.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields10 = <Fields10>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields10;
+    (function (Fields10) {
+        Fields10["BASIC"] = "BASIC";
+        Fields10["DEFAULT"] = "DEFAULT";
+        Fields10["FULL"] = "FULL";
+    })(Fields10 = Occ.Fields10 || (Occ.Fields10 = {}));
+    /**
+     * Defines values for Fields11.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields11 = <Fields11>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields11;
+    (function (Fields11) {
+        Fields11["BASIC"] = "BASIC";
+        Fields11["DEFAULT"] = "DEFAULT";
+        Fields11["FULL"] = "FULL";
+    })(Fields11 = Occ.Fields11 || (Occ.Fields11 = {}));
+    /**
+     * Defines values for Fields12.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields12 = <Fields12>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields12;
+    (function (Fields12) {
+        Fields12["BASIC"] = "BASIC";
+        Fields12["DEFAULT"] = "DEFAULT";
+        Fields12["FULL"] = "FULL";
+    })(Fields12 = Occ.Fields12 || (Occ.Fields12 = {}));
+    /**
+     * Defines values for Fields13.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields13 = <Fields13>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields13;
+    (function (Fields13) {
+        Fields13["BASIC"] = "BASIC";
+        Fields13["DEFAULT"] = "DEFAULT";
+        Fields13["FULL"] = "FULL";
+    })(Fields13 = Occ.Fields13 || (Occ.Fields13 = {}));
+    /**
+     * Defines values for Fields14.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields14 = <Fields14>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields14;
+    (function (Fields14) {
+        Fields14["BASIC"] = "BASIC";
+        Fields14["DEFAULT"] = "DEFAULT";
+        Fields14["FULL"] = "FULL";
+    })(Fields14 = Occ.Fields14 || (Occ.Fields14 = {}));
+    /**
+     * Defines values for Fields15.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields15 = <Fields15>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields15;
+    (function (Fields15) {
+        Fields15["BASIC"] = "BASIC";
+        Fields15["DEFAULT"] = "DEFAULT";
+        Fields15["FULL"] = "FULL";
+    })(Fields15 = Occ.Fields15 || (Occ.Fields15 = {}));
+    /**
+     * Defines values for Fields16.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields16 = <Fields16>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields16;
+    (function (Fields16) {
+        Fields16["BASIC"] = "BASIC";
+        Fields16["DEFAULT"] = "DEFAULT";
+        Fields16["FULL"] = "FULL";
+    })(Fields16 = Occ.Fields16 || (Occ.Fields16 = {}));
+    /**
+     * Defines values for SortEnum.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: SortEnum = <SortEnum>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let SortEnum;
+    (function (SortEnum) {
+        SortEnum["BASIC"] = "BASIC";
+        SortEnum["DEFAULT"] = "DEFAULT";
+        SortEnum["FULL"] = "FULL";
+    })(SortEnum = Occ.SortEnum || (Occ.SortEnum = {}));
+    /**
+     * Defines values for Fields17.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields17 = <Fields17>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields17;
+    (function (Fields17) {
+        Fields17["BASIC"] = "BASIC";
+        Fields17["DEFAULT"] = "DEFAULT";
+        Fields17["FULL"] = "FULL";
+    })(Fields17 = Occ.Fields17 || (Occ.Fields17 = {}));
+    /**
+     * Defines values for Fields18.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields18 = <Fields18>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields18;
+    (function (Fields18) {
+        Fields18["BASIC"] = "BASIC";
+        Fields18["DEFAULT"] = "DEFAULT";
+        Fields18["FULL"] = "FULL";
+    })(Fields18 = Occ.Fields18 || (Occ.Fields18 = {}));
+    /**
+     * Defines values for Fields19.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields19 = <Fields19>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields19;
+    (function (Fields19) {
+        Fields19["BASIC"] = "BASIC";
+        Fields19["DEFAULT"] = "DEFAULT";
+        Fields19["FULL"] = "FULL";
+    })(Fields19 = Occ.Fields19 || (Occ.Fields19 = {}));
+    /**
+     * Defines values for Fields20.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields20 = <Fields20>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields20;
+    (function (Fields20) {
+        Fields20["BASIC"] = "BASIC";
+        Fields20["DEFAULT"] = "DEFAULT";
+        Fields20["FULL"] = "FULL";
+    })(Fields20 = Occ.Fields20 || (Occ.Fields20 = {}));
+    /**
+     * Defines values for Fields21.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields21 = <Fields21>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields21;
+    (function (Fields21) {
+        Fields21["BASIC"] = "BASIC";
+        Fields21["DEFAULT"] = "DEFAULT";
+        Fields21["FULL"] = "FULL";
+    })(Fields21 = Occ.Fields21 || (Occ.Fields21 = {}));
+    /**
+     * Defines values for Fields22.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields22 = <Fields22>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields22;
+    (function (Fields22) {
+        Fields22["BASIC"] = "BASIC";
+        Fields22["DEFAULT"] = "DEFAULT";
+        Fields22["FULL"] = "FULL";
+    })(Fields22 = Occ.Fields22 || (Occ.Fields22 = {}));
+    /**
+     * Defines values for Fields23.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields23 = <Fields23>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields23;
+    (function (Fields23) {
+        Fields23["BASIC"] = "BASIC";
+        Fields23["DEFAULT"] = "DEFAULT";
+        Fields23["FULL"] = "FULL";
+    })(Fields23 = Occ.Fields23 || (Occ.Fields23 = {}));
+    /**
+     * Defines values for Fields24.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields24 = <Fields24>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields24;
+    (function (Fields24) {
+        Fields24["BASIC"] = "BASIC";
+        Fields24["DEFAULT"] = "DEFAULT";
+        Fields24["FULL"] = "FULL";
+    })(Fields24 = Occ.Fields24 || (Occ.Fields24 = {}));
+    /**
+     * Defines values for Fields25.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields25 = <Fields25>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields25;
+    (function (Fields25) {
+        Fields25["BASIC"] = "BASIC";
+        Fields25["DEFAULT"] = "DEFAULT";
+        Fields25["FULL"] = "FULL";
+    })(Fields25 = Occ.Fields25 || (Occ.Fields25 = {}));
+    /**
+     * Defines values for Fields26.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields26 = <Fields26>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields26;
+    (function (Fields26) {
+        Fields26["BASIC"] = "BASIC";
+        Fields26["DEFAULT"] = "DEFAULT";
+        Fields26["FULL"] = "FULL";
+    })(Fields26 = Occ.Fields26 || (Occ.Fields26 = {}));
+    /**
+     * Defines values for Fields27.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields27 = <Fields27>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields27;
+    (function (Fields27) {
+        Fields27["BASIC"] = "BASIC";
+        Fields27["DEFAULT"] = "DEFAULT";
+        Fields27["FULL"] = "FULL";
+    })(Fields27 = Occ.Fields27 || (Occ.Fields27 = {}));
+    /**
+     * Defines values for Fields28.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields28 = <Fields28>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields28;
+    (function (Fields28) {
+        Fields28["BASIC"] = "BASIC";
+        Fields28["DEFAULT"] = "DEFAULT";
+        Fields28["FULL"] = "FULL";
+    })(Fields28 = Occ.Fields28 || (Occ.Fields28 = {}));
+    /**
+     * Defines values for Fields29.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields29 = <Fields29>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields29;
+    (function (Fields29) {
+        Fields29["BASIC"] = "BASIC";
+        Fields29["DEFAULT"] = "DEFAULT";
+        Fields29["FULL"] = "FULL";
+    })(Fields29 = Occ.Fields29 || (Occ.Fields29 = {}));
+    /**
+     * Defines values for Fields30.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields30 = <Fields30>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields30;
+    (function (Fields30) {
+        Fields30["BASIC"] = "BASIC";
+        Fields30["DEFAULT"] = "DEFAULT";
+        Fields30["FULL"] = "FULL";
+    })(Fields30 = Occ.Fields30 || (Occ.Fields30 = {}));
+    /**
+     * Defines values for Fields31.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields31 = <Fields31>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields31;
+    (function (Fields31) {
+        Fields31["BASIC"] = "BASIC";
+        Fields31["DEFAULT"] = "DEFAULT";
+        Fields31["FULL"] = "FULL";
+    })(Fields31 = Occ.Fields31 || (Occ.Fields31 = {}));
+    /**
+     * Defines values for Fields32.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields32 = <Fields32>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields32;
+    (function (Fields32) {
+        Fields32["BASIC"] = "BASIC";
+        Fields32["DEFAULT"] = "DEFAULT";
+        Fields32["FULL"] = "FULL";
+    })(Fields32 = Occ.Fields32 || (Occ.Fields32 = {}));
+    /**
+     * Defines values for Fields33.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields33 = <Fields33>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields33;
+    (function (Fields33) {
+        Fields33["BASIC"] = "BASIC";
+        Fields33["DEFAULT"] = "DEFAULT";
+        Fields33["FULL"] = "FULL";
+    })(Fields33 = Occ.Fields33 || (Occ.Fields33 = {}));
+    /**
+     * Defines values for Fields34.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields34 = <Fields34>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields34;
+    (function (Fields34) {
+        Fields34["BASIC"] = "BASIC";
+        Fields34["DEFAULT"] = "DEFAULT";
+        Fields34["FULL"] = "FULL";
+    })(Fields34 = Occ.Fields34 || (Occ.Fields34 = {}));
+    /**
+     * Defines values for Fields35.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields35 = <Fields35>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields35;
+    (function (Fields35) {
+        Fields35["BASIC"] = "BASIC";
+        Fields35["DEFAULT"] = "DEFAULT";
+        Fields35["FULL"] = "FULL";
+    })(Fields35 = Occ.Fields35 || (Occ.Fields35 = {}));
+    /**
+     * Defines values for Fields36.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields36 = <Fields36>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields36;
+    (function (Fields36) {
+        Fields36["BASIC"] = "BASIC";
+        Fields36["DEFAULT"] = "DEFAULT";
+        Fields36["FULL"] = "FULL";
+    })(Fields36 = Occ.Fields36 || (Occ.Fields36 = {}));
+    /**
+     * Defines values for Fields37.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields37 = <Fields37>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields37;
+    (function (Fields37) {
+        Fields37["BASIC"] = "BASIC";
+        Fields37["DEFAULT"] = "DEFAULT";
+        Fields37["FULL"] = "FULL";
+    })(Fields37 = Occ.Fields37 || (Occ.Fields37 = {}));
+    /**
+     * Defines values for Fields38.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields38 = <Fields38>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields38;
+    (function (Fields38) {
+        Fields38["BASIC"] = "BASIC";
+        Fields38["DEFAULT"] = "DEFAULT";
+        Fields38["FULL"] = "FULL";
+    })(Fields38 = Occ.Fields38 || (Occ.Fields38 = {}));
+    /**
+     * Defines values for Fields39.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields39 = <Fields39>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields39;
+    (function (Fields39) {
+        Fields39["BASIC"] = "BASIC";
+        Fields39["DEFAULT"] = "DEFAULT";
+        Fields39["FULL"] = "FULL";
+    })(Fields39 = Occ.Fields39 || (Occ.Fields39 = {}));
+    /**
+     * Defines values for Fields40.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields40 = <Fields40>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields40;
+    (function (Fields40) {
+        Fields40["BASIC"] = "BASIC";
+        Fields40["DEFAULT"] = "DEFAULT";
+        Fields40["FULL"] = "FULL";
+    })(Fields40 = Occ.Fields40 || (Occ.Fields40 = {}));
+    /**
+     * Defines values for Fields41.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields41 = <Fields41>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields41;
+    (function (Fields41) {
+        Fields41["BASIC"] = "BASIC";
+        Fields41["DEFAULT"] = "DEFAULT";
+        Fields41["FULL"] = "FULL";
+    })(Fields41 = Occ.Fields41 || (Occ.Fields41 = {}));
+    /**
+     * Defines values for Fields42.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields42 = <Fields42>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields42;
+    (function (Fields42) {
+        Fields42["BASIC"] = "BASIC";
+        Fields42["DEFAULT"] = "DEFAULT";
+        Fields42["FULL"] = "FULL";
+    })(Fields42 = Occ.Fields42 || (Occ.Fields42 = {}));
+    /**
+     * Defines values for Fields43.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields43 = <Fields43>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields43;
+    (function (Fields43) {
+        Fields43["BASIC"] = "BASIC";
+        Fields43["DEFAULT"] = "DEFAULT";
+        Fields43["FULL"] = "FULL";
+    })(Fields43 = Occ.Fields43 || (Occ.Fields43 = {}));
+    /**
+     * Defines values for Fields44.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields44 = <Fields44>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields44;
+    (function (Fields44) {
+        Fields44["BASIC"] = "BASIC";
+        Fields44["DEFAULT"] = "DEFAULT";
+        Fields44["FULL"] = "FULL";
+    })(Fields44 = Occ.Fields44 || (Occ.Fields44 = {}));
+    /**
+     * Defines values for Fields45.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields45 = <Fields45>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields45;
+    (function (Fields45) {
+        Fields45["BASIC"] = "BASIC";
+        Fields45["DEFAULT"] = "DEFAULT";
+        Fields45["FULL"] = "FULL";
+    })(Fields45 = Occ.Fields45 || (Occ.Fields45 = {}));
+    /**
+     * Defines values for Fields46.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields46 = <Fields46>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields46;
+    (function (Fields46) {
+        Fields46["BASIC"] = "BASIC";
+        Fields46["DEFAULT"] = "DEFAULT";
+        Fields46["FULL"] = "FULL";
+    })(Fields46 = Occ.Fields46 || (Occ.Fields46 = {}));
+    /**
+     * Defines values for Fields47.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields47 = <Fields47>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields47;
+    (function (Fields47) {
+        Fields47["BASIC"] = "BASIC";
+        Fields47["DEFAULT"] = "DEFAULT";
+        Fields47["FULL"] = "FULL";
+    })(Fields47 = Occ.Fields47 || (Occ.Fields47 = {}));
+    /**
+     * Defines values for Fields48.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields48 = <Fields48>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields48;
+    (function (Fields48) {
+        Fields48["BASIC"] = "BASIC";
+        Fields48["DEFAULT"] = "DEFAULT";
+        Fields48["FULL"] = "FULL";
+    })(Fields48 = Occ.Fields48 || (Occ.Fields48 = {}));
+    /**
+     * Defines values for Fields49.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields49 = <Fields49>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields49;
+    (function (Fields49) {
+        Fields49["BASIC"] = "BASIC";
+        Fields49["DEFAULT"] = "DEFAULT";
+        Fields49["FULL"] = "FULL";
+    })(Fields49 = Occ.Fields49 || (Occ.Fields49 = {}));
+    /**
+     * Defines values for Fields50.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields50 = <Fields50>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields50;
+    (function (Fields50) {
+        Fields50["BASIC"] = "BASIC";
+        Fields50["DEFAULT"] = "DEFAULT";
+        Fields50["FULL"] = "FULL";
+    })(Fields50 = Occ.Fields50 || (Occ.Fields50 = {}));
+    /**
+     * Defines values for Fields51.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields51 = <Fields51>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields51;
+    (function (Fields51) {
+        Fields51["BASIC"] = "BASIC";
+        Fields51["DEFAULT"] = "DEFAULT";
+        Fields51["FULL"] = "FULL";
+    })(Fields51 = Occ.Fields51 || (Occ.Fields51 = {}));
+    /**
+     * Defines values for Fields52.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields52 = <Fields52>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields52;
+    (function (Fields52) {
+        Fields52["BASIC"] = "BASIC";
+        Fields52["DEFAULT"] = "DEFAULT";
+        Fields52["FULL"] = "FULL";
+    })(Fields52 = Occ.Fields52 || (Occ.Fields52 = {}));
+    /**
+     * Defines values for Fields53.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields53 = <Fields53>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields53;
+    (function (Fields53) {
+        Fields53["BASIC"] = "BASIC";
+        Fields53["DEFAULT"] = "DEFAULT";
+        Fields53["FULL"] = "FULL";
+    })(Fields53 = Occ.Fields53 || (Occ.Fields53 = {}));
+    /**
+     * Defines values for Fields54.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields54 = <Fields54>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields54;
+    (function (Fields54) {
+        Fields54["BASIC"] = "BASIC";
+        Fields54["DEFAULT"] = "DEFAULT";
+        Fields54["FULL"] = "FULL";
+    })(Fields54 = Occ.Fields54 || (Occ.Fields54 = {}));
+    /**
+     * Defines values for Fields55.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields55 = <Fields55>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields55;
+    (function (Fields55) {
+        Fields55["BASIC"] = "BASIC";
+        Fields55["DEFAULT"] = "DEFAULT";
+        Fields55["FULL"] = "FULL";
+    })(Fields55 = Occ.Fields55 || (Occ.Fields55 = {}));
+    /**
+     * Defines values for Fields56.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields56 = <Fields56>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields56;
+    (function (Fields56) {
+        Fields56["BASIC"] = "BASIC";
+        Fields56["DEFAULT"] = "DEFAULT";
+        Fields56["FULL"] = "FULL";
+    })(Fields56 = Occ.Fields56 || (Occ.Fields56 = {}));
+    /**
+     * Defines values for Fields57.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields57 = <Fields57>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields57;
+    (function (Fields57) {
+        Fields57["BASIC"] = "BASIC";
+        Fields57["DEFAULT"] = "DEFAULT";
+        Fields57["FULL"] = "FULL";
+    })(Fields57 = Occ.Fields57 || (Occ.Fields57 = {}));
+    /**
+     * Defines values for Fields58.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields58 = <Fields58>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields58;
+    (function (Fields58) {
+        Fields58["BASIC"] = "BASIC";
+        Fields58["DEFAULT"] = "DEFAULT";
+        Fields58["FULL"] = "FULL";
+    })(Fields58 = Occ.Fields58 || (Occ.Fields58 = {}));
+    /**
+     * Defines values for Fields59.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields59 = <Fields59>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields59;
+    (function (Fields59) {
+        Fields59["BASIC"] = "BASIC";
+        Fields59["DEFAULT"] = "DEFAULT";
+        Fields59["FULL"] = "FULL";
+    })(Fields59 = Occ.Fields59 || (Occ.Fields59 = {}));
+    /**
+     * Defines values for Fields60.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields60 = <Fields60>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields60;
+    (function (Fields60) {
+        Fields60["BASIC"] = "BASIC";
+        Fields60["DEFAULT"] = "DEFAULT";
+        Fields60["FULL"] = "FULL";
+    })(Fields60 = Occ.Fields60 || (Occ.Fields60 = {}));
+    /**
+     * Defines values for Fields61.
+     * Possible values include: 'BASIC', 'DEFAULT', 'FULL'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Fields61 = <Fields61>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Fields61;
+    (function (Fields61) {
+        Fields61["BASIC"] = "BASIC";
+        Fields61["DEFAULT"] = "DEFAULT";
+        Fields61["FULL"] = "FULL";
+    })(Fields61 = Occ.Fields61 || (Occ.Fields61 = {}));
+    /**
+     * Defines values for Type.
+     * Possible values include: 'all', 'product', 'order'
+     * There could be more values for this enum apart from the ones defined here.If
+     * you want to set a value that is not from the known values then you can do
+     * the following:
+     * let param: Type = <Type>"someUnknownValueThatWillStillBeValid";
+     * @readonly
+     * @enum {string}
+     */
+    let Type;
+    (function (Type) {
+        Type["All"] = "all";
+        Type["Product"] = "product";
+        Type["Order"] = "order";
+    })(Type = Occ.Type || (Occ.Type = {}));
+})(Occ || (Occ = {}));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class SmartEditService {
     /**
      * @param {?} cmsService
@@ -18196,6 +19681,6 @@ PersonalizationModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, PriceType, ImageType, Fields, Fields1, Fields2, Fields3, Fields4, Fields5, Fields6, PageType, Fields7, Fields8, Fields9, Fields10, Fields11, Fields12, Fields13, Fields14, Fields15, Fields16, SortEnum, Fields17, Fields18, Fields19, Fields20, Fields21, Fields22, Fields23, Fields24, Fields25, Fields26, Fields27, Fields28, Fields29, Fields30, Fields31, Fields32, Fields33, Fields34, Fields35, Fields36, Fields37, Fields38, Fields39, Fields40, Fields41, Fields42, Fields43, Fields44, Fields45, Fields46, Fields47, Fields48, Fields49, Fields50, Fields51, Fields52, Fields53, Fields54, Fields55, Fields56, Fields57, Fields58, Fields59, Fields60, Fields61, Type, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductOccModule, OccProductAdapter, OccProductSearchAdapter, OccProductReviewsAdapter, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$5 as getReducers, clearUserState, reducerToken$5 as reducerToken, reducerProvider$5 as reducerProvider, metaReducers$2 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$5 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$j as ɵcn, clearCheckoutState as ɵck, getReducers$7 as ɵch, metaReducers$3 as ɵcl, reducerProvider$7 as ɵcj, reducerToken$7 as ɵci, CmsStoreModule as ɵct, cmsStoreConfigFactory as ɵcs, ComponentEffects as ɵdb, effects$6 as ɵcz, NavigationEntryItemEffects as ɵdc, PageEffects as ɵda, clearCmsState as ɵcx, getReducers$8 as ɵcu, metaReducers$4 as ɵcy, reducerProvider$8 as ɵcw, reducerToken$8 as ɵcv, reducer$k as ɵdg, reducer$l as ɵdd, reducer$m as ɵdf, ConfigModule as ɵff, ServerConfig as ɵeb, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵea, reducer$8 as ɵdz, getReducers$4 as ɵdw, reducerProvider$4 as ɵdy, reducerToken$4 as ɵdx, defaultI18nConfig as ɵec, i18nextInit as ɵee, i18nextProviders as ɵed, MockDatePipe as ɵef, MockTranslationService as ɵeg, PageType as ɵde, PageType as ɵcp, defaultPersonalizationConfig as ɵgx, interceptors$3 as ɵgy, OccPersonalizationIdInterceptor as ɵgz, ProcessModule as ɵgq, PROCESS_FEATURE as ɵgs, ProcessStoreModule as ɵgr, getReducers$6 as ɵgt, reducerProvider$6 as ɵgv, reducerToken$6 as ɵgu, defaultOccProductConfig as ɵeh, effects$7 as ɵds, ProductReviewsEffects as ɵdv, ProductsSearchEffects as ɵdt, ProductEffects as ɵdu, ProductStoreModule as ɵeq, productStoreConfigFactory as ɵep, clearProductsState as ɵdq, getReducers$9 as ɵdn, metaReducers$5 as ɵdr, reducerProvider$9 as ɵdp, reducerToken$9 as ɵdo, reducer$o as ɵer, getAuxSearchResults as ɵen, getProductSuggestions as ɵeo, getSearchResults as ɵem, reducer$n as ɵel, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵes, BaseSiteService as ɵbk, SiteContextParamsService as ɵey, SiteContextRoutesHandler as ɵfa, SiteContextUrlSerializer as ɵez, CurrenciesEffects as ɵdm, effects$2 as ɵdk, LanguagesEffects as ɵdl, reducer$5 as ɵex, reducer$4 as ɵew, getReducers$3 as ɵdh, reducerProvider$3 as ɵdj, reducerToken$3 as ɵdi, reducer$3 as ɵev, SiteContextStoreModule as ɵeu, siteContextStoreConfigFactory as ɵet, CmsTicketInterceptor as ɵfc, interceptors$2 as ɵfb, SmartEditService as ɵfd, EntityFailAction as ɵcq, EntityLoadAction as ɵco, EntityResetAction as ɵfp, EntitySuccessAction as ɵcr, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfg, FindStoresEffect as ɵfm, effects$8 as ɵfl, ViewAllStoresEffect as ɵfn, getReducers$a as ɵfi, reducerProvider$a as ɵfk, reducerToken$a as ɵfj, getStoreFinderState as ɵfe, StoreFinderStoreModule as ɵfh, BillingCountriesEffect as ɵgc, DeliveryCountriesEffects as ɵgd, ForgotPasswordEffects as ɵgn, effects$4 as ɵgb, OrderDetailsEffect as ɵge, UserPaymentMethodsEffects as ɵgf, RegionsEffects as ɵgg, ResetPasswordEffects as ɵgh, TitlesEffects as ɵgi, UpdateEmailEffects as ɵgo, UpdatePasswordEffects as ɵgp, UserAddressesEffects as ɵgj, UserDetailsEffects as ɵgk, UserOrdersEffect as ɵgl, UserRegisterEffects as ɵgm, reducer$9 as ɵfs, reducer$a as ɵfw, reducer$b as ɵfv, reducer$c as ɵft, reducer$d as ɵfy, reducer$e as ɵfz, reducer$f as ɵfx, reducer$g as ɵfr, reducer$h as ɵfq, reducer$i as ɵfu, UserStoreModule as ɵga, StripHtmlPipe as ɵgw };
+export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductOccModule, OccProductAdapter, OccProductSearchAdapter, OccProductReviewsAdapter, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, OccSiteService, SiteContextOccModule, SiteContextInterceptor, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderService, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$5 as getReducers, clearUserState, reducerToken$5 as reducerToken, reducerProvider$5 as reducerProvider, metaReducers$2 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$5 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$j as ɵcn, clearCheckoutState as ɵck, getReducers$7 as ɵch, metaReducers$3 as ɵcl, reducerProvider$7 as ɵcj, reducerToken$7 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$6 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$8 as ɵct, metaReducers$4 as ɵcx, reducerProvider$8 as ɵcv, reducerToken$8 as ɵcu, reducer$k as ɵde, reducer$l as ɵdc, reducer$m as ɵdd, ConfigModule as ɵfa, ServerConfig as ɵdz, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdy, reducer$8 as ɵdx, getReducers$4 as ɵdu, reducerProvider$4 as ɵdw, reducerToken$4 as ɵdv, defaultI18nConfig as ɵea, i18nextInit as ɵec, i18nextProviders as ɵeb, MockDatePipe as ɵed, MockTranslationService as ɵee, defaultPersonalizationConfig as ɵgr, interceptors$3 as ɵgs, OccPersonalizationIdInterceptor as ɵgt, ProcessModule as ɵgk, PROCESS_FEATURE as ɵgm, ProcessStoreModule as ɵgl, getReducers$6 as ɵgn, reducerProvider$6 as ɵgp, reducerToken$6 as ɵgo, defaultOccProductConfig as ɵef, effects$7 as ɵdq, ProductReviewsEffects as ɵdt, ProductsSearchEffects as ɵdr, ProductEffects as ɵds, ProductStoreModule as ɵel, productStoreConfigFactory as ɵek, clearProductsState as ɵdo, getReducers$9 as ɵdl, metaReducers$5 as ɵdp, reducerProvider$9 as ɵdn, reducerToken$9 as ɵdm, reducer$o as ɵem, getAuxSearchResults as ɵei, getProductSuggestions as ɵej, getSearchResults as ɵeh, reducer$n as ɵeg, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵen, BaseSiteService as ɵbk, SiteContextParamsService as ɵet, SiteContextRoutesHandler as ɵev, SiteContextUrlSerializer as ɵeu, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵes, reducer$4 as ɵer, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵeq, SiteContextStoreModule as ɵep, siteContextStoreConfigFactory as ɵeo, CmsTicketInterceptor as ɵex, interceptors$2 as ɵew, SmartEditService as ɵey, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfj, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfb, FindStoresEffect as ɵfh, effects$8 as ɵfg, ViewAllStoresEffect as ɵfi, getReducers$a as ɵfd, reducerProvider$a as ɵff, reducerToken$a as ɵfe, getStoreFinderState as ɵez, StoreFinderStoreModule as ɵfc, BillingCountriesEffect as ɵfw, DeliveryCountriesEffects as ɵfx, ForgotPasswordEffects as ɵgh, effects$4 as ɵfv, OrderDetailsEffect as ɵfy, UserPaymentMethodsEffects as ɵfz, RegionsEffects as ɵga, ResetPasswordEffects as ɵgb, TitlesEffects as ɵgc, UpdateEmailEffects as ɵgi, UpdatePasswordEffects as ɵgj, UserAddressesEffects as ɵgd, UserDetailsEffects as ɵge, UserOrdersEffect as ɵgf, UserRegisterEffects as ɵgg, reducer$9 as ɵfm, reducer$a as ɵfq, reducer$b as ɵfp, reducer$c as ɵfn, reducer$d as ɵfs, reducer$e as ɵft, reducer$f as ɵfr, reducer$g as ɵfl, reducer$h as ɵfk, reducer$i as ɵfo, UserStoreModule as ɵfu, StripHtmlPipe as ɵgq };
 
 //# sourceMappingURL=spartacus-core.js.map

@@ -1,7 +1,9 @@
 import { MemoizedSelector } from '@ngrx/store';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { CheckoutState, CheckoutStepsState, StateWithCheckout } from '../checkout-state';
-import { DeliveryMode, Address, Order, PaymentDetails } from '../../../occ/occ-models/index';
+import { DeliveryMode, Order } from '../../../model/order.model';
+import { PaymentDetails } from '../../../model/cart.model';
+import { Address } from '../../../model/address.model';
 export declare const getDeliveryAddressSelector: (state: CheckoutStepsState) => Address;
 export declare const getDeliveryModeSelector: (state: CheckoutStepsState) => {
     supported: {

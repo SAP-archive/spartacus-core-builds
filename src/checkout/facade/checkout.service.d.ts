@@ -2,7 +2,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromCheckoutStore from '../store/index';
 import { CartDataService } from '../../cart/index';
-import { PaymentDetails, CardType, Order, DeliveryMode, AddressValidation, Address } from '../../occ/occ-models/index';
+import { DeliveryMode, Order } from '../../model/order.model';
+import { CardType, PaymentDetails } from '../../model/cart.model';
+import { Address, AddressValidation } from '../../model/address.model';
 export declare class CheckoutService {
     private checkoutStore;
     private cartData;

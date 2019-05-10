@@ -1,8 +1,8 @@
-import { Cart } from '../../../occ/occ-models';
 import { Converter, ConverterService } from '../../../util/converter.service';
-import { UICart } from '../../model/cart';
-export declare class OccCartNormalizer implements Converter<Cart, UICart> {
+import { Cart } from '../../../model/cart.model';
+import { Occ } from '../../../occ/occ-models/occ.models';
+export declare class OccCartNormalizer implements Converter<Occ.Cart, Cart> {
     private converter;
     constructor(converter: ConverterService);
-    convert(source: Cart, target?: UICart): UICart;
+    convert(source: Occ.Cart, target?: Cart): Cart;
 }

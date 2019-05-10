@@ -1,7 +1,9 @@
 import { Action } from '@ngrx/store';
-import { Address, DeliveryMode, Order, PaymentDetails } from '../../../occ/occ-models/index';
 import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
 import { CheckoutDetails } from '../../models/checkout.model';
+import { Address } from '../../../model/address.model';
+import { DeliveryMode, Order } from '../../../model/order.model';
+import { PaymentDetails } from '../../../model/cart.model';
 export declare const ADD_DELIVERY_ADDRESS = "[Checkout] Add Delivery Address";
 export declare const ADD_DELIVERY_ADDRESS_FAIL = "[Checkout] Add Delivery Address Fail";
 export declare const ADD_DELIVERY_ADDRESS_SUCCESS = "[Checkout] Add Delivery Address Success";

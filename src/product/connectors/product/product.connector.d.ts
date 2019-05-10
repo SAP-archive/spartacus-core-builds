@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { ProductAdapter } from './product.adapter';
-import { UIProduct } from '../../model/product';
+import { Product } from '../../../model/product.model';
 export declare class ProductConnector {
     private adapter;
     constructor(adapter: ProductAdapter);
-    get(productCode: string): Observable<UIProduct>;
+    get(productCode: string): Observable<Product>;
 }

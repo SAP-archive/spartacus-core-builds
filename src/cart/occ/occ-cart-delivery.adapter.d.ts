@@ -1,9 +1,10 @@
 import { Observable } from 'rxjs';
-import { Address, DeliveryMode } from '../../occ/occ-models/occ.models';
 import { HttpClient } from '@angular/common/http';
 import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
 import { CartDeliveryAdapter } from '../connectors/delivery/cart-delivery.adapter';
 import { ConverterService } from '../../util/converter.service';
+import { Address } from '../../model/address.model';
+import { DeliveryMode } from '../../model/order.model';
 export declare class OccCartDeliveryAdapter implements CartDeliveryAdapter {
     protected http: HttpClient;
     private occEndpoints;

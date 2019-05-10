@@ -1,8 +1,8 @@
-import { ProductSearchPage } from '../../../occ/occ-models/occ.models';
+import { Occ } from '../../../occ/occ-models/occ.models';
 import { Converter, ConverterService } from '../../../util/converter.service';
-import { UIProductSearchPage } from '../../model/product-search-page';
-export declare class OccProductSearchPageNormalizer implements Converter<ProductSearchPage, UIProductSearchPage> {
+import { ProductSearchPage } from '../../../model/product-search.model';
+export declare class OccProductSearchPageNormalizer implements Converter<Occ.ProductSearchPage, ProductSearchPage> {
     private converterService;
     constructor(converterService: ConverterService);
-    convert(source: ProductSearchPage, target?: UIProductSearchPage): UIProductSearchPage;
+    convert(source: Occ.ProductSearchPage, target?: ProductSearchPage): ProductSearchPage;
 }

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Country } from '../../../occ/occ-models/index';
+import { Country } from '../../../model/address.model';
 export declare const LOAD_DELIVERY_COUNTRIES = "[User] Load Delivery Countries";
 export declare const LOAD_DELIVERY_COUNTRIES_FAIL = "[User] Load Delivery Countries Fail";
 export declare const LOAD_DELIVERY_COUNTRIES_SUCCESS = "[User] Load Delivery Countries Success";

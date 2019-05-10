@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
-import { Address, DeliveryMode } from '../../../occ/occ-models/occ.models';
 import { CartDeliveryAdapter } from './cart-delivery.adapter';
+import { Address } from '../../../model/address.model';
+import { DeliveryMode } from '../../../model/order.model';
 export declare class CartDeliveryConnector {
     private adapter;
     constructor(adapter: CartDeliveryAdapter);
