@@ -7821,7 +7821,7 @@ class UnknownErrorHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add('An unknown error occured', GlobalMessageType.MSG_TYPE_ERROR);
+        this.globalMessageService.add({ key: 'httpHandlers.unknownError' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 UnknownErrorHandler.decorators = [
@@ -7844,7 +7844,7 @@ class BadGatewayHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add('A server error occurred. Please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
+        this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 BadGatewayHandler.decorators = [
@@ -7874,20 +7874,29 @@ class BadRequestHandler extends HttpErrorHandler {
         if (response.url.includes(OAUTH_ENDPOINT$3) &&
             response.error.error === 'invalid_grant') {
             if (request.body.get('grant_type') === 'password') {
-                this.globalMessageService.add(this.getErrorMessage(response) + '. Please login again.', GlobalMessageType.MSG_TYPE_ERROR);
+                this.globalMessageService.add({
+                    key: 'httpHandlers.badRequestPleaseLoginAgain',
+                    params: { errorMessage: this.getErrorMessage(response) },
+                }, GlobalMessageType.MSG_TYPE_ERROR);
                 this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }
         }
         else if (response.error.errors[0].type === 'PasswordMismatchError') {
             // uses en translation error message instead of backend exception error
             // @todo: this condition could be removed if backend gives better message
-            this.globalMessageService.add('Old password incorrect.', GlobalMessageType.MSG_TYPE_ERROR);
+            this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
             // text: customError.customError.passwordMismatch,
         }
         else {
             // this is currently showing up in case we have a page not found. It should be a 404.
             // see https://jira.hybris.com/browse/CMSX-8516
-            this.globalMessageService.add(this.getErrorMessage(response), GlobalMessageType.MSG_TYPE_ERROR);
+            /** @type {?} */
+            const errorMessage = this.getErrorMessage(response);
+            /** @type {?} */
+            const textObj = errorMessage
+                ? { raw: errorMessage }
+                : { key: 'httpHandlers.unknownError' };
+            this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
         }
     }
     /**
@@ -7906,7 +7915,7 @@ class BadRequestHandler extends HttpErrorHandler {
                 errMsg = resp.error.error_description;
             }
         }
-        return errMsg || 'An unknown error occured';
+        return errMsg || '';
     }
 }
 BadRequestHandler.decorators = [
@@ -7929,7 +7938,7 @@ class ConflictHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add('Already exists', GlobalMessageType.MSG_TYPE_ERROR);
+        this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 ConflictHandler.decorators = [
@@ -7952,7 +7961,7 @@ class ForbiddenHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add('You are not authorized to perform this action.', GlobalMessageType.MSG_TYPE_ERROR);
+        this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 ForbiddenHandler.decorators = [
@@ -7975,7 +7984,7 @@ class GatewayTimeoutHandler extends HttpErrorHandler {
      * @return {?}
      */
     handleError() {
-        this.globalMessageService.add('The server did not responded, please try again later.', GlobalMessageType.MSG_TYPE_ERROR);
+        this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
     }
 }
 GatewayTimeoutHandler.decorators = [
@@ -10560,9 +10569,7 @@ class ForgotPasswordEffects {
                 .pipe(switchMap(() => [
                 new ForgotPasswordEmailRequestSuccess(),
                 new AddMessage({
-                    text: {
-                        raw: 'An email has been sent to you with information on how to reset your password.',
-                    },
+                    text: { key: 'forgottenPassword.passwordResetEmailSent' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new ForgotPasswordEmailRequestFail(error))));
@@ -10741,9 +10748,7 @@ class ResetPasswordEffects {
             return this.occUserService.resetPassword(token, password).pipe(switchMap(() => [
                 new ResetPasswordSuccess(),
                 new AddMessage({
-                    text: {
-                        raw: 'Success! You can now login using your new password.',
-                    },
+                    text: { key: 'forgottenPassword.passwordResetSuccess' },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new ResetPasswordFail(error))));
@@ -10920,21 +10925,21 @@ class UserAddressesEffects {
          */
         this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS_SUCCESS), tap(() => {
             this.loadAddresses();
-            this.showGlobalMessage('New address was added successfully!');
+            this.showGlobalMessage('addressForm.userAddressAddSuccess');
         }));
         /**
          *  Reload addresses and notify about update success
          */
         this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS_SUCCESS), tap(() => {
             this.loadAddresses();
-            this.showGlobalMessage('Address updated successfully!');
+            this.showGlobalMessage('addressForm.userAddressUpdateSuccess');
         }));
         /**
          *  Reload addresses and notify about delete success
          */
         this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS_SUCCESS), tap(() => {
             this.loadAddresses();
-            this.showGlobalMessage('Address deleted successfully!');
+            this.showGlobalMessage('addressForm.userAddressDeleteSuccess');
         }));
     }
     /**
@@ -10949,7 +10954,7 @@ class UserAddressesEffects {
         this.messageService.remove(GlobalMessageType.MSG_TYPE_ERROR);
         this.messageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
         // ----------
-        this.messageService.add(text, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+        this.messageService.add({ key: text }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
     }
     /**
      * @private
@@ -11281,7 +11286,9 @@ class CheckoutEffects {
             }), switchMap(data => [
                 new PlaceOrderSuccess(data),
                 new AddMessage({
-                    text: { raw: 'Order placed successfully' },
+                    text: {
+                        key: 'checkoutOrderConfirmation.orderPlacedSuccessfully',
+                    },
                     type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
                 }),
             ]), catchError(error => of(new PlaceOrderFail(error))));
@@ -16057,7 +16064,14 @@ const defaultI18nConfig = {
         fallbackLang: false,
         debug: false,
         chunks: {
-            common: ['common', 'spinner', 'header', 'searchBox', 'sorting'],
+            common: [
+                'common',
+                'spinner',
+                'header',
+                'searchBox',
+                'sorting',
+                'httpHandlers',
+            ],
             cart: ['cartDetails', 'cartItems', 'orderCost'],
             address: ['addressForm', 'addressBook', 'addressCard'],
             payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
