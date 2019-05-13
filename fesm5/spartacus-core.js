@@ -995,7 +995,7 @@ var UrlService = /** @class */ (function () {
      * @return {?}
      */
     function (command) {
-        return command && Boolean(command.route);
+        return command && Boolean(command.cxRoute);
     };
     /**
      * @private
@@ -1022,11 +1022,11 @@ var UrlService = /** @class */ (function () {
      */
     function (command) {
         this.standarizeRouteCommand(command);
-        if (!command.route) {
+        if (!command.cxRoute) {
             return null;
         }
         /** @type {?} */
-        var routeConfig = this.routingConfigService.getRouteConfig(command.route);
+        var routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
         // if no route translation was configured, return null:
         if (!routeConfig || !routeConfig.paths) {
             return null;
@@ -2291,7 +2291,7 @@ var UserErrorHandlingService = /** @class */ (function () {
                 _this.authService.refreshUserToken(token);
             }
             else if (!token.access_token && !token.refresh_token) {
-                _this.routingService.go({ route: 'login' });
+                _this.routingService.go({ cxRoute: 'login' });
             }
             oldToken = oldToken || token;
         }), filter(function (token) { return oldToken.access_token !== token.access_token; }), take(1));
@@ -3780,7 +3780,7 @@ var AuthGuard = /** @class */ (function () {
         var _this = this;
         return this.authService.getUserToken().pipe(map(function (token) {
             if (!token.access_token) {
-                _this.routingService.go({ route: 'login' });
+                _this.routingService.go({ cxRoute: 'login' });
                 _this.routingService.saveRedirectUrl(state.url);
             }
             return !!token.access_token;
@@ -3820,7 +3820,7 @@ var NotAuthGuard = /** @class */ (function () {
         var _this = this;
         return this.authService.getUserToken().pipe(map(function (token) {
             if (token.access_token) {
-                _this.routingService.go({ route: 'home' });
+                _this.routingService.go({ cxRoute: 'home' });
             }
             return !token.access_token;
         }));
@@ -21597,13 +21597,13 @@ var SmartEditService = /** @class */ (function () {
             this.getPreviewPage = true;
             if (cmsPage.type === PageType.PRODUCT_PAGE) {
                 this.routingService.go({
-                    route: 'product',
+                    cxRoute: 'product',
                     params: { code: 2053367 },
                 });
             }
             else if (cmsPage.type === PageType.CATEGORY_PAGE) {
                 this.routingService.go({
-                    route: 'category',
+                    cxRoute: 'category',
                     params: { code: 575 },
                 });
             }

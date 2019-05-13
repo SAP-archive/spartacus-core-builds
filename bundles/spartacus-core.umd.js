@@ -1072,7 +1072,7 @@
          * @return {?}
          */
             function (command) {
-                return command && Boolean(command.route);
+                return command && Boolean(command.cxRoute);
             };
         /**
          * @private
@@ -1099,11 +1099,11 @@
          */
             function (command) {
                 this.standarizeRouteCommand(command);
-                if (!command.route) {
+                if (!command.cxRoute) {
                     return null;
                 }
                 /** @type {?} */
-                var routeConfig = this.routingConfigService.getRouteConfig(command.route);
+                var routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
                 // if no route translation was configured, return null:
                 if (!routeConfig || !routeConfig.paths) {
                     return null;
@@ -2378,7 +2378,7 @@
                         _this.authService.refreshUserToken(token);
                     }
                     else if (!token.access_token && !token.refresh_token) {
-                        _this.routingService.go({ route: 'login' });
+                        _this.routingService.go({ cxRoute: 'login' });
                     }
                     oldToken = oldToken || token;
                 }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
@@ -3891,7 +3891,7 @@
                 var _this = this;
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (!token.access_token) {
-                        _this.routingService.go({ route: 'login' });
+                        _this.routingService.go({ cxRoute: 'login' });
                         _this.routingService.saveRedirectUrl(state.url);
                     }
                     return !!token.access_token;
@@ -3933,7 +3933,7 @@
                 var _this = this;
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (token.access_token) {
-                        _this.routingService.go({ route: 'home' });
+                        _this.routingService.go({ cxRoute: 'home' });
                     }
                     return !token.access_token;
                 }));
@@ -21914,13 +21914,13 @@
                     this.getPreviewPage = true;
                     if (cmsPage.type === PageType.PRODUCT_PAGE) {
                         this.routingService.go({
-                            route: 'product',
+                            cxRoute: 'product',
                             params: { code: 2053367 },
                         });
                     }
                     else if (cmsPage.type === PageType.CATEGORY_PAGE) {
                         this.routingService.go({
-                            route: 'category',
+                            cxRoute: 'category',
                             params: { code: 575 },
                         });
                     }

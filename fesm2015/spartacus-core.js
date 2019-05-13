@@ -873,7 +873,7 @@ class UrlService {
      * @return {?}
      */
     isRouteCommand(command) {
-        return command && Boolean(command.route);
+        return command && Boolean(command.cxRoute);
     }
     /**
      * @private
@@ -890,11 +890,11 @@ class UrlService {
      */
     generateUrlPart(command) {
         this.standarizeRouteCommand(command);
-        if (!command.route) {
+        if (!command.cxRoute) {
             return null;
         }
         /** @type {?} */
-        const routeConfig = this.routingConfigService.getRouteConfig(command.route);
+        const routeConfig = this.routingConfigService.getRouteConfig(command.cxRoute);
         // if no route translation was configured, return null:
         if (!routeConfig || !routeConfig.paths) {
             return null;
@@ -1871,7 +1871,7 @@ class UserErrorHandlingService {
                 this.authService.refreshUserToken(token);
             }
             else if (!token.access_token && !token.refresh_token) {
-                this.routingService.go({ route: 'login' });
+                this.routingService.go({ cxRoute: 'login' });
             }
             oldToken = oldToken || token;
         }), filter((token) => oldToken.access_token !== token.access_token), take(1));
@@ -3216,7 +3216,7 @@ class AuthGuard {
     canActivate(_route, state) {
         return this.authService.getUserToken().pipe(map((token) => {
             if (!token.access_token) {
-                this.routingService.go({ route: 'login' });
+                this.routingService.go({ cxRoute: 'login' });
                 this.routingService.saveRedirectUrl(state.url);
             }
             return !!token.access_token;
@@ -3255,7 +3255,7 @@ class NotAuthGuard {
     canActivate() {
         return this.authService.getUserToken().pipe(map(token => {
             if (token.access_token) {
-                this.routingService.go({ route: 'home' });
+                this.routingService.go({ cxRoute: 'home' });
             }
             return !token.access_token;
         }));
@@ -18414,13 +18414,13 @@ class SmartEditService {
             this.getPreviewPage = true;
             if (cmsPage.type === PageType.PRODUCT_PAGE) {
                 this.routingService.go({
-                    route: 'product',
+                    cxRoute: 'product',
                     params: { code: 2053367 },
                 });
             }
             else if (cmsPage.type === PageType.CATEGORY_PAGE) {
                 this.routingService.go({
-                    route: 'category',
+                    cxRoute: 'category',
                     params: { code: 575 },
                 });
             }
