@@ -1,7 +1,7 @@
 import { InjectionToken, Provider } from '@angular/core';
 import { Params, RouterStateSnapshot } from '@angular/router';
-import { ActionReducerMap, MemoizedSelector } from '@ngrx/store';
 import * as fromNgrxRouter from '@ngrx/router-store';
+import { ActionReducerMap, MemoizedSelector } from '@ngrx/store';
 import { PageContext } from '../../models/page-context.model';
 export interface RouterState extends fromNgrxRouter.RouterReducerState<ActivatedRouterStateSnapshot> {
     redirectUrl: string;

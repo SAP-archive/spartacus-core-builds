@@ -8,7 +8,7 @@ import { __decorate, __metadata } from 'tslib';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, Pipe, APP_INITIALIZER, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, concatMap, groupBy, shareReplay, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
@@ -285,6 +285,13 @@ ConfigModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+const ROUTING_FEATURE = 'router';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 const GO = '[Router] Go';
 /** @type {?} */
 const GO_BY_URL = '[Router] Go By Url';
@@ -349,13 +356,6 @@ class ClearRedirectUrl {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const ROUTING_FEATURE = 'router';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 const initialState = {
     redirectUrl: '',
     navigationId: 0,
@@ -407,8 +407,10 @@ function reducer(state = initialState, action) {
                 : '';
             /** @type {?} */
             let redirectUrl;
-            if (contextId === 'login' ||
-                contextId === 'register' ||
+            if (
+            // TODO: Should be rafactored, utilizimg semantic pages configuration
+            contextId === '/login' ||
+                contextId === '/login/register' ||
                 currentUrl === state.redirectUrl) {
                 redirectUrl = state.redirectUrl;
             }

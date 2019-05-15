@@ -348,6 +348,13 @@ var ConfigModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+var ROUTING_FEATURE = 'router';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 var GO = '[Router] Go';
 /** @type {?} */
 var GO_BY_URL = '[Router] Go By Url';
@@ -409,13 +416,6 @@ var ClearRedirectUrl = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var ROUTING_FEATURE = 'router';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 var initialState = {
     redirectUrl: '',
     navigationId: 0,
@@ -468,8 +468,10 @@ function reducer(state, action) {
                 : '';
             /** @type {?} */
             var redirectUrl = void 0;
-            if (contextId === 'login' ||
-                contextId === 'register' ||
+            if (
+            // TODO: Should be rafactored, utilizimg semantic pages configuration
+            contextId === '/login' ||
+                contextId === '/login/register' ||
                 currentUrl === state.redirectUrl) {
                 redirectUrl = state.redirectUrl;
             }
