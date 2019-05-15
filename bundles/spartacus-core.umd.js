@@ -23891,7 +23891,10 @@
     /** @type {?} */
     var defaultPersonalizationConfig = {
         personalization: {
-            requestHeader: 'Occ-Personalization-Id',
+            httpHeaderName: {
+                id: 'Occ-Personalization-Id',
+                timestamp: 'Occ-Personalization-Time',
+            },
         },
     };
 
@@ -23900,17 +23903,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var PERSONALIZATION_KEY = 'personalization-id';
+    var PERSONALIZATION_ID_KEY = 'personalization-id';
     var OccPersonalizationIdInterceptor = /** @class */ (function () {
         function OccPersonalizationIdInterceptor(config, occEndpoints, winRef, platform) {
             this.config = config;
             this.occEndpoints = occEndpoints;
             this.winRef = winRef;
             this.platform = platform;
-            this.requestHeader = this.config.personalization.requestHeader.toLowerCase();
+            this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
             this.personalizationId =
                 this.winRef.localStorage &&
-                    this.winRef.localStorage.getItem(PERSONALIZATION_KEY);
+                    this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
         }
         /**
          * @param {?} request
@@ -23943,7 +23946,7 @@
                             var receivedId = event.headers.get(_this.requestHeader);
                             if (_this.personalizationId !== receivedId) {
                                 _this.personalizationId = receivedId;
-                                _this.winRef.localStorage.setItem(PERSONALIZATION_KEY, _this.personalizationId);
+                                _this.winRef.localStorage.setItem(PERSONALIZATION_ID_KEY, _this.personalizationId);
                             }
                         }
                     }
@@ -23969,10 +23972,84 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var PERSONALIZATION_TIME_KEY = 'personalization-time';
+    var OccPersonalizationTimeInterceptor = /** @class */ (function () {
+        function OccPersonalizationTimeInterceptor(config, occEndpoints, winRef, platform) {
+            this.config = config;
+            this.occEndpoints = occEndpoints;
+            this.winRef = winRef;
+            this.platform = platform;
+            this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
+            this.timestamp =
+                this.winRef.localStorage &&
+                    this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        OccPersonalizationTimeInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                var _this = this;
+                var _a;
+                if (i1$3.isPlatformServer(this.platform)) {
+                    return next.handle(request);
+                }
+                if (this.timestamp &&
+                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
+                    request = request.clone({
+                        setHeaders: (_a = {},
+                            _a[this.requestHeader] = this.timestamp,
+                            _a),
+                    });
+                }
+                return next.handle(request).pipe(operators.tap(function (event) {
+                    if (event instanceof i1$2.HttpResponse) {
+                        if (event.headers.keys().includes(_this.requestHeader)) {
+                            /** @type {?} */
+                            var receivedTimestamp = event.headers.get(_this.requestHeader);
+                            if (_this.timestamp !== receivedTimestamp) {
+                                _this.timestamp = receivedTimestamp;
+                                _this.winRef.localStorage.setItem(PERSONALIZATION_TIME_KEY, _this.timestamp);
+                            }
+                        }
+                    }
+                }));
+            };
+        OccPersonalizationTimeInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccPersonalizationTimeInterceptor.ctorParameters = function () {
+            return [
+                { type: PersonalizationConfig },
+                { type: OccEndpointsService },
+                { type: WindowRef },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+            ];
+        };
+        return OccPersonalizationTimeInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var interceptors$3 = [
         {
             provide: i1$2.HTTP_INTERCEPTORS,
             useClass: OccPersonalizationIdInterceptor,
+            multi: true,
+        },
+        {
+            provide: i1$2.HTTP_INTERCEPTORS,
+            useClass: OccPersonalizationTimeInterceptor,
             multi: true,
         },
     ];
@@ -24879,6 +24956,7 @@
     exports.ɵgu = defaultPersonalizationConfig;
     exports.ɵgv = interceptors$3;
     exports.ɵgw = OccPersonalizationIdInterceptor;
+    exports.ɵgx = OccPersonalizationTimeInterceptor;
     exports.ɵgn = ProcessModule;
     exports.ɵgp = PROCESS_FEATURE;
     exports.ɵgo = ProcessStoreModule;

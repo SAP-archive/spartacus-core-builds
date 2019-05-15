@@ -55,6 +55,7 @@ export { MockTranslationService as ɵef } from './src/i18n/testing/mock-translat
 export { defaultPersonalizationConfig as ɵgu } from './src/personalization/config/default-personalization-config';
 export { interceptors as ɵgv } from './src/personalization/http-interceptors/index';
 export { OccPersonalizationIdInterceptor as ɵgw } from './src/personalization/http-interceptors/occ-personalization-id.interceptor';
+export { OccPersonalizationTimeInterceptor as ɵgx } from './src/personalization/http-interceptors/occ-personalization-time.interceptor';
 export { ProcessModule as ɵgn } from './src/process/process.module';
 export { PROCESS_FEATURE as ɵgp } from './src/process/store/process-state';
 export { ProcessStoreModule as ɵgo } from './src/process/store/process-store.module';
