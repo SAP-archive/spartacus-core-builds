@@ -14677,21 +14677,120 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ ProductAdapter = /** @class */ (function () {
+        function ProductAdapter() {
+        }
+        return ProductAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductConnector = /** @class */ (function () {
+        function ProductConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        ProductConnector.prototype.get = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+            function (productCode) {
+                return this.adapter.load(productCode);
+            };
+        ProductConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductConnector.ctorParameters = function () {
+            return [
+                { type: ProductAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(i0.inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+        return ProductConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
-    var defaultOccProductConfig = {
-        backend: {
-            occ: {
-                endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
-                    productReviews: 'products/${productCode}/reviews',
-                    // tslint:disable:max-line-length
-                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
-                    // tslint:enable
-                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
-                },
-            },
-        },
-    };
+    var PRODUCT_REFERENCES_NORMALIZER = new i0.InjectionToken('ProductReferencesListNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ ProductReferencesAdapter = /** @class */ (function () {
+        function ProductReferencesAdapter() {
+        }
+        return ProductReferencesAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReferencesConnector = /** @class */ (function () {
+        function ProductReferencesConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        ProductReferencesConnector.prototype.get = /**
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (productCode, referenceType, pageSize) {
+                return this.adapter.load(productCode, referenceType, pageSize);
+            };
+        ProductReferencesConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductReferencesConnector.ctorParameters = function () {
+            return [
+                { type: ProductReferencesAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(i0.inject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+        return ProductReferencesConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -14712,6 +14811,55 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductReviewsConnector = /** @class */ (function () {
+        function ProductReviewsConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} productCode
+         * @param {?=} maxCount
+         * @return {?}
+         */
+        ProductReviewsConnector.prototype.get = /**
+         * @param {?} productCode
+         * @param {?=} maxCount
+         * @return {?}
+         */
+            function (productCode, maxCount) {
+                return this.adapter.load(productCode, maxCount);
+            };
+        /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+        ProductReviewsConnector.prototype.add = /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+            function (productCode, review) {
+                return this.adapter.post(productCode, review);
+            };
+        ProductReviewsConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductReviewsConnector.ctorParameters = function () {
+            return [
+                { type: ProductReviewsAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+        return ProductReviewsConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var PRODUCT_REVIEW_NORMALIZER = new i0.InjectionToken('ProductReviewNormalizer');
     /** @type {?} */
@@ -14721,133 +14869,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccProductReviewsAdapter = /** @class */ (function () {
-        function OccProductReviewsAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @param {?} productCode
-         * @param {?=} maxCount
-         * @return {?}
-         */
-        OccProductReviewsAdapter.prototype.load = /**
-         * @param {?} productCode
-         * @param {?=} maxCount
-         * @return {?}
-         */
-            function (productCode, maxCount) {
-                return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(operators.pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
-            };
-        /**
-         * @param {?} productCode
-         * @param {?} review
-         * @return {?}
-         */
-        OccProductReviewsAdapter.prototype.post = /**
-         * @param {?} productCode
-         * @param {?} review
-         * @return {?}
-         */
-            function (productCode, review) {
-                review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
-                /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                /** @type {?} */
-                var body = new URLSearchParams();
-                body.append('headline', review.headline);
-                body.append('comment', review.comment);
-                body.append('rating', review.rating.toString());
-                body.append('alias', review.alias);
-                return this.http.post(this.getEndpoint(productCode), body.toString(), {
-                    headers: headers,
-                });
-            };
-        /**
-         * @protected
-         * @param {?} code
-         * @param {?=} maxCount
-         * @return {?}
-         */
-        OccProductReviewsAdapter.prototype.getEndpoint = /**
-         * @protected
-         * @param {?} code
-         * @param {?=} maxCount
-         * @return {?}
-         */
-            function (code, maxCount) {
-                return this.occEndpoints.getUrl('productReviews', {
-                    productCode: code,
-                }, { maxCount: maxCount });
-            };
-        OccProductReviewsAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccProductReviewsAdapter.ctorParameters = function () {
-            return [
-                { type: i1$2.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccProductReviewsAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OccProductAdapter = /** @class */ (function () {
-        function OccProductAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @param {?} productCode
-         * @return {?}
-         */
-        OccProductAdapter.prototype.load = /**
-         * @param {?} productCode
-         * @return {?}
-         */
-            function (productCode) {
-                return this.http
-                    .get(this.getEndpoint(productCode))
-                    .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
-            };
-        /**
-         * @protected
-         * @param {?} code
-         * @return {?}
-         */
-        OccProductAdapter.prototype.getEndpoint = /**
-         * @protected
-         * @param {?} code
-         * @return {?}
-         */
-            function (code) {
-                return this.occEndpoints.getUrl('product', {
-                    productCode: code,
-                });
-            };
-        OccProductAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccProductAdapter.ctorParameters = function () {
-            return [
-                { type: i1$2.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccProductAdapter;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -14858,11 +14879,79 @@
      */
     var /**
      * @abstract
-     */ ProductAdapter = /** @class */ (function () {
-        function ProductAdapter() {
+     */ ProductSearchAdapter = /** @class */ (function () {
+        function ProductSearchAdapter() {
         }
-        return ProductAdapter;
+        return ProductSearchAdapter;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductSearchConnector = /** @class */ (function () {
+        function ProductSearchConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        ProductSearchConnector.prototype.search = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                return this.adapter.search(query, searchConfig);
+            };
+        /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        ProductSearchConnector.prototype.getSuggestions = /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (term, pageSize) {
+                return this.adapter.loadSuggestions(term, pageSize);
+            };
+        ProductSearchConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductSearchConnector.ctorParameters = function () {
+            return [
+                { type: ProductSearchAdapter }
+            ];
+        };
+        /** @nocollapse */ ProductSearchConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.inject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+        return ProductSearchConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PRODUCT_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('ProductSearchPageNormalizer');
+    /** @type {?} */
+    var PRODUCT_SUGGESTION_NORMALIZER = new i0.InjectionToken('ProductSuggestionNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -15078,133 +15167,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ ProductSearchAdapter = /** @class */ (function () {
-        function ProductSearchAdapter() {
-        }
-        return ProductSearchAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PRODUCT_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('ProductSearchPageNormalizer');
-    /** @type {?} */
-    var PRODUCT_SUGGESTION_NORMALIZER = new i0.InjectionToken('ProductSuggestionNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var DEFAULT_SEARCH_CONFIG = {
-        pageSize: 20,
-    };
-    var OccProductSearchAdapter = /** @class */ (function () {
-        function OccProductSearchAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        OccProductSearchAdapter.prototype.search = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                if (searchConfig === void 0) {
-                    searchConfig = DEFAULT_SEARCH_CONFIG;
-                }
-                return this.http
-                    .get(this.getSearchEndpoint(query, searchConfig))
-                    .pipe(this.converter.pipeable(PRODUCT_SEARCH_PAGE_NORMALIZER));
-            };
-        /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-        OccProductSearchAdapter.prototype.loadSuggestions = /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-            function (term, pageSize) {
-                if (pageSize === void 0) {
-                    pageSize = 3;
-                }
-                return this.http
-                    .get(this.getSuggestionEndpoint(term, pageSize.toString()))
-                    .pipe(operators.pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
-            };
-        /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @return {?}
-         */
-        OccProductSearchAdapter.prototype.getSearchEndpoint = /**
-         * @protected
-         * @param {?} query
-         * @param {?} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                return this.occEndpoints.getUrl('productSearch', {
-                    query: query,
-                }, {
-                    pageSize: searchConfig.pageSize,
-                    currentPage: searchConfig.currentPage,
-                    sort: searchConfig.sortCode,
-                });
-            };
-        /**
-         * @protected
-         * @param {?} term
-         * @param {?} max
-         * @return {?}
-         */
-        OccProductSearchAdapter.prototype.getSuggestionEndpoint = /**
-         * @protected
-         * @param {?} term
-         * @param {?} max
-         * @return {?}
-         */
-            function (term, max) {
-                return this.occEndpoints.getUrl('productSuggestions', {
-                    term: term,
-                    max: max,
-                });
-            };
-        OccProductSearchAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccProductSearchAdapter.ctorParameters = function () {
-            return [
-                { type: i1$2.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccProductSearchAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccProductSearchPageNormalizer = /** @class */ (function () {
         function OccProductSearchPageNormalizer(converterService) {
             this.converterService = converterService;
@@ -15248,69 +15210,97 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductOccModule = /** @class */ (function () {
-        function ProductOccModule() {
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
+    /** @type {?} */
+    var LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
+    /** @type {?} */
+    var LOAD_PRODUCT_REFERENCES_SUCCESS = '[Product] Load Product References Data Success';
+    var LoadProductReferences = /** @class */ (function () {
+        function LoadProductReferences(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REFERENCES;
         }
-        ProductOccModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
-                            OccModule,
-                            ConfigModule.withConfig(defaultOccProductConfig),
-                        ],
-                        providers: [
-                            {
-                                provide: ProductAdapter,
-                                useClass: OccProductAdapter,
-                            },
-                            {
-                                provide: PRODUCT_NORMALIZER,
-                                useClass: ProductImageNormalizer,
-                                multi: true,
-                            },
-                            {
-                                provide: PRODUCT_NORMALIZER,
-                                useClass: ProductReferenceNormalizer,
-                                multi: true,
-                            },
-                            {
-                                provide: ProductSearchAdapter,
-                                useClass: OccProductSearchAdapter,
-                            },
-                            {
-                                provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
-                                useClass: OccProductSearchPageNormalizer,
-                                multi: true,
-                            },
-                            {
-                                provide: ProductReviewsAdapter,
-                                useClass: OccProductReviewsAdapter,
-                            },
-                        ],
-                    },] }
-        ];
-        return ProductOccModule;
+        return LoadProductReferences;
+    }());
+    var LoadProductReferencesFail = /** @class */ (function () {
+        function LoadProductReferencesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REFERENCES_FAIL;
+        }
+        return LoadProductReferencesFail;
+    }());
+    var LoadProductReferencesSuccess = /** @class */ (function () {
+        function LoadProductReferencesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REFERENCES_SUCCESS;
+        }
+        return LoadProductReferencesSuccess;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
-    var PRODUCT_FEATURE = 'product';
+    var LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
     /** @type {?} */
-    var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+    var LOAD_PRODUCT_REVIEWS_FAIL = '[Product] Load Product Reviews Data Fail';
+    /** @type {?} */
+    var LOAD_PRODUCT_REVIEWS_SUCCESS = '[Product] Load Product Reviews Data Success';
+    /** @type {?} */
+    var POST_PRODUCT_REVIEW = '[Product] Post Product Review';
+    /** @type {?} */
+    var POST_PRODUCT_REVIEW_FAIL = '[Product] Post Product Review Fail';
+    /** @type {?} */
+    var POST_PRODUCT_REVIEW_SUCCESS = '[Product] Post Product Review Success';
+    var LoadProductReviews = /** @class */ (function () {
+        function LoadProductReviews(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REVIEWS;
+        }
+        return LoadProductReviews;
+    }());
+    var LoadProductReviewsFail = /** @class */ (function () {
+        function LoadProductReviewsFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REVIEWS_FAIL;
+        }
+        return LoadProductReviewsFail;
+    }());
+    var LoadProductReviewsSuccess = /** @class */ (function () {
+        function LoadProductReviewsSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_PRODUCT_REVIEWS_SUCCESS;
+        }
+        return LoadProductReviewsSuccess;
+    }());
+    var PostProductReview = /** @class */ (function () {
+        function PostProductReview(payload) {
+            this.payload = payload;
+            this.type = POST_PRODUCT_REVIEW;
+        }
+        return PostProductReview;
+    }());
+    var PostProductReviewFail = /** @class */ (function () {
+        function PostProductReviewFail(payload) {
+            this.payload = payload;
+            this.type = POST_PRODUCT_REVIEW_FAIL;
+        }
+        return PostProductReviewFail;
+    }());
+    var PostProductReviewSuccess = /** @class */ (function () {
+        function PostProductReviewSuccess(payload) {
+            this.payload = payload;
+            this.type = POST_PRODUCT_REVIEW_SUCCESS;
+        }
+        return PostProductReviewSuccess;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -15387,6 +15377,15 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var PRODUCT_FEATURE = 'product';
+    /** @type {?} */
+    var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var LOAD_PRODUCT = '[Product] Load Product Data';
     /** @type {?} */
     var LOAD_PRODUCT_FAIL = '[Product] Load Product Data Fail';
@@ -15427,306 +15426,98 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
-    /** @type {?} */
-    var LOAD_PRODUCT_REVIEWS_FAIL = '[Product] Load Product Reviews Data Fail';
-    /** @type {?} */
-    var LOAD_PRODUCT_REVIEWS_SUCCESS = '[Product] Load Product Reviews Data Success';
-    /** @type {?} */
-    var POST_PRODUCT_REVIEW = '[Product] Post Product Review';
-    /** @type {?} */
-    var POST_PRODUCT_REVIEW_FAIL = '[Product] Post Product Review Fail';
-    /** @type {?} */
-    var POST_PRODUCT_REVIEW_SUCCESS = '[Product] Post Product Review Success';
-    var LoadProductReviews = /** @class */ (function () {
-        function LoadProductReviews(payload) {
-            this.payload = payload;
-            this.type = LOAD_PRODUCT_REVIEWS;
-        }
-        return LoadProductReviews;
-    }());
-    var LoadProductReviewsFail = /** @class */ (function () {
-        function LoadProductReviewsFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_PRODUCT_REVIEWS_FAIL;
-        }
-        return LoadProductReviewsFail;
-    }());
-    var LoadProductReviewsSuccess = /** @class */ (function () {
-        function LoadProductReviewsSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_PRODUCT_REVIEWS_SUCCESS;
-        }
-        return LoadProductReviewsSuccess;
-    }());
-    var PostProductReview = /** @class */ (function () {
-        function PostProductReview(payload) {
-            this.payload = payload;
-            this.type = POST_PRODUCT_REVIEW;
-        }
-        return PostProductReview;
-    }());
-    var PostProductReviewFail = /** @class */ (function () {
-        function PostProductReviewFail(payload) {
-            this.payload = payload;
-            this.type = POST_PRODUCT_REVIEW_FAIL;
-        }
-        return PostProductReviewFail;
-    }());
-    var PostProductReviewSuccess = /** @class */ (function () {
-        function PostProductReviewSuccess(payload) {
-            this.payload = payload;
-            this.type = POST_PRODUCT_REVIEW_SUCCESS;
-        }
-        return PostProductReviewSuccess;
-    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
-    /** @type {?} */
-    var getSelectedProductsFactory = function (codes) {
-        return i1$1.createSelector(getProductState, function (details) {
-            return codes
-                .map(function (code) {
-                return details.entities[code] ? details.entities[code].value : undefined;
-            })
-                .filter(function (product) { return product !== undefined; });
-        });
-    };
-    /** @type {?} */
-    var getSelectedProductStateFactory = function (code) {
-        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
-    };
-    /** @type {?} */
-    var getSelectedProductFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
-    };
-    /** @type {?} */
-    var getSelectedProductLoadingFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
-    };
-    /** @type {?} */
-    var getSelectedProductSuccessFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
-    };
-    /** @type {?} */
-    var getSelectedProductErrorFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
-    };
-    /** @type {?} */
-    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
-        return Object.keys(details.entities);
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$d = {
-        results: {},
-        suggestions: [],
-        auxResults: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$d(state, action) {
-        if (state === void 0) {
-            state = initialState$d;
+    var ProductReferencesEffects = /** @class */ (function () {
+        function ProductReferencesEffects(actions$, productReferencesConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReferencesConnector = productReferencesConnector;
+            this.loadProductReferences$ = this.actions$.pipe(effects.ofType(LOAD_PRODUCT_REFERENCES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.productReferencesConnector
+                    .get(payload.productCode, payload.referenceType, payload.pageSize)
+                    .pipe(operators.map(function (data) {
+                    return new LoadProductReferencesSuccess({
+                        productCode: payload.productCode,
+                        list: data,
+                    });
+                }), operators.catchError(function (_error) {
+                    return rxjs.of(new LoadProductReferencesFail(( /** @type {?} */({
+                        message: payload.productCode,
+                    }))));
+                }));
+            }));
         }
-        switch (action.type) {
-            case SEARCH_PRODUCTS_SUCCESS: {
-                /** @type {?} */
-                var results = action.payload;
-                /** @type {?} */
-                var res = action.auxiliary ? { auxResults: results } : { results: results };
-                return __assign({}, state, res);
-            }
-            case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
-                /** @type {?} */
-                var suggestions = action.payload;
-                return __assign({}, state, { suggestions: suggestions });
-            }
-            case CLEAN_PRODUCT_SEARCH: {
-                return initialState$d;
-            }
-        }
-        return state;
-    }
-    /** @type {?} */
-    var getSearchResults = function (state) { return state.results; };
-    /** @type {?} */
-    var getAuxSearchResults = function (state) { return state.auxResults; };
-    /** @type {?} */
-    var getProductSuggestions = function (state) { return state.suggestions; };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
-    /** @type {?} */
-    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
-    /** @type {?} */
-    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
-    /** @type {?} */
-    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
-    /** @type {?} */
-    var getSelectedProductReviewsFactory = function (productCode) {
-        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
-            if (reviewData.productCode === productCode) {
-                return reviewData.list;
-            }
-        });
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$e = {
-        productCode: '',
-        list: [],
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$e(state, action) {
-        if (state === void 0) {
-            state = initialState$e;
-        }
-        switch (action.type) {
-            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
-                /** @type {?} */
-                var productCode = action.payload.productCode;
-                /** @type {?} */
-                var list = action.payload.list;
-                return __assign({}, state, { productCode: productCode,
-                    list: list });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$7() {
-        return {
-            search: reducer$d,
-            details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$e,
-        };
-    }
-    /** @type {?} */
-    var reducerToken$7 = new i0.InjectionToken('ProductReducers');
-    /** @type {?} */
-    var reducerProvider$7 = {
-        provide: reducerToken$7,
-        useFactory: getReducers$7,
-    };
-    /**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function clearProductsState(reducer) {
-        return function (state, action) {
-            if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        };
-    }
-    /** @type {?} */
-    var metaReducers$4 = [clearProductsState];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductSearchConnector = /** @class */ (function () {
-        function ProductSearchConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchConnector.prototype.search = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                return this.adapter.search(query, searchConfig);
-            };
-        /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-        ProductSearchConnector.prototype.getSuggestions = /**
-         * @param {?} term
-         * @param {?=} pageSize
-         * @return {?}
-         */
-            function (term, pageSize) {
-                return this.adapter.loadSuggestions(term, pageSize);
-            };
-        ProductSearchConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
+        ProductReferencesEffects.decorators = [
+            { type: i0.Injectable }
         ];
         /** @nocollapse */
-        ProductSearchConnector.ctorParameters = function () {
+        ProductReferencesEffects.ctorParameters = function () {
             return [
-                { type: ProductSearchAdapter }
+                { type: effects.Actions },
+                { type: ProductReferencesConnector }
             ];
         };
-        /** @nocollapse */ ProductSearchConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.inject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
-        return ProductSearchConnector;
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
+        return ProductReferencesEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReviewsEffects = /** @class */ (function () {
+        function ProductReviewsEffects(actions$, productReviewsConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReviewsConnector = productReviewsConnector;
+            this.loadProductReviews$ = this.actions$.pipe(effects.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
+                return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
+                    return new LoadProductReviewsSuccess({
+                        productCode: productCode,
+                        list: data,
+                    });
+                }), operators.catchError(function (_error) {
+                    return rxjs.of(new LoadProductReviewsFail(( /** @type {?} */({
+                        message: productCode,
+                    }))));
+                }));
+            }));
+            this.postProductReview = this.actions$.pipe(effects.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
+                return _this.productReviewsConnector
+                    .add(payload.productCode, payload.review)
+                    .pipe(operators.map(function (reviewResponse) {
+                    return new PostProductReviewSuccess(reviewResponse);
+                }), operators.catchError(function (_error) {
+                    return rxjs.of(new PostProductReviewFail(payload.productCode));
+                }));
+            }));
+        }
+        ProductReviewsEffects.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ProductReviewsEffects.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: ProductReviewsConnector }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+        return ProductReviewsEffects;
     }());
 
     /**
@@ -15787,40 +15578,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductConnector = /** @class */ (function () {
-        function ProductConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} productCode
-         * @return {?}
-         */
-        ProductConnector.prototype.get = /**
-         * @param {?} productCode
-         * @return {?}
-         */
-            function (productCode) {
-                return this.adapter.load(productCode);
-            };
-        ProductConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        ProductConnector.ctorParameters = function () {
-            return [
-                { type: ProductAdapter }
-            ];
-        };
-        /** @nocollapse */ ProductConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(i0.inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
-        return ProductConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var ProductEffects = /** @class */ (function () {
         function ProductEffects(actions$, productConnector) {
             var _this = this;
@@ -15857,118 +15614,468 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductReviewsConnector = /** @class */ (function () {
-        function ProductReviewsConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} productCode
-         * @param {?=} maxCount
-         * @return {?}
-         */
-        ProductReviewsConnector.prototype.get = /**
-         * @param {?} productCode
-         * @param {?=} maxCount
-         * @return {?}
-         */
-            function (productCode, maxCount) {
-                return this.adapter.load(productCode, maxCount);
-            };
-        /**
-         * @param {?} productCode
-         * @param {?} review
-         * @return {?}
-         */
-        ProductReviewsConnector.prototype.add = /**
-         * @param {?} productCode
-         * @param {?} review
-         * @return {?}
-         */
-            function (productCode, review) {
-                return this.adapter.post(productCode, review);
-            };
-        ProductReviewsConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        ProductReviewsConnector.ctorParameters = function () {
-            return [
-                { type: ProductReviewsAdapter }
-            ];
-        };
-        /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
-        return ProductReviewsConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductReviewsEffects = /** @class */ (function () {
-        function ProductReviewsEffects(actions$, productReviewsConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productReviewsConnector = productReviewsConnector;
-            this.loadProductReviews$ = this.actions$.pipe(effects.ofType(LOAD_PRODUCT_REVIEWS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (productCode) {
-                return _this.productReviewsConnector.get(productCode).pipe(operators.map(function (data) {
-                    return new LoadProductReviewsSuccess({
-                        productCode: productCode,
-                        list: data,
-                    });
-                }), operators.catchError(function (_error) {
-                    return rxjs.of(new LoadProductReviewsFail(( /** @type {?} */({
-                        message: productCode,
-                    }))));
-                }));
-            }));
-            this.postProductReview = this.actions$.pipe(effects.ofType(POST_PRODUCT_REVIEW), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.productReviewsConnector
-                    .add(payload.productCode, payload.review)
-                    .pipe(operators.map(function (reviewResponse) {
-                    return new PostProductReviewSuccess(reviewResponse);
-                }), operators.catchError(function (_error) {
-                    return rxjs.of(new PostProductReviewFail(payload.productCode));
-                }));
-            }));
-        }
-        ProductReviewsEffects.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        ProductReviewsEffects.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: ProductReviewsConnector }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductReviewsEffects.prototype, "postProductReview", void 0);
-        return ProductReviewsEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var effects$7 = [
         ProductsSearchEffects,
         ProductEffects,
         ProductReviewsEffects,
+        ProductReferencesEffects,
     ];
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var initialState$d = {
+        productCode: '',
+        list: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$d(state, action) {
+        if (state === void 0) {
+            state = initialState$d;
+        }
+        switch (action.type) {
+            case LOAD_PRODUCT_REFERENCES_SUCCESS: {
+                /** @type {?} */
+                var productCode = action.payload.productCode;
+                /** @type {?} */
+                var list = action.payload.list;
+                return __assign({}, state, { list: list,
+                    productCode: productCode });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$e = {
+        productCode: '',
+        list: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$e(state, action) {
+        if (state === void 0) {
+            state = initialState$e;
+        }
+        switch (action.type) {
+            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
+                /** @type {?} */
+                var productCode = action.payload.productCode;
+                /** @type {?} */
+                var list = action.payload.list;
+                return __assign({}, state, { productCode: productCode,
+                    list: list });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$f = {
+        results: {},
+        suggestions: [],
+        auxResults: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$f(state, action) {
+        if (state === void 0) {
+            state = initialState$f;
+        }
+        switch (action.type) {
+            case SEARCH_PRODUCTS_SUCCESS: {
+                /** @type {?} */
+                var results = action.payload;
+                /** @type {?} */
+                var res = action.auxiliary ? { auxResults: results } : { results: results };
+                return __assign({}, state, res);
+            }
+            case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
+                /** @type {?} */
+                var suggestions = action.payload;
+                return __assign({}, state, { suggestions: suggestions });
+            }
+            case CLEAN_PRODUCT_SEARCH: {
+                return initialState$f;
+            }
+        }
+        return state;
+    }
+    /** @type {?} */
+    var getSearchResults = function (state) { return state.results; };
+    /** @type {?} */
+    var getAuxSearchResults = function (state) { return state.auxResults; };
+    /** @type {?} */
+    var getProductSuggestions = function (state) { return state.suggestions; };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$7() {
+        return {
+            search: reducer$f,
+            details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
+            reviews: reducer$e,
+            references: reducer$d,
+        };
+    }
+    /** @type {?} */
+    var reducerToken$7 = new i0.InjectionToken('ProductReducers');
+    /** @type {?} */
+    var reducerProvider$7 = {
+        provide: reducerToken$7,
+        useFactory: getReducers$7,
+    };
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearProductsState(reducer) {
+        return function (state, action) {
+            if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        };
+    }
+    /** @type {?} */
+    var metaReducers$4 = [clearProductsState];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getProductReferencesState = i1$1.createSelector(getProductsState, function (state) { return state.references; });
+    /** @type {?} */
+    var getSelectedProductReferencesFactory = function (productCode) {
+        return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
+            if (referenceTypeData.productCode === productCode) {
+                return referenceTypeData.list;
+            }
+        });
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
+    /** @type {?} */
+    var getSelectedProductReviewsFactory = function (productCode) {
+        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
+            if (reviewData.productCode === productCode) {
+                return reviewData.list;
+            }
+        });
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
+    /** @type {?} */
+    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
+    /** @type {?} */
+    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
+    /** @type {?} */
+    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
+    /** @type {?} */
+    var getSelectedProductsFactory = function (codes) {
+        return i1$1.createSelector(getProductState, function (details) {
+            return codes
+                .map(function (code) {
+                return details.entities[code] ? details.entities[code].value : undefined;
+            })
+                .filter(function (product) { return product !== undefined; });
+        });
+    };
+    /** @type {?} */
+    var getSelectedProductStateFactory = function (code) {
+        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+    };
+    /** @type {?} */
+    var getSelectedProductFactory = function (code) {
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+    };
+    /** @type {?} */
+    var getSelectedProductLoadingFactory = function (code) {
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+    };
+    /** @type {?} */
+    var getSelectedProductSuccessFactory = function (code) {
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+    };
+    /** @type {?} */
+    var getSelectedProductErrorFactory = function (code) {
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+    };
+    /** @type {?} */
+    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
+        return Object.keys(details.entities);
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReferenceService = /** @class */ (function () {
+        function ProductReferenceService(store) {
+            this.store = store;
+        }
+        /**
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        ProductReferenceService.prototype.get = /**
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (productCode, referenceType, pageSize) {
+                var _this = this;
+                return this.store.pipe(i1$1.select(getSelectedProductReferencesFactory(productCode)), operators.tap(function (references) {
+                    if (references === undefined && productCode !== undefined) {
+                        _this.store.dispatch(new LoadProductReferences({
+                            productCode: productCode,
+                            referenceType: referenceType,
+                            pageSize: pageSize,
+                        }));
+                    }
+                }));
+            };
+        ProductReferenceService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ProductReferenceService.ctorParameters = function () {
+            return [
+                { type: i1$1.Store }
+            ];
+        };
+        return ProductReferenceService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReviewService = /** @class */ (function () {
+        function ProductReviewService(store) {
+            this.store = store;
+        }
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        ProductReviewService.prototype.getByProductCode = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+            function (productCode) {
+                var _this = this;
+                /** @type {?} */
+                var selector = getSelectedProductReviewsFactory(productCode);
+                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
+                    if (reviews === undefined && productCode !== undefined) {
+                        _this.store.dispatch(new LoadProductReviews(productCode));
+                    }
+                }));
+            };
+        /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+        ProductReviewService.prototype.add = /**
+         * @param {?} productCode
+         * @param {?} review
+         * @return {?}
+         */
+            function (productCode, review) {
+                this.store.dispatch(new PostProductReview({
+                    productCode: productCode,
+                    review: review,
+                }));
+            };
+        ProductReviewService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ProductReviewService.ctorParameters = function () {
+            return [
+                { type: i1$1.Store }
+            ];
+        };
+        return ProductReviewService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductSearchService = /** @class */ (function () {
+        function ProductSearchService(store, router) {
+            this.store = store;
+            this.router = router;
+        }
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        ProductSearchService.prototype.search = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                /** @type {?} */
+                var urlTree = this.router.createUrlTree([], {
+                    queryParams: __assign({}, searchConfig, { query: query }),
+                    preserveFragment: false,
+                });
+                this.router.navigateByUrl(urlTree);
+                this.store.dispatch(new SearchProducts({
+                    queryText: query,
+                    searchConfig: searchConfig,
+                }));
+            };
+        /**
+         * @return {?}
+         */
+        ProductSearchService.prototype.getSearchResults = /**
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getSearchResults$1));
+            };
+        /**
+         * @return {?}
+         */
+        ProductSearchService.prototype.clearSearchResults = /**
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new CleanProductSearchState());
+            };
+        /**
+         * @return {?}
+         */
+        ProductSearchService.prototype.getAuxSearchResults = /**
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
+            };
+        /**
+         * @return {?}
+         */
+        ProductSearchService.prototype.getSearchSuggestions = /**
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProductSuggestions$1));
+            };
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        ProductSearchService.prototype.searchAuxiliary = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                this.store.dispatch(new SearchProducts({
+                    queryText: query,
+                    searchConfig: searchConfig,
+                }, true));
+            };
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        ProductSearchService.prototype.getSuggestions = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                this.store.dispatch(new GetProductSuggestions({
+                    term: query,
+                    searchConfig: searchConfig,
+                }));
+            };
+        ProductSearchService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ProductSearchService.ctorParameters = function () {
+            return [
+                { type: i1$1.Store },
+                { type: i1.Router }
+            ];
+        };
+        return ProductSearchService;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -16103,211 +16210,550 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductSearchService = /** @class */ (function () {
-        function ProductSearchService(store, router) {
-            this.store = store;
-            this.router = router;
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccProductReferencesAdapter = /** @class */ (function () {
+        function OccProductReferencesAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
         /**
-         * @param {?} query
-         * @param {?=} searchConfig
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
          * @return {?}
          */
-        ProductSearchService.prototype.search = /**
-         * @param {?} query
-         * @param {?=} searchConfig
+        OccProductReferencesAdapter.prototype.load = /**
+         * @param {?} productCode
+         * @param {?=} referenceType
+         * @param {?=} pageSize
          * @return {?}
          */
-            function (query, searchConfig) {
-                /** @type {?} */
-                var urlTree = this.router.createUrlTree([], {
-                    queryParams: __assign({}, searchConfig, { query: query }),
-                    preserveFragment: false,
-                });
-                this.router.navigateByUrl(urlTree);
-                this.store.dispatch(new SearchProducts({
-                    queryText: query,
-                    searchConfig: searchConfig,
-                }));
+            function (productCode, referenceType, pageSize) {
+                return this.http
+                    .get(this.getEndpoint(productCode, referenceType, pageSize))
+                    .pipe(this.converter.pipeable(PRODUCT_REFERENCES_NORMALIZER));
             };
         /**
+         * @protected
+         * @param {?} code
+         * @param {?=} reference
+         * @param {?=} pageSize
          * @return {?}
          */
-        ProductSearchService.prototype.getSearchResults = /**
+        OccProductReferencesAdapter.prototype.getEndpoint = /**
+         * @protected
+         * @param {?} code
+         * @param {?=} reference
+         * @param {?=} pageSize
          * @return {?}
          */
-            function () {
-                return this.store.pipe(i1$1.select(getSearchResults$1));
+            function (code, reference, pageSize) {
+                return this.occEndpoints.getUrl('productReferences', {
+                    productCode: code,
+                }, { referenceType: reference, pageSize: pageSize });
             };
-        /**
-         * @return {?}
-         */
-        ProductSearchService.prototype.clearSearchResults = /**
-         * @return {?}
-         */
-            function () {
-                this.store.dispatch(new CleanProductSearchState());
-            };
-        /**
-         * @return {?}
-         */
-        ProductSearchService.prototype.getAuxSearchResults = /**
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
-            };
-        /**
-         * @return {?}
-         */
-        ProductSearchService.prototype.getSearchSuggestions = /**
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getProductSuggestions$1));
-            };
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchService.prototype.searchAuxiliary = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                this.store.dispatch(new SearchProducts({
-                    queryText: query,
-                    searchConfig: searchConfig,
-                }, true));
-            };
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchService.prototype.getSuggestions = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                this.store.dispatch(new GetProductSuggestions({
-                    term: query,
-                    searchConfig: searchConfig,
-                }));
-            };
-        ProductSearchService.decorators = [
+        OccProductReferencesAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        ProductSearchService.ctorParameters = function () {
+        OccProductReferencesAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
-                { type: i1.Router }
+                { type: i1$2.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return ProductSearchService;
+        return OccProductReferencesAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductReviewService = /** @class */ (function () {
-        function ProductReviewService(store) {
-            this.store = store;
+    var OccProductReviewsAdapter = /** @class */ (function () {
+        function OccProductReviewsAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
         }
         /**
          * @param {?} productCode
+         * @param {?=} maxCount
          * @return {?}
          */
-        ProductReviewService.prototype.getByProductCode = /**
+        OccProductReviewsAdapter.prototype.load = /**
          * @param {?} productCode
+         * @param {?=} maxCount
          * @return {?}
          */
-            function (productCode) {
-                var _this = this;
-                /** @type {?} */
-                var selector = getSelectedProductReviewsFactory(productCode);
-                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
-                    if (reviews === undefined && productCode !== undefined) {
-                        _this.store.dispatch(new LoadProductReviews(productCode));
-                    }
-                }));
+            function (productCode, maxCount) {
+                return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(operators.pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
             };
         /**
          * @param {?} productCode
          * @param {?} review
          * @return {?}
          */
-        ProductReviewService.prototype.add = /**
+        OccProductReviewsAdapter.prototype.post = /**
          * @param {?} productCode
          * @param {?} review
          * @return {?}
          */
             function (productCode, review) {
-                this.store.dispatch(new PostProductReview({
-                    productCode: productCode,
-                    review: review,
-                }));
+                review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
+                /** @type {?} */
+                var headers = new i1$2.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                /** @type {?} */
+                var body = new URLSearchParams();
+                body.append('headline', review.headline);
+                body.append('comment', review.comment);
+                body.append('rating', review.rating.toString());
+                body.append('alias', review.alias);
+                return this.http.post(this.getEndpoint(productCode), body.toString(), {
+                    headers: headers,
+                });
             };
-        ProductReviewService.decorators = [
+        /**
+         * @protected
+         * @param {?} code
+         * @param {?=} maxCount
+         * @return {?}
+         */
+        OccProductReviewsAdapter.prototype.getEndpoint = /**
+         * @protected
+         * @param {?} code
+         * @param {?=} maxCount
+         * @return {?}
+         */
+            function (code, maxCount) {
+                return this.occEndpoints.getUrl('productReviews', {
+                    productCode: code,
+                }, { maxCount: maxCount });
+            };
+        OccProductReviewsAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        ProductReviewService.ctorParameters = function () {
+        OccProductReviewsAdapter.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1$2.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return ProductReviewService;
+        return OccProductReviewsAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var DEFAULT_SEARCH_CONFIG = {
+        pageSize: 20,
+    };
+    var OccProductSearchAdapter = /** @class */ (function () {
+        function OccProductSearchAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.search = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                if (searchConfig === void 0) {
+                    searchConfig = DEFAULT_SEARCH_CONFIG;
+                }
+                return this.http
+                    .get(this.getSearchEndpoint(query, searchConfig))
+                    .pipe(this.converter.pipeable(PRODUCT_SEARCH_PAGE_NORMALIZER));
+            };
+        /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.loadSuggestions = /**
+         * @param {?} term
+         * @param {?=} pageSize
+         * @return {?}
+         */
+            function (term, pageSize) {
+                if (pageSize === void 0) {
+                    pageSize = 3;
+                }
+                return this.http
+                    .get(this.getSuggestionEndpoint(term, pageSize.toString()))
+                    .pipe(operators.pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
+            };
+        /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.getSearchEndpoint = /**
+         * @protected
+         * @param {?} query
+         * @param {?} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                return this.occEndpoints.getUrl('productSearch', {
+                    query: query,
+                }, {
+                    pageSize: searchConfig.pageSize,
+                    currentPage: searchConfig.currentPage,
+                    sort: searchConfig.sortCode,
+                });
+            };
+        /**
+         * @protected
+         * @param {?} term
+         * @param {?} max
+         * @return {?}
+         */
+        OccProductSearchAdapter.prototype.getSuggestionEndpoint = /**
+         * @protected
+         * @param {?} term
+         * @param {?} max
+         * @return {?}
+         */
+            function (term, max) {
+                return this.occEndpoints.getUrl('productSuggestions', {
+                    term: term,
+                    max: max,
+                });
+            };
+        OccProductSearchAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccProductSearchAdapter.ctorParameters = function () {
+            return [
+                { type: i1$2.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccProductSearchAdapter;
+    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var OccProductAdapter = /** @class */ (function () {
+        function OccProductAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        OccProductAdapter.prototype.load = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+            function (productCode) {
+                return this.http
+                    .get(this.getEndpoint(productCode))
+                    .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
+            };
+        /**
+         * @protected
+         * @param {?} code
+         * @return {?}
+         */
+        OccProductAdapter.prototype.getEndpoint = /**
+         * @protected
+         * @param {?} code
+         * @return {?}
+         */
+            function (code) {
+                return this.occEndpoints.getUrl('product', {
+                    productCode: code,
+                });
+            };
+        OccProductAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccProductAdapter.ctorParameters = function () {
+            return [
+                { type: i1$2.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccProductAdapter;
+    }());
+
     /**
-     * @return {?}
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    function productStoreConfigFactory() {
-        var _a;
-        // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
-        /** @type {?} */
-        var config = {
-            state: {
-                ssrTransfer: {
-                    keys: (_a = {}, _a[PRODUCT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+    /** @type {?} */
+    var defaultOccProductConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                    productReviews: 'products/${productCode}/reviews',
+                    // Uncomment this when occ gets configured
+                    // productReferences:
+                    //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
+                    productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
+                    // tslint:disable:max-line-length
+                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                    // tslint:enable
+                    productSuggestions: 'products/suggestions?term=${term}&max=${max}',
                 },
             },
-        };
-        return config;
-    }
-    var ProductStoreModule = /** @class */ (function () {
-        function ProductStoreModule() {
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccProductReferencesListNormalizer = /** @class */ (function () {
+        function OccProductReferencesListNormalizer(converter) {
+            this.converter = converter;
         }
-        ProductStoreModule.decorators = [
+        /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        OccProductReferencesListNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+            function (source, target) {
+                var _this = this;
+                if (target === void 0) {
+                    target = [];
+                }
+                if (target === undefined) {
+                    target = __assign({}, (( /** @type {?} */(source))));
+                }
+                if (source && source.references) {
+                    target = source.references.map(function (reference) { return (__assign({}, reference, { target: _this.converter.convert(reference.target, PRODUCT_NORMALIZER) })); });
+                    return target;
+                }
+            };
+        OccProductReferencesListNormalizer.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccProductReferencesListNormalizer.ctorParameters = function () {
+            return [
+                { type: ConverterService }
+            ];
+        };
+        return OccProductReferencesListNormalizer;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductOccModule = /** @class */ (function () {
+        function ProductOccModule() {
+        }
+        ProductOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
                             i1$3.CommonModule,
                             i1$2.HttpClientModule,
-                            ProductOccModule,
-                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
-                            effects.EffectsModule.forFeature(effects$7),
-                            ConfigModule.withConfigFactory(productStoreConfigFactory),
+                            OccModule,
+                            ConfigModule.withConfig(defaultOccProductConfig),
                         ],
-                        providers: [reducerProvider$7],
+                        providers: [
+                            {
+                                provide: ProductAdapter,
+                                useClass: OccProductAdapter,
+                            },
+                            {
+                                provide: PRODUCT_NORMALIZER,
+                                useClass: ProductImageNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: ProductReferencesAdapter,
+                                useClass: OccProductReferencesAdapter,
+                            },
+                            {
+                                provide: PRODUCT_REFERENCES_NORMALIZER,
+                                useClass: OccProductReferencesListNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: ProductSearchAdapter,
+                                useClass: OccProductSearchAdapter,
+                            },
+                            {
+                                provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
+                                useClass: OccProductSearchPageNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: ProductReviewsAdapter,
+                                useClass: OccProductReviewsAdapter,
+                            },
+                        ],
                     },] }
         ];
-        return ProductStoreModule;
+        return ProductOccModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CategoryPageMetaResolver = /** @class */ (function (_super) {
+        __extends(CategoryPageMetaResolver, _super);
+        function CategoryPageMetaResolver(routingService, productSearchService, cms) {
+            var _this = _super.call(this) || this;
+            _this.routingService = routingService;
+            _this.productSearchService = productSearchService;
+            _this.cms = cms;
+            _this.pageType = PageType.CATEGORY_PAGE;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolve = /**
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
+                    // only the existence of a plp component tells us if products
+                    // are rendered or if this is an ordinary content page
+                    if (_this.hasProductListComponent(page)) {
+                        return _this.productSearchService.getSearchResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
+                            return rxjs.combineLatest([
+                                _this.resolveTitle(data),
+                                _this.resolveBreadcrumbs(data),
+                            ]);
+                        }), operators.map(function (_a) {
+                            var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
+                            return ({ title: title, breadcrumbs: breadcrumbs });
+                        }));
+                    }
+                    else {
+                        return rxjs.of({
+                            title: page.title || page.name,
+                        });
+                    }
+                }));
+            };
+        /**
+         * @param {?} data
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolveTitle = /**
+         * @param {?} data
+         * @return {?}
+         */
+            function (data) {
+                return rxjs.of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
+            };
+        /**
+         * @param {?} data
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
+         * @param {?} data
+         * @return {?}
+         */
+            function (data) {
+                var e_1, _a;
+                /** @type {?} */
+                var breadcrumbs = [];
+                breadcrumbs.push({ label: 'Home', link: '/' });
+                try {
+                    for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        var br = _c.value;
+                        breadcrumbs.push({
+                            label: br.facetValueName,
+                            link: '/c/' + br.facetValueCode,
+                        });
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (_c && !_c.done && (_a = _b.return))
+                            _a.call(_b);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                return rxjs.of(breadcrumbs);
+            };
+        /**
+         * @private
+         * @param {?} page
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.hasProductListComponent = /**
+         * @private
+         * @param {?} page
+         * @return {?}
+         */
+            function (page) {
+                // ProductListComponent
+                return !!Object.keys(page.slots).find(function (key) {
+                    return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent'; });
+                });
+            };
+        CategoryPageMetaResolver.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CategoryPageMetaResolver.ctorParameters = function () {
+            return [
+                { type: RoutingService },
+                { type: ProductSearchService },
+                { type: CmsService }
+            ];
+        };
+        /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService), i0.inject(CmsService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+        return CategoryPageMetaResolver;
+    }(PageMetaResolver));
 
     /**
      * @fileoverview added by tsickle
@@ -16555,125 +17001,40 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CategoryPageMetaResolver = /** @class */ (function (_super) {
-        __extends(CategoryPageMetaResolver, _super);
-        function CategoryPageMetaResolver(routingService, productSearchService, cms) {
-            var _this = _super.call(this) || this;
-            _this.routingService = routingService;
-            _this.productSearchService = productSearchService;
-            _this.cms = cms;
-            _this.pageType = PageType.CATEGORY_PAGE;
-            return _this;
+    /**
+     * @return {?}
+     */
+    function productStoreConfigFactory() {
+        var _a;
+        // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
+        /** @type {?} */
+        var config = {
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[PRODUCT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
+        };
+        return config;
+    }
+    var ProductStoreModule = /** @class */ (function () {
+        function ProductStoreModule() {
         }
-        /**
-         * @return {?}
-         */
-        CategoryPageMetaResolver.prototype.resolve = /**
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
-                    // only the existence of a plp component tells us if products
-                    // are rendered or if this is an ordinary content page
-                    if (_this.hasProductListComponent(page)) {
-                        return _this.productSearchService.getSearchResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
-                            return rxjs.combineLatest([
-                                _this.resolveTitle(data),
-                                _this.resolveBreadcrumbs(data),
-                            ]);
-                        }), operators.map(function (_a) {
-                            var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
-                            return ({ title: title, breadcrumbs: breadcrumbs });
-                        }));
-                    }
-                    else {
-                        return rxjs.of({
-                            title: page.title || page.name,
-                        });
-                    }
-                }));
-            };
-        /**
-         * @param {?} data
-         * @return {?}
-         */
-        CategoryPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} data
-         * @return {?}
-         */
-            function (data) {
-                return rxjs.of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
-            };
-        /**
-         * @param {?} data
-         * @return {?}
-         */
-        CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
-         * @param {?} data
-         * @return {?}
-         */
-            function (data) {
-                var e_1, _a;
-                /** @type {?} */
-                var breadcrumbs = [];
-                breadcrumbs.push({ label: 'Home', link: '/' });
-                try {
-                    for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
-                        var br = _c.value;
-                        breadcrumbs.push({
-                            label: br.facetValueName,
-                            link: '/c/' + br.facetValueCode,
-                        });
-                    }
-                }
-                catch (e_1_1) {
-                    e_1 = { error: e_1_1 };
-                }
-                finally {
-                    try {
-                        if (_c && !_c.done && (_a = _b.return))
-                            _a.call(_b);
-                    }
-                    finally {
-                        if (e_1)
-                            throw e_1.error;
-                    }
-                }
-                return rxjs.of(breadcrumbs);
-            };
-        /**
-         * @private
-         * @param {?} page
-         * @return {?}
-         */
-        CategoryPageMetaResolver.prototype.hasProductListComponent = /**
-         * @private
-         * @param {?} page
-         * @return {?}
-         */
-            function (page) {
-                // ProductListComponent
-                return !!Object.keys(page.slots).find(function (key) {
-                    return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent'; });
-                });
-            };
-        CategoryPageMetaResolver.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
+        ProductStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1$3.CommonModule,
+                            i1$2.HttpClientModule,
+                            ProductOccModule,
+                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
+                            effects.EffectsModule.forFeature(effects$7),
+                            ConfigModule.withConfigFactory(productStoreConfigFactory),
+                        ],
+                        providers: [reducerProvider$7],
                     },] }
         ];
-        /** @nocollapse */
-        CategoryPageMetaResolver.ctorParameters = function () {
-            return [
-                { type: RoutingService },
-                { type: ProductSearchService },
-                { type: CmsService }
-            ];
-        };
-        /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService), i0.inject(CmsService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
-        return CategoryPageMetaResolver;
-    }(PageMetaResolver));
+        return ProductStoreModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -16706,27 +17067,13 @@
                         providers: __spread([
                             ProductService,
                             ProductSearchService,
-                            ProductReviewService
+                            ProductReviewService,
+                            ProductReferenceService
                         ], pageTitleResolvers),
                     },] }
         ];
         return ProductModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -16965,41 +17312,6 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$f = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$f(state, action) {
-        if (state === void 0) {
-            state = initialState$f;
-        }
-        switch (action.type) {
-            case LOAD_BILLING_COUNTRIES_SUCCESS: {
-                /** @type {?} */
-                var billingCountries = action.payload;
-                /** @type {?} */
-                var entities = billingCountries.reduce(function (countryEntities, name) {
-                    var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
-                }, __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case CLEAR_MISCS_DATA: {
-                return initialState$f;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var initialState$g = {
         entities: {},
     };
@@ -17013,13 +17325,13 @@
             state = initialState$g;
         }
         switch (action.type) {
-            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+            case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 /** @type {?} */
-                var deliveryCountries = action.payload;
+                var billingCountries = action.payload;
                 /** @type {?} */
-                var entities = deliveryCountries.reduce(function (countryEntities, country) {
+                var entities = billingCountries.reduce(function (countryEntities, name) {
                     var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
+                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
                 }, __assign({}, state.entities));
                 return __assign({}, state, { entities: entities });
             }
@@ -17036,7 +17348,7 @@
      */
     /** @type {?} */
     var initialState$h = {
-        order: {},
+        entities: {},
     };
     /**
      * @param {?=} state
@@ -17048,12 +17360,17 @@
             state = initialState$h;
         }
         switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
+            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 /** @type {?} */
-                var order = action.payload;
-                return __assign({}, state, { order: order });
+                var deliveryCountries = action.payload;
+                /** @type {?} */
+                var entities = deliveryCountries.reduce(function (countryEntities, country) {
+                    var _a;
+                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
+                }, __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
             }
-            case CLEAR_ORDER_DETAILS: {
+            case CLEAR_MISCS_DATA: {
                 return initialState$h;
             }
         }
@@ -17065,7 +17382,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$i = [];
+    var initialState$i = {
+        order: {},
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -17076,10 +17395,12 @@
             state = initialState$i;
         }
         switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$i;
+            case LOAD_ORDER_DETAILS_SUCCESS: {
+                /** @type {?} */
+                var order = action.payload;
+                return __assign({}, state, { order: order });
             }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            case CLEAR_ORDER_DETAILS: {
                 return initialState$i;
             }
         }
@@ -17091,9 +17412,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$j = {
-        entities: [],
-    };
+    var initialState$j = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -17104,19 +17423,11 @@
             state = initialState$j;
         }
         switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload;
-                if (entities) {
-                    return __assign({}, state, { entities: entities });
-                }
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$j;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
                 return initialState$j;
-            }
-            case LOAD_REGIONS: {
-                return __assign({}, state);
-            }
-            case CLEAR_MISCS_DATA: {
-                return __assign({}, initialState$j);
             }
         }
         return state;
@@ -17127,7 +17438,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$k = false;
+    var initialState$k = {
+        entities: [],
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -17136,6 +17449,40 @@
     function reducer$k(state, action) {
         if (state === void 0) {
             state = initialState$k;
+        }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload;
+                if (entities) {
+                    return __assign({}, state, { entities: entities });
+                }
+                return initialState$k;
+            }
+            case LOAD_REGIONS: {
+                return __assign({}, state);
+            }
+            case CLEAR_MISCS_DATA: {
+                return __assign({}, initialState$k);
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$l = false;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$l(state, action) {
+        if (state === void 0) {
+            state = initialState$l;
         }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
@@ -17150,7 +17497,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$l = {
+    var initialState$m = {
         entities: {},
     };
     /**
@@ -17158,9 +17505,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$l(state, action) {
+    function reducer$m(state, action) {
         if (state === void 0) {
-            state = initialState$l;
+            state = initialState$m;
         }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
@@ -17174,34 +17521,8 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_MISCS_DATA: {
-                return initialState$l;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$m = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$m(state, action) {
-        if (state === void 0) {
-            state = initialState$m;
-        }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$m;
             }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$m;
-            }
         }
         return state;
     }
@@ -17211,7 +17532,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$n = ( /** @type {?} */({}));
+    var initialState$n = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -17220,6 +17541,32 @@
     function reducer$n(state, action) {
         if (state === void 0) {
             state = initialState$n;
+        }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$n;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$n;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$o = ( /** @type {?} */({}));
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$o(state, action) {
+        if (state === void 0) {
+            state = initialState$o;
         }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
@@ -17239,7 +17586,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$o = {
+    var initialState$p = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -17249,16 +17596,16 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$o(state, action) {
+    function reducer$p(state, action) {
         if (state === void 0) {
-            state = initialState$o;
+            state = initialState$p;
         }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$o;
+                return action.payload ? action.payload : initialState$p;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$o;
+                return initialState$p;
             }
         }
         return state;
@@ -17274,17 +17621,17 @@
     function getReducers$8() {
         return {
             account: i1$1.combineReducers({
-                details: reducer$n,
+                details: reducer$o,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$m),
-            billingCountries: reducer$f,
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$i),
-            orders: loaderReducer(USER_ORDERS, reducer$o),
-            order: reducer$h,
-            countries: reducer$g,
-            titles: reducer$l,
-            regions: reducer$j,
-            resetPassword: reducer$k,
+            addresses: loaderReducer(USER_ADDRESSES, reducer$n),
+            billingCountries: reducer$g,
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
+            orders: loaderReducer(USER_ORDERS, reducer$p),
+            order: reducer$i,
+            countries: reducer$h,
+            titles: reducer$m,
+            regions: reducer$k,
+            resetPassword: reducer$l,
         };
     }
     /** @type {?} */
@@ -24009,15 +24356,54 @@
     exports.OccEndpointsService = OccEndpointsService;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.InterceptorUtil = InterceptorUtil;
-    exports.ProductOccModule = ProductOccModule;
-    exports.OccProductAdapter = OccProductAdapter;
-    exports.OccProductSearchAdapter = OccProductSearchAdapter;
-    exports.OccProductReviewsAdapter = OccProductReviewsAdapter;
+    exports.ProductConnector = ProductConnector;
+    exports.ProductAdapter = ProductAdapter;
+    exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
+    exports.PRODUCT_REFERENCES_NORMALIZER = PRODUCT_REFERENCES_NORMALIZER;
+    exports.ProductReferencesAdapter = ProductReferencesAdapter;
+    exports.ProductReferencesConnector = ProductReferencesConnector;
+    exports.ProductReviewsConnector = ProductReviewsConnector;
+    exports.ProductReviewsAdapter = ProductReviewsAdapter;
+    exports.PRODUCT_REVIEW_NORMALIZER = PRODUCT_REVIEW_NORMALIZER;
+    exports.PRODUCT_REVIEW_SERIALIZER = PRODUCT_REVIEW_SERIALIZER;
+    exports.ProductSearchConnector = ProductSearchConnector;
+    exports.ProductSearchAdapter = ProductSearchAdapter;
+    exports.PRODUCT_SEARCH_PAGE_NORMALIZER = PRODUCT_SEARCH_PAGE_NORMALIZER;
+    exports.PRODUCT_SUGGESTION_NORMALIZER = PRODUCT_SUGGESTION_NORMALIZER;
+    exports.ProductReferenceService = ProductReferenceService;
+    exports.ProductReviewService = ProductReviewService;
+    exports.ProductSearchService = ProductSearchService;
+    exports.ProductService = ProductService;
     exports.ProductImageNormalizer = ProductImageNormalizer;
     exports.ProductReferenceNormalizer = ProductReferenceNormalizer;
     exports.OccProductSearchPageNormalizer = OccProductSearchPageNormalizer;
-    exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
-    exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
+    exports.OccProductReferencesAdapter = OccProductReferencesAdapter;
+    exports.OccProductReviewsAdapter = OccProductReviewsAdapter;
+    exports.OccProductSearchAdapter = OccProductSearchAdapter;
+    exports.OccProductAdapter = OccProductAdapter;
+    exports.ProductOccModule = ProductOccModule;
+    exports.ProductModule = ProductModule;
+    exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
+    exports.ProductPageMetaResolver = ProductPageMetaResolver;
+    exports.SearchPageMetaResolver = SearchPageMetaResolver;
+    exports.LOAD_PRODUCT_REFERENCES = LOAD_PRODUCT_REFERENCES;
+    exports.LOAD_PRODUCT_REFERENCES_FAIL = LOAD_PRODUCT_REFERENCES_FAIL;
+    exports.LOAD_PRODUCT_REFERENCES_SUCCESS = LOAD_PRODUCT_REFERENCES_SUCCESS;
+    exports.LoadProductReferences = LoadProductReferences;
+    exports.LoadProductReferencesFail = LoadProductReferencesFail;
+    exports.LoadProductReferencesSuccess = LoadProductReferencesSuccess;
+    exports.LOAD_PRODUCT_REVIEWS = LOAD_PRODUCT_REVIEWS;
+    exports.LOAD_PRODUCT_REVIEWS_FAIL = LOAD_PRODUCT_REVIEWS_FAIL;
+    exports.LOAD_PRODUCT_REVIEWS_SUCCESS = LOAD_PRODUCT_REVIEWS_SUCCESS;
+    exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
+    exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
+    exports.POST_PRODUCT_REVIEW_SUCCESS = POST_PRODUCT_REVIEW_SUCCESS;
+    exports.LoadProductReviews = LoadProductReviews;
+    exports.LoadProductReviewsFail = LoadProductReviewsFail;
+    exports.LoadProductReviewsSuccess = LoadProductReviewsSuccess;
+    exports.PostProductReview = PostProductReview;
+    exports.PostProductReviewFail = PostProductReviewFail;
+    exports.PostProductReviewSuccess = PostProductReviewSuccess;
     exports.SEARCH_PRODUCTS = SEARCH_PRODUCTS;
     exports.SEARCH_PRODUCTS_FAIL = SEARCH_PRODUCTS_FAIL;
     exports.SEARCH_PRODUCTS_SUCCESS = SEARCH_PRODUCTS_SUCCESS;
@@ -24038,19 +24424,17 @@
     exports.LoadProduct = LoadProduct;
     exports.LoadProductFail = LoadProductFail;
     exports.LoadProductSuccess = LoadProductSuccess;
-    exports.LOAD_PRODUCT_REVIEWS = LOAD_PRODUCT_REVIEWS;
-    exports.LOAD_PRODUCT_REVIEWS_FAIL = LOAD_PRODUCT_REVIEWS_FAIL;
-    exports.LOAD_PRODUCT_REVIEWS_SUCCESS = LOAD_PRODUCT_REVIEWS_SUCCESS;
-    exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
-    exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
-    exports.POST_PRODUCT_REVIEW_SUCCESS = POST_PRODUCT_REVIEW_SUCCESS;
-    exports.LoadProductReviews = LoadProductReviews;
-    exports.LoadProductReviewsFail = LoadProductReviewsFail;
-    exports.LoadProductReviewsSuccess = LoadProductReviewsSuccess;
-    exports.PostProductReview = PostProductReview;
-    exports.PostProductReviewFail = PostProductReviewFail;
-    exports.PostProductReviewSuccess = PostProductReviewSuccess;
+    exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
+    exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
     exports.getProductsState = getProductsState;
+    exports.getProductReferencesState = getProductReferencesState;
+    exports.getSelectedProductReferencesFactory = getSelectedProductReferencesFactory;
+    exports.getProductReviewsState = getProductReviewsState;
+    exports.getSelectedProductReviewsFactory = getSelectedProductReviewsFactory;
+    exports.getProductsSearchState = getProductsSearchState;
+    exports.getSearchResults = getSearchResults$1;
+    exports.getAuxSearchResults = getAuxSearchResults$1;
+    exports.getProductSuggestions = getProductSuggestions$1;
     exports.getProductState = getProductState;
     exports.getSelectedProductsFactory = getSelectedProductsFactory;
     exports.getSelectedProductStateFactory = getSelectedProductStateFactory;
@@ -24059,30 +24443,6 @@
     exports.getSelectedProductSuccessFactory = getSelectedProductSuccessFactory;
     exports.getSelectedProductErrorFactory = getSelectedProductErrorFactory;
     exports.getAllProductCodes = getAllProductCodes;
-    exports.getProductsSearchState = getProductsSearchState;
-    exports.getSearchResults = getSearchResults$1;
-    exports.getAuxSearchResults = getAuxSearchResults$1;
-    exports.getProductSuggestions = getProductSuggestions$1;
-    exports.getProductReviewsState = getProductReviewsState;
-    exports.getSelectedProductReviewsFactory = getSelectedProductReviewsFactory;
-    exports.ProductService = ProductService;
-    exports.ProductSearchService = ProductSearchService;
-    exports.ProductReviewService = ProductReviewService;
-    exports.ProductModule = ProductModule;
-    exports.ProductConnector = ProductConnector;
-    exports.ProductAdapter = ProductAdapter;
-    exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
-    exports.ProductSearchConnector = ProductSearchConnector;
-    exports.ProductSearchAdapter = ProductSearchAdapter;
-    exports.PRODUCT_SEARCH_PAGE_NORMALIZER = PRODUCT_SEARCH_PAGE_NORMALIZER;
-    exports.PRODUCT_SUGGESTION_NORMALIZER = PRODUCT_SUGGESTION_NORMALIZER;
-    exports.ProductReviewsConnector = ProductReviewsConnector;
-    exports.ProductReviewsAdapter = ProductReviewsAdapter;
-    exports.PRODUCT_REVIEW_NORMALIZER = PRODUCT_REVIEW_NORMALIZER;
-    exports.PRODUCT_REVIEW_SERIALIZER = PRODUCT_REVIEW_SERIALIZER;
-    exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
-    exports.ProductPageMetaResolver = ProductPageMetaResolver;
-    exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.RoutingModule = RoutingModule;
     exports.RoutingService = RoutingService;
     exports.PageContext = PageContext;
@@ -24503,45 +24863,48 @@
     exports.ɵde = reducer$a;
     exports.ɵdc = reducer$b;
     exports.ɵdd = reducer$c;
-    exports.ɵfa = ConfigModule;
-    exports.ɵdz = ServerConfig;
+    exports.ɵfd = ConfigModule;
+    exports.ɵea = ServerConfig;
     exports.ɵbn = provideConfigValidator;
-    exports.ɵdy = HttpErrorInterceptor;
-    exports.ɵdx = reducer$8;
-    exports.ɵdu = getReducers$4;
-    exports.ɵdw = reducerProvider$4;
-    exports.ɵdv = reducerToken$4;
-    exports.ɵea = defaultI18nConfig;
-    exports.ɵec = i18nextInit;
-    exports.ɵeb = i18nextProviders;
-    exports.ɵed = MockDatePipe;
-    exports.ɵee = MockTranslationService;
-    exports.ɵgr = defaultPersonalizationConfig;
-    exports.ɵgs = interceptors$3;
-    exports.ɵgt = OccPersonalizationIdInterceptor;
-    exports.ɵgk = ProcessModule;
-    exports.ɵgm = PROCESS_FEATURE;
-    exports.ɵgl = ProcessStoreModule;
-    exports.ɵgn = getReducers$9;
-    exports.ɵgp = reducerProvider$9;
-    exports.ɵgo = reducerToken$9;
-    exports.ɵef = defaultOccProductConfig;
-    exports.ɵdq = effects$7;
-    exports.ɵdt = ProductReviewsEffects;
-    exports.ɵdr = ProductsSearchEffects;
-    exports.ɵds = ProductEffects;
-    exports.ɵel = ProductStoreModule;
-    exports.ɵek = productStoreConfigFactory;
-    exports.ɵdo = clearProductsState;
-    exports.ɵdl = getReducers$7;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdn = reducerProvider$7;
-    exports.ɵdm = reducerToken$7;
-    exports.ɵem = reducer$e;
-    exports.ɵei = getAuxSearchResults;
-    exports.ɵej = getProductSuggestions;
-    exports.ɵeh = getSearchResults;
-    exports.ɵeg = reducer$d;
+    exports.ɵdz = HttpErrorInterceptor;
+    exports.ɵdy = reducer$8;
+    exports.ɵdv = getReducers$4;
+    exports.ɵdx = reducerProvider$4;
+    exports.ɵdw = reducerToken$4;
+    exports.ɵeb = defaultI18nConfig;
+    exports.ɵed = i18nextInit;
+    exports.ɵec = i18nextProviders;
+    exports.ɵee = MockDatePipe;
+    exports.ɵef = MockTranslationService;
+    exports.ɵgu = defaultPersonalizationConfig;
+    exports.ɵgv = interceptors$3;
+    exports.ɵgw = OccPersonalizationIdInterceptor;
+    exports.ɵgn = ProcessModule;
+    exports.ɵgp = PROCESS_FEATURE;
+    exports.ɵgo = ProcessStoreModule;
+    exports.ɵgq = getReducers$9;
+    exports.ɵgs = reducerProvider$9;
+    exports.ɵgr = reducerToken$9;
+    exports.ɵeg = defaultOccProductConfig;
+    exports.ɵeh = OccProductReferencesListNormalizer;
+    exports.ɵdl = effects$7;
+    exports.ɵdm = ProductReferencesEffects;
+    exports.ɵdn = ProductReviewsEffects;
+    exports.ɵdo = ProductsSearchEffects;
+    exports.ɵdp = ProductEffects;
+    exports.ɵej = ProductStoreModule;
+    exports.ɵei = productStoreConfigFactory;
+    exports.ɵdt = clearProductsState;
+    exports.ɵdq = getReducers$7;
+    exports.ɵdu = metaReducers$4;
+    exports.ɵds = reducerProvider$7;
+    exports.ɵdr = reducerToken$7;
+    exports.ɵep = reducer$d;
+    exports.ɵeo = reducer$e;
+    exports.ɵem = getAuxSearchResults;
+    exports.ɵen = getProductSuggestions;
+    exports.ɵel = getSearchResults;
+    exports.ɵek = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵb = ROUTING_FEATURE;
@@ -24552,28 +24915,28 @@
     exports.ɵd = reducer;
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
-    exports.ɵen = defaultSiteContextConfigFactory;
+    exports.ɵeq = defaultSiteContextConfigFactory;
     exports.ɵbk = BaseSiteService;
-    exports.ɵet = SiteContextParamsService;
-    exports.ɵev = SiteContextRoutesHandler;
-    exports.ɵeu = SiteContextUrlSerializer;
+    exports.ɵew = SiteContextParamsService;
+    exports.ɵey = SiteContextRoutesHandler;
+    exports.ɵex = SiteContextUrlSerializer;
     exports.ɵdk = CurrenciesEffects;
     exports.ɵdi = effects$3;
     exports.ɵdj = LanguagesEffects;
-    exports.ɵes = reducer$5;
-    exports.ɵer = reducer$4;
+    exports.ɵev = reducer$5;
+    exports.ɵeu = reducer$4;
     exports.ɵdf = getReducers$3;
     exports.ɵdh = reducerProvider$3;
     exports.ɵdg = reducerToken$3;
-    exports.ɵeq = reducer$3;
-    exports.ɵep = SiteContextStoreModule;
-    exports.ɵeo = siteContextStoreConfigFactory;
-    exports.ɵex = CmsTicketInterceptor;
-    exports.ɵew = interceptors$2;
-    exports.ɵey = SmartEditService;
+    exports.ɵet = reducer$3;
+    exports.ɵes = SiteContextStoreModule;
+    exports.ɵer = siteContextStoreConfigFactory;
+    exports.ɵfa = CmsTicketInterceptor;
+    exports.ɵez = interceptors$2;
+    exports.ɵfb = SmartEditService;
     exports.ɵcp = EntityFailAction;
     exports.ɵco = EntityLoadAction;
-    exports.ɵfj = EntityResetAction;
+    exports.ɵfm = EntityResetAction;
     exports.ɵcq = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
@@ -24581,42 +24944,42 @@
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfb = defaultStoreFinderConfig;
-    exports.ɵfh = FindStoresEffect;
-    exports.ɵfg = effects$9;
-    exports.ɵfi = ViewAllStoresEffect;
-    exports.ɵfd = getReducers$a;
-    exports.ɵff = reducerProvider$a;
-    exports.ɵfe = reducerToken$a;
-    exports.ɵez = getStoreFinderState;
-    exports.ɵfc = StoreFinderStoreModule;
-    exports.ɵfw = BillingCountriesEffect;
-    exports.ɵfx = DeliveryCountriesEffects;
-    exports.ɵgh = ForgotPasswordEffects;
-    exports.ɵfv = effects$8;
-    exports.ɵfy = OrderDetailsEffect;
-    exports.ɵfz = UserPaymentMethodsEffects;
-    exports.ɵga = RegionsEffects;
-    exports.ɵgb = ResetPasswordEffects;
-    exports.ɵgc = TitlesEffects;
-    exports.ɵgi = UpdateEmailEffects;
-    exports.ɵgj = UpdatePasswordEffects;
-    exports.ɵgd = UserAddressesEffects;
-    exports.ɵge = UserDetailsEffects;
-    exports.ɵgf = UserOrdersEffect;
-    exports.ɵgg = UserRegisterEffects;
-    exports.ɵfm = reducer$f;
-    exports.ɵfq = reducer$g;
-    exports.ɵfp = reducer$h;
-    exports.ɵfn = reducer$i;
-    exports.ɵfs = reducer$j;
-    exports.ɵft = reducer$k;
-    exports.ɵfr = reducer$l;
-    exports.ɵfl = reducer$m;
-    exports.ɵfk = reducer$n;
-    exports.ɵfo = reducer$o;
-    exports.ɵfu = UserStoreModule;
-    exports.ɵgq = StripHtmlPipe;
+    exports.ɵfe = defaultStoreFinderConfig;
+    exports.ɵfk = FindStoresEffect;
+    exports.ɵfj = effects$9;
+    exports.ɵfl = ViewAllStoresEffect;
+    exports.ɵfg = getReducers$a;
+    exports.ɵfi = reducerProvider$a;
+    exports.ɵfh = reducerToken$a;
+    exports.ɵfc = getStoreFinderState;
+    exports.ɵff = StoreFinderStoreModule;
+    exports.ɵfz = BillingCountriesEffect;
+    exports.ɵga = DeliveryCountriesEffects;
+    exports.ɵgk = ForgotPasswordEffects;
+    exports.ɵfy = effects$8;
+    exports.ɵgb = OrderDetailsEffect;
+    exports.ɵgc = UserPaymentMethodsEffects;
+    exports.ɵgd = RegionsEffects;
+    exports.ɵge = ResetPasswordEffects;
+    exports.ɵgf = TitlesEffects;
+    exports.ɵgl = UpdateEmailEffects;
+    exports.ɵgm = UpdatePasswordEffects;
+    exports.ɵgg = UserAddressesEffects;
+    exports.ɵgh = UserDetailsEffects;
+    exports.ɵgi = UserOrdersEffect;
+    exports.ɵgj = UserRegisterEffects;
+    exports.ɵfp = reducer$g;
+    exports.ɵft = reducer$h;
+    exports.ɵfs = reducer$i;
+    exports.ɵfq = reducer$j;
+    exports.ɵfv = reducer$k;
+    exports.ɵfw = reducer$l;
+    exports.ɵfu = reducer$m;
+    exports.ɵfo = reducer$n;
+    exports.ɵfn = reducer$o;
+    exports.ɵfr = reducer$p;
+    exports.ɵfx = UserStoreModule;
+    exports.ɵgt = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

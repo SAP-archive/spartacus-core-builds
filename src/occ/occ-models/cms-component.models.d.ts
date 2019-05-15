@@ -59,6 +59,14 @@ export interface CmsProductCarouselComponent extends CmsComponent {
     popup?: string;
     scroll?: string;
 }
+export interface CmsProductReferencesComponent extends CmsComponent {
+    title?: string;
+    displayProductTitles?: string;
+    displayProductPrices?: string;
+    maximumNumberProducts?: number;
+    productReferenceTypes?: string;
+    container?: string;
+}
 export interface CmsMiniCartComponent extends CmsComponent {
     container?: string;
     shownProductCount?: string;

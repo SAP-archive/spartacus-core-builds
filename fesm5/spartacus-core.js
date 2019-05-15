@@ -14466,6 +14466,49 @@ var CxApiModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ProductAdapter = /** @class */ (function () {
+    function ProductAdapter() {
+    }
+    return ProductAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductConnector = /** @class */ (function () {
+    function ProductConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    ProductConnector.prototype.get = /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        return this.adapter.load(productCode);
+    };
+    ProductConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductConnector.ctorParameters = function () { return [
+        { type: ProductAdapter }
+    ]; };
+    /** @nocollapse */ ProductConnector.ngInjectableDef = defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+    return ProductConnector;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -14477,20 +14520,64 @@ var CxApiModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var defaultOccProductConfig = {
-    backend: {
-        occ: {
-            endpoints: {
-                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
-                productReviews: 'products/${productCode}/reviews',
-                // tslint:disable:max-line-length
-                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
-                // tslint:enable
-                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
-            },
-        },
-    },
-};
+var PRODUCT_REFERENCES_NORMALIZER = new InjectionToken('ProductReferencesListNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ProductReferencesAdapter = /** @class */ (function () {
+    function ProductReferencesAdapter() {
+    }
+    return ProductReferencesAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductReferencesConnector = /** @class */ (function () {
+    function ProductReferencesConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    ProductReferencesConnector.prototype.get = /**
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    function (productCode, referenceType, pageSize) {
+        return this.adapter.load(productCode, referenceType, pageSize);
+    };
+    ProductReferencesConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductReferencesConnector.ctorParameters = function () { return [
+        { type: ProductReferencesAdapter }
+    ]; };
+    /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = defineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(inject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+    return ProductReferencesConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -14512,6 +14599,53 @@ ProductReviewsAdapter = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var ProductReviewsConnector = /** @class */ (function () {
+    function ProductReviewsConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} productCode
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    ProductReviewsConnector.prototype.get = /**
+     * @param {?} productCode
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    function (productCode, maxCount) {
+        return this.adapter.load(productCode, maxCount);
+    };
+    /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    ProductReviewsConnector.prototype.add = /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    function (productCode, review) {
+        return this.adapter.post(productCode, review);
+    };
+    ProductReviewsConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductReviewsConnector.ctorParameters = function () { return [
+        { type: ProductReviewsAdapter }
+    ]; };
+    /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+    return ProductReviewsConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 var PRODUCT_REVIEW_NORMALIZER = new InjectionToken('ProductReviewNormalizer');
 /** @type {?} */
@@ -14521,129 +14655,6 @@ var PRODUCT_REVIEW_SERIALIZER = new InjectionToken('ProductReviewSerializer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var OccProductReviewsAdapter = /** @class */ (function () {
-    function OccProductReviewsAdapter(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    /**
-     * @param {?} productCode
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    OccProductReviewsAdapter.prototype.load = /**
-     * @param {?} productCode
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    function (productCode, maxCount) {
-        return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
-    };
-    /**
-     * @param {?} productCode
-     * @param {?} review
-     * @return {?}
-     */
-    OccProductReviewsAdapter.prototype.post = /**
-     * @param {?} productCode
-     * @param {?} review
-     * @return {?}
-     */
-    function (productCode, review) {
-        review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        /** @type {?} */
-        var body = new URLSearchParams();
-        body.append('headline', review.headline);
-        body.append('comment', review.comment);
-        body.append('rating', review.rating.toString());
-        body.append('alias', review.alias);
-        return this.http.post(this.getEndpoint(productCode), body.toString(), {
-            headers: headers,
-        });
-    };
-    /**
-     * @protected
-     * @param {?} code
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    OccProductReviewsAdapter.prototype.getEndpoint = /**
-     * @protected
-     * @param {?} code
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    function (code, maxCount) {
-        return this.occEndpoints.getUrl('productReviews', {
-            productCode: code,
-        }, { maxCount: maxCount });
-    };
-    OccProductReviewsAdapter.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    OccProductReviewsAdapter.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-    return OccProductReviewsAdapter;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var OccProductAdapter = /** @class */ (function () {
-    function OccProductAdapter(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    /**
-     * @param {?} productCode
-     * @return {?}
-     */
-    OccProductAdapter.prototype.load = /**
-     * @param {?} productCode
-     * @return {?}
-     */
-    function (productCode) {
-        return this.http
-            .get(this.getEndpoint(productCode))
-            .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
-    };
-    /**
-     * @protected
-     * @param {?} code
-     * @return {?}
-     */
-    OccProductAdapter.prototype.getEndpoint = /**
-     * @protected
-     * @param {?} code
-     * @return {?}
-     */
-    function (code) {
-        return this.occEndpoints.getUrl('product', {
-            productCode: code,
-        });
-    };
-    OccProductAdapter.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    OccProductAdapter.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-    return OccProductAdapter;
-}());
 
 /**
  * @fileoverview added by tsickle
@@ -14655,11 +14666,77 @@ var OccProductAdapter = /** @class */ (function () {
 var  /**
  * @abstract
  */
-ProductAdapter = /** @class */ (function () {
-    function ProductAdapter() {
+ProductSearchAdapter = /** @class */ (function () {
+    function ProductSearchAdapter() {
     }
-    return ProductAdapter;
+    return ProductSearchAdapter;
 }());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductSearchConnector = /** @class */ (function () {
+    function ProductSearchConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchConnector.prototype.search = /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        return this.adapter.search(query, searchConfig);
+    };
+    /**
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    ProductSearchConnector.prototype.getSuggestions = /**
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    function (term, pageSize) {
+        return this.adapter.loadSuggestions(term, pageSize);
+    };
+    ProductSearchConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ProductSearchConnector.ctorParameters = function () { return [
+        { type: ProductSearchAdapter }
+    ]; };
+    /** @nocollapse */ ProductSearchConnector.ngInjectableDef = defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(inject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+    return ProductSearchConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var PRODUCT_SEARCH_PAGE_NORMALIZER = new InjectionToken('ProductSearchPageNormalizer');
+/** @type {?} */
+var PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -14861,128 +14938,6 @@ var ProductReferenceNormalizer = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-ProductSearchAdapter = /** @class */ (function () {
-    function ProductSearchAdapter() {
-    }
-    return ProductSearchAdapter;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var PRODUCT_SEARCH_PAGE_NORMALIZER = new InjectionToken('ProductSearchPageNormalizer');
-/** @type {?} */
-var PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNormalizer');
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var DEFAULT_SEARCH_CONFIG = {
-    pageSize: 20,
-};
-var OccProductSearchAdapter = /** @class */ (function () {
-    function OccProductSearchAdapter(http, occEndpoints, converter) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
-        this.converter = converter;
-    }
-    /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    OccProductSearchAdapter.prototype.search = /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    function (query, searchConfig) {
-        if (searchConfig === void 0) { searchConfig = DEFAULT_SEARCH_CONFIG; }
-        return this.http
-            .get(this.getSearchEndpoint(query, searchConfig))
-            .pipe(this.converter.pipeable(PRODUCT_SEARCH_PAGE_NORMALIZER));
-    };
-    /**
-     * @param {?} term
-     * @param {?=} pageSize
-     * @return {?}
-     */
-    OccProductSearchAdapter.prototype.loadSuggestions = /**
-     * @param {?} term
-     * @param {?=} pageSize
-     * @return {?}
-     */
-    function (term, pageSize) {
-        if (pageSize === void 0) { pageSize = 3; }
-        return this.http
-            .get(this.getSuggestionEndpoint(term, pageSize.toString()))
-            .pipe(pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
-    };
-    /**
-     * @protected
-     * @param {?} query
-     * @param {?} searchConfig
-     * @return {?}
-     */
-    OccProductSearchAdapter.prototype.getSearchEndpoint = /**
-     * @protected
-     * @param {?} query
-     * @param {?} searchConfig
-     * @return {?}
-     */
-    function (query, searchConfig) {
-        return this.occEndpoints.getUrl('productSearch', {
-            query: query,
-        }, {
-            pageSize: searchConfig.pageSize,
-            currentPage: searchConfig.currentPage,
-            sort: searchConfig.sortCode,
-        });
-    };
-    /**
-     * @protected
-     * @param {?} term
-     * @param {?} max
-     * @return {?}
-     */
-    OccProductSearchAdapter.prototype.getSuggestionEndpoint = /**
-     * @protected
-     * @param {?} term
-     * @param {?} max
-     * @return {?}
-     */
-    function (term, max) {
-        return this.occEndpoints.getUrl('productSuggestions', {
-            term: term,
-            max: max,
-        });
-    };
-    OccProductSearchAdapter.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    OccProductSearchAdapter.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: OccEndpointsService },
-        { type: ConverterService }
-    ]; };
-    return OccProductSearchAdapter;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var OccProductSearchPageNormalizer = /** @class */ (function () {
     function OccProductSearchPageNormalizer(converterService) {
         this.converterService = converterService;
@@ -15022,69 +14977,97 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductOccModule = /** @class */ (function () {
-    function ProductOccModule() {
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
+/** @type {?} */
+var LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
+/** @type {?} */
+var LOAD_PRODUCT_REFERENCES_SUCCESS = '[Product] Load Product References Data Success';
+var LoadProductReferences = /** @class */ (function () {
+    function LoadProductReferences(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REFERENCES;
     }
-    ProductOccModule.decorators = [
-        { type: NgModule, args: [{
-                    imports: [
-                        CommonModule,
-                        HttpClientModule,
-                        OccModule,
-                        ConfigModule.withConfig(defaultOccProductConfig),
-                    ],
-                    providers: [
-                        {
-                            provide: ProductAdapter,
-                            useClass: OccProductAdapter,
-                        },
-                        {
-                            provide: PRODUCT_NORMALIZER,
-                            useClass: ProductImageNormalizer,
-                            multi: true,
-                        },
-                        {
-                            provide: PRODUCT_NORMALIZER,
-                            useClass: ProductReferenceNormalizer,
-                            multi: true,
-                        },
-                        {
-                            provide: ProductSearchAdapter,
-                            useClass: OccProductSearchAdapter,
-                        },
-                        {
-                            provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
-                            useClass: OccProductSearchPageNormalizer,
-                            multi: true,
-                        },
-                        {
-                            provide: ProductReviewsAdapter,
-                            useClass: OccProductReviewsAdapter,
-                        },
-                    ],
-                },] }
-    ];
-    return ProductOccModule;
+    return LoadProductReferences;
+}());
+var LoadProductReferencesFail = /** @class */ (function () {
+    function LoadProductReferencesFail(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REFERENCES_FAIL;
+    }
+    return LoadProductReferencesFail;
+}());
+var LoadProductReferencesSuccess = /** @class */ (function () {
+    function LoadProductReferencesSuccess(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REFERENCES_SUCCESS;
+    }
+    return LoadProductReferencesSuccess;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
-var PRODUCT_FEATURE = 'product';
+var LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
 /** @type {?} */
-var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+var LOAD_PRODUCT_REVIEWS_FAIL = '[Product] Load Product Reviews Data Fail';
+/** @type {?} */
+var LOAD_PRODUCT_REVIEWS_SUCCESS = '[Product] Load Product Reviews Data Success';
+/** @type {?} */
+var POST_PRODUCT_REVIEW = '[Product] Post Product Review';
+/** @type {?} */
+var POST_PRODUCT_REVIEW_FAIL = '[Product] Post Product Review Fail';
+/** @type {?} */
+var POST_PRODUCT_REVIEW_SUCCESS = '[Product] Post Product Review Success';
+var LoadProductReviews = /** @class */ (function () {
+    function LoadProductReviews(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REVIEWS;
+    }
+    return LoadProductReviews;
+}());
+var LoadProductReviewsFail = /** @class */ (function () {
+    function LoadProductReviewsFail(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REVIEWS_FAIL;
+    }
+    return LoadProductReviewsFail;
+}());
+var LoadProductReviewsSuccess = /** @class */ (function () {
+    function LoadProductReviewsSuccess(payload) {
+        this.payload = payload;
+        this.type = LOAD_PRODUCT_REVIEWS_SUCCESS;
+    }
+    return LoadProductReviewsSuccess;
+}());
+var PostProductReview = /** @class */ (function () {
+    function PostProductReview(payload) {
+        this.payload = payload;
+        this.type = POST_PRODUCT_REVIEW;
+    }
+    return PostProductReview;
+}());
+var PostProductReviewFail = /** @class */ (function () {
+    function PostProductReviewFail(payload) {
+        this.payload = payload;
+        this.type = POST_PRODUCT_REVIEW_FAIL;
+    }
+    return PostProductReviewFail;
+}());
+var PostProductReviewSuccess = /** @class */ (function () {
+    function PostProductReviewSuccess(payload) {
+        this.payload = payload;
+        this.type = POST_PRODUCT_REVIEW_SUCCESS;
+    }
+    return PostProductReviewSuccess;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -15161,6 +15144,15 @@ var CleanProductSearchState = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+var PRODUCT_FEATURE = 'product';
+/** @type {?} */
+var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 var LOAD_PRODUCT = '[Product] Load Product Data';
 /** @type {?} */
 var LOAD_PRODUCT_FAIL = '[Product] Load Product Data Fail';
@@ -15201,300 +15193,94 @@ var LoadProductSuccess = /** @class */ (function (_super) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-var LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
-/** @type {?} */
-var LOAD_PRODUCT_REVIEWS_FAIL = '[Product] Load Product Reviews Data Fail';
-/** @type {?} */
-var LOAD_PRODUCT_REVIEWS_SUCCESS = '[Product] Load Product Reviews Data Success';
-/** @type {?} */
-var POST_PRODUCT_REVIEW = '[Product] Post Product Review';
-/** @type {?} */
-var POST_PRODUCT_REVIEW_FAIL = '[Product] Post Product Review Fail';
-/** @type {?} */
-var POST_PRODUCT_REVIEW_SUCCESS = '[Product] Post Product Review Success';
-var LoadProductReviews = /** @class */ (function () {
-    function LoadProductReviews(payload) {
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_REVIEWS;
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductReferencesEffects = /** @class */ (function () {
+    function ProductReferencesEffects(actions$, productReferencesConnector) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.productReferencesConnector = productReferencesConnector;
+        this.loadProductReferences$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REFERENCES), map(function (action) { return action.payload; }), mergeMap(function (payload) {
+            return _this.productReferencesConnector
+                .get(payload.productCode, payload.referenceType, payload.pageSize)
+                .pipe(map(function (data) {
+                return new LoadProductReferencesSuccess({
+                    productCode: payload.productCode,
+                    list: data,
+                });
+            }), catchError(function (_error) {
+                return of(new LoadProductReferencesFail((/** @type {?} */ ({
+                    message: payload.productCode,
+                }))));
+            }));
+        }));
     }
-    return LoadProductReviews;
-}());
-var LoadProductReviewsFail = /** @class */ (function () {
-    function LoadProductReviewsFail(payload) {
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_REVIEWS_FAIL;
-    }
-    return LoadProductReviewsFail;
-}());
-var LoadProductReviewsSuccess = /** @class */ (function () {
-    function LoadProductReviewsSuccess(payload) {
-        this.payload = payload;
-        this.type = LOAD_PRODUCT_REVIEWS_SUCCESS;
-    }
-    return LoadProductReviewsSuccess;
-}());
-var PostProductReview = /** @class */ (function () {
-    function PostProductReview(payload) {
-        this.payload = payload;
-        this.type = POST_PRODUCT_REVIEW;
-    }
-    return PostProductReview;
-}());
-var PostProductReviewFail = /** @class */ (function () {
-    function PostProductReviewFail(payload) {
-        this.payload = payload;
-        this.type = POST_PRODUCT_REVIEW_FAIL;
-    }
-    return PostProductReviewFail;
-}());
-var PostProductReviewSuccess = /** @class */ (function () {
-    function PostProductReviewSuccess(payload) {
-        this.payload = payload;
-        this.type = POST_PRODUCT_REVIEW_SUCCESS;
-    }
-    return PostProductReviewSuccess;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getProductsState = createFeatureSelector(PRODUCT_FEATURE);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getProductState = createSelector(getProductsState, function (state) { return state.details; });
-/** @type {?} */
-var getSelectedProductsFactory = function (codes) {
-    return createSelector(getProductState, function (details) {
-        return codes
-            .map(function (code) {
-            return details.entities[code] ? details.entities[code].value : undefined;
-        })
-            .filter(function (product) { return product !== undefined; });
-    });
-};
-/** @type {?} */
-var getSelectedProductStateFactory = function (code) {
-    return createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
-};
-/** @type {?} */
-var getSelectedProductFactory = function (code) {
-    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
-};
-/** @type {?} */
-var getSelectedProductLoadingFactory = function (code) {
-    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
-};
-/** @type {?} */
-var getSelectedProductSuccessFactory = function (code) {
-    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
-};
-/** @type {?} */
-var getSelectedProductErrorFactory = function (code) {
-    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
-};
-/** @type {?} */
-var getAllProductCodes = createSelector(getProductState, function (details) {
-    return Object.keys(details.entities);
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var initialState$d = {
-    results: {},
-    suggestions: [],
-    auxResults: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$d(state, action) {
-    if (state === void 0) { state = initialState$d; }
-    switch (action.type) {
-        case SEARCH_PRODUCTS_SUCCESS: {
-            /** @type {?} */
-            var results = action.payload;
-            /** @type {?} */
-            var res = action.auxiliary ? { auxResults: results } : { results: results };
-            return __assign({}, state, res);
-        }
-        case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
-            /** @type {?} */
-            var suggestions = action.payload;
-            return __assign({}, state, { suggestions: suggestions });
-        }
-        case CLEAN_PRODUCT_SEARCH: {
-            return initialState$d;
-        }
-    }
-    return state;
-}
-/** @type {?} */
-var getSearchResults = function (state) { return state.results; };
-/** @type {?} */
-var getAuxSearchResults = function (state) { return state.auxResults; };
-/** @type {?} */
-var getProductSuggestions = function (state) { return state.suggestions; };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getProductsSearchState = createSelector(getProductsState, function (state) { return state.search; });
-/** @type {?} */
-var getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
-/** @type {?} */
-var getAuxSearchResults$1 = createSelector(getProductsSearchState, getAuxSearchResults);
-/** @type {?} */
-var getProductSuggestions$1 = createSelector(getProductsSearchState, getProductSuggestions);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getProductReviewsState = createSelector(getProductsState, function (state) { return state.reviews; });
-/** @type {?} */
-var getSelectedProductReviewsFactory = function (productCode) {
-    return createSelector(getProductReviewsState, function (reviewData) {
-        if (reviewData.productCode === productCode) {
-            return reviewData.list;
-        }
-    });
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var initialState$e = {
-    productCode: '',
-    list: [],
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$e(state, action) {
-    if (state === void 0) { state = initialState$e; }
-    switch (action.type) {
-        case LOAD_PRODUCT_REVIEWS_SUCCESS: {
-            /** @type {?} */
-            var productCode = action.payload.productCode;
-            /** @type {?} */
-            var list = action.payload.list;
-            return __assign({}, state, { productCode: productCode,
-                list: list });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$7() {
-    return {
-        search: reducer$d,
-        details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-        reviews: reducer$e,
-    };
-}
-/** @type {?} */
-var reducerToken$7 = new InjectionToken('ProductReducers');
-/** @type {?} */
-var reducerProvider$7 = {
-    provide: reducerToken$7,
-    useFactory: getReducers$7,
-};
-/**
- * @param {?} reducer
- * @return {?}
- */
-function clearProductsState(reducer) {
-    return function (state, action) {
-        if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
-            state = undefined;
-        }
-        return reducer(state, action);
-    };
-}
-/** @type {?} */
-var metaReducers$4 = [clearProductsState];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ProductSearchConnector = /** @class */ (function () {
-    function ProductSearchConnector(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    ProductSearchConnector.prototype.search = /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    function (query, searchConfig) {
-        return this.adapter.search(query, searchConfig);
-    };
-    /**
-     * @param {?} term
-     * @param {?=} pageSize
-     * @return {?}
-     */
-    ProductSearchConnector.prototype.getSuggestions = /**
-     * @param {?} term
-     * @param {?=} pageSize
-     * @return {?}
-     */
-    function (term, pageSize) {
-        return this.adapter.loadSuggestions(term, pageSize);
-    };
-    ProductSearchConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
+    ProductReferencesEffects.decorators = [
+        { type: Injectable }
     ];
     /** @nocollapse */
-    ProductSearchConnector.ctorParameters = function () { return [
-        { type: ProductSearchAdapter }
+    ProductReferencesEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: ProductReferencesConnector }
     ]; };
-    /** @nocollapse */ ProductSearchConnector.ngInjectableDef = defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(inject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
-    return ProductSearchConnector;
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
+    return ProductReferencesEffects;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductReviewsEffects = /** @class */ (function () {
+    function ProductReviewsEffects(actions$, productReviewsConnector) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.productReviewsConnector = productReviewsConnector;
+        this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map(function (action) { return action.payload; }), mergeMap(function (productCode) {
+            return _this.productReviewsConnector.get(productCode).pipe(map(function (data) {
+                return new LoadProductReviewsSuccess({
+                    productCode: productCode,
+                    list: data,
+                });
+            }), catchError(function (_error) {
+                return of(new LoadProductReviewsFail((/** @type {?} */ ({
+                    message: productCode,
+                }))));
+            }));
+        }));
+        this.postProductReview = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW), map(function (action) { return action.payload; }), mergeMap(function (payload) {
+            return _this.productReviewsConnector
+                .add(payload.productCode, payload.review)
+                .pipe(map(function (reviewResponse) {
+                return new PostProductReviewSuccess(reviewResponse);
+            }), catchError(function (_error) {
+                return of(new PostProductReviewFail(payload.productCode));
+            }));
+        }));
+    }
+    ProductReviewsEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ProductReviewsEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: ProductReviewsConnector }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+    return ProductReviewsEffects;
 }());
 
 /**
@@ -15553,38 +15339,6 @@ var ProductsSearchEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductConnector = /** @class */ (function () {
-    function ProductConnector(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @param {?} productCode
-     * @return {?}
-     */
-    ProductConnector.prototype.get = /**
-     * @param {?} productCode
-     * @return {?}
-     */
-    function (productCode) {
-        return this.adapter.load(productCode);
-    };
-    ProductConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    ProductConnector.ctorParameters = function () { return [
-        { type: ProductAdapter }
-    ]; };
-    /** @nocollapse */ ProductConnector.ngInjectableDef = defineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(inject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
-    return ProductConnector;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var ProductEffects = /** @class */ (function () {
     function ProductEffects(actions$, productConnector) {
         var _this = this;
@@ -15619,114 +15373,456 @@ var ProductEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductReviewsConnector = /** @class */ (function () {
-    function ProductReviewsConnector(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @param {?} productCode
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    ProductReviewsConnector.prototype.get = /**
-     * @param {?} productCode
-     * @param {?=} maxCount
-     * @return {?}
-     */
-    function (productCode, maxCount) {
-        return this.adapter.load(productCode, maxCount);
-    };
-    /**
-     * @param {?} productCode
-     * @param {?} review
-     * @return {?}
-     */
-    ProductReviewsConnector.prototype.add = /**
-     * @param {?} productCode
-     * @param {?} review
-     * @return {?}
-     */
-    function (productCode, review) {
-        return this.adapter.post(productCode, review);
-    };
-    ProductReviewsConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    ProductReviewsConnector.ctorParameters = function () { return [
-        { type: ProductReviewsAdapter }
-    ]; };
-    /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(inject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
-    return ProductReviewsConnector;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var ProductReviewsEffects = /** @class */ (function () {
-    function ProductReviewsEffects(actions$, productReviewsConnector) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.productReviewsConnector = productReviewsConnector;
-        this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map(function (action) { return action.payload; }), mergeMap(function (productCode) {
-            return _this.productReviewsConnector.get(productCode).pipe(map(function (data) {
-                return new LoadProductReviewsSuccess({
-                    productCode: productCode,
-                    list: data,
-                });
-            }), catchError(function (_error) {
-                return of(new LoadProductReviewsFail((/** @type {?} */ ({
-                    message: productCode,
-                }))));
-            }));
-        }));
-        this.postProductReview = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.productReviewsConnector
-                .add(payload.productCode, payload.review)
-                .pipe(map(function (reviewResponse) {
-                return new PostProductReviewSuccess(reviewResponse);
-            }), catchError(function (_error) {
-                return of(new PostProductReviewFail(payload.productCode));
-            }));
-        }));
-    }
-    ProductReviewsEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    ProductReviewsEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: ProductReviewsConnector }
-    ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], ProductReviewsEffects.prototype, "postProductReview", void 0);
-    return ProductReviewsEffects;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
 var effects$6 = [
     ProductsSearchEffects,
     ProductEffects,
     ProductReviewsEffects,
+    ProductReferencesEffects,
 ];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var initialState$d = {
+    productCode: '',
+    list: [],
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$d(state, action) {
+    if (state === void 0) { state = initialState$d; }
+    switch (action.type) {
+        case LOAD_PRODUCT_REFERENCES_SUCCESS: {
+            /** @type {?} */
+            var productCode = action.payload.productCode;
+            /** @type {?} */
+            var list = action.payload.list;
+            return __assign({}, state, { list: list,
+                productCode: productCode });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$e = {
+    productCode: '',
+    list: [],
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$e(state, action) {
+    if (state === void 0) { state = initialState$e; }
+    switch (action.type) {
+        case LOAD_PRODUCT_REVIEWS_SUCCESS: {
+            /** @type {?} */
+            var productCode = action.payload.productCode;
+            /** @type {?} */
+            var list = action.payload.list;
+            return __assign({}, state, { productCode: productCode,
+                list: list });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$f = {
+    results: {},
+    suggestions: [],
+    auxResults: {},
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$f(state, action) {
+    if (state === void 0) { state = initialState$f; }
+    switch (action.type) {
+        case SEARCH_PRODUCTS_SUCCESS: {
+            /** @type {?} */
+            var results = action.payload;
+            /** @type {?} */
+            var res = action.auxiliary ? { auxResults: results } : { results: results };
+            return __assign({}, state, res);
+        }
+        case GET_PRODUCT_SUGGESTIONS_SUCCESS: {
+            /** @type {?} */
+            var suggestions = action.payload;
+            return __assign({}, state, { suggestions: suggestions });
+        }
+        case CLEAN_PRODUCT_SEARCH: {
+            return initialState$f;
+        }
+    }
+    return state;
+}
+/** @type {?} */
+var getSearchResults = function (state) { return state.results; };
+/** @type {?} */
+var getAuxSearchResults = function (state) { return state.auxResults; };
+/** @type {?} */
+var getProductSuggestions = function (state) { return state.suggestions; };
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$7() {
+    return {
+        search: reducer$f,
+        details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
+        reviews: reducer$e,
+        references: reducer$d,
+    };
+}
+/** @type {?} */
+var reducerToken$7 = new InjectionToken('ProductReducers');
+/** @type {?} */
+var reducerProvider$7 = {
+    provide: reducerToken$7,
+    useFactory: getReducers$7,
+};
+/**
+ * @param {?} reducer
+ * @return {?}
+ */
+function clearProductsState(reducer) {
+    return function (state, action) {
+        if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
+            state = undefined;
+        }
+        return reducer(state, action);
+    };
+}
+/** @type {?} */
+var metaReducers$4 = [clearProductsState];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getProductsState = createFeatureSelector(PRODUCT_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getProductReferencesState = createSelector(getProductsState, function (state) { return state.references; });
+/** @type {?} */
+var getSelectedProductReferencesFactory = function (productCode) {
+    return createSelector(getProductReferencesState, function (referenceTypeData) {
+        if (referenceTypeData.productCode === productCode) {
+            return referenceTypeData.list;
+        }
+    });
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getProductReviewsState = createSelector(getProductsState, function (state) { return state.reviews; });
+/** @type {?} */
+var getSelectedProductReviewsFactory = function (productCode) {
+    return createSelector(getProductReviewsState, function (reviewData) {
+        if (reviewData.productCode === productCode) {
+            return reviewData.list;
+        }
+    });
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getProductsSearchState = createSelector(getProductsState, function (state) { return state.search; });
+/** @type {?} */
+var getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
+/** @type {?} */
+var getAuxSearchResults$1 = createSelector(getProductsSearchState, getAuxSearchResults);
+/** @type {?} */
+var getProductSuggestions$1 = createSelector(getProductsSearchState, getProductSuggestions);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getProductState = createSelector(getProductsState, function (state) { return state.details; });
+/** @type {?} */
+var getSelectedProductsFactory = function (codes) {
+    return createSelector(getProductState, function (details) {
+        return codes
+            .map(function (code) {
+            return details.entities[code] ? details.entities[code].value : undefined;
+        })
+            .filter(function (product) { return product !== undefined; });
+    });
+};
+/** @type {?} */
+var getSelectedProductStateFactory = function (code) {
+    return createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+};
+/** @type {?} */
+var getSelectedProductFactory = function (code) {
+    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+};
+/** @type {?} */
+var getSelectedProductLoadingFactory = function (code) {
+    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+};
+/** @type {?} */
+var getSelectedProductSuccessFactory = function (code) {
+    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+};
+/** @type {?} */
+var getSelectedProductErrorFactory = function (code) {
+    return createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+};
+/** @type {?} */
+var getAllProductCodes = createSelector(getProductState, function (details) {
+    return Object.keys(details.entities);
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductReferenceService = /** @class */ (function () {
+    function ProductReferenceService(store) {
+        this.store = store;
+    }
+    /**
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    ProductReferenceService.prototype.get = /**
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    function (productCode, referenceType, pageSize) {
+        var _this = this;
+        return this.store.pipe(select(getSelectedProductReferencesFactory(productCode)), tap(function (references) {
+            if (references === undefined && productCode !== undefined) {
+                _this.store.dispatch(new LoadProductReferences({
+                    productCode: productCode,
+                    referenceType: referenceType,
+                    pageSize: pageSize,
+                }));
+            }
+        }));
+    };
+    ProductReferenceService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ProductReferenceService.ctorParameters = function () { return [
+        { type: Store }
+    ]; };
+    return ProductReferenceService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductReviewService = /** @class */ (function () {
+    function ProductReviewService(store) {
+        this.store = store;
+    }
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    ProductReviewService.prototype.getByProductCode = /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        var _this = this;
+        /** @type {?} */
+        var selector = getSelectedProductReviewsFactory(productCode);
+        return this.store.pipe(select(selector), tap(function (reviews) {
+            if (reviews === undefined && productCode !== undefined) {
+                _this.store.dispatch(new LoadProductReviews(productCode));
+            }
+        }));
+    };
+    /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    ProductReviewService.prototype.add = /**
+     * @param {?} productCode
+     * @param {?} review
+     * @return {?}
+     */
+    function (productCode, review) {
+        this.store.dispatch(new PostProductReview({
+            productCode: productCode,
+            review: review,
+        }));
+    };
+    ProductReviewService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ProductReviewService.ctorParameters = function () { return [
+        { type: Store }
+    ]; };
+    return ProductReviewService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductSearchService = /** @class */ (function () {
+    function ProductSearchService(store, router) {
+        this.store = store;
+        this.router = router;
+    }
+    /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchService.prototype.search = /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        /** @type {?} */
+        var urlTree = this.router.createUrlTree([], {
+            queryParams: __assign({}, searchConfig, { query: query }),
+            preserveFragment: false,
+        });
+        this.router.navigateByUrl(urlTree);
+        this.store.dispatch(new SearchProducts({
+            queryText: query,
+            searchConfig: searchConfig,
+        }));
+    };
+    /**
+     * @return {?}
+     */
+    ProductSearchService.prototype.getSearchResults = /**
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getSearchResults$1));
+    };
+    /**
+     * @return {?}
+     */
+    ProductSearchService.prototype.clearSearchResults = /**
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new CleanProductSearchState());
+    };
+    /**
+     * @return {?}
+     */
+    ProductSearchService.prototype.getAuxSearchResults = /**
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getAuxSearchResults$1), filter(function (results) { return Object.keys(results).length > 0; }));
+    };
+    /**
+     * @return {?}
+     */
+    ProductSearchService.prototype.getSearchSuggestions = /**
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProductSuggestions$1));
+    };
+    /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchService.prototype.searchAuxiliary = /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        this.store.dispatch(new SearchProducts({
+            queryText: query,
+            searchConfig: searchConfig,
+        }, true));
+    };
+    /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchService.prototype.getSuggestions = /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        this.store.dispatch(new GetProductSuggestions({
+            term: query,
+            searchConfig: searchConfig,
+        }));
+    };
+    ProductSearchService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ProductSearchService.ctorParameters = function () { return [
+        { type: Store },
+        { type: Router }
+    ]; };
+    return ProductSearchService;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -15859,207 +15955,536 @@ var ProductService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductSearchService = /** @class */ (function () {
-    function ProductSearchService(store, router) {
-        this.store = store;
-        this.router = router;
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccProductReferencesAdapter = /** @class */ (function () {
+    function OccProductReferencesAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
     }
     /**
-     * @param {?} query
-     * @param {?=} searchConfig
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
      * @return {?}
      */
-    ProductSearchService.prototype.search = /**
-     * @param {?} query
-     * @param {?=} searchConfig
+    OccProductReferencesAdapter.prototype.load = /**
+     * @param {?} productCode
+     * @param {?=} referenceType
+     * @param {?=} pageSize
      * @return {?}
      */
-    function (query, searchConfig) {
-        /** @type {?} */
-        var urlTree = this.router.createUrlTree([], {
-            queryParams: __assign({}, searchConfig, { query: query }),
-            preserveFragment: false,
-        });
-        this.router.navigateByUrl(urlTree);
-        this.store.dispatch(new SearchProducts({
-            queryText: query,
-            searchConfig: searchConfig,
-        }));
+    function (productCode, referenceType, pageSize) {
+        return this.http
+            .get(this.getEndpoint(productCode, referenceType, pageSize))
+            .pipe(this.converter.pipeable(PRODUCT_REFERENCES_NORMALIZER));
     };
     /**
+     * @protected
+     * @param {?} code
+     * @param {?=} reference
+     * @param {?=} pageSize
      * @return {?}
      */
-    ProductSearchService.prototype.getSearchResults = /**
+    OccProductReferencesAdapter.prototype.getEndpoint = /**
+     * @protected
+     * @param {?} code
+     * @param {?=} reference
+     * @param {?=} pageSize
      * @return {?}
      */
-    function () {
-        return this.store.pipe(select(getSearchResults$1));
+    function (code, reference, pageSize) {
+        return this.occEndpoints.getUrl('productReferences', {
+            productCode: code,
+        }, { referenceType: reference, pageSize: pageSize });
     };
-    /**
-     * @return {?}
-     */
-    ProductSearchService.prototype.clearSearchResults = /**
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new CleanProductSearchState());
-    };
-    /**
-     * @return {?}
-     */
-    ProductSearchService.prototype.getAuxSearchResults = /**
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getAuxSearchResults$1), filter(function (results) { return Object.keys(results).length > 0; }));
-    };
-    /**
-     * @return {?}
-     */
-    ProductSearchService.prototype.getSearchSuggestions = /**
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProductSuggestions$1));
-    };
-    /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    ProductSearchService.prototype.searchAuxiliary = /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    function (query, searchConfig) {
-        this.store.dispatch(new SearchProducts({
-            queryText: query,
-            searchConfig: searchConfig,
-        }, true));
-    };
-    /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    ProductSearchService.prototype.getSuggestions = /**
-     * @param {?} query
-     * @param {?=} searchConfig
-     * @return {?}
-     */
-    function (query, searchConfig) {
-        this.store.dispatch(new GetProductSuggestions({
-            term: query,
-            searchConfig: searchConfig,
-        }));
-    };
-    ProductSearchService.decorators = [
+    OccProductReferencesAdapter.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    ProductSearchService.ctorParameters = function () { return [
-        { type: Store },
-        { type: Router }
+    OccProductReferencesAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
     ]; };
-    return ProductSearchService;
+    return OccProductReferencesAdapter;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ProductReviewService = /** @class */ (function () {
-    function ProductReviewService(store) {
-        this.store = store;
+var OccProductReviewsAdapter = /** @class */ (function () {
+    function OccProductReviewsAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
     }
     /**
      * @param {?} productCode
+     * @param {?=} maxCount
      * @return {?}
      */
-    ProductReviewService.prototype.getByProductCode = /**
+    OccProductReviewsAdapter.prototype.load = /**
      * @param {?} productCode
+     * @param {?=} maxCount
      * @return {?}
      */
-    function (productCode) {
-        var _this = this;
-        /** @type {?} */
-        var selector = getSelectedProductReviewsFactory(productCode);
-        return this.store.pipe(select(selector), tap(function (reviews) {
-            if (reviews === undefined && productCode !== undefined) {
-                _this.store.dispatch(new LoadProductReviews(productCode));
-            }
-        }));
+    function (productCode, maxCount) {
+        return this.http.get(this.getEndpoint(productCode, maxCount)).pipe(pluck('reviews'), this.converter.pipeableMany(PRODUCT_REVIEW_NORMALIZER));
     };
     /**
      * @param {?} productCode
      * @param {?} review
      * @return {?}
      */
-    ProductReviewService.prototype.add = /**
+    OccProductReviewsAdapter.prototype.post = /**
      * @param {?} productCode
      * @param {?} review
      * @return {?}
      */
     function (productCode, review) {
-        this.store.dispatch(new PostProductReview({
-            productCode: productCode,
-            review: review,
-        }));
+        review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        /** @type {?} */
+        var body = new URLSearchParams();
+        body.append('headline', review.headline);
+        body.append('comment', review.comment);
+        body.append('rating', review.rating.toString());
+        body.append('alias', review.alias);
+        return this.http.post(this.getEndpoint(productCode), body.toString(), {
+            headers: headers,
+        });
     };
-    ProductReviewService.decorators = [
+    /**
+     * @protected
+     * @param {?} code
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    OccProductReviewsAdapter.prototype.getEndpoint = /**
+     * @protected
+     * @param {?} code
+     * @param {?=} maxCount
+     * @return {?}
+     */
+    function (code, maxCount) {
+        return this.occEndpoints.getUrl('productReviews', {
+            productCode: code,
+        }, { maxCount: maxCount });
+    };
+    OccProductReviewsAdapter.decorators = [
         { type: Injectable }
     ];
     /** @nocollapse */
-    ProductReviewService.ctorParameters = function () { return [
-        { type: Store }
+    OccProductReviewsAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
     ]; };
-    return ProductReviewService;
+    return OccProductReviewsAdapter;
 }());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var DEFAULT_SEARCH_CONFIG = {
+    pageSize: 20,
+};
+var OccProductSearchAdapter = /** @class */ (function () {
+    function OccProductSearchAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    OccProductSearchAdapter.prototype.search = /**
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        if (searchConfig === void 0) { searchConfig = DEFAULT_SEARCH_CONFIG; }
+        return this.http
+            .get(this.getSearchEndpoint(query, searchConfig))
+            .pipe(this.converter.pipeable(PRODUCT_SEARCH_PAGE_NORMALIZER));
+    };
+    /**
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    OccProductSearchAdapter.prototype.loadSuggestions = /**
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    function (term, pageSize) {
+        if (pageSize === void 0) { pageSize = 3; }
+        return this.http
+            .get(this.getSuggestionEndpoint(term, pageSize.toString()))
+            .pipe(pluck('suggestions'), this.converter.pipeableMany(PRODUCT_SUGGESTION_NORMALIZER));
+    };
+    /**
+     * @protected
+     * @param {?} query
+     * @param {?} searchConfig
+     * @return {?}
+     */
+    OccProductSearchAdapter.prototype.getSearchEndpoint = /**
+     * @protected
+     * @param {?} query
+     * @param {?} searchConfig
+     * @return {?}
+     */
+    function (query, searchConfig) {
+        return this.occEndpoints.getUrl('productSearch', {
+            query: query,
+        }, {
+            pageSize: searchConfig.pageSize,
+            currentPage: searchConfig.currentPage,
+            sort: searchConfig.sortCode,
+        });
+    };
+    /**
+     * @protected
+     * @param {?} term
+     * @param {?} max
+     * @return {?}
+     */
+    OccProductSearchAdapter.prototype.getSuggestionEndpoint = /**
+     * @protected
+     * @param {?} term
+     * @param {?} max
+     * @return {?}
+     */
+    function (term, max) {
+        return this.occEndpoints.getUrl('productSuggestions', {
+            term: term,
+            max: max,
+        });
+    };
+    OccProductSearchAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccProductSearchAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccProductSearchAdapter;
+}());
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var OccProductAdapter = /** @class */ (function () {
+    function OccProductAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    OccProductAdapter.prototype.load = /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        return this.http
+            .get(this.getEndpoint(productCode))
+            .pipe(this.converter.pipeable(PRODUCT_NORMALIZER));
+    };
+    /**
+     * @protected
+     * @param {?} code
+     * @return {?}
+     */
+    OccProductAdapter.prototype.getEndpoint = /**
+     * @protected
+     * @param {?} code
+     * @return {?}
+     */
+    function (code) {
+        return this.occEndpoints.getUrl('product', {
+            productCode: code,
+        });
+    };
+    OccProductAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccProductAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccProductAdapter;
+}());
+
 /**
- * @return {?}
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-function productStoreConfigFactory() {
-    var _a;
-    // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
-    /** @type {?} */
-    var config = {
-        state: {
-            ssrTransfer: {
-                keys: (_a = {}, _a[PRODUCT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+/** @type {?} */
+var defaultOccProductConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                productReviews: 'products/${productCode}/reviews',
+                // Uncomment this when occ gets configured
+                // productReferences:
+                //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
+                productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
+                // tslint:disable:max-line-length
+                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                // tslint:enable
+                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
             },
         },
-    };
-    return config;
-}
-var ProductStoreModule = /** @class */ (function () {
-    function ProductStoreModule() {
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var OccProductReferencesListNormalizer = /** @class */ (function () {
+    function OccProductReferencesListNormalizer(converter) {
+        this.converter = converter;
     }
-    ProductStoreModule.decorators = [
+    /**
+     * @param {?} source
+     * @param {?=} target
+     * @return {?}
+     */
+    OccProductReferencesListNormalizer.prototype.convert = /**
+     * @param {?} source
+     * @param {?=} target
+     * @return {?}
+     */
+    function (source, target) {
+        var _this = this;
+        if (target === void 0) { target = []; }
+        if (target === undefined) {
+            target = __assign({}, ((/** @type {?} */ (source))));
+        }
+        if (source && source.references) {
+            target = source.references.map(function (reference) { return (__assign({}, reference, { target: _this.converter.convert(reference.target, PRODUCT_NORMALIZER) })); });
+            return target;
+        }
+    };
+    OccProductReferencesListNormalizer.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccProductReferencesListNormalizer.ctorParameters = function () { return [
+        { type: ConverterService }
+    ]; };
+    return OccProductReferencesListNormalizer;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ProductOccModule = /** @class */ (function () {
+    function ProductOccModule() {
+    }
+    ProductOccModule.decorators = [
         { type: NgModule, args: [{
                     imports: [
                         CommonModule,
                         HttpClientModule,
-                        ProductOccModule,
-                        StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
-                        EffectsModule.forFeature(effects$6),
-                        ConfigModule.withConfigFactory(productStoreConfigFactory),
+                        OccModule,
+                        ConfigModule.withConfig(defaultOccProductConfig),
                     ],
-                    providers: [reducerProvider$7],
+                    providers: [
+                        {
+                            provide: ProductAdapter,
+                            useClass: OccProductAdapter,
+                        },
+                        {
+                            provide: PRODUCT_NORMALIZER,
+                            useClass: ProductImageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductReferencesAdapter,
+                            useClass: OccProductReferencesAdapter,
+                        },
+                        {
+                            provide: PRODUCT_REFERENCES_NORMALIZER,
+                            useClass: OccProductReferencesListNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductSearchAdapter,
+                            useClass: OccProductSearchAdapter,
+                        },
+                        {
+                            provide: PRODUCT_SEARCH_PAGE_NORMALIZER,
+                            useClass: OccProductSearchPageNormalizer,
+                            multi: true,
+                        },
+                        {
+                            provide: ProductReviewsAdapter,
+                            useClass: OccProductReviewsAdapter,
+                        },
+                    ],
                 },] }
     ];
-    return ProductStoreModule;
+    return ProductOccModule;
 }());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var CategoryPageMetaResolver = /** @class */ (function (_super) {
+    __extends(CategoryPageMetaResolver, _super);
+    function CategoryPageMetaResolver(routingService, productSearchService, cms) {
+        var _this = _super.call(this) || this;
+        _this.routingService = routingService;
+        _this.productSearchService = productSearchService;
+        _this.cms = cms;
+        _this.pageType = PageType.CATEGORY_PAGE;
+        return _this;
+    }
+    /**
+     * @return {?}
+     */
+    CategoryPageMetaResolver.prototype.resolve = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(function (page) {
+            // only the existence of a plp component tells us if products
+            // are rendered or if this is an ordinary content page
+            if (_this.hasProductListComponent(page)) {
+                return _this.productSearchService.getSearchResults().pipe(filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), switchMap(function (data) {
+                    return combineLatest([
+                        _this.resolveTitle(data),
+                        _this.resolveBreadcrumbs(data),
+                    ]);
+                }), map(function (_a) {
+                    var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
+                    return ({ title: title, breadcrumbs: breadcrumbs });
+                }));
+            }
+            else {
+                return of({
+                    title: page.title || page.name,
+                });
+            }
+        }));
+    };
+    /**
+     * @param {?} data
+     * @return {?}
+     */
+    CategoryPageMetaResolver.prototype.resolveTitle = /**
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        return of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
+    };
+    /**
+     * @param {?} data
+     * @return {?}
+     */
+    CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        var e_1, _a;
+        /** @type {?} */
+        var breadcrumbs = [];
+        breadcrumbs.push({ label: 'Home', link: '/' });
+        try {
+            for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var br = _c.value;
+                breadcrumbs.push({
+                    label: br.facetValueName,
+                    link: '/c/' + br.facetValueCode,
+                });
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return of(breadcrumbs);
+    };
+    /**
+     * @private
+     * @param {?} page
+     * @return {?}
+     */
+    CategoryPageMetaResolver.prototype.hasProductListComponent = /**
+     * @private
+     * @param {?} page
+     * @return {?}
+     */
+    function (page) {
+        // ProductListComponent
+        return !!Object.keys(page.slots).find(function (key) {
+            return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent'; });
+        });
+    };
+    CategoryPageMetaResolver.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    CategoryPageMetaResolver.ctorParameters = function () { return [
+        { type: RoutingService },
+        { type: ProductSearchService },
+        { type: CmsService }
+    ]; };
+    /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(inject(RoutingService), inject(ProductSearchService), inject(CmsService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+    return CategoryPageMetaResolver;
+}(PageMetaResolver));
 
 /**
  * @fileoverview added by tsickle
@@ -16297,117 +16722,40 @@ var SearchPageMetaResolver = /** @class */ (function (_super) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var CategoryPageMetaResolver = /** @class */ (function (_super) {
-    __extends(CategoryPageMetaResolver, _super);
-    function CategoryPageMetaResolver(routingService, productSearchService, cms) {
-        var _this = _super.call(this) || this;
-        _this.routingService = routingService;
-        _this.productSearchService = productSearchService;
-        _this.cms = cms;
-        _this.pageType = PageType.CATEGORY_PAGE;
-        return _this;
+/**
+ * @return {?}
+ */
+function productStoreConfigFactory() {
+    var _a;
+    // if we want to reuse PRODUCT_FEATURE const in config, we have to use factory instead of plain object
+    /** @type {?} */
+    var config = {
+        state: {
+            ssrTransfer: {
+                keys: (_a = {}, _a[PRODUCT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+            },
+        },
+    };
+    return config;
+}
+var ProductStoreModule = /** @class */ (function () {
+    function ProductStoreModule() {
     }
-    /**
-     * @return {?}
-     */
-    CategoryPageMetaResolver.prototype.resolve = /**
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(function (page) {
-            // only the existence of a plp component tells us if products
-            // are rendered or if this is an ordinary content page
-            if (_this.hasProductListComponent(page)) {
-                return _this.productSearchService.getSearchResults().pipe(filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), switchMap(function (data) {
-                    return combineLatest([
-                        _this.resolveTitle(data),
-                        _this.resolveBreadcrumbs(data),
-                    ]);
-                }), map(function (_a) {
-                    var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
-                    return ({ title: title, breadcrumbs: breadcrumbs });
-                }));
-            }
-            else {
-                return of({
-                    title: page.title || page.name,
-                });
-            }
-        }));
-    };
-    /**
-     * @param {?} data
-     * @return {?}
-     */
-    CategoryPageMetaResolver.prototype.resolveTitle = /**
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        return of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
-    };
-    /**
-     * @param {?} data
-     * @return {?}
-     */
-    CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        var e_1, _a;
-        /** @type {?} */
-        var breadcrumbs = [];
-        breadcrumbs.push({ label: 'Home', link: '/' });
-        try {
-            for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
-                var br = _c.value;
-                breadcrumbs.push({
-                    label: br.facetValueName,
-                    link: '/c/' + br.facetValueCode,
-                });
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return of(breadcrumbs);
-    };
-    /**
-     * @private
-     * @param {?} page
-     * @return {?}
-     */
-    CategoryPageMetaResolver.prototype.hasProductListComponent = /**
-     * @private
-     * @param {?} page
-     * @return {?}
-     */
-    function (page) {
-        // ProductListComponent
-        return !!Object.keys(page.slots).find(function (key) {
-            return !!page.slots[key].components.find(function (comp) { return comp.typeCode === 'CMSProductListComponent'; });
-        });
-    };
-    CategoryPageMetaResolver.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
+    ProductStoreModule.decorators = [
+        { type: NgModule, args: [{
+                    imports: [
+                        CommonModule,
+                        HttpClientModule,
+                        ProductOccModule,
+                        StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
+                        EffectsModule.forFeature(effects$6),
+                        ConfigModule.withConfigFactory(productStoreConfigFactory),
+                    ],
+                    providers: [reducerProvider$7],
                 },] }
     ];
-    /** @nocollapse */
-    CategoryPageMetaResolver.ctorParameters = function () { return [
-        { type: RoutingService },
-        { type: ProductSearchService },
-        { type: CmsService }
-    ]; };
-    /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(inject(RoutingService), inject(ProductSearchService), inject(CmsService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
-    return CategoryPageMetaResolver;
-}(PageMetaResolver));
+    return ProductStoreModule;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -16440,32 +16788,13 @@ var ProductModule = /** @class */ (function () {
                     providers: __spread([
                         ProductService,
                         ProductSearchService,
-                        ProductReviewService
+                        ProductReviewService,
+                        ProductReferenceService
                     ], pageTitleResolvers),
                 },] }
     ];
     return ProductModule;
 }());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -16705,39 +17034,6 @@ var UserOccModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$f = {
-    entities: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$f(state, action) {
-    if (state === void 0) { state = initialState$f; }
-    switch (action.type) {
-        case LOAD_BILLING_COUNTRIES_SUCCESS: {
-            /** @type {?} */
-            var billingCountries = action.payload;
-            /** @type {?} */
-            var entities = billingCountries.reduce(function (countryEntities, name) {
-                var _a;
-                return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
-            }, __assign({}, state.entities));
-            return __assign({}, state, { entities: entities });
-        }
-        case CLEAR_MISCS_DATA: {
-            return initialState$f;
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 var initialState$g = {
     entities: {},
 };
@@ -16749,13 +17045,13 @@ var initialState$g = {
 function reducer$g(state, action) {
     if (state === void 0) { state = initialState$g; }
     switch (action.type) {
-        case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+        case LOAD_BILLING_COUNTRIES_SUCCESS: {
             /** @type {?} */
-            var deliveryCountries = action.payload;
+            var billingCountries = action.payload;
             /** @type {?} */
-            var entities = deliveryCountries.reduce(function (countryEntities, country) {
+            var entities = billingCountries.reduce(function (countryEntities, name) {
                 var _a;
-                return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
+                return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
             }, __assign({}, state.entities));
             return __assign({}, state, { entities: entities });
         }
@@ -16772,7 +17068,7 @@ function reducer$g(state, action) {
  */
 /** @type {?} */
 var initialState$h = {
-    order: {},
+    entities: {},
 };
 /**
  * @param {?=} state
@@ -16782,12 +17078,17 @@ var initialState$h = {
 function reducer$h(state, action) {
     if (state === void 0) { state = initialState$h; }
     switch (action.type) {
-        case LOAD_ORDER_DETAILS_SUCCESS: {
+        case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
             /** @type {?} */
-            var order = action.payload;
-            return __assign({}, state, { order: order });
+            var deliveryCountries = action.payload;
+            /** @type {?} */
+            var entities = deliveryCountries.reduce(function (countryEntities, country) {
+                var _a;
+                return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
+            }, __assign({}, state.entities));
+            return __assign({}, state, { entities: entities });
         }
-        case CLEAR_ORDER_DETAILS: {
+        case CLEAR_MISCS_DATA: {
             return initialState$h;
         }
     }
@@ -16799,7 +17100,9 @@ function reducer$h(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$i = [];
+var initialState$i = {
+    order: {},
+};
 /**
  * @param {?=} state
  * @param {?=} action
@@ -16808,10 +17111,12 @@ var initialState$i = [];
 function reducer$i(state, action) {
     if (state === void 0) { state = initialState$i; }
     switch (action.type) {
-        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-            return action.payload ? action.payload : initialState$i;
+        case LOAD_ORDER_DETAILS_SUCCESS: {
+            /** @type {?} */
+            var order = action.payload;
+            return __assign({}, state, { order: order });
         }
-        case LOAD_USER_PAYMENT_METHODS_FAIL: {
+        case CLEAR_ORDER_DETAILS: {
             return initialState$i;
         }
     }
@@ -16823,9 +17128,7 @@ function reducer$i(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$j = {
-    entities: [],
-};
+var initialState$j = [];
 /**
  * @param {?=} state
  * @param {?=} action
@@ -16834,19 +17137,11 @@ var initialState$j = {
 function reducer$j(state, action) {
     if (state === void 0) { state = initialState$j; }
     switch (action.type) {
-        case LOAD_REGIONS_SUCCESS: {
-            /** @type {?} */
-            var entities = action.payload;
-            if (entities) {
-                return __assign({}, state, { entities: entities });
-            }
+        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+            return action.payload ? action.payload : initialState$j;
+        }
+        case LOAD_USER_PAYMENT_METHODS_FAIL: {
             return initialState$j;
-        }
-        case LOAD_REGIONS: {
-            return __assign({}, state);
-        }
-        case CLEAR_MISCS_DATA: {
-            return __assign({}, initialState$j);
         }
     }
     return state;
@@ -16857,7 +17152,9 @@ function reducer$j(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$k = false;
+var initialState$k = {
+    entities: [],
+};
 /**
  * @param {?=} state
  * @param {?=} action
@@ -16865,6 +17162,38 @@ var initialState$k = false;
  */
 function reducer$k(state, action) {
     if (state === void 0) { state = initialState$k; }
+    switch (action.type) {
+        case LOAD_REGIONS_SUCCESS: {
+            /** @type {?} */
+            var entities = action.payload;
+            if (entities) {
+                return __assign({}, state, { entities: entities });
+            }
+            return initialState$k;
+        }
+        case LOAD_REGIONS: {
+            return __assign({}, state);
+        }
+        case CLEAR_MISCS_DATA: {
+            return __assign({}, initialState$k);
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$l = false;
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$l(state, action) {
+    if (state === void 0) { state = initialState$l; }
     switch (action.type) {
         case RESET_PASSWORD_SUCCESS: {
             return true;
@@ -16878,7 +17207,7 @@ function reducer$k(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$l = {
+var initialState$m = {
     entities: {},
 };
 /**
@@ -16886,8 +17215,8 @@ var initialState$l = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$l(state, action) {
-    if (state === void 0) { state = initialState$l; }
+function reducer$m(state, action) {
+    if (state === void 0) { state = initialState$m; }
     switch (action.type) {
         case LOAD_TITLES_SUCCESS: {
             /** @type {?} */
@@ -16900,32 +17229,8 @@ function reducer$l(state, action) {
             return __assign({}, state, { entities: entities });
         }
         case CLEAR_MISCS_DATA: {
-            return initialState$l;
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var initialState$m = [];
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$m(state, action) {
-    if (state === void 0) { state = initialState$m; }
-    switch (action.type) {
-        case LOAD_USER_ADDRESSES_FAIL: {
             return initialState$m;
         }
-        case LOAD_USER_ADDRESSES_SUCCESS: {
-            return action.payload ? action.payload : initialState$m;
-        }
     }
     return state;
 }
@@ -16935,7 +17240,7 @@ function reducer$m(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$n = (/** @type {?} */ ({}));
+var initialState$n = [];
 /**
  * @param {?=} state
  * @param {?=} action
@@ -16943,6 +17248,30 @@ var initialState$n = (/** @type {?} */ ({}));
  */
 function reducer$n(state, action) {
     if (state === void 0) { state = initialState$n; }
+    switch (action.type) {
+        case LOAD_USER_ADDRESSES_FAIL: {
+            return initialState$n;
+        }
+        case LOAD_USER_ADDRESSES_SUCCESS: {
+            return action.payload ? action.payload : initialState$n;
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$o = (/** @type {?} */ ({}));
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$o(state, action) {
+    if (state === void 0) { state = initialState$o; }
     switch (action.type) {
         case LOAD_USER_DETAILS_SUCCESS: {
             return action.payload;
@@ -16961,7 +17290,7 @@ function reducer$n(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$o = {
+var initialState$p = {
     orders: [],
     pagination: {},
     sorts: [],
@@ -16971,14 +17300,14 @@ var initialState$o = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$o(state, action) {
-    if (state === void 0) { state = initialState$o; }
+function reducer$p(state, action) {
+    if (state === void 0) { state = initialState$p; }
     switch (action.type) {
         case LOAD_USER_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$o;
+            return action.payload ? action.payload : initialState$p;
         }
         case LOAD_USER_ORDERS_FAIL: {
-            return initialState$o;
+            return initialState$p;
         }
     }
     return state;
@@ -16994,17 +17323,17 @@ function reducer$o(state, action) {
 function getReducers$8() {
     return {
         account: combineReducers({
-            details: reducer$n,
+            details: reducer$o,
         }),
-        addresses: loaderReducer(USER_ADDRESSES, reducer$m),
-        billingCountries: reducer$f,
-        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$i),
-        orders: loaderReducer(USER_ORDERS, reducer$o),
-        order: reducer$h,
-        countries: reducer$g,
-        titles: reducer$l,
-        regions: reducer$j,
-        resetPassword: reducer$k,
+        addresses: loaderReducer(USER_ADDRESSES, reducer$n),
+        billingCountries: reducer$g,
+        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
+        orders: loaderReducer(USER_ORDERS, reducer$p),
+        order: reducer$i,
+        countries: reducer$h,
+        titles: reducer$m,
+        regions: reducer$k,
+        resetPassword: reducer$l,
     };
 }
 /** @type {?} */
@@ -23387,6 +23716,6 @@ var PersonalizationModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductOccModule, OccProductAdapter, OccProductSearchAdapter, OccProductReviewsAdapter, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, getProductsState, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductReviewsState, getSelectedProductReviewsFactory, ProductService, ProductSearchService, ProductReviewService, ProductModule, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfa, ServerConfig as ɵdz, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdy, reducer$8 as ɵdx, getReducers$4 as ɵdu, reducerProvider$4 as ɵdw, reducerToken$4 as ɵdv, defaultI18nConfig as ɵea, i18nextInit as ɵec, i18nextProviders as ɵeb, MockDatePipe as ɵed, MockTranslationService as ɵee, defaultPersonalizationConfig as ɵgr, interceptors$3 as ɵgs, OccPersonalizationIdInterceptor as ɵgt, ProcessModule as ɵgk, PROCESS_FEATURE as ɵgm, ProcessStoreModule as ɵgl, getReducers$9 as ɵgn, reducerProvider$9 as ɵgp, reducerToken$9 as ɵgo, defaultOccProductConfig as ɵef, effects$6 as ɵdq, ProductReviewsEffects as ɵdt, ProductsSearchEffects as ɵdr, ProductEffects as ɵds, ProductStoreModule as ɵel, productStoreConfigFactory as ɵek, clearProductsState as ɵdo, getReducers$7 as ɵdl, metaReducers$4 as ɵdp, reducerProvider$7 as ɵdn, reducerToken$7 as ɵdm, reducer$e as ɵem, getAuxSearchResults as ɵei, getProductSuggestions as ɵej, getSearchResults as ɵeh, reducer$d as ɵeg, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵen, BaseSiteService as ɵbk, SiteContextParamsService as ɵet, SiteContextRoutesHandler as ɵev, SiteContextUrlSerializer as ɵeu, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵes, reducer$4 as ɵer, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵeq, SiteContextStoreModule as ɵep, siteContextStoreConfigFactory as ɵeo, CmsTicketInterceptor as ɵex, interceptors$2 as ɵew, SmartEditService as ɵey, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfj, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfb, FindStoresEffect as ɵfh, effects$8 as ɵfg, ViewAllStoresEffect as ɵfi, getReducers$a as ɵfd, reducerProvider$a as ɵff, reducerToken$a as ɵfe, getStoreFinderState as ɵez, StoreFinderStoreModule as ɵfc, BillingCountriesEffect as ɵfw, DeliveryCountriesEffects as ɵfx, ForgotPasswordEffects as ɵgh, effects$7 as ɵfv, OrderDetailsEffect as ɵfy, UserPaymentMethodsEffects as ɵfz, RegionsEffects as ɵga, ResetPasswordEffects as ɵgb, TitlesEffects as ɵgc, UpdateEmailEffects as ɵgi, UpdatePasswordEffects as ɵgj, UserAddressesEffects as ɵgd, UserDetailsEffects as ɵge, UserOrdersEffect as ɵgf, UserRegisterEffects as ɵgg, reducer$f as ɵfm, reducer$g as ɵfq, reducer$h as ɵfp, reducer$i as ɵfn, reducer$j as ɵfs, reducer$k as ɵft, reducer$l as ɵfr, reducer$m as ɵfl, reducer$n as ɵfk, reducer$o as ɵfo, UserStoreModule as ɵfu, StripHtmlPipe as ɵgq };
+export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, DatePipe$1 as DatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, OccProductReferencesAdapter, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductAdapter, ProductOccModule, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, getProductsState, getProductReferencesState, getSelectedProductReferencesFactory, getProductReviewsState, getSelectedProductReviewsFactory, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfd, ServerConfig as ɵea, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdz, reducer$8 as ɵdy, getReducers$4 as ɵdv, reducerProvider$4 as ɵdx, reducerToken$4 as ɵdw, defaultI18nConfig as ɵeb, i18nextInit as ɵed, i18nextProviders as ɵec, MockDatePipe as ɵee, MockTranslationService as ɵef, defaultPersonalizationConfig as ɵgu, interceptors$3 as ɵgv, OccPersonalizationIdInterceptor as ɵgw, ProcessModule as ɵgn, PROCESS_FEATURE as ɵgp, ProcessStoreModule as ɵgo, getReducers$9 as ɵgq, reducerProvider$9 as ɵgs, reducerToken$9 as ɵgr, defaultOccProductConfig as ɵeg, OccProductReferencesListNormalizer as ɵeh, effects$6 as ɵdl, ProductReferencesEffects as ɵdm, ProductReviewsEffects as ɵdn, ProductsSearchEffects as ɵdo, ProductEffects as ɵdp, ProductStoreModule as ɵej, productStoreConfigFactory as ɵei, clearProductsState as ɵdt, getReducers$7 as ɵdq, metaReducers$4 as ɵdu, reducerProvider$7 as ɵds, reducerToken$7 as ɵdr, reducer$d as ɵep, reducer$e as ɵeo, getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer$f as ɵek, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵeq, BaseSiteService as ɵbk, SiteContextParamsService as ɵew, SiteContextRoutesHandler as ɵey, SiteContextUrlSerializer as ɵex, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵev, reducer$4 as ɵeu, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵet, SiteContextStoreModule as ɵes, siteContextStoreConfigFactory as ɵer, CmsTicketInterceptor as ɵfa, interceptors$2 as ɵez, SmartEditService as ɵfb, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfm, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfe, FindStoresEffect as ɵfk, effects$8 as ɵfj, ViewAllStoresEffect as ɵfl, getReducers$a as ɵfg, reducerProvider$a as ɵfi, reducerToken$a as ɵfh, getStoreFinderState as ɵfc, StoreFinderStoreModule as ɵff, BillingCountriesEffect as ɵfz, DeliveryCountriesEffects as ɵga, ForgotPasswordEffects as ɵgk, effects$7 as ɵfy, OrderDetailsEffect as ɵgb, UserPaymentMethodsEffects as ɵgc, RegionsEffects as ɵgd, ResetPasswordEffects as ɵge, TitlesEffects as ɵgf, UpdateEmailEffects as ɵgl, UpdatePasswordEffects as ɵgm, UserAddressesEffects as ɵgg, UserDetailsEffects as ɵgh, UserOrdersEffect as ɵgi, UserRegisterEffects as ɵgj, reducer$g as ɵfp, reducer$h as ɵft, reducer$i as ɵfs, reducer$j as ɵfq, reducer$k as ɵfv, reducer$l as ɵfw, reducer$m as ɵfu, reducer$n as ɵfo, reducer$o as ɵfn, reducer$p as ɵfr, UserStoreModule as ɵfx, StripHtmlPipe as ɵgt };
 
 //# sourceMappingURL=spartacus-core.js.map

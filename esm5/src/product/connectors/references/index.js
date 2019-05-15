@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { PRODUCT_REFERENCES_NORMALIZER } from './converters';
+export { ProductReferencesAdapter } from './product-references.adapter';
+export { ProductReferencesConnector } from './product-references.connector';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvcHJvZHVjdC9jb25uZWN0b3JzL3JlZmVyZW5jZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLDhDQUFjLGNBQWMsQ0FBQztBQUM3Qix5Q0FBYyw4QkFBOEIsQ0FBQztBQUM3QywyQ0FBYyxnQ0FBZ0MsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vY29udmVydGVycyc7XG5leHBvcnQgKiBmcm9tICcuL3Byb2R1Y3QtcmVmZXJlbmNlcy5hZGFwdGVyJztcbmV4cG9ydCAqIGZyb20gJy4vcHJvZHVjdC1yZWZlcmVuY2VzLmNvbm5lY3Rvcic7XG4iXX0=
