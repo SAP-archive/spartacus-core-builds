@@ -1,12 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import * as fromOrderDetailsAction from '../actions/order-details.action';
-import { OccOrderService } from '../../occ/index';
-import { ConverterService } from '../../../util/converter.service';
+import { OrderConnector } from '../../connectors/order.connector';
 export declare class OrderDetailsEffect {
     private actions$;
-    private occOrderService;
-    private converter;
+    private orderConnector;
     loadOrderDetails$: Observable<fromOrderDetailsAction.OrderDetailsAction>;
-    constructor(actions$: Actions, occOrderService: OccOrderService, converter: ConverterService);
+    constructor(actions$: Actions, orderConnector: OrderConnector);
 }

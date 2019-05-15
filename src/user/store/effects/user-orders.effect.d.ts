@@ -2,11 +2,11 @@ import { Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromUserOrdersAction from '../actions/user-orders.action';
-import { OccOrderService } from '../../occ/index';
+import { OrderConnector } from '../../connectors/order.connector';
 export declare class UserOrdersEffect {
     private actions$;
-    private occOrderService;
-    constructor(actions$: Actions, occOrderService: OccOrderService);
+    private orderConnector;
+    constructor(actions$: Actions, orderConnector: OrderConnector);
     loadUserOrders$: Observable<fromUserOrdersAction.UserOrdersAction>;
     resetUserOrders$: Observable<Action>;
 }
