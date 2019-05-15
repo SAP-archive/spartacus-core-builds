@@ -6746,47 +6746,56 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccSiteService = /** @class */ (function () {
-        function OccSiteService(http, occEndpoints) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ SiteAdapter = /** @class */ (function () {
+        function SiteAdapter() {
+        }
+        return SiteAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SiteConnector = /** @class */ (function () {
+        function SiteConnector(adapter) {
+            this.adapter = adapter;
         }
         /**
          * @return {?}
          */
-        OccSiteService.prototype.loadLanguages = /**
+        SiteConnector.prototype.getLanguages = /**
          * @return {?}
          */
             function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint('languages'))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                return this.adapter.loadLanguages();
             };
         /**
          * @return {?}
          */
-        OccSiteService.prototype.loadCurrencies = /**
+        SiteConnector.prototype.getCurrencies = /**
          * @return {?}
          */
             function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint('currencies'))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                return this.adapter.loadCurrencies();
             };
-        OccSiteService.decorators = [
+        SiteConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        OccSiteService.ctorParameters = function () {
+        SiteConnector.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
-                { type: OccEndpointsService }
+                { type: SiteAdapter }
             ];
         };
-        /** @nocollapse */ OccSiteService.ngInjectableDef = i0.defineInjectable({ factory: function OccSiteService_Factory() { return new OccSiteService(i0.inject(i1$2.HttpClient), i0.inject(OccEndpointsService)); }, token: OccSiteService, providedIn: "root" });
-        return OccSiteService;
+        /** @nocollapse */ SiteConnector.ngInjectableDef = i0.defineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(i0.inject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+        return SiteConnector;
     }());
 
     /**
@@ -6794,13 +6803,13 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var LanguagesEffects = /** @class */ (function () {
-        function LanguagesEffects(actions$, occSiteService, winRef) {
+        function LanguagesEffects(actions$, siteConnector, winRef) {
             var _this = this;
             this.actions$ = actions$;
-            this.occSiteService = occSiteService;
+            this.siteConnector = siteConnector;
             this.winRef = winRef;
             this.loadLanguages$ = this.actions$.pipe(effects.ofType(LOAD_LANGUAGES), operators.exhaustMap(function () {
-                return _this.occSiteService.loadLanguages().pipe(operators.map(function (data) { return new LoadLanguagesSuccess(data.languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(error)); }));
+                return _this.siteConnector.getLanguages().pipe(operators.map(function (languages) { return new LoadLanguagesSuccess(languages); }), operators.catchError(function (error) { return rxjs.of(new LoadLanguagesFail(error)); }));
             }));
             this.activateLanguage$ = this.actions$.pipe(effects.ofType(SET_ACTIVE_LANGUAGE), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
@@ -6815,7 +6824,7 @@
         LanguagesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccSiteService },
+                { type: SiteConnector },
                 { type: WindowRef }
             ];
         };
@@ -6835,13 +6844,13 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CurrenciesEffects = /** @class */ (function () {
-        function CurrenciesEffects(actions$, occSiteService, winRef) {
+        function CurrenciesEffects(actions$, siteConnector, winRef) {
             var _this = this;
             this.actions$ = actions$;
-            this.occSiteService = occSiteService;
+            this.siteConnector = siteConnector;
             this.winRef = winRef;
             this.loadCurrencies$ = this.actions$.pipe(effects.ofType(LOAD_CURRENCIES), operators.exhaustMap(function () {
-                return _this.occSiteService.loadCurrencies().pipe(operators.map(function (data) { return new LoadCurrenciesSuccess(data.currencies); }), operators.catchError(function (error) { return rxjs.of(new LoadCurrenciesFail(error)); }));
+                return _this.siteConnector.getCurrencies().pipe(operators.map(function (currencies) { return new LoadCurrenciesSuccess(currencies); }), operators.catchError(function (error) { return rxjs.of(new LoadCurrenciesFail(error)); }));
             }));
             this.activateCurrency$ = this.actions$.pipe(effects.ofType(SET_ACTIVE_CURRENCY), operators.tap(function (action) {
                 if (_this.winRef.sessionStorage) {
@@ -6856,7 +6865,7 @@
         CurrenciesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccSiteService },
+                { type: SiteConnector },
                 { type: WindowRef }
             ];
         };
@@ -7156,7 +7165,7 @@
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [OccModule, i1$3.CommonModule, i1$2.HttpClientModule],
-                        providers: [OccModule, OccSiteService],
+                        providers: [OccModule],
                     },] }
         ];
         return SiteContextOccModule;
@@ -8197,11 +8206,70 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var LANGUAGE_NORMALIZER = new i0.InjectionToken('LanguageNormalizer');
+    /** @type {?} */
+    var CURRENCY_NORMALIZER = new i0.InjectionToken('CurrencyNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccSiteAdapter = /** @class */ (function () {
+        function OccSiteAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @return {?}
+         */
+        OccSiteAdapter.prototype.loadLanguages = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint('languages'))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (languageList) { return languageList.languages; }), this.converter.pipeableMany(LANGUAGE_NORMALIZER));
+            };
+        /**
+         * @return {?}
+         */
+        OccSiteAdapter.prototype.loadCurrencies = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint('currencies'))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (currencyList) { return currencyList.currencies; }), this.converter.pipeableMany(CURRENCY_NORMALIZER));
+            };
+        OccSiteAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccSiteAdapter.ctorParameters = function () {
+            return [
+                { type: i1$2.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccSiteAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var interceptors$1 = [
         {
             provide: i1$2.HTTP_INTERCEPTORS,
             useClass: SiteContextInterceptor,
             multi: true,
+        },
+        {
+            provide: SiteAdapter,
+            useClass: OccSiteAdapter,
         },
     ];
 
@@ -8242,6 +8310,11 @@
         ];
         return SiteContextModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -24043,9 +24116,9 @@
     exports.CurrencyService = CurrencyService;
     exports.SiteContextModule = SiteContextModule;
     exports.interceptors = interceptors$1;
-    exports.OccSiteService = OccSiteService;
     exports.SiteContextOccModule = SiteContextOccModule;
     exports.SiteContextInterceptor = SiteContextInterceptor;
+    exports.OccSiteAdapter = OccSiteAdapter;
     exports.SiteContextConfig = SiteContextConfig;
     exports.serviceMapFactory = serviceMapFactory;
     exports.ContextServiceMap = ContextServiceMap;
@@ -24057,6 +24130,10 @@
     exports.contextServiceProviders = contextServiceProviders;
     exports.initSiteContextRoutesHandler = initSiteContextRoutesHandler;
     exports.siteContextParamsProviders = siteContextParamsProviders;
+    exports.SiteConnector = SiteConnector;
+    exports.SiteAdapter = SiteAdapter;
+    exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
+    exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
     exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;

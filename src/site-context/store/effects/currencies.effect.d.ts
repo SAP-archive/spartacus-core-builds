@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs';
 import { Actions } from '@ngrx/effects';
-import { OccSiteService } from '../../occ/occ-site.service';
 import { WindowRef } from '../../../window/window-ref';
+import { SiteConnector } from '../../connectors/site.connector';
 export declare class CurrenciesEffects {
     private actions$;
-    private occSiteService;
+    private siteConnector;
     private winRef;
     loadCurrencies$: Observable<any>;
     activateCurrency$: Observable<any>;
-    constructor(actions$: Actions, occSiteService: OccSiteService, winRef: WindowRef);
+    constructor(actions$: Actions, siteConnector: SiteConnector, winRef: WindowRef);
 }

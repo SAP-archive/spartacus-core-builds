@@ -1,12 +1,12 @@
 import { Observable } from 'rxjs';
 import { Actions } from '@ngrx/effects';
-import { OccSiteService } from '../../occ/occ-site.service';
 import { WindowRef } from '../../../window/window-ref';
+import { SiteConnector } from '../../connectors/site.connector';
 export declare class LanguagesEffects {
     private actions$;
-    private occSiteService;
+    private siteConnector;
     private winRef;
     loadLanguages$: Observable<any>;
     activateLanguage$: Observable<any>;
-    constructor(actions$: Actions, occSiteService: OccSiteService, winRef: WindowRef);
+    constructor(actions$: Actions, siteConnector: SiteConnector, winRef: WindowRef);
 }
