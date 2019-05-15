@@ -7710,12 +7710,10 @@ class GlobalMessageService {
      * @return {?}
      */
     add(text, type) {
-        if (typeof text === 'string') {
-            this.store.dispatch(new AddMessage({ text: { raw: text }, type }));
-        }
-        else {
-            this.store.dispatch(new AddMessage({ text, type }));
-        }
+        this.store.dispatch(new AddMessage({
+            text: typeof text === 'string' ? { raw: text } : text,
+            type,
+        }));
     }
     /**
      * Remove message(s) from store
@@ -7724,15 +7722,12 @@ class GlobalMessageService {
      * @return {?}
      */
     remove(type, index) {
-        if (index !== undefined) {
-            this.store.dispatch(new RemoveMessage({
+        this.store.dispatch(index !== undefined
+            ? new RemoveMessage({
                 type: type,
                 index: index,
-            }));
-        }
-        else {
-            this.store.dispatch(new RemoveMessagesByType(type));
-        }
+            })
+            : new RemoveMessagesByType(type));
     }
 }
 GlobalMessageService.decorators = [
@@ -11738,7 +11733,7 @@ class CmsService {
                 if (!attemptedLoad && !isNavigating) {
                     this.store.dispatch(new LoadComponent(uid));
                 }
-            }), filter(([_, componentState]) => componentState.success), map(([_, componentState]) => componentState.value), shareReplay({ bufferSize: 1, refCount: true }));
+            }), pluck(1), filter(componentState => componentState.success), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     }
@@ -11831,7 +11826,7 @@ class CmsService {
             if (!attemptedLoad || shouldReload) {
                 this.store.dispatch(new LoadPageData(pageContext));
             }
-        }), filter(entity => entity.success || entity.error), map(entity => entity.success), catchError(() => of(false)));
+        }), filter(entity => entity.success || entity.error), pluck('success'), catchError(() => of(false)));
     }
 }
 CmsService.decorators = [
@@ -16034,12 +16029,8 @@ class TranslatePipe {
             return ((/** @type {?} */ (input))).raw;
         }
         /** @type {?} */
-        let key;
-        if (typeof input === 'string') {
-            key = input;
-        }
-        else {
-            key = input.key;
+        const key = typeof input === 'string' ? input : input.key;
+        if (typeof input !== 'string') {
             options = Object.assign({}, options, input.params);
         }
         this.translate(key, options);
@@ -16444,12 +16435,8 @@ class MockTranslatePipe {
             return ((/** @type {?} */ (input))).raw;
         }
         /** @type {?} */
-        let key;
-        if (typeof input === 'string') {
-            key = input;
-        }
-        else {
-            key = input.key;
+        const key = typeof input === 'string' ? input : input.key;
+        if (typeof input !== 'string') {
             options = Object.assign({}, options, input.params);
         }
         return mockTranslate(key, options);

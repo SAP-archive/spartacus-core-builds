@@ -8818,7 +8818,8 @@ var GlobalMessageService = /** @class */ (function () {
     };
     /**
      * Add one message into store
-     * @param message: GlobalMessage object
+     * @param text: string | Translatable
+     * @param type: GlobalMessageType object
      */
     /**
      * Add one message into store
@@ -8833,12 +8834,10 @@ var GlobalMessageService = /** @class */ (function () {
      * @return {?}
      */
     function (text, type) {
-        if (typeof text === 'string') {
-            this.store.dispatch(new AddMessage({ text: { raw: text }, type: type }));
-        }
-        else {
-            this.store.dispatch(new AddMessage({ text: text, type: type }));
-        }
+        this.store.dispatch(new AddMessage({
+            text: typeof text === 'string' ? { raw: text } : text,
+            type: type,
+        }));
     };
     /**
      * Remove message(s) from store
@@ -8859,15 +8858,12 @@ var GlobalMessageService = /** @class */ (function () {
      * @return {?}
      */
     function (type, index) {
-        if (index !== undefined) {
-            this.store.dispatch(new RemoveMessage({
+        this.store.dispatch(index !== undefined
+            ? new RemoveMessage({
                 type: type,
                 index: index,
-            }));
-        }
-        else {
-            this.store.dispatch(new RemoveMessagesByType(type));
-        }
+            })
+            : new RemoveMessagesByType(type));
     };
     GlobalMessageService.decorators = [
         { type: Injectable }
@@ -13723,13 +13719,7 @@ var CmsService = /** @class */ (function () {
                 if (!attemptedLoad && !isNavigating) {
                     _this.store.dispatch(new LoadComponent(uid));
                 }
-            }), filter(function (_a) {
-                var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
-                return componentState.success;
-            }), map(function (_a) {
-                var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
-                return componentState.value;
-            }), shareReplay({ bufferSize: 1, refCount: true }));
+            }), pluck(1), filter(function (componentState) { return componentState.success; }), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     };
@@ -13912,7 +13902,7 @@ var CmsService = /** @class */ (function () {
             if (!attemptedLoad || shouldReload) {
                 _this.store.dispatch(new LoadPageData(pageContext));
             }
-        }), filter(function (entity) { return entity.success || entity.error; }), map(function (entity) { return entity.success; }), catchError(function () { return of(false); }));
+        }), filter(function (entity) { return entity.success || entity.error; }), pluck('success'), catchError(function () { return of(false); }));
     };
     CmsService.decorators = [
         { type: Injectable, args: [{
@@ -19139,12 +19129,8 @@ var TranslatePipe = /** @class */ (function () {
             return ((/** @type {?} */ (input))).raw;
         }
         /** @type {?} */
-        var key;
-        if (typeof input === 'string') {
-            key = input;
-        }
-        else {
-            key = input.key;
+        var key = typeof input === 'string' ? input : input.key;
+        if (typeof input !== 'string') {
             options = __assign({}, options, input.params);
         }
         this.translate(key, options);
@@ -19621,12 +19607,8 @@ var MockTranslatePipe = /** @class */ (function () {
             return ((/** @type {?} */ (input))).raw;
         }
         /** @type {?} */
-        var key;
-        if (typeof input === 'string') {
-            key = input;
-        }
-        else {
-            key = input.key;
+        var key = typeof input === 'string' ? input : input.key;
+        if (typeof input !== 'string') {
             options = __assign({}, options, input.params);
         }
         return mockTranslate(key, options);

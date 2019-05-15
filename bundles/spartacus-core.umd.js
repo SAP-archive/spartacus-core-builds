@@ -8941,7 +8941,8 @@
             };
         /**
          * Add one message into store
-         * @param message: GlobalMessage object
+         * @param text: string | Translatable
+         * @param type: GlobalMessageType object
          */
         /**
          * Add one message into store
@@ -8956,12 +8957,10 @@
          * @return {?}
          */
             function (text, type) {
-                if (typeof text === 'string') {
-                    this.store.dispatch(new AddMessage({ text: { raw: text }, type: type }));
-                }
-                else {
-                    this.store.dispatch(new AddMessage({ text: text, type: type }));
-                }
+                this.store.dispatch(new AddMessage({
+                    text: typeof text === 'string' ? { raw: text } : text,
+                    type: type,
+                }));
             };
         /**
          * Remove message(s) from store
@@ -8982,15 +8981,12 @@
          * @return {?}
          */
             function (type, index) {
-                if (index !== undefined) {
-                    this.store.dispatch(new RemoveMessage({
+                this.store.dispatch(index !== undefined
+                    ? new RemoveMessage({
                         type: type,
                         index: index,
-                    }));
-                }
-                else {
-                    this.store.dispatch(new RemoveMessagesByType(type));
-                }
+                    })
+                    : new RemoveMessagesByType(type));
             };
         GlobalMessageService.decorators = [
             { type: i0.Injectable }
@@ -13928,13 +13924,7 @@
                         if (!attemptedLoad && !isNavigating) {
                             _this.store.dispatch(new LoadComponent(uid));
                         }
-                    }), operators.filter(function (_a) {
-                        var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
-                        return componentState.success;
-                    }), operators.map(function (_a) {
-                        var _b = __read(_a, 2), _ = _b[0], componentState = _b[1];
-                        return componentState.value;
-                    }), operators.shareReplay({ bufferSize: 1, refCount: true }));
+                    }), operators.pluck(1), operators.filter(function (componentState) { return componentState.success; }), operators.pluck('value'), operators.shareReplay({ bufferSize: 1, refCount: true }));
                 }
                 return ( /** @type {?} */(this.components[uid]));
             };
@@ -14119,7 +14109,7 @@
                     if (!attemptedLoad || shouldReload) {
                         _this.store.dispatch(new LoadPageData(pageContext));
                     }
-                }), operators.filter(function (entity) { return entity.success || entity.error; }), operators.map(function (entity) { return entity.success; }), operators.catchError(function () { return rxjs.of(false); }));
+                }), operators.filter(function (entity) { return entity.success || entity.error; }), operators.pluck('success'), operators.catchError(function () { return rxjs.of(false); }));
             };
         CmsService.decorators = [
             { type: i0.Injectable, args: [{
@@ -19444,12 +19434,8 @@
                     return (( /** @type {?} */(input))).raw;
                 }
                 /** @type {?} */
-                var key;
-                if (typeof input === 'string') {
-                    key = input;
-                }
-                else {
-                    key = input.key;
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
                     options = __assign({}, options, input.params);
                 }
                 this.translate(key, options);
@@ -19942,12 +19928,8 @@
                     return (( /** @type {?} */(input))).raw;
                 }
                 /** @type {?} */
-                var key;
-                if (typeof input === 'string') {
-                    key = input;
-                }
-                else {
-                    key = input.key;
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
                     options = __assign({}, options, input.params);
                 }
                 return mockTranslate(key, options);
