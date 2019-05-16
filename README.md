@@ -1,4 +1,4 @@
-# Spartacus core builds
+# Spartacus core snapshot builds
 
 Snapshot builds for the Spartacus core library
 
