@@ -13846,7 +13846,7 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = this.routingService.isNavigating().pipe(operators.withLatestFrom(this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)))), operators.tap(function (_a) {
+                    this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)))).pipe(operators.tap(function (_a) {
                         var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||

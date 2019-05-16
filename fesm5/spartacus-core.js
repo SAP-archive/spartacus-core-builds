@@ -10,7 +10,7 @@ import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { __decorate, __metadata, __assign, __spread, __extends, __read, __values } from 'tslib';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, defineInjectable, inject, INJECTOR, NgZone, ChangeDetectorRef, ComponentFactoryResolver } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, groupBy, shareReplay, withLatestFrom, concatMap, takeWhile } from 'rxjs/operators';
+import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, pluck, groupBy, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 
 /**
@@ -13641,7 +13641,7 @@ var CmsService = /** @class */ (function () {
     function (uid) {
         var _this = this;
         if (!this.components[uid]) {
-            this.components[uid] = this.routingService.isNavigating().pipe(withLatestFrom(this.store.pipe(select(componentStateSelectorFactory(uid)))), tap(function (_a) {
+            this.components[uid] = combineLatest(this.routingService.isNavigating(), this.store.pipe(select(componentStateSelectorFactory(uid)))).pipe(tap(function (_a) {
                 var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                 /** @type {?} */
                 var attemptedLoad = componentState.loading ||
