@@ -11672,9 +11672,6 @@
      */
     /** @type {?} */
     var defaultCmsModuleConfig = {
-        cmsComponents: {
-            CMSTabParagraphComponent: { selector: 'cx-paragraph' },
-        },
         backend: {
             occ: {
                 endpoints: {

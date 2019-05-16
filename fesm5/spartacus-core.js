@@ -11525,9 +11525,6 @@ CmsConfig = /** @class */ (function (_super) {
  */
 /** @type {?} */
 var defaultCmsModuleConfig = {
-    cmsComponents: {
-        CMSTabParagraphComponent: { selector: 'cx-paragraph' },
-    },
     backend: {
         occ: {
             endpoints: {

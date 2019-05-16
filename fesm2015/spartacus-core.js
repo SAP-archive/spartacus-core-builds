@@ -10032,9 +10032,6 @@ class CmsConfig extends OccConfig {
  */
 /** @type {?} */
 const defaultCmsModuleConfig = {
-    cmsComponents: {
-        CMSTabParagraphComponent: { selector: 'cx-paragraph' },
-    },
     backend: {
         occ: {
             endpoints: {
