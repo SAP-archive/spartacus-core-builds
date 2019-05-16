@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { CmsComponent } from '../../../occ/occ-models/index';
-import { CmsComponentAdapter } from './cms-component.adapter';
-import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
 import { PageContext } from '../../../routing/models/page-context.model';
+import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
+import { CmsComponentAdapter } from './cms-component.adapter';
 export declare class CmsComponentConnector {
     protected cmsStructureConfigService: CmsStructureConfigService;
     protected adapter: CmsComponentAdapter;

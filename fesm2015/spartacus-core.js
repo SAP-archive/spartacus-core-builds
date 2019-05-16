@@ -7886,15 +7886,17 @@ class BadRequestHandler extends HttpErrorHandler {
             // text: customError.customError.passwordMismatch,
         }
         else {
-            // this is currently showing up in case we have a page not found. It should be a 404.
-            // see https://jira.hybris.com/browse/CMSX-8516
-            /** @type {?} */
-            const errorMessage = this.getErrorMessage(response);
-            /** @type {?} */
-            const textObj = errorMessage
-                ? { raw: errorMessage }
-                : { key: 'httpHandlers.unknownError' };
-            this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
+            if (!request.url.includes('/cms/components')) {
+                // this is currently showing up in case we have a page not found. It should be a 404.
+                // see https://jira.hybris.com/browse/CMSX-8516
+                /** @type {?} */
+                const errorMessage = this.getErrorMessage(response);
+                /** @type {?} */
+                const textObj = errorMessage
+                    ? { raw: errorMessage }
+                    : { key: 'httpHandlers.unknownError' };
+                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
+            }
         }
     }
     /**
@@ -10337,11 +10339,34 @@ class OccCmsComponentAdapter {
      * @param {?=} sort
      * @return {?}
      */
-    loadList(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
+    findComponentsByIds(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
         /** @type {?} */
-        const requestParams = this.getComponentsRequestParams(pageContext, currentPage, pageSize, sort);
+        const requestParams = Object.assign({}, this.getContextParams(pageContext), this.getPaginationParams(currentPage, pageSize, sort));
+        requestParams['componentIds'] = ids.toString();
+        return this.http
+            .get(this.getComponentsEndpoint(requestParams, fields), {
+            headers: this.headers,
+        })
+            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER), catchError(error => {
+            if (error.status === 400) {
+                return this.searchComponentsByIds(ids, pageContext, fields, currentPage, pageSize, sort);
+            }
+        }));
+    }
+    /**
+     * @param {?} ids
+     * @param {?} pageContext
+     * @param {?=} fields
+     * @param {?=} currentPage
+     * @param {?=} pageSize
+     * @param {?=} sort
+     * @return {?}
+     */
+    searchComponentsByIds(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
         /** @type {?} */
         const idList = { idList: ids };
+        /** @type {?} */
+        const requestParams = Object.assign({}, this.getContextParams(pageContext), this.getPaginationParams(currentPage, pageSize, sort));
         return this.http
             .post(this.getComponentsEndpoint(requestParams, fields), idList, {
             headers: this.headers,
@@ -10355,7 +10380,7 @@ class OccCmsComponentAdapter {
      * @return {?}
      */
     getComponentEndPoint(id, pageContext) {
-        return this.occEndpoints.getUrl('component', { id }, this.getComponentRequestParams(pageContext));
+        return this.occEndpoints.getUrl('component', { id }, this.getContextParams(pageContext));
     }
     /**
      * @protected
@@ -10368,15 +10393,14 @@ class OccCmsComponentAdapter {
     }
     /**
      * @private
-     * @param {?} pageContext
      * @param {?=} currentPage
      * @param {?=} pageSize
      * @param {?=} sort
      * @return {?}
      */
-    getComponentsRequestParams(pageContext, currentPage, pageSize, sort) {
+    getPaginationParams(currentPage, pageSize, sort) {
         /** @type {?} */
-        const requestParams = this.getComponentRequestParams(pageContext);
+        const requestParams = {};
         if (currentPage !== undefined) {
             requestParams['currentPage'] = currentPage.toString();
         }
@@ -10393,7 +10417,7 @@ class OccCmsComponentAdapter {
      * @param {?} pageContext
      * @return {?}
      */
-    getComponentRequestParams(pageContext) {
+    getContextParams(pageContext) {
         /** @type {?} */
         let requestParams = {};
         switch (pageContext.type) {
@@ -10926,7 +10950,7 @@ class CmsComponentConnector {
             }, []);
             if (missingIds.length > 0) {
                 return this.adapter
-                    .loadList(missingIds, pageContext)
+                    .findComponentsByIds(missingIds, pageContext)
                     .pipe(map(loadedComponents => [
                     ...configuredComponents.filter(Boolean),
                     ...loadedComponents,
