@@ -3,7 +3,7 @@ import { CartAdapter } from './cart.adapter';
 import { CheckoutDetails } from '../../../checkout/models/checkout.model';
 import { Cart } from '../../../model/cart.model';
 export declare class CartConnector {
-    private adapter;
+    protected adapter: CartAdapter;
     constructor(adapter: CartAdapter);
     loadAll(userId: string, details?: boolean): Observable<Cart[]>;
     load(userId: string, cartId: string, details?: boolean): Observable<Cart>;

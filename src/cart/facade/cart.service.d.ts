@@ -6,9 +6,9 @@ import { StateWithCart } from '../store/cart-state';
 import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 export declare class CartService {
-    private store;
-    private cartData;
-    private authService;
+    protected store: Store<StateWithCart>;
+    protected cartData: CartDataService;
+    protected authService: AuthService;
     private callback;
     constructor(store: Store<StateWithCart>, cartData: CartDataService, authService: AuthService);
     getActive(): Observable<Cart>;

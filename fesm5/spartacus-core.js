@@ -5716,13 +5716,13 @@ var OccCartPaymentAdapter = /** @class */ (function () {
             .pipe(catchError(function (error) { return throwError(error.json()); }));
     };
     /**
-     * @private
+     * @protected
      * @param {?} postUrl
      * @param {?} parameters
      * @return {?}
      */
     OccCartPaymentAdapter.prototype.createSubWithProvider = /**
-     * @private
+     * @protected
      * @param {?} postUrl
      * @param {?} parameters
      * @return {?}

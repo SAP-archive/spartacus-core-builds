@@ -14,7 +14,7 @@ export declare class OccCartPaymentAdapter implements CartPaymentAdapter {
     create(userId: string, cartId: string, paymentDetails: PaymentDetails): Observable<PaymentDetails>;
     set(userId: string, cartId: string, paymentDetailsId: string): Observable<any>;
     protected getProviderSubInfo(userId: string, cartId: string): Observable<any>;
-    private createSubWithProvider;
+    protected createSubWithProvider(postUrl: string, parameters: any): Observable<any>;
     protected createDetailsWithParameters(userId: string, cartId: string, parameters: any): Observable<PaymentDetails>;
     private getParamsForPaymentProvider;
     private extractPaymentDetailsFromHtml;
