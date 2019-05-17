@@ -7,3 +7,4 @@ export * from './store/store-finder-state';
 export * from './service/index';
 export * from './facade/index';
 export * from './store-finder.module';
+export * from './connectors/index';

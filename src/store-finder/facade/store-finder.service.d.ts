@@ -1,9 +1,9 @@
 import { Store } from '@ngrx/store';
 import { StateWithStoreFinder, FindStoresState, ViewAllStoresState } from '../store/store-finder-state';
 import { StoreFinderSearchConfig } from './../model/search-config';
-import { LongitudeLatitude } from './../model/longitude-latitude';
 import { Observable } from 'rxjs';
 import { WindowRef } from '../../window/window-ref';
+import { GeoPoint } from '../../model/misc.model';
 export declare class StoreFinderService {
     private store;
     private winRef;
@@ -32,7 +32,7 @@ export declare class StoreFinderService {
      * @param searchConfig search configuration
      * @param countryIsoCode country ISO code
      */
-    findStoresAction(queryText: string, longitudeLatitude: LongitudeLatitude, searchConfig: StoreFinderSearchConfig, countryIsoCode?: string): void;
+    findStoresAction(queryText: string, longitudeLatitude: GeoPoint, searchConfig: StoreFinderSearchConfig, countryIsoCode?: string): void;
     /**
      * View all stores
      */

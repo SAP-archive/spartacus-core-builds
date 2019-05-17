@@ -21751,6 +21751,16 @@
         function UserSignUp() { }
         Occ.UserSignUp = UserSignUp;
         /**
+         * @record
+         */
+        function StoreCount() { }
+        Occ.StoreCount = StoreCount;
+        /**
+         * @record
+         */
+        function StoreCountList() { }
+        Occ.StoreCountList = StoreCountList;
+        /**
          *
          * An interface representing VoucherList.
          * @record
@@ -23116,12 +23126,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var STORES_ENDPOINT = 'stores';
-    var OccStoreFinderService = /** @class */ (function () {
-        function OccStoreFinderService(http, occEndpoints) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ StoreFinderAdapter = /** @class */ (function () {
+        function StoreFinderAdapter() {
+        }
+        return StoreFinderAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var StoreFinderConnector = /** @class */ (function () {
+        function StoreFinderConnector(adapter) {
+            this.adapter = adapter;
         }
         /**
          * @param {?} query
@@ -23129,33 +23154,110 @@
          * @param {?=} longitudeLatitude
          * @return {?}
          */
-        OccStoreFinderService.prototype.findStores = /**
+        StoreFinderConnector.prototype.search = /**
          * @param {?} query
          * @param {?} searchConfig
          * @param {?=} longitudeLatitude
          * @return {?}
          */
             function (query, searchConfig, longitudeLatitude) {
-                return this.callOccFindStores(query, searchConfig, longitudeLatitude);
+                return this.adapter.search(query, searchConfig, longitudeLatitude);
             };
         /**
          * @return {?}
          */
-        OccStoreFinderService.prototype.storesCount = /**
+        StoreFinderConnector.prototype.getCounts = /**
          * @return {?}
          */
             function () {
-                /** @type {?} */
-                var storeCountUrl = this.getStoresEndpoint('storescounts');
-                return this.http
-                    .get(storeCountUrl)
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                return this.adapter.loadCounts();
             };
         /**
          * @param {?} storeId
          * @return {?}
          */
-        OccStoreFinderService.prototype.findStoreById = /**
+        StoreFinderConnector.prototype.get = /**
+         * @param {?} storeId
+         * @return {?}
+         */
+            function (storeId) {
+                return this.adapter.load(storeId);
+            };
+        StoreFinderConnector.decorators = [
+            { type: i0.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        StoreFinderConnector.ctorParameters = function () {
+            return [
+                { type: StoreFinderAdapter }
+            ];
+        };
+        /** @nocollapse */ StoreFinderConnector.ngInjectableDef = i0.defineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(i0.inject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+        return StoreFinderConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var POINT_OF_SERVICE_NORMALIZER = new i0.InjectionToken('PointOfServiceNormalizer');
+    /** @type {?} */
+    var STORE_FINDER_SEARCH_PAGE_NORMALIZER = new i0.InjectionToken('StoreFinderSearchPageNormalizer');
+    /** @type {?} */
+    var STORE_COUNT_NORMALIZER = new i0.InjectionToken('StoreCountNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var STORES_ENDPOINT = 'stores';
+    var OccStoreFinderAdapter = /** @class */ (function () {
+        function OccStoreFinderAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+        OccStoreFinderAdapter.prototype.search = /**
+         * @param {?} query
+         * @param {?} searchConfig
+         * @param {?=} longitudeLatitude
+         * @return {?}
+         */
+            function (query, searchConfig, longitudeLatitude) {
+                return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+            };
+        /**
+         * @return {?}
+         */
+        OccStoreFinderAdapter.prototype.loadCounts = /**
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var storeCountUrl = this.getStoresEndpoint('storescounts');
+                return this.http.get(storeCountUrl).pipe(operators.map(function (_a) {
+                    var countriesAndRegionsStoreCount = _a.countriesAndRegionsStoreCount;
+                    return countriesAndRegionsStoreCount;
+                }), operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
+            };
+        /**
+         * @param {?} storeId
+         * @return {?}
+         */
+        OccStoreFinderAdapter.prototype.load = /**
          * @param {?} storeId
          * @return {?}
          */
@@ -23164,9 +23266,7 @@
                 var storeDetailsUrl = this.getStoresEndpoint(storeId);
                 /** @type {?} */
                 var params = { fields: 'FULL' };
-                return this.http
-                    .get(storeDetailsUrl, { params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+                return this.http.get(storeDetailsUrl, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
             };
         /**
          * @protected
@@ -23175,7 +23275,7 @@
          * @param {?=} longitudeLatitude
          * @return {?}
          */
-        OccStoreFinderService.prototype.callOccFindStores = /**
+        OccStoreFinderAdapter.prototype.callOccFindStores = /**
          * @protected
          * @param {?} query
          * @param {?} searchConfig
@@ -23220,7 +23320,7 @@
          * @param {?=} url
          * @return {?}
          */
-        OccStoreFinderService.prototype.getStoresEndpoint = /**
+        OccStoreFinderAdapter.prototype.getStoresEndpoint = /**
          * @protected
          * @param {?=} url
          * @return {?}
@@ -23230,17 +23330,18 @@
                 var baseUrl = this.occEndpoints.getEndpoint(STORES_ENDPOINT);
                 return url ? baseUrl + '/' + url : baseUrl;
             };
-        OccStoreFinderService.decorators = [
+        OccStoreFinderAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccStoreFinderService.ctorParameters = function () {
+        OccStoreFinderAdapter.ctorParameters = function () {
             return [
                 { type: i1$2.HttpClient },
-                { type: OccEndpointsService }
+                { type: OccEndpointsService },
+                { type: ConverterService }
             ];
         };
-        return OccStoreFinderService;
+        return OccStoreFinderAdapter;
     }());
 
     /**
@@ -23252,8 +23353,7 @@
         }
         StoreFinderOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule, i1$2.HttpClientModule, OccModule],
-                        providers: [OccStoreFinderService],
+                        providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }],
                     },] }
         ];
         return StoreFinderOccModule;
@@ -23929,15 +24029,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var FindStoresEffect = /** @class */ (function () {
-        function FindStoresEffect(actions$, occStoreFinderService) {
+        function FindStoresEffect(actions$, storeFinderConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occStoreFinderService = occStoreFinderService;
+            this.storeFinderConnector = storeFinderConnector;
             this.findStores$ = this.actions$.pipe(effects.ofType(FIND_STORES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.occStoreFinderService
-                    .findStores(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
+                return _this.storeFinderConnector
+                    .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
                     .pipe(operators.map(function (data) {
-                    data.geolocation = payload.longitudeLatitude;
                     if (payload.countryIsoCode) {
                         data.stores = data.stores.filter(function (store) {
                             return store.address.country.isocode === payload.countryIsoCode;
@@ -23947,7 +24046,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new FindStoresFail(error)); }));
             }));
             this.findStoreById$ = this.actions$.pipe(effects.ofType(FIND_STORE_BY_ID), operators.map(function (action) { return action.payload; }), operators.switchMap(function (payload) {
-                return _this.occStoreFinderService.findStoreById(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(error)); }));
+                return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map(function (data) { return new FindStoreByIdSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new FindStoreByIdFail(error)); }));
             }));
         }
         FindStoresEffect.decorators = [
@@ -23957,7 +24056,7 @@
         FindStoresEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccStoreFinderService }
+                { type: StoreFinderConnector }
             ];
         };
         __decorate([
@@ -23976,12 +24075,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var ViewAllStoresEffect = /** @class */ (function () {
-        function ViewAllStoresEffect(actions$, occStoreFinderService) {
+        function ViewAllStoresEffect(actions$, storeFinderConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occStoreFinderService = occStoreFinderService;
+            this.storeFinderConnector = storeFinderConnector;
             this.viewAllStores$ = this.actions$.pipe(effects.ofType(VIEW_ALL_STORES), operators.switchMap(function () {
-                return _this.occStoreFinderService.storesCount().pipe(operators.map(function (data) { return new ViewAllStoresSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(error)); }));
+                return _this.storeFinderConnector.getCounts().pipe(operators.map(function (data) { return new ViewAllStoresSuccess(data); }), operators.catchError(function (error) { return rxjs.of(new ViewAllStoresFail(error)); }));
             }));
         }
         ViewAllStoresEffect.decorators = [
@@ -23991,7 +24090,7 @@
         ViewAllStoresEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccStoreFinderService }
+                { type: StoreFinderConnector }
             ];
         };
         __decorate([
@@ -25158,8 +25257,8 @@
     exports.StateConfig = StateConfig;
     exports.metaReducersFactory = metaReducersFactory;
     exports.META_REDUCER = META_REDUCER;
-    exports.OccStoreFinderService = OccStoreFinderService;
     exports.StoreFinderOccModule = StoreFinderOccModule;
+    exports.OccStoreFinderAdapter = OccStoreFinderAdapter;
     exports.StoreFinderConfig = StoreFinderConfig;
     exports.ON_HOLD = ON_HOLD;
     exports.FIND_STORES = FIND_STORES;
@@ -25194,6 +25293,11 @@
     exports.StoreFinderService = StoreFinderService;
     exports.StoreDataService = StoreDataService;
     exports.StoreFinderCoreModule = StoreFinderCoreModule;
+    exports.StoreFinderConnector = StoreFinderConnector;
+    exports.StoreFinderAdapter = StoreFinderAdapter;
+    exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;
+    exports.STORE_FINDER_SEARCH_PAGE_NORMALIZER = STORE_FINDER_SEARCH_PAGE_NORMALIZER;
+    exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
     exports.OccUserAddressAdapter = OccUserAddressAdapter;
     exports.OccUserAccountAdapter = OccUserAccountAdapter;
     exports.OccUserDetailsAdapter = OccUserDetailsAdapter;

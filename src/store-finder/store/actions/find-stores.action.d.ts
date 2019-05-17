@@ -1,6 +1,6 @@
 import { StoreFinderSearchConfig } from '../../model/search-config';
-import { LongitudeLatitude } from '../../model/longitude-latitude';
 import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { GeoPoint } from '../../../model/misc.model';
 export declare const ON_HOLD = "[StoreFinder] On Hold";
 export declare const FIND_STORES = "[StoreFinder] Find Stores";
 export declare const FIND_STORES_FAIL = "[StoreFinder] Find Stores Fail";
@@ -15,7 +15,7 @@ export declare class OnHold extends LoaderLoadAction {
 export declare class FindStores extends LoaderLoadAction {
     payload: {
         queryText: string;
-        longitudeLatitude?: LongitudeLatitude;
+        longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         searchConfig?: StoreFinderSearchConfig;
         countryIsoCode?: string;
@@ -23,7 +23,7 @@ export declare class FindStores extends LoaderLoadAction {
     readonly type = "[StoreFinder] Find Stores";
     constructor(payload: {
         queryText: string;
-        longitudeLatitude?: LongitudeLatitude;
+        longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
         searchConfig?: StoreFinderSearchConfig;
         countryIsoCode?: string;

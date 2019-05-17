@@ -1,30 +1,13 @@
 import { Price, Product } from './product.model';
-import { GeoPoint, OpeningSchedule, PaginationModel, SortModel } from './misc.model';
-import { Image } from './image.model';
+import { PaginationModel, SortModel } from './misc.model';
 import { Address } from './address.model';
 import { DeliveryOrderEntryGroup, PaymentDetails, Principal, PromotionResult, Voucher } from './cart.model';
+import { PointOfService } from './point-of-service.model';
 export interface DeliveryMode {
     code?: string;
     deliveryCost?: Price;
     description?: string;
     name?: string;
-}
-export interface PointOfService {
-    address?: Address;
-    description?: string;
-    displayName?: string;
-    distanceKm?: number;
-    features?: {
-        [propertyName: string]: string;
-    };
-    formattedDistance?: string;
-    geoPoint?: GeoPoint;
-    mapIcon?: Image;
-    name?: string;
-    openingHours?: OpeningSchedule;
-    storeContent?: string;
-    storeImages?: Image[];
-    url?: string;
 }
 export interface OrderEntry {
     basePrice?: Price;

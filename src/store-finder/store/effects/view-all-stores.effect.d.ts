@@ -1,9 +1,9 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { OccStoreFinderService } from '../../occ/store-finder.service';
+import { StoreFinderConnector } from '../../connectors/store-finder.connector';
 export declare class ViewAllStoresEffect {
     private actions$;
-    private occStoreFinderService;
-    constructor(actions$: Actions, occStoreFinderService: OccStoreFinderService);
+    private storeFinderConnector;
+    constructor(actions$: Actions, storeFinderConnector: StoreFinderConnector);
     viewAllStores$: Observable<any>;
 }

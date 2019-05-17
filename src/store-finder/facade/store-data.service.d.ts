@@ -1,4 +1,4 @@
-import { Location } from '../model';
+import { PointOfService } from '../../model/point-of-service.model';
 export declare class StoreDataService {
     readonly DECIMAL_BASE: 10;
     readonly weekDays: {
@@ -14,30 +14,30 @@ export declare class StoreDataService {
      * Returns store latitude
      * @param location store location
      */
-    getStoreLatitude(location: Location): number;
+    getStoreLatitude(location: PointOfService): number;
     /**
      * Returns store longitude
      * @param location store location
      */
-    getStoreLongitude(location: Location): number;
+    getStoreLongitude(location: PointOfService): number;
     /**
      * Returns store closing time
      * @param location store location
      * @param date date to compare
      */
-    getStoreClosingTime(location: Location, date: Date): Date;
+    getStoreClosingTime(location: PointOfService, date: Date): Date;
     /**
      * Returns store opening time
      * @param location store location
      * @param date date to compare
      */
-    getStoreOpeningTime(location: Location, date: Date): Date;
+    getStoreOpeningTime(location: PointOfService, date: Date): Date;
     /**
      * Returns information about store open status
      * @param location store location
      * @param date date to compare
      */
-    isStoreOpen(location: Location, date: Date): boolean;
+    isStoreOpen(location: PointOfService, date: Date): boolean;
     /**
      * Extracts schedule from the given location for the given date
      * @param location location

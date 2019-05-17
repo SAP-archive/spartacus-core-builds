@@ -1,5 +1,5 @@
 import { PaginationModel, SortModel } from './misc.model';
-import { PointOfService } from './order.model';
+import { PointOfService } from './point-of-service.model';
 export interface StoreFinderSearchPage {
     boundEastLongitude?: number;
     boundNorthLatitude?: number;
@@ -11,4 +11,10 @@ export interface StoreFinderSearchPage {
     sourceLatitude?: number;
     sourceLongitude?: number;
     stores?: PointOfService[];
+}
+export interface StoreCount {
+    count?: number;
+    isoCode?: string;
+    name?: string;
+    type?: string;
 }

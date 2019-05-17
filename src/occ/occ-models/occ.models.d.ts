@@ -744,13 +744,13 @@ export declare namespace Occ {
          */
         formattedHour?: string;
         /**
-         * @member {Uint8Array} [hour]
+         * @member {number} [hour]
          */
-        hour?: Uint8Array;
+        hour?: number;
         /**
-         * @member {Uint8Array} [minute]
+         * @member {number} [minute]
          */
-        minute?: Uint8Array;
+        minute?: number;
     }
     /**
      *
@@ -2741,6 +2741,15 @@ export declare namespace Occ {
          * @member {string} [uid]
          */
         uid?: string;
+    }
+    interface StoreCount {
+        count?: number;
+        isoCode?: string;
+        name?: string;
+        type?: string;
+    }
+    interface StoreCountList {
+        countriesAndRegionsStoreCount?: StoreCount[];
     }
     /**
      *
