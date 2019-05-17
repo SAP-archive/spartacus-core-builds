@@ -1,12 +1,13 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { Address, Country, Region } from '../../model/address.model';
+import { PaymentDetails } from '../../model/cart.model';
+import { Title, User } from '../../model/misc.model';
+import { Order, OrderHistoryList } from '../../model/order.model';
+import { ConsentTemplateList } from '../../occ/occ-models/additional-occ.models';
 import * as fromProcessStore from '../../process/store/process-state';
 import { UserRegisterFormData } from '../model/user.model';
 import * as fromStore from '../store/index';
-import { Title, User } from '../../model/misc.model';
-import { Order, OrderHistoryList } from '../../model/order.model';
-import { PaymentDetails } from '../../model/cart.model';
-import { Address, Country, Region } from '../../model/address.model';
 export declare class UserService {
     private store;
     constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
@@ -245,7 +246,7 @@ export declare class UserService {
      */
     updatePassword(userId: string, oldPassword: string, newPassword: string): void;
     /**
-     * Returns the update passwrod loading flag
+     * Returns the update password loading flag
      */
     getUpdatePasswordResultLoading(): Observable<boolean>;
     /**
@@ -261,4 +262,74 @@ export declare class UserService {
      * concludes, regardless if it's a success or an error
      */
     resetUpdatePasswordProcessState(): void;
+    /**
+     * Retrieves all consents
+     * @param userId user ID for which to retrieve consents
+     */
+    loadConsents(userId: string): void;
+    /**
+     * Returns all consents
+     */
+    getConsents(): Observable<ConsentTemplateList>;
+    /**
+     * Returns the consents loading flag
+     */
+    getConsentsResultLoading(): Observable<boolean>;
+    /**
+     * Returns the consents success flag
+     */
+    getConsentsResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the consents error flag
+     */
+    getConsentsResultError(): Observable<boolean>;
+    /**
+     * Resets the processing state for consent retrieval
+     */
+    resetConsentsProcessState(): void;
+    /**
+     * Give consent for specified consent template ID and version.
+     * @param userId and ID of a user giving the consent
+     * @param consentTemplateId a template ID for which to give a consent
+     * @param consentTemplateVersion a template version for which to give a consent
+     */
+    giveConsent(userId: string, consentTemplateId: string, consentTemplateVersion: number): void;
+    /**
+     * Returns the give consent process loading flag
+     */
+    getGiveConsentResultLoading(): Observable<boolean>;
+    /**
+     * Returns the give consent process success flag
+     */
+    getGiveConsentResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the give consent process error flag
+     */
+    getGiveConsentResultError(): Observable<boolean>;
+    /**
+     * Resents the give consent process flags
+     */
+    resetGiveConsentProcessState(): void;
+    /**
+     * Withdraw consent for the given `consentCode`
+     * @param userId a user ID for which to withdraw the consent
+     * @param consentCode for which to withdraw the consent
+     */
+    withdrawConsent(userId: string, consentCode: string): void;
+    /**
+     * Returns the withdraw consent process loading flag
+     */
+    getWithdrawConsentResultLoading(): Observable<boolean>;
+    /**
+     * Returns the withdraw consent process success flag
+     */
+    getWithdrawConsentResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the withdraw consent process error flag
+     */
+    getWithdrawConsentResultError(): Observable<boolean>;
+    /**
+     * Resets the process flags for withdraw consent
+     */
+    resetWithdrawConsentProcessState(): void;
 }

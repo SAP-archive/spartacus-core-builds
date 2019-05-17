@@ -7,6 +7,7 @@ export * from './regions.effect';
 export * from './reset-password.effect';
 export * from './titles.effect';
 export * from './user-addresses.effect';
+export * from './user-consents.effect';
 export * from './user-details.effect';
 export * from './user-orders.effect';
 export * from './user-register.effect';

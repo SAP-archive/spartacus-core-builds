@@ -9583,6 +9583,12 @@
     /** @type {?} */
     var REMOVE_USER_PROCESS_ID = 'removeUser';
     /** @type {?} */
+    var GIVE_CONSENT_PROCESS_ID = 'giveConsent';
+    /** @type {?} */
+    var WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
+    /** @type {?} */
+    var USER_CONSENTS = '[User] User Consents';
+    /** @type {?} */
     var USER_PAYMENT_METHODS = '[User] User Payment Methods';
     /** @type {?} */
     var USER_ORDERS = '[User] User Orders';
@@ -10063,6 +10069,149 @@
         }
         return DeleteUserAddressSuccess;
     }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_USER_CONSENTS = '[User] Load User Consents';
+    /** @type {?} */
+    var LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
+    /** @type {?} */
+    var LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
+    /** @type {?} */
+    var RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
+    /** @type {?} */
+    var GIVE_USER_CONSENT = '[User] Give User Consent';
+    /** @type {?} */
+    var GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
+    /** @type {?} */
+    var GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
+    /** @type {?} */
+    var RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
+    /** @type {?} */
+    var WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
+    /** @type {?} */
+    var WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
+    /** @type {?} */
+    var WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
+    /** @type {?} */
+    var RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
+    var LoadUserConsents = /** @class */ (function (_super) {
+        __extends(LoadUserConsents, _super);
+        function LoadUserConsents(payload) {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS;
+            return _this;
+        }
+        return LoadUserConsents;
+    }(LoaderLoadAction));
+    var LoadUserConsentsFail = /** @class */ (function (_super) {
+        __extends(LoadUserConsentsFail, _super);
+        function LoadUserConsentsFail(payload) {
+            var _this = _super.call(this, USER_CONSENTS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS_FAIL;
+            return _this;
+        }
+        return LoadUserConsentsFail;
+    }(LoaderFailAction));
+    var LoadUserConsentsSuccess = /** @class */ (function (_super) {
+        __extends(LoadUserConsentsSuccess, _super);
+        function LoadUserConsentsSuccess(payload) {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_USER_CONSENTS_SUCCESS;
+            return _this;
+        }
+        return LoadUserConsentsSuccess;
+    }(LoaderSuccessAction));
+    var ResetLoadUserConsents = /** @class */ (function (_super) {
+        __extends(ResetLoadUserConsents, _super);
+        function ResetLoadUserConsents() {
+            var _this = _super.call(this, USER_CONSENTS) || this;
+            _this.type = RESET_LOAD_USER_CONSENTS;
+            return _this;
+        }
+        return ResetLoadUserConsents;
+    }(LoaderResetAction));
+    var GiveUserConsent = /** @class */ (function (_super) {
+        __extends(GiveUserConsent, _super);
+        function GiveUserConsent(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = GIVE_USER_CONSENT;
+            return _this;
+        }
+        return GiveUserConsent;
+    }(EntityLoadAction));
+    var GiveUserConsentFail = /** @class */ (function (_super) {
+        __extends(GiveUserConsentFail, _super);
+        function GiveUserConsentFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload) || this;
+            _this.type = GIVE_USER_CONSENT_FAIL;
+            return _this;
+        }
+        return GiveUserConsentFail;
+    }(EntityFailAction));
+    var GiveUserConsentSuccess = /** @class */ (function (_super) {
+        __extends(GiveUserConsentSuccess, _super);
+        function GiveUserConsentSuccess(consentTemplate) {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.consentTemplate = consentTemplate;
+            _this.type = GIVE_USER_CONSENT_SUCCESS;
+            return _this;
+        }
+        return GiveUserConsentSuccess;
+    }(EntitySuccessAction));
+    var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
+        __extends(ResetGiveUserConsentProcess, _super);
+        function ResetGiveUserConsentProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+            _this.type = RESET_GIVE_USER_CONSENT_PROCESS;
+            return _this;
+        }
+        return ResetGiveUserConsentProcess;
+    }(EntityResetAction));
+    var WithdrawUserConsent = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsent, _super);
+        function WithdrawUserConsent(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = WITHDRAW_USER_CONSENT;
+            return _this;
+        }
+        return WithdrawUserConsent;
+    }(EntityLoadAction));
+    var WithdrawUserConsentFail = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsentFail, _super);
+        function WithdrawUserConsentFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload) || this;
+            _this.type = WITHDRAW_USER_CONSENT_FAIL;
+            return _this;
+        }
+        return WithdrawUserConsentFail;
+    }(EntityFailAction));
+    var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
+        __extends(WithdrawUserConsentSuccess, _super);
+        function WithdrawUserConsentSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.type = WITHDRAW_USER_CONSENT_SUCCESS;
+            return _this;
+        }
+        return WithdrawUserConsentSuccess;
+    }(EntitySuccessAction));
+    var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
+        __extends(ResetWithdrawUserConsentProcess, _super);
+        function ResetWithdrawUserConsentProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+            _this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
+            return _this;
+        }
+        return ResetWithdrawUserConsentProcess;
+    }(EntityResetAction));
 
     /**
      * @fileoverview added by tsickle
@@ -16940,16 +17089,16 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
-    /** @type {?} */
-    var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
+    var USER_REGISTER_FORM_SERIALIZER = new i0.InjectionToken('UserRegisterFormSerializer');
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_REGISTER_FORM_SERIALIZER = new i0.InjectionToken('UserRegisterFormSerializer');
+    var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
+    /** @type {?} */
+    var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
 
     /**
      * @fileoverview added by tsickle
@@ -16965,6 +17114,10 @@
     var UPDATE_EMAIL_ENDPOINT = '/login';
     /** @type {?} */
     var UPDATE_PASSWORD_ENDPOINT = '/password';
+    /** @type {?} */
+    var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
+    /** @type {?} */
+    var CONSENTS_ENDPOINT = '/consents';
     var OccUserAccountAdapter = /** @class */ (function () {
         function OccUserAccountAdapter(http, occEndpoints, converter) {
             this.http = http;
@@ -17117,6 +17270,70 @@
                 return this.http
                     .delete(url)
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserAccountAdapter.prototype.loadConsents = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + CONSENTS_TEMPLATES_ENDPOINT;
+                /** @type {?} */
+                var headers = new i1$2.HttpHeaders({ 'Cache-Control': 'no-cache' });
+                return this.http
+                    .get(url, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+        OccUserAccountAdapter.prototype.giveConsent = /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+            function (userId, consentTemplateId, consentTemplateVersion) {
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
+                /** @type {?} */
+                var httpParams = new i1$2.HttpParams()
+                    .set('consentTemplateId', consentTemplateId)
+                    .set('consentTemplateVersion', consentTemplateVersion.toString());
+                /** @type {?} */
+                var headers = new i1$2.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Cache-Control': 'no-cache',
+                });
+                return this.http
+                    .post(url, httpParams, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+        OccUserAccountAdapter.prototype.withdrawConsent = /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+            function (userId, consentCode) {
+                /** @type {?} */
+                var headers = new i1$2.HttpHeaders({
+                    'Cache-Control': 'no-cache',
+                });
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT + '/' + consentCode;
+                return this.http.delete(url, { headers: headers });
             };
         OccUserAccountAdapter.decorators = [
             { type: i0.Injectable }
@@ -17832,7 +18049,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$o = ( /** @type {?} */({}));
+    var initialState$o = {
+        consentTemplates: [],
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -17841,6 +18060,44 @@
     function reducer$o(state, action) {
         if (state === void 0) {
             state = initialState$o;
+        }
+        switch (action.type) {
+            case LOAD_USER_CONSENTS_SUCCESS: {
+                /** @type {?} */
+                var consents = action.payload;
+                return consents ? consents : initialState$o;
+            }
+            case GIVE_USER_CONSENT_SUCCESS: {
+                /** @type {?} */
+                var updatedConsentTemplate_1 = action.consentTemplate;
+                /** @type {?} */
+                var updatedTemplates = state.consentTemplates.map(function (consentTemplate) {
+                    return consentTemplate.id === updatedConsentTemplate_1.id
+                        ? updatedConsentTemplate_1
+                        : consentTemplate;
+                });
+                return {
+                    consentTemplates: updatedTemplates,
+                };
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$p = ( /** @type {?} */({}));
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$p(state, action) {
+        if (state === void 0) {
+            state = initialState$p;
         }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
@@ -17860,7 +18117,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$p = {
+    var initialState$q = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -17870,16 +18127,16 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$p(state, action) {
+    function reducer$q(state, action) {
         if (state === void 0) {
-            state = initialState$p;
+            state = initialState$q;
         }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$p;
+                return action.payload ? action.payload : initialState$q;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$p;
+                return initialState$q;
             }
         }
         return state;
@@ -17895,12 +18152,13 @@
     function getReducers$8() {
         return {
             account: i1$1.combineReducers({
-                details: reducer$o,
+                details: reducer$p,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$n),
             billingCountries: reducer$g,
+            consents: loaderReducer(USER_CONSENTS, reducer$o),
             payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
-            orders: loaderReducer(USER_ORDERS, reducer$p),
+            orders: loaderReducer(USER_ORDERS, reducer$q),
             order: reducer$i,
             countries: reducer$h,
             titles: reducer$m,
@@ -17942,57 +18200,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
+    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
     /** @type {?} */
-    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
+    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
-    /** @type {?} */
-    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
-    /** @type {?} */
-    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
-    /** @type {?} */
-    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
-    /** @type {?} */
-    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
-    /** @type {?} */
-    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
-    /** @type {?} */
-    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
-    /** @type {?} */
-    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
-    /** @type {?} */
-    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
-    /** @type {?} */
-    var titleSelectorFactory = function (code) {
-        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
-    };
+    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
     /**
      * @fileoverview added by tsickle
@@ -18014,15 +18226,6 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
-    /** @type {?} */
-    var getAllRegions = i1$1.createSelector(getRegionsState, function (state) { return state.entities; });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var getOrderState = i1$1.createSelector(getUserState, function (state) { return state.order; });
     /** @type {?} */
     var getOrderDetails = i1$1.createSelector(getOrderState, function (state) { return state.order; });
@@ -18032,11 +18235,20 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
+    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
     /** @type {?} */
-    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
+    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getRegionsState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
+    /** @type {?} */
+    var getAllRegions = i1$1.createSelector(getRegionsState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
@@ -18044,6 +18256,67 @@
      */
     /** @type {?} */
     var getResetPassword = i1$1.createSelector(getUserState, function (state) { return state.resetPassword; });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
+    /** @type {?} */
+    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
+    /** @type {?} */
+    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+    /** @type {?} */
+    var titleSelectorFactory = function (code) {
+        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
+    /** @type {?} */
+    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+    /** @type {?} */
+    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getConsentsState = i1$1.createSelector(getUserState, function (state) { return state.consents; });
+    /** @type {?} */
+    var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
+    /** @type {?} */
+    var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
+    /** @type {?} */
+    var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
+    /** @type {?} */
+    var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
+    /** @type {?} */
+    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
+    /** @type {?} */
+    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+    /** @type {?} */
+    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -18979,14 +19252,14 @@
                 this.store.dispatch(new UpdatePassword({ userId: userId, oldPassword: oldPassword, newPassword: newPassword }));
             };
         /**
-         * Returns the update passwrod loading flag
+         * Returns the update password loading flag
          */
         /**
-         * Returns the update passwrod loading flag
+         * Returns the update password loading flag
          * @return {?}
          */
         UserService.prototype.getUpdatePasswordResultLoading = /**
-         * Returns the update passwrod loading flag
+         * Returns the update password loading flag
          * @return {?}
          */
             function () {
@@ -19036,6 +19309,252 @@
          */
             function () {
                 this.store.dispatch(new UpdatePasswordReset());
+            };
+        /**
+         * Retrieves all consents
+         * @param userId user ID for which to retrieve consents
+         */
+        /**
+         * Retrieves all consents
+         * @param {?} userId user ID for which to retrieve consents
+         * @return {?}
+         */
+        UserService.prototype.loadConsents = /**
+         * Retrieves all consents
+         * @param {?} userId user ID for which to retrieve consents
+         * @return {?}
+         */
+            function (userId) {
+                this.store.dispatch(new LoadUserConsents(userId));
+            };
+        /**
+         * Returns all consents
+         */
+        /**
+         * Returns all consents
+         * @return {?}
+         */
+        UserService.prototype.getConsents = /**
+         * Returns all consents
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getConsentsValue));
+            };
+        /**
+         * Returns the consents loading flag
+         */
+        /**
+         * Returns the consents loading flag
+         * @return {?}
+         */
+        UserService.prototype.getConsentsResultLoading = /**
+         * Returns the consents loading flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getConsentsLoading));
+            };
+        /**
+         * Returns the consents success flag
+         */
+        /**
+         * Returns the consents success flag
+         * @return {?}
+         */
+        UserService.prototype.getConsentsResultSuccess = /**
+         * Returns the consents success flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getConsentsSuccess));
+            };
+        /**
+         * Returns the consents error flag
+         */
+        /**
+         * Returns the consents error flag
+         * @return {?}
+         */
+        UserService.prototype.getConsentsResultError = /**
+         * Returns the consents error flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getConsentsError));
+            };
+        /**
+         * Resets the processing state for consent retrieval
+         */
+        /**
+         * Resets the processing state for consent retrieval
+         * @return {?}
+         */
+        UserService.prototype.resetConsentsProcessState = /**
+         * Resets the processing state for consent retrieval
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new ResetLoadUserConsents());
+            };
+        /**
+         * Give consent for specified consent template ID and version.
+         * @param userId and ID of a user giving the consent
+         * @param consentTemplateId a template ID for which to give a consent
+         * @param consentTemplateVersion a template version for which to give a consent
+         */
+        /**
+         * Give consent for specified consent template ID and version.
+         * @param {?} userId and ID of a user giving the consent
+         * @param {?} consentTemplateId a template ID for which to give a consent
+         * @param {?} consentTemplateVersion a template version for which to give a consent
+         * @return {?}
+         */
+        UserService.prototype.giveConsent = /**
+         * Give consent for specified consent template ID and version.
+         * @param {?} userId and ID of a user giving the consent
+         * @param {?} consentTemplateId a template ID for which to give a consent
+         * @param {?} consentTemplateVersion a template version for which to give a consent
+         * @return {?}
+         */
+            function (userId, consentTemplateId, consentTemplateVersion) {
+                this.store.dispatch(new GiveUserConsent({
+                    userId: userId,
+                    consentTemplateId: consentTemplateId,
+                    consentTemplateVersion: consentTemplateVersion,
+                }));
+            };
+        /**
+         * Returns the give consent process loading flag
+         */
+        /**
+         * Returns the give consent process loading flag
+         * @return {?}
+         */
+        UserService.prototype.getGiveConsentResultLoading = /**
+         * Returns the give consent process loading flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Returns the give consent process success flag
+         */
+        /**
+         * Returns the give consent process success flag
+         * @return {?}
+         */
+        UserService.prototype.getGiveConsentResultSuccess = /**
+         * Returns the give consent process success flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Returns the give consent process error flag
+         */
+        /**
+         * Returns the give consent process error flag
+         * @return {?}
+         */
+        UserService.prototype.getGiveConsentResultError = /**
+         * Returns the give consent process error flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Resents the give consent process flags
+         */
+        /**
+         * Resents the give consent process flags
+         * @return {?}
+         */
+        UserService.prototype.resetGiveConsentProcessState = /**
+         * Resents the give consent process flags
+         * @return {?}
+         */
+            function () {
+                return this.store.dispatch(new ResetGiveUserConsentProcess());
+            };
+        /**
+         * Withdraw consent for the given `consentCode`
+         * @param userId a user ID for which to withdraw the consent
+         * @param consentCode for which to withdraw the consent
+         */
+        /**
+         * Withdraw consent for the given `consentCode`
+         * @param {?} userId a user ID for which to withdraw the consent
+         * @param {?} consentCode for which to withdraw the consent
+         * @return {?}
+         */
+        UserService.prototype.withdrawConsent = /**
+         * Withdraw consent for the given `consentCode`
+         * @param {?} userId a user ID for which to withdraw the consent
+         * @param {?} consentCode for which to withdraw the consent
+         * @return {?}
+         */
+            function (userId, consentCode) {
+                this.store.dispatch(new WithdrawUserConsent({ userId: userId, consentCode: consentCode }));
+            };
+        /**
+         * Returns the withdraw consent process loading flag
+         */
+        /**
+         * Returns the withdraw consent process loading flag
+         * @return {?}
+         */
+        UserService.prototype.getWithdrawConsentResultLoading = /**
+         * Returns the withdraw consent process loading flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Returns the withdraw consent process success flag
+         */
+        /**
+         * Returns the withdraw consent process success flag
+         * @return {?}
+         */
+        UserService.prototype.getWithdrawConsentResultSuccess = /**
+         * Returns the withdraw consent process success flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Returns the withdraw consent process error flag
+         */
+        /**
+         * Returns the withdraw consent process error flag
+         * @return {?}
+         */
+        UserService.prototype.getWithdrawConsentResultError = /**
+         * Returns the withdraw consent process error flag
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+            };
+        /**
+         * Resets the process flags for withdraw consent
+         */
+        /**
+         * Resets the process flags for withdraw consent
+         * @return {?}
+         */
+        UserService.prototype.resetWithdrawConsentProcessState = /**
+         * Resets the process flags for withdraw consent
+         * @return {?}
+         */
+            function () {
+                return this.store.dispatch(new ResetWithdrawUserConsentProcess());
             };
         UserService.decorators = [
             { type: i0.Injectable }
@@ -19247,6 +19766,45 @@
          */
             function (userId) {
                 return this.adapter.remove(userId);
+            };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserAccountConnector.prototype.loadConsents = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                return this.adapter.loadConsents(userId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+        UserAccountConnector.prototype.giveConsent = /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+            function (userId, consentTemplateId, consentTemplateVersion) {
+                return this.adapter.giveConsent(userId, consentTemplateId, consentTemplateVersion);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+        UserAccountConnector.prototype.withdrawConsent = /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+            function (userId, consentCode) {
+                return this.adapter.withdrawConsent(userId, consentCode);
             };
         UserAccountConnector.decorators = [
             { type: i0.Injectable, args: [{
@@ -19824,6 +20382,54 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var UserConsentsEffect = /** @class */ (function () {
+        function UserConsentsEffect(actions$, userAccountConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userAccountConnector = userAccountConnector;
+            this.getConsents$ = this.actions$.pipe(effects.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (userId) {
+                return _this.userAccountConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(error)); }));
+            }));
+            this.giveConsent$ = this.actions$.pipe(effects.ofType(GIVE_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
+                var userId = _a.userId, consentTemplateId = _a.consentTemplateId, consentTemplateVersion = _a.consentTemplateVersion;
+                return _this.userAccountConnector
+                    .giveConsent(userId, consentTemplateId, consentTemplateVersion)
+                    .pipe(operators.map(function (consent) { return new GiveUserConsentSuccess(consent); }), operators.catchError(function (error) { return rxjs.of(new GiveUserConsentFail(error)); }));
+            }));
+            this.withdrawConsent$ = this.actions$.pipe(effects.ofType(WITHDRAW_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
+                var userId = _a.userId, consentCode = _a.consentCode;
+                return _this.userAccountConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function (_) { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(error)); }));
+            }));
+        }
+        UserConsentsEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        UserConsentsEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: UserAccountConnector }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserConsentsEffect.prototype, "getConsents$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserConsentsEffect.prototype, "giveConsent$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
+        return UserConsentsEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserDetailsConnector = /** @class */ (function () {
         function UserDetailsConnector(adapter) {
             this.adapter = adapter;
@@ -20027,6 +20633,7 @@
         ForgotPasswordEffects,
         UpdateEmailEffects,
         UpdatePasswordEffects,
+        UserConsentsEffect,
     ];
 
     /**
@@ -20556,6 +21163,7 @@
                     'updateEmailForm',
                     'updatePasswordForm',
                     'updateProfileForm',
+                    'consentManagementForm',
                 ],
             },
         },
@@ -22840,11 +23448,6 @@
             Type["Order"] = "order";
         })(Type = Occ.Type || (Occ.Type = {}));
     })(exports.Occ || (exports.Occ = {}));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -25410,6 +26013,30 @@
     exports.DeleteUserAddress = DeleteUserAddress;
     exports.DeleteUserAddressFail = DeleteUserAddressFail;
     exports.DeleteUserAddressSuccess = DeleteUserAddressSuccess;
+    exports.LOAD_USER_CONSENTS = LOAD_USER_CONSENTS;
+    exports.LOAD_USER_CONSENTS_SUCCESS = LOAD_USER_CONSENTS_SUCCESS;
+    exports.LOAD_USER_CONSENTS_FAIL = LOAD_USER_CONSENTS_FAIL;
+    exports.RESET_LOAD_USER_CONSENTS = RESET_LOAD_USER_CONSENTS;
+    exports.GIVE_USER_CONSENT = GIVE_USER_CONSENT;
+    exports.GIVE_USER_CONSENT_FAIL = GIVE_USER_CONSENT_FAIL;
+    exports.GIVE_USER_CONSENT_SUCCESS = GIVE_USER_CONSENT_SUCCESS;
+    exports.RESET_GIVE_USER_CONSENT_PROCESS = RESET_GIVE_USER_CONSENT_PROCESS;
+    exports.WITHDRAW_USER_CONSENT = WITHDRAW_USER_CONSENT;
+    exports.WITHDRAW_USER_CONSENT_FAIL = WITHDRAW_USER_CONSENT_FAIL;
+    exports.WITHDRAW_USER_CONSENT_SUCCESS = WITHDRAW_USER_CONSENT_SUCCESS;
+    exports.RESET_WITHDRAW_USER_CONSENT_PROCESS = RESET_WITHDRAW_USER_CONSENT_PROCESS;
+    exports.LoadUserConsents = LoadUserConsents;
+    exports.LoadUserConsentsFail = LoadUserConsentsFail;
+    exports.LoadUserConsentsSuccess = LoadUserConsentsSuccess;
+    exports.ResetLoadUserConsents = ResetLoadUserConsents;
+    exports.GiveUserConsent = GiveUserConsent;
+    exports.GiveUserConsentFail = GiveUserConsentFail;
+    exports.GiveUserConsentSuccess = GiveUserConsentSuccess;
+    exports.ResetGiveUserConsentProcess = ResetGiveUserConsentProcess;
+    exports.WithdrawUserConsent = WithdrawUserConsent;
+    exports.WithdrawUserConsentFail = WithdrawUserConsentFail;
+    exports.WithdrawUserConsentSuccess = WithdrawUserConsentSuccess;
+    exports.ResetWithdrawUserConsentProcess = ResetWithdrawUserConsentProcess;
     exports.LOAD_USER_DETAILS = LOAD_USER_DETAILS;
     exports.LOAD_USER_DETAILS_FAIL = LOAD_USER_DETAILS_FAIL;
     exports.LOAD_USER_DETAILS_SUCCESS = LOAD_USER_DETAILS_SUCCESS;
@@ -25451,39 +26078,47 @@
     exports.reducerToken = reducerToken$8;
     exports.reducerProvider = reducerProvider$8;
     exports.metaReducers = metaReducers$5;
-    exports.getDetailsState = getDetailsState;
-    exports.getDetails = getDetails;
-    exports.getAddressesLoaderState = getAddressesLoaderState;
-    exports.getAddresses = getAddresses;
-    exports.getAddressesLoading = getAddressesLoading;
-    exports.getPaymentMethodsState = getPaymentMethodsState;
-    exports.getPaymentMethods = getPaymentMethods;
-    exports.getPaymentMethodsLoading = getPaymentMethodsLoading;
-    exports.getOrdersState = getOrdersState;
-    exports.getOrdersLoaded = getOrdersLoaded;
-    exports.getOrders = getOrders;
-    exports.getTitlesState = getTitlesState;
-    exports.getTitlesEntites = getTitlesEntites;
-    exports.getAllTitles = getAllTitles;
-    exports.titleSelectorFactory = titleSelectorFactory;
+    exports.getBillingCountriesState = getBillingCountriesState;
+    exports.getBillingCountriesEntites = getBillingCountriesEntites;
+    exports.getAllBillingCountries = getAllBillingCountries;
     exports.getDeliveryCountriesState = getDeliveryCountriesState;
     exports.getDeliveryCountriesEntites = getDeliveryCountriesEntites;
     exports.getAllDeliveryCountries = getAllDeliveryCountries;
     exports.countrySelectorFactory = countrySelectorFactory;
-    exports.getRegionsState = getRegionsState;
-    exports.getAllRegions = getAllRegions;
+    exports.getUserState = getUserState;
     exports.getOrderState = getOrderState;
     exports.getOrderDetails = getOrderDetails;
-    exports.getUserState = getUserState;
-    exports.getBillingCountriesState = getBillingCountriesState;
-    exports.getBillingCountriesEntites = getBillingCountriesEntites;
-    exports.getAllBillingCountries = getAllBillingCountries;
+    exports.getPaymentMethodsState = getPaymentMethodsState;
+    exports.getPaymentMethods = getPaymentMethods;
+    exports.getPaymentMethodsLoading = getPaymentMethodsLoading;
+    exports.getRegionsState = getRegionsState;
+    exports.getAllRegions = getAllRegions;
     exports.getResetPassword = getResetPassword;
+    exports.getTitlesState = getTitlesState;
+    exports.getTitlesEntites = getTitlesEntites;
+    exports.getAllTitles = getAllTitles;
+    exports.titleSelectorFactory = titleSelectorFactory;
+    exports.getAddressesLoaderState = getAddressesLoaderState;
+    exports.getAddresses = getAddresses;
+    exports.getAddressesLoading = getAddressesLoading;
+    exports.getConsentsState = getConsentsState;
+    exports.getConsentsValue = getConsentsValue;
+    exports.getConsentsLoading = getConsentsLoading;
+    exports.getConsentsSuccess = getConsentsSuccess;
+    exports.getConsentsError = getConsentsError;
+    exports.getDetailsState = getDetailsState;
+    exports.getDetails = getDetails;
+    exports.getOrdersState = getOrdersState;
+    exports.getOrdersLoaded = getOrdersLoaded;
+    exports.getOrders = getOrders;
     exports.USER_FEATURE = USER_FEATURE;
     exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
     exports.UPDATE_USER_DETAILS_PROCESS_ID = UPDATE_USER_DETAILS_PROCESS_ID;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
+    exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
+    exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
+    exports.USER_CONSENTS = USER_CONSENTS;
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
     exports.USER_ORDERS = USER_ORDERS;
     exports.USER_ADDRESSES = USER_ADDRESSES;
@@ -25589,16 +26224,16 @@
     exports.ɵec = i18nextProviders;
     exports.ɵee = MockDatePipe;
     exports.ɵef = MockTranslationService;
-    exports.ɵgt = defaultPersonalizationConfig;
-    exports.ɵgu = interceptors$3;
-    exports.ɵgv = OccPersonalizationIdInterceptor;
-    exports.ɵgw = OccPersonalizationTimeInterceptor;
-    exports.ɵgm = ProcessModule;
-    exports.ɵgo = PROCESS_FEATURE;
-    exports.ɵgn = ProcessStoreModule;
-    exports.ɵgp = getReducers$9;
-    exports.ɵgr = reducerProvider$9;
-    exports.ɵgq = reducerToken$9;
+    exports.ɵgv = defaultPersonalizationConfig;
+    exports.ɵgw = interceptors$3;
+    exports.ɵgx = OccPersonalizationIdInterceptor;
+    exports.ɵgy = OccPersonalizationTimeInterceptor;
+    exports.ɵgo = ProcessModule;
+    exports.ɵgq = PROCESS_FEATURE;
+    exports.ɵgp = ProcessStoreModule;
+    exports.ɵgr = getReducers$9;
+    exports.ɵgt = reducerProvider$9;
+    exports.ɵgs = reducerToken$9;
     exports.ɵeg = defaultOccProductConfig;
     exports.ɵeh = OccProductReferencesListNormalizer;
     exports.ɵdl = effects$7;
@@ -25666,33 +26301,35 @@
     exports.ɵfg = reducerToken$a;
     exports.ɵfb = getStoreFinderState;
     exports.ɵfe = StoreFinderStoreModule;
-    exports.ɵfy = BillingCountriesEffect;
-    exports.ɵfz = DeliveryCountriesEffects;
-    exports.ɵgj = ForgotPasswordEffects;
-    exports.ɵfx = effects$8;
-    exports.ɵga = OrderDetailsEffect;
-    exports.ɵgb = UserPaymentMethodsEffects;
-    exports.ɵgc = RegionsEffects;
-    exports.ɵgd = ResetPasswordEffects;
-    exports.ɵge = TitlesEffects;
-    exports.ɵgk = UpdateEmailEffects;
-    exports.ɵgl = UpdatePasswordEffects;
-    exports.ɵgf = UserAddressesEffects;
-    exports.ɵgg = UserDetailsEffects;
-    exports.ɵgh = UserOrdersEffect;
-    exports.ɵgi = UserRegisterEffects;
+    exports.ɵfz = BillingCountriesEffect;
+    exports.ɵga = DeliveryCountriesEffects;
+    exports.ɵgl = ForgotPasswordEffects;
+    exports.ɵfy = effects$8;
+    exports.ɵgb = OrderDetailsEffect;
+    exports.ɵgc = UserPaymentMethodsEffects;
+    exports.ɵgd = RegionsEffects;
+    exports.ɵge = ResetPasswordEffects;
+    exports.ɵgf = TitlesEffects;
+    exports.ɵgm = UpdateEmailEffects;
+    exports.ɵgn = UpdatePasswordEffects;
+    exports.ɵgg = UserAddressesEffects;
+    exports.ɵgh = UserConsentsEffect;
+    exports.ɵgi = UserDetailsEffects;
+    exports.ɵgj = UserOrdersEffect;
+    exports.ɵgk = UserRegisterEffects;
     exports.ɵfo = reducer$g;
-    exports.ɵfs = reducer$h;
-    exports.ɵfr = reducer$i;
-    exports.ɵfp = reducer$j;
-    exports.ɵfu = reducer$k;
-    exports.ɵfv = reducer$l;
-    exports.ɵft = reducer$m;
+    exports.ɵft = reducer$h;
+    exports.ɵfs = reducer$i;
+    exports.ɵfq = reducer$j;
+    exports.ɵfv = reducer$k;
+    exports.ɵfw = reducer$l;
+    exports.ɵfu = reducer$m;
     exports.ɵfn = reducer$n;
-    exports.ɵfm = reducer$o;
-    exports.ɵfq = reducer$p;
-    exports.ɵfw = UserStoreModule;
-    exports.ɵgs = StripHtmlPipe;
+    exports.ɵfp = reducer$o;
+    exports.ɵfm = reducer$p;
+    exports.ɵfr = reducer$q;
+    exports.ɵfx = UserStoreModule;
+    exports.ɵgu = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

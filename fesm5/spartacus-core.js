@@ -9459,6 +9459,12 @@ var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
 /** @type {?} */
 var REMOVE_USER_PROCESS_ID = 'removeUser';
 /** @type {?} */
+var GIVE_CONSENT_PROCESS_ID = 'giveConsent';
+/** @type {?} */
+var WITHDRAW_CONSENT_PROCESS_ID = 'withdrawConsent';
+/** @type {?} */
+var USER_CONSENTS = '[User] User Consents';
+/** @type {?} */
 var USER_PAYMENT_METHODS = '[User] User Payment Methods';
 /** @type {?} */
 var USER_ORDERS = '[User] User Orders';
@@ -9939,6 +9945,149 @@ var DeleteUserAddressSuccess = /** @class */ (function (_super) {
     }
     return DeleteUserAddressSuccess;
 }(LoaderSuccessAction));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var LOAD_USER_CONSENTS = '[User] Load User Consents';
+/** @type {?} */
+var LOAD_USER_CONSENTS_SUCCESS = '[User] Load User Consents Success';
+/** @type {?} */
+var LOAD_USER_CONSENTS_FAIL = '[User] Load User Consents Fail';
+/** @type {?} */
+var RESET_LOAD_USER_CONSENTS = '[User] Reset Load User Consents';
+/** @type {?} */
+var GIVE_USER_CONSENT = '[User] Give User Consent';
+/** @type {?} */
+var GIVE_USER_CONSENT_FAIL = '[User] Give User Consent Fail';
+/** @type {?} */
+var GIVE_USER_CONSENT_SUCCESS = '[User] Give User Consent Success';
+/** @type {?} */
+var RESET_GIVE_USER_CONSENT_PROCESS = '[User] Reset Give User Consent Process';
+/** @type {?} */
+var WITHDRAW_USER_CONSENT = '[User] Withdraw User Consent';
+/** @type {?} */
+var WITHDRAW_USER_CONSENT_FAIL = '[User] Withdraw User Consent Fail';
+/** @type {?} */
+var WITHDRAW_USER_CONSENT_SUCCESS = '[User] Withdraw User Consent Success';
+/** @type {?} */
+var RESET_WITHDRAW_USER_CONSENT_PROCESS = '[User] Reset Withdraw User Consent Process';
+var LoadUserConsents = /** @class */ (function (_super) {
+    __extends(LoadUserConsents, _super);
+    function LoadUserConsents(payload) {
+        var _this = _super.call(this, USER_CONSENTS) || this;
+        _this.payload = payload;
+        _this.type = LOAD_USER_CONSENTS;
+        return _this;
+    }
+    return LoadUserConsents;
+}(LoaderLoadAction));
+var LoadUserConsentsFail = /** @class */ (function (_super) {
+    __extends(LoadUserConsentsFail, _super);
+    function LoadUserConsentsFail(payload) {
+        var _this = _super.call(this, USER_CONSENTS, payload) || this;
+        _this.payload = payload;
+        _this.type = LOAD_USER_CONSENTS_FAIL;
+        return _this;
+    }
+    return LoadUserConsentsFail;
+}(LoaderFailAction));
+var LoadUserConsentsSuccess = /** @class */ (function (_super) {
+    __extends(LoadUserConsentsSuccess, _super);
+    function LoadUserConsentsSuccess(payload) {
+        var _this = _super.call(this, USER_CONSENTS) || this;
+        _this.payload = payload;
+        _this.type = LOAD_USER_CONSENTS_SUCCESS;
+        return _this;
+    }
+    return LoadUserConsentsSuccess;
+}(LoaderSuccessAction));
+var ResetLoadUserConsents = /** @class */ (function (_super) {
+    __extends(ResetLoadUserConsents, _super);
+    function ResetLoadUserConsents() {
+        var _this = _super.call(this, USER_CONSENTS) || this;
+        _this.type = RESET_LOAD_USER_CONSENTS;
+        return _this;
+    }
+    return ResetLoadUserConsents;
+}(LoaderResetAction));
+var GiveUserConsent = /** @class */ (function (_super) {
+    __extends(GiveUserConsent, _super);
+    function GiveUserConsent(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+        _this.payload = payload;
+        _this.type = GIVE_USER_CONSENT;
+        return _this;
+    }
+    return GiveUserConsent;
+}(EntityLoadAction));
+var GiveUserConsentFail = /** @class */ (function (_super) {
+    __extends(GiveUserConsentFail, _super);
+    function GiveUserConsentFail(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload) || this;
+        _this.type = GIVE_USER_CONSENT_FAIL;
+        return _this;
+    }
+    return GiveUserConsentFail;
+}(EntityFailAction));
+var GiveUserConsentSuccess = /** @class */ (function (_super) {
+    __extends(GiveUserConsentSuccess, _super);
+    function GiveUserConsentSuccess(consentTemplate) {
+        var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+        _this.consentTemplate = consentTemplate;
+        _this.type = GIVE_USER_CONSENT_SUCCESS;
+        return _this;
+    }
+    return GiveUserConsentSuccess;
+}(EntitySuccessAction));
+var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
+    __extends(ResetGiveUserConsentProcess, _super);
+    function ResetGiveUserConsentProcess() {
+        var _this = _super.call(this, PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID) || this;
+        _this.type = RESET_GIVE_USER_CONSENT_PROCESS;
+        return _this;
+    }
+    return ResetGiveUserConsentProcess;
+}(EntityResetAction));
+var WithdrawUserConsent = /** @class */ (function (_super) {
+    __extends(WithdrawUserConsent, _super);
+    function WithdrawUserConsent(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+        _this.payload = payload;
+        _this.type = WITHDRAW_USER_CONSENT;
+        return _this;
+    }
+    return WithdrawUserConsent;
+}(EntityLoadAction));
+var WithdrawUserConsentFail = /** @class */ (function (_super) {
+    __extends(WithdrawUserConsentFail, _super);
+    function WithdrawUserConsentFail(payload) {
+        var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID, payload) || this;
+        _this.type = WITHDRAW_USER_CONSENT_FAIL;
+        return _this;
+    }
+    return WithdrawUserConsentFail;
+}(EntityFailAction));
+var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
+    __extends(WithdrawUserConsentSuccess, _super);
+    function WithdrawUserConsentSuccess() {
+        var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+        _this.type = WITHDRAW_USER_CONSENT_SUCCESS;
+        return _this;
+    }
+    return WithdrawUserConsentSuccess;
+}(EntitySuccessAction));
+var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
+    __extends(ResetWithdrawUserConsentProcess, _super);
+    function ResetWithdrawUserConsentProcess() {
+        var _this = _super.call(this, PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID) || this;
+        _this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
+        return _this;
+    }
+    return ResetWithdrawUserConsentProcess;
+}(EntityResetAction));
 
 /**
  * @fileoverview added by tsickle
@@ -16664,16 +16813,16 @@ var OccUserAddressAdapter = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var USER_NORMALIZER = new InjectionToken('UserNormalizer');
-/** @type {?} */
-var USER_SERIALIZER = new InjectionToken('UserSerializer');
+var USER_REGISTER_FORM_SERIALIZER = new InjectionToken('UserRegisterFormSerializer');
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var USER_REGISTER_FORM_SERIALIZER = new InjectionToken('UserRegisterFormSerializer');
+var USER_NORMALIZER = new InjectionToken('UserNormalizer');
+/** @type {?} */
+var USER_SERIALIZER = new InjectionToken('UserSerializer');
 
 /**
  * @fileoverview added by tsickle
@@ -16689,6 +16838,10 @@ var RESET_PASSWORD_ENDPOINT = '/resetpassword';
 var UPDATE_EMAIL_ENDPOINT = '/login';
 /** @type {?} */
 var UPDATE_PASSWORD_ENDPOINT = '/password';
+/** @type {?} */
+var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
+/** @type {?} */
+var CONSENTS_ENDPOINT = '/consents';
 var OccUserAccountAdapter = /** @class */ (function () {
     function OccUserAccountAdapter(http, occEndpoints, converter) {
         this.http = http;
@@ -16841,6 +16994,70 @@ var OccUserAccountAdapter = /** @class */ (function () {
         return this.http
             .delete(url)
             .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.loadConsents = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint() + userId + CONSENTS_TEMPLATES_ENDPOINT;
+        /** @type {?} */
+        var headers = new HttpHeaders({ 'Cache-Control': 'no-cache' });
+        return this.http
+            .get(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.giveConsent = /**
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    function (userId, consentTemplateId, consentTemplateVersion) {
+        /** @type {?} */
+        var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
+        /** @type {?} */
+        var httpParams = new HttpParams()
+            .set('consentTemplateId', consentTemplateId)
+            .set('consentTemplateVersion', consentTemplateVersion.toString());
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Cache-Control': 'no-cache',
+        });
+        return this.http
+            .post(url, httpParams, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.withdrawConsent = /**
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    function (userId, consentCode) {
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Cache-Control': 'no-cache',
+        });
+        /** @type {?} */
+        var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT + '/' + consentCode;
+        return this.http.delete(url, { headers: headers });
     };
     OccUserAccountAdapter.decorators = [
         { type: Injectable }
@@ -17533,7 +17750,9 @@ function reducer$n(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$o = (/** @type {?} */ ({}));
+var initialState$o = {
+    consentTemplates: [],
+};
 /**
  * @param {?=} state
  * @param {?=} action
@@ -17541,6 +17760,42 @@ var initialState$o = (/** @type {?} */ ({}));
  */
 function reducer$o(state, action) {
     if (state === void 0) { state = initialState$o; }
+    switch (action.type) {
+        case LOAD_USER_CONSENTS_SUCCESS: {
+            /** @type {?} */
+            var consents = action.payload;
+            return consents ? consents : initialState$o;
+        }
+        case GIVE_USER_CONSENT_SUCCESS: {
+            /** @type {?} */
+            var updatedConsentTemplate_1 = action.consentTemplate;
+            /** @type {?} */
+            var updatedTemplates = state.consentTemplates.map(function (consentTemplate) {
+                return consentTemplate.id === updatedConsentTemplate_1.id
+                    ? updatedConsentTemplate_1
+                    : consentTemplate;
+            });
+            return {
+                consentTemplates: updatedTemplates,
+            };
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$p = (/** @type {?} */ ({}));
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$p(state, action) {
+    if (state === void 0) { state = initialState$p; }
     switch (action.type) {
         case LOAD_USER_DETAILS_SUCCESS: {
             return action.payload;
@@ -17559,7 +17814,7 @@ function reducer$o(state, action) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$p = {
+var initialState$q = {
     orders: [],
     pagination: {},
     sorts: [],
@@ -17569,14 +17824,14 @@ var initialState$p = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$p(state, action) {
-    if (state === void 0) { state = initialState$p; }
+function reducer$q(state, action) {
+    if (state === void 0) { state = initialState$q; }
     switch (action.type) {
         case LOAD_USER_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$p;
+            return action.payload ? action.payload : initialState$q;
         }
         case LOAD_USER_ORDERS_FAIL: {
-            return initialState$p;
+            return initialState$q;
         }
     }
     return state;
@@ -17592,12 +17847,13 @@ function reducer$p(state, action) {
 function getReducers$8() {
     return {
         account: combineReducers({
-            details: reducer$o,
+            details: reducer$p,
         }),
         addresses: loaderReducer(USER_ADDRESSES, reducer$n),
         billingCountries: reducer$g,
+        consents: loaderReducer(USER_CONSENTS, reducer$o),
         payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
-        orders: loaderReducer(USER_ORDERS, reducer$p),
+        orders: loaderReducer(USER_ORDERS, reducer$q),
         order: reducer$i,
         countries: reducer$h,
         titles: reducer$m,
@@ -17639,57 +17895,11 @@ var getUserState = createFeatureSelector(USER_FEATURE);
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var getDetailsState = createSelector(getUserState, function (state) { return state.account; });
+var getBillingCountriesState = createSelector(getUserState, function (state) { return state.billingCountries; });
 /** @type {?} */
-var getDetails = createSelector(getDetailsState, function (state) { return state.details; });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+var getBillingCountriesEntites = createSelector(getBillingCountriesState, function (state) { return state.entities; });
 /** @type {?} */
-var getAddressesLoaderState = createSelector(getUserState, function (state) { return state.addresses; });
-/** @type {?} */
-var getAddresses = createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
-/** @type {?} */
-var getAddressesLoading = createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getPaymentMethodsState = createSelector(getUserState, function (state) { return state.payments; });
-/** @type {?} */
-var getPaymentMethods = createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
-/** @type {?} */
-var getPaymentMethodsLoading = createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getOrdersState = createSelector(getUserState, function (state) { return state.orders; });
-/** @type {?} */
-var getOrdersLoaded = createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
-/** @type {?} */
-var getOrders = createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var getTitlesState = createSelector(getUserState, function (state) { return state.titles; });
-/** @type {?} */
-var getTitlesEntites = createSelector(getTitlesState, function (state) { return state.entities; });
-/** @type {?} */
-var getAllTitles = createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
-/** @type {?} */
-var titleSelectorFactory = function (code) {
-    return createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
-};
+var getAllBillingCountries = createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
 /**
  * @fileoverview added by tsickle
@@ -17711,15 +17921,6 @@ var countrySelectorFactory = function (isocode) {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var getRegionsState = createSelector(getUserState, function (state) { return state.regions; });
-/** @type {?} */
-var getAllRegions = createSelector(getRegionsState, function (state) { return state.entities; });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 var getOrderState = createSelector(getUserState, function (state) { return state.order; });
 /** @type {?} */
 var getOrderDetails = createSelector(getOrderState, function (state) { return state.order; });
@@ -17729,11 +17930,20 @@ var getOrderDetails = createSelector(getOrderState, function (state) { return st
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var getBillingCountriesState = createSelector(getUserState, function (state) { return state.billingCountries; });
+var getPaymentMethodsState = createSelector(getUserState, function (state) { return state.payments; });
 /** @type {?} */
-var getBillingCountriesEntites = createSelector(getBillingCountriesState, function (state) { return state.entities; });
+var getPaymentMethods = createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
 /** @type {?} */
-var getAllBillingCountries = createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+var getPaymentMethodsLoading = createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getRegionsState = createSelector(getUserState, function (state) { return state.regions; });
+/** @type {?} */
+var getAllRegions = createSelector(getRegionsState, function (state) { return state.entities; });
 
 /**
  * @fileoverview added by tsickle
@@ -17741,6 +17951,67 @@ var getAllBillingCountries = createSelector(getBillingCountriesEntites, function
  */
 /** @type {?} */
 var getResetPassword = createSelector(getUserState, function (state) { return state.resetPassword; });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getTitlesState = createSelector(getUserState, function (state) { return state.titles; });
+/** @type {?} */
+var getTitlesEntites = createSelector(getTitlesState, function (state) { return state.entities; });
+/** @type {?} */
+var getAllTitles = createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+/** @type {?} */
+var titleSelectorFactory = function (code) {
+    return createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getAddressesLoaderState = createSelector(getUserState, function (state) { return state.addresses; });
+/** @type {?} */
+var getAddresses = createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+/** @type {?} */
+var getAddressesLoading = createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getConsentsState = createSelector(getUserState, function (state) { return state.consents; });
+/** @type {?} */
+var getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
+/** @type {?} */
+var getConsentsLoading = createSelector(getConsentsState, loaderLoadingSelector);
+/** @type {?} */
+var getConsentsSuccess = createSelector(getConsentsState, loaderSuccessSelector);
+/** @type {?} */
+var getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getDetailsState = createSelector(getUserState, function (state) { return state.account; });
+/** @type {?} */
+var getDetails = createSelector(getDetailsState, function (state) { return state.details; });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var getOrdersState = createSelector(getUserState, function (state) { return state.orders; });
+/** @type {?} */
+var getOrdersLoaded = createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+/** @type {?} */
+var getOrders = createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
 /**
  * @fileoverview added by tsickle
@@ -18676,14 +18947,14 @@ var UserService = /** @class */ (function () {
         this.store.dispatch(new UpdatePassword({ userId: userId, oldPassword: oldPassword, newPassword: newPassword }));
     };
     /**
-     * Returns the update passwrod loading flag
+     * Returns the update password loading flag
      */
     /**
-     * Returns the update passwrod loading flag
+     * Returns the update password loading flag
      * @return {?}
      */
     UserService.prototype.getUpdatePasswordResultLoading = /**
-     * Returns the update passwrod loading flag
+     * Returns the update password loading flag
      * @return {?}
      */
     function () {
@@ -18733,6 +19004,252 @@ var UserService = /** @class */ (function () {
      */
     function () {
         this.store.dispatch(new UpdatePasswordReset());
+    };
+    /**
+     * Retrieves all consents
+     * @param userId user ID for which to retrieve consents
+     */
+    /**
+     * Retrieves all consents
+     * @param {?} userId user ID for which to retrieve consents
+     * @return {?}
+     */
+    UserService.prototype.loadConsents = /**
+     * Retrieves all consents
+     * @param {?} userId user ID for which to retrieve consents
+     * @return {?}
+     */
+    function (userId) {
+        this.store.dispatch(new LoadUserConsents(userId));
+    };
+    /**
+     * Returns all consents
+     */
+    /**
+     * Returns all consents
+     * @return {?}
+     */
+    UserService.prototype.getConsents = /**
+     * Returns all consents
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getConsentsValue));
+    };
+    /**
+     * Returns the consents loading flag
+     */
+    /**
+     * Returns the consents loading flag
+     * @return {?}
+     */
+    UserService.prototype.getConsentsResultLoading = /**
+     * Returns the consents loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getConsentsLoading));
+    };
+    /**
+     * Returns the consents success flag
+     */
+    /**
+     * Returns the consents success flag
+     * @return {?}
+     */
+    UserService.prototype.getConsentsResultSuccess = /**
+     * Returns the consents success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getConsentsSuccess));
+    };
+    /**
+     * Returns the consents error flag
+     */
+    /**
+     * Returns the consents error flag
+     * @return {?}
+     */
+    UserService.prototype.getConsentsResultError = /**
+     * Returns the consents error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getConsentsError));
+    };
+    /**
+     * Resets the processing state for consent retrieval
+     */
+    /**
+     * Resets the processing state for consent retrieval
+     * @return {?}
+     */
+    UserService.prototype.resetConsentsProcessState = /**
+     * Resets the processing state for consent retrieval
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new ResetLoadUserConsents());
+    };
+    /**
+     * Give consent for specified consent template ID and version.
+     * @param userId and ID of a user giving the consent
+     * @param consentTemplateId a template ID for which to give a consent
+     * @param consentTemplateVersion a template version for which to give a consent
+     */
+    /**
+     * Give consent for specified consent template ID and version.
+     * @param {?} userId and ID of a user giving the consent
+     * @param {?} consentTemplateId a template ID for which to give a consent
+     * @param {?} consentTemplateVersion a template version for which to give a consent
+     * @return {?}
+     */
+    UserService.prototype.giveConsent = /**
+     * Give consent for specified consent template ID and version.
+     * @param {?} userId and ID of a user giving the consent
+     * @param {?} consentTemplateId a template ID for which to give a consent
+     * @param {?} consentTemplateVersion a template version for which to give a consent
+     * @return {?}
+     */
+    function (userId, consentTemplateId, consentTemplateVersion) {
+        this.store.dispatch(new GiveUserConsent({
+            userId: userId,
+            consentTemplateId: consentTemplateId,
+            consentTemplateVersion: consentTemplateVersion,
+        }));
+    };
+    /**
+     * Returns the give consent process loading flag
+     */
+    /**
+     * Returns the give consent process loading flag
+     * @return {?}
+     */
+    UserService.prototype.getGiveConsentResultLoading = /**
+     * Returns the give consent process loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Returns the give consent process success flag
+     */
+    /**
+     * Returns the give consent process success flag
+     * @return {?}
+     */
+    UserService.prototype.getGiveConsentResultSuccess = /**
+     * Returns the give consent process success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Returns the give consent process error flag
+     */
+    /**
+     * Returns the give consent process error flag
+     * @return {?}
+     */
+    UserService.prototype.getGiveConsentResultError = /**
+     * Returns the give consent process error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Resents the give consent process flags
+     */
+    /**
+     * Resents the give consent process flags
+     * @return {?}
+     */
+    UserService.prototype.resetGiveConsentProcessState = /**
+     * Resents the give consent process flags
+     * @return {?}
+     */
+    function () {
+        return this.store.dispatch(new ResetGiveUserConsentProcess());
+    };
+    /**
+     * Withdraw consent for the given `consentCode`
+     * @param userId a user ID for which to withdraw the consent
+     * @param consentCode for which to withdraw the consent
+     */
+    /**
+     * Withdraw consent for the given `consentCode`
+     * @param {?} userId a user ID for which to withdraw the consent
+     * @param {?} consentCode for which to withdraw the consent
+     * @return {?}
+     */
+    UserService.prototype.withdrawConsent = /**
+     * Withdraw consent for the given `consentCode`
+     * @param {?} userId a user ID for which to withdraw the consent
+     * @param {?} consentCode for which to withdraw the consent
+     * @return {?}
+     */
+    function (userId, consentCode) {
+        this.store.dispatch(new WithdrawUserConsent({ userId: userId, consentCode: consentCode }));
+    };
+    /**
+     * Returns the withdraw consent process loading flag
+     */
+    /**
+     * Returns the withdraw consent process loading flag
+     * @return {?}
+     */
+    UserService.prototype.getWithdrawConsentResultLoading = /**
+     * Returns the withdraw consent process loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Returns the withdraw consent process success flag
+     */
+    /**
+     * Returns the withdraw consent process success flag
+     * @return {?}
+     */
+    UserService.prototype.getWithdrawConsentResultSuccess = /**
+     * Returns the withdraw consent process success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Returns the withdraw consent process error flag
+     */
+    /**
+     * Returns the withdraw consent process error flag
+     * @return {?}
+     */
+    UserService.prototype.getWithdrawConsentResultError = /**
+     * Returns the withdraw consent process error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+    };
+    /**
+     * Resets the process flags for withdraw consent
+     */
+    /**
+     * Resets the process flags for withdraw consent
+     * @return {?}
+     */
+    UserService.prototype.resetWithdrawConsentProcessState = /**
+     * Resets the process flags for withdraw consent
+     * @return {?}
+     */
+    function () {
+        return this.store.dispatch(new ResetWithdrawUserConsentProcess());
     };
     UserService.decorators = [
         { type: Injectable }
@@ -18938,6 +19455,45 @@ var UserAccountConnector = /** @class */ (function () {
      */
     function (userId) {
         return this.adapter.remove(userId);
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAccountConnector.prototype.loadConsents = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return this.adapter.loadConsents(userId);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    UserAccountConnector.prototype.giveConsent = /**
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    function (userId, consentTemplateId, consentTemplateVersion) {
+        return this.adapter.giveConsent(userId, consentTemplateId, consentTemplateVersion);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    UserAccountConnector.prototype.withdrawConsent = /**
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    function (userId, consentCode) {
+        return this.adapter.withdrawConsent(userId, consentCode);
     };
     UserAccountConnector.decorators = [
         { type: Injectable, args: [{
@@ -19489,6 +20045,52 @@ var UserAddressesEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var UserConsentsEffect = /** @class */ (function () {
+    function UserConsentsEffect(actions$, userAccountConnector) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.userAccountConnector = userAccountConnector;
+        this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map(function (action) { return action.payload; }), switchMap(function (userId) {
+            return _this.userAccountConnector.loadConsents(userId).pipe(map(function (consents) { return new LoadUserConsentsSuccess(consents); }), catchError(function (error) { return of(new LoadUserConsentsFail(error)); }));
+        }));
+        this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT), map(function (action) { return action.payload; }), switchMap(function (_a) {
+            var userId = _a.userId, consentTemplateId = _a.consentTemplateId, consentTemplateVersion = _a.consentTemplateVersion;
+            return _this.userAccountConnector
+                .giveConsent(userId, consentTemplateId, consentTemplateVersion)
+                .pipe(map(function (consent) { return new GiveUserConsentSuccess(consent); }), catchError(function (error) { return of(new GiveUserConsentFail(error)); }));
+        }));
+        this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map(function (action) { return action.payload; }), switchMap(function (_a) {
+            var userId = _a.userId, consentCode = _a.consentCode;
+            return _this.userAccountConnector.withdrawConsent(userId, consentCode).pipe(map(function (_) { return new WithdrawUserConsentSuccess(); }), catchError(function (error) { return of(new WithdrawUserConsentFail(error)); }));
+        }));
+    }
+    UserConsentsEffect.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    UserConsentsEffect.ctorParameters = function () { return [
+        { type: Actions },
+        { type: UserAccountConnector }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserConsentsEffect.prototype, "getConsents$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserConsentsEffect.prototype, "giveConsent$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
+    return UserConsentsEffect;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UserDetailsConnector = /** @class */ (function () {
     function UserDetailsConnector(adapter) {
         this.adapter = adapter;
@@ -19680,6 +20282,7 @@ var effects$7 = [
     ForgotPasswordEffects,
     UpdateEmailEffects,
     UpdatePasswordEffects,
+    UserConsentsEffect,
 ];
 
 /**
@@ -20216,6 +20819,7 @@ var defaultI18nConfig = {
                 'updateEmailForm',
                 'updatePasswordForm',
                 'updateProfileForm',
+                'consentManagementForm',
             ],
         },
     },
@@ -20643,6 +21247,16 @@ function getMetaTagContent(name, meta) {
     var metaTag = meta.getTag("name=\"" + name + "\"");
     return metaTag && metaTag.content;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -22490,11 +23104,6 @@ var Occ;
         Type["Order"] = "order";
     })(Type = Occ.Type || (Occ.Type = {}));
 })(Occ || (Occ = {}));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -24371,6 +24980,6 @@ var PersonalizationModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, CxDatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, OccProductReferencesAdapter, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductAdapter, ProductOccModule, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, getProductsState, getProductReferencesState, getSelectedProductReferencesFactory, getProductReviewsState, getSelectedProductReviewsFactory, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, SmartEditService, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, StoreFinderOccModule, OccStoreFinderAdapter, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, StoreFinderConnector, StoreFinderAdapter, POINT_OF_SERVICE_NORMALIZER, STORE_FINDER_SEARCH_PAGE_NORMALIZER, STORE_COUNT_NORMALIZER, OccUserAddressAdapter, OccUserAccountAdapter, OccUserDetailsAdapter, OccUserPaymentAdapter, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, UserAccountConnector, UserAccountAdapter, USER_REGISTER_FORM_SERIALIZER, UserAddressConnector, UserAddressAdapter, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, UserDetailsConnector, UserDetailsAdapter, USER_NORMALIZER, USER_SERIALIZER, UserPaymentConnector, UserPaymentAdapter, USER_PAYMENT_NORMALIZER, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfc, ServerConfig as ɵea, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdz, reducer$8 as ɵdy, getReducers$4 as ɵdv, reducerProvider$4 as ɵdx, reducerToken$4 as ɵdw, defaultI18nConfig as ɵeb, i18nextInit as ɵed, i18nextProviders as ɵec, MockDatePipe as ɵee, MockTranslationService as ɵef, defaultPersonalizationConfig as ɵgt, interceptors$3 as ɵgu, OccPersonalizationIdInterceptor as ɵgv, OccPersonalizationTimeInterceptor as ɵgw, ProcessModule as ɵgm, PROCESS_FEATURE as ɵgo, ProcessStoreModule as ɵgn, getReducers$9 as ɵgp, reducerProvider$9 as ɵgr, reducerToken$9 as ɵgq, defaultOccProductConfig as ɵeg, OccProductReferencesListNormalizer as ɵeh, effects$6 as ɵdl, ProductReferencesEffects as ɵdm, ProductReviewsEffects as ɵdn, ProductsSearchEffects as ɵdo, ProductEffects as ɵdp, ProductStoreModule as ɵej, productStoreConfigFactory as ɵei, clearProductsState as ɵdt, getReducers$7 as ɵdq, metaReducers$4 as ɵdu, reducerProvider$7 as ɵds, reducerToken$7 as ɵdr, reducer$d as ɵep, reducer$e as ɵeo, getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer$f as ɵek, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵeq, BaseSiteService as ɵbk, SiteContextParamsService as ɵew, SiteContextRoutesHandler as ɵey, SiteContextUrlSerializer as ɵex, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵev, reducer$4 as ɵeu, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵet, SiteContextStoreModule as ɵes, siteContextStoreConfigFactory as ɵer, CmsTicketInterceptor as ɵfa, interceptors$2 as ɵez, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfl, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfd, FindStoresEffect as ɵfj, effects$8 as ɵfi, ViewAllStoresEffect as ɵfk, getReducers$a as ɵff, reducerProvider$a as ɵfh, reducerToken$a as ɵfg, getStoreFinderState as ɵfb, StoreFinderStoreModule as ɵfe, BillingCountriesEffect as ɵfy, DeliveryCountriesEffects as ɵfz, ForgotPasswordEffects as ɵgj, effects$7 as ɵfx, OrderDetailsEffect as ɵga, UserPaymentMethodsEffects as ɵgb, RegionsEffects as ɵgc, ResetPasswordEffects as ɵgd, TitlesEffects as ɵge, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, UserAddressesEffects as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, reducer$g as ɵfo, reducer$h as ɵfs, reducer$i as ɵfr, reducer$j as ɵfp, reducer$k as ɵfu, reducer$l as ɵfv, reducer$m as ɵft, reducer$n as ɵfn, reducer$o as ɵfm, reducer$p as ɵfq, UserStoreModule as ɵfw, StripHtmlPipe as ɵgs };
+export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, CxDatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, OccProductReferencesAdapter, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductAdapter, ProductOccModule, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, getProductsState, getProductReferencesState, getSelectedProductReferencesFactory, getProductReviewsState, getSelectedProductReviewsFactory, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, SmartEditService, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, StoreFinderOccModule, OccStoreFinderAdapter, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, StoreFinderConnector, StoreFinderAdapter, POINT_OF_SERVICE_NORMALIZER, STORE_FINDER_SEARCH_PAGE_NORMALIZER, STORE_COUNT_NORMALIZER, OccUserAddressAdapter, OccUserAccountAdapter, OccUserDetailsAdapter, OccUserPaymentAdapter, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_CONSENTS_FAIL, RESET_LOAD_USER_CONSENTS, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, RESET_GIVE_USER_CONSENT_PROCESS, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, RESET_WITHDRAW_USER_CONSENT_PROCESS, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, ResetLoadUserConsents, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, ResetGiveUserConsentProcess, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, ResetWithdrawUserConsentProcess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getUserState, getOrderState, getOrderDetails, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getRegionsState, getAllRegions, getResetPassword, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getAddressesLoaderState, getAddresses, getAddressesLoading, getConsentsState, getConsentsValue, getConsentsLoading, getConsentsSuccess, getConsentsError, getDetailsState, getDetails, getOrdersState, getOrdersLoaded, getOrders, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, GIVE_CONSENT_PROCESS_ID, WITHDRAW_CONSENT_PROCESS_ID, USER_CONSENTS, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, UserAccountConnector, UserAccountAdapter, USER_REGISTER_FORM_SERIALIZER, UserAddressConnector, UserAddressAdapter, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, UserDetailsConnector, UserDetailsAdapter, USER_NORMALIZER, USER_SERIALIZER, UserPaymentConnector, UserPaymentAdapter, USER_PAYMENT_NORMALIZER, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfc, ServerConfig as ɵea, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdz, reducer$8 as ɵdy, getReducers$4 as ɵdv, reducerProvider$4 as ɵdx, reducerToken$4 as ɵdw, defaultI18nConfig as ɵeb, i18nextInit as ɵed, i18nextProviders as ɵec, MockDatePipe as ɵee, MockTranslationService as ɵef, defaultPersonalizationConfig as ɵgv, interceptors$3 as ɵgw, OccPersonalizationIdInterceptor as ɵgx, OccPersonalizationTimeInterceptor as ɵgy, ProcessModule as ɵgo, PROCESS_FEATURE as ɵgq, ProcessStoreModule as ɵgp, getReducers$9 as ɵgr, reducerProvider$9 as ɵgt, reducerToken$9 as ɵgs, defaultOccProductConfig as ɵeg, OccProductReferencesListNormalizer as ɵeh, effects$6 as ɵdl, ProductReferencesEffects as ɵdm, ProductReviewsEffects as ɵdn, ProductsSearchEffects as ɵdo, ProductEffects as ɵdp, ProductStoreModule as ɵej, productStoreConfigFactory as ɵei, clearProductsState as ɵdt, getReducers$7 as ɵdq, metaReducers$4 as ɵdu, reducerProvider$7 as ɵds, reducerToken$7 as ɵdr, reducer$d as ɵep, reducer$e as ɵeo, getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer$f as ɵek, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵeq, BaseSiteService as ɵbk, SiteContextParamsService as ɵew, SiteContextRoutesHandler as ɵey, SiteContextUrlSerializer as ɵex, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵev, reducer$4 as ɵeu, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵet, SiteContextStoreModule as ɵes, siteContextStoreConfigFactory as ɵer, CmsTicketInterceptor as ɵfa, interceptors$2 as ɵez, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfl, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfd, FindStoresEffect as ɵfj, effects$8 as ɵfi, ViewAllStoresEffect as ɵfk, getReducers$a as ɵff, reducerProvider$a as ɵfh, reducerToken$a as ɵfg, getStoreFinderState as ɵfb, StoreFinderStoreModule as ɵfe, BillingCountriesEffect as ɵfz, DeliveryCountriesEffects as ɵga, ForgotPasswordEffects as ɵgl, effects$7 as ɵfy, OrderDetailsEffect as ɵgb, UserPaymentMethodsEffects as ɵgc, RegionsEffects as ɵgd, ResetPasswordEffects as ɵge, TitlesEffects as ɵgf, UpdateEmailEffects as ɵgm, UpdatePasswordEffects as ɵgn, UserAddressesEffects as ɵgg, UserConsentsEffect as ɵgh, UserDetailsEffects as ɵgi, UserOrdersEffect as ɵgj, UserRegisterEffects as ɵgk, reducer$g as ɵfo, reducer$h as ɵft, reducer$i as ɵfs, reducer$j as ɵfq, reducer$k as ɵfv, reducer$l as ɵfw, reducer$m as ɵfu, reducer$n as ɵfn, reducer$o as ɵfp, reducer$p as ɵfm, reducer$q as ɵfr, UserStoreModule as ɵfx, StripHtmlPipe as ɵgu };
 
 //# sourceMappingURL=spartacus-core.js.map
