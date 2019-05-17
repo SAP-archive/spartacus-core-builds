@@ -11349,11 +11349,11 @@ var CheckoutService = /** @class */ (function () {
         return this.checkoutStore.pipe(select(getCheckoutDetailsLoaded));
     };
     /**
-     * @private
+     * @protected
      * @return {?}
      */
     CheckoutService.prototype.actionAllowed = /**
-     * @private
+     * @protected
      * @return {?}
      */
     function () {

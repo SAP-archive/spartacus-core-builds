@@ -11489,11 +11489,11 @@
                 return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
             };
         /**
-         * @private
+         * @protected
          * @return {?}
          */
         CheckoutService.prototype.actionAllowed = /**
-         * @private
+         * @protected
          * @return {?}
          */
             function () {

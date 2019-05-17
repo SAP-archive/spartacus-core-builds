@@ -6,8 +6,8 @@ import { DeliveryMode, Order } from '../../model/order.model';
 import { CardType, PaymentDetails } from '../../model/cart.model';
 import { Address, AddressValidation } from '../../model/address.model';
 export declare class CheckoutService {
-    private checkoutStore;
-    private cartData;
+    protected checkoutStore: Store<fromCheckoutStore.StateWithCheckout>;
+    protected cartData: CartDataService;
     constructor(checkoutStore: Store<fromCheckoutStore.StateWithCheckout>, cartData: CartDataService);
     /**
      * Get supported delivery modes
@@ -98,5 +98,5 @@ export declare class CheckoutService {
     clearCheckoutStep(stepNumber: number): void;
     loadCheckoutDetails(userId: string, cartId: string): void;
     getCheckoutDetailsLoaded(): Observable<boolean>;
-    private actionAllowed;
+    protected actionAllowed(): boolean;
 }
