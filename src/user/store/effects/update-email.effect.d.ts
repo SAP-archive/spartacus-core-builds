@@ -1,10 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { OccUserService } from '../../occ/index';
 import * as fromUpdateEmailAction from '../actions/update-email.action';
+import { UserAccountConnector } from '../../connectors/account/user-account.connector';
 export declare class UpdateEmailEffects {
     private actions$;
-    private occUserService;
-    constructor(actions$: Actions, occUserService: OccUserService);
+    private userAccountConnector;
+    constructor(actions$: Actions, userAccountConnector: UserAccountConnector);
     updateEmail$: Observable<fromUpdateEmailAction.UpdateEmailSuccessAction | fromUpdateEmailAction.UpdateEmailErrorAction>;
 }

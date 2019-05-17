@@ -4945,9 +4945,9 @@ var CartPaymentConnector = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var CART_PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
+var PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
 /** @type {?} */
-var CART_PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
+var PAYMENT_DETAILS_SERIALIZER = new InjectionToken('PaymentDetailsSerializer');
 
 /**
  * @fileoverview added by tsickle
@@ -5655,7 +5655,7 @@ var OccCartPaymentAdapter = /** @class */ (function () {
      */
     function (userId, cartId, paymentDetails) {
         var _this = this;
-        paymentDetails = this.converter.convert(paymentDetails, CART_PAYMENT_DETAILS_SERIALIZER);
+        paymentDetails = this.converter.convert(paymentDetails, PAYMENT_DETAILS_SERIALIZER);
         return this.getProviderSubInfo(userId, cartId).pipe(map(function (data) {
             /** @type {?} */
             var labelsMap = _this.convertToMap(data.mappingLabels.entry);
@@ -5667,7 +5667,7 @@ var OccCartPaymentAdapter = /** @class */ (function () {
         }), mergeMap(function (sub) {
             // create a subscription directly with payment provider
             return _this.createSubWithProvider(sub.url, sub.parameters).pipe(map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), mergeMap(function (fromPaymentProvider) {
-                return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(CART_PAYMENT_DETAILS_NORMALIZER));
+                return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
             }));
         }));
     };
@@ -10532,120 +10532,49 @@ var CardTypesEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-var USER_ENDPOINT = 'users/';
-/** @type {?} */
-var ADDRESSES_VERIFICATION_ENDPOINT = '/addresses/verification';
-/** @type {?} */
-var ADDRESSES_ENDPOINT = '/addresses';
-/** @type {?} */
-var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
-/** @type {?} */
-var FORGOT_PASSWORD_ENDPOINT = '/forgottenpasswordtokens';
-/** @type {?} */
-var RESET_PASSWORD_ENDPOINT = '/resetpassword';
-/** @type {?} */
-var UPDATE_EMAIL_ENDPOINT = '/login';
-/** @type {?} */
-var UPDATE_PASSWORD_ENDPOINT = '/password';
-var OccUserService = /** @class */ (function () {
-    // some extending from baseservice is not working here...
-    function OccUserService(http, occEndpoints) {
-        this.http = http;
-        this.occEndpoints = occEndpoints;
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+UserAddressAdapter = /** @class */ (function () {
+    function UserAddressAdapter() {
+    }
+    return UserAddressAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var UserAddressConnector = /** @class */ (function () {
+    function UserAddressConnector(adapter) {
+        this.adapter = adapter;
     }
     /**
      * @param {?} userId
      * @return {?}
      */
-    OccUserService.prototype.loadUser = /**
+    UserAddressConnector.prototype.getAll = /**
      * @param {?} userId
      * @return {?}
      */
     function (userId) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId;
-        return this.http
-            .get(url)
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} username
-     * @param {?} user
-     * @return {?}
-     */
-    OccUserService.prototype.updateUserDetails = /**
-     * @param {?} username
-     * @param {?} user
-     * @return {?}
-     */
-    function (username, user) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + username;
-        return this.http
-            .patch(url, user)
-            .pipe(catchError(function (error) { return throwError(error); }));
+        return this.adapter.loadAll(userId);
     };
     /**
      * @param {?} userId
      * @param {?} address
      * @return {?}
      */
-    OccUserService.prototype.verifyAddress = /**
+    UserAddressConnector.prototype.add = /**
      * @param {?} userId
      * @param {?} address
      * @return {?}
      */
     function (userId, address) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + ADDRESSES_VERIFICATION_ENDPOINT;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .post(url, address, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @return {?}
-     */
-    OccUserService.prototype.loadUserAddresses = /**
-     * @param {?} userId
-     * @return {?}
-     */
-    function (userId) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .get(url, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @param {?} address
-     * @return {?}
-     */
-    OccUserService.prototype.addUserAddress = /**
-     * @param {?} userId
-     * @param {?} address
-     * @return {?}
-     */
-    function (userId, address) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .post(url, address, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
+        return this.adapter.add(userId, address);
     };
     /**
      * @param {?} userId
@@ -10653,260 +10582,52 @@ var OccUserService = /** @class */ (function () {
      * @param {?} address
      * @return {?}
      */
-    OccUserService.prototype.updateUserAddress = /**
+    UserAddressConnector.prototype.update = /**
      * @param {?} userId
      * @param {?} addressId
      * @param {?} address
      * @return {?}
      */
     function (userId, addressId, address) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .patch(url, address, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
+        return this.adapter.update(userId, addressId, address);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressConnector.prototype.verify = /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    function (userId, address) {
+        return this.adapter.verify(userId, address);
     };
     /**
      * @param {?} userId
      * @param {?} addressId
      * @return {?}
      */
-    OccUserService.prototype.deleteUserAddress = /**
+    UserAddressConnector.prototype.delete = /**
      * @param {?} userId
      * @param {?} addressId
      * @return {?}
      */
     function (userId, addressId) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + ADDRESSES_ENDPOINT + '/' + addressId;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .delete(url, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
+        return this.adapter.delete(userId, addressId);
     };
-    /**
-     * @param {?} userId
-     * @return {?}
-     */
-    OccUserService.prototype.loadUserPaymentMethods = /**
-     * @param {?} userId
-     * @return {?}
-     */
-    function (userId) {
-        /** @type {?} */
-        var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "?saved=true";
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .get(url, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    OccUserService.prototype.deleteUserPaymentMethod = /**
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    function (userId, paymentMethodID) {
-        /** @type {?} */
-        var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .delete(url, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    OccUserService.prototype.setDefaultUserPaymentMethod = /**
-     * @param {?} userId
-     * @param {?} paymentMethodID
-     * @return {?}
-     */
-    function (userId, paymentMethodID) {
-        /** @type {?} */
-        var url = "" + this.getUserEndpoint() + userId + PAYMENT_DETAILS_ENDPOINT + "/" + paymentMethodID;
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        return this.http
-            .patch(url, 
-        // TODO: Remove billingAddress property
-        { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} user
-     * @return {?}
-     */
-    OccUserService.prototype.registerUser = /**
-     * @param {?} user
-     * @return {?}
-     */
-    function (user) {
-        /** @type {?} */
-        var url = this.getUserEndpoint();
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, user, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userEmailAddress
-     * @return {?}
-     */
-    OccUserService.prototype.requestForgotPasswordEmail = /**
-     * @param {?} userEmailAddress
-     * @return {?}
-     */
-    function (userEmailAddress) {
-        /** @type {?} */
-        var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
-        /** @type {?} */
-        var httpParams = new HttpParams().set('userId', userEmailAddress);
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, httpParams, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} token
-     * @param {?} newPassword
-     * @return {?}
-     */
-    OccUserService.prototype.resetPassword = /**
-     * @param {?} token
-     * @param {?} newPassword
-     * @return {?}
-     */
-    function (token, newPassword) {
-        /** @type {?} */
-        var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-        });
-        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, { token: token, newPassword: newPassword }, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @return {?}
-     */
-    OccUserService.prototype.removeUser = /**
-     * @param {?} userId
-     * @return {?}
-     */
-    function (userId) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId;
-        return this.http
-            .delete(url)
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @param {?} userId
-     * @param {?} currentPassword
-     * @param {?} newUserId
-     * @return {?}
-     */
-    OccUserService.prototype.updateEmail = /**
-     * @param {?} userId
-     * @param {?} currentPassword
-     * @param {?} newUserId
-     * @return {?}
-     */
-    function (userId, currentPassword, newUserId) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + UPDATE_EMAIL_ENDPOINT;
-        /** @type {?} */
-        var httpParams = new HttpParams()
-            .set('password', currentPassword)
-            .set('newLogin', newUserId);
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .put(url, httpParams, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    /**
-     * @protected
-     * @return {?}
-     */
-    OccUserService.prototype.getUserEndpoint = /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return this.occEndpoints.getEndpoint(USER_ENDPOINT);
-    };
-    /**
-     * @param {?} userId
-     * @param {?} oldPassword
-     * @param {?} newPassword
-     * @return {?}
-     */
-    OccUserService.prototype.updatePassword = /**
-     * @param {?} userId
-     * @param {?} oldPassword
-     * @param {?} newPassword
-     * @return {?}
-     */
-    function (userId, oldPassword, newPassword) {
-        /** @type {?} */
-        var url = this.getUserEndpoint() + userId + UPDATE_PASSWORD_ENDPOINT;
-        /** @type {?} */
-        var httpParams = new HttpParams()
-            .set('old', oldPassword)
-            .set('new', newPassword);
-        /** @type {?} */
-        var headers = new HttpHeaders({
-            'Content-Type': 'application/x-www-form-urlencoded',
-        });
-        return this.http
-            .put(url, httpParams, { headers: headers })
-            .pipe(catchError(function (error) { return throwError(error); }));
-    };
-    OccUserService.decorators = [
-        { type: Injectable }
+    UserAddressConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
     ];
     /** @nocollapse */
-    OccUserService.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: OccEndpointsService }
+    UserAddressConnector.ctorParameters = function () { return [
+        { type: UserAddressAdapter }
     ]; };
-    return OccUserService;
+    /** @nocollapse */ UserAddressConnector.ngInjectableDef = defineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(inject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+    return UserAddressConnector;
 }());
 
 /**
@@ -10914,12 +10635,12 @@ var OccUserService = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AddressVerificationEffect = /** @class */ (function () {
-    function AddressVerificationEffect(actions$, occUserService) {
+    function AddressVerificationEffect(actions$, userAddressConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAddressConnector = userAddressConnector;
         this.verifyAddress$ = this.actions$.pipe(ofType(VERIFY_ADDRESS), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occUserService.verifyAddress(payload.userId, payload.address).pipe(map(function (data) {
+            return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(map(function (data) {
                 return new VerifyAddressSuccess(data);
             }), catchError(function (error) { return of(new VerifyAddressFail(error)); }));
         }));
@@ -10930,7 +10651,7 @@ var AddressVerificationEffect = /** @class */ (function () {
     /** @nocollapse */
     AddressVerificationEffect.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAddressConnector }
     ]; };
     __decorate([
         Effect(),
@@ -16780,6 +16501,531 @@ var ProductModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+var ADDRESS_NORMALIZER = new InjectionToken('AddressNormalizer');
+/** @type {?} */
+var ADDRESS_SERIALIZER = new InjectionToken('AddressSerializer');
+/** @type {?} */
+var ADDRESS_VALIDATION_NORMALIZER = new InjectionToken('AddressValidationNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_ENDPOINT = 'users/';
+/** @type {?} */
+var ADDRESSES_ENDPOINT = '/addresses';
+/** @type {?} */
+var ADDRESSES_VERIFICATION_ENDPOINT = '/addresses/verification';
+var OccUserAddressAdapter = /** @class */ (function () {
+    function OccUserAddressAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.getUserEndpoint = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var endpoint = "" + USER_ENDPOINT + userId;
+        return this.occEndpoints.getEndpoint(endpoint);
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.loadAll = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http.get(url, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), map(function (addressList) { return addressList.addresses; }), this.converter.pipeableMany(ADDRESS_NORMALIZER));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.add = /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    function (userId, address) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        address = this.converter.convert(address, ADDRESS_SERIALIZER);
+        return this.http
+            .post(url, address, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} addressId
+     * @param {?} address
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.update = /**
+     * @param {?} userId
+     * @param {?} addressId
+     * @param {?} address
+     * @return {?}
+     */
+    function (userId, addressId, address) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        address = this.converter.convert(address, ADDRESS_SERIALIZER);
+        return this.http
+            .patch(url, address, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.verify = /**
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    function (userId, address) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + ADDRESSES_VERIFICATION_ENDPOINT;
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        address = this.converter.convert(address, ADDRESS_SERIALIZER);
+        return this.http.post(url, address, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(ADDRESS_VALIDATION_NORMALIZER));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} addressId
+     * @return {?}
+     */
+    OccUserAddressAdapter.prototype.delete = /**
+     * @param {?} userId
+     * @param {?} addressId
+     * @return {?}
+     */
+    function (userId, addressId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http
+            .delete(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserAddressAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccUserAddressAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccUserAddressAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_NORMALIZER = new InjectionToken('UserNormalizer');
+/** @type {?} */
+var USER_SERIALIZER = new InjectionToken('UserSerializer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_REGISTER_FORM_SERIALIZER = new InjectionToken('UserRegisterFormSerializer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_ENDPOINT$1 = 'users/';
+/** @type {?} */
+var FORGOT_PASSWORD_ENDPOINT = '/forgottenpasswordtokens';
+/** @type {?} */
+var RESET_PASSWORD_ENDPOINT = '/resetpassword';
+/** @type {?} */
+var UPDATE_EMAIL_ENDPOINT = '/login';
+/** @type {?} */
+var UPDATE_PASSWORD_ENDPOINT = '/password';
+var OccUserAccountAdapter = /** @class */ (function () {
+    function OccUserAccountAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @private
+     * @param {?=} userId
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.getUserEndpoint = /**
+     * @private
+     * @param {?=} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var endpoint = userId ? "" + USER_ENDPOINT$1 + userId : USER_ENDPOINT$1;
+        return this.occEndpoints.getEndpoint(endpoint);
+    };
+    /**
+     * @param {?} user
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.register = /**
+     * @param {?} user
+     * @return {?}
+     */
+    function (user) {
+        /** @type {?} */
+        var url = this.getUserEndpoint();
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        user = this.converter.convert(user, USER_REGISTER_FORM_SERIALIZER);
+        return this.http.post(url, user, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(USER_NORMALIZER));
+    };
+    /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.requestForgotPasswordEmail = /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    function (userEmailAddress) {
+        /** @type {?} */
+        var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
+        /** @type {?} */
+        var httpParams = new HttpParams().set('userId', userEmailAddress);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        return this.http
+            .post(url, httpParams, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.resetPassword = /**
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    function (token, newPassword) {
+        /** @type {?} */
+        var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        return this.http
+            .post(url, { token: token, newPassword: newPassword }, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.updateEmail = /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    function (userId, currentPassword, newUserId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + UPDATE_EMAIL_ENDPOINT;
+        /** @type {?} */
+        var httpParams = new HttpParams()
+            .set('password', currentPassword)
+            .set('newLogin', newUserId);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http
+            .put(url, httpParams, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.updatePassword = /**
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    function (userId, oldPassword, newPassword) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId) + UPDATE_PASSWORD_ENDPOINT;
+        /** @type {?} */
+        var httpParams = new HttpParams()
+            .set('old', oldPassword)
+            .set('new', newPassword);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        return this.http
+            .put(url, httpParams, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserAccountAdapter.prototype.remove = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId);
+        return this.http
+            .delete(url)
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserAccountAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccUserAccountAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccUserAccountAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_ENDPOINT$2 = 'users/';
+var OccUserDetailsAdapter = /** @class */ (function () {
+    function OccUserDetailsAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserDetailsAdapter.prototype.getUserEndpoint = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var endpoint = "" + USER_ENDPOINT$2 + userId;
+        return this.occEndpoints.getEndpoint(endpoint);
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserDetailsAdapter.prototype.load = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId);
+        return this.http.get(url).pipe(catchError(function (error) { return throwError(error); }), this.converter.pipeable(USER_NORMALIZER));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} user
+     * @return {?}
+     */
+    OccUserDetailsAdapter.prototype.update = /**
+     * @param {?} userId
+     * @param {?} user
+     * @return {?}
+     */
+    function (userId, user) {
+        /** @type {?} */
+        var url = this.getUserEndpoint(userId);
+        user = this.converter.convert(user, USER_SERIALIZER);
+        return this.http
+            .patch(url, user)
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserDetailsAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccUserDetailsAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccUserDetailsAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_ENDPOINT$3 = 'users/';
+/** @type {?} */
+var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
+var OccUserPaymentAdapter = /** @class */ (function () {
+    function OccUserPaymentAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserPaymentAdapter.prototype.getPaymentDetailsEndpoint = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var endpoint = "" + USER_ENDPOINT$3 + userId + PAYMENT_DETAILS_ENDPOINT;
+        return this.occEndpoints.getEndpoint(endpoint);
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    OccUserPaymentAdapter.prototype.loadAll = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        /** @type {?} */
+        var url = this.getPaymentDetailsEndpoint(userId) + '?saved=true';
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http.get(url, { headers: headers }).pipe(catchError(function (error) { return throwError(error); }), map(function (methodList) { return methodList.payments; }), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    OccUserPaymentAdapter.prototype.delete = /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    function (userId, paymentMethodID) {
+        /** @type {?} */
+        var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http
+            .delete(url, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    OccUserPaymentAdapter.prototype.setDefault = /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    function (userId, paymentMethodID) {
+        /** @type {?} */
+        var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        return this.http
+            .patch(url, 
+        // TODO: Remove billingAddress property
+        { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
+            .pipe(catchError(function (error) { return throwError(error); }));
+    };
+    OccUserPaymentAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccUserPaymentAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccUserPaymentAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 var ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 /** @type {?} */
 var ORDER_HISTORY_NORMALIZER = new InjectionToken('OrderHistoryNormalizer');
@@ -16977,6 +17223,54 @@ var OccOrderNormalizer = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+UserDetailsAdapter = /** @class */ (function () {
+    function UserDetailsAdapter() {
+    }
+    return UserDetailsAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+UserAccountAdapter = /** @class */ (function () {
+    function UserAccountAdapter() {
+    }
+    return UserAccountAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+UserPaymentAdapter = /** @class */ (function () {
+    function UserPaymentAdapter() {
+    }
+    return UserPaymentAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UserOccModule = /** @class */ (function () {
     function UserOccModule() {
     }
@@ -16984,7 +17278,13 @@ var UserOccModule = /** @class */ (function () {
         { type: NgModule, args: [{
                     imports: [CommonModule, HttpClientModule, OccModule],
                     providers: [
-                        OccUserService,
+                        { provide: UserDetailsAdapter, useClass: OccUserDetailsAdapter },
+                        { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
+                        { provide: UserAccountAdapter, useClass: OccUserAccountAdapter },
+                        {
+                            provide: UserPaymentAdapter,
+                            useClass: OccUserPaymentAdapter,
+                        },
                         { provide: OrderAdapter, useClass: OccOrderAdapter },
                         { provide: ORDER_NORMALIZER, useClass: OccOrderNormalizer, multi: true },
                     ],
@@ -18554,15 +18854,112 @@ var DeliveryCountriesEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var UserAccountConnector = /** @class */ (function () {
+    function UserAccountConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} user
+     * @return {?}
+     */
+    UserAccountConnector.prototype.register = /**
+     * @param {?} user
+     * @return {?}
+     */
+    function (user) {
+        return this.adapter.register(user);
+    };
+    /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    UserAccountConnector.prototype.requestForgotPasswordEmail = /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    function (userEmailAddress) {
+        return this.adapter.requestForgotPasswordEmail(userEmailAddress);
+    };
+    /**
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAccountConnector.prototype.resetPassword = /**
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    function (token, newPassword) {
+        return this.adapter.resetPassword(token, newPassword);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    UserAccountConnector.prototype.updateEmail = /**
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    function (userId, currentPassword, newUserId) {
+        return this.adapter.updateEmail(userId, currentPassword, newUserId);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAccountConnector.prototype.updatePassword = /**
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    function (userId, oldPassword, newPassword) {
+        return this.adapter.updatePassword(userId, oldPassword, newPassword);
+    };
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAccountConnector.prototype.remove = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return this.adapter.remove(userId);
+    };
+    UserAccountConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    UserAccountConnector.ctorParameters = function () { return [
+        { type: UserAccountAdapter }
+    ]; };
+    /** @nocollapse */ UserAccountConnector.ngInjectableDef = defineInjectable({ factory: function UserAccountConnector_Factory() { return new UserAccountConnector(inject(UserAccountAdapter)); }, token: UserAccountConnector, providedIn: "root" });
+    return UserAccountConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var ForgotPasswordEffects = /** @class */ (function () {
-    function ForgotPasswordEffects(actions$, occUserService) {
+    function ForgotPasswordEffects(actions$, userAccountConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAccountConnector = userAccountConnector;
         this.requestForgotPasswordEmail$ = this.actions$.pipe(ofType(FORGOT_PASSWORD_EMAIL_REQUEST), map(function (action) {
             return action.payload;
         }), concatMap(function (userEmailAddress) {
-            return _this.occUserService
+            return _this.userAccountConnector
                 .requestForgotPasswordEmail(userEmailAddress)
                 .pipe(switchMap(function () { return [
                 new ForgotPasswordEmailRequestSuccess(),
@@ -18581,7 +18978,7 @@ var ForgotPasswordEffects = /** @class */ (function () {
     /** @nocollapse */
     ForgotPasswordEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAccountConnector }
     ]; };
     __decorate([
         Effect(),
@@ -18626,16 +19023,74 @@ var OrderDetailsEffect = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var UserPaymentConnector = /** @class */ (function () {
+    function UserPaymentConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    UserPaymentConnector.prototype.getAll = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return this.adapter.loadAll(userId);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentConnector.prototype.delete = /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    function (userId, paymentMethodID) {
+        return this.adapter.delete(userId, paymentMethodID);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentConnector.prototype.setDefault = /**
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    function (userId, paymentMethodID) {
+        return this.adapter.setDefault(userId, paymentMethodID);
+    };
+    UserPaymentConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    UserPaymentConnector.ctorParameters = function () { return [
+        { type: UserPaymentAdapter }
+    ]; };
+    /** @nocollapse */ UserPaymentConnector.ngInjectableDef = defineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(inject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+    return UserPaymentConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UserPaymentMethodsEffects = /** @class */ (function () {
-    function UserPaymentMethodsEffects(actions$, occUserService) {
+    function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userPaymentMethodConnector = userPaymentMethodConnector;
         this.loadUserPaymentMethods$ = this.actions$.pipe(ofType(LOAD_USER_PAYMENT_METHODS), map(function (action) {
             return action.payload;
         }), mergeMap(function (payload) {
-            return _this.occUserService.loadUserPaymentMethods(payload).pipe(map(function (paymentsList) {
-                return new LoadUserPaymentMethodsSuccess(paymentsList.payments);
+            return _this.userPaymentMethodConnector.getAll(payload).pipe(map(function (payments) {
+                return new LoadUserPaymentMethodsSuccess(payments);
             }), catchError(function (error) {
                 return of(new LoadUserPaymentMethodsFail(error));
             }));
@@ -18643,8 +19098,8 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
         this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map(function (action) {
             return action.payload;
         }), mergeMap(function (payload) {
-            return _this.occUserService
-                .setDefaultUserPaymentMethod(payload.userId, payload.paymentMethodId)
+            return _this.userPaymentMethodConnector
+                .setDefault(payload.userId, payload.paymentMethodId)
                 .pipe(switchMap(function (data) {
                 return [
                     new SetDefaultUserPaymentMethodSuccess(data),
@@ -18657,8 +19112,8 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
         this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map(function (action) {
             return action.payload;
         }), mergeMap(function (payload) {
-            return _this.occUserService
-                .deleteUserPaymentMethod(payload.userId, payload.paymentMethodId)
+            return _this.userPaymentMethodConnector
+                .delete(payload.userId, payload.paymentMethodId)
                 .pipe(switchMap(function (data) {
                 return [
                     new DeleteUserPaymentMethodSuccess(data),
@@ -18675,7 +19130,7 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
     /** @nocollapse */
     UserPaymentMethodsEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserPaymentConnector }
     ]; };
     __decorate([
         Effect(),
@@ -18727,15 +19182,15 @@ var RegionsEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ResetPasswordEffects = /** @class */ (function () {
-    function ResetPasswordEffects(actions$, occUserService) {
+    function ResetPasswordEffects(actions$, userAccountConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAccountConnector = userAccountConnector;
         this.resetPassword$ = this.actions$.pipe(ofType(RESET_PASSWORD), map(function (action) {
             return action.payload;
         }), switchMap(function (_a) {
             var token = _a.token, password = _a.password;
-            return _this.occUserService.resetPassword(token, password).pipe(switchMap(function () { return [
+            return _this.userAccountConnector.resetPassword(token, password).pipe(switchMap(function () { return [
                 new ResetPasswordSuccess(),
                 new AddMessage({
                     text: { key: 'forgottenPassword.passwordResetSuccess' },
@@ -18750,7 +19205,7 @@ var ResetPasswordEffects = /** @class */ (function () {
     /** @nocollapse */
     ResetPasswordEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAccountConnector }
     ]; };
     __decorate([
         Effect(),
@@ -18817,12 +19272,12 @@ var TitlesEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UpdateEmailEffects = /** @class */ (function () {
-    function UpdateEmailEffects(actions$, occUserService) {
+    function UpdateEmailEffects(actions$, userAccountConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAccountConnector = userAccountConnector;
         this.updateEmail$ = this.actions$.pipe(ofType(UPDATE_EMAIL), map(function (action) { return action.payload; }), concatMap(function (payload) {
-            return _this.occUserService
+            return _this.userAccountConnector
                 .updateEmail(payload.uid, payload.password, payload.newUid)
                 .pipe(map(function () {
                 return new UpdateEmailSuccessAction(payload.newUid);
@@ -18837,7 +19292,7 @@ var UpdateEmailEffects = /** @class */ (function () {
     /** @nocollapse */
     UpdateEmailEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAccountConnector }
     ]; };
     __decorate([
         Effect(),
@@ -18851,12 +19306,12 @@ var UpdateEmailEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UpdatePasswordEffects = /** @class */ (function () {
-    function UpdatePasswordEffects(actions$, occUserService) {
+    function UpdatePasswordEffects(actions$, userAccountConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAccountConnector = userAccountConnector;
         this.updatePassword$ = this.actions$.pipe(ofType(UPDATE_PASSWORD), map(function (action) { return action.payload; }), concatMap(function (payload) {
-            return _this.occUserService
+            return _this.userAccountConnector
                 .updatePassword(payload.userId, payload.oldPassword, payload.newPassword)
                 .pipe(map(function (_) { return new UpdatePasswordSuccess(); }), catchError(function (error) { return of(new UpdatePasswordFail(error)); }));
         }));
@@ -18867,7 +19322,7 @@ var UpdatePasswordEffects = /** @class */ (function () {
     /** @nocollapse */
     UpdatePasswordEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAccountConnector }
     ]; };
     __decorate([
         Effect(),
@@ -18881,22 +19336,22 @@ var UpdatePasswordEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserAddressesEffects = /** @class */ (function () {
-    function UserAddressesEffects(actions$, occUserService, userService, messageService) {
+    function UserAddressesEffects(actions$, userAddressConnector, userService, messageService) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userAddressConnector = userAddressConnector;
         this.userService = userService;
         this.messageService = messageService;
         this.loadUserAddresses$ = this.actions$.pipe(ofType(LOAD_USER_ADDRESSES), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occUserService.loadUserAddresses(payload).pipe(map(function (addressesList) {
-                return new LoadUserAddressesSuccess(addressesList.addresses);
+            return _this.userAddressConnector.getAll(payload).pipe(map(function (addresses) {
+                return new LoadUserAddressesSuccess(addresses);
             }), catchError(function (error) {
                 return of(new LoadUserAddressesFail(error));
             }));
         }));
         this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occUserService
-                .addUserAddress(payload.userId, payload.address)
+            return _this.userAddressConnector
+                .add(payload.userId, payload.address)
                 .pipe(map(function (data) {
                 return new AddUserAddressSuccess(data);
             }), catchError(function (error) {
@@ -18904,8 +19359,8 @@ var UserAddressesEffects = /** @class */ (function () {
             }));
         }));
         this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occUserService
-                .updateUserAddress(payload.userId, payload.addressId, payload.address)
+            return _this.userAddressConnector
+                .update(payload.userId, payload.addressId, payload.address)
                 .pipe(map(function (data) {
                 return new UpdateUserAddressSuccess(data);
             }), catchError(function (error) {
@@ -18913,8 +19368,8 @@ var UserAddressesEffects = /** @class */ (function () {
             }));
         }));
         this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map(function (action) { return action.payload; }), mergeMap(function (payload) {
-            return _this.occUserService
-                .deleteUserAddress(payload.userId, payload.addressId)
+            return _this.userAddressConnector
+                .delete(payload.userId, payload.addressId)
                 .pipe(map(function (data) {
                 return new DeleteUserAddressSuccess(data);
             }), catchError(function (error) {
@@ -18990,7 +19445,7 @@ var UserAddressesEffects = /** @class */ (function () {
     /** @nocollapse */
     UserAddressesEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService },
+        { type: UserAddressConnector },
         { type: UserService },
         { type: GlobalMessageService }
     ]; };
@@ -19029,21 +19484,66 @@ var UserAddressesEffects = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var UserDetailsConnector = /** @class */ (function () {
+    function UserDetailsConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @return {?}
+     */
+    UserDetailsConnector.prototype.get = /**
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return this.adapter.load(userId);
+    };
+    /**
+     * @param {?} username
+     * @param {?} user
+     * @return {?}
+     */
+    UserDetailsConnector.prototype.update = /**
+     * @param {?} username
+     * @param {?} user
+     * @return {?}
+     */
+    function (username, user) {
+        return this.adapter.update(username, user);
+    };
+    UserDetailsConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    UserDetailsConnector.ctorParameters = function () { return [
+        { type: UserDetailsAdapter }
+    ]; };
+    /** @nocollapse */ UserDetailsConnector.ngInjectableDef = defineInjectable({ factory: function UserDetailsConnector_Factory() { return new UserDetailsConnector(inject(UserDetailsAdapter)); }, token: UserDetailsConnector, providedIn: "root" });
+    return UserDetailsConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UserDetailsEffects = /** @class */ (function () {
-    function UserDetailsEffects(actions$, occUserService) {
+    function UserDetailsEffects(actions$, userDetailsConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.occUserService = occUserService;
+        this.userDetailsConnector = userDetailsConnector;
         this.loadUserDetails$ = this.actions$.pipe(ofType(LOAD_USER_DETAILS), map(function (action) { return action.payload; }), mergeMap(function (userId) {
-            return _this.occUserService.loadUser(userId).pipe(map(function (user) {
+            return _this.userDetailsConnector.get(userId).pipe(map(function (user) {
                 return new LoadUserDetailsSuccess(user);
             }), catchError(function (error) {
                 return of(new LoadUserDetailsFail(error));
             }));
         }));
         this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map(function (action) { return action.payload; }), concatMap(function (payload) {
-            return _this.occUserService
-                .updateUserDetails(payload.username, payload.userDetails)
+            return _this.userDetailsConnector
+                .update(payload.username, payload.userDetails)
                 .pipe(map(function (_) {
                 return new UpdateUserDetailsSuccess(payload.userDetails);
             }), catchError(function (error) {
@@ -19057,7 +19557,7 @@ var UserDetailsEffects = /** @class */ (function () {
     /** @nocollapse */
     UserDetailsEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserDetailsConnector }
     ]; };
     __decorate([
         Effect(),
@@ -19116,12 +19616,12 @@ var UserOrdersEffect = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserRegisterEffects = /** @class */ (function () {
-    function UserRegisterEffects(actions$, userService) {
+    function UserRegisterEffects(actions$, userAccountConnector) {
         var _this = this;
         this.actions$ = actions$;
-        this.userService = userService;
+        this.userAccountConnector = userAccountConnector;
         this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map(function (action) { return action.payload; }), mergeMap(function (user) {
-            return _this.userService.registerUser(user).pipe(switchMap(function (_result) { return [
+            return _this.userAccountConnector.register(user).pipe(switchMap(function (_result) { return [
                 new LoadUserToken({
                     userId: user.uid,
                     password: user.password,
@@ -19130,7 +19630,7 @@ var UserRegisterEffects = /** @class */ (function () {
             ]; }), catchError(function (error) { return of(new RegisterUserFail(error)); }));
         }));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map(function (action) { return action.payload; }), mergeMap(function (userId) {
-            return _this.userService.removeUser(userId).pipe(switchMap(function (_result) { return [
+            return _this.userAccountConnector.remove(userId).pipe(switchMap(function (_result) { return [
                 new RemoveUserSuccess(),
                 new Logout(),
             ]; }), catchError(function (error) { return of(new RemoveUserFail(error)); }));
@@ -19142,7 +19642,7 @@ var UserRegisterEffects = /** @class */ (function () {
     /** @nocollapse */
     UserRegisterEffects.ctorParameters = function () { return [
         { type: Actions },
-        { type: OccUserService }
+        { type: UserAccountConnector }
     ]; };
     __decorate([
         Effect(),
@@ -19215,6 +19715,38 @@ var UserModule = /** @class */ (function () {
     ];
     return UserModule;
 }());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var USER_PAYMENT_NORMALIZER = new InjectionToken('UserNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -23756,6 +24288,6 @@ var PersonalizationModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, CART_PAYMENT_DETAILS_NORMALIZER, CART_PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, CxDatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, OccProductReferencesAdapter, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductAdapter, ProductOccModule, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, getProductsState, getProductReferencesState, getSelectedProductReferencesFactory, getProductReviewsState, getSelectedProductReviewsFactory, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserService, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfd, ServerConfig as ɵea, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdz, reducer$8 as ɵdy, getReducers$4 as ɵdv, reducerProvider$4 as ɵdx, reducerToken$4 as ɵdw, defaultI18nConfig as ɵeb, i18nextInit as ɵed, i18nextProviders as ɵec, MockDatePipe as ɵee, MockTranslationService as ɵef, defaultPersonalizationConfig as ɵgu, interceptors$3 as ɵgv, OccPersonalizationIdInterceptor as ɵgw, OccPersonalizationTimeInterceptor as ɵgx, ProcessModule as ɵgn, PROCESS_FEATURE as ɵgp, ProcessStoreModule as ɵgo, getReducers$9 as ɵgq, reducerProvider$9 as ɵgs, reducerToken$9 as ɵgr, defaultOccProductConfig as ɵeg, OccProductReferencesListNormalizer as ɵeh, effects$6 as ɵdl, ProductReferencesEffects as ɵdm, ProductReviewsEffects as ɵdn, ProductsSearchEffects as ɵdo, ProductEffects as ɵdp, ProductStoreModule as ɵej, productStoreConfigFactory as ɵei, clearProductsState as ɵdt, getReducers$7 as ɵdq, metaReducers$4 as ɵdu, reducerProvider$7 as ɵds, reducerToken$7 as ɵdr, reducer$d as ɵep, reducer$e as ɵeo, getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer$f as ɵek, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵeq, BaseSiteService as ɵbk, SiteContextParamsService as ɵew, SiteContextRoutesHandler as ɵey, SiteContextUrlSerializer as ɵex, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵev, reducer$4 as ɵeu, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵet, SiteContextStoreModule as ɵes, siteContextStoreConfigFactory as ɵer, CmsTicketInterceptor as ɵfa, interceptors$2 as ɵez, SmartEditService as ɵfb, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfm, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfe, FindStoresEffect as ɵfk, effects$8 as ɵfj, ViewAllStoresEffect as ɵfl, getReducers$a as ɵfg, reducerProvider$a as ɵfi, reducerToken$a as ɵfh, getStoreFinderState as ɵfc, StoreFinderStoreModule as ɵff, BillingCountriesEffect as ɵfz, DeliveryCountriesEffects as ɵga, ForgotPasswordEffects as ɵgk, effects$7 as ɵfy, OrderDetailsEffect as ɵgb, UserPaymentMethodsEffects as ɵgc, RegionsEffects as ɵgd, ResetPasswordEffects as ɵge, TitlesEffects as ɵgf, UpdateEmailEffects as ɵgl, UpdatePasswordEffects as ɵgm, UserAddressesEffects as ɵgg, UserDetailsEffects as ɵgh, UserOrdersEffect as ɵgi, UserRegisterEffects as ɵgj, reducer$g as ɵfp, reducer$h as ɵft, reducer$i as ɵfs, reducer$j as ɵfq, reducer$k as ɵfv, reducer$l as ɵfw, reducer$m as ɵfu, reducer$n as ɵfo, reducer$o as ɵfn, reducer$p as ɵfr, UserStoreModule as ɵfx, StripHtmlPipe as ɵgt };
+export { PageType, ImageType, PriceType, testestsd, AuthModule, AuthConfig, AuthService, AuthGuard, NotAuthGuard, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, RefreshUserToken, RefreshUserTokenSuccess, RefreshUserTokenFail, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LOGIN, LOGOUT, Login, Logout, getAuthState, getUserTokenSelector, getUserTokenState, getUserToken, getClientTokenState, AUTH_FEATURE, CLIENT_TOKEN_DATA, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ADD_ENTRY, ADD_ENTRY_SUCCESS, ADD_ENTRY_FAIL, REMOVE_ENTRY, REMOVE_ENTRY_SUCCESS, REMOVE_ENTRY_FAIL, UPDATE_ENTRY, UPDATE_ENTRY_SUCCESS, UPDATE_ENTRY_FAIL, AddEntry, AddEntrySuccess, AddEntryFail, RemoveEntry, RemoveEntrySuccess, RemoveEntryFail, UpdateEntry, UpdateEntrySuccess, UpdateEntryFail, getCartContentSelector, getRefreshSelector, getEntriesSelector, getCartMergeCompleteSelector, getCartsState, getActiveCartState, getCartState, getCartContent, getRefresh, getLoaded, getCartMergeComplete, getEntriesMap, getEntrySelectorFactory, getEntries, CART_FEATURE, CART_DATA, services$1 as services, CartService, ANONYMOUS_USERID, CartDataService, CartConnector, CartAdapter, CART_NORMALIZER, CartDeliveryConnector, CartDeliveryAdapter, DELIVERY_ADDRESS_NORMALIZER, DELIVERY_ADDRESS_SERIALIZER, DELIVERY_MODE_NORMALIZER, CartEntryConnector, CartEntryAdapter, CART_MODIFICATION_NORMALIZER, CartPaymentConnector, CartPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, OccCartAdapter, OccCartDeliveryAdapter, OccCartEntryAdapter, OccCartPaymentAdapter, CartOccModule, CartModule, CHECKOUT_FEATURE, CHECKOUT_DETAILS, CHECKOUT_CLEAR_MISCS_DATA, CheckoutClearMiscsData, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, CLEAR_SUPPORTED_DELIVERY_MODES, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, CLEAR_CHECKOUT_STEP, CLEAR_CHECKOUT_DATA, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, ClearSupportedDeliveryModes, ClearCheckoutStep, ClearCheckoutData, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, CLEAR_ADDRESS_VERIFICATION_RESULTS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ClearAddressVerificationResults, getDeliveryAddressSelector, getDeliveryModeSelector, getPaymentDetailsSelector, getOrderDetailsSelector, getCheckoutState, getCheckoutStepsState, getCheckoutSteps, getDeliveryAddress, getDeliveryMode, getSupportedDeliveryModes, getSelectedCode, getSelectedDeliveryMode, getPaymentDetails, getCheckoutOrderDetails, getCheckoutDetailsLoaded, getCardTypesState, getCardTypesEntites$1 as getCardTypesEntites, getAllCardTypes, getAddressVerificationResultsState, getAddressVerificationResults$1 as getAddressVerificationResults, CheckoutService, CheckoutModule, CartPageMetaResolver, CheckoutPageMetaResolver, JSP_INCLUDE_CMS_COMPONENT_TYPE, CMS_FLEX_COMPONENT_TYPE, CmsConfig, defaultCmsModuleConfig, CmsStructureConfig, PageRobotsMeta, OccCmsPageAdapter, OccCmsPageNormalizer, OccCmsComponentAdapter, CmsOccModule, CmsPageAdapter, CmsPageConnector, CMS_PAGE_NORMALIZE, CmsComponentConnector, CmsComponentAdapter, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, NAVIGATION_DETAIL_ENTITY, COMPONENT_ENTITY, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, GET_COMPONENET_FROM_PAGE, LoadComponent, LoadComponentFail, LoadComponentSuccess, GetComponentFromPage, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, getPageEntitiesSelector, getIndexByType, getPageComponentTypesSelector, getPageState, getPageStateIndex, getIndex, getIndexEntity, getPageEntities, getPageData, getPageComponentTypes, currentSlotSelectorFactory, getComponentEntitiesSelector, getComponentState, getComponentEntities, componentStateSelectorFactory, componentSelectorFactory, getNavigationEntryItemState, getSelectedNavigationEntryItemState, itemsSelectorFactory, getCmsState, CmsService, PageMetaService, CmsModule, ComponentMapperService, CmsStructureConfigService, DynamicAttributeService, PageMetaResolver, ContentPageMetaResolver, CmsPageTitleModule, provideConfig, provideConfigFactory, configurationFactory, Config, ConfigChunk, ConfigModule, ServerConfig, defaultServerConfig, provideConfigValidator, validateConfig, ConfigValidatorToken, CxApiModule, CxApiService, GLOBAL_MESSAGE_FEATURE, ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType, getGlobalMessageState, getGlobalMessageEntities, GlobalMessageStoreModule, GlobalMessageService, GlobalMessageType, GlobalMessageModule, errorHandlers, httpErrorInterceptors, BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler, CxDatePipe, TranslatePipe, TranslationService, TranslationChunkService, I18nModule, I18nConfig, I18nextTranslationService, I18nTestingModule, MockTranslatePipe, occServerConfigFromMetaTagFactory, mediaServerConfigFromMetaTagFactory, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, defaultOccConfig, OccConfig, occConfigValidator, OccMiscsService, Occ, OccModule, OccEndpointsService, USE_CLIENT_TOKEN, InterceptorUtil, ProductConnector, ProductAdapter, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewsConnector, ProductReviewsAdapter, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, ProductSearchConnector, ProductSearchAdapter, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, ProductReferenceService, ProductReviewService, ProductSearchService, ProductService, ProductImageNormalizer, ProductReferenceNormalizer, OccProductSearchPageNormalizer, OccProductReferencesAdapter, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductAdapter, ProductOccModule, ProductModule, CategoryPageMetaResolver, ProductPageMetaResolver, SearchPageMetaResolver, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_SUCCESS, GET_PRODUCT_SUGGESTIONS_FAIL, CLEAN_PRODUCT_SEARCH, SearchProducts, SearchProductsFail, SearchProductsSuccess, GetProductSuggestions, GetProductSuggestionsSuccess, GetProductSuggestionsFail, CleanProductSearchState, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_SUCCESS, LoadProduct, LoadProductFail, LoadProductSuccess, PRODUCT_FEATURE, PRODUCT_DETAIL_ENTITY, getProductsState, getProductReferencesState, getSelectedProductReferencesFactory, getProductReviewsState, getSelectedProductReviewsFactory, getProductsSearchState, getSearchResults$1 as getSearchResults, getAuxSearchResults$1 as getAuxSearchResults, getProductSuggestions$1 as getProductSuggestions, getProductState, getSelectedProductsFactory, getSelectedProductStateFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductSuccessFactory, getSelectedProductErrorFactory, getAllProductCodes, RoutingModule, RoutingService, PageContext, RoutingConfig, UrlModule, UrlPipe, UrlService, ConfigurableRoutesService, initConfigurableRoutes, ConfigurableRoutesModule, RoutingConfigService, LanguageService, CurrencyService, SiteContextModule, interceptors$1 as interceptors, SiteContextOccModule, SiteContextInterceptor, OccSiteAdapter, SiteContextConfig, serviceMapFactory, ContextServiceMap, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, contextServiceMapProvider, inititializeContext, contextServiceProviders, initSiteContextRoutesHandler, siteContextParamsProviders, SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, SITE_CONTEXT_FEATURE, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, SET_ACTIVE_LANGUAGE, LANGUAGE_CHANGE, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, SetActiveLanguage, LanguageChange, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, SET_ACTIVE_CURRENCY, CURRENCY_CHANGE, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, SetActiveCurrency, CurrencyChange, SET_ACTIVE_BASE_SITE, BASE_SITE_CHANGE, SetActiveBaseSite, BaseSiteChange, getSiteContextState, getLanguagesState, getLanguagesEntities, getActiveLanguage, getAllLanguages, getCurrenciesState, getCurrenciesEntities, getActiveCurrency, getAllCurrencies, getActiveBaseSite, SmartEditModule, StateModule, getStateSlice, entityLoadMeta, entityFailMeta, entitySuccessMeta, entityResetMeta, ENTITY_LOAD_ACTION, ENTITY_FAIL_ACTION, ENTITY_SUCCESS_ACTION, ENTITY_RESET_ACTION, EntityLoadAction, EntityFailAction, EntitySuccessAction, EntityResetAction, entityLoaderReducer, entityStateSelector, entityValueSelector, entityLoadingSelector, entityErrorSelector, entitySuccessSelector, entityMeta, entityRemoveMeta, entityRemoveAllMeta, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, EntityRemoveAction, EntityRemoveAllAction, entityReducer, initialEntityState, entitySelector, loadMeta, failMeta, successMeta, resetMeta, LOADER_LOAD_ACTION, LOADER_FAIL_ACTION, LOADER_SUCCESS_ACTION, LOADER_RESET_ACTION, LoaderLoadAction, LoaderFailAction, LoaderSuccessAction, LoaderResetAction, loaderReducer, initialLoaderState, loaderValueSelector, loaderLoadingSelector, loaderErrorSelector, loaderSuccessSelector, ofLoaderLoad, ofLoaderFail, ofLoaderSuccess, StorageSyncType, StateTransferType, StateConfig, metaReducersFactory, META_REDUCER, OccStoreFinderService, StoreFinderOccModule, StoreFinderConfig, ON_HOLD, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, OnHold, FindStores, FindStoresFail, FindStoresSuccess, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, getFindStoresState, getFindStoresEntities, getStoresLoading, getViewAllStoresState, getViewAllStoresEntities, getViewAllStoresLoading, STORE_FINDER_FEATURE, STORE_FINDER_DATA, ExternalJsFileLoader, GoogleMapRendererService, StoreFinderService, StoreDataService, StoreFinderCoreModule, OccUserAddressAdapter, OccUserAccountAdapter, OccUserDetailsAdapter, OccUserPaymentAdapter, OccOrderAdapter, OccOrderNormalizer, UserOccModule, CLEAR_MISCS_DATA, ClearMiscsData, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, CLEAR_ORDER_DETAILS, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, ClearOrderDetails, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, LOAD_REGIONS, LOAD_REGIONS_SUCCESS, LOAD_REGIONS_FAIL, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, RESET_PASSWORD, RESET_PASSWORD_SUCCESS, RESET_PASSWORD_FAIL, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_SUCCESS, RESET_EMAIL, UpdateEmailAction, UpdateEmailSuccessAction, UpdateEmailErrorAction, ResetUpdateEmailAction, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_SUCCESS, UPDATE_PASSWORD_RESET, UpdatePassword, UpdatePasswordFail, UpdatePasswordSuccess, UpdatePasswordReset, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_SUCCESS, RESET_USER_DETAILS, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, ResetUpdateUserDetails, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, CLEAR_USER_ORDERS, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, ClearUserOrders, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_SUCCESS, REMOVE_USER_RESET, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveUser, RemoveUserFail, RemoveUserSuccess, RemoveUserReset, getReducers$8 as getReducers, clearUserState, reducerToken$8 as reducerToken, reducerProvider$8 as reducerProvider, metaReducers$5 as metaReducers, getDetailsState, getDetails, getAddressesLoaderState, getAddresses, getAddressesLoading, getPaymentMethodsState, getPaymentMethods, getPaymentMethodsLoading, getOrdersState, getOrdersLoaded, getOrders, getTitlesState, getTitlesEntites, getAllTitles, titleSelectorFactory, getDeliveryCountriesState, getDeliveryCountriesEntites, getAllDeliveryCountries, countrySelectorFactory, getRegionsState, getAllRegions, getOrderState, getOrderDetails, getUserState, getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries, getResetPassword, USER_FEATURE, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, REMOVE_USER_PROCESS_ID, USER_PAYMENT_METHODS, USER_ORDERS, USER_ADDRESSES, UserService, UserModule, UserAccountConnector, UserAccountAdapter, USER_REGISTER_FORM_SERIALIZER, UserAddressConnector, UserAddressAdapter, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, UserDetailsConnector, UserDetailsAdapter, USER_NORMALIZER, USER_SERIALIZER, UserPaymentConnector, UserPaymentAdapter, USER_PAYMENT_NORMALIZER, OrderConnector, OrderAdapter, ORDER_NORMALIZER, ORDER_HISTORY_NORMALIZER, PipeModule, StripHtmlModule, ConverterService, UtilModule, WindowRef, PersonalizationModule, PersonalizationConfig, defaultAuthConfig as ɵbe, AuthErrorInterceptor as ɵbm, ClientTokenInterceptor as ɵbj, interceptors as ɵbi, UserTokenInterceptor as ɵbl, ClientAuthenticationTokenService as ɵbc, ClientErrorHandlingService as ɵbg, services as ɵbf, UserAuthenticationTokenService as ɵbb, UserErrorHandlingService as ɵbh, AuthStoreModule as ɵm, authStoreConfigFactory as ɵl, ClientTokenEffect as ɵba, effects$1 as ɵy, UserTokenEffects as ɵz, clearAuthState as ɵw, getReducers$1 as ɵt, metaReducers as ɵx, reducerProvider$1 as ɵv, reducerToken$1 as ɵu, reducer$1 as ɵbd, OccCartNormalizer as ɵbo, CartStoreModule as ɵbp, CartEntryEffects as ɵbx, CartEffects as ɵbw, effects$3 as ɵbv, reducer$2 as ɵby, clearCartState as ɵbt, getReducers$2 as ɵbq, metaReducers$1 as ɵbu, reducerProvider$2 as ɵbs, reducerToken$2 as ɵbr, CheckoutStoreModule as ɵcm, AddressVerificationEffect as ɵcg, CardTypesEffects as ɵcf, CheckoutEffects as ɵce, effects$4 as ɵcd, getAddressVerificationResults as ɵcc, reducer$7 as ɵcb, getCardTypesEntites as ɵca, reducer$6 as ɵbz, reducer$9 as ɵcn, clearCheckoutState as ɵck, getReducers$5 as ɵch, metaReducers$2 as ɵcl, reducerProvider$5 as ɵcj, reducerToken$5 as ɵci, CmsStoreModule as ɵcs, cmsStoreConfigFactory as ɵcr, ComponentEffects as ɵda, effects$5 as ɵcy, NavigationEntryItemEffects as ɵdb, PageEffects as ɵcz, clearCmsState as ɵcw, getReducers$6 as ɵct, metaReducers$3 as ɵcx, reducerProvider$6 as ɵcv, reducerToken$6 as ɵcu, reducer$a as ɵde, reducer$b as ɵdc, reducer$c as ɵdd, ConfigModule as ɵfd, ServerConfig as ɵea, provideConfigValidator as ɵbn, HttpErrorInterceptor as ɵdz, reducer$8 as ɵdy, getReducers$4 as ɵdv, reducerProvider$4 as ɵdx, reducerToken$4 as ɵdw, defaultI18nConfig as ɵeb, i18nextInit as ɵed, i18nextProviders as ɵec, MockDatePipe as ɵee, MockTranslationService as ɵef, defaultPersonalizationConfig as ɵgu, interceptors$3 as ɵgv, OccPersonalizationIdInterceptor as ɵgw, OccPersonalizationTimeInterceptor as ɵgx, ProcessModule as ɵgn, PROCESS_FEATURE as ɵgp, ProcessStoreModule as ɵgo, getReducers$9 as ɵgq, reducerProvider$9 as ɵgs, reducerToken$9 as ɵgr, defaultOccProductConfig as ɵeg, OccProductReferencesListNormalizer as ɵeh, effects$6 as ɵdl, ProductReferencesEffects as ɵdm, ProductReviewsEffects as ɵdn, ProductsSearchEffects as ɵdo, ProductEffects as ɵdp, ProductStoreModule as ɵej, productStoreConfigFactory as ɵei, clearProductsState as ɵdt, getReducers$7 as ɵdq, metaReducers$4 as ɵdu, reducerProvider$7 as ɵds, reducerToken$7 as ɵdr, reducer$d as ɵep, reducer$e as ɵeo, getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer$f as ɵek, UrlMatcherFactoryService as ɵa, UrlParsingService as ɵk, ROUTING_FEATURE as ɵb, effects as ɵh, RouterEffects as ɵi, CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe, defaultSiteContextConfigFactory as ɵeq, BaseSiteService as ɵbk, SiteContextParamsService as ɵew, SiteContextRoutesHandler as ɵey, SiteContextUrlSerializer as ɵex, CurrenciesEffects as ɵdk, effects$2 as ɵdi, LanguagesEffects as ɵdj, reducer$5 as ɵev, reducer$4 as ɵeu, getReducers$3 as ɵdf, reducerProvider$3 as ɵdh, reducerToken$3 as ɵdg, reducer$3 as ɵet, SiteContextStoreModule as ɵes, siteContextStoreConfigFactory as ɵer, CmsTicketInterceptor as ɵfa, interceptors$2 as ɵez, SmartEditService as ɵfb, EntityFailAction as ɵcp, EntityLoadAction as ɵco, EntityResetAction as ɵfm, EntitySuccessAction as ɵcq, DEFAULT_LOCAL_STORAGE_KEY as ɵn, DEFAULT_SESSION_STORAGE_KEY as ɵo, defaultStateConfig as ɵp, stateMetaReducers as ɵq, getStorageSyncReducer as ɵr, getTransferStateReducer as ɵs, defaultStoreFinderConfig as ɵfe, FindStoresEffect as ɵfk, effects$8 as ɵfj, ViewAllStoresEffect as ɵfl, getReducers$a as ɵfg, reducerProvider$a as ɵfi, reducerToken$a as ɵfh, getStoreFinderState as ɵfc, StoreFinderStoreModule as ɵff, BillingCountriesEffect as ɵfz, DeliveryCountriesEffects as ɵga, ForgotPasswordEffects as ɵgk, effects$7 as ɵfy, OrderDetailsEffect as ɵgb, UserPaymentMethodsEffects as ɵgc, RegionsEffects as ɵgd, ResetPasswordEffects as ɵge, TitlesEffects as ɵgf, UpdateEmailEffects as ɵgl, UpdatePasswordEffects as ɵgm, UserAddressesEffects as ɵgg, UserDetailsEffects as ɵgh, UserOrdersEffect as ɵgi, UserRegisterEffects as ɵgj, reducer$g as ɵfp, reducer$h as ɵft, reducer$i as ɵfs, reducer$j as ɵfq, reducer$k as ɵfv, reducer$l as ɵfw, reducer$m as ɵfu, reducer$n as ɵfo, reducer$o as ɵfn, reducer$p as ɵfr, UserStoreModule as ɵfx, StripHtmlPipe as ɵgt };
 
 //# sourceMappingURL=spartacus-core.js.map

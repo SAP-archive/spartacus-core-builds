@@ -7,7 +7,7 @@ import * as fromCartActions from './../../../cart/store/actions/index';
 import { CartDeliveryConnector } from '../../../cart/connectors/delivery/cart-delivery.connector';
 import { CartPaymentConnector } from '../../../cart/connectors/payment/cart-payment.connector';
 import { CartConnector } from '../../../cart/connectors/cart/cart.connector';
-import { OrderConnector } from '../../../user/connectors/order.connector';
+import { OrderConnector } from '../../../user/connectors/order/order.connector';
 export declare class CheckoutEffects {
     private actions$;
     private cartDeliveryConnector;
