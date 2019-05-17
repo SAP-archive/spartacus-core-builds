@@ -4762,6 +4762,7 @@ class OccCartPaymentAdapter {
         }), mergeMap(sub => {
             // create a subscription directly with payment provider
             return this.createSubWithProvider(sub.url, sub.parameters).pipe(map(response => this.extractPaymentDetailsFromHtml(response)), mergeMap(fromPaymentProvider => {
+                fromPaymentProvider['savePaymentInfo'] = true;
                 return this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
             }));
         }));

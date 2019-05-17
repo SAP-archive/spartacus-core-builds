@@ -5790,6 +5790,7 @@
                 }), operators.mergeMap(function (sub) {
                     // create a subscription directly with payment provider
                     return _this.createSubWithProvider(sub.url, sub.parameters).pipe(operators.map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), operators.mergeMap(function (fromPaymentProvider) {
+                        fromPaymentProvider['savePaymentInfo'] = true;
                         return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
                     }));
                 }));
