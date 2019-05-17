@@ -1,12 +1,12 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { CmsComponent } from '../../occ/occ-models/cms-component.models';
+import { RoutingService } from '../../routing/facade/routing.service';
+import { PageContext } from '../../routing/models/page-context.model';
 import { ContentSlotData } from '../model/content-slot-data.model';
 import { NodeItem } from '../model/node-item.model';
 import { Page } from '../model/page.model';
 import { StateWithCms } from '../store/cms-state';
-import { CmsComponent } from '../../occ/occ-models/cms-component.models';
-import { RoutingService } from '../../routing/facade/routing.service';
-import { PageContext } from '../../routing/models/page-context.model';
 export declare class CmsService {
     protected store: Store<StateWithCms>;
     protected routingService: RoutingService;
