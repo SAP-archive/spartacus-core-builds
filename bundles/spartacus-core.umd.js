@@ -19584,9 +19584,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var DatePipe = /** @class */ (function (_super) {
-        __extends(DatePipe, _super);
-        function DatePipe(language, config) {
+    // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
+    var CxDatePipe = /** @class */ (function (_super) {
+        __extends(CxDatePipe, _super);
+        function CxDatePipe(language, config) {
             var _this = _super.call(this, null) || this;
             _this.language = language;
             _this.config = config;
@@ -19598,7 +19599,7 @@
          * @param {?=} timezone
          * @return {?}
          */
-        DatePipe.prototype.transform = /**
+        CxDatePipe.prototype.transform = /**
          * @param {?} value
          * @param {?=} format
          * @param {?=} timezone
@@ -19611,7 +19612,7 @@
          * @private
          * @return {?}
          */
-        DatePipe.prototype.getLang = /**
+        CxDatePipe.prototype.getLang = /**
          * @private
          * @return {?}
          */
@@ -19631,7 +19632,7 @@
          * @private
          * @return {?}
          */
-        DatePipe.prototype.getActiveLang = /**
+        CxDatePipe.prototype.getActiveLang = /**
          * @private
          * @return {?}
          */
@@ -19649,7 +19650,7 @@
          * @param {?} lang
          * @return {?}
          */
-        DatePipe.prototype.reportMissingLocaleData = /**
+        CxDatePipe.prototype.reportMissingLocaleData = /**
          * @private
          * @param {?} lang
          * @return {?}
@@ -19659,17 +19660,17 @@
                     console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
                 }
             };
-        DatePipe.decorators = [
+        CxDatePipe.decorators = [
             { type: i0.Pipe, args: [{ name: 'cxDate' },] }
         ];
         /** @nocollapse */
-        DatePipe.ctorParameters = function () {
+        CxDatePipe.ctorParameters = function () {
             return [
                 { type: LanguageService },
                 { type: I18nConfig }
             ];
         };
-        return DatePipe;
+        return CxDatePipe;
     }(i1$3.DatePipe));
 
     /**
@@ -20187,8 +20188,8 @@
             };
         I18nModule.decorators = [
             { type: i0.NgModule, args: [{
-                        declarations: [TranslatePipe, DatePipe],
-                        exports: [TranslatePipe, DatePipe],
+                        declarations: [TranslatePipe, CxDatePipe],
+                        exports: [TranslatePipe, CxDatePipe],
                     },] }
         ];
         return I18nModule;
@@ -24380,7 +24381,7 @@
     exports.NotFoundHandler = NotFoundHandler;
     exports.HttpErrorHandler = HttpErrorHandler;
     exports.UnknownErrorHandler = UnknownErrorHandler;
-    exports.DatePipe = DatePipe;
+    exports.CxDatePipe = CxDatePipe;
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationService = TranslationService;
     exports.TranslationChunkService = TranslationChunkService;
