@@ -8,8 +8,8 @@ import { CmsComponent } from '../../occ/occ-models/cms-component.models';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { PageContext } from '../../routing/models/page-context.model';
 export declare class CmsService {
-    private store;
-    private routingService;
+    protected store: Store<StateWithCms>;
+    protected routingService: RoutingService;
     private _launchInSmartEdit;
     private components;
     constructor(store: Store<StateWithCms>, routingService: RoutingService);

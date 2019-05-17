@@ -12436,11 +12436,11 @@
     /**
      * Service that provides access to CMS structure from a static
      * configuration or configuration file. This class uses static
-     * configuration is designed in async fashion so that configuratiosn
+     * configuration is designed in async fashion so that configurations
      * can be loaded from a file or stream.
      *
-     * The intend of the `CmsStructureConfigService` however is to provide
-     * fast loading pages and default cms structure for comodoty commerce.
+     * The intent of the `CmsStructureConfigService` however is to provide
+     * fast loading pages and default cms structure for commodity commerce.
      * @abstract
      */
     var CmsStructureConfigService = /** @class */ (function () {
@@ -12544,13 +12544,13 @@
          */
         /**
          * returns an observable with the `PageConfig`.
-         * @private
+         * @protected
          * @param {?} pageId
          * @return {?}
          */
         CmsStructureConfigService.prototype.getPageFromConfig = /**
          * returns an observable with the `PageConfig`.
-         * @private
+         * @protected
          * @param {?} pageId
          * @return {?}
          */
@@ -12568,7 +12568,7 @@
          * Merge page data from the configuration into the given structure, if any.
          * If the given page structure is empty, a page is created and the page slots are
          * are merged into the page.
-         * @private
+         * @protected
          * @param {?} pageId
          * @param {?} pageStructure
          * @return {?}
@@ -12577,7 +12577,7 @@
          * Merge page data from the configuration into the given structure, if any.
          * If the given page structure is empty, a page is created and the page slots are
          * are merged into the page.
-         * @private
+         * @protected
          * @param {?} pageId
          * @param {?} pageStructure
          * @return {?}
@@ -12614,7 +12614,7 @@
          * is ingored. Even if the slot does not have inner structure (such as
          * components), so that the cms structure is able to override the (static)
          * configuration.
-         * @private
+         * @protected
          * @param {?} pageStructure
          * @param {?=} slots
          * @return {?}
@@ -12625,7 +12625,7 @@
          * is ingored. Even if the slot does not have inner structure (such as
          * components), so that the cms structure is able to override the (static)
          * configuration.
-         * @private
+         * @protected
          * @param {?} pageStructure
          * @param {?=} slots
          * @return {?}
@@ -12696,13 +12696,13 @@
                 return rxjs.of(pageStructure);
             };
         /**
-         * @private
+         * @protected
          * @param {?} slots
          * @param {?} position
          * @return {?}
          */
         CmsStructureConfigService.prototype.getComponentsByPosition = /**
-         * @private
+         * @protected
          * @param {?} slots
          * @param {?} position
          * @return {?}
@@ -12742,12 +12742,12 @@
                 return components;
             };
         /**
-         * @private
+         * @protected
          * @param {?} componentId
          * @return {?}
          */
         CmsStructureConfigService.prototype.getComponentById = /**
-         * @private
+         * @protected
          * @param {?} componentId
          * @return {?}
          */

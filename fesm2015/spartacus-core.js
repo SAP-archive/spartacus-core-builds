@@ -10566,11 +10566,11 @@ CmsOccModule.decorators = [
 /**
  * Service that provides access to CMS structure from a static
  * configuration or configuration file. This class uses static
- * configuration is designed in async fashion so that configuratiosn
+ * configuration is designed in async fashion so that configurations
  * can be loaded from a file or stream.
  *
- * The intend of the `CmsStructureConfigService` however is to provide
- * fast loading pages and default cms structure for comodoty commerce.
+ * The intent of the `CmsStructureConfigService` however is to provide
+ * fast loading pages and default cms structure for commodity commerce.
  * @abstract
  */
 class CmsStructureConfigService {
@@ -10623,7 +10623,7 @@ class CmsStructureConfigService {
     }
     /**
      * returns an observable with the `PageConfig`.
-     * @private
+     * @protected
      * @param {?} pageId
      * @return {?}
      */
@@ -10636,7 +10636,7 @@ class CmsStructureConfigService {
      * Merge page data from the configuration into the given structure, if any.
      * If the given page structure is empty, a page is created and the page slots are
      * are merged into the page.
-     * @private
+     * @protected
      * @param {?} pageId
      * @param {?} pageStructure
      * @return {?}
@@ -10665,7 +10665,7 @@ class CmsStructureConfigService {
      * is ingored. Even if the slot does not have inner structure (such as
      * components), so that the cms structure is able to override the (static)
      * configuration.
-     * @private
+     * @protected
      * @param {?} pageStructure
      * @param {?=} slots
      * @return {?}
@@ -10703,7 +10703,7 @@ class CmsStructureConfigService {
         return of(pageStructure);
     }
     /**
-     * @private
+     * @protected
      * @param {?} slots
      * @param {?} position
      * @return {?}
@@ -10726,7 +10726,7 @@ class CmsStructureConfigService {
         return components;
     }
     /**
-     * @private
+     * @protected
      * @param {?} componentId
      * @return {?}
      */
@@ -11964,6 +11964,11 @@ DynamicAttributeService.decorators = [
             },] }
 ];
 /** @nocollapse */ DynamicAttributeService.ngInjectableDef = defineInjectable({ factory: function DynamicAttributeService_Factory() { return new DynamicAttributeService(); }, token: DynamicAttributeService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle

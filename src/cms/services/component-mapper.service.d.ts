@@ -1,10 +1,10 @@
 import { Type, ComponentFactoryResolver, Renderer2 } from '@angular/core';
 import { CmsConfig } from '../config/cms-config';
 export declare class ComponentMapperService {
-    private componentFactoryResolver;
-    private config;
-    private document;
-    private platform;
+    protected componentFactoryResolver: ComponentFactoryResolver;
+    protected config: CmsConfig;
+    protected document: any;
+    protected platform: any;
     missingComponents: string[];
     private loadedWebComponents;
     constructor(componentFactoryResolver: ComponentFactoryResolver, config: CmsConfig, document: any, platform: any);

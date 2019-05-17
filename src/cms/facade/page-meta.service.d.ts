@@ -3,7 +3,7 @@ import { Page, PageMeta } from '../model/page.model';
 import { CmsService } from './cms.service';
 import { PageMetaResolver } from '../page/page-meta.resolver';
 export declare class PageMetaService {
-    private resolvers;
+    protected resolvers: PageMetaResolver[];
     protected cms: CmsService;
     constructor(resolvers: PageMetaResolver[], cms: CmsService);
     getMeta(): Observable<PageMeta>;
