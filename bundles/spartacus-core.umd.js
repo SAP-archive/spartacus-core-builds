@@ -46,6 +46,65 @@
     /** @type {?} */
     var testestsd = 'sare';
 
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_USER_TOKEN = '[Auth] Load User Token';
+    /** @type {?} */
+    var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
+    /** @type {?} */
+    var LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
+    var LoadUserToken = /** @class */ (function () {
+        function LoadUserToken(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN;
+        }
+        return LoadUserToken;
+    }());
+    var LoadUserTokenFail = /** @class */ (function () {
+        function LoadUserTokenFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN_FAIL;
+        }
+        return LoadUserTokenFail;
+    }());
+    var LoadUserTokenSuccess = /** @class */ (function () {
+        function LoadUserTokenSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN_SUCCESS;
+        }
+        return LoadUserTokenSuccess;
+    }());
+    var RefreshUserToken = /** @class */ (function () {
+        function RefreshUserToken(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN;
+        }
+        return RefreshUserToken;
+    }());
+    var RefreshUserTokenSuccess = /** @class */ (function () {
+        function RefreshUserTokenSuccess(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN_SUCCESS;
+        }
+        return RefreshUserTokenSuccess;
+    }());
+    var RefreshUserTokenFail = /** @class */ (function () {
+        function RefreshUserTokenFail(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN_FAIL;
+        }
+        return RefreshUserTokenFail;
+    }());
+
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
     Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -141,6 +200,199 @@
             ar = ar.concat(__read(arguments[i]));
         return ar;
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var AUTH_FEATURE = 'auth';
+    /** @type {?} */
+    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
+    /** @type {?} */
+    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
+    /** @type {?} */
+    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
+    /** @type {?} */
+    var LOADER_RESET_ACTION = '[LOADER] RESET';
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function loadMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                load: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @param {?=} error
+     * @return {?}
+     */
+    function failMeta(entityType, error) {
+        return {
+            entityType: entityType,
+            loader: {
+                error: error ? error : true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function successMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                success: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function resetMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {},
+        };
+    }
+    var LoaderLoadAction = /** @class */ (function () {
+        function LoaderLoadAction(entityType) {
+            this.type = LOADER_LOAD_ACTION;
+            this.meta = loadMeta(entityType);
+        }
+        return LoaderLoadAction;
+    }());
+    var LoaderFailAction = /** @class */ (function () {
+        function LoaderFailAction(entityType, error) {
+            this.type = LOADER_FAIL_ACTION;
+            this.meta = failMeta(entityType, error);
+        }
+        return LoaderFailAction;
+    }());
+    var LoaderSuccessAction = /** @class */ (function () {
+        function LoaderSuccessAction(entityType) {
+            this.type = LOADER_SUCCESS_ACTION;
+            this.meta = successMeta(entityType);
+        }
+        return LoaderSuccessAction;
+    }());
+    var LoaderResetAction = /** @class */ (function () {
+        function LoaderResetAction(entityType) {
+            this.type = LOADER_RESET_ACTION;
+            this.meta = resetMeta(entityType);
+        }
+        return LoaderResetAction;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
+    var LoadClientToken = /** @class */ (function (_super) {
+        __extends(LoadClientToken, _super);
+        function LoadClientToken() {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.type = LOAD_CLIENT_TOKEN;
+            return _this;
+        }
+        return LoadClientToken;
+    }(LoaderLoadAction));
+    var LoadClientTokenFail = /** @class */ (function (_super) {
+        __extends(LoadClientTokenFail, _super);
+        function LoadClientTokenFail(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_FAIL;
+            return _this;
+        }
+        return LoadClientTokenFail;
+    }(LoaderFailAction));
+    var LoadClientTokenSuccess = /** @class */ (function (_super) {
+        __extends(LoadClientTokenSuccess, _super);
+        function LoadClientTokenSuccess(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
+            return _this;
+        }
+        return LoadClientTokenSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOGIN = '[Auth] Login';
+    /** @type {?} */
+    var LOGOUT = '[Auth] Logout';
+    var Login = /** @class */ (function () {
+        function Login() {
+            this.type = LOGIN;
+        }
+        return Login;
+    }());
+    var Logout = /** @class */ (function () {
+        function Logout() {
+            this.type = LOGOUT;
+        }
+        return Logout;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getUserTokenSelector = function (state) { return state.token; };
+    /** @type {?} */
+    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
+    /** @type {?} */
+    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -663,27 +915,6 @@
                 return { url: url, queryParams: queryParams, params: params, context: context, cmsRequired: cmsRequired };
             };
         return CustomSerializer;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOGIN = '[Auth] Login';
-    /** @type {?} */
-    var LOGOUT = '[Auth] Logout';
-    var Login = /** @class */ (function () {
-        function Login() {
-            this.type = LOGIN;
-        }
-        return Login;
-    }());
-    var Logout = /** @class */ (function () {
-        function Logout() {
-            this.type = LOGOUT;
-        }
-        return Logout;
     }());
 
     /**
@@ -1883,227 +2114,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var AUTH_FEATURE = 'auth';
-    /** @type {?} */
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
-    /** @type {?} */
-    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
-    /** @type {?} */
-    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
-    /** @type {?} */
-    var LOADER_RESET_ACTION = '[LOADER] RESET';
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function loadMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                load: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @param {?=} error
-     * @return {?}
-     */
-    function failMeta(entityType, error) {
-        return {
-            entityType: entityType,
-            loader: {
-                error: error ? error : true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function successMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                success: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function resetMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {},
-        };
-    }
-    var LoaderLoadAction = /** @class */ (function () {
-        function LoaderLoadAction(entityType) {
-            this.type = LOADER_LOAD_ACTION;
-            this.meta = loadMeta(entityType);
-        }
-        return LoaderLoadAction;
-    }());
-    var LoaderFailAction = /** @class */ (function () {
-        function LoaderFailAction(entityType, error) {
-            this.type = LOADER_FAIL_ACTION;
-            this.meta = failMeta(entityType, error);
-        }
-        return LoaderFailAction;
-    }());
-    var LoaderSuccessAction = /** @class */ (function () {
-        function LoaderSuccessAction(entityType) {
-            this.type = LOADER_SUCCESS_ACTION;
-            this.meta = successMeta(entityType);
-        }
-        return LoaderSuccessAction;
-    }());
-    var LoaderResetAction = /** @class */ (function () {
-        function LoaderResetAction(entityType) {
-            this.type = LOADER_RESET_ACTION;
-            this.meta = resetMeta(entityType);
-        }
-        return LoaderResetAction;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
-    var LoadClientToken = /** @class */ (function (_super) {
-        __extends(LoadClientToken, _super);
-        function LoadClientToken() {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.type = LOAD_CLIENT_TOKEN;
-            return _this;
-        }
-        return LoadClientToken;
-    }(LoaderLoadAction));
-    var LoadClientTokenFail = /** @class */ (function (_super) {
-        __extends(LoadClientTokenFail, _super);
-        function LoadClientTokenFail(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_FAIL;
-            return _this;
-        }
-        return LoadClientTokenFail;
-    }(LoaderFailAction));
-    var LoadClientTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadClientTokenSuccess, _super);
-        function LoadClientTokenSuccess(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadClientTokenSuccess;
-    }(LoaderSuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_USER_TOKEN = '[Auth] Load User Token';
-    /** @type {?} */
-    var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
-    /** @type {?} */
-    var LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
-    var LoadUserToken = /** @class */ (function () {
-        function LoadUserToken(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN;
-        }
-        return LoadUserToken;
-    }());
-    var LoadUserTokenFail = /** @class */ (function () {
-        function LoadUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_FAIL;
-        }
-        return LoadUserTokenFail;
-    }());
-    var LoadUserTokenSuccess = /** @class */ (function () {
-        function LoadUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_SUCCESS;
-        }
-        return LoadUserTokenSuccess;
-    }());
-    var RefreshUserToken = /** @class */ (function () {
-        function RefreshUserToken(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN;
-        }
-        return RefreshUserToken;
-    }());
-    var RefreshUserTokenSuccess = /** @class */ (function () {
-        function RefreshUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_SUCCESS;
-        }
-        return RefreshUserTokenSuccess;
-    }());
-    var RefreshUserTokenFail = /** @class */ (function () {
-        function RefreshUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_FAIL;
-        }
-        return RefreshUserTokenFail;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getUserTokenSelector = function (state) { return state.token; };
-    /** @type {?} */
-    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
-    /** @type {?} */
-    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var AuthService = /** @class */ (function () {
         function AuthService(store) {
             this.store = store;
@@ -2297,13 +2307,13 @@
                 }));
             };
         /**
-         * @private
+         * @protected
          * @param {?} request
          * @param {?} token
          * @return {?}
          */
         ClientErrorHandlingService.prototype.createNewRequestWithNewToken = /**
-         * @private
+         * @protected
          * @param {?} request
          * @param {?} token
          * @return {?}
@@ -2364,11 +2374,11 @@
                 this.authService.logout();
             };
         /**
-         * @private
+         * @protected
          * @return {?}
          */
         UserErrorHandlingService.prototype.handleExpiredToken = /**
-         * @private
+         * @protected
          * @return {?}
          */
             function () {
@@ -2386,13 +2396,13 @@
                 }), operators.filter(function (token) { return oldToken.access_token !== token.access_token; }), operators.take(1));
             };
         /**
-         * @private
+         * @protected
          * @param {?} request
          * @param {?} token
          * @return {?}
          */
         UserErrorHandlingService.prototype.createNewRequestWithNewToken = /**
-         * @private
+         * @protected
          * @param {?} request
          * @param {?} token
          * @return {?}
@@ -3049,11 +3059,11 @@
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
         /**
-         * @private
+         * @protected
          * @return {?}
          */
         ClientAuthenticationTokenService.prototype.getOAuthEndpoint = /**
-         * @private
+         * @protected
          * @return {?}
          */
             function () {
@@ -3165,7 +3175,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var services = [
+    var AuthServices = [
         ClientAuthenticationTokenService,
         ClientErrorHandlingService,
         UserAuthenticationTokenService,
@@ -3629,11 +3639,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var ClientTokenEffect = /** @class */ (function () {
         function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
             var _this = this;
@@ -3864,7 +3869,7 @@
                             AuthStoreModule,
                             ConfigModule.withConfig(defaultAuthConfig),
                         ],
-                        providers: __spread(services, [{ provide: AuthConfig, useExisting: Config }]),
+                        providers: __spread(AuthServices, [{ provide: AuthConfig, useExisting: Config }]),
                     },] }
         ];
         return AuthModule;
@@ -3956,11 +3961,6 @@
         /** @nocollapse */ NotAuthGuard.ngInjectableDef = i0.defineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.inject(RoutingService), i0.inject(AuthService)); }, token: NotAuthGuard, providedIn: "root" });
         return NotAuthGuard;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -4651,7 +4651,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var services$1 = [CartService, CartDataService];
+    var services = [CartService, CartDataService];
 
     /**
      * @fileoverview added by tsickle
@@ -25317,11 +25317,6 @@
     exports.ImageType = ImageType;
     exports.PriceType = PriceType;
     exports.testestsd = testestsd;
-    exports.AuthModule = AuthModule;
-    exports.AuthConfig = AuthConfig;
-    exports.AuthService = AuthService;
-    exports.AuthGuard = AuthGuard;
-    exports.NotAuthGuard = NotAuthGuard;
     exports.LOAD_USER_TOKEN = LOAD_USER_TOKEN;
     exports.LOAD_USER_TOKEN_FAIL = LOAD_USER_TOKEN_FAIL;
     exports.LOAD_USER_TOKEN_SUCCESS = LOAD_USER_TOKEN_SUCCESS;
@@ -25351,6 +25346,12 @@
     exports.getClientTokenState = getClientTokenState;
     exports.AUTH_FEATURE = AUTH_FEATURE;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
+    exports.AuthModule = AuthModule;
+    exports.AuthConfig = AuthConfig;
+    exports.AuthService = AuthService;
+    exports.AuthGuard = AuthGuard;
+    exports.NotAuthGuard = NotAuthGuard;
+    exports.AuthServices = AuthServices;
     exports.CREATE_CART = CREATE_CART;
     exports.CREATE_CART_FAIL = CREATE_CART_FAIL;
     exports.CREATE_CART_SUCCESS = CREATE_CART_SUCCESS;
@@ -25401,7 +25402,7 @@
     exports.getEntries = getEntries;
     exports.CART_FEATURE = CART_FEATURE;
     exports.CART_DATA = CART_DATA;
-    exports.services = services$1;
+    exports.services = services;
     exports.CartService = CartService;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.CartDataService = CartDataService;
@@ -26152,15 +26153,14 @@
     exports.PersonalizationModule = PersonalizationModule;
     exports.PersonalizationConfig = PersonalizationConfig;
     exports.ɵbe = defaultAuthConfig;
-    exports.ɵbm = AuthErrorInterceptor;
-    exports.ɵbj = ClientTokenInterceptor;
-    exports.ɵbi = interceptors;
-    exports.ɵbl = UserTokenInterceptor;
+    exports.ɵbl = AuthErrorInterceptor;
+    exports.ɵbi = ClientTokenInterceptor;
+    exports.ɵbh = interceptors;
+    exports.ɵbk = UserTokenInterceptor;
     exports.ɵbc = ClientAuthenticationTokenService;
-    exports.ɵbg = ClientErrorHandlingService;
-    exports.ɵbf = services;
+    exports.ɵbf = ClientErrorHandlingService;
     exports.ɵbb = UserAuthenticationTokenService;
-    exports.ɵbh = UserErrorHandlingService;
+    exports.ɵbg = UserErrorHandlingService;
     exports.ɵm = AuthStoreModule;
     exports.ɵl = authStoreConfigFactory;
     exports.ɵba = ClientTokenEffect;
@@ -26172,89 +26172,89 @@
     exports.ɵv = reducerProvider$1;
     exports.ɵu = reducerToken$1;
     exports.ɵbd = reducer$1;
-    exports.ɵbo = OccCartNormalizer;
-    exports.ɵbp = CartStoreModule;
-    exports.ɵbx = CartEntryEffects;
-    exports.ɵbw = CartEffects;
-    exports.ɵbv = effects$4;
-    exports.ɵby = reducer$2;
-    exports.ɵbt = clearCartState;
-    exports.ɵbq = getReducers$2;
-    exports.ɵbu = metaReducers$1;
-    exports.ɵbs = reducerProvider$2;
-    exports.ɵbr = reducerToken$2;
-    exports.ɵcm = CheckoutStoreModule;
-    exports.ɵcg = AddressVerificationEffect;
-    exports.ɵcf = CardTypesEffects;
-    exports.ɵce = CheckoutEffects;
-    exports.ɵcd = effects$5;
-    exports.ɵcc = getAddressVerificationResults;
-    exports.ɵcb = reducer$7;
-    exports.ɵca = getCardTypesEntites;
-    exports.ɵbz = reducer$6;
-    exports.ɵcn = reducer$9;
-    exports.ɵck = clearCheckoutState;
-    exports.ɵch = getReducers$5;
-    exports.ɵcl = metaReducers$2;
-    exports.ɵcj = reducerProvider$5;
-    exports.ɵci = reducerToken$5;
-    exports.ɵcs = CmsStoreModule;
-    exports.ɵcr = cmsStoreConfigFactory;
-    exports.ɵda = ComponentEffects;
-    exports.ɵcy = effects$6;
-    exports.ɵdb = NavigationEntryItemEffects;
-    exports.ɵcz = PageEffects;
-    exports.ɵcw = clearCmsState;
-    exports.ɵct = getReducers$6;
-    exports.ɵcx = metaReducers$3;
-    exports.ɵcv = reducerProvider$6;
-    exports.ɵcu = reducerToken$6;
-    exports.ɵde = reducer$a;
-    exports.ɵdc = reducer$b;
-    exports.ɵdd = reducer$c;
-    exports.ɵfc = ConfigModule;
-    exports.ɵea = ServerConfig;
-    exports.ɵbn = provideConfigValidator;
-    exports.ɵdz = HttpErrorInterceptor;
-    exports.ɵdy = reducer$8;
-    exports.ɵdv = getReducers$4;
-    exports.ɵdx = reducerProvider$4;
-    exports.ɵdw = reducerToken$4;
-    exports.ɵeb = defaultI18nConfig;
-    exports.ɵed = i18nextInit;
-    exports.ɵec = i18nextProviders;
-    exports.ɵee = MockDatePipe;
-    exports.ɵef = MockTranslationService;
-    exports.ɵgv = defaultPersonalizationConfig;
-    exports.ɵgw = interceptors$3;
-    exports.ɵgx = OccPersonalizationIdInterceptor;
-    exports.ɵgy = OccPersonalizationTimeInterceptor;
-    exports.ɵgo = ProcessModule;
-    exports.ɵgq = PROCESS_FEATURE;
-    exports.ɵgp = ProcessStoreModule;
-    exports.ɵgr = getReducers$9;
-    exports.ɵgt = reducerProvider$9;
-    exports.ɵgs = reducerToken$9;
-    exports.ɵeg = defaultOccProductConfig;
-    exports.ɵeh = OccProductReferencesListNormalizer;
-    exports.ɵdl = effects$7;
-    exports.ɵdm = ProductReferencesEffects;
-    exports.ɵdn = ProductReviewsEffects;
-    exports.ɵdo = ProductsSearchEffects;
-    exports.ɵdp = ProductEffects;
-    exports.ɵej = ProductStoreModule;
-    exports.ɵei = productStoreConfigFactory;
-    exports.ɵdt = clearProductsState;
-    exports.ɵdq = getReducers$7;
-    exports.ɵdu = metaReducers$4;
-    exports.ɵds = reducerProvider$7;
-    exports.ɵdr = reducerToken$7;
-    exports.ɵep = reducer$d;
-    exports.ɵeo = reducer$e;
-    exports.ɵem = getAuxSearchResults;
-    exports.ɵen = getProductSuggestions;
-    exports.ɵel = getSearchResults;
-    exports.ɵek = reducer$f;
+    exports.ɵbn = OccCartNormalizer;
+    exports.ɵbo = CartStoreModule;
+    exports.ɵbw = CartEntryEffects;
+    exports.ɵbv = CartEffects;
+    exports.ɵbu = effects$4;
+    exports.ɵbx = reducer$2;
+    exports.ɵbs = clearCartState;
+    exports.ɵbp = getReducers$2;
+    exports.ɵbt = metaReducers$1;
+    exports.ɵbr = reducerProvider$2;
+    exports.ɵbq = reducerToken$2;
+    exports.ɵcl = CheckoutStoreModule;
+    exports.ɵcf = AddressVerificationEffect;
+    exports.ɵce = CardTypesEffects;
+    exports.ɵcd = CheckoutEffects;
+    exports.ɵcc = effects$5;
+    exports.ɵcb = getAddressVerificationResults;
+    exports.ɵca = reducer$7;
+    exports.ɵbz = getCardTypesEntites;
+    exports.ɵby = reducer$6;
+    exports.ɵcm = reducer$9;
+    exports.ɵcj = clearCheckoutState;
+    exports.ɵcg = getReducers$5;
+    exports.ɵck = metaReducers$2;
+    exports.ɵci = reducerProvider$5;
+    exports.ɵch = reducerToken$5;
+    exports.ɵcr = CmsStoreModule;
+    exports.ɵcq = cmsStoreConfigFactory;
+    exports.ɵcz = ComponentEffects;
+    exports.ɵcx = effects$6;
+    exports.ɵda = NavigationEntryItemEffects;
+    exports.ɵcy = PageEffects;
+    exports.ɵcv = clearCmsState;
+    exports.ɵcs = getReducers$6;
+    exports.ɵcw = metaReducers$3;
+    exports.ɵcu = reducerProvider$6;
+    exports.ɵct = reducerToken$6;
+    exports.ɵdd = reducer$a;
+    exports.ɵdb = reducer$b;
+    exports.ɵdc = reducer$c;
+    exports.ɵfb = ConfigModule;
+    exports.ɵdz = ServerConfig;
+    exports.ɵbm = provideConfigValidator;
+    exports.ɵdy = HttpErrorInterceptor;
+    exports.ɵdx = reducer$8;
+    exports.ɵdu = getReducers$4;
+    exports.ɵdw = reducerProvider$4;
+    exports.ɵdv = reducerToken$4;
+    exports.ɵea = defaultI18nConfig;
+    exports.ɵec = i18nextInit;
+    exports.ɵeb = i18nextProviders;
+    exports.ɵed = MockDatePipe;
+    exports.ɵee = MockTranslationService;
+    exports.ɵgu = defaultPersonalizationConfig;
+    exports.ɵgv = interceptors$3;
+    exports.ɵgw = OccPersonalizationIdInterceptor;
+    exports.ɵgx = OccPersonalizationTimeInterceptor;
+    exports.ɵgn = ProcessModule;
+    exports.ɵgp = PROCESS_FEATURE;
+    exports.ɵgo = ProcessStoreModule;
+    exports.ɵgq = getReducers$9;
+    exports.ɵgs = reducerProvider$9;
+    exports.ɵgr = reducerToken$9;
+    exports.ɵef = defaultOccProductConfig;
+    exports.ɵeg = OccProductReferencesListNormalizer;
+    exports.ɵdk = effects$7;
+    exports.ɵdl = ProductReferencesEffects;
+    exports.ɵdm = ProductReviewsEffects;
+    exports.ɵdn = ProductsSearchEffects;
+    exports.ɵdo = ProductEffects;
+    exports.ɵei = ProductStoreModule;
+    exports.ɵeh = productStoreConfigFactory;
+    exports.ɵds = clearProductsState;
+    exports.ɵdp = getReducers$7;
+    exports.ɵdt = metaReducers$4;
+    exports.ɵdr = reducerProvider$7;
+    exports.ɵdq = reducerToken$7;
+    exports.ɵeo = reducer$d;
+    exports.ɵen = reducer$e;
+    exports.ɵel = getAuxSearchResults;
+    exports.ɵem = getProductSuggestions;
+    exports.ɵek = getSearchResults;
+    exports.ɵej = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵb = ROUTING_FEATURE;
@@ -26265,72 +26265,72 @@
     exports.ɵd = reducer;
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
-    exports.ɵeq = defaultSiteContextConfigFactory;
-    exports.ɵbk = BaseSiteService;
-    exports.ɵew = SiteContextParamsService;
-    exports.ɵey = SiteContextRoutesHandler;
-    exports.ɵex = SiteContextUrlSerializer;
-    exports.ɵdk = CurrenciesEffects;
-    exports.ɵdi = effects$3;
-    exports.ɵdj = LanguagesEffects;
-    exports.ɵev = reducer$5;
-    exports.ɵeu = reducer$4;
-    exports.ɵdf = getReducers$3;
-    exports.ɵdh = reducerProvider$3;
-    exports.ɵdg = reducerToken$3;
-    exports.ɵet = reducer$3;
-    exports.ɵes = SiteContextStoreModule;
-    exports.ɵer = siteContextStoreConfigFactory;
-    exports.ɵfa = CmsTicketInterceptor;
-    exports.ɵez = interceptors$2;
-    exports.ɵcp = EntityFailAction;
-    exports.ɵco = EntityLoadAction;
-    exports.ɵfl = EntityResetAction;
-    exports.ɵcq = EntitySuccessAction;
+    exports.ɵep = defaultSiteContextConfigFactory;
+    exports.ɵbj = BaseSiteService;
+    exports.ɵev = SiteContextParamsService;
+    exports.ɵex = SiteContextRoutesHandler;
+    exports.ɵew = SiteContextUrlSerializer;
+    exports.ɵdj = CurrenciesEffects;
+    exports.ɵdh = effects$3;
+    exports.ɵdi = LanguagesEffects;
+    exports.ɵeu = reducer$5;
+    exports.ɵet = reducer$4;
+    exports.ɵde = getReducers$3;
+    exports.ɵdg = reducerProvider$3;
+    exports.ɵdf = reducerToken$3;
+    exports.ɵes = reducer$3;
+    exports.ɵer = SiteContextStoreModule;
+    exports.ɵeq = siteContextStoreConfigFactory;
+    exports.ɵez = CmsTicketInterceptor;
+    exports.ɵey = interceptors$2;
+    exports.ɵco = EntityFailAction;
+    exports.ɵcn = EntityLoadAction;
+    exports.ɵfk = EntityResetAction;
+    exports.ɵcp = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
     exports.ɵp = defaultStateConfig;
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfd = defaultStoreFinderConfig;
-    exports.ɵfj = FindStoresEffect;
-    exports.ɵfi = effects$9;
-    exports.ɵfk = ViewAllStoresEffect;
-    exports.ɵff = getReducers$a;
-    exports.ɵfh = reducerProvider$a;
-    exports.ɵfg = reducerToken$a;
-    exports.ɵfb = getStoreFinderState;
-    exports.ɵfe = StoreFinderStoreModule;
-    exports.ɵfz = BillingCountriesEffect;
-    exports.ɵga = DeliveryCountriesEffects;
-    exports.ɵgl = ForgotPasswordEffects;
-    exports.ɵfy = effects$8;
-    exports.ɵgb = OrderDetailsEffect;
-    exports.ɵgc = UserPaymentMethodsEffects;
-    exports.ɵgd = RegionsEffects;
-    exports.ɵge = ResetPasswordEffects;
-    exports.ɵgf = TitlesEffects;
-    exports.ɵgm = UpdateEmailEffects;
-    exports.ɵgn = UpdatePasswordEffects;
-    exports.ɵgg = UserAddressesEffects;
-    exports.ɵgh = UserConsentsEffect;
-    exports.ɵgi = UserDetailsEffects;
-    exports.ɵgj = UserOrdersEffect;
-    exports.ɵgk = UserRegisterEffects;
-    exports.ɵfo = reducer$g;
-    exports.ɵft = reducer$h;
-    exports.ɵfs = reducer$i;
-    exports.ɵfq = reducer$j;
-    exports.ɵfv = reducer$k;
-    exports.ɵfw = reducer$l;
-    exports.ɵfu = reducer$m;
-    exports.ɵfn = reducer$n;
-    exports.ɵfp = reducer$o;
-    exports.ɵfm = reducer$p;
-    exports.ɵfr = reducer$q;
-    exports.ɵfx = UserStoreModule;
-    exports.ɵgu = StripHtmlPipe;
+    exports.ɵfc = defaultStoreFinderConfig;
+    exports.ɵfi = FindStoresEffect;
+    exports.ɵfh = effects$9;
+    exports.ɵfj = ViewAllStoresEffect;
+    exports.ɵfe = getReducers$a;
+    exports.ɵfg = reducerProvider$a;
+    exports.ɵff = reducerToken$a;
+    exports.ɵfa = getStoreFinderState;
+    exports.ɵfd = StoreFinderStoreModule;
+    exports.ɵfy = BillingCountriesEffect;
+    exports.ɵfz = DeliveryCountriesEffects;
+    exports.ɵgk = ForgotPasswordEffects;
+    exports.ɵfx = effects$8;
+    exports.ɵga = OrderDetailsEffect;
+    exports.ɵgb = UserPaymentMethodsEffects;
+    exports.ɵgc = RegionsEffects;
+    exports.ɵgd = ResetPasswordEffects;
+    exports.ɵge = TitlesEffects;
+    exports.ɵgl = UpdateEmailEffects;
+    exports.ɵgm = UpdatePasswordEffects;
+    exports.ɵgf = UserAddressesEffects;
+    exports.ɵgg = UserConsentsEffect;
+    exports.ɵgh = UserDetailsEffects;
+    exports.ɵgi = UserOrdersEffect;
+    exports.ɵgj = UserRegisterEffects;
+    exports.ɵfn = reducer$g;
+    exports.ɵfs = reducer$h;
+    exports.ɵfr = reducer$i;
+    exports.ɵfp = reducer$j;
+    exports.ɵfu = reducer$k;
+    exports.ɵfv = reducer$l;
+    exports.ɵft = reducer$m;
+    exports.ɵfm = reducer$n;
+    exports.ɵfo = reducer$o;
+    exports.ɵfl = reducer$p;
+    exports.ɵfq = reducer$q;
+    exports.ɵfw = UserStoreModule;
+    exports.ɵgt = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

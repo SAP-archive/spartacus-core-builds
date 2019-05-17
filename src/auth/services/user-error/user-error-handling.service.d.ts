@@ -4,11 +4,11 @@ import { AuthService } from '../../facade/auth.service';
 import { UserToken } from '../../models/token-types.model';
 import { RoutingService } from '../../../routing/facade/routing.service';
 export declare class UserErrorHandlingService {
-    private authService;
-    private routingService;
+    protected authService: AuthService;
+    protected routingService: RoutingService;
     constructor(authService: AuthService, routingService: RoutingService);
     handleExpiredUserToken(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<UserToken>>;
     handleExpiredRefreshToken(): void;
-    private handleExpiredToken;
-    private createNewRequestWithNewToken;
+    protected handleExpiredToken(): Observable<UserToken>;
+    protected createNewRequestWithNewToken(request: HttpRequest<any>, token: UserToken): HttpRequest<any>;
 }

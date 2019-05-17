@@ -1,1 +1,1 @@
-export declare const services: any[];
+export declare const AuthServices: any[];

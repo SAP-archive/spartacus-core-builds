@@ -4,7 +4,7 @@ import { LoaderState } from '../../state/utils/loader/loader-state';
 import { ClientToken, UserToken } from '../models/token-types.model';
 import { StateWithAuth } from '../store/auth-state';
 export declare class AuthService {
-    private store;
+    protected store: Store<StateWithAuth>;
     constructor(store: Store<StateWithAuth>);
     /**
      * Loads a new user token
