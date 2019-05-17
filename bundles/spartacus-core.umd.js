@@ -22949,12 +22949,12 @@
                 });
             };
         /**
-         * @private
+         * @protected
          * @param {?} cmsPage
          * @return {?}
          */
         SmartEditService.prototype.goToPreviewPage = /**
-         * @private
+         * @protected
          * @param {?} cmsPage
          * @return {?}
          */
@@ -25201,6 +25201,7 @@
     exports.getAllCurrencies = getAllCurrencies;
     exports.getActiveBaseSite = getActiveBaseSite;
     exports.SmartEditModule = SmartEditModule;
+    exports.SmartEditService = SmartEditService;
     exports.StateModule = StateModule;
     exports.getStateSlice = getStateSlice;
     exports.entityLoadMeta = entityLoadMeta;
@@ -25575,7 +25576,7 @@
     exports.ɵde = reducer$a;
     exports.ɵdc = reducer$b;
     exports.ɵdd = reducer$c;
-    exports.ɵfd = ConfigModule;
+    exports.ɵfc = ConfigModule;
     exports.ɵea = ServerConfig;
     exports.ɵbn = provideConfigValidator;
     exports.ɵdz = HttpErrorInterceptor;
@@ -25588,16 +25589,16 @@
     exports.ɵec = i18nextProviders;
     exports.ɵee = MockDatePipe;
     exports.ɵef = MockTranslationService;
-    exports.ɵgu = defaultPersonalizationConfig;
-    exports.ɵgv = interceptors$3;
-    exports.ɵgw = OccPersonalizationIdInterceptor;
-    exports.ɵgx = OccPersonalizationTimeInterceptor;
-    exports.ɵgn = ProcessModule;
-    exports.ɵgp = PROCESS_FEATURE;
-    exports.ɵgo = ProcessStoreModule;
-    exports.ɵgq = getReducers$9;
-    exports.ɵgs = reducerProvider$9;
-    exports.ɵgr = reducerToken$9;
+    exports.ɵgt = defaultPersonalizationConfig;
+    exports.ɵgu = interceptors$3;
+    exports.ɵgv = OccPersonalizationIdInterceptor;
+    exports.ɵgw = OccPersonalizationTimeInterceptor;
+    exports.ɵgm = ProcessModule;
+    exports.ɵgo = PROCESS_FEATURE;
+    exports.ɵgn = ProcessStoreModule;
+    exports.ɵgp = getReducers$9;
+    exports.ɵgr = reducerProvider$9;
+    exports.ɵgq = reducerToken$9;
     exports.ɵeg = defaultOccProductConfig;
     exports.ɵeh = OccProductReferencesListNormalizer;
     exports.ɵdl = effects$7;
@@ -25646,10 +25647,9 @@
     exports.ɵer = siteContextStoreConfigFactory;
     exports.ɵfa = CmsTicketInterceptor;
     exports.ɵez = interceptors$2;
-    exports.ɵfb = SmartEditService;
     exports.ɵcp = EntityFailAction;
     exports.ɵco = EntityLoadAction;
-    exports.ɵfm = EntityResetAction;
+    exports.ɵfl = EntityResetAction;
     exports.ɵcq = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
@@ -25657,42 +25657,42 @@
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfe = defaultStoreFinderConfig;
-    exports.ɵfk = FindStoresEffect;
-    exports.ɵfj = effects$9;
-    exports.ɵfl = ViewAllStoresEffect;
-    exports.ɵfg = getReducers$a;
-    exports.ɵfi = reducerProvider$a;
-    exports.ɵfh = reducerToken$a;
-    exports.ɵfc = getStoreFinderState;
-    exports.ɵff = StoreFinderStoreModule;
-    exports.ɵfz = BillingCountriesEffect;
-    exports.ɵga = DeliveryCountriesEffects;
-    exports.ɵgk = ForgotPasswordEffects;
-    exports.ɵfy = effects$8;
-    exports.ɵgb = OrderDetailsEffect;
-    exports.ɵgc = UserPaymentMethodsEffects;
-    exports.ɵgd = RegionsEffects;
-    exports.ɵge = ResetPasswordEffects;
-    exports.ɵgf = TitlesEffects;
-    exports.ɵgl = UpdateEmailEffects;
-    exports.ɵgm = UpdatePasswordEffects;
-    exports.ɵgg = UserAddressesEffects;
-    exports.ɵgh = UserDetailsEffects;
-    exports.ɵgi = UserOrdersEffect;
-    exports.ɵgj = UserRegisterEffects;
-    exports.ɵfp = reducer$g;
-    exports.ɵft = reducer$h;
-    exports.ɵfs = reducer$i;
-    exports.ɵfq = reducer$j;
-    exports.ɵfv = reducer$k;
-    exports.ɵfw = reducer$l;
-    exports.ɵfu = reducer$m;
-    exports.ɵfo = reducer$n;
-    exports.ɵfn = reducer$o;
-    exports.ɵfr = reducer$p;
-    exports.ɵfx = UserStoreModule;
-    exports.ɵgt = StripHtmlPipe;
+    exports.ɵfd = defaultStoreFinderConfig;
+    exports.ɵfj = FindStoresEffect;
+    exports.ɵfi = effects$9;
+    exports.ɵfk = ViewAllStoresEffect;
+    exports.ɵff = getReducers$a;
+    exports.ɵfh = reducerProvider$a;
+    exports.ɵfg = reducerToken$a;
+    exports.ɵfb = getStoreFinderState;
+    exports.ɵfe = StoreFinderStoreModule;
+    exports.ɵfy = BillingCountriesEffect;
+    exports.ɵfz = DeliveryCountriesEffects;
+    exports.ɵgj = ForgotPasswordEffects;
+    exports.ɵfx = effects$8;
+    exports.ɵga = OrderDetailsEffect;
+    exports.ɵgb = UserPaymentMethodsEffects;
+    exports.ɵgc = RegionsEffects;
+    exports.ɵgd = ResetPasswordEffects;
+    exports.ɵge = TitlesEffects;
+    exports.ɵgk = UpdateEmailEffects;
+    exports.ɵgl = UpdatePasswordEffects;
+    exports.ɵgf = UserAddressesEffects;
+    exports.ɵgg = UserDetailsEffects;
+    exports.ɵgh = UserOrdersEffect;
+    exports.ɵgi = UserRegisterEffects;
+    exports.ɵfo = reducer$g;
+    exports.ɵfs = reducer$h;
+    exports.ɵfr = reducer$i;
+    exports.ɵfp = reducer$j;
+    exports.ɵfu = reducer$k;
+    exports.ɵfv = reducer$l;
+    exports.ɵft = reducer$m;
+    exports.ɵfn = reducer$n;
+    exports.ɵfm = reducer$o;
+    exports.ɵfq = reducer$p;
+    exports.ɵfw = UserStoreModule;
+    exports.ɵgs = StripHtmlPipe;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
