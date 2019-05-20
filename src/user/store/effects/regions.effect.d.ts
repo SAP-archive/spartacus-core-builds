@@ -1,10 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import * as fromActions from '../actions/index';
-import { OccMiscsService } from '../../../occ/miscs/miscs.service';
+import { UserPaymentConnector } from '../../connectors/payment/user-payment.connector';
 export declare class RegionsEffects {
     private actions$;
-    private occMiscsService;
+    private userPaymentConnector;
     loadRegions$: Observable<fromActions.RegionsAction>;
-    constructor(actions$: Actions, occMiscsService: OccMiscsService);
+    constructor(actions$: Actions, userPaymentConnector: UserPaymentConnector);
 }

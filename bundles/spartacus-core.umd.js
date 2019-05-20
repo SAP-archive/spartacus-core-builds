@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
     (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,i1,i18nextXhrBackend,i18next,rxjs,i1$1,effects,i0,i1$2,operators,i1$3) { 'use strict';
+}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,i1,i18nextXhrBackend,i18next,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -654,7 +654,7 @@
             };
         ConfigModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule],
+                        imports: [i1$2.CommonModule],
                         declarations: [],
                     },] }
         ];
@@ -1000,7 +1000,7 @@
             return [
                 { type: effects.Actions },
                 { type: i1.Router },
-                { type: i1$3.Location }
+                { type: i1$2.Location }
             ];
         };
         __decorate([
@@ -1088,10 +1088,10 @@
         /** @nocollapse */
         WindowRef.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$3.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
             ];
         };
-        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$3.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$2.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
         return WindowRef;
     }());
 
@@ -2015,7 +2015,7 @@
         }
         ConfigurableRoutesModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule],
+                        imports: [i1$2.CommonModule],
                         providers: [
                             {
                                 provide: i0.APP_INITIALIZER,
@@ -2455,7 +2455,7 @@
                 if (headers) {
                     return headers.append(headerName, JSON.stringify(interceptorParam));
                 }
-                headers = new i1$2.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+                headers = new http.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
                 return headers;
             };
         /**
@@ -2526,7 +2526,7 @@
                     request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
                 }
                 return next.handle(request).pipe(operators.catchError(function (errResponse) {
-                    if (errResponse instanceof i1$2.HttpErrorResponse) {
+                    if (errResponse instanceof http.HttpErrorResponse) {
                         switch (errResponse.status) {
                             case 401: // Unauthorized
                                 if (isClientTokenRequest) {
@@ -2842,7 +2842,7 @@
                         httpParamsOptions = { fromString: queryParamsFromEndpoint };
                     }
                     /** @type {?} */
-                    var httpParams_1 = new i1$2.HttpParams(httpParamsOptions);
+                    var httpParams_1 = new http.HttpParams(httpParamsOptions);
                     Object.keys(queryParams).forEach(function (key) {
                         /** @type {?} */
                         var value = queryParams[key];
@@ -3009,17 +3009,17 @@
     /** @type {?} */
     var interceptors = [
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: ClientTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: UserTokenInterceptor,
             multi: true,
         },
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: AuthErrorInterceptor,
             multi: true,
         },
@@ -3032,9 +3032,9 @@
     /** @type {?} */
     var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var ClientAuthenticationTokenService = /** @class */ (function () {
-        function ClientAuthenticationTokenService(config, http) {
+        function ClientAuthenticationTokenService(config, http$$1) {
             this.config = config;
-            this.http = http;
+            this.http = http$$1;
         }
         /**
          * @return {?}
@@ -3046,12 +3046,12 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$2.HttpParams()
+                var params = new http.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('grant_type', 'client_credentials');
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3076,7 +3076,7 @@
         ClientAuthenticationTokenService.ctorParameters = function () {
             return [
                 { type: AuthConfig },
-                { type: i1$2.HttpClient }
+                { type: http.HttpClient }
             ];
         };
         return ClientAuthenticationTokenService;
@@ -3089,8 +3089,8 @@
     /** @type {?} */
     var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
     var UserAuthenticationTokenService = /** @class */ (function () {
-        function UserAuthenticationTokenService(http, config) {
-            this.http = http;
+        function UserAuthenticationTokenService(http$$1, config) {
+            this.http = http$$1;
             this.config = config;
         }
         /**
@@ -3107,14 +3107,14 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$2.HttpParams()
+                var params = new http.HttpParams()
                     .set('client_id', this.config.authentication.client_id)
                     .set('client_secret', this.config.authentication.client_secret)
                     .set('grant_type', 'password') // authorization_code, client_credentials, password
                     .set('username', userId)
                     .set('password', password);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3133,13 +3133,13 @@
                 /** @type {?} */
                 var url = this.getOAuthEndpoint();
                 /** @type {?} */
-                var params = new i1$2.HttpParams()
+                var params = new http.HttpParams()
                     .set('client_id', encodeURIComponent(this.config.authentication.client_id))
                     .set('client_secret', encodeURIComponent(this.config.authentication.client_secret))
                     .set('refresh_token', encodeURI(refreshToken))
                     .set('grant_type', 'refresh_token');
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -3163,7 +3163,7 @@
         /** @nocollapse */
         UserAuthenticationTokenService.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: AuthConfig }
             ];
         };
@@ -3447,10 +3447,10 @@
             config.state &&
             config.state.ssrTransfer &&
             config.state.ssrTransfer.keys) {
-            if (i1$3.isPlatformBrowser(platformId)) {
+            if (i1$2.isPlatformBrowser(platformId)) {
                 return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
-            else if (i1$3.isPlatformServer(platformId)) {
+            else if (i1$2.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -3828,8 +3828,8 @@
         AuthStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             StateModule,
                             i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
                             effects.EffectsModule.forFeature(effects$2),
@@ -3863,8 +3863,8 @@
         AuthModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             RoutingModule,
                             AuthStoreModule,
                             ConfigModule.withConfig(defaultAuthConfig),
@@ -5038,6 +5038,15 @@
             function (userId, cartId, paymentDetailsId) {
                 return this.adapter.set(userId, cartId, paymentDetailsId);
             };
+        /**
+         * @return {?}
+         */
+        CartPaymentConnector.prototype.getCardTypes = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadCardTypes();
+            };
         CartPaymentConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
@@ -5061,6 +5070,8 @@
     var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
     /** @type {?} */
     var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
+    /** @type {?} */
+    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -5275,8 +5286,8 @@
     /** @type {?} */
     var CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
     var OccCartAdapter = /** @class */ (function () {
-        function OccCartAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCartAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -5310,10 +5321,10 @@
                 var url = this.getCartEndpoint(userId);
                 /** @type {?} */
                 var params = details
-                    ? new i1$2.HttpParams({
+                    ? new http.HttpParams({
                         fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
                     })
-                    : new i1$2.HttpParams({
+                    : new http.HttpParams({
                         fromString: "fields=carts(" + BASIC_PARAMS + ",saveTime)",
                     });
                 return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
@@ -5335,10 +5346,10 @@
                 var url = this.getCartEndpoint(userId) + cartId;
                 /** @type {?} */
                 var params = details
-                    ? new i1$2.HttpParams({
+                    ? new http.HttpParams({
                         fromString: "fields=" + DETAILS_PARAMS,
                     })
-                    : new i1$2.HttpParams({
+                    : new http.HttpParams({
                         fromString: "fields=" + BASIC_PARAMS,
                     });
                 if (cartId === 'current') {
@@ -5373,7 +5384,7 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId;
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: "fields=" + CHECKOUT_PARAMS,
                 });
                 return this.http
@@ -5406,7 +5417,7 @@
                     queryString = queryString + "&toMergeCartGuid=" + toMergeCartGuid;
                 }
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: queryString,
                 });
                 return this.http.post(url, toAdd, { params: params }).pipe(this.converter.pipeable(CART_NORMALIZER), operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
@@ -5417,7 +5428,7 @@
         /** @nocollapse */
         OccCartAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -5430,8 +5441,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccCartDeliveryAdapter = /** @class */ (function () {
-        function OccCartDeliveryAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCartDeliveryAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -5466,7 +5477,7 @@
                 address = this.converter.convert(address, DELIVERY_ADDRESS_SERIALIZER);
                 return this.http
                     .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                    headers: new i1$2.HttpHeaders().set('Content-Type', 'application/json'),
+                    headers: new http.HttpHeaders().set('Content-Type', 'application/json'),
                 })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_ADDRESS_NORMALIZER));
             };
@@ -5544,7 +5555,7 @@
         /** @nocollapse */
         OccCartDeliveryAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -5557,8 +5568,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccCartEntryAdapter = /** @class */ (function () {
-        function OccCartEntryAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCartEntryAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -5600,11 +5611,11 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries';
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: 'code=' + productCode + '&qty=' + quantity,
                 });
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5636,11 +5647,11 @@
                     queryString = queryString + '&pickupStore=' + pickupStore;
                 }
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: queryString,
                 });
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http.patch(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -5661,7 +5672,7 @@
                 /** @type {?} */
                 var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5674,7 +5685,7 @@
         /** @nocollapse */
         OccCartEntryAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -5740,9 +5751,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var ENDPOINT_CARD_TYPES = 'cardtypes';
     var OccCartPaymentAdapter = /** @class */ (function () {
-        function OccCartPaymentAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCartPaymentAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
             if (typeof DOMParser !== 'undefined') {
@@ -5815,6 +5828,17 @@
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
             };
         /**
+         * @return {?}
+         */
+        OccCartPaymentAdapter.prototype.loadCardTypes = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (cardTypeList) { return cardTypeList.cardTypes; }), this.converter.pipeableMany(CARD_TYPE_NORMALIZER));
+            };
+        /**
          * @protected
          * @param {?} userId
          * @param {?} cartId
@@ -5847,12 +5871,12 @@
          */
             function (postUrl, parameters) {
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                     Accept: 'text/html',
                 });
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
@@ -5877,12 +5901,12 @@
          */
             function (userId, cartId, parameters) {
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams({ encoder: new CustomEncoder() });
+                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
                 Object.keys(parameters).forEach(function (key) {
                     httpParams = httpParams.append(key, parameters[key]);
                 });
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -5993,7 +6017,7 @@
         /** @nocollapse */
         OccCartPaymentAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -6120,7 +6144,7 @@
         }
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule, i1$2.HttpClientModule, OccModule],
+                        imports: [i1$2.CommonModule, http.HttpClientModule, OccModule],
                         providers: [
                             {
                                 provide: CartAdapter,
@@ -7096,7 +7120,7 @@
         }
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [OccModule, i1$3.CommonModule, i1$2.HttpClientModule],
+                        imports: [OccModule, i1$2.CommonModule, http.HttpClientModule],
                         providers: [OccModule],
                     },] }
         ];
@@ -7129,8 +7153,8 @@
         SiteContextStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
                             effects.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
@@ -7944,7 +7968,7 @@
          */
             function () {
                 this.router = this.injector.get(i1.Router);
-                this.location = this.injector.get(i1$3.Location);
+                this.location = this.injector.get(i1$2.Location);
                 /** @type {?} */
                 var routingParams = this.siteContextParams.getContextParameters('route');
                 if (routingParams.length) {
@@ -8147,8 +8171,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccSiteAdapter = /** @class */ (function () {
-        function OccSiteAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccSiteAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -8180,7 +8204,7 @@
         /** @nocollapse */
         OccSiteAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -8195,7 +8219,7 @@
     /** @type {?} */
     var interceptors$1 = [
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: SiteContextInterceptor,
             multi: true,
         },
@@ -8417,8 +8441,8 @@
         CartStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             CartOccModule,
                             i1$1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
                             effects.EffectsModule.forFeature(effects$4),
@@ -9020,7 +9044,7 @@
             function (request, next) {
                 var _this = this;
                 return next.handle(request).pipe(operators.catchError(function (response) {
-                    if (response instanceof i1$2.HttpErrorResponse) {
+                    if (response instanceof http.HttpErrorResponse) {
                         _this.handleErrorResponse(request, response);
                         return rxjs.throwError(response);
                     }
@@ -9392,7 +9416,7 @@
     /** @type {?} */
     var httpErrorInterceptors = [
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: HttpErrorInterceptor,
             multi: true,
         },
@@ -10681,124 +10705,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ENDPOINT_COUNTRIES = 'countries';
-    /** @type {?} */
-    var ENDPOINT_TITLES = 'titles';
-    /** @type {?} */
-    var ENDPOINT_CARD_TYPES = 'cardtypes';
-    /** @type {?} */
-    var ENDPOINT_REGIONS = 'regions';
-    /** @type {?} */
-    var COUNTRIES_TYPE_SHIPPING = 'SHIPPING';
-    /** @type {?} */
-    var COUNTRIES_TYPE_BILLING = 'BILLING';
-    var OccMiscsService = /** @class */ (function () {
-        function OccMiscsService(http, occEndpoints) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-        }
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadDeliveryCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$2.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadBillingCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_COUNTRIES), {
-                    params: new i1$2.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadTitles = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_TITLES))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadCardTypes = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        OccMiscsService.prototype.loadRegions = /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(this.buildRegionsUrl(countryIsoCode)))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @private
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        OccMiscsService.prototype.buildRegionsUrl = /**
-         * @private
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                return ENDPOINT_COUNTRIES + "/" + countryIsoCode + "/" + ENDPOINT_REGIONS;
-            };
-        OccMiscsService.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        OccMiscsService.ctorParameters = function () {
-            return [
-                { type: i1$2.HttpClient },
-                { type: OccEndpointsService }
-            ];
-        };
-        /** @nocollapse */ OccMiscsService.ngInjectableDef = i0.defineInjectable({ factory: function OccMiscsService_Factory() { return new OccMiscsService(i0.inject(i1$2.HttpClient), i0.inject(OccEndpointsService)); }, token: OccMiscsService, providedIn: "root" });
-        return OccMiscsService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CardTypesEffects = /** @class */ (function () {
-        function CardTypesEffects(actions$, occMiscsService) {
+        function CardTypesEffects(actions$, cartPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occMiscsService = occMiscsService;
+            this.cartPaymentConnector = cartPaymentConnector;
             this.loadCardTypes$ = this.actions$.pipe(effects.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
-                return _this.occMiscsService.loadCardTypes().pipe(operators.map(function (data) { return new LoadCardTypesSuccess(data.cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(error)); }));
+                return _this.cartPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(error)); }));
             }));
         }
         CardTypesEffects.decorators = [
@@ -10808,7 +10721,7 @@
         CardTypesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccMiscsService }
+                { type: CartPaymentConnector }
             ];
         };
         __decorate([
@@ -11612,11 +11525,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccCmsPageAdapter = /** @class */ (function () {
-        function OccCmsPageAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCmsPageAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1$2.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new http.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
          * @param {?} pageContext
@@ -11696,7 +11609,7 @@
         /** @nocollapse */
         OccCmsPageAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -11945,11 +11858,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccCmsComponentAdapter = /** @class */ (function () {
-        function OccCmsComponentAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccCmsComponentAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
-            this.headers = new i1$2.HttpHeaders().set('Content-Type', 'application/json');
+            this.headers = new http.HttpHeaders().set('Content-Type', 'application/json');
         }
         /**
          * @template T
@@ -12143,7 +12056,7 @@
         /** @nocollapse */
         OccCmsComponentAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -12347,7 +12260,7 @@
                         _this.loadedWebComponents[path] = script;
                         script.setAttribute('src', path);
                         renderer.appendChild(_this.document.body, script);
-                        if (i1$3.isPlatformBrowser(_this.platform)) {
+                        if (i1$2.isPlatformBrowser(_this.platform)) {
                             script.onload = function () {
                                 script.onload = null;
                             };
@@ -12377,7 +12290,7 @@
             return [
                 { type: i0.ComponentFactoryResolver },
                 { type: CmsConfig },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$3.DOCUMENT,] }] },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] },
                 { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
             ];
         };
@@ -12408,7 +12321,7 @@
         }
         CmsOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule, i1$2.HttpClientModule],
+                        imports: [i1$2.CommonModule, http.HttpClientModule],
                         providers: [
                             ComponentMapperService,
                             {
@@ -12808,7 +12721,7 @@
                     .pipe(operators.switchMap(function (loadFromConfig) {
                     if (!loadFromConfig) {
                         return _this.cmsPageAdapter.load(pageContext).pipe(operators.catchError(function (error) {
-                            if (error instanceof i1$2.HttpErrorResponse &&
+                            if (error instanceof http.HttpErrorResponse &&
                                 error.status === 400) {
                                 return rxjs.of({});
                             }
@@ -13462,7 +13375,7 @@
         }
         UrlModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule],
+                        imports: [i1$2.CommonModule],
                         declarations: [UrlPipe],
                         exports: [UrlPipe],
                     },] }
@@ -14106,8 +14019,8 @@
         CmsStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             StateModule,
                             i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$6),
@@ -14451,8 +14364,8 @@
         CheckoutStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$5),
                         ],
@@ -16056,8 +15969,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccProductReferencesAdapter = /** @class */ (function () {
-        function OccProductReferencesAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccProductReferencesAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -16103,7 +16016,7 @@
         /** @nocollapse */
         OccProductReferencesAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -16116,8 +16029,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccProductReviewsAdapter = /** @class */ (function () {
-        function OccProductReviewsAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccProductReviewsAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -16147,7 +16060,7 @@
             function (productCode, review) {
                 review = this.converter.convert(review, PRODUCT_REVIEW_SERIALIZER);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 /** @type {?} */
@@ -16183,7 +16096,7 @@
         /** @nocollapse */
         OccProductReviewsAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -16200,8 +16113,8 @@
         pageSize: 20,
     };
     var OccProductSearchAdapter = /** @class */ (function () {
-        function OccProductSearchAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccProductSearchAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -16286,7 +16199,7 @@
         /** @nocollapse */
         OccProductSearchAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -16299,8 +16212,8 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OccProductAdapter = /** @class */ (function () {
-        function OccProductAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccProductAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -16338,7 +16251,7 @@
         /** @nocollapse */
         OccProductAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -16423,8 +16336,8 @@
         ProductOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             OccModule,
                             ConfigModule.withConfig(defaultOccProductConfig),
                         ],
@@ -16863,8 +16776,8 @@
         ProductStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             ProductOccModule,
                             i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$7),
@@ -16947,8 +16860,8 @@
     /** @type {?} */
     var ADDRESSES_VERIFICATION_ENDPOINT = '/addresses/verification';
     var OccUserAddressAdapter = /** @class */ (function () {
-        function OccUserAddressAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccUserAddressAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -16979,7 +16892,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http.get(url, { headers: headers }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (addressList) { return addressList.addresses; }), this.converter.pipeableMany(ADDRESS_NORMALIZER));
@@ -16998,7 +16911,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -17022,7 +16935,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -17044,7 +16957,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + ADDRESSES_VERIFICATION_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 address = this.converter.convert(address, ADDRESS_SERIALIZER);
@@ -17064,7 +16977,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -17077,7 +16990,7 @@
         /** @nocollapse */
         OccUserAddressAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17091,6 +17004,8 @@
      */
     /** @type {?} */
     var USER_REGISTER_FORM_SERIALIZER = new i0.InjectionToken('UserRegisterFormSerializer');
+    /** @type {?} */
+    var TITLE_NORMALIZER = new i0.InjectionToken('TitleNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -17119,9 +17034,11 @@
     var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
     /** @type {?} */
     var CONSENTS_ENDPOINT = '/consents';
+    /** @type {?} */
+    var TITLES_ENDPOINT = 'titles';
     var OccUserAccountAdapter = /** @class */ (function () {
-        function OccUserAccountAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccUserAccountAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -17152,7 +17069,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint();
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -17171,9 +17088,9 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams().set('userId', userEmailAddress);
+                var httpParams = new http.HttpParams().set('userId', userEmailAddress);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -17195,7 +17112,7 @@
                 /** @type {?} */
                 var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
@@ -17219,11 +17136,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + UPDATE_EMAIL_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams()
+                var httpParams = new http.HttpParams()
                     .set('password', currentPassword)
                     .set('newLogin', newUserId);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -17246,11 +17163,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint(userId) + UPDATE_PASSWORD_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams()
+                var httpParams = new http.HttpParams()
                     .set('old', oldPassword)
                     .set('new', newPassword);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http
@@ -17273,6 +17190,17 @@
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
         /**
+         * @return {?}
+         */
+        OccUserAccountAdapter.prototype.loadTitles = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (titleList) { return titleList.titles; }), this.converter.pipeableMany(TITLE_NORMALIZER));
+            };
+        /**
          * @param {?} userId
          * @return {?}
          */
@@ -17284,7 +17212,7 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + CONSENTS_TEMPLATES_ENDPOINT;
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({ 'Cache-Control': 'no-cache' });
+                var headers = new http.HttpHeaders({ 'Cache-Control': 'no-cache' });
                 return this.http
                     .get(url, { headers: headers })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
@@ -17305,11 +17233,11 @@
                 /** @type {?} */
                 var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
                 /** @type {?} */
-                var httpParams = new i1$2.HttpParams()
+                var httpParams = new http.HttpParams()
                     .set('consentTemplateId', consentTemplateId)
                     .set('consentTemplateVersion', consentTemplateVersion.toString());
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Cache-Control': 'no-cache',
                 });
@@ -17329,7 +17257,7 @@
          */
             function (userId, consentCode) {
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Cache-Control': 'no-cache',
                 });
                 /** @type {?} */
@@ -17342,7 +17270,7 @@
         /** @nocollapse */
         OccUserAccountAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17357,8 +17285,8 @@
     /** @type {?} */
     var USER_ENDPOINT$2 = 'users/';
     var OccUserDetailsAdapter = /** @class */ (function () {
-        function OccUserDetailsAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccUserDetailsAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -17414,7 +17342,7 @@
         /** @nocollapse */
         OccUserDetailsAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17427,12 +17355,29 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var COUNTRY_NORMALIZER = new i0.InjectionToken('CountryNormalizer');
+    /** @type {?} */
+    var REGION_NORMALIZER = new i0.InjectionToken('RegionNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var USER_ENDPOINT$3 = 'users/';
     /** @type {?} */
     var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
+    /** @type {?} */
+    var COUNTRIES_ENDPOINT = 'countries';
+    /** @type {?} */
+    var REGIONS_ENDPOINT = 'regions';
+    /** @type {?} */
+    var COUNTRIES_TYPE_BILLING = 'BILLING';
+    /** @type {?} */
+    var COUNTRIES_TYPE_SHIPPING = 'SHIPPING';
     var OccUserPaymentAdapter = /** @class */ (function () {
-        function OccUserPaymentAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccUserPaymentAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -17463,7 +17408,7 @@
                 /** @type {?} */
                 var url = this.getPaymentDetailsEndpoint(userId) + '?saved=true';
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http.get(url, { headers: headers }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (methodList) { return methodList.payments; }), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
@@ -17482,7 +17427,7 @@
                 /** @type {?} */
                 var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -17503,7 +17448,7 @@
                 /** @type {?} */
                 var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/json',
                 });
                 return this.http
@@ -17512,13 +17457,54 @@
                 { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
+        /**
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.loadBillingCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
+                    params: new http.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (countryList) { return countryList.countries; }), this.converter.pipeableMany(COUNTRY_NORMALIZER));
+            };
+        /**
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.loadDeliveryCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
+                    params: new http.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (countryList) { return countryList.countries; }), this.converter.pipeableMany(COUNTRY_NORMALIZER));
+            };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.loadRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                /** @type {?} */
+                var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT;
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(regionsEndpoint))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (regionList) { return regionList.regions; }), this.converter.pipeableMany(REGION_NORMALIZER));
+            };
         OccUserPaymentAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
         OccUserPaymentAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17543,8 +17529,8 @@
     /** @type {?} */
     var FULL_PARAMS = 'fields=FULL';
     var OccOrderAdapter = /** @class */ (function () {
-        function OccOrderAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccOrderAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -17577,11 +17563,11 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
                 });
                 /** @type {?} */
-                var headers = new i1$2.HttpHeaders({
+                var headers = new http.HttpHeaders({
                     'Content-Type': 'application/x-www-form-urlencoded',
                 });
                 return this.http.post(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(ORDER_NORMALIZER));
@@ -17602,7 +17588,7 @@
                 /** @type {?} */
                 var orderUrl = url + '/' + orderCode;
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: FULL_PARAMS,
                 });
                 return this.http
@@ -17629,7 +17615,7 @@
                 /** @type {?} */
                 var url = this.getOrderEndpoint(userId);
                 /** @type {?} */
-                var params = new i1$2.HttpParams();
+                var params = new http.HttpParams();
                 if (pageSize) {
                     params = params.set('pageSize', pageSize.toString());
                 }
@@ -17647,7 +17633,7 @@
         /** @nocollapse */
         OccOrderAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -17782,7 +17768,7 @@
         }
         UserOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$3.CommonModule, i1$2.HttpClientModule, OccModule],
+                        imports: [i1$2.CommonModule, http.HttpClientModule, OccModule],
                         providers: [
                             { provide: UserDetailsAdapter, useClass: OccUserDetailsAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
@@ -19628,13 +19614,102 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var UserPaymentConnector = /** @class */ (function () {
+        function UserPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.getAll = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                return this.adapter.loadAll(userId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+            function (userId, paymentMethodID) {
+                return this.adapter.delete(userId, paymentMethodID);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.setDefault = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+            function (userId, paymentMethodID) {
+                return this.adapter.setDefault(userId, paymentMethodID);
+            };
+        /**
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.getBillingCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadBillingCountries();
+            };
+        /**
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.getDeliveryCountries = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadDeliveryCountries();
+            };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.getRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                return this.adapter.loadRegions(countryIsoCode);
+            };
+        UserPaymentConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserPaymentConnector.ctorParameters = function () {
+            return [
+                { type: UserPaymentAdapter }
+            ];
+        };
+        /** @nocollapse */ UserPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.inject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+        return UserPaymentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var BillingCountriesEffect = /** @class */ (function () {
-        function BillingCountriesEffect(actions$, occMiscsService) {
+        function BillingCountriesEffect(actions$, userPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occMiscsService = occMiscsService;
+            this.userPaymentConnector = userPaymentConnector;
             this.loadBillingCountries$ = this.actions$.pipe(effects.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap(function () {
-                return _this.occMiscsService.loadBillingCountries().pipe(operators.map(function (data) { return new LoadBillingCountriesSuccess(data.countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(error)); }));
+                return _this.userPaymentConnector.getBillingCountries().pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(error)); }));
             }));
         }
         BillingCountriesEffect.decorators = [
@@ -19644,7 +19719,7 @@
         BillingCountriesEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccMiscsService }
+                { type: UserPaymentConnector }
             ];
         };
         __decorate([
@@ -19659,12 +19734,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var DeliveryCountriesEffects = /** @class */ (function () {
-        function DeliveryCountriesEffects(actions$, occMiscsService) {
+        function DeliveryCountriesEffects(actions$, userPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occMiscsService = occMiscsService;
+            this.userPaymentConnector = userPaymentConnector;
             this.loadDeliveryCountries$ = this.actions$.pipe(effects.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap(function () {
-                return _this.occMiscsService.loadDeliveryCountries().pipe(operators.map(function (data) { return new LoadDeliveryCountriesSuccess(data.countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(error)); }));
+                return _this.userPaymentConnector.getDeliveryCountries().pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(error)); }));
             }));
         }
         DeliveryCountriesEffects.decorators = [
@@ -19674,7 +19749,7 @@
         DeliveryCountriesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccMiscsService }
+                { type: UserPaymentConnector }
             ];
         };
         __decorate([
@@ -19767,6 +19842,15 @@
          */
             function (userId) {
                 return this.adapter.remove(userId);
+            };
+        /**
+         * @return {?}
+         */
+        UserAccountConnector.prototype.getTitles = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadTitles();
             };
         /**
          * @param {?} userId
@@ -19904,66 +19988,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UserPaymentConnector = /** @class */ (function () {
-        function UserPaymentConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.getAll = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                return this.adapter.loadAll(userId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.delete = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-            function (userId, paymentMethodID) {
-                return this.adapter.delete(userId, paymentMethodID);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.setDefault = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-            function (userId, paymentMethodID) {
-                return this.adapter.setDefault(userId, paymentMethodID);
-            };
-        UserPaymentConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UserPaymentConnector.ctorParameters = function () {
-            return [
-                { type: UserPaymentAdapter }
-            ];
-        };
-        /** @nocollapse */ UserPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.inject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-        return UserPaymentConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var UserPaymentMethodsEffects = /** @class */ (function () {
         function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
             var _this = this;
@@ -20037,14 +20061,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var RegionsEffects = /** @class */ (function () {
-        function RegionsEffects(actions$, occMiscsService) {
+        function RegionsEffects(actions$, userPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occMiscsService = occMiscsService;
+            this.userPaymentConnector = userPaymentConnector;
             this.loadRegions$ = this.actions$.pipe(effects.ofType(LOAD_REGIONS), operators.map(function (action) {
                 return action.payload;
             }), operators.switchMap(function (countryCode) {
-                return _this.occMiscsService.loadRegions(countryCode).pipe(operators.map(function (data) { return new LoadRegionsSuccess(data.regions); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
+                return _this.userPaymentConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess(regions); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
             }));
         }
         RegionsEffects.decorators = [
@@ -20054,7 +20078,7 @@
         RegionsEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccMiscsService }
+                { type: UserPaymentConnector }
             ];
         };
         __decorate([
@@ -20110,14 +20134,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var TitlesEffects = /** @class */ (function () {
-        function TitlesEffects(actions$, occMiscsService) {
+        function TitlesEffects(actions$, userAccountConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.occMiscsService = occMiscsService;
+            this.userAccountConnector = userAccountConnector;
             this.loadTitles$ = this.actions$.pipe(effects.ofType(LOAD_TITLES), operators.switchMap(function () {
-                return _this.occMiscsService.loadTitles().pipe(operators.map(function (data) {
+                return _this.userAccountConnector.getTitles().pipe(operators.map(function (titles) {
                     /** @type {?} */
-                    var sortedTitles = _this.sortTitles(data.titles);
+                    var sortedTitles = _this.sortTitles(titles);
                     return new LoadTitlesSuccess(sortedTitles);
                 }), operators.catchError(function (error) { return rxjs.of(new LoadTitlesFail(error)); }));
             }));
@@ -20150,7 +20174,7 @@
         TitlesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OccMiscsService }
+                { type: UserAccountConnector }
             ];
         };
         __decorate([
@@ -20647,7 +20671,7 @@
         UserStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
+                            i1$2.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
                             i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
@@ -20690,13 +20714,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_PAYMENT_NORMALIZER = new i0.InjectionToken('UserNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -20770,7 +20787,7 @@
                 /** @type {?} */
                 var lang = this.getActiveLang();
                 try {
-                    i1$3.getLocaleId(lang);
+                    i1$2.getLocaleId(lang);
                     return lang;
                 }
                 catch (_a) {
@@ -20821,7 +20838,7 @@
             ];
         };
         return CxDatePipe;
-    }(i1$3.DatePipe));
+    }(i1$2.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -21487,7 +21504,7 @@
             { type: i0.Pipe, args: [{ name: 'cxDate' },] }
         ];
         return MockDatePipe;
-    }(i1$3.DatePipe));
+    }(i1$2.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -23690,7 +23707,7 @@
     /** @type {?} */
     var interceptors$2 = [
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: CmsTicketInterceptor,
             multi: true,
         },
@@ -23823,8 +23840,8 @@
     /** @type {?} */
     var STORES_ENDPOINT = 'stores';
     var OccStoreFinderAdapter = /** @class */ (function () {
-        function OccStoreFinderAdapter(http, occEndpoints, converter) {
-            this.http = http;
+        function OccStoreFinderAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
@@ -23890,7 +23907,7 @@
                 /** @type {?} */
                 var url = this.getStoresEndpoint();
                 /** @type {?} */
-                var params = new i1$2.HttpParams({
+                var params = new http.HttpParams({
                     fromString: 'fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),' +
                         'geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),' +
                         'pagination(DEFAULT),' +
@@ -23940,7 +23957,7 @@
         /** @nocollapse */
         OccStoreFinderAdapter.ctorParameters = function () {
             return [
-                { type: i1$2.HttpClient },
+                { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
@@ -24240,7 +24257,7 @@
         /** @nocollapse */
         ExternalJsFileLoader.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$3.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
             ];
         };
         return ExternalJsFileLoader;
@@ -24944,8 +24961,8 @@
         StoreFinderStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$3.CommonModule,
-                            i1$2.HttpClientModule,
+                            i1$2.CommonModule,
+                            http.HttpClientModule,
                             StoreFinderOccModule,
                             i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
                             effects.EffectsModule.forFeature(effects$9),
@@ -25144,7 +25161,7 @@
             function (request, next) {
                 var _this = this;
                 var _a;
-                if (i1$3.isPlatformServer(this.platform)) {
+                if (i1$2.isPlatformServer(this.platform)) {
                     return next.handle(request);
                 }
                 if (this.personalizationId &&
@@ -25156,7 +25173,7 @@
                     });
                 }
                 return next.handle(request).pipe(operators.tap(function (event) {
-                    if (event instanceof i1$2.HttpResponse) {
+                    if (event instanceof http.HttpResponse) {
                         if (event.headers.keys().includes(_this.requestHeader)) {
                             /** @type {?} */
                             var receivedId = event.headers.get(_this.requestHeader);
@@ -25213,7 +25230,7 @@
             function (request, next) {
                 var _this = this;
                 var _a;
-                if (i1$3.isPlatformServer(this.platform)) {
+                if (i1$2.isPlatformServer(this.platform)) {
                     return next.handle(request);
                 }
                 if (this.timestamp &&
@@ -25225,7 +25242,7 @@
                     });
                 }
                 return next.handle(request).pipe(operators.tap(function (event) {
-                    if (event instanceof i1$2.HttpResponse) {
+                    if (event instanceof http.HttpResponse) {
                         if (event.headers.keys().includes(_this.requestHeader)) {
                             /** @type {?} */
                             var receivedTimestamp = event.headers.get(_this.requestHeader);
@@ -25259,12 +25276,12 @@
     /** @type {?} */
     var interceptors$3 = [
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: OccPersonalizationIdInterceptor,
             multi: true,
         },
         {
-            provide: i1$2.HTTP_INTERCEPTORS,
+            provide: http.HTTP_INTERCEPTORS,
             useClass: OccPersonalizationTimeInterceptor,
             multi: true,
         },
@@ -25421,6 +25438,7 @@
     exports.CartPaymentAdapter = CartPaymentAdapter;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
+    exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
     exports.OccCartAdapter = OccCartAdapter;
     exports.OccCartDeliveryAdapter = OccCartDeliveryAdapter;
     exports.OccCartEntryAdapter = OccCartEntryAdapter;
@@ -25645,7 +25663,6 @@
     exports.defaultOccConfig = defaultOccConfig;
     exports.OccConfig = OccConfig;
     exports.occConfigValidator = occConfigValidator;
-    exports.OccMiscsService = OccMiscsService;
     exports.OccModule = OccModule;
     exports.OccEndpointsService = OccEndpointsService;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
@@ -26129,6 +26146,7 @@
     exports.UserAccountConnector = UserAccountConnector;
     exports.UserAccountAdapter = UserAccountAdapter;
     exports.USER_REGISTER_FORM_SERIALIZER = USER_REGISTER_FORM_SERIALIZER;
+    exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
     exports.UserAddressConnector = UserAddressConnector;
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
@@ -26140,7 +26158,8 @@
     exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.UserPaymentConnector = UserPaymentConnector;
     exports.UserPaymentAdapter = UserPaymentAdapter;
-    exports.USER_PAYMENT_NORMALIZER = USER_PAYMENT_NORMALIZER;
+    exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
+    exports.REGION_NORMALIZER = REGION_NORMALIZER;
     exports.OrderConnector = OrderConnector;
     exports.OrderAdapter = OrderAdapter;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;

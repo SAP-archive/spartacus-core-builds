@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../../model/misc.model';
+import { Title, User } from '../../model/misc.model';
 import { ConsentTemplate, ConsentTemplateList } from '../../occ/occ-models/additional-occ.models';
 import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
 import { ConverterService } from '../../util/converter.service';
@@ -18,6 +18,7 @@ export declare class OccUserAccountAdapter implements UserAccountAdapter {
     updateEmail(userId: string, currentPassword: string, newUserId: string): Observable<{}>;
     updatePassword(userId: string, oldPassword: string, newPassword: string): Observable<{}>;
     remove(userId: string): Observable<{}>;
+    loadTitles(): Observable<Title[]>;
     loadConsents(userId: string): Observable<ConsentTemplateList>;
     giveConsent(userId: string, consentTemplateId: string, consentTemplateVersion: number): Observable<ConsentTemplate>;
     withdrawConsent(userId: string, consentCode: string): Observable<{}>;

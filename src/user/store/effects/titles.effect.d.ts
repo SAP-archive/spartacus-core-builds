@@ -1,11 +1,11 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { OccMiscsService } from '../../../occ/miscs/miscs.service';
 import * as fromAction from '../actions/titles.action';
+import { UserAccountConnector } from '../../connectors/account/user-account.connector';
 export declare class TitlesEffects {
     private actions$;
-    private occMiscsService;
+    private userAccountConnector;
     loadTitles$: Observable<fromAction.TitlesAction>;
     private sortTitles;
-    constructor(actions$: Actions, occMiscsService: OccMiscsService);
+    constructor(actions$: Actions, userAccountConnector: UserAccountConnector);
 }

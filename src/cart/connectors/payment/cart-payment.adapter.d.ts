@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { PaymentDetails } from '../../../model/cart.model';
+import { CardType, PaymentDetails } from '../../../model/cart.model';
 export declare abstract class CartPaymentAdapter {
     /**
      * Abstract method used to create payment details on cart
@@ -17,4 +17,8 @@ export declare abstract class CartPaymentAdapter {
      * @param paymentDetailsId
      */
     abstract set(userId: string, cartId: string, paymentDetailsId: string): Observable<any>;
+    /**
+     * Abstract method used to get available cart types
+     */
+    abstract loadCardTypes(): Observable<CardType[]>;
 }

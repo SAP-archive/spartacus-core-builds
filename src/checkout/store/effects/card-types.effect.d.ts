@@ -1,10 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import * as fromAction from '../actions/card-types.action';
-import { OccMiscsService } from '../../../occ/miscs/miscs.service';
+import { CartPaymentConnector } from '../../../cart/connectors/payment/cart-payment.connector';
 export declare class CardTypesEffects {
     private actions$;
-    private occMiscsService;
+    private cartPaymentConnector;
     loadCardTypes$: Observable<fromAction.LoadCardTypesSuccess | fromAction.LoadCardTypesFail>;
-    constructor(actions$: Actions, occMiscsService: OccMiscsService);
+    constructor(actions$: Actions, cartPaymentConnector: CartPaymentConnector);
 }

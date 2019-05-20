@@ -4,6 +4,7 @@ import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
 import { Observable } from 'rxjs';
 import { PaymentDetails } from '../../model/cart.model';
 import { ConverterService } from '../../util/converter.service';
+import { Country, Region } from '../../model/address.model';
 export declare class OccUserPaymentAdapter implements UserPaymentAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
@@ -13,4 +14,7 @@ export declare class OccUserPaymentAdapter implements UserPaymentAdapter {
     loadAll(userId: string): Observable<PaymentDetails[]>;
     delete(userId: string, paymentMethodID: string): Observable<{}>;
     setDefault(userId: string, paymentMethodID: string): Observable<{}>;
+    loadBillingCountries(): Observable<Country[]>;
+    loadDeliveryCountries(): Observable<Country[]>;
+    loadRegions(countryIsoCode: string): Observable<Region[]>;
 }
