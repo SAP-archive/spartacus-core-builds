@@ -5,8 +5,8 @@ import { SearchConfig } from '../model/search-config';
 import * as fromStore from '../store/index';
 import { Suggestion, ProductSearchPage } from '../../model/product-search.model';
 export declare class ProductSearchService {
-    private store;
-    private router;
+    protected store: Store<fromStore.StateWithProduct>;
+    protected router: Router;
     constructor(store: Store<fromStore.StateWithProduct>, router: Router);
     search(query: string, searchConfig?: SearchConfig): void;
     getSearchResults(): Observable<ProductSearchPage>;

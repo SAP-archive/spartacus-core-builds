@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import * as fromStore from '../store/index';
 import { Product } from '../../model/product.model';
 export declare class ProductService {
-    private store;
+    protected store: Store<fromStore.StateWithProduct>;
     constructor(store: Store<fromStore.StateWithProduct>);
     private products;
     /**
