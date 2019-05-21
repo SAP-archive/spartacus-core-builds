@@ -8,9 +8,9 @@ import { UrlCommands } from '../configurable-routes/url-translation/url-command'
 import { UrlService } from '../configurable-routes/url-translation/url.service';
 import { RouterState } from '../store/reducers/router.reducer';
 export declare class RoutingService {
-    private store;
-    private winRef;
-    private urlService;
+    protected store: Store<fromStore.RouterState>;
+    protected winRef: WindowRef;
+    protected urlService: UrlService;
     constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, urlService: UrlService);
     /**
      * Get the current router state
@@ -67,5 +67,5 @@ export declare class RoutingService {
      * @param query
      * @param extras: Represents the extra options used during navigation.
      */
-    private navigate;
+    protected navigate(path: any[], query?: object, extras?: NavigationExtras): void;
 }

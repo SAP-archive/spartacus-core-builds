@@ -74,11 +74,11 @@ export { reducer as ɵeo } from './src/product/store/reducers/product-reviews.re
 export { getAuxSearchResults as ɵem, getProductSuggestions as ɵen, getSearchResults as ɵel, reducer as ɵek } from './src/product/store/reducers/product-search.reducer';
 export { UrlMatcherFactoryService as ɵa } from './src/routing/configurable-routes/url-matcher-factory.service';
 export { UrlParsingService as ɵk } from './src/routing/configurable-routes/url-translation/url-parsing.service';
-export { ROUTING_FEATURE as ɵb } from './src/routing/state';
 export { RouterState as ɵj } from './src/routing/store';
 export { effects as ɵh } from './src/routing/store/effects/index';
 export { RouterEffects as ɵi } from './src/routing/store/effects/router.effect';
 export { CustomSerializer as ɵg, getReducers as ɵc, reducer as ɵd, reducerProvider as ɵf, reducerToken as ɵe } from './src/routing/store/reducers/router.reducer';
+export { ROUTING_FEATURE as ɵb } from './src/routing/store/state';
 export { defaultSiteContextConfigFactory as ɵeq } from './src/site-context/config/default-site-context-config';
 export { BaseSiteService as ɵbj } from './src/site-context/facade/base-site.service';
 export { SiteContextParamsService as ɵew } from './src/site-context/facade/site-context-params.service';

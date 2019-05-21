@@ -1684,7 +1684,7 @@
          */
         /**
          * Navigation with a new state into history
-         * @private
+         * @protected
          * @param {?} path
          * @param {?=} query
          * @param {?=} extras
@@ -1692,7 +1692,7 @@
          */
         RoutingService.prototype.navigate = /**
          * Navigation with a new state into history
-         * @private
+         * @protected
          * @param {?} path
          * @param {?=} query
          * @param {?=} extras
@@ -25735,6 +25735,18 @@
     exports.getSelectedProductSuccessFactory = getSelectedProductSuccessFactory;
     exports.getSelectedProductErrorFactory = getSelectedProductErrorFactory;
     exports.getAllProductCodes = getAllProductCodes;
+    exports.GO = GO;
+    exports.GO_BY_URL = GO_BY_URL;
+    exports.BACK = BACK;
+    exports.FORWARD = FORWARD;
+    exports.SAVE_REDIRECT_URL = SAVE_REDIRECT_URL;
+    exports.CLEAR_REDIRECT_URL = CLEAR_REDIRECT_URL;
+    exports.Go = Go;
+    exports.GoByUrl = GoByUrl;
+    exports.Back = Back;
+    exports.Forward = Forward;
+    exports.SaveRedirectUrl = SaveRedirectUrl;
+    exports.ClearRedirectUrl = ClearRedirectUrl;
     exports.RoutingModule = RoutingModule;
     exports.RoutingService = RoutingService;
     exports.PageContext = PageContext;
@@ -26255,7 +26267,6 @@
     exports.ɵek = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
-    exports.ɵb = ROUTING_FEATURE;
     exports.ɵh = effects$1;
     exports.ɵi = RouterEffects;
     exports.ɵg = CustomSerializer;
@@ -26263,6 +26274,7 @@
     exports.ɵd = reducer;
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
+    exports.ɵb = ROUTING_FEATURE;
     exports.ɵeq = defaultSiteContextConfigFactory;
     exports.ɵbj = BaseSiteService;
     exports.ɵew = SiteContextParamsService;
