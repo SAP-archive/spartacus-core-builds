@@ -4,7 +4,7 @@ import { GlobalMessageType } from '../models/global-message.model';
 import { GlobalMessageEntities, StateWithGlobalMessage } from '../store/index';
 import { Translatable } from '../../i18n/translatable';
 export declare class GlobalMessageService {
-    private store;
+    protected store: Store<StateWithGlobalMessage>;
     constructor(store: Store<StateWithGlobalMessage>);
     /**
      * Get all global messages

@@ -9849,25 +9849,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var GlobalMessageStoreModule = /** @class */ (function () {
-        function GlobalMessageStoreModule() {
-        }
-        GlobalMessageStoreModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            StateModule,
-                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
-                        ],
-                        providers: [reducerProvider$4],
-                    },] }
-        ];
-        return GlobalMessageStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -9951,22 +9932,6 @@
         };
         return GlobalMessageService;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var GlobalMessageType = {
-        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
-        MSG_TYPE_ERROR: '[GlobalMessage] Error',
-        MSG_TYPE_INFO: '[GlobalMessage] Information',
-    };
 
     /**
      * @fileoverview added by tsickle
@@ -10104,6 +10069,17 @@
         };
         return HttpErrorInterceptor;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var GlobalMessageType = {
+        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
+        MSG_TYPE_ERROR: '[GlobalMessage] Error',
+        MSG_TYPE_INFO: '[GlobalMessage] Information',
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -10422,6 +10398,25 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var GlobalMessageStoreModule = /** @class */ (function () {
+        function GlobalMessageStoreModule() {
+        }
+        GlobalMessageStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            StateModule,
+                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                        ],
+                        providers: [reducerProvider$4],
+                    },] }
+        ];
+        return GlobalMessageStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var GlobalMessageModule = /** @class */ (function () {
         function GlobalMessageModule() {
         }
@@ -10445,6 +10440,11 @@
         ];
         return GlobalMessageModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -25617,10 +25617,9 @@
     exports.RemoveMessagesByType = RemoveMessagesByType;
     exports.getGlobalMessageState = getGlobalMessageState;
     exports.getGlobalMessageEntities = getGlobalMessageEntities;
-    exports.GlobalMessageStoreModule = GlobalMessageStoreModule;
+    exports.GlobalMessageModule = GlobalMessageModule;
     exports.GlobalMessageService = GlobalMessageService;
     exports.GlobalMessageType = GlobalMessageType;
-    exports.GlobalMessageModule = GlobalMessageModule;
     exports.errorHandlers = errorHandlers;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.BadGatewayHandler = BadGatewayHandler;
@@ -26222,49 +26221,50 @@
     exports.ɵdd = reducer$a;
     exports.ɵdb = reducer$b;
     exports.ɵdc = reducer$c;
-    exports.ɵfg = ConfigModule;
-    exports.ɵee = ServerConfig;
+    exports.ɵfh = ConfigModule;
+    exports.ɵef = ServerConfig;
     exports.ɵbm = provideConfigValidator;
-    exports.ɵed = HttpErrorInterceptor;
-    exports.ɵec = reducer$8;
-    exports.ɵdz = getReducers$4;
-    exports.ɵeb = reducerProvider$4;
-    exports.ɵea = reducerToken$4;
-    exports.ɵef = defaultI18nConfig;
-    exports.ɵeh = i18nextInit;
-    exports.ɵeg = i18nextProviders;
-    exports.ɵei = MockDatePipe;
-    exports.ɵej = MockTranslationService;
-    exports.ɵgy = defaultPersonalizationConfig;
-    exports.ɵgz = interceptors$3;
-    exports.ɵha = OccPersonalizationIdInterceptor;
-    exports.ɵhb = OccPersonalizationTimeInterceptor;
-    exports.ɵgs = ProcessModule;
-    exports.ɵgu = PROCESS_FEATURE;
-    exports.ɵgt = ProcessStoreModule;
-    exports.ɵgv = getReducers$9;
-    exports.ɵgx = reducerProvider$9;
-    exports.ɵgw = reducerToken$9;
-    exports.ɵel = OccProductReferencesListNormalizer;
-    exports.ɵek = ProductNameNormalizer;
+    exports.ɵee = HttpErrorInterceptor;
+    exports.ɵdz = GlobalMessageStoreModule;
+    exports.ɵed = reducer$8;
+    exports.ɵea = getReducers$4;
+    exports.ɵec = reducerProvider$4;
+    exports.ɵeb = reducerToken$4;
+    exports.ɵeg = defaultI18nConfig;
+    exports.ɵei = i18nextInit;
+    exports.ɵeh = i18nextProviders;
+    exports.ɵej = MockDatePipe;
+    exports.ɵek = MockTranslationService;
+    exports.ɵgz = defaultPersonalizationConfig;
+    exports.ɵha = interceptors$3;
+    exports.ɵhb = OccPersonalizationIdInterceptor;
+    exports.ɵhc = OccPersonalizationTimeInterceptor;
+    exports.ɵgt = ProcessModule;
+    exports.ɵgv = PROCESS_FEATURE;
+    exports.ɵgu = ProcessStoreModule;
+    exports.ɵgw = getReducers$9;
+    exports.ɵgy = reducerProvider$9;
+    exports.ɵgx = reducerToken$9;
+    exports.ɵem = OccProductReferencesListNormalizer;
+    exports.ɵel = ProductNameNormalizer;
     exports.ɵdk = effects$7;
     exports.ɵdl = ProductReferencesEffects;
     exports.ɵdm = ProductReviewsEffects;
     exports.ɵdn = ProductsSearchEffects;
     exports.ɵdo = ProductEffects;
-    exports.ɵen = ProductStoreModule;
-    exports.ɵem = productStoreConfigFactory;
+    exports.ɵeo = ProductStoreModule;
+    exports.ɵen = productStoreConfigFactory;
     exports.ɵds = clearProductsState;
     exports.ɵdp = getReducers$7;
     exports.ɵdt = metaReducers$4;
     exports.ɵdr = reducerProvider$7;
     exports.ɵdq = reducerToken$7;
-    exports.ɵet = reducer$d;
-    exports.ɵes = reducer$e;
-    exports.ɵeq = getAuxSearchResults;
-    exports.ɵer = getProductSuggestions;
-    exports.ɵep = getSearchResults;
-    exports.ɵeo = reducer$f;
+    exports.ɵeu = reducer$d;
+    exports.ɵet = reducer$e;
+    exports.ɵer = getAuxSearchResults;
+    exports.ɵes = getProductSuggestions;
+    exports.ɵeq = getSearchResults;
+    exports.ɵep = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26275,27 +26275,27 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵeu = defaultSiteContextConfigFactory;
+    exports.ɵev = defaultSiteContextConfigFactory;
     exports.ɵbj = BaseSiteService;
-    exports.ɵfa = SiteContextParamsService;
-    exports.ɵfc = SiteContextRoutesHandler;
-    exports.ɵfb = SiteContextUrlSerializer;
+    exports.ɵfb = SiteContextParamsService;
+    exports.ɵfd = SiteContextRoutesHandler;
+    exports.ɵfc = SiteContextUrlSerializer;
     exports.ɵdj = CurrenciesEffects;
     exports.ɵdh = effects$3;
     exports.ɵdi = LanguagesEffects;
-    exports.ɵez = reducer$5;
-    exports.ɵey = reducer$4;
+    exports.ɵfa = reducer$5;
+    exports.ɵez = reducer$4;
     exports.ɵde = getReducers$3;
     exports.ɵdg = reducerProvider$3;
     exports.ɵdf = reducerToken$3;
-    exports.ɵex = reducer$3;
-    exports.ɵew = SiteContextStoreModule;
-    exports.ɵev = siteContextStoreConfigFactory;
-    exports.ɵfe = CmsTicketInterceptor;
-    exports.ɵfd = interceptors$2;
+    exports.ɵey = reducer$3;
+    exports.ɵex = SiteContextStoreModule;
+    exports.ɵew = siteContextStoreConfigFactory;
+    exports.ɵff = CmsTicketInterceptor;
+    exports.ɵfe = interceptors$2;
     exports.ɵco = EntityFailAction;
     exports.ɵcn = EntityLoadAction;
-    exports.ɵfp = EntityResetAction;
+    exports.ɵfq = EntityResetAction;
     exports.ɵcp = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
@@ -26303,48 +26303,48 @@
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfh = defaultStoreFinderConfig;
-    exports.ɵfn = FindStoresEffect;
-    exports.ɵfm = effects$9;
-    exports.ɵfo = ViewAllStoresEffect;
-    exports.ɵfj = getReducers$a;
-    exports.ɵfl = reducerProvider$a;
-    exports.ɵfk = reducerToken$a;
-    exports.ɵff = getStoreFinderState;
-    exports.ɵfi = StoreFinderStoreModule;
-    exports.ɵfs = BillingCountriesEffect;
-    exports.ɵft = DeliveryCountriesEffects;
-    exports.ɵge = ForgotPasswordEffects;
-    exports.ɵfr = effects$8;
-    exports.ɵfu = OrderDetailsEffect;
-    exports.ɵfv = UserPaymentMethodsEffects;
-    exports.ɵfw = RegionsEffects;
-    exports.ɵfx = ResetPasswordEffects;
-    exports.ɵfy = TitlesEffects;
-    exports.ɵgf = UpdateEmailEffects;
-    exports.ɵgg = UpdatePasswordEffects;
-    exports.ɵfz = UserAddressesEffects;
-    exports.ɵga = UserConsentsEffect;
-    exports.ɵgb = UserDetailsEffects;
-    exports.ɵgc = UserOrdersEffect;
-    exports.ɵgd = UserRegisterEffects;
-    exports.ɵgj = reducer$g;
-    exports.ɵgo = reducer$h;
+    exports.ɵfi = defaultStoreFinderConfig;
+    exports.ɵfo = FindStoresEffect;
+    exports.ɵfn = effects$9;
+    exports.ɵfp = ViewAllStoresEffect;
+    exports.ɵfk = getReducers$a;
+    exports.ɵfm = reducerProvider$a;
+    exports.ɵfl = reducerToken$a;
+    exports.ɵfg = getStoreFinderState;
+    exports.ɵfj = StoreFinderStoreModule;
+    exports.ɵft = BillingCountriesEffect;
+    exports.ɵfu = DeliveryCountriesEffects;
+    exports.ɵgf = ForgotPasswordEffects;
+    exports.ɵfs = effects$8;
+    exports.ɵfv = OrderDetailsEffect;
+    exports.ɵfw = UserPaymentMethodsEffects;
+    exports.ɵfx = RegionsEffects;
+    exports.ɵfy = ResetPasswordEffects;
+    exports.ɵfz = TitlesEffects;
+    exports.ɵgg = UpdateEmailEffects;
+    exports.ɵgh = UpdatePasswordEffects;
+    exports.ɵga = UserAddressesEffects;
+    exports.ɵgb = UserConsentsEffect;
+    exports.ɵgc = UserDetailsEffects;
+    exports.ɵgd = UserOrdersEffect;
+    exports.ɵge = UserRegisterEffects;
+    exports.ɵgk = reducer$g;
+    exports.ɵgp = reducer$h;
     exports.ɵdx = clearUserState;
     exports.ɵdu = getReducers$8;
     exports.ɵdy = metaReducers$5;
     exports.ɵdw = reducerProvider$8;
     exports.ɵdv = reducerToken$8;
-    exports.ɵgn = reducer$i;
-    exports.ɵgl = reducer$j;
-    exports.ɵgq = reducer$k;
-    exports.ɵgr = reducer$l;
-    exports.ɵgp = reducer$m;
-    exports.ɵgi = reducer$n;
-    exports.ɵgk = reducer$o;
-    exports.ɵgh = reducer$p;
-    exports.ɵgm = reducer$q;
-    exports.ɵfq = UserStoreModule;
+    exports.ɵgo = reducer$i;
+    exports.ɵgm = reducer$j;
+    exports.ɵgr = reducer$k;
+    exports.ɵgs = reducer$l;
+    exports.ɵgq = reducer$m;
+    exports.ɵgj = reducer$n;
+    exports.ɵgl = reducer$o;
+    exports.ɵgi = reducer$p;
+    exports.ɵgn = reducer$q;
+    exports.ɵfr = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

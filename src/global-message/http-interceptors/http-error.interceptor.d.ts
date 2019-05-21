@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest
 import { Observable } from 'rxjs';
 import { HttpErrorHandler } from './handlers/http-error.handler';
 export declare class HttpErrorInterceptor implements HttpInterceptor {
-    private handlers;
+    protected handlers: HttpErrorHandler[];
     constructor(handlers: HttpErrorHandler[]);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     protected handleErrorResponse(request: HttpRequest<any>, response: HttpErrorResponse): void;
