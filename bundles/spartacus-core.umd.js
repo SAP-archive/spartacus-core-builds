@@ -16330,6 +16330,59 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductNameNormalizer = /** @class */ (function () {
+        function ProductNameNormalizer(config) {
+            this.config = config;
+        }
+        /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        ProductNameNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+            function (source, target) {
+                if (target === undefined) {
+                    target = __assign({}, (( /** @type {?} */(source))));
+                }
+                if (source.name) {
+                    target.name = this.normalize(source.name);
+                    target.nameHtml = source.name;
+                }
+                return target;
+            };
+        /**
+         * @protected
+         * @param {?} name
+         * @return {?}
+         */
+        ProductNameNormalizer.prototype.normalize = /**
+         * @protected
+         * @param {?} name
+         * @return {?}
+         */
+            function (name) {
+                return name.replace(/<[^>]*>/g, '');
+            };
+        ProductNameNormalizer.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ProductNameNormalizer.ctorParameters = function () {
+            return [
+                { type: OccConfig }
+            ];
+        };
+        return ProductNameNormalizer;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductOccModule = /** @class */ (function () {
         function ProductOccModule() {
         }
@@ -16349,6 +16402,11 @@
                             {
                                 provide: PRODUCT_NORMALIZER,
                                 useClass: ProductImageNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: PRODUCT_NORMALIZER,
+                                useClass: ProductNameNormalizer,
                                 multi: true,
                             },
                             {
@@ -25019,84 +25077,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var StripHtmlPipe = /** @class */ (function () {
-        function StripHtmlPipe() {
-        }
-        /**
-         * @param {?} product
-         * @return {?}
-         */
-        StripHtmlPipe.prototype.transform = /**
-         * @param {?} product
-         * @return {?}
-         */
-            function (product) {
-                /** @type {?} */
-                var productClone = Object.assign({}, product);
-                productClone.name = product.name.replace(/<[^>]*>/g, '');
-                return productClone;
-            };
-        StripHtmlPipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'stripHtml' },] }
-        ];
-        return StripHtmlPipe;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StripHtmlModule = /** @class */ (function () {
-        function StripHtmlModule() {
-        }
-        StripHtmlModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        declarations: [StripHtmlPipe],
-                        exports: [StripHtmlPipe],
-                    },] }
-        ];
-        return StripHtmlModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var PipeModule = /** @class */ (function () {
-        function PipeModule() {
-        }
-        PipeModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [StripHtmlModule],
-                    },] }
-        ];
-        return PipeModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UtilModule = /** @class */ (function () {
-        function UtilModule() {
-        }
-        UtilModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [PipeModule],
-                    },] }
-        ];
-        return UtilModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -26165,10 +26145,7 @@
     exports.OrderAdapter = OrderAdapter;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
-    exports.PipeModule = PipeModule;
-    exports.StripHtmlModule = StripHtmlModule;
     exports.ConverterService = ConverterService;
-    exports.UtilModule = UtilModule;
     exports.WindowRef = WindowRef;
     exports.PersonalizationModule = PersonalizationModule;
     exports.PersonalizationConfig = PersonalizationConfig;
@@ -26232,7 +26209,7 @@
     exports.ɵdd = reducer$a;
     exports.ɵdb = reducer$b;
     exports.ɵdc = reducer$c;
-    exports.ɵfb = ConfigModule;
+    exports.ɵfc = ConfigModule;
     exports.ɵdz = ServerConfig;
     exports.ɵbm = provideConfigValidator;
     exports.ɵdy = HttpErrorInterceptor;
@@ -26249,32 +26226,33 @@
     exports.ɵgv = interceptors$3;
     exports.ɵgw = OccPersonalizationIdInterceptor;
     exports.ɵgx = OccPersonalizationTimeInterceptor;
-    exports.ɵgn = ProcessModule;
-    exports.ɵgp = PROCESS_FEATURE;
-    exports.ɵgo = ProcessStoreModule;
-    exports.ɵgq = getReducers$9;
-    exports.ɵgs = reducerProvider$9;
-    exports.ɵgr = reducerToken$9;
+    exports.ɵgo = ProcessModule;
+    exports.ɵgq = PROCESS_FEATURE;
+    exports.ɵgp = ProcessStoreModule;
+    exports.ɵgr = getReducers$9;
+    exports.ɵgt = reducerProvider$9;
+    exports.ɵgs = reducerToken$9;
     exports.ɵef = defaultOccProductConfig;
-    exports.ɵeg = OccProductReferencesListNormalizer;
+    exports.ɵeh = OccProductReferencesListNormalizer;
+    exports.ɵeg = ProductNameNormalizer;
     exports.ɵdk = effects$7;
     exports.ɵdl = ProductReferencesEffects;
     exports.ɵdm = ProductReviewsEffects;
     exports.ɵdn = ProductsSearchEffects;
     exports.ɵdo = ProductEffects;
-    exports.ɵei = ProductStoreModule;
-    exports.ɵeh = productStoreConfigFactory;
+    exports.ɵej = ProductStoreModule;
+    exports.ɵei = productStoreConfigFactory;
     exports.ɵds = clearProductsState;
     exports.ɵdp = getReducers$7;
     exports.ɵdt = metaReducers$4;
     exports.ɵdr = reducerProvider$7;
     exports.ɵdq = reducerToken$7;
-    exports.ɵeo = reducer$d;
-    exports.ɵen = reducer$e;
-    exports.ɵel = getAuxSearchResults;
-    exports.ɵem = getProductSuggestions;
-    exports.ɵek = getSearchResults;
-    exports.ɵej = reducer$f;
+    exports.ɵep = reducer$d;
+    exports.ɵeo = reducer$e;
+    exports.ɵem = getAuxSearchResults;
+    exports.ɵen = getProductSuggestions;
+    exports.ɵel = getSearchResults;
+    exports.ɵek = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵb = ROUTING_FEATURE;
@@ -26285,27 +26263,27 @@
     exports.ɵd = reducer;
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
-    exports.ɵep = defaultSiteContextConfigFactory;
+    exports.ɵeq = defaultSiteContextConfigFactory;
     exports.ɵbj = BaseSiteService;
-    exports.ɵev = SiteContextParamsService;
-    exports.ɵex = SiteContextRoutesHandler;
-    exports.ɵew = SiteContextUrlSerializer;
+    exports.ɵew = SiteContextParamsService;
+    exports.ɵey = SiteContextRoutesHandler;
+    exports.ɵex = SiteContextUrlSerializer;
     exports.ɵdj = CurrenciesEffects;
     exports.ɵdh = effects$3;
     exports.ɵdi = LanguagesEffects;
-    exports.ɵeu = reducer$5;
-    exports.ɵet = reducer$4;
+    exports.ɵev = reducer$5;
+    exports.ɵeu = reducer$4;
     exports.ɵde = getReducers$3;
     exports.ɵdg = reducerProvider$3;
     exports.ɵdf = reducerToken$3;
-    exports.ɵes = reducer$3;
-    exports.ɵer = SiteContextStoreModule;
-    exports.ɵeq = siteContextStoreConfigFactory;
-    exports.ɵez = CmsTicketInterceptor;
-    exports.ɵey = interceptors$2;
+    exports.ɵet = reducer$3;
+    exports.ɵes = SiteContextStoreModule;
+    exports.ɵer = siteContextStoreConfigFactory;
+    exports.ɵfa = CmsTicketInterceptor;
+    exports.ɵez = interceptors$2;
     exports.ɵco = EntityFailAction;
     exports.ɵcn = EntityLoadAction;
-    exports.ɵfk = EntityResetAction;
+    exports.ɵfl = EntityResetAction;
     exports.ɵcp = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
@@ -26313,44 +26291,43 @@
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfc = defaultStoreFinderConfig;
-    exports.ɵfi = FindStoresEffect;
-    exports.ɵfh = effects$9;
-    exports.ɵfj = ViewAllStoresEffect;
-    exports.ɵfe = getReducers$a;
-    exports.ɵfg = reducerProvider$a;
-    exports.ɵff = reducerToken$a;
-    exports.ɵfa = getStoreFinderState;
-    exports.ɵfd = StoreFinderStoreModule;
-    exports.ɵfy = BillingCountriesEffect;
-    exports.ɵfz = DeliveryCountriesEffects;
-    exports.ɵgk = ForgotPasswordEffects;
-    exports.ɵfx = effects$8;
-    exports.ɵga = OrderDetailsEffect;
-    exports.ɵgb = UserPaymentMethodsEffects;
-    exports.ɵgc = RegionsEffects;
-    exports.ɵgd = ResetPasswordEffects;
-    exports.ɵge = TitlesEffects;
-    exports.ɵgl = UpdateEmailEffects;
-    exports.ɵgm = UpdatePasswordEffects;
-    exports.ɵgf = UserAddressesEffects;
-    exports.ɵgg = UserConsentsEffect;
-    exports.ɵgh = UserDetailsEffects;
-    exports.ɵgi = UserOrdersEffect;
-    exports.ɵgj = UserRegisterEffects;
-    exports.ɵfn = reducer$g;
-    exports.ɵfs = reducer$h;
-    exports.ɵfr = reducer$i;
-    exports.ɵfp = reducer$j;
-    exports.ɵfu = reducer$k;
-    exports.ɵfv = reducer$l;
-    exports.ɵft = reducer$m;
-    exports.ɵfm = reducer$n;
-    exports.ɵfo = reducer$o;
-    exports.ɵfl = reducer$p;
-    exports.ɵfq = reducer$q;
-    exports.ɵfw = UserStoreModule;
-    exports.ɵgt = StripHtmlPipe;
+    exports.ɵfd = defaultStoreFinderConfig;
+    exports.ɵfj = FindStoresEffect;
+    exports.ɵfi = effects$9;
+    exports.ɵfk = ViewAllStoresEffect;
+    exports.ɵff = getReducers$a;
+    exports.ɵfh = reducerProvider$a;
+    exports.ɵfg = reducerToken$a;
+    exports.ɵfb = getStoreFinderState;
+    exports.ɵfe = StoreFinderStoreModule;
+    exports.ɵfz = BillingCountriesEffect;
+    exports.ɵga = DeliveryCountriesEffects;
+    exports.ɵgl = ForgotPasswordEffects;
+    exports.ɵfy = effects$8;
+    exports.ɵgb = OrderDetailsEffect;
+    exports.ɵgc = UserPaymentMethodsEffects;
+    exports.ɵgd = RegionsEffects;
+    exports.ɵge = ResetPasswordEffects;
+    exports.ɵgf = TitlesEffects;
+    exports.ɵgm = UpdateEmailEffects;
+    exports.ɵgn = UpdatePasswordEffects;
+    exports.ɵgg = UserAddressesEffects;
+    exports.ɵgh = UserConsentsEffect;
+    exports.ɵgi = UserDetailsEffects;
+    exports.ɵgj = UserOrdersEffect;
+    exports.ɵgk = UserRegisterEffects;
+    exports.ɵfo = reducer$g;
+    exports.ɵft = reducer$h;
+    exports.ɵfs = reducer$i;
+    exports.ɵfq = reducer$j;
+    exports.ɵfv = reducer$k;
+    exports.ɵfw = reducer$l;
+    exports.ɵfu = reducer$m;
+    exports.ɵfn = reducer$n;
+    exports.ɵfp = reducer$o;
+    exports.ɵfm = reducer$p;
+    exports.ɵfr = reducer$q;
+    exports.ɵfx = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
