@@ -1,6 +1,6 @@
-import { CartAdapter } from '../connectors/cart/cart.adapter';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { CartAdapter } from '../connectors/cart/cart.adapter';
 import { OccEndpointsService } from '../../occ/services/occ-endpoints.service';
 import { ConverterService } from '../../util/converter.service';
 import { CheckoutDetails } from '../../checkout/models/checkout.model';

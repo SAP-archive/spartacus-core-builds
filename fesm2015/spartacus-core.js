@@ -7491,643 +7491,6 @@ const getAddressVerificationResults$1 = createSelector(getAddressVerificationRes
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const GLOBAL_MESSAGE_FEATURE = 'global-message';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const ADD_MESSAGE = '[Global-message] Add a Message';
-/** @type {?} */
-const REMOVE_MESSAGE = '[Global-message] Remove a Message';
-/** @type {?} */
-const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-class AddMessage {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_MESSAGE;
-    }
-}
-class RemoveMessage {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGE;
-    }
-}
-class RemoveMessagesByType {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGES_BY_TYPE;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, (state) => state.entities);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$8 = {
-    entities: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$8(state = initialState$8, action) {
-    switch (action.type) {
-        case ADD_MESSAGE: {
-            /** @type {?} */
-            const message = action.payload;
-            if (state.entities[message.type] === undefined) {
-                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
-            }
-            else {
-                /** @type {?} */
-                const msgs = state.entities[message.type];
-                if (!msgs.includes(message.text)) {
-                    return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...msgs, message.text] }) });
-                }
-            }
-            return state;
-        }
-        case REMOVE_MESSAGE: {
-            /** @type {?} */
-            const msgType = action.payload.type;
-            /** @type {?} */
-            const msgIndex = action.payload.index;
-            if (Object.keys(state.entities).length === 0 ||
-                !state.entities[msgType]) {
-                return state;
-            }
-            /** @type {?} */
-            const messages = [...state.entities[msgType]];
-            messages.splice(msgIndex, 1);
-            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
-        }
-        case REMOVE_MESSAGES_BY_TYPE: {
-            /** @type {?} */
-            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
-            return Object.assign({}, state, { entities });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$4() {
-    return reducer$8;
-}
-/** @type {?} */
-const reducerToken$4 = new InjectionToken('GlobalMessageReducers');
-/** @type {?} */
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageStoreModule {
-}
-GlobalMessageStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
-                ],
-                providers: [reducerProvider$4],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageService {
-    /**
-     * @param {?} store
-     */
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Get all global messages
-     * @return {?}
-     */
-    get() {
-        return this.store.pipe(select(getGlobalMessageEntities), filter(data => data !== undefined));
-    }
-    /**
-     * Add one message into store
-     * @param {?} text
-     * @param {?} type
-     * @return {?}
-     */
-    add(text, type) {
-        this.store.dispatch(new AddMessage({
-            text: typeof text === 'string' ? { raw: text } : text,
-            type,
-        }));
-    }
-    /**
-     * Remove message(s) from store
-     * @param {?} type
-     * @param {?=} index
-     * @return {?}
-     */
-    remove(type, index) {
-        this.store.dispatch(index !== undefined
-            ? new RemoveMessage({
-                type: type,
-                index: index,
-            })
-            : new RemoveMessagesByType(type));
-    }
-}
-GlobalMessageService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-GlobalMessageService.ctorParameters = () => [
-    { type: Store }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const GlobalMessageType = {
-    MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
-    MSG_TYPE_ERROR: '[GlobalMessage] Error',
-    MSG_TYPE_INFO: '[GlobalMessage] Information',
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {number} */
-const HttpResponseStatus = {
-    UNKNOWN: -1,
-    BAD_REQUEST: 400,
-    FORBIDDEN: 403,
-    NOT_FOUND: 404,
-    CONFLICT: 409,
-    BAD_GATEWAY: 502,
-    GATEWAY_TIMEOUT: 504,
-};
-HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
-HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
-HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
-HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
-HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
-HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class HttpErrorHandler {
-    /**
-     * @param {?} globalMessageService
-     */
-    constructor(globalMessageService) {
-        this.globalMessageService = globalMessageService;
-    }
-}
-HttpErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-HttpErrorHandler.ctorParameters = () => [
-    { type: GlobalMessageService }
-];
-/** @nocollapse */ HttpErrorHandler.ngInjectableDef = defineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(inject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class HttpErrorInterceptor {
-    /**
-     * @param {?} handlers
-     */
-    constructor(handlers) {
-        this.handlers = handlers;
-        // We reverse the handlers to allow for custom handlers
-        // that replace standard handlers
-        this.handlers.reverse();
-    }
-    /**
-     * @param {?} request
-     * @param {?} next
-     * @return {?}
-     */
-    intercept(request, next) {
-        return next.handle(request).pipe(catchError((response) => {
-            if (response instanceof HttpErrorResponse) {
-                this.handleErrorResponse(request, response);
-                return throwError(response);
-            }
-        }));
-    }
-    /**
-     * @protected
-     * @param {?} request
-     * @param {?} response
-     * @return {?}
-     */
-    handleErrorResponse(request, response) {
-        /** @type {?} */
-        const handler = this.getResponseHandler(response);
-        if (handler) {
-            handler.handleError(request, response);
-        }
-    }
-    /**
-     * return the error handler that matches the `HttpResponseStatus` code.
-     * If no handler is available, the UNKNOWN handler is returned.
-     * @protected
-     * @param {?} response
-     * @return {?}
-     */
-    getResponseHandler(response) {
-        /** @type {?} */
-        const status = response.status;
-        /** @type {?} */
-        let handler = this.handlers.find(h => h.responseStatus === status);
-        if (!handler) {
-            handler = this.handlers.find(h => h.responseStatus === HttpResponseStatus.UNKNOWN);
-        }
-        return handler;
-    }
-}
-HttpErrorInterceptor.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-HttpErrorInterceptor.ctorParameters = () => [
-    { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class UnknownErrorHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.UNKNOWN;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.unknownError' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-UnknownErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(inject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class BadGatewayHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-BadGatewayHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ BadGatewayHandler.ngInjectableDef = defineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(inject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const OAUTH_ENDPOINT$3 = '/authorizationserver/oauth/token';
-class BadRequestHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.BAD_REQUEST;
-    }
-    /**
-     * @param {?} request
-     * @param {?} response
-     * @return {?}
-     */
-    handleError(request, response) {
-        if (response.url.includes(OAUTH_ENDPOINT$3) &&
-            response.error.error === 'invalid_grant') {
-            if (request.body.get('grant_type') === 'password') {
-                this.globalMessageService.add({
-                    key: 'httpHandlers.badRequestPleaseLoginAgain',
-                    params: { errorMessage: this.getErrorMessage(response) },
-                }, GlobalMessageType.MSG_TYPE_ERROR);
-                this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-            }
-        }
-        else if (response.error.errors[0].type === 'PasswordMismatchError') {
-            // uses en translation error message instead of backend exception error
-            // @todo: this condition could be removed if backend gives better message
-            this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
-            // text: customError.customError.passwordMismatch,
-        }
-        else {
-            if (!request.url.includes('/cms/components')) {
-                // this is currently showing up in case we have a page not found. It should be a 404.
-                // see https://jira.hybris.com/browse/CMSX-8516
-                /** @type {?} */
-                const errorMessage = this.getErrorMessage(response);
-                /** @type {?} */
-                const textObj = errorMessage
-                    ? { raw: errorMessage }
-                    : { key: 'httpHandlers.unknownError' };
-                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
-            }
-        }
-    }
-    /**
-     * @protected
-     * @param {?} resp
-     * @return {?}
-     */
-    getErrorMessage(resp) {
-        /** @type {?} */
-        let errMsg = resp.message;
-        if (resp.error) {
-            if (resp.error.errors && resp.error.errors instanceof Array) {
-                errMsg = resp.error.errors[0].message;
-            }
-            else if (resp.error.error_description) {
-                errMsg = resp.error.error_description;
-            }
-        }
-        return errMsg || '';
-    }
-}
-BadRequestHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ BadRequestHandler.ngInjectableDef = defineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(inject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ConflictHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.CONFLICT;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-ConflictHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ ConflictHandler.ngInjectableDef = defineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(inject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ForbiddenHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.FORBIDDEN;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-ForbiddenHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ ForbiddenHandler.ngInjectableDef = defineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(inject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GatewayTimeoutHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-GatewayTimeoutHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(inject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class NotFoundHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.NOT_FOUND;
-    }
-    // empty error handler to avoid we fallabck to the unknown error handler
-    /**
-     * @return {?}
-     */
-    handleError() { }
-}
-NotFoundHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ NotFoundHandler.ngInjectableDef = defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(inject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const errorHandlers = [
-    {
-        provide: HttpErrorHandler,
-        useExisting: UnknownErrorHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: BadGatewayHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: BadRequestHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: ConflictHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: ForbiddenHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: GatewayTimeoutHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: NotFoundHandler,
-        multi: true,
-    },
-];
-/** @type {?} */
-const httpErrorInterceptors = [
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: HttpErrorInterceptor,
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageModule {
-    /**
-     * @return {?}
-     */
-    static forRoot() {
-        return {
-            ngModule: GlobalMessageModule,
-            providers: [...errorHandlers, ...httpErrorInterceptors],
-        };
-    }
-}
-GlobalMessageModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [GlobalMessageStoreModule],
-                providers: [GlobalMessageService],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 const LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
 /** @type {?} */
 const LOAD_BILLING_COUNTRIES_FAIL = '[User] Load Billing Countries Fail';
@@ -9120,6 +8483,643 @@ class ClearMiscsData {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const GLOBAL_MESSAGE_FEATURE = 'global-message';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ADD_MESSAGE = '[Global-message] Add a Message';
+/** @type {?} */
+const REMOVE_MESSAGE = '[Global-message] Remove a Message';
+/** @type {?} */
+const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+class AddMessage {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_MESSAGE;
+    }
+}
+class RemoveMessage {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGE;
+    }
+}
+class RemoveMessagesByType {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGES_BY_TYPE;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, (state) => state.entities);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$8 = {
+    entities: {},
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$8(state = initialState$8, action) {
+    switch (action.type) {
+        case ADD_MESSAGE: {
+            /** @type {?} */
+            const message = action.payload;
+            if (state.entities[message.type] === undefined) {
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
+            }
+            else {
+                /** @type {?} */
+                const msgs = state.entities[message.type];
+                if (!msgs.includes(message.text)) {
+                    return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...msgs, message.text] }) });
+                }
+            }
+            return state;
+        }
+        case REMOVE_MESSAGE: {
+            /** @type {?} */
+            const msgType = action.payload.type;
+            /** @type {?} */
+            const msgIndex = action.payload.index;
+            if (Object.keys(state.entities).length === 0 ||
+                !state.entities[msgType]) {
+                return state;
+            }
+            /** @type {?} */
+            const messages = [...state.entities[msgType]];
+            messages.splice(msgIndex, 1);
+            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
+        }
+        case REMOVE_MESSAGES_BY_TYPE: {
+            /** @type {?} */
+            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
+            return Object.assign({}, state, { entities });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$4() {
+    return reducer$8;
+}
+/** @type {?} */
+const reducerToken$4 = new InjectionToken('GlobalMessageReducers');
+/** @type {?} */
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageStoreModule {
+}
+GlobalMessageStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StateModule,
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                ],
+                providers: [reducerProvider$4],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Get all global messages
+     * @return {?}
+     */
+    get() {
+        return this.store.pipe(select(getGlobalMessageEntities), filter(data => data !== undefined));
+    }
+    /**
+     * Add one message into store
+     * @param {?} text
+     * @param {?} type
+     * @return {?}
+     */
+    add(text, type) {
+        this.store.dispatch(new AddMessage({
+            text: typeof text === 'string' ? { raw: text } : text,
+            type,
+        }));
+    }
+    /**
+     * Remove message(s) from store
+     * @param {?} type
+     * @param {?=} index
+     * @return {?}
+     */
+    remove(type, index) {
+        this.store.dispatch(index !== undefined
+            ? new RemoveMessage({
+                type: type,
+                index: index,
+            })
+            : new RemoveMessagesByType(type));
+    }
+}
+GlobalMessageService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+GlobalMessageService.ctorParameters = () => [
+    { type: Store }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const GlobalMessageType = {
+    MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
+    MSG_TYPE_ERROR: '[GlobalMessage] Error',
+    MSG_TYPE_INFO: '[GlobalMessage] Information',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {number} */
+const HttpResponseStatus = {
+    UNKNOWN: -1,
+    BAD_REQUEST: 400,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    BAD_GATEWAY: 502,
+    GATEWAY_TIMEOUT: 504,
+};
+HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
+HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
+HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
+HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
+HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
+HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
+HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class HttpErrorHandler {
+    /**
+     * @param {?} globalMessageService
+     */
+    constructor(globalMessageService) {
+        this.globalMessageService = globalMessageService;
+    }
+}
+HttpErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+HttpErrorHandler.ctorParameters = () => [
+    { type: GlobalMessageService }
+];
+/** @nocollapse */ HttpErrorHandler.ngInjectableDef = defineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(inject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class HttpErrorInterceptor {
+    /**
+     * @param {?} handlers
+     */
+    constructor(handlers) {
+        this.handlers = handlers;
+        // We reverse the handlers to allow for custom handlers
+        // that replace standard handlers
+        this.handlers.reverse();
+    }
+    /**
+     * @param {?} request
+     * @param {?} next
+     * @return {?}
+     */
+    intercept(request, next) {
+        return next.handle(request).pipe(catchError((response) => {
+            if (response instanceof HttpErrorResponse) {
+                this.handleErrorResponse(request, response);
+                return throwError(response);
+            }
+        }));
+    }
+    /**
+     * @protected
+     * @param {?} request
+     * @param {?} response
+     * @return {?}
+     */
+    handleErrorResponse(request, response) {
+        /** @type {?} */
+        const handler = this.getResponseHandler(response);
+        if (handler) {
+            handler.handleError(request, response);
+        }
+    }
+    /**
+     * return the error handler that matches the `HttpResponseStatus` code.
+     * If no handler is available, the UNKNOWN handler is returned.
+     * @protected
+     * @param {?} response
+     * @return {?}
+     */
+    getResponseHandler(response) {
+        /** @type {?} */
+        const status = response.status;
+        /** @type {?} */
+        let handler = this.handlers.find(h => h.responseStatus === status);
+        if (!handler) {
+            handler = this.handlers.find(h => h.responseStatus === HttpResponseStatus.UNKNOWN);
+        }
+        return handler;
+    }
+}
+HttpErrorInterceptor.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+HttpErrorInterceptor.ctorParameters = () => [
+    { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class UnknownErrorHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.UNKNOWN;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.unknownError' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+UnknownErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(inject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class BadGatewayHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+BadGatewayHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ BadGatewayHandler.ngInjectableDef = defineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(inject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const OAUTH_ENDPOINT$3 = '/authorizationserver/oauth/token';
+class BadRequestHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+    }
+    /**
+     * @param {?} request
+     * @param {?} response
+     * @return {?}
+     */
+    handleError(request, response) {
+        if (response.url.includes(OAUTH_ENDPOINT$3) &&
+            response.error.error === 'invalid_grant') {
+            if (request.body.get('grant_type') === 'password') {
+                this.globalMessageService.add({
+                    key: 'httpHandlers.badRequestPleaseLoginAgain',
+                    params: { errorMessage: this.getErrorMessage(response) },
+                }, GlobalMessageType.MSG_TYPE_ERROR);
+                this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
+            }
+        }
+        else if (response.error.errors[0].type === 'PasswordMismatchError') {
+            // uses en translation error message instead of backend exception error
+            // @todo: this condition could be removed if backend gives better message
+            this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
+            // text: customError.customError.passwordMismatch,
+        }
+        else {
+            if (!request.url.includes('/cms/components')) {
+                // this is currently showing up in case we have a page not found. It should be a 404.
+                // see https://jira.hybris.com/browse/CMSX-8516
+                /** @type {?} */
+                const errorMessage = this.getErrorMessage(response);
+                /** @type {?} */
+                const textObj = errorMessage
+                    ? { raw: errorMessage }
+                    : { key: 'httpHandlers.unknownError' };
+                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
+            }
+        }
+    }
+    /**
+     * @protected
+     * @param {?} resp
+     * @return {?}
+     */
+    getErrorMessage(resp) {
+        /** @type {?} */
+        let errMsg = resp.message;
+        if (resp.error) {
+            if (resp.error.errors && resp.error.errors instanceof Array) {
+                errMsg = resp.error.errors[0].message;
+            }
+            else if (resp.error.error_description) {
+                errMsg = resp.error.error_description;
+            }
+        }
+        return errMsg || '';
+    }
+}
+BadRequestHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ BadRequestHandler.ngInjectableDef = defineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(inject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ConflictHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.CONFLICT;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+ConflictHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ ConflictHandler.ngInjectableDef = defineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(inject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ForbiddenHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.FORBIDDEN;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+ForbiddenHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ ForbiddenHandler.ngInjectableDef = defineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(inject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GatewayTimeoutHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+GatewayTimeoutHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(inject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class NotFoundHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.NOT_FOUND;
+    }
+    // empty error handler to avoid we fallabck to the unknown error handler
+    /**
+     * @return {?}
+     */
+    handleError() { }
+}
+NotFoundHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ NotFoundHandler.ngInjectableDef = defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(inject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const errorHandlers = [
+    {
+        provide: HttpErrorHandler,
+        useExisting: UnknownErrorHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: BadGatewayHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: BadRequestHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: ConflictHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: ForbiddenHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: GatewayTimeoutHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: NotFoundHandler,
+        multi: true,
+    },
+];
+/** @type {?} */
+const httpErrorInterceptors = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: HttpErrorInterceptor,
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: GlobalMessageModule,
+            providers: [...errorHandlers, ...httpErrorInterceptors],
+        };
+    }
+}
+GlobalMessageModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [GlobalMessageStoreModule],
+                providers: [GlobalMessageService],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @abstract
  */
@@ -9183,15 +9183,15 @@ class CheckoutEffects {
     /**
      * @param {?} actions$
      * @param {?} cartDeliveryConnector
-     * @param {?} cartConnector
      * @param {?} cartPaymentConnector
+     * @param {?} cartConnector
      * @param {?} orderConnector
      */
-    constructor(actions$, cartDeliveryConnector, cartConnector, cartPaymentConnector, orderConnector) {
+    constructor(actions$, cartDeliveryConnector, cartPaymentConnector, cartConnector, orderConnector) {
         this.actions$ = actions$;
         this.cartDeliveryConnector = cartDeliveryConnector;
-        this.cartConnector = cartConnector;
         this.cartPaymentConnector = cartPaymentConnector;
+        this.cartConnector = cartConnector;
         this.orderConnector = orderConnector;
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((action) => action.payload), mergeMap(payload => this.cartDeliveryConnector
             .createAddress(payload.userId, payload.cartId, payload.address)
@@ -9285,8 +9285,8 @@ CheckoutEffects.decorators = [
 CheckoutEffects.ctorParameters = () => [
     { type: Actions },
     { type: CartDeliveryConnector },
-    { type: CartConnector },
     { type: CartPaymentConnector },
+    { type: CartConnector },
     { type: OrderConnector }
 ];
 __decorate([
@@ -17387,6 +17387,7 @@ const defaultI18nConfig = {
                 'checkoutOrderConfirmation',
                 'checkoutReview',
                 'checkoutShipping',
+                'checkoutProgress',
             ],
             product: [
                 'productDetails',
