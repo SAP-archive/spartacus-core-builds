@@ -9,7 +9,7 @@ import * as fromProcessStore from '../../process/store/process-state';
 import { UserRegisterFormData } from '../model/user.model';
 import * as fromStore from '../store/index';
 export declare class UserService {
-    private store;
+    protected store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>;
     constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
     /**
      * Returns a user
