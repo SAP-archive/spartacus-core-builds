@@ -8,7 +8,7 @@ import { Currency } from '../../model/misc.model';
  * Facade that provides easy access to curreny state, actions and selectors.
  */
 export declare class CurrencyService implements SiteContext<Currency> {
-    private store;
+    protected store: Store<fromStore.StateWithSiteContext>;
     private sessionStorage;
     constructor(store: Store<fromStore.StateWithSiteContext>, winRef: WindowRef);
     /**

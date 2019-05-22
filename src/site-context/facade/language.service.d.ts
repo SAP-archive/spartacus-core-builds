@@ -8,7 +8,7 @@ import { Language } from '../../model/misc.model';
  * Facade that provides easy access to language state, actions and selectors.
  */
 export declare class LanguageService implements SiteContext<Language> {
-    private store;
+    protected store: Store<fromStore.StateWithSiteContext>;
     private sessionStorage;
     constructor(store: Store<fromStore.StateWithSiteContext>, winRef: WindowRef);
     /**

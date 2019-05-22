@@ -1,5 +1,5 @@
 import { Injector, OnDestroy } from '@angular/core';
-import { SiteContextParamsService } from '../facade/site-context-params.service';
+import { SiteContextParamsService } from './site-context-params.service';
 import { SiteContextUrlSerializer } from './site-context-url-serializer';
 export declare class SiteContextRoutesHandler implements OnDestroy {
     private siteContextParams;

@@ -3,7 +3,7 @@ import { SiteContext } from './site-context.interface';
 import { Store } from '@ngrx/store';
 import { StateWithSiteContext } from '../store/state';
 export declare class BaseSiteService implements SiteContext<string> {
-    private store;
+    protected store: Store<StateWithSiteContext>;
     constructor(store: Store<StateWithSiteContext>);
     /**
      * Represents the current baseSite.

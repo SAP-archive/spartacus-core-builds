@@ -1,5 +1,5 @@
 import { DefaultUrlSerializer, UrlTree } from '@angular/router';
-import { SiteContextParamsService } from '../facade/site-context-params.service';
+import { SiteContextParamsService } from './site-context-params.service';
 import { SiteContextConfig } from '../config/site-context-config';
 export interface ParamValuesMap {
     [name: string]: string;
