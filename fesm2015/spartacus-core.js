@@ -1,4 +1,4 @@
-import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
@@ -667,9 +667,11 @@ function reducer(state = initialState, action) {
         case ROUTER_NAVIGATION: {
             return Object.assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
         }
-        case ROUTER_NAVIGATED:
         case ROUTER_ERROR:
         case ROUTER_CANCEL: {
+            return Object.assign({}, state, { nextState: undefined });
+        }
+        case ROUTER_NAVIGATED: {
             /** @type {?} */
             const currentUrl = action.payload.routerState
                 ? action.payload.routerState.url
@@ -9808,7 +9810,7 @@ class PageEffects {
             routerState.state &&
             routerState.state.cmsRequired &&
             !routerState.nextState), map(routerState => routerState.state.context), take(1), mergeMap(context => of(new LoadPageData(context))))));
-        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map((action) => action.payload), switchMap(pageContext => {
+        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map((action) => action.payload), groupBy(pageContext => pageContext.type + pageContext.id), mergeMap(group => group.pipe(switchMap(pageContext => {
             return this.cmsPageConnector.get(pageContext).pipe(mergeMap((cmsStructure) => {
                 return [
                     new GetComponentFromPage(cmsStructure.components),
@@ -9817,7 +9819,7 @@ class PageEffects {
             }), catchError(error => {
                 return of(new LoadPageDataFail(pageContext, error));
             }));
-        }));
+        }))));
     }
 }
 PageEffects.decorators = [

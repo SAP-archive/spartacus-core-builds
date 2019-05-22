@@ -1,4 +1,4 @@
-import { ROUTER_NAVIGATION, ROUTER_NAVIGATED, ROUTER_ERROR, ROUTER_CANCEL, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { makeStateKey, TransferState } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, PRIMARY_OUTLET, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, DefaultUrlSerializer, UrlSerializer } from '@angular/router';
@@ -712,9 +712,11 @@ function reducer(state, action) {
         case ROUTER_NAVIGATION: {
             return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
         }
-        case ROUTER_NAVIGATED:
         case ROUTER_ERROR:
         case ROUTER_CANCEL: {
+            return __assign({}, state, { nextState: undefined });
+        }
+        case ROUTER_NAVIGATED: {
             /** @type {?} */
             var currentUrl = action.payload.routerState
                 ? action.payload.routerState.url
@@ -11265,14 +11267,16 @@ var PageEffects = /** @class */ (function () {
                     !routerState.nextState;
             }), map(function (routerState) { return routerState.state.context; }), take(1), mergeMap(function (context) { return of(new LoadPageData(context)); }));
         }));
-        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map(function (action) { return action.payload; }), switchMap(function (pageContext) {
-            return _this.cmsPageConnector.get(pageContext).pipe(mergeMap(function (cmsStructure) {
-                return [
-                    new GetComponentFromPage(cmsStructure.components),
-                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
-                ];
-            }), catchError(function (error) {
-                return of(new LoadPageDataFail(pageContext, error));
+        this.loadPageData$ = this.actions$.pipe(ofType(LOAD_PAGE_DATA), map(function (action) { return action.payload; }), groupBy(function (pageContext) { return pageContext.type + pageContext.id; }), mergeMap(function (group) {
+            return group.pipe(switchMap(function (pageContext) {
+                return _this.cmsPageConnector.get(pageContext).pipe(mergeMap(function (cmsStructure) {
+                    return [
+                        new GetComponentFromPage(cmsStructure.components),
+                        new LoadPageDataSuccess(pageContext, cmsStructure.page),
+                    ];
+                }), catchError(function (error) {
+                    return of(new LoadPageDataFail(pageContext, error));
+                }));
             }));
         }));
     }

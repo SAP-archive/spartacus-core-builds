@@ -775,9 +775,11 @@
             case fromNgrxRouter.ROUTER_NAVIGATION: {
                 return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
             }
-            case fromNgrxRouter.ROUTER_NAVIGATED:
             case fromNgrxRouter.ROUTER_ERROR:
             case fromNgrxRouter.ROUTER_CANCEL: {
+                return __assign({}, state, { nextState: undefined });
+            }
+            case fromNgrxRouter.ROUTER_NAVIGATED: {
                 /** @type {?} */
                 var currentUrl = action.payload.routerState
                     ? action.payload.routerState.url
@@ -11395,14 +11397,16 @@
                         !routerState.nextState;
                 }), operators.map(function (routerState) { return routerState.state.context; }), operators.take(1), operators.mergeMap(function (context) { return rxjs.of(new LoadPageData(context)); }));
             }));
-            this.loadPageData$ = this.actions$.pipe(effects.ofType(LOAD_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.switchMap(function (pageContext) {
-                return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
-                    return [
-                        new GetComponentFromPage(cmsStructure.components),
-                        new LoadPageDataSuccess(pageContext, cmsStructure.page),
-                    ];
-                }), operators.catchError(function (error) {
-                    return rxjs.of(new LoadPageDataFail(pageContext, error));
+            this.loadPageData$ = this.actions$.pipe(effects.ofType(LOAD_PAGE_DATA), operators.map(function (action) { return action.payload; }), operators.groupBy(function (pageContext) { return pageContext.type + pageContext.id; }), operators.mergeMap(function (group) {
+                return group.pipe(operators.switchMap(function (pageContext) {
+                    return _this.cmsPageConnector.get(pageContext).pipe(operators.mergeMap(function (cmsStructure) {
+                        return [
+                            new GetComponentFromPage(cmsStructure.components),
+                            new LoadPageDataSuccess(pageContext, cmsStructure.page),
+                        ];
+                    }), operators.catchError(function (error) {
+                        return rxjs.of(new LoadPageDataFail(pageContext, error));
+                    }));
                 }));
             }));
         }
