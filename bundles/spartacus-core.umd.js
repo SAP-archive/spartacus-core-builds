@@ -17848,7 +17848,6 @@
                     'productSummary',
                     'productReview',
                     'addToCart',
-                    'CMSTabParagraphContainer',
                 ],
                 user: [
                     'forgottenPassword',
