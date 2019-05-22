@@ -25,6 +25,9 @@ export interface JspIncludeCmsComponentConfig {
     AccountAddressBookComponent?: CmsComponentMapping;
     ForgotPasswordComponent?: CmsComponentMapping;
     ResetPasswordComponent?: CmsComponentMapping;
+    ProductDetailsTabComponent?: CmsComponentMapping;
+    ProductSpecsTabComponent?: CmsComponentMapping;
+    ProductReviewsTabComponent?: CmsComponentMapping;
 }
 export declare const JSP_INCLUDE_CMS_COMPONENT_TYPE = "JspIncludeComponent";
 export declare const CMS_FLEX_COMPONENT_TYPE = "CMSFlexComponent";

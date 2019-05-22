@@ -17618,6 +17618,7 @@ var defaultI18nConfig = {
                 'productSummary',
                 'productReview',
                 'addToCart',
+                'CMSTabParagraphContainer',
             ],
             user: [
                 'forgottenPassword',
