@@ -1,5 +1,5 @@
-import { Product } from './product.model';
 import { PaginationModel, SortModel } from './misc.model';
+import { Product } from './product.model';
 export interface SearchQuery {
     value?: string;
 }
@@ -48,4 +48,8 @@ export interface ProductSearchPage {
 }
 export interface Suggestion {
     value?: string;
+}
+export interface ClearSearch {
+    clearPageResults?: boolean;
+    clearSearchboxResults?: boolean;
 }

@@ -1,14 +1,14 @@
 import { Action } from '@ngrx/store';
-import { SearchConfig } from '../../model/search-config';
-import { Suggestion, ProductSearchPage } from '../../../model/product-search.model';
 import { ErrorModel } from '../../../model/misc.model';
+import { ClearSearch, ProductSearchPage, Suggestion } from '../../../model/product-search.model';
+import { SearchConfig } from '../../model/search-config';
 export declare const SEARCH_PRODUCTS = "[Product] Search Products";
 export declare const SEARCH_PRODUCTS_FAIL = "[Product] Search Products Fail";
 export declare const SEARCH_PRODUCTS_SUCCESS = "[Product] Search Products Success";
 export declare const GET_PRODUCT_SUGGESTIONS = "[Product] Get Product Suggestions";
 export declare const GET_PRODUCT_SUGGESTIONS_SUCCESS = "[Product] Get Product Suggestions Success";
 export declare const GET_PRODUCT_SUGGESTIONS_FAIL = "[Product] Get Product Suggestions Fail";
-export declare const CLEAN_PRODUCT_SEARCH = "[Product] Clean Product Search State";
+export declare const CLEAR_PRODUCT_SEARCH_RESULT = "[Product] Clear Product Search Result";
 export declare class SearchProducts implements Action {
     payload: {
         queryText: string;
@@ -54,8 +54,9 @@ export declare class GetProductSuggestionsFail implements Action {
     readonly type = "[Product] Get Product Suggestions Fail";
     constructor(payload: ErrorModel);
 }
-export declare class CleanProductSearchState implements Action {
-    readonly type = "[Product] Clean Product Search State";
-    constructor();
+export declare class ClearProductSearchResult implements Action {
+    payload: ClearSearch;
+    readonly type = "[Product] Clear Product Search Result";
+    constructor(payload?: ClearSearch);
 }
-export declare type ProductSearchAction = SearchProducts | SearchProductsFail | SearchProductsSuccess | GetProductSuggestions | GetProductSuggestionsSuccess | GetProductSuggestionsFail | CleanProductSearchState;
+export declare type ProductSearchAction = SearchProducts | SearchProductsFail | SearchProductsSuccess | GetProductSuggestions | GetProductSuggestionsSuccess | GetProductSuggestionsFail | ClearProductSearchResult;

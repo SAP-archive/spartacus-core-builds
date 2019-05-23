@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,i1,i18nextXhrBackend,i18next,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('i18next-xhr-backend'), require('i18next'), require('@angular/forms'), require('@angular/router'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', 'i18next-xhr-backend', 'i18next', '@angular/forms', '@angular/router', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.i18nextXhrBackend,global.i18next,global.ng.forms,global.ng.router,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
+}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i1,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -13055,7 +13055,7 @@
     /** @type {?} */
     var GET_PRODUCT_SUGGESTIONS_FAIL = '[Product] Get Product Suggestions Fail';
     /** @type {?} */
-    var CLEAN_PRODUCT_SEARCH = '[Product] Clean Product Search State';
+    var CLEAR_PRODUCT_SEARCH_RESULT = '[Product] Clear Product Search Result';
     var SearchProducts = /** @class */ (function () {
         function SearchProducts(payload, auxiliary) {
             this.payload = payload;
@@ -13101,11 +13101,18 @@
         }
         return GetProductSuggestionsFail;
     }());
-    var CleanProductSearchState = /** @class */ (function () {
-        function CleanProductSearchState() {
-            this.type = CLEAN_PRODUCT_SEARCH;
+    var ClearProductSearchResult = /** @class */ (function () {
+        function ClearProductSearchResult(payload) {
+            if (payload === void 0) {
+                payload = {
+                    clearPageResults: false,
+                    clearSearchboxResults: false,
+                };
+            }
+            this.payload = payload;
+            this.type = CLEAR_PRODUCT_SEARCH_RESULT;
         }
-        return CleanProductSearchState;
+        return ClearProductSearchResult;
     }());
 
     /**
@@ -13452,8 +13459,12 @@
                 var suggestions = action.payload;
                 return __assign({}, state, { suggestions: suggestions });
             }
-            case CLEAN_PRODUCT_SEARCH: {
-                return initialState$f;
+            case CLEAR_PRODUCT_SEARCH_RESULT: {
+                return __assign({}, state, { results: action.payload.clearPageResults ? {} : state.results, suggestions: action.payload.clearSearchboxResults
+                        ? []
+                        : state.suggestions, auxResults: action.payload.clearSearchboxResults
+                        ? {}
+                        : state.auxResults });
             }
         }
         return state;
@@ -13735,7 +13746,7 @@
         /**
          * @return {?}
          */
-        ProductSearchService.prototype.getSearchResults = /**
+        ProductSearchService.prototype.getResults = /**
          * @return {?}
          */
             function () {
@@ -13744,60 +13755,12 @@
         /**
          * @return {?}
          */
-        ProductSearchService.prototype.clearSearchResults = /**
+        ProductSearchService.prototype.clearResults = /**
          * @return {?}
          */
             function () {
-                this.store.dispatch(new CleanProductSearchState());
-            };
-        /**
-         * @return {?}
-         */
-        ProductSearchService.prototype.getAuxSearchResults = /**
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getAuxSearchResults$1), operators.filter(function (results) { return Object.keys(results).length > 0; }));
-            };
-        /**
-         * @return {?}
-         */
-        ProductSearchService.prototype.getSearchSuggestions = /**
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getProductSuggestions$1));
-            };
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchService.prototype.searchAuxiliary = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                this.store.dispatch(new SearchProducts({
-                    queryText: query,
-                    searchConfig: searchConfig,
-                }, true));
-            };
-        /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-        ProductSearchService.prototype.getSuggestions = /**
-         * @param {?} query
-         * @param {?=} searchConfig
-         * @return {?}
-         */
-            function (query, searchConfig) {
-                this.store.dispatch(new GetProductSuggestions({
-                    term: query,
-                    searchConfig: searchConfig,
+                this.store.dispatch(new ClearProductSearchResult({
+                    clearPageResults: true,
                 }));
             };
         ProductSearchService.decorators = [
@@ -13946,6 +13909,885 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var SearchboxService = /** @class */ (function (_super) {
+        __extends(SearchboxService, _super);
+        function SearchboxService() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        /**
+         * dispatch the search for the search box
+         */
+        /**
+         * dispatch the search for the search box
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        SearchboxService.prototype.search = /**
+         * dispatch the search for the search box
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                this.store.dispatch(new SearchProducts({
+                    queryText: query,
+                    searchConfig: searchConfig,
+                }, true));
+            };
+        /**
+         * @return {?}
+         */
+        SearchboxService.prototype.getResults = /**
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getAuxSearchResults$1));
+            };
+        /**
+         * clears the products and suggestions
+         */
+        /**
+         * clears the products and suggestions
+         * @return {?}
+         */
+        SearchboxService.prototype.clearResults = /**
+         * clears the products and suggestions
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new ClearProductSearchResult({
+                    clearSearchboxResults: true,
+                }));
+            };
+        /**
+         * @return {?}
+         */
+        SearchboxService.prototype.getSuggestionResults = /**
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getProductSuggestions$1));
+            };
+        /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+        SearchboxService.prototype.searchSuggestions = /**
+         * @param {?} query
+         * @param {?=} searchConfig
+         * @return {?}
+         */
+            function (query, searchConfig) {
+                this.store.dispatch(new GetProductSuggestions({
+                    term: query,
+                    searchConfig: searchConfig,
+                }));
+            };
+        SearchboxService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1$1.Store), i0.inject(i1.Router)); }, token: SearchboxService, providedIn: "root" });
+        return SearchboxService;
+    }(ProductSearchService));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ I18nConfig = /** @class */ (function (_super) {
+        __extends(I18nConfig, _super);
+        function I18nConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return I18nConfig;
+    }(ServerConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
+    var CxDatePipe = /** @class */ (function (_super) {
+        __extends(CxDatePipe, _super);
+        function CxDatePipe(language, config) {
+            var _this = _super.call(this, null) || this;
+            _this.language = language;
+            _this.config = config;
+            return _this;
+        }
+        /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+        CxDatePipe.prototype.transform = /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+            function (value, format, timezone) {
+                return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        CxDatePipe.prototype.getLang = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var lang = this.getActiveLang();
+                try {
+                    i1$2.getLocaleId(lang);
+                    return lang;
+                }
+                catch (_a) {
+                    this.reportMissingLocaleData(lang);
+                    return 'en';
+                }
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        CxDatePipe.prototype.getActiveLang = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var result;
+                this.language
+                    .getActive()
+                    .subscribe(function (lang) { return (result = lang); })
+                    .unsubscribe();
+                return result;
+            };
+        /**
+         * @private
+         * @param {?} lang
+         * @return {?}
+         */
+        CxDatePipe.prototype.reportMissingLocaleData = /**
+         * @private
+         * @param {?} lang
+         * @return {?}
+         */
+            function (lang) {
+                if (!this.config.production) {
+                    console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
+                }
+            };
+        CxDatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+        ];
+        /** @nocollapse */
+        CxDatePipe.ctorParameters = function () {
+            return [
+                { type: LanguageService },
+                { type: I18nConfig }
+            ];
+        };
+        return CxDatePipe;
+    }(i1$2.DatePipe));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function shallowEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true;
+        }
+        if (!objA || !objB) {
+            return false;
+        }
+        /** @type {?} */
+        var aKeys = Object.keys(objA);
+        /** @type {?} */
+        var bKeys = Object.keys(objB);
+        /** @type {?} */
+        var aKeysLen = aKeys.length;
+        /** @type {?} */
+        var bKeysLen = bKeys.length;
+        if (aKeysLen !== bKeysLen) {
+            return false;
+        }
+        for (var i = 0; i < aKeysLen; i++) {
+            /** @type {?} */
+            var key = aKeys[i];
+            if (objA[key] !== objB[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var TranslatePipe = /** @class */ (function () {
+        function TranslatePipe(service, cd) {
+            this.service = service;
+            this.cd = cd;
+        }
+        /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+        TranslatePipe.prototype.transform = /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+            function (input, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
+                    options = __assign({}, options, input.params);
+                }
+                this.translate(key, options);
+                return this.translatedValue;
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} options
+         * @return {?}
+         */
+        TranslatePipe.prototype.translate = /**
+         * @private
+         * @param {?} key
+         * @param {?} options
+         * @return {?}
+         */
+            function (key, options) {
+                var _this = this;
+                if (key !== this.lastKey ||
+                    !shallowEqualObjects(options, this.lastOptions)) {
+                    this.lastKey = key;
+                    this.lastOptions = options;
+                    if (this.sub) {
+                        this.sub.unsubscribe();
+                    }
+                    this.sub = this.service
+                        .translate(key, options, true)
+                        .subscribe(function (val) { return _this.markForCheck(val); });
+                }
+            };
+        /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+        TranslatePipe.prototype.markForCheck = /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+            function (value) {
+                this.translatedValue = value;
+                this.cd.markForCheck();
+            };
+        /**
+         * @return {?}
+         */
+        TranslatePipe.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                if (this.sub) {
+                    this.sub.unsubscribe();
+                }
+            };
+        TranslatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxTranslate', pure: false },] }
+        ];
+        /** @nocollapse */
+        TranslatePipe.ctorParameters = function () {
+            return [
+                { type: TranslationService },
+                { type: i0.ChangeDetectorRef }
+            ];
+        };
+        return TranslatePipe;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var TranslationChunkService = /** @class */ (function () {
+        function TranslationChunkService(config) {
+            var _this = this;
+            this.config = config;
+            this.duplicates = {};
+            this.chunks = {};
+            this.KEY_SEPARATOR = '.';
+            Object.keys(config.i18n.chunks).forEach(function (chunk) {
+                config.i18n.chunks[chunk].forEach(function (key) {
+                    if (_this.chunks.hasOwnProperty(key)) {
+                        if (!_this.duplicates[key]) {
+                            _this.duplicates[key] = [_this.chunks[key]];
+                        }
+                        _this.duplicates[key].push(chunk);
+                    }
+                    else {
+                        _this.chunks[key] = chunk;
+                    }
+                });
+            });
+            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
+                this.warnDuplicates(this.duplicates);
+            }
+        }
+        /**
+         * @param {?} key
+         * @return {?}
+         */
+        TranslationChunkService.prototype.getChunkNameForKey = /**
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                /** @type {?} */
+                var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
+                /** @type {?} */
+                var chunk = this.chunks && this.chunks[mainKey];
+                if (!chunk) {
+                    return mainKey; // fallback to main key as a chunk
+                }
+                return chunk;
+            };
+        /**
+         * @private
+         * @param {?} items
+         * @return {?}
+         */
+        TranslationChunkService.prototype.warnDuplicates = /**
+         * @private
+         * @param {?} items
+         * @return {?}
+         */
+            function (items) {
+                var _this = this;
+                /** @type {?} */
+                var dupes = [];
+                Object.keys(items).forEach(function (key) {
+                    dupes.push("* '" + key + "' found in chunks: " + items[key].join(', ') + ". Used '" + _this.chunks[key] + "." + key + "'.");
+                });
+                console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
+            };
+        TranslationChunkService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        TranslationChunkService.ctorParameters = function () {
+            return [
+                { type: I18nConfig }
+            ];
+        };
+        return TranslationChunkService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} config
+     * @param {?} languageService
+     * @return {?}
+     */
+    function i18nextInit(config, languageService) {
+        return function () {
+            /** @type {?} */
+            var i18nextConfig = {
+                ns: [],
+                // don't preload any namespaces
+                fallbackLng: config.i18n.fallbackLang,
+                debug: config.i18n.debug,
+                interpolation: {
+                    escapeValue: false,
+                },
+            };
+            if (config.i18n.backend) {
+                i18next.use(i18nextXhrBackend);
+                i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
+            }
+            return i18next.init(i18nextConfig, function () {
+                // Don't use i18next's 'resources' config key for adding static translations,
+                // because it will disable loading chunks from backend. We add resources here, in the init's callback.
+                i18nextAddTranslations(config.i18n.resources);
+                syncI18nextWithSiteContext(languageService);
+            });
+        };
+    }
+    /**
+     * @param {?=} resources
+     * @return {?}
+     */
+    function i18nextAddTranslations(resources) {
+        if (resources === void 0) {
+            resources = {};
+        }
+        Object.keys(resources).forEach(function (lang) {
+            Object.keys(resources[lang]).forEach(function (chunkName) {
+                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
+            });
+        });
+    }
+    /**
+     * @param {?} language
+     * @return {?}
+     */
+    function syncI18nextWithSiteContext(language) {
+        // always update language of i18next on site context (language) change
+        language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var i18nextProviders = [
+        {
+            provide: i0.APP_INITIALIZER,
+            useFactory: i18nextInit,
+            deps: [I18nConfig, LanguageService],
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultI18nConfig = {
+        i18n: {
+            fallbackLang: false,
+            debug: false,
+            chunks: {
+                common: [
+                    'common',
+                    'spinner',
+                    'header',
+                    'searchBox',
+                    'sorting',
+                    'httpHandlers',
+                    'pageMetaResolver',
+                ],
+                cart: ['cartDetails', 'cartItems', 'orderCost', 'miniCart'],
+                address: ['addressForm', 'addressBook', 'addressCard'],
+                payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
+                myAccount: ['orderDetails', 'orderHistory', 'closeAccount'],
+                storeFinder: ['storeFinder'],
+                pwa: ['pwa'],
+                checkout: [
+                    'checkout',
+                    'checkoutAddress',
+                    'checkoutOrderConfirmation',
+                    'checkoutReview',
+                    'checkoutShipping',
+                    'checkoutProgress',
+                ],
+                product: [
+                    'productDetails',
+                    'productList',
+                    'productFacetNavigation',
+                    'productSummary',
+                    'productReview',
+                    'addToCart',
+                ],
+                user: [
+                    'forgottenPassword',
+                    'loginForm',
+                    'login',
+                    'register',
+                    'updateEmailForm',
+                    'updatePasswordForm',
+                    'updateProfileForm',
+                    'consentManagementForm',
+                ],
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nextTranslationService = /** @class */ (function () {
+        function I18nextTranslationService(config, translationChunk) {
+            this.config = config;
+            this.translationChunk = translationChunk;
+            this.NON_BREAKING_SPACE = String.fromCharCode(160);
+            this.NAMESPACE_SEPARATOR = ':';
+        }
+        /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} whitespaceUntilLoaded
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.translate = /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} whitespaceUntilLoaded
+         * @return {?}
+         */
+            function (key, options, whitespaceUntilLoaded) {
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
+                // (or the fallback value in case the key is missing).
+                var _this = this;
+                if (options === void 0) {
+                    options = {};
+                }
+                if (whitespaceUntilLoaded === void 0) {
+                    whitespaceUntilLoaded = false;
+                }
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
+                // (or the fallback value in case the key is missing).
+                // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
+                // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
+                // which together with `switchMap` operator may lead to an infinite loop.
+                /** @type {?} */
+                var chunkName = this.translationChunk.getChunkNameForKey(key);
+                /** @type {?} */
+                var namespacedKey = this.getNamespacedKey(key, chunkName);
+                return new rxjs.Observable(function (subscriber) {
+                    /** @type {?} */
+                    var translate = function () {
+                        if (i18next.exists(namespacedKey, options)) {
+                            subscriber.next(i18next.t(namespacedKey, options));
+                        }
+                        else {
+                            if (whitespaceUntilLoaded) {
+                                subscriber.next(_this.NON_BREAKING_SPACE);
+                            }
+                            i18next.loadNamespaces(chunkName, function () {
+                                if (!i18next.exists(namespacedKey, options)) {
+                                    _this.reportMissingKey(key, chunkName);
+                                    subscriber.next(_this.getFallbackValue(namespacedKey));
+                                }
+                                else {
+                                    subscriber.next(i18next.t(namespacedKey, options));
+                                }
+                            });
+                        }
+                    };
+                    translate();
+                    i18next.on('languageChanged', translate);
+                    return function () { return i18next.off('languageChanged', translate); };
+                });
+            };
+        /**
+         * @param {?} chunkNames
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.loadChunks = /**
+         * @param {?} chunkNames
+         * @return {?}
+         */
+            function (chunkNames) {
+                return i18next.loadNamespaces(chunkNames);
+            };
+        /**
+         * Returns a fallback value in case when the given key is missing
+         * @param key
+         */
+        /**
+         * Returns a fallback value in case when the given key is missing
+         * @protected
+         * @param {?} key
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.getFallbackValue = /**
+         * Returns a fallback value in case when the given key is missing
+         * @protected
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} chunkName
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.reportMissingKey = /**
+         * @private
+         * @param {?} key
+         * @param {?} chunkName
+         * @return {?}
+         */
+            function (key, chunkName) {
+                if (!this.config.production) {
+                    console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
+                }
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} chunk
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.getNamespacedKey = /**
+         * @private
+         * @param {?} key
+         * @param {?} chunk
+         * @return {?}
+         */
+            function (key, chunk) {
+                return chunk + this.NAMESPACE_SEPARATOR + key;
+            };
+        I18nextTranslationService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        I18nextTranslationService.ctorParameters = function () {
+            return [
+                { type: I18nConfig },
+                { type: TranslationChunkService }
+            ];
+        };
+        return I18nextTranslationService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nModule = /** @class */ (function () {
+        function I18nModule() {
+        }
+        /**
+         * @return {?}
+         */
+        I18nModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: I18nModule,
+                    providers: __spread([
+                        provideConfig(defaultI18nConfig),
+                        { provide: I18nConfig, useExisting: Config },
+                        { provide: TranslationService, useClass: I18nextTranslationService },
+                        TranslationChunkService
+                    ], i18nextProviders),
+                };
+            };
+        I18nModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [TranslatePipe, CxDatePipe],
+                        exports: [TranslatePipe, CxDatePipe],
+                    },] }
+        ];
+        return I18nModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    function mockTranslate(key, options) {
+        if (options === void 0) {
+            options = {};
+        }
+        /** @type {?} */
+        var optionsString = Object.keys(options)
+            .sort()
+            .map(function (optionName) { return optionName + ":" + options[optionName]; })
+            .join(' ');
+        return optionsString ? key + " " + optionsString : key;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockTranslatePipe = /** @class */ (function () {
+        function MockTranslatePipe() {
+        }
+        /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+        MockTranslatePipe.prototype.transform = /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+            function (input, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
+                    options = __assign({}, options, input.params);
+                }
+                return mockTranslate(key, options);
+            };
+        MockTranslatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxTranslate' },] }
+        ];
+        return MockTranslatePipe;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockTranslationService = /** @class */ (function () {
+        function MockTranslationService() {
+        }
+        /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} _whitespaceUntilLoaded
+         * @return {?}
+         */
+        MockTranslationService.prototype.translate = /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} _whitespaceUntilLoaded
+         * @return {?}
+         */
+            function (key, options, _whitespaceUntilLoaded) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if (_whitespaceUntilLoaded === void 0) {
+                    _whitespaceUntilLoaded = false;
+                }
+                return new rxjs.Observable(function (subscriber) {
+                    /** @type {?} */
+                    var value = mockTranslate(key, options);
+                    subscriber.next(value);
+                    subscriber.complete();
+                });
+            };
+        /**
+         * @param {?} _chunks
+         * @return {?}
+         */
+        MockTranslationService.prototype.loadChunks = /**
+         * @param {?} _chunks
+         * @return {?}
+         */
+            function (_chunks) {
+                return Promise.resolve();
+            };
+        MockTranslationService.decorators = [
+            { type: i0.Injectable }
+        ];
+        return MockTranslationService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockDatePipe = /** @class */ (function (_super) {
+        __extends(MockDatePipe, _super);
+        function MockDatePipe() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+        MockDatePipe.prototype.transform = /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+            function (value, format, timezone) {
+                return _super.prototype.transform.call(this, value, format, timezone, 'en');
+            };
+        MockDatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+        ];
+        return MockDatePipe;
+    }(i1$2.DatePipe));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nTestingModule = /** @class */ (function () {
+        function I18nTestingModule() {
+        }
+        I18nTestingModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [MockTranslatePipe, MockDatePipe],
+                        exports: [MockTranslatePipe, MockDatePipe],
+                        providers: [
+                            { provide: TranslationService, useClass: MockTranslationService },
+                        ],
+                    },] }
+        ];
+        return I18nTestingModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -13974,7 +14816,7 @@
                     // only the existence of a plp component tells us if products
                     // are rendered or if this is an ordinary content page
                     if (_this.hasProductListComponent(page)) {
-                        return _this.productSearchService.getSearchResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
+                        return _this.productSearchService.getResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
                             return rxjs.combineLatest([
                                 _this.resolveTitle(data),
                                 _this.resolveBreadcrumbs(data),
@@ -14290,7 +15132,7 @@
             function () {
                 var _this = this;
                 /** @type {?} */
-                var total$ = this.productSearchService.getSearchResults().pipe(operators.filter(function (data) { return !!(data && data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
+                var total$ = this.productSearchService.getResults().pipe(operators.filter(function (data) { return !!(data && data.pagination); }), operators.map(function (results) { return results.pagination.totalResults; }));
                 /** @type {?} */
                 var query$ = this.routingService.getRouterState().pipe(operators.map(function (state) { return state.state.params['query']; }), operators.filter(Boolean));
                 return rxjs.combineLatest([total$, query$]).pipe(operators.switchMap(function (_a) {
@@ -17454,796 +18296,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ I18nConfig = /** @class */ (function (_super) {
-        __extends(I18nConfig, _super);
-        function I18nConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return I18nConfig;
-    }(ServerConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
-    var CxDatePipe = /** @class */ (function (_super) {
-        __extends(CxDatePipe, _super);
-        function CxDatePipe(language, config) {
-            var _this = _super.call(this, null) || this;
-            _this.language = language;
-            _this.config = config;
-            return _this;
-        }
-        /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-        CxDatePipe.prototype.transform = /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-            function (value, format, timezone) {
-                return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        CxDatePipe.prototype.getLang = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                /** @type {?} */
-                var lang = this.getActiveLang();
-                try {
-                    i1$2.getLocaleId(lang);
-                    return lang;
-                }
-                catch (_a) {
-                    this.reportMissingLocaleData(lang);
-                    return 'en';
-                }
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        CxDatePipe.prototype.getActiveLang = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                /** @type {?} */
-                var result;
-                this.language
-                    .getActive()
-                    .subscribe(function (lang) { return (result = lang); })
-                    .unsubscribe();
-                return result;
-            };
-        /**
-         * @private
-         * @param {?} lang
-         * @return {?}
-         */
-        CxDatePipe.prototype.reportMissingLocaleData = /**
-         * @private
-         * @param {?} lang
-         * @return {?}
-         */
-            function (lang) {
-                if (!this.config.production) {
-                    console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
-                }
-            };
-        CxDatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
-        ];
-        /** @nocollapse */
-        CxDatePipe.ctorParameters = function () {
-            return [
-                { type: LanguageService },
-                { type: I18nConfig }
-            ];
-        };
-        return CxDatePipe;
-    }(i1$2.DatePipe));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} objA
-     * @param {?} objB
-     * @return {?}
-     */
-    function shallowEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true;
-        }
-        if (!objA || !objB) {
-            return false;
-        }
-        /** @type {?} */
-        var aKeys = Object.keys(objA);
-        /** @type {?} */
-        var bKeys = Object.keys(objB);
-        /** @type {?} */
-        var aKeysLen = aKeys.length;
-        /** @type {?} */
-        var bKeysLen = bKeys.length;
-        if (aKeysLen !== bKeysLen) {
-            return false;
-        }
-        for (var i = 0; i < aKeysLen; i++) {
-            /** @type {?} */
-            var key = aKeys[i];
-            if (objA[key] !== objB[key]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TranslatePipe = /** @class */ (function () {
-        function TranslatePipe(service, cd) {
-            this.service = service;
-            this.cd = cd;
-        }
-        /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-        TranslatePipe.prototype.transform = /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-            function (input, options) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if ((( /** @type {?} */(input))).raw) {
-                    return (( /** @type {?} */(input))).raw;
-                }
-                /** @type {?} */
-                var key = typeof input === 'string' ? input : input.key;
-                if (typeof input !== 'string') {
-                    options = __assign({}, options, input.params);
-                }
-                this.translate(key, options);
-                return this.translatedValue;
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} options
-         * @return {?}
-         */
-        TranslatePipe.prototype.translate = /**
-         * @private
-         * @param {?} key
-         * @param {?} options
-         * @return {?}
-         */
-            function (key, options) {
-                var _this = this;
-                if (key !== this.lastKey ||
-                    !shallowEqualObjects(options, this.lastOptions)) {
-                    this.lastKey = key;
-                    this.lastOptions = options;
-                    if (this.sub) {
-                        this.sub.unsubscribe();
-                    }
-                    this.sub = this.service
-                        .translate(key, options, true)
-                        .subscribe(function (val) { return _this.markForCheck(val); });
-                }
-            };
-        /**
-         * @private
-         * @param {?} value
-         * @return {?}
-         */
-        TranslatePipe.prototype.markForCheck = /**
-         * @private
-         * @param {?} value
-         * @return {?}
-         */
-            function (value) {
-                this.translatedValue = value;
-                this.cd.markForCheck();
-            };
-        /**
-         * @return {?}
-         */
-        TranslatePipe.prototype.ngOnDestroy = /**
-         * @return {?}
-         */
-            function () {
-                if (this.sub) {
-                    this.sub.unsubscribe();
-                }
-            };
-        TranslatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxTranslate', pure: false },] }
-        ];
-        /** @nocollapse */
-        TranslatePipe.ctorParameters = function () {
-            return [
-                { type: TranslationService },
-                { type: i0.ChangeDetectorRef }
-            ];
-        };
-        return TranslatePipe;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TranslationChunkService = /** @class */ (function () {
-        function TranslationChunkService(config) {
-            var _this = this;
-            this.config = config;
-            this.duplicates = {};
-            this.chunks = {};
-            this.KEY_SEPARATOR = '.';
-            Object.keys(config.i18n.chunks).forEach(function (chunk) {
-                config.i18n.chunks[chunk].forEach(function (key) {
-                    if (_this.chunks.hasOwnProperty(key)) {
-                        if (!_this.duplicates[key]) {
-                            _this.duplicates[key] = [_this.chunks[key]];
-                        }
-                        _this.duplicates[key].push(chunk);
-                    }
-                    else {
-                        _this.chunks[key] = chunk;
-                    }
-                });
-            });
-            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
-                this.warnDuplicates(this.duplicates);
-            }
-        }
-        /**
-         * @param {?} key
-         * @return {?}
-         */
-        TranslationChunkService.prototype.getChunkNameForKey = /**
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                /** @type {?} */
-                var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
-                /** @type {?} */
-                var chunk = this.chunks && this.chunks[mainKey];
-                if (!chunk) {
-                    return mainKey; // fallback to main key as a chunk
-                }
-                return chunk;
-            };
-        /**
-         * @private
-         * @param {?} items
-         * @return {?}
-         */
-        TranslationChunkService.prototype.warnDuplicates = /**
-         * @private
-         * @param {?} items
-         * @return {?}
-         */
-            function (items) {
-                var _this = this;
-                /** @type {?} */
-                var dupes = [];
-                Object.keys(items).forEach(function (key) {
-                    dupes.push("* '" + key + "' found in chunks: " + items[key].join(', ') + ". Used '" + _this.chunks[key] + "." + key + "'.");
-                });
-                console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
-            };
-        TranslationChunkService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        TranslationChunkService.ctorParameters = function () {
-            return [
-                { type: I18nConfig }
-            ];
-        };
-        return TranslationChunkService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} config
-     * @param {?} languageService
-     * @return {?}
-     */
-    function i18nextInit(config, languageService) {
-        return function () {
-            /** @type {?} */
-            var i18nextConfig = {
-                ns: [],
-                // don't preload any namespaces
-                fallbackLng: config.i18n.fallbackLang,
-                debug: config.i18n.debug,
-                interpolation: {
-                    escapeValue: false,
-                },
-            };
-            if (config.i18n.backend) {
-                i18next.use(i18nextXhrBackend);
-                i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
-            }
-            return i18next.init(i18nextConfig, function () {
-                // Don't use i18next's 'resources' config key for adding static translations,
-                // because it will disable loading chunks from backend. We add resources here, in the init's callback.
-                i18nextAddTranslations(config.i18n.resources);
-                syncI18nextWithSiteContext(languageService);
-            });
-        };
-    }
-    /**
-     * @param {?=} resources
-     * @return {?}
-     */
-    function i18nextAddTranslations(resources) {
-        if (resources === void 0) {
-            resources = {};
-        }
-        Object.keys(resources).forEach(function (lang) {
-            Object.keys(resources[lang]).forEach(function (chunkName) {
-                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
-            });
-        });
-    }
-    /**
-     * @param {?} language
-     * @return {?}
-     */
-    function syncI18nextWithSiteContext(language) {
-        // always update language of i18next on site context (language) change
-        language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var i18nextProviders = [
-        {
-            provide: i0.APP_INITIALIZER,
-            useFactory: i18nextInit,
-            deps: [I18nConfig, LanguageService],
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultI18nConfig = {
-        i18n: {
-            fallbackLang: false,
-            debug: false,
-            chunks: {
-                common: [
-                    'common',
-                    'spinner',
-                    'header',
-                    'searchBox',
-                    'sorting',
-                    'httpHandlers',
-                    'pageMetaResolver',
-                ],
-                cart: ['cartDetails', 'cartItems', 'orderCost', 'miniCart'],
-                address: ['addressForm', 'addressBook', 'addressCard'],
-                payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
-                myAccount: ['orderDetails', 'orderHistory', 'closeAccount'],
-                storeFinder: ['storeFinder'],
-                pwa: ['pwa'],
-                checkout: [
-                    'checkout',
-                    'checkoutAddress',
-                    'checkoutOrderConfirmation',
-                    'checkoutReview',
-                    'checkoutShipping',
-                    'checkoutProgress',
-                ],
-                product: [
-                    'productDetails',
-                    'productList',
-                    'productFacetNavigation',
-                    'productSummary',
-                    'productReview',
-                    'addToCart',
-                ],
-                user: [
-                    'forgottenPassword',
-                    'loginForm',
-                    'login',
-                    'register',
-                    'updateEmailForm',
-                    'updatePasswordForm',
-                    'updateProfileForm',
-                    'consentManagementForm',
-                ],
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nextTranslationService = /** @class */ (function () {
-        function I18nextTranslationService(config, translationChunk) {
-            this.config = config;
-            this.translationChunk = translationChunk;
-            this.NON_BREAKING_SPACE = String.fromCharCode(160);
-            this.NAMESPACE_SEPARATOR = ':';
-        }
-        /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} whitespaceUntilLoaded
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.translate = /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} whitespaceUntilLoaded
-         * @return {?}
-         */
-            function (key, options, whitespaceUntilLoaded) {
-                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
-                // (or the fallback value in case the key is missing).
-                var _this = this;
-                if (options === void 0) {
-                    options = {};
-                }
-                if (whitespaceUntilLoaded === void 0) {
-                    whitespaceUntilLoaded = false;
-                }
-                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
-                // (or the fallback value in case the key is missing).
-                // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
-                // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
-                // which together with `switchMap` operator may lead to an infinite loop.
-                /** @type {?} */
-                var chunkName = this.translationChunk.getChunkNameForKey(key);
-                /** @type {?} */
-                var namespacedKey = this.getNamespacedKey(key, chunkName);
-                return new rxjs.Observable(function (subscriber) {
-                    /** @type {?} */
-                    var translate = function () {
-                        if (i18next.exists(namespacedKey, options)) {
-                            subscriber.next(i18next.t(namespacedKey, options));
-                        }
-                        else {
-                            if (whitespaceUntilLoaded) {
-                                subscriber.next(_this.NON_BREAKING_SPACE);
-                            }
-                            i18next.loadNamespaces(chunkName, function () {
-                                if (!i18next.exists(namespacedKey, options)) {
-                                    _this.reportMissingKey(key, chunkName);
-                                    subscriber.next(_this.getFallbackValue(namespacedKey));
-                                }
-                                else {
-                                    subscriber.next(i18next.t(namespacedKey, options));
-                                }
-                            });
-                        }
-                    };
-                    translate();
-                    i18next.on('languageChanged', translate);
-                    return function () { return i18next.off('languageChanged', translate); };
-                });
-            };
-        /**
-         * @param {?} chunkNames
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.loadChunks = /**
-         * @param {?} chunkNames
-         * @return {?}
-         */
-            function (chunkNames) {
-                return i18next.loadNamespaces(chunkNames);
-            };
-        /**
-         * Returns a fallback value in case when the given key is missing
-         * @param key
-         */
-        /**
-         * Returns a fallback value in case when the given key is missing
-         * @protected
-         * @param {?} key
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.getFallbackValue = /**
-         * Returns a fallback value in case when the given key is missing
-         * @protected
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} chunkName
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.reportMissingKey = /**
-         * @private
-         * @param {?} key
-         * @param {?} chunkName
-         * @return {?}
-         */
-            function (key, chunkName) {
-                if (!this.config.production) {
-                    console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
-                }
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} chunk
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.getNamespacedKey = /**
-         * @private
-         * @param {?} key
-         * @param {?} chunk
-         * @return {?}
-         */
-            function (key, chunk) {
-                return chunk + this.NAMESPACE_SEPARATOR + key;
-            };
-        I18nextTranslationService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        I18nextTranslationService.ctorParameters = function () {
-            return [
-                { type: I18nConfig },
-                { type: TranslationChunkService }
-            ];
-        };
-        return I18nextTranslationService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nModule = /** @class */ (function () {
-        function I18nModule() {
-        }
-        /**
-         * @return {?}
-         */
-        I18nModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: I18nModule,
-                    providers: __spread([
-                        provideConfig(defaultI18nConfig),
-                        { provide: I18nConfig, useExisting: Config },
-                        { provide: TranslationService, useClass: I18nextTranslationService },
-                        TranslationChunkService
-                    ], i18nextProviders),
-                };
-            };
-        I18nModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        declarations: [TranslatePipe, CxDatePipe],
-                        exports: [TranslatePipe, CxDatePipe],
-                    },] }
-        ];
-        return I18nModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    function mockTranslate(key, options) {
-        if (options === void 0) {
-            options = {};
-        }
-        /** @type {?} */
-        var optionsString = Object.keys(options)
-            .sort()
-            .map(function (optionName) { return optionName + ":" + options[optionName]; })
-            .join(' ');
-        return optionsString ? key + " " + optionsString : key;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockTranslatePipe = /** @class */ (function () {
-        function MockTranslatePipe() {
-        }
-        /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-        MockTranslatePipe.prototype.transform = /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-            function (input, options) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if ((( /** @type {?} */(input))).raw) {
-                    return (( /** @type {?} */(input))).raw;
-                }
-                /** @type {?} */
-                var key = typeof input === 'string' ? input : input.key;
-                if (typeof input !== 'string') {
-                    options = __assign({}, options, input.params);
-                }
-                return mockTranslate(key, options);
-            };
-        MockTranslatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxTranslate' },] }
-        ];
-        return MockTranslatePipe;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockTranslationService = /** @class */ (function () {
-        function MockTranslationService() {
-        }
-        /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} _whitespaceUntilLoaded
-         * @return {?}
-         */
-        MockTranslationService.prototype.translate = /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} _whitespaceUntilLoaded
-         * @return {?}
-         */
-            function (key, options, _whitespaceUntilLoaded) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if (_whitespaceUntilLoaded === void 0) {
-                    _whitespaceUntilLoaded = false;
-                }
-                return new rxjs.Observable(function (subscriber) {
-                    /** @type {?} */
-                    var value = mockTranslate(key, options);
-                    subscriber.next(value);
-                    subscriber.complete();
-                });
-            };
-        /**
-         * @param {?} _chunks
-         * @return {?}
-         */
-        MockTranslationService.prototype.loadChunks = /**
-         * @param {?} _chunks
-         * @return {?}
-         */
-            function (_chunks) {
-                return Promise.resolve();
-            };
-        MockTranslationService.decorators = [
-            { type: i0.Injectable }
-        ];
-        return MockTranslationService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockDatePipe = /** @class */ (function (_super) {
-        __extends(MockDatePipe, _super);
-        function MockDatePipe() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-        MockDatePipe.prototype.transform = /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-            function (value, format, timezone) {
-                return _super.prototype.transform.call(this, value, format, timezone, 'en');
-            };
-        MockDatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
-        ];
-        return MockDatePipe;
-    }(i1$2.DatePipe));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nTestingModule = /** @class */ (function () {
-        function I18nTestingModule() {
-        }
-        I18nTestingModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        declarations: [MockTranslatePipe, MockDatePipe],
-                        exports: [MockTranslatePipe, MockDatePipe],
-                        providers: [
-                            { provide: TranslationService, useClass: MockTranslationService },
-                        ],
-                    },] }
-        ];
-        return I18nTestingModule;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -22375,7 +22427,7 @@
                     //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
                     productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
                     // tslint:disable:max-line-length
-                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT)&query=${query}',
+                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch&query=${query}',
                     // tslint:enable
                     productSuggestions: 'products/suggestions?term=${term}&max=${max}',
                 },
@@ -25735,6 +25787,7 @@
     exports.ProductReviewService = ProductReviewService;
     exports.ProductSearchService = ProductSearchService;
     exports.ProductService = ProductService;
+    exports.SearchboxService = SearchboxService;
     exports.ProductModule = ProductModule;
     exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
     exports.ProductPageMetaResolver = ProductPageMetaResolver;
@@ -25763,14 +25816,14 @@
     exports.GET_PRODUCT_SUGGESTIONS = GET_PRODUCT_SUGGESTIONS;
     exports.GET_PRODUCT_SUGGESTIONS_SUCCESS = GET_PRODUCT_SUGGESTIONS_SUCCESS;
     exports.GET_PRODUCT_SUGGESTIONS_FAIL = GET_PRODUCT_SUGGESTIONS_FAIL;
-    exports.CLEAN_PRODUCT_SEARCH = CLEAN_PRODUCT_SEARCH;
+    exports.CLEAR_PRODUCT_SEARCH_RESULT = CLEAR_PRODUCT_SEARCH_RESULT;
     exports.SearchProducts = SearchProducts;
     exports.SearchProductsFail = SearchProductsFail;
     exports.SearchProductsSuccess = SearchProductsSuccess;
     exports.GetProductSuggestions = GetProductSuggestions;
     exports.GetProductSuggestionsSuccess = GetProductSuggestionsSuccess;
     exports.GetProductSuggestionsFail = GetProductSuggestionsFail;
-    exports.CleanProductSearchState = CleanProductSearchState;
+    exports.ClearProductSearchResult = ClearProductSearchResult;
     exports.LOAD_PRODUCT = LOAD_PRODUCT;
     exports.LOAD_PRODUCT_FAIL = LOAD_PRODUCT_FAIL;
     exports.LOAD_PRODUCT_SUCCESS = LOAD_PRODUCT_SUCCESS;
@@ -26250,6 +26303,7 @@
     exports.ɵch = metaReducers$2;
     exports.ɵcf = reducerProvider$5;
     exports.ɵce = reducerToken$5;
+    exports.ɵet = PageMetaResolver;
     exports.ɵco = CmsStoreModule;
     exports.ɵcn = cmsStoreConfigFactory;
     exports.ɵcw = ComponentEffects;
@@ -26272,22 +26326,24 @@
     exports.ɵdx = getReducers$4;
     exports.ɵdz = reducerProvider$4;
     exports.ɵdy = reducerToken$4;
+    exports.ɵes = TranslationService;
     exports.ɵed = defaultI18nConfig;
     exports.ɵef = i18nextInit;
     exports.ɵee = i18nextProviders;
     exports.ɵeg = MockDatePipe;
     exports.ɵeh = MockTranslationService;
     exports.ɵei = defaultOccProductConfig;
-    exports.ɵgv = defaultPersonalizationConfig;
-    exports.ɵgw = interceptors$2;
-    exports.ɵgx = OccPersonalizationIdInterceptor;
-    exports.ɵgy = OccPersonalizationTimeInterceptor;
-    exports.ɵgp = ProcessModule;
-    exports.ɵgr = PROCESS_FEATURE;
-    exports.ɵgq = ProcessStoreModule;
-    exports.ɵgs = getReducers$9;
-    exports.ɵgu = reducerProvider$9;
-    exports.ɵgt = reducerToken$9;
+    exports.ɵgz = defaultPersonalizationConfig;
+    exports.ɵha = interceptors$2;
+    exports.ɵhb = OccPersonalizationIdInterceptor;
+    exports.ɵhc = OccPersonalizationTimeInterceptor;
+    exports.ɵgt = ProcessModule;
+    exports.ɵgv = PROCESS_FEATURE;
+    exports.ɵgu = ProcessStoreModule;
+    exports.ɵgw = getReducers$9;
+    exports.ɵgy = reducerProvider$9;
+    exports.ɵgx = reducerToken$9;
+    exports.ɵev = ProductSearchService;
     exports.ɵdh = effects$7;
     exports.ɵdi = ProductReferencesEffects;
     exports.ɵdj = ProductReviewsEffects;
@@ -26306,6 +26362,7 @@
     exports.ɵep = getProductSuggestions;
     exports.ɵen = getSearchResults;
     exports.ɵem = reducer$f;
+    exports.ɵeu = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26316,26 +26373,26 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵes = defaultSiteContextConfigFactory;
-    exports.ɵey = SiteContextParamsService;
-    exports.ɵfa = SiteContextRoutesHandler;
-    exports.ɵez = SiteContextUrlSerializer;
+    exports.ɵew = defaultSiteContextConfigFactory;
+    exports.ɵfc = SiteContextParamsService;
+    exports.ɵfe = SiteContextRoutesHandler;
+    exports.ɵfd = SiteContextUrlSerializer;
     exports.ɵdg = CurrenciesEffects;
     exports.ɵde = effects$3;
     exports.ɵdf = LanguagesEffects;
-    exports.ɵex = reducer$5;
-    exports.ɵew = reducer$4;
+    exports.ɵfb = reducer$5;
+    exports.ɵfa = reducer$4;
     exports.ɵdb = getReducers$3;
     exports.ɵdd = reducerProvider$3;
     exports.ɵdc = reducerToken$3;
-    exports.ɵev = reducer$3;
-    exports.ɵeu = SiteContextStoreModule;
-    exports.ɵet = siteContextStoreConfigFactory;
-    exports.ɵfc = CmsTicketInterceptor;
-    exports.ɵfb = interceptors$1;
+    exports.ɵez = reducer$3;
+    exports.ɵey = SiteContextStoreModule;
+    exports.ɵex = siteContextStoreConfigFactory;
+    exports.ɵfg = CmsTicketInterceptor;
+    exports.ɵff = interceptors$1;
     exports.ɵcl = EntityFailAction;
     exports.ɵck = EntityLoadAction;
-    exports.ɵfm = EntityResetAction;
+    exports.ɵfq = EntityResetAction;
     exports.ɵcm = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
@@ -26343,48 +26400,48 @@
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfe = defaultStoreFinderConfig;
-    exports.ɵfk = FindStoresEffect;
-    exports.ɵfj = effects$9;
-    exports.ɵfl = ViewAllStoresEffect;
-    exports.ɵfg = getReducers$a;
-    exports.ɵfi = reducerProvider$a;
-    exports.ɵfh = reducerToken$a;
-    exports.ɵfd = getStoreFinderState;
-    exports.ɵff = StoreFinderStoreModule;
-    exports.ɵfp = BillingCountriesEffect;
-    exports.ɵfq = DeliveryCountriesEffects;
-    exports.ɵgb = ForgotPasswordEffects;
-    exports.ɵfo = effects$8;
-    exports.ɵfr = OrderDetailsEffect;
-    exports.ɵfs = UserPaymentMethodsEffects;
-    exports.ɵft = RegionsEffects;
-    exports.ɵfu = ResetPasswordEffects;
-    exports.ɵfv = TitlesEffects;
-    exports.ɵgc = UpdateEmailEffects;
-    exports.ɵgd = UpdatePasswordEffects;
-    exports.ɵfw = UserAddressesEffects;
-    exports.ɵfx = UserConsentsEffect;
-    exports.ɵfy = UserDetailsEffects;
-    exports.ɵfz = UserOrdersEffect;
-    exports.ɵga = UserRegisterEffects;
-    exports.ɵgg = reducer$g;
-    exports.ɵgl = reducer$h;
+    exports.ɵfi = defaultStoreFinderConfig;
+    exports.ɵfo = FindStoresEffect;
+    exports.ɵfn = effects$9;
+    exports.ɵfp = ViewAllStoresEffect;
+    exports.ɵfk = getReducers$a;
+    exports.ɵfm = reducerProvider$a;
+    exports.ɵfl = reducerToken$a;
+    exports.ɵfh = getStoreFinderState;
+    exports.ɵfj = StoreFinderStoreModule;
+    exports.ɵft = BillingCountriesEffect;
+    exports.ɵfu = DeliveryCountriesEffects;
+    exports.ɵgf = ForgotPasswordEffects;
+    exports.ɵfs = effects$8;
+    exports.ɵfv = OrderDetailsEffect;
+    exports.ɵfw = UserPaymentMethodsEffects;
+    exports.ɵfx = RegionsEffects;
+    exports.ɵfy = ResetPasswordEffects;
+    exports.ɵfz = TitlesEffects;
+    exports.ɵgg = UpdateEmailEffects;
+    exports.ɵgh = UpdatePasswordEffects;
+    exports.ɵga = UserAddressesEffects;
+    exports.ɵgb = UserConsentsEffect;
+    exports.ɵgc = UserDetailsEffects;
+    exports.ɵgd = UserOrdersEffect;
+    exports.ɵge = UserRegisterEffects;
+    exports.ɵgk = reducer$g;
+    exports.ɵgp = reducer$h;
     exports.ɵdu = clearUserState;
     exports.ɵdr = getReducers$8;
     exports.ɵdv = metaReducers$5;
     exports.ɵdt = reducerProvider$8;
     exports.ɵds = reducerToken$8;
-    exports.ɵgk = reducer$i;
-    exports.ɵgi = reducer$j;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$l;
-    exports.ɵgm = reducer$m;
-    exports.ɵgf = reducer$n;
-    exports.ɵgh = reducer$o;
-    exports.ɵge = reducer$p;
-    exports.ɵgj = reducer$q;
-    exports.ɵfn = UserStoreModule;
+    exports.ɵgo = reducer$i;
+    exports.ɵgm = reducer$j;
+    exports.ɵgr = reducer$k;
+    exports.ɵgs = reducer$l;
+    exports.ɵgq = reducer$m;
+    exports.ɵgj = reducer$n;
+    exports.ɵgl = reducer$o;
+    exports.ɵgi = reducer$p;
+    exports.ɵgn = reducer$q;
+    exports.ɵfr = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
