@@ -1738,7 +1738,6 @@ class AuthService {
      */
     refreshUserToken(token) {
         this.store.dispatch(new RefreshUserToken({
-            userId: token.userId,
             refreshToken: token.refresh_token,
         }));
     }
@@ -2926,6 +2925,13 @@ StateModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const USERID_CURRENT = 'current';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UserTokenEffects {
     /**
      * @param {?} actions$
@@ -2939,19 +2945,18 @@ class UserTokenEffects {
                 /** @type {?} */
                 const date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = userId;
+                token.userId = USERID_CURRENT;
                 token.expiration_time = date;
                 return new LoadUserTokenSuccess(token);
             }), catchError(error => of(new LoadUserTokenFail(error))));
         }));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(() => new Login()));
-        this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), switchMap(({ userId, refreshToken }) => {
+        this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), switchMap(({ refreshToken }) => {
             return this.userTokenService.refreshToken(refreshToken).pipe(map((token) => {
-                token.userId = userId;
                 /** @type {?} */
                 const date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = userId;
+                token.userId = USERID_CURRENT;
                 token.expiration_time = date;
                 return new RefreshUserTokenSuccess(token);
             }, catchError(error => of(new RefreshUserTokenFail(error)))));

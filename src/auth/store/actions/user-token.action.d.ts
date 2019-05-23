@@ -29,12 +29,10 @@ export declare class LoadUserTokenSuccess implements Action {
 }
 export declare class RefreshUserToken implements Action {
     payload: {
-        userId: string;
         refreshToken: string;
     };
     readonly type = "[Auth] Refresh User Token";
     constructor(payload: {
-        userId: string;
         refreshToken: string;
     });
 }

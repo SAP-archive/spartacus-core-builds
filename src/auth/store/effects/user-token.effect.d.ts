@@ -1,8 +1,8 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import { UserAuthenticationTokenService } from './../../services/user-authentication/user-authentication-token.service';
-import { UserTokenAction } from '../actions/user-token.action';
 import { Login } from '../actions/login-logout.action';
+import { UserTokenAction } from '../actions/user-token.action';
+import { UserAuthenticationTokenService } from './../../services/user-authentication/user-authentication-token.service';
 export declare class UserTokenEffects {
     private actions$;
     private userTokenService;

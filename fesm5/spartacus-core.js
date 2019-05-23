@@ -2095,7 +2095,6 @@ var AuthService = /** @class */ (function () {
      */
     function (token) {
         this.store.dispatch(new RefreshUserToken({
-            userId: token.userId,
             refreshToken: token.refresh_token,
         }));
     };
@@ -3479,6 +3478,13 @@ var StateModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var USERID_CURRENT = 'current';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var UserTokenEffects = /** @class */ (function () {
     function UserTokenEffects(actions$, userTokenService) {
         var _this = this;
@@ -3490,20 +3496,19 @@ var UserTokenEffects = /** @class */ (function () {
                 /** @type {?} */
                 var date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = userId;
+                token.userId = USERID_CURRENT;
                 token.expiration_time = date;
                 return new LoadUserTokenSuccess(token);
             }), catchError(function (error) { return of(new LoadUserTokenFail(error)); }));
         }));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(function () { return new Login(); }));
         this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map(function (action) { return action.payload; }), switchMap(function (_a) {
-            var userId = _a.userId, refreshToken = _a.refreshToken;
+            var refreshToken = _a.refreshToken;
             return _this.userTokenService.refreshToken(refreshToken).pipe(map(function (token) {
-                token.userId = userId;
                 /** @type {?} */
                 var date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = userId;
+                token.userId = USERID_CURRENT;
                 token.expiration_time = date;
                 return new RefreshUserTokenSuccess(token);
             }, catchError(function (error) { return of(new RefreshUserTokenFail(error)); })));
