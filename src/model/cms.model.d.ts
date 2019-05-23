@@ -39,6 +39,10 @@ export interface CmsParagraphComponent extends CmsComponent {
     modifiedTime?: string;
     title?: string;
 }
+export interface CMSTabParagraphContainer extends CmsComponent {
+    container?: string;
+    components?: string;
+}
 export interface CmsBannerComponentMedia {
     altText?: string;
     code?: string;
