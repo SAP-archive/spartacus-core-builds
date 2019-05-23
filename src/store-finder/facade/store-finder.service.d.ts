@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { WindowRef } from '../../window/window-ref';
 import { GeoPoint } from '../../model/misc.model';
 export declare class StoreFinderService {
-    private store;
-    private winRef;
+    protected store: Store<StateWithStoreFinder>;
+    protected winRef: WindowRef;
     private geolocationWatchId;
     constructor(store: Store<StateWithStoreFinder>, winRef: WindowRef);
     /**

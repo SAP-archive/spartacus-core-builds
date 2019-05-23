@@ -1,5 +1,5 @@
 export declare class ExternalJsFileLoader {
-    private document;
+    protected document: any;
     constructor(document: any);
     /**
      * Loads a javascript from an external URL

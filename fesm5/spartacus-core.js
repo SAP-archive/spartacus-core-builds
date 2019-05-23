@@ -24192,7 +24192,7 @@ var StoreDataService = /** @class */ (function () {
      */
     /**
      * Extracts schedule from the given location for the given date
-     * @private
+     * @protected
      * @param {?} location location
      * @param {?} date date
      *
@@ -24200,7 +24200,7 @@ var StoreDataService = /** @class */ (function () {
      */
     StoreDataService.prototype.getSchedule = /**
      * Extracts schedule from the given location for the given date
-     * @private
+     * @protected
      * @param {?} location location
      * @param {?} date date
      *

@@ -45,5 +45,5 @@ export declare class StoreDataService {
      *
      * @returns payload describing the store's schedule for the given day.
      */
-    private getSchedule;
+    protected getSchedule(location: PointOfService, date: Date): any;
 }

@@ -2,9 +2,9 @@ import { ExternalJsFileLoader } from './external-js-file-loader.service';
 import { StoreDataService } from '../facade/store-data.service';
 import { StoreFinderConfig } from '../config/store-finder-config';
 export declare class GoogleMapRendererService {
-    private config;
-    private externalJsFileLoader;
-    private storeDataService;
+    protected config: StoreFinderConfig;
+    protected externalJsFileLoader: ExternalJsFileLoader;
+    protected storeDataService: StoreDataService;
     private googleMap;
     private markers;
     constructor(config: StoreFinderConfig, externalJsFileLoader: ExternalJsFileLoader, storeDataService: StoreDataService);
