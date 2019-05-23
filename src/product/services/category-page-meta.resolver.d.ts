@@ -6,7 +6,7 @@ import { PageTitleResolver } from '../../cms/page/page.resolvers';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductSearchService } from '../facade/product-search.service';
 import { ProductSearchPage } from '../../model/product-search.model';
-import { TranslationService } from '../../i18n';
+import { TranslationService } from '../../i18n/translation.service';
 export declare class CategoryPageMetaResolver extends PageMetaResolver implements PageTitleResolver {
     protected routingService: RoutingService;
     protected productSearchService: ProductSearchService;

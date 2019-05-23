@@ -3,7 +3,7 @@ import { CmsService } from '../facade/cms.service';
 import { Page, PageMeta } from '../model/page.model';
 import { PageMetaResolver } from './page-meta.resolver';
 import { PageBreadcrumbResolver, PageTitleResolver } from './page.resolvers';
-import { TranslationService } from '../../i18n';
+import { TranslationService } from '../../i18n/translation.service';
 export declare class ContentPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageBreadcrumbResolver {
     protected cms: CmsService;
     protected translation: TranslationService;

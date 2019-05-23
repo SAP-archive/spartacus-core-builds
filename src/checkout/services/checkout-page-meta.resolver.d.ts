@@ -4,7 +4,7 @@ import { PageMeta, PageRobotsMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
 import { PageRobotsResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
 import { Cart } from '../../model/cart.model';
-import { TranslationService } from '../../i18n';
+import { TranslationService } from '../../i18n/translation.service';
 export declare class CheckoutPageMetaResolver extends PageMetaResolver implements PageTitleResolver, PageRobotsResolver {
     protected cartService: CartService;
     protected translation: TranslationService;

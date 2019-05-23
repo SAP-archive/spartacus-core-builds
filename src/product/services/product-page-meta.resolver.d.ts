@@ -5,7 +5,7 @@ import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, P
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductService } from '../facade/product.service';
 import { Product } from '../../model/product.model';
-import { TranslationService } from '../../i18n';
+import { TranslationService } from '../../i18n/translation.service';
 export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver {
     protected routingService: RoutingService;
     protected productService: ProductService;
