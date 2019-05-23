@@ -12307,7 +12307,7 @@ var CartPageMetaResolver = /** @class */ (function (_super) {
      */
     function () {
         var _this = this;
-        return this.cms.getCurrentPage().pipe(switchMap(function (page) {
+        return this.cms.getCurrentPage().pipe(filter(function (page) { return page !== undefined; }), switchMap(function (page) {
             return combineLatest([_this.resolveTitle(page), _this.resolveRobots()]);
         }), map(function (_a) {
             var _b = __read(_a, 2), title = _b[0], robots = _b[1];

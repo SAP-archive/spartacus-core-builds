@@ -12451,7 +12451,7 @@
          */
             function () {
                 var _this = this;
-                return this.cms.getCurrentPage().pipe(operators.switchMap(function (page) {
+                return this.cms.getCurrentPage().pipe(operators.filter(function (page) { return page !== undefined; }), operators.switchMap(function (page) {
                     return rxjs.combineLatest([_this.resolveTitle(page), _this.resolveRobots()]);
                 }), operators.map(function (_a) {
                     var _b = __read(_a, 2), title = _b[0], robots = _b[1];

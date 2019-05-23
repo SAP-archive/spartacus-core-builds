@@ -10578,7 +10578,7 @@ class CartPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return this.cms.getCurrentPage().pipe(switchMap(page => combineLatest([this.resolveTitle(page), this.resolveRobots()])), map(([title, robots]) => ({ title, robots })));
+        return this.cms.getCurrentPage().pipe(filter(page => page !== undefined), switchMap(page => combineLatest([this.resolveTitle(page), this.resolveRobots()])), map(([title, robots]) => ({ title, robots })));
     }
     /**
      * @param {?} page
