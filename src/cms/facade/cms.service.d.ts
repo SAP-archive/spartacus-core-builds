@@ -1,6 +1,6 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { CmsComponent } from '../../occ/occ-models/cms-component.models';
+import { CmsComponent } from '../../model/cms.model';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { PageContext } from '../../routing/models/page-context.model';
 import { ContentSlotData } from '../model/content-slot-data.model';

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { CmsComponent } from '../../../occ/occ-models/index';
+import { CmsComponent } from '../../../model/cms.model';
 import { PageContext } from '../../../routing/models/page-context.model';
 import { CmsStructureConfigService } from '../../services/cms-structure-config.service';
 import { CmsComponentAdapter } from './cms-component.adapter';

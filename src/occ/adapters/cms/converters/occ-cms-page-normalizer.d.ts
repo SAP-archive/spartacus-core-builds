@@ -1,8 +1,8 @@
 import { CmsStructureModel } from '../../../../cms/model/page.model';
 import { Converter } from '../../../../util/converter.service';
-import { CMSPage } from '../../../../model/cms.model';
-export declare class OccCmsPageNormalizer implements Converter<CMSPage, CmsStructureModel> {
-    convert(source: CMSPage, target?: CmsStructureModel): CmsStructureModel;
+import { Occ } from '../../../occ-models/occ.models';
+export declare class OccCmsPageNormalizer implements Converter<Occ.CMSPage, CmsStructureModel> {
+    convert(source: Occ.CMSPage, target?: CmsStructureModel): CmsStructureModel;
     private normalizePageData;
     private normalizePageSlotData;
     private normalizePageComponentData;

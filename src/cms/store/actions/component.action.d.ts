@@ -1,4 +1,4 @@
-import { CmsComponent } from '../../../occ/occ-models/index';
+import { CmsComponent } from '../../../model/cms.model';
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const LOAD_COMPONENT = "[Cms] Load Component";
 export declare const LOAD_COMPONENT_FAIL = "[Cms] Load Component Fail";
