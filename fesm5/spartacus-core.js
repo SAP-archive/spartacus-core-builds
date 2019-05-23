@@ -3,7 +3,7 @@ import { makeStateKey, TransferState } from '@angular/platform-browser';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import i18next from 'i18next';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
+import { Router, PRIMARY_OUTLET, RouterModule, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, DefaultUrlSerializer, UrlSerializer } from '@angular/router';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { createFeatureSelector, createSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
