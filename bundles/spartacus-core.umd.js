@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('@angular/router'), require('i18next-xhr-backend'), require('i18next'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', '@angular/router', 'i18next-xhr-backend', 'i18next', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.ng.forms,global.ng.router,global.i18nextXhrBackend,global.i18next,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,forms,i1,i18nextXhrBackend,i18next,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('i18next-xhr-backend'), require('i18next'), require('@angular/forms'), require('@angular/router'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', 'i18next-xhr-backend', 'i18next', '@angular/forms', '@angular/router', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.i18nextXhrBackend,global.i18next,global.ng.forms,global.ng.router,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
+}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i1,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -12029,11 +12029,822 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ I18nConfig = /** @class */ (function (_super) {
+        __extends(I18nConfig, _super);
+        function I18nConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return I18nConfig;
+    }(ServerConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
+    var CxDatePipe = /** @class */ (function (_super) {
+        __extends(CxDatePipe, _super);
+        function CxDatePipe(language, config) {
+            var _this = _super.call(this, null) || this;
+            _this.language = language;
+            _this.config = config;
+            return _this;
+        }
+        /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+        CxDatePipe.prototype.transform = /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+            function (value, format, timezone) {
+                return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        CxDatePipe.prototype.getLang = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var lang = this.getActiveLang();
+                try {
+                    i1$2.getLocaleId(lang);
+                    return lang;
+                }
+                catch (_a) {
+                    this.reportMissingLocaleData(lang);
+                    return 'en';
+                }
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        CxDatePipe.prototype.getActiveLang = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var result;
+                this.language
+                    .getActive()
+                    .subscribe(function (lang) { return (result = lang); })
+                    .unsubscribe();
+                return result;
+            };
+        /**
+         * @private
+         * @param {?} lang
+         * @return {?}
+         */
+        CxDatePipe.prototype.reportMissingLocaleData = /**
+         * @private
+         * @param {?} lang
+         * @return {?}
+         */
+            function (lang) {
+                if (!this.config.production) {
+                    console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
+                }
+            };
+        CxDatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+        ];
+        /** @nocollapse */
+        CxDatePipe.ctorParameters = function () {
+            return [
+                { type: LanguageService },
+                { type: I18nConfig }
+            ];
+        };
+        return CxDatePipe;
+    }(i1$2.DatePipe));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ TranslationService = /** @class */ (function () {
+        function TranslationService() {
+        }
+        return TranslationService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function shallowEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true;
+        }
+        if (!objA || !objB) {
+            return false;
+        }
+        /** @type {?} */
+        var aKeys = Object.keys(objA);
+        /** @type {?} */
+        var bKeys = Object.keys(objB);
+        /** @type {?} */
+        var aKeysLen = aKeys.length;
+        /** @type {?} */
+        var bKeysLen = bKeys.length;
+        if (aKeysLen !== bKeysLen) {
+            return false;
+        }
+        for (var i = 0; i < aKeysLen; i++) {
+            /** @type {?} */
+            var key = aKeys[i];
+            if (objA[key] !== objB[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var TranslatePipe = /** @class */ (function () {
+        function TranslatePipe(service, cd) {
+            this.service = service;
+            this.cd = cd;
+        }
+        /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+        TranslatePipe.prototype.transform = /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+            function (input, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
+                    options = __assign({}, options, input.params);
+                }
+                this.translate(key, options);
+                return this.translatedValue;
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} options
+         * @return {?}
+         */
+        TranslatePipe.prototype.translate = /**
+         * @private
+         * @param {?} key
+         * @param {?} options
+         * @return {?}
+         */
+            function (key, options) {
+                var _this = this;
+                if (key !== this.lastKey ||
+                    !shallowEqualObjects(options, this.lastOptions)) {
+                    this.lastKey = key;
+                    this.lastOptions = options;
+                    if (this.sub) {
+                        this.sub.unsubscribe();
+                    }
+                    this.sub = this.service
+                        .translate(key, options, true)
+                        .subscribe(function (val) { return _this.markForCheck(val); });
+                }
+            };
+        /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+        TranslatePipe.prototype.markForCheck = /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+            function (value) {
+                this.translatedValue = value;
+                this.cd.markForCheck();
+            };
+        /**
+         * @return {?}
+         */
+        TranslatePipe.prototype.ngOnDestroy = /**
+         * @return {?}
+         */
+            function () {
+                if (this.sub) {
+                    this.sub.unsubscribe();
+                }
+            };
+        TranslatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxTranslate', pure: false },] }
+        ];
+        /** @nocollapse */
+        TranslatePipe.ctorParameters = function () {
+            return [
+                { type: TranslationService },
+                { type: i0.ChangeDetectorRef }
+            ];
+        };
+        return TranslatePipe;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var TranslationChunkService = /** @class */ (function () {
+        function TranslationChunkService(config) {
+            var _this = this;
+            this.config = config;
+            this.duplicates = {};
+            this.chunks = {};
+            this.KEY_SEPARATOR = '.';
+            Object.keys(config.i18n.chunks).forEach(function (chunk) {
+                config.i18n.chunks[chunk].forEach(function (key) {
+                    if (_this.chunks.hasOwnProperty(key)) {
+                        if (!_this.duplicates[key]) {
+                            _this.duplicates[key] = [_this.chunks[key]];
+                        }
+                        _this.duplicates[key].push(chunk);
+                    }
+                    else {
+                        _this.chunks[key] = chunk;
+                    }
+                });
+            });
+            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
+                this.warnDuplicates(this.duplicates);
+            }
+        }
+        /**
+         * @param {?} key
+         * @return {?}
+         */
+        TranslationChunkService.prototype.getChunkNameForKey = /**
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                /** @type {?} */
+                var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
+                /** @type {?} */
+                var chunk = this.chunks && this.chunks[mainKey];
+                if (!chunk) {
+                    return mainKey; // fallback to main key as a chunk
+                }
+                return chunk;
+            };
+        /**
+         * @private
+         * @param {?} items
+         * @return {?}
+         */
+        TranslationChunkService.prototype.warnDuplicates = /**
+         * @private
+         * @param {?} items
+         * @return {?}
+         */
+            function (items) {
+                var _this = this;
+                /** @type {?} */
+                var dupes = [];
+                Object.keys(items).forEach(function (key) {
+                    dupes.push("* '" + key + "' found in chunks: " + items[key].join(', ') + ". Used '" + _this.chunks[key] + "." + key + "'.");
+                });
+                console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
+            };
+        TranslationChunkService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        TranslationChunkService.ctorParameters = function () {
+            return [
+                { type: I18nConfig }
+            ];
+        };
+        return TranslationChunkService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} config
+     * @param {?} languageService
+     * @return {?}
+     */
+    function i18nextInit(config, languageService) {
+        return function () {
+            /** @type {?} */
+            var i18nextConfig = {
+                ns: [],
+                // don't preload any namespaces
+                fallbackLng: config.i18n.fallbackLang,
+                debug: config.i18n.debug,
+                interpolation: {
+                    escapeValue: false,
+                },
+            };
+            if (config.i18n.backend) {
+                i18next.use(i18nextXhrBackend);
+                i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
+            }
+            return i18next.init(i18nextConfig, function () {
+                // Don't use i18next's 'resources' config key for adding static translations,
+                // because it will disable loading chunks from backend. We add resources here, in the init's callback.
+                i18nextAddTranslations(config.i18n.resources);
+                syncI18nextWithSiteContext(languageService);
+            });
+        };
+    }
+    /**
+     * @param {?=} resources
+     * @return {?}
+     */
+    function i18nextAddTranslations(resources) {
+        if (resources === void 0) {
+            resources = {};
+        }
+        Object.keys(resources).forEach(function (lang) {
+            Object.keys(resources[lang]).forEach(function (chunkName) {
+                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
+            });
+        });
+    }
+    /**
+     * @param {?} language
+     * @return {?}
+     */
+    function syncI18nextWithSiteContext(language) {
+        // always update language of i18next on site context (language) change
+        language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var i18nextProviders = [
+        {
+            provide: i0.APP_INITIALIZER,
+            useFactory: i18nextInit,
+            deps: [I18nConfig, LanguageService],
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultI18nConfig = {
+        i18n: {
+            fallbackLang: false,
+            debug: false,
+            chunks: {
+                common: [
+                    'common',
+                    'spinner',
+                    'header',
+                    'searchBox',
+                    'sorting',
+                    'httpHandlers',
+                    'pageMetaResolver',
+                ],
+                cart: ['cartDetails', 'cartItems', 'orderCost', 'miniCart'],
+                address: ['addressForm', 'addressBook', 'addressCard'],
+                payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
+                myAccount: ['orderDetails', 'orderHistory', 'closeAccount'],
+                storeFinder: ['storeFinder'],
+                pwa: ['pwa'],
+                checkout: [
+                    'checkout',
+                    'checkoutAddress',
+                    'checkoutOrderConfirmation',
+                    'checkoutReview',
+                    'checkoutShipping',
+                    'checkoutProgress',
+                ],
+                product: [
+                    'productDetails',
+                    'productList',
+                    'productFacetNavigation',
+                    'productSummary',
+                    'productReview',
+                    'addToCart',
+                ],
+                user: [
+                    'forgottenPassword',
+                    'loginForm',
+                    'login',
+                    'register',
+                    'updateEmailForm',
+                    'updatePasswordForm',
+                    'updateProfileForm',
+                    'consentManagementForm',
+                ],
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nextTranslationService = /** @class */ (function () {
+        function I18nextTranslationService(config, translationChunk) {
+            this.config = config;
+            this.translationChunk = translationChunk;
+            this.NON_BREAKING_SPACE = String.fromCharCode(160);
+            this.NAMESPACE_SEPARATOR = ':';
+        }
+        /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} whitespaceUntilLoaded
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.translate = /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} whitespaceUntilLoaded
+         * @return {?}
+         */
+            function (key, options, whitespaceUntilLoaded) {
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
+                // (or the fallback value in case the key is missing).
+                var _this = this;
+                if (options === void 0) {
+                    options = {};
+                }
+                if (whitespaceUntilLoaded === void 0) {
+                    whitespaceUntilLoaded = false;
+                }
+                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
+                // (or the fallback value in case the key is missing).
+                // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
+                // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
+                // which together with `switchMap` operator may lead to an infinite loop.
+                /** @type {?} */
+                var chunkName = this.translationChunk.getChunkNameForKey(key);
+                /** @type {?} */
+                var namespacedKey = this.getNamespacedKey(key, chunkName);
+                return new rxjs.Observable(function (subscriber) {
+                    /** @type {?} */
+                    var translate = function () {
+                        if (i18next.exists(namespacedKey, options)) {
+                            subscriber.next(i18next.t(namespacedKey, options));
+                        }
+                        else {
+                            if (whitespaceUntilLoaded) {
+                                subscriber.next(_this.NON_BREAKING_SPACE);
+                            }
+                            i18next.loadNamespaces(chunkName, function () {
+                                if (!i18next.exists(namespacedKey, options)) {
+                                    _this.reportMissingKey(key, chunkName);
+                                    subscriber.next(_this.getFallbackValue(namespacedKey));
+                                }
+                                else {
+                                    subscriber.next(i18next.t(namespacedKey, options));
+                                }
+                            });
+                        }
+                    };
+                    translate();
+                    i18next.on('languageChanged', translate);
+                    return function () { return i18next.off('languageChanged', translate); };
+                });
+            };
+        /**
+         * @param {?} chunkNames
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.loadChunks = /**
+         * @param {?} chunkNames
+         * @return {?}
+         */
+            function (chunkNames) {
+                return i18next.loadNamespaces(chunkNames);
+            };
+        /**
+         * Returns a fallback value in case when the given key is missing
+         * @param key
+         */
+        /**
+         * Returns a fallback value in case when the given key is missing
+         * @protected
+         * @param {?} key
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.getFallbackValue = /**
+         * Returns a fallback value in case when the given key is missing
+         * @protected
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} chunkName
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.reportMissingKey = /**
+         * @private
+         * @param {?} key
+         * @param {?} chunkName
+         * @return {?}
+         */
+            function (key, chunkName) {
+                if (!this.config.production) {
+                    console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
+                }
+            };
+        /**
+         * @private
+         * @param {?} key
+         * @param {?} chunk
+         * @return {?}
+         */
+        I18nextTranslationService.prototype.getNamespacedKey = /**
+         * @private
+         * @param {?} key
+         * @param {?} chunk
+         * @return {?}
+         */
+            function (key, chunk) {
+                return chunk + this.NAMESPACE_SEPARATOR + key;
+            };
+        I18nextTranslationService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        I18nextTranslationService.ctorParameters = function () {
+            return [
+                { type: I18nConfig },
+                { type: TranslationChunkService }
+            ];
+        };
+        return I18nextTranslationService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nModule = /** @class */ (function () {
+        function I18nModule() {
+        }
+        /**
+         * @return {?}
+         */
+        I18nModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: I18nModule,
+                    providers: __spread([
+                        provideConfig(defaultI18nConfig),
+                        { provide: I18nConfig, useExisting: Config },
+                        { provide: TranslationService, useClass: I18nextTranslationService },
+                        TranslationChunkService
+                    ], i18nextProviders),
+                };
+            };
+        I18nModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [TranslatePipe, CxDatePipe],
+                        exports: [TranslatePipe, CxDatePipe],
+                    },] }
+        ];
+        return I18nModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} key
+     * @param {?=} options
+     * @return {?}
+     */
+    function mockTranslate(key, options) {
+        if (options === void 0) {
+            options = {};
+        }
+        /** @type {?} */
+        var optionsString = Object.keys(options)
+            .sort()
+            .map(function (optionName) { return optionName + ":" + options[optionName]; })
+            .join(' ');
+        return optionsString ? key + " " + optionsString : key;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockTranslatePipe = /** @class */ (function () {
+        function MockTranslatePipe() {
+        }
+        /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+        MockTranslatePipe.prototype.transform = /**
+         * @param {?} input
+         * @param {?=} options
+         * @return {?}
+         */
+            function (input, options) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if ((( /** @type {?} */(input))).raw) {
+                    return (( /** @type {?} */(input))).raw;
+                }
+                /** @type {?} */
+                var key = typeof input === 'string' ? input : input.key;
+                if (typeof input !== 'string') {
+                    options = __assign({}, options, input.params);
+                }
+                return mockTranslate(key, options);
+            };
+        MockTranslatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxTranslate' },] }
+        ];
+        return MockTranslatePipe;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockTranslationService = /** @class */ (function () {
+        function MockTranslationService() {
+        }
+        /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} _whitespaceUntilLoaded
+         * @return {?}
+         */
+        MockTranslationService.prototype.translate = /**
+         * @param {?} key
+         * @param {?=} options
+         * @param {?=} _whitespaceUntilLoaded
+         * @return {?}
+         */
+            function (key, options, _whitespaceUntilLoaded) {
+                if (options === void 0) {
+                    options = {};
+                }
+                if (_whitespaceUntilLoaded === void 0) {
+                    _whitespaceUntilLoaded = false;
+                }
+                return new rxjs.Observable(function (subscriber) {
+                    /** @type {?} */
+                    var value = mockTranslate(key, options);
+                    subscriber.next(value);
+                    subscriber.complete();
+                });
+            };
+        /**
+         * @param {?} _chunks
+         * @return {?}
+         */
+        MockTranslationService.prototype.loadChunks = /**
+         * @param {?} _chunks
+         * @return {?}
+         */
+            function (_chunks) {
+                return Promise.resolve();
+            };
+        MockTranslationService.decorators = [
+            { type: i0.Injectable }
+        ];
+        return MockTranslationService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MockDatePipe = /** @class */ (function (_super) {
+        __extends(MockDatePipe, _super);
+        function MockDatePipe() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+        MockDatePipe.prototype.transform = /**
+         * @param {?} value
+         * @param {?=} format
+         * @param {?=} timezone
+         * @return {?}
+         */
+            function (value, format, timezone) {
+                return _super.prototype.transform.call(this, value, format, timezone, 'en');
+            };
+        MockDatePipe.decorators = [
+            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
+        ];
+        return MockDatePipe;
+    }(i1$2.DatePipe));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var I18nTestingModule = /** @class */ (function () {
+        function I18nTestingModule() {
+        }
+        I18nTestingModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [MockTranslatePipe, MockDatePipe],
+                        exports: [MockTranslatePipe, MockDatePipe],
+                        providers: [
+                            { provide: TranslationService, useClass: MockTranslationService },
+                        ],
+                    },] }
+        ];
+        return I18nTestingModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ContentPageMetaResolver = /** @class */ (function (_super) {
         __extends(ContentPageMetaResolver, _super);
-        function ContentPageMetaResolver(cms) {
+        function ContentPageMetaResolver(cms, translation) {
             var _this = _super.call(this) || this;
             _this.cms = cms;
+            _this.translation = translation;
             _this.pageType = PageType.CONTENT_PAGE;
             return _this;
         }
@@ -12061,7 +12872,9 @@
          * @return {?}
          */
             function (page) {
-                return rxjs.of(page.title);
+                return this.translation.translate('pageMetaResolver.content.title', {
+                    content: page.title,
+                });
             };
         /**
          * @param {?} _page
@@ -12084,10 +12897,11 @@
         /** @nocollapse */
         ContentPageMetaResolver.ctorParameters = function () {
             return [
-                { type: CmsService }
+                { type: CmsService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ ContentPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.inject(CmsService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ ContentPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(i0.inject(CmsService), i0.inject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
         return ContentPageMetaResolver;
     }(PageMetaResolver));
 
@@ -12111,11 +12925,6 @@
         ];
         return CmsPageTitleModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -12435,10 +13244,11 @@
      */
     var CartPageMetaResolver = /** @class */ (function (_super) {
         __extends(CartPageMetaResolver, _super);
-        function CartPageMetaResolver(cartService, cms) {
+        function CartPageMetaResolver(cartService, cms, translation) {
             var _this = _super.call(this) || this;
             _this.cartService = cartService;
             _this.cms = cms;
+            _this.translation = translation;
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'CartPageTemplate';
             return _this;
@@ -12467,10 +13277,12 @@
          * @return {?}
          */
             function (page) {
-                return this.cartService
-                    .getActive()
-                    .pipe(operators.map(function (cart) {
-                    return cart && cart.code ? page.title + " (" + cart.code + ")" : page.title;
+                var _this = this;
+                return this.cartService.getActive().pipe(operators.switchMap(function (cart) {
+                    return _this.translation.translate('pageMetaResolver.cart.title', {
+                        title: page.title,
+                        code: (cart && cart.code) || '',
+                    });
                 }));
             };
         /**
@@ -12491,10 +13303,11 @@
         CartPageMetaResolver.ctorParameters = function () {
             return [
                 { type: CartService },
-                { type: CmsService }
+                { type: CmsService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(i0.inject(CartService), i0.inject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(i0.inject(CartService), i0.inject(CmsService), i0.inject(TranslationService)); }, token: CartPageMetaResolver, providedIn: "root" });
         return CartPageMetaResolver;
     }(PageMetaResolver));
 
@@ -12504,9 +13317,10 @@
      */
     var CheckoutPageMetaResolver = /** @class */ (function (_super) {
         __extends(CheckoutPageMetaResolver, _super);
-        function CheckoutPageMetaResolver(cartService) {
+        function CheckoutPageMetaResolver(cartService, translation) {
             var _this = _super.call(this) || this;
             _this.cartService = cartService;
+            _this.translation = translation;
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
             return _this;
@@ -12535,7 +13349,9 @@
          * @return {?}
          */
             function (cart) {
-                return rxjs.of("Checkout " + cart.totalItems + " items");
+                return this.translation.translate('pageMetaResolver.checkout.title', {
+                    count: cart.totalItems,
+                });
             };
         /**
          * @return {?}
@@ -12554,10 +13370,11 @@
         /** @nocollapse */
         CheckoutPageMetaResolver.ctorParameters = function () {
             return [
-                { type: CartService }
+                { type: CartService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.inject(CartService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(i0.inject(CartService), i0.inject(TranslationService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
 
@@ -13926,11 +14743,12 @@
      */
     var CategoryPageMetaResolver = /** @class */ (function (_super) {
         __extends(CategoryPageMetaResolver, _super);
-        function CategoryPageMetaResolver(routingService, productSearchService, cms) {
+        function CategoryPageMetaResolver(routingService, productSearchService, cms, translation) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.cms = cms;
+            _this.translation = translation;
             _this.pageType = PageType.CATEGORY_PAGE;
             return _this;
         }
@@ -13972,7 +14790,10 @@
          * @return {?}
          */
             function (data) {
-                return rxjs.of(data.pagination.totalResults + " results for " + data.breadcrumbs[0].facetValueName);
+                return this.translation.translate('pageMetaResolver.category.title', {
+                    count: data.pagination.totalResults,
+                    query: data.breadcrumbs[0].facetValueName,
+                });
             };
         /**
          * @param {?} data
@@ -14037,10 +14858,11 @@
             return [
                 { type: RoutingService },
                 { type: ProductSearchService },
-                { type: CmsService }
+                { type: CmsService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService), i0.inject(CmsService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService), i0.inject(CmsService), i0.inject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
         return CategoryPageMetaResolver;
     }(PageMetaResolver));
 
@@ -14050,10 +14872,11 @@
      */
     var ProductPageMetaResolver = /** @class */ (function (_super) {
         __extends(ProductPageMetaResolver, _super);
-        function ProductPageMetaResolver(routingService, productService) {
+        function ProductPageMetaResolver(routingService, productService, translation) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productService = productService;
+            _this.translation = translation;
             _this.pageType = PageType.PRODUCT_PAGE;
             return _this;
         }
@@ -14093,7 +14916,9 @@
          * @return {?}
          */
             function (product) {
-                return rxjs.of(product.name);
+                return this.translation.translate('pageMetaResolver.product.heading', {
+                    heading: product.name,
+                });
             };
         /**
          * @param {?} product
@@ -14108,7 +14933,9 @@
                 var title = product.name;
                 title += this.resolveFirstCategory(product);
                 title += this.resolveManufacturer(product);
-                return rxjs.of(title);
+                return this.translation.translate('pageMetaResolver.product.title', {
+                    title: title,
+                });
             };
         /**
          * @param {?} product
@@ -14119,7 +14946,9 @@
          * @return {?}
          */
             function (product) {
-                return rxjs.of(product.summary);
+                return this.translation.translate('pageMetaResolver.product.description', {
+                    description: product.summary,
+                });
             };
         /**
          * @param {?} product
@@ -14219,10 +15048,11 @@
         ProductPageMetaResolver.ctorParameters = function () {
             return [
                 { type: RoutingService },
-                { type: ProductService }
+                { type: ProductService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ ProductPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ ProductPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductService), i0.inject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
         return ProductPageMetaResolver;
     }(PageMetaResolver));
 
@@ -14232,10 +15062,11 @@
      */
     var SearchPageMetaResolver = /** @class */ (function (_super) {
         __extends(SearchPageMetaResolver, _super);
-        function SearchPageMetaResolver(routingService, productSearchService) {
+        function SearchPageMetaResolver(routingService, productSearchService, translation) {
             var _this = _super.call(this) || this;
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
+            _this.translation = translation;
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'SearchResultsListPageTemplate';
             return _this;
@@ -14268,7 +15099,10 @@
          * @return {?}
          */
             function (total, query) {
-                return rxjs.of(total + " results for \"" + query + "\"");
+                return this.translation.translate('pageMetaResolver.search.title', {
+                    count: total,
+                    query: query,
+                });
             };
         SearchPageMetaResolver.decorators = [
             { type: i0.Injectable, args: [{
@@ -14279,10 +15113,11 @@
         SearchPageMetaResolver.ctorParameters = function () {
             return [
                 { type: RoutingService },
-                { type: ProductSearchService }
+                { type: ProductSearchService },
+                { type: TranslationService }
             ];
         };
-        /** @nocollapse */ SearchPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService)); }, token: SearchPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ SearchPageMetaResolver.ngInjectableDef = i0.defineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(i0.inject(RoutingService), i0.inject(ProductSearchService), i0.inject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
         return SearchPageMetaResolver;
     }(PageMetaResolver));
 
@@ -17409,810 +18244,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ I18nConfig = /** @class */ (function (_super) {
-        __extends(I18nConfig, _super);
-        function I18nConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return I18nConfig;
-    }(ServerConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
-    var CxDatePipe = /** @class */ (function (_super) {
-        __extends(CxDatePipe, _super);
-        function CxDatePipe(language, config) {
-            var _this = _super.call(this, null) || this;
-            _this.language = language;
-            _this.config = config;
-            return _this;
-        }
-        /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-        CxDatePipe.prototype.transform = /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-            function (value, format, timezone) {
-                return _super.prototype.transform.call(this, value, format, timezone, this.getLang());
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        CxDatePipe.prototype.getLang = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                /** @type {?} */
-                var lang = this.getActiveLang();
-                try {
-                    i1$2.getLocaleId(lang);
-                    return lang;
-                }
-                catch (_a) {
-                    this.reportMissingLocaleData(lang);
-                    return 'en';
-                }
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        CxDatePipe.prototype.getActiveLang = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                /** @type {?} */
-                var result;
-                this.language
-                    .getActive()
-                    .subscribe(function (lang) { return (result = lang); })
-                    .unsubscribe();
-                return result;
-            };
-        /**
-         * @private
-         * @param {?} lang
-         * @return {?}
-         */
-        CxDatePipe.prototype.reportMissingLocaleData = /**
-         * @private
-         * @param {?} lang
-         * @return {?}
-         */
-            function (lang) {
-                if (!this.config.production) {
-                    console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
-                }
-            };
-        CxDatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
-        ];
-        /** @nocollapse */
-        CxDatePipe.ctorParameters = function () {
-            return [
-                { type: LanguageService },
-                { type: I18nConfig }
-            ];
-        };
-        return CxDatePipe;
-    }(i1$2.DatePipe));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ TranslationService = /** @class */ (function () {
-        function TranslationService() {
-        }
-        return TranslationService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} objA
-     * @param {?} objB
-     * @return {?}
-     */
-    function shallowEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true;
-        }
-        if (!objA || !objB) {
-            return false;
-        }
-        /** @type {?} */
-        var aKeys = Object.keys(objA);
-        /** @type {?} */
-        var bKeys = Object.keys(objB);
-        /** @type {?} */
-        var aKeysLen = aKeys.length;
-        /** @type {?} */
-        var bKeysLen = bKeys.length;
-        if (aKeysLen !== bKeysLen) {
-            return false;
-        }
-        for (var i = 0; i < aKeysLen; i++) {
-            /** @type {?} */
-            var key = aKeys[i];
-            if (objA[key] !== objB[key]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TranslatePipe = /** @class */ (function () {
-        function TranslatePipe(service, cd) {
-            this.service = service;
-            this.cd = cd;
-        }
-        /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-        TranslatePipe.prototype.transform = /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-            function (input, options) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if ((( /** @type {?} */(input))).raw) {
-                    return (( /** @type {?} */(input))).raw;
-                }
-                /** @type {?} */
-                var key = typeof input === 'string' ? input : input.key;
-                if (typeof input !== 'string') {
-                    options = __assign({}, options, input.params);
-                }
-                this.translate(key, options);
-                return this.translatedValue;
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} options
-         * @return {?}
-         */
-        TranslatePipe.prototype.translate = /**
-         * @private
-         * @param {?} key
-         * @param {?} options
-         * @return {?}
-         */
-            function (key, options) {
-                var _this = this;
-                if (key !== this.lastKey ||
-                    !shallowEqualObjects(options, this.lastOptions)) {
-                    this.lastKey = key;
-                    this.lastOptions = options;
-                    if (this.sub) {
-                        this.sub.unsubscribe();
-                    }
-                    this.sub = this.service
-                        .translate(key, options, true)
-                        .subscribe(function (val) { return _this.markForCheck(val); });
-                }
-            };
-        /**
-         * @private
-         * @param {?} value
-         * @return {?}
-         */
-        TranslatePipe.prototype.markForCheck = /**
-         * @private
-         * @param {?} value
-         * @return {?}
-         */
-            function (value) {
-                this.translatedValue = value;
-                this.cd.markForCheck();
-            };
-        /**
-         * @return {?}
-         */
-        TranslatePipe.prototype.ngOnDestroy = /**
-         * @return {?}
-         */
-            function () {
-                if (this.sub) {
-                    this.sub.unsubscribe();
-                }
-            };
-        TranslatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxTranslate', pure: false },] }
-        ];
-        /** @nocollapse */
-        TranslatePipe.ctorParameters = function () {
-            return [
-                { type: TranslationService },
-                { type: i0.ChangeDetectorRef }
-            ];
-        };
-        return TranslatePipe;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var TranslationChunkService = /** @class */ (function () {
-        function TranslationChunkService(config) {
-            var _this = this;
-            this.config = config;
-            this.duplicates = {};
-            this.chunks = {};
-            this.KEY_SEPARATOR = '.';
-            Object.keys(config.i18n.chunks).forEach(function (chunk) {
-                config.i18n.chunks[chunk].forEach(function (key) {
-                    if (_this.chunks.hasOwnProperty(key)) {
-                        if (!_this.duplicates[key]) {
-                            _this.duplicates[key] = [_this.chunks[key]];
-                        }
-                        _this.duplicates[key].push(chunk);
-                    }
-                    else {
-                        _this.chunks[key] = chunk;
-                    }
-                });
-            });
-            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
-                this.warnDuplicates(this.duplicates);
-            }
-        }
-        /**
-         * @param {?} key
-         * @return {?}
-         */
-        TranslationChunkService.prototype.getChunkNameForKey = /**
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                /** @type {?} */
-                var mainKey = (key || '').split(this.KEY_SEPARATOR)[0];
-                /** @type {?} */
-                var chunk = this.chunks && this.chunks[mainKey];
-                if (!chunk) {
-                    return mainKey; // fallback to main key as a chunk
-                }
-                return chunk;
-            };
-        /**
-         * @private
-         * @param {?} items
-         * @return {?}
-         */
-        TranslationChunkService.prototype.warnDuplicates = /**
-         * @private
-         * @param {?} items
-         * @return {?}
-         */
-            function (items) {
-                var _this = this;
-                /** @type {?} */
-                var dupes = [];
-                Object.keys(items).forEach(function (key) {
-                    dupes.push("* '" + key + "' found in chunks: " + items[key].join(', ') + ". Used '" + _this.chunks[key] + "." + key + "'.");
-                });
-                console.warn("Duplicated keys has been found in the config of i18n chunks:\n" + dupes.join('\n'));
-            };
-        TranslationChunkService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        TranslationChunkService.ctorParameters = function () {
-            return [
-                { type: I18nConfig }
-            ];
-        };
-        return TranslationChunkService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} config
-     * @param {?} languageService
-     * @return {?}
-     */
-    function i18nextInit(config, languageService) {
-        return function () {
-            /** @type {?} */
-            var i18nextConfig = {
-                ns: [],
-                // don't preload any namespaces
-                fallbackLng: config.i18n.fallbackLang,
-                debug: config.i18n.debug,
-                interpolation: {
-                    escapeValue: false,
-                },
-            };
-            if (config.i18n.backend) {
-                i18next.use(i18nextXhrBackend);
-                i18nextConfig = __assign({}, i18nextConfig, { backend: config.i18n.backend });
-            }
-            return i18next.init(i18nextConfig, function () {
-                // Don't use i18next's 'resources' config key for adding static translations,
-                // because it will disable loading chunks from backend. We add resources here, in the init's callback.
-                i18nextAddTranslations(config.i18n.resources);
-                syncI18nextWithSiteContext(languageService);
-            });
-        };
-    }
-    /**
-     * @param {?=} resources
-     * @return {?}
-     */
-    function i18nextAddTranslations(resources) {
-        if (resources === void 0) {
-            resources = {};
-        }
-        Object.keys(resources).forEach(function (lang) {
-            Object.keys(resources[lang]).forEach(function (chunkName) {
-                i18next.addResourceBundle(lang, chunkName, resources[lang][chunkName], true, true);
-            });
-        });
-    }
-    /**
-     * @param {?} language
-     * @return {?}
-     */
-    function syncI18nextWithSiteContext(language) {
-        // always update language of i18next on site context (language) change
-        language.getActive().subscribe(function (lang) { return i18next.changeLanguage(lang); });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var i18nextProviders = [
-        {
-            provide: i0.APP_INITIALIZER,
-            useFactory: i18nextInit,
-            deps: [I18nConfig, LanguageService],
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultI18nConfig = {
-        i18n: {
-            fallbackLang: false,
-            debug: false,
-            chunks: {
-                common: [
-                    'common',
-                    'spinner',
-                    'header',
-                    'searchBox',
-                    'sorting',
-                    'httpHandlers',
-                ],
-                cart: ['cartDetails', 'cartItems', 'orderCost', 'miniCart'],
-                address: ['addressForm', 'addressBook', 'addressCard'],
-                payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
-                myAccount: ['orderDetails', 'orderHistory', 'closeAccount'],
-                storeFinder: ['storeFinder'],
-                pwa: ['pwa'],
-                checkout: [
-                    'checkout',
-                    'checkoutAddress',
-                    'checkoutOrderConfirmation',
-                    'checkoutReview',
-                    'checkoutShipping',
-                    'checkoutProgress',
-                ],
-                product: [
-                    'productDetails',
-                    'productList',
-                    'productFacetNavigation',
-                    'productSummary',
-                    'productReview',
-                    'addToCart',
-                ],
-                user: [
-                    'forgottenPassword',
-                    'loginForm',
-                    'login',
-                    'register',
-                    'updateEmailForm',
-                    'updatePasswordForm',
-                    'updateProfileForm',
-                    'consentManagementForm',
-                ],
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nextTranslationService = /** @class */ (function () {
-        function I18nextTranslationService(config, translationChunk) {
-            this.config = config;
-            this.translationChunk = translationChunk;
-            this.NON_BREAKING_SPACE = String.fromCharCode(160);
-            this.NAMESPACE_SEPARATOR = ':';
-        }
-        /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} whitespaceUntilLoaded
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.translate = /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} whitespaceUntilLoaded
-         * @return {?}
-         */
-            function (key, options, whitespaceUntilLoaded) {
-                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
-                // (or the fallback value in case the key is missing).
-                var _this = this;
-                if (options === void 0) {
-                    options = {};
-                }
-                if (whitespaceUntilLoaded === void 0) {
-                    whitespaceUntilLoaded = false;
-                }
-                // If we've already loaded the chunk (or failed to load), we should immediately emit the value
-                // (or the fallback value in case the key is missing).
-                // Moreover, we SHOULD emit a value (or a fallback value) synchronously (not in a promise/setTimeout).
-                // Otherwise, we the will trigger additional deferred change detection in a view that consumes the returned observable,
-                // which together with `switchMap` operator may lead to an infinite loop.
-                /** @type {?} */
-                var chunkName = this.translationChunk.getChunkNameForKey(key);
-                /** @type {?} */
-                var namespacedKey = this.getNamespacedKey(key, chunkName);
-                return new rxjs.Observable(function (subscriber) {
-                    /** @type {?} */
-                    var translate = function () {
-                        if (i18next.exists(namespacedKey, options)) {
-                            subscriber.next(i18next.t(namespacedKey, options));
-                        }
-                        else {
-                            if (whitespaceUntilLoaded) {
-                                subscriber.next(_this.NON_BREAKING_SPACE);
-                            }
-                            i18next.loadNamespaces(chunkName, function () {
-                                if (!i18next.exists(namespacedKey, options)) {
-                                    _this.reportMissingKey(key, chunkName);
-                                    subscriber.next(_this.getFallbackValue(namespacedKey));
-                                }
-                                else {
-                                    subscriber.next(i18next.t(namespacedKey, options));
-                                }
-                            });
-                        }
-                    };
-                    translate();
-                    i18next.on('languageChanged', translate);
-                    return function () { return i18next.off('languageChanged', translate); };
-                });
-            };
-        /**
-         * @param {?} chunkNames
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.loadChunks = /**
-         * @param {?} chunkNames
-         * @return {?}
-         */
-            function (chunkNames) {
-                return i18next.loadNamespaces(chunkNames);
-            };
-        /**
-         * Returns a fallback value in case when the given key is missing
-         * @param key
-         */
-        /**
-         * Returns a fallback value in case when the given key is missing
-         * @protected
-         * @param {?} key
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.getFallbackValue = /**
-         * Returns a fallback value in case when the given key is missing
-         * @protected
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} chunkName
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.reportMissingKey = /**
-         * @private
-         * @param {?} key
-         * @param {?} chunkName
-         * @return {?}
-         */
-            function (key, chunkName) {
-                if (!this.config.production) {
-                    console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
-                }
-            };
-        /**
-         * @private
-         * @param {?} key
-         * @param {?} chunk
-         * @return {?}
-         */
-        I18nextTranslationService.prototype.getNamespacedKey = /**
-         * @private
-         * @param {?} key
-         * @param {?} chunk
-         * @return {?}
-         */
-            function (key, chunk) {
-                return chunk + this.NAMESPACE_SEPARATOR + key;
-            };
-        I18nextTranslationService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        I18nextTranslationService.ctorParameters = function () {
-            return [
-                { type: I18nConfig },
-                { type: TranslationChunkService }
-            ];
-        };
-        return I18nextTranslationService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nModule = /** @class */ (function () {
-        function I18nModule() {
-        }
-        /**
-         * @return {?}
-         */
-        I18nModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: I18nModule,
-                    providers: __spread([
-                        provideConfig(defaultI18nConfig),
-                        { provide: I18nConfig, useExisting: Config },
-                        { provide: TranslationService, useClass: I18nextTranslationService },
-                        TranslationChunkService
-                    ], i18nextProviders),
-                };
-            };
-        I18nModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        declarations: [TranslatePipe, CxDatePipe],
-                        exports: [TranslatePipe, CxDatePipe],
-                    },] }
-        ];
-        return I18nModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} key
-     * @param {?=} options
-     * @return {?}
-     */
-    function mockTranslate(key, options) {
-        if (options === void 0) {
-            options = {};
-        }
-        /** @type {?} */
-        var optionsString = Object.keys(options)
-            .sort()
-            .map(function (optionName) { return optionName + ":" + options[optionName]; })
-            .join(' ');
-        return optionsString ? key + " " + optionsString : key;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockTranslatePipe = /** @class */ (function () {
-        function MockTranslatePipe() {
-        }
-        /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-        MockTranslatePipe.prototype.transform = /**
-         * @param {?} input
-         * @param {?=} options
-         * @return {?}
-         */
-            function (input, options) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if ((( /** @type {?} */(input))).raw) {
-                    return (( /** @type {?} */(input))).raw;
-                }
-                /** @type {?} */
-                var key = typeof input === 'string' ? input : input.key;
-                if (typeof input !== 'string') {
-                    options = __assign({}, options, input.params);
-                }
-                return mockTranslate(key, options);
-            };
-        MockTranslatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxTranslate' },] }
-        ];
-        return MockTranslatePipe;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockTranslationService = /** @class */ (function () {
-        function MockTranslationService() {
-        }
-        /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} _whitespaceUntilLoaded
-         * @return {?}
-         */
-        MockTranslationService.prototype.translate = /**
-         * @param {?} key
-         * @param {?=} options
-         * @param {?=} _whitespaceUntilLoaded
-         * @return {?}
-         */
-            function (key, options, _whitespaceUntilLoaded) {
-                if (options === void 0) {
-                    options = {};
-                }
-                if (_whitespaceUntilLoaded === void 0) {
-                    _whitespaceUntilLoaded = false;
-                }
-                return new rxjs.Observable(function (subscriber) {
-                    /** @type {?} */
-                    var value = mockTranslate(key, options);
-                    subscriber.next(value);
-                    subscriber.complete();
-                });
-            };
-        /**
-         * @param {?} _chunks
-         * @return {?}
-         */
-        MockTranslationService.prototype.loadChunks = /**
-         * @param {?} _chunks
-         * @return {?}
-         */
-            function (_chunks) {
-                return Promise.resolve();
-            };
-        MockTranslationService.decorators = [
-            { type: i0.Injectable }
-        ];
-        return MockTranslationService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MockDatePipe = /** @class */ (function (_super) {
-        __extends(MockDatePipe, _super);
-        function MockDatePipe() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-        MockDatePipe.prototype.transform = /**
-         * @param {?} value
-         * @param {?=} format
-         * @param {?=} timezone
-         * @return {?}
-         */
-            function (value, format, timezone) {
-                return _super.prototype.transform.call(this, value, format, timezone, 'en');
-            };
-        MockDatePipe.decorators = [
-            { type: i0.Pipe, args: [{ name: 'cxDate' },] }
-        ];
-        return MockDatePipe;
-    }(i1$2.DatePipe));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var I18nTestingModule = /** @class */ (function () {
-        function I18nTestingModule() {
-        }
-        I18nTestingModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        declarations: [MockTranslatePipe, MockDatePipe],
-                        exports: [MockTranslatePipe, MockDatePipe],
-                        providers: [
-                            { provide: TranslationService, useClass: MockTranslationService },
-                        ],
-                    },] }
-        ];
-        return I18nTestingModule;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -26219,62 +26250,63 @@
     exports.ɵch = metaReducers$2;
     exports.ɵcf = reducerProvider$5;
     exports.ɵce = reducerToken$5;
-    exports.ɵco = CmsStoreModule;
-    exports.ɵcn = cmsStoreConfigFactory;
-    exports.ɵcw = ComponentEffects;
-    exports.ɵcu = effects$6;
-    exports.ɵcx = NavigationEntryItemEffects;
-    exports.ɵcv = PageEffects;
-    exports.ɵcs = clearCmsState;
-    exports.ɵcp = getReducers$6;
-    exports.ɵct = metaReducers$3;
-    exports.ɵcr = reducerProvider$6;
-    exports.ɵcq = reducerToken$6;
-    exports.ɵda = reducer$a;
-    exports.ɵcy = reducer$b;
-    exports.ɵcz = reducer$c;
-    exports.ɵec = ServerConfig;
-    exports.ɵej = provideConfigValidator;
-    exports.ɵeb = HttpErrorInterceptor;
-    exports.ɵdw = GlobalMessageStoreModule;
-    exports.ɵea = reducer$8;
-    exports.ɵdx = getReducers$4;
-    exports.ɵdz = reducerProvider$4;
-    exports.ɵdy = reducerToken$4;
-    exports.ɵed = defaultI18nConfig;
-    exports.ɵef = i18nextInit;
-    exports.ɵee = i18nextProviders;
-    exports.ɵeg = MockDatePipe;
-    exports.ɵeh = MockTranslationService;
-    exports.ɵei = defaultOccProductConfig;
-    exports.ɵgv = defaultPersonalizationConfig;
-    exports.ɵgw = interceptors$2;
-    exports.ɵgx = OccPersonalizationIdInterceptor;
-    exports.ɵgy = OccPersonalizationTimeInterceptor;
-    exports.ɵgp = ProcessModule;
-    exports.ɵgr = PROCESS_FEATURE;
-    exports.ɵgq = ProcessStoreModule;
-    exports.ɵgs = getReducers$9;
-    exports.ɵgu = reducerProvider$9;
-    exports.ɵgt = reducerToken$9;
-    exports.ɵdh = effects$7;
-    exports.ɵdi = ProductReferencesEffects;
-    exports.ɵdj = ProductReviewsEffects;
-    exports.ɵdk = ProductsSearchEffects;
-    exports.ɵdl = ProductEffects;
-    exports.ɵel = ProductStoreModule;
-    exports.ɵek = productStoreConfigFactory;
-    exports.ɵdp = clearProductsState;
-    exports.ɵdm = getReducers$7;
-    exports.ɵdq = metaReducers$4;
-    exports.ɵdo = reducerProvider$7;
-    exports.ɵdn = reducerToken$7;
-    exports.ɵer = reducer$d;
-    exports.ɵeq = reducer$e;
-    exports.ɵeo = getAuxSearchResults;
-    exports.ɵep = getProductSuggestions;
-    exports.ɵen = getSearchResults;
-    exports.ɵem = reducer$f;
+    exports.ɵcp = CmsStoreModule;
+    exports.ɵco = cmsStoreConfigFactory;
+    exports.ɵcx = ComponentEffects;
+    exports.ɵcv = effects$6;
+    exports.ɵcy = NavigationEntryItemEffects;
+    exports.ɵcw = PageEffects;
+    exports.ɵct = clearCmsState;
+    exports.ɵcq = getReducers$6;
+    exports.ɵcu = metaReducers$3;
+    exports.ɵcs = reducerProvider$6;
+    exports.ɵcr = reducerToken$6;
+    exports.ɵdb = reducer$a;
+    exports.ɵcz = reducer$b;
+    exports.ɵda = reducer$c;
+    exports.ɵed = ServerConfig;
+    exports.ɵek = provideConfigValidator;
+    exports.ɵec = HttpErrorInterceptor;
+    exports.ɵdx = GlobalMessageStoreModule;
+    exports.ɵeb = reducer$8;
+    exports.ɵdy = getReducers$4;
+    exports.ɵea = reducerProvider$4;
+    exports.ɵdz = reducerToken$4;
+    exports.ɵck = TranslationService;
+    exports.ɵee = defaultI18nConfig;
+    exports.ɵeg = i18nextInit;
+    exports.ɵef = i18nextProviders;
+    exports.ɵeh = MockDatePipe;
+    exports.ɵei = MockTranslationService;
+    exports.ɵej = defaultOccProductConfig;
+    exports.ɵgw = defaultPersonalizationConfig;
+    exports.ɵgx = interceptors$2;
+    exports.ɵgy = OccPersonalizationIdInterceptor;
+    exports.ɵgz = OccPersonalizationTimeInterceptor;
+    exports.ɵgq = ProcessModule;
+    exports.ɵgs = PROCESS_FEATURE;
+    exports.ɵgr = ProcessStoreModule;
+    exports.ɵgt = getReducers$9;
+    exports.ɵgv = reducerProvider$9;
+    exports.ɵgu = reducerToken$9;
+    exports.ɵdi = effects$7;
+    exports.ɵdj = ProductReferencesEffects;
+    exports.ɵdk = ProductReviewsEffects;
+    exports.ɵdl = ProductsSearchEffects;
+    exports.ɵdm = ProductEffects;
+    exports.ɵem = ProductStoreModule;
+    exports.ɵel = productStoreConfigFactory;
+    exports.ɵdq = clearProductsState;
+    exports.ɵdn = getReducers$7;
+    exports.ɵdr = metaReducers$4;
+    exports.ɵdp = reducerProvider$7;
+    exports.ɵdo = reducerToken$7;
+    exports.ɵes = reducer$d;
+    exports.ɵer = reducer$e;
+    exports.ɵep = getAuxSearchResults;
+    exports.ɵeq = getProductSuggestions;
+    exports.ɵeo = getSearchResults;
+    exports.ɵen = reducer$f;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26285,75 +26317,75 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵes = defaultSiteContextConfigFactory;
-    exports.ɵey = SiteContextParamsService;
-    exports.ɵfa = SiteContextRoutesHandler;
-    exports.ɵez = SiteContextUrlSerializer;
-    exports.ɵdg = CurrenciesEffects;
-    exports.ɵde = effects$3;
-    exports.ɵdf = LanguagesEffects;
-    exports.ɵex = reducer$5;
-    exports.ɵew = reducer$4;
-    exports.ɵdb = getReducers$3;
-    exports.ɵdd = reducerProvider$3;
-    exports.ɵdc = reducerToken$3;
-    exports.ɵev = reducer$3;
-    exports.ɵeu = SiteContextStoreModule;
-    exports.ɵet = siteContextStoreConfigFactory;
-    exports.ɵfc = CmsTicketInterceptor;
-    exports.ɵfb = interceptors$1;
-    exports.ɵcl = EntityFailAction;
-    exports.ɵck = EntityLoadAction;
-    exports.ɵfm = EntityResetAction;
-    exports.ɵcm = EntitySuccessAction;
+    exports.ɵet = defaultSiteContextConfigFactory;
+    exports.ɵez = SiteContextParamsService;
+    exports.ɵfb = SiteContextRoutesHandler;
+    exports.ɵfa = SiteContextUrlSerializer;
+    exports.ɵdh = CurrenciesEffects;
+    exports.ɵdf = effects$3;
+    exports.ɵdg = LanguagesEffects;
+    exports.ɵey = reducer$5;
+    exports.ɵex = reducer$4;
+    exports.ɵdc = getReducers$3;
+    exports.ɵde = reducerProvider$3;
+    exports.ɵdd = reducerToken$3;
+    exports.ɵew = reducer$3;
+    exports.ɵev = SiteContextStoreModule;
+    exports.ɵeu = siteContextStoreConfigFactory;
+    exports.ɵfd = CmsTicketInterceptor;
+    exports.ɵfc = interceptors$1;
+    exports.ɵcm = EntityFailAction;
+    exports.ɵcl = EntityLoadAction;
+    exports.ɵfn = EntityResetAction;
+    exports.ɵcn = EntitySuccessAction;
     exports.ɵn = DEFAULT_LOCAL_STORAGE_KEY;
     exports.ɵo = DEFAULT_SESSION_STORAGE_KEY;
     exports.ɵp = defaultStateConfig;
     exports.ɵq = stateMetaReducers;
     exports.ɵr = getStorageSyncReducer;
     exports.ɵs = getTransferStateReducer;
-    exports.ɵfe = defaultStoreFinderConfig;
-    exports.ɵfk = FindStoresEffect;
-    exports.ɵfj = effects$9;
-    exports.ɵfl = ViewAllStoresEffect;
-    exports.ɵfg = getReducers$a;
-    exports.ɵfi = reducerProvider$a;
-    exports.ɵfh = reducerToken$a;
-    exports.ɵfd = getStoreFinderState;
-    exports.ɵff = StoreFinderStoreModule;
-    exports.ɵfp = BillingCountriesEffect;
-    exports.ɵfq = DeliveryCountriesEffects;
-    exports.ɵgb = ForgotPasswordEffects;
-    exports.ɵfo = effects$8;
-    exports.ɵfr = OrderDetailsEffect;
-    exports.ɵfs = UserPaymentMethodsEffects;
-    exports.ɵft = RegionsEffects;
-    exports.ɵfu = ResetPasswordEffects;
-    exports.ɵfv = TitlesEffects;
-    exports.ɵgc = UpdateEmailEffects;
-    exports.ɵgd = UpdatePasswordEffects;
-    exports.ɵfw = UserAddressesEffects;
-    exports.ɵfx = UserConsentsEffect;
-    exports.ɵfy = UserDetailsEffects;
-    exports.ɵfz = UserOrdersEffect;
-    exports.ɵga = UserRegisterEffects;
-    exports.ɵgg = reducer$g;
-    exports.ɵgl = reducer$h;
-    exports.ɵdu = clearUserState;
-    exports.ɵdr = getReducers$8;
-    exports.ɵdv = metaReducers$5;
-    exports.ɵdt = reducerProvider$8;
-    exports.ɵds = reducerToken$8;
-    exports.ɵgk = reducer$i;
-    exports.ɵgi = reducer$j;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$l;
-    exports.ɵgm = reducer$m;
-    exports.ɵgf = reducer$n;
-    exports.ɵgh = reducer$o;
-    exports.ɵge = reducer$p;
-    exports.ɵgj = reducer$q;
-    exports.ɵfn = UserStoreModule;
+    exports.ɵff = defaultStoreFinderConfig;
+    exports.ɵfl = FindStoresEffect;
+    exports.ɵfk = effects$9;
+    exports.ɵfm = ViewAllStoresEffect;
+    exports.ɵfh = getReducers$a;
+    exports.ɵfj = reducerProvider$a;
+    exports.ɵfi = reducerToken$a;
+    exports.ɵfe = getStoreFinderState;
+    exports.ɵfg = StoreFinderStoreModule;
+    exports.ɵfq = BillingCountriesEffect;
+    exports.ɵfr = DeliveryCountriesEffects;
+    exports.ɵgc = ForgotPasswordEffects;
+    exports.ɵfp = effects$8;
+    exports.ɵfs = OrderDetailsEffect;
+    exports.ɵft = UserPaymentMethodsEffects;
+    exports.ɵfu = RegionsEffects;
+    exports.ɵfv = ResetPasswordEffects;
+    exports.ɵfw = TitlesEffects;
+    exports.ɵgd = UpdateEmailEffects;
+    exports.ɵge = UpdatePasswordEffects;
+    exports.ɵfx = UserAddressesEffects;
+    exports.ɵfy = UserConsentsEffect;
+    exports.ɵfz = UserDetailsEffects;
+    exports.ɵga = UserOrdersEffect;
+    exports.ɵgb = UserRegisterEffects;
+    exports.ɵgh = reducer$g;
+    exports.ɵgm = reducer$h;
+    exports.ɵdv = clearUserState;
+    exports.ɵds = getReducers$8;
+    exports.ɵdw = metaReducers$5;
+    exports.ɵdu = reducerProvider$8;
+    exports.ɵdt = reducerToken$8;
+    exports.ɵgl = reducer$i;
+    exports.ɵgj = reducer$j;
+    exports.ɵgo = reducer$k;
+    exports.ɵgp = reducer$l;
+    exports.ɵgn = reducer$m;
+    exports.ɵgg = reducer$n;
+    exports.ɵgi = reducer$o;
+    exports.ɵgf = reducer$p;
+    exports.ɵgk = reducer$q;
+    exports.ɵfo = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

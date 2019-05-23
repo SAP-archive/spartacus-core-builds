@@ -5,10 +5,12 @@ import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, P
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductService } from '../facade/product.service';
 import { Product } from '../../model/product.model';
+import { TranslationService } from '../../i18n';
 export declare class ProductPageMetaResolver extends PageMetaResolver implements PageHeadingResolver, PageTitleResolver, PageDescriptionResolver, PageBreadcrumbResolver, PageImageResolver {
     protected routingService: RoutingService;
     protected productService: ProductService;
-    constructor(routingService: RoutingService, productService: ProductService);
+    protected translation: TranslationService;
+    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService);
     resolve(): Observable<PageMeta>;
     resolveHeading(product: Product): Observable<string>;
     resolveTitle(product: Product): Observable<string>;
