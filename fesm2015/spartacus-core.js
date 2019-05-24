@@ -12656,10 +12656,18 @@ class CategoryPageMetaResolver extends PageMetaResolver {
         const breadcrumbs = [];
         breadcrumbs.push({ label: 'Home', link: '/' });
         for (const br of data.breadcrumbs) {
-            breadcrumbs.push({
-                label: br.facetValueName,
-                link: '/c/' + br.facetValueCode,
-            });
+            if (br.facetCode === 'category') {
+                breadcrumbs.push({
+                    label: br.facetValueName,
+                    link: `/c/${br.facetValueCode}`,
+                });
+            }
+            if (br.facetCode === 'brand') {
+                breadcrumbs.push({
+                    label: br.facetValueName,
+                    link: `/Brands/${br.facetValueName}/c/${br.facetValueCode}`,
+                });
+            }
         }
         return of(breadcrumbs);
     }

@@ -14702,10 +14702,18 @@ var CategoryPageMetaResolver = /** @class */ (function (_super) {
         try {
             for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
                 var br = _c.value;
-                breadcrumbs.push({
-                    label: br.facetValueName,
-                    link: '/c/' + br.facetValueCode,
-                });
+                if (br.facetCode === 'category') {
+                    breadcrumbs.push({
+                        label: br.facetValueName,
+                        link: "/c/" + br.facetValueCode,
+                    });
+                }
+                if (br.facetCode === 'brand') {
+                    breadcrumbs.push({
+                        label: br.facetValueName,
+                        link: "/Brands/" + br.facetValueName + "/c/" + br.facetValueCode,
+                    });
+                }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
