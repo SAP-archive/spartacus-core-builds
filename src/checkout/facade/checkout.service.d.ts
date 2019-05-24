@@ -1,10 +1,10 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromCheckoutStore from '../store/index';
 import { CartDataService } from '../../cart/index';
-import { DeliveryMode, Order } from '../../model/order.model';
-import { CardType, PaymentDetails } from '../../model/cart.model';
 import { Address, AddressValidation } from '../../model/address.model';
+import { CardType, PaymentDetails } from '../../model/cart.model';
+import { DeliveryMode, Order } from '../../model/order.model';
+import * as fromCheckoutStore from '../store/index';
 export declare class CheckoutService {
     protected checkoutStore: Store<fromCheckoutStore.StateWithCheckout>;
     protected cartData: CartDataService;
@@ -96,7 +96,7 @@ export declare class CheckoutService {
      * @param stepNumber : the step number to be cleared
      */
     clearCheckoutStep(stepNumber: number): void;
-    loadCheckoutDetails(userId: string, cartId: string): void;
+    loadCheckoutDetails(cartId: string): void;
     getCheckoutDetailsLoaded(): Observable<boolean>;
     protected actionAllowed(): boolean;
 }

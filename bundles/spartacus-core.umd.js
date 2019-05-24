@@ -10158,17 +10158,18 @@
                 this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
             };
         /**
-         * @param {?} userId
          * @param {?} cartId
          * @return {?}
          */
         CheckoutService.prototype.loadCheckoutDetails = /**
-         * @param {?} userId
          * @param {?} cartId
          * @return {?}
          */
-            function (userId, cartId) {
-                this.checkoutStore.dispatch(new LoadCheckoutDetails({ userId: userId, cartId: cartId }));
+            function (cartId) {
+                this.checkoutStore.dispatch(new LoadCheckoutDetails({
+                    userId: this.cartData.userId,
+                    cartId: cartId,
+                }));
             };
         /**
          * @return {?}

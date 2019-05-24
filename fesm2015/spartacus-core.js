@@ -8837,12 +8837,14 @@ class CheckoutService {
         this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
     }
     /**
-     * @param {?} userId
      * @param {?} cartId
      * @return {?}
      */
-    loadCheckoutDetails(userId, cartId) {
-        this.checkoutStore.dispatch(new LoadCheckoutDetails({ userId, cartId }));
+    loadCheckoutDetails(cartId) {
+        this.checkoutStore.dispatch(new LoadCheckoutDetails({
+            userId: this.cartData.userId,
+            cartId,
+        }));
     }
     /**
      * @return {?}
