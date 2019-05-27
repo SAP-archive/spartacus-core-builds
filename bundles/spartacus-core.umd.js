@@ -1194,10 +1194,10 @@
          */
             function (routeName) {
                 /** @type {?} */
-                var routesConfig = this.config.routing.routes;
+                var routeConfig = this.config && this.config.routing && this.config.routing.routes;
                 /** @type {?} */
-                var result = routesConfig && routesConfig[routeName];
-                if (!routesConfig || result === undefined) {
+                var result = routeConfig && routeConfig[routeName];
+                if (!routeConfig || result === undefined) {
                     this.warn("No path was configured for the named route '" + routeName + "'!");
                 }
                 return result;
@@ -1238,18 +1238,58 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UrlService = /** @class */ (function () {
-        function UrlService(routingConfigService, urlParser, config) {
+    var SemanticPathService = /** @class */ (function () {
+        function SemanticPathService(routingConfigService, urlParser, config) {
             this.routingConfigService = routingConfigService;
             this.urlParser = urlParser;
             this.config = config;
             this.ROOT_URL = ['/'];
         }
         /**
+         * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
+         */
+        /**
+         * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
+         * @param {?} routeName
+         * @return {?}
+         */
+        SemanticPathService.prototype.get = /**
+         * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
+         * @param {?} routeName
+         * @return {?}
+         */
+            function (routeName) {
+                /** @type {?} */
+                var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+                return routeConfig && Array.isArray(routeConfig.paths)
+                    ? '/' + routeConfig.paths[0]
+                    : undefined;
+            };
+        /**
+         * Transforms the array of url commands. Each command can be:
+         * a) string - will be left untouched
+         * b) object { cxRoute: <route name> } - will be replaced with semantic path
+         * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
+         *
+         * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
+         */
+        /**
+         * Transforms the array of url commands. Each command can be:
+         * a) string - will be left untouched
+         * b) object { cxRoute: <route name> } - will be replaced with semantic path
+         * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
+         *
+         * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
          * @param {?} commands
          * @return {?}
          */
-        UrlService.prototype.generateUrl = /**
+        SemanticPathService.prototype.transform = /**
+         * Transforms the array of url commands. Each command can be:
+         * a) string - will be left untouched
+         * b) object { cxRoute: <route name> } - will be replaced with semantic path
+         * c) object { cxRoute: <route name>, params: { ... } } - same as above, but with passed params
+         *
+         * If the first command is the object with the `cxRoute` property, returns an absolute url (with the first element of the array `'/'`)
          * @param {?} commands
          * @return {?}
          */
@@ -1301,7 +1341,7 @@
          * @param {?} command
          * @return {?}
          */
-        UrlService.prototype.isRouteCommand = /**
+        SemanticPathService.prototype.isRouteCommand = /**
          * @private
          * @param {?} command
          * @return {?}
@@ -1314,7 +1354,7 @@
          * @param {?} commands
          * @return {?}
          */
-        UrlService.prototype.shouldOutputAbsolute = /**
+        SemanticPathService.prototype.shouldOutputAbsolute = /**
          * @private
          * @param {?} commands
          * @return {?}
@@ -1327,7 +1367,7 @@
          * @param {?} command
          * @return {?}
          */
-        UrlService.prototype.generateUrlPart = /**
+        SemanticPathService.prototype.generateUrlPart = /**
          * @private
          * @param {?} command
          * @return {?}
@@ -1359,7 +1399,7 @@
          * @param {?} command
          * @return {?}
          */
-        UrlService.prototype.standarizeRouteCommand = /**
+        SemanticPathService.prototype.standarizeRouteCommand = /**
          * @private
          * @param {?} command
          * @return {?}
@@ -1374,7 +1414,7 @@
          * @param {?} paramsMapping
          * @return {?}
          */
-        UrlService.prototype.provideParamsValues = /**
+        SemanticPathService.prototype.provideParamsValues = /**
          * @private
          * @param {?} path
          * @param {?} params
@@ -1400,7 +1440,7 @@
          * @param {?} params
          * @return {?}
          */
-        UrlService.prototype.findPathWithFillableParams = /**
+        SemanticPathService.prototype.findPathWithFillableParams = /**
          * @private
          * @param {?} routeConfig
          * @param {?} params
@@ -1427,7 +1467,7 @@
          * @param {?} path
          * @return {?}
          */
-        UrlService.prototype.getParams = /**
+        SemanticPathService.prototype.getParams = /**
          * @private
          * @param {?} path
          * @return {?}
@@ -1444,7 +1484,7 @@
          * @param {?} paramsMapping
          * @return {?}
          */
-        UrlService.prototype.getMappedParamName = /**
+        SemanticPathService.prototype.getMappedParamName = /**
          * @private
          * @param {?} paramName
          * @param {?} paramsMapping
@@ -1461,7 +1501,7 @@
          * @param {...?} args
          * @return {?}
          */
-        UrlService.prototype.warn = /**
+        SemanticPathService.prototype.warn = /**
          * @private
          * @param {...?} args
          * @return {?}
@@ -1475,19 +1515,19 @@
                     console.warn.apply(console, __spread(args));
                 }
             };
-        UrlService.decorators = [
+        SemanticPathService.decorators = [
             { type: i0.Injectable, args: [{ providedIn: 'root' },] }
         ];
         /** @nocollapse */
-        UrlService.ctorParameters = function () {
+        SemanticPathService.ctorParameters = function () {
             return [
                 { type: RoutingConfigService },
                 { type: UrlParsingService },
                 { type: ServerConfig }
             ];
         };
-        /** @nocollapse */ UrlService.ngInjectableDef = i0.defineInjectable({ factory: function UrlService_Factory() { return new UrlService(i0.inject(RoutingConfigService), i0.inject(UrlParsingService), i0.inject(ServerConfig)); }, token: UrlService, providedIn: "root" });
-        return UrlService;
+        /** @nocollapse */ SemanticPathService.ngInjectableDef = i0.defineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(i0.inject(RoutingConfigService), i0.inject(UrlParsingService), i0.inject(ServerConfig)); }, token: SemanticPathService, providedIn: "root" });
+        return SemanticPathService;
     }());
 
     /**
@@ -1495,10 +1535,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var RoutingService = /** @class */ (function () {
-        function RoutingService(store, winRef, urlService) {
+        function RoutingService(store, winRef, semanticPathService) {
             this.store = store;
             this.winRef = winRef;
-            this.urlService = urlService;
+            this.semanticPathService = semanticPathService;
         }
         /**
          * Get the current router state
@@ -1578,7 +1618,7 @@
          */
             function (commands, query, extras) {
                 /** @type {?} */
-                var path = this.urlService.generateUrl(commands);
+                var path = this.semanticPathService.transform(commands);
                 return this.navigate(path, query, extras);
             };
         /**
@@ -1717,10 +1757,10 @@
             return [
                 { type: i1$1.Store },
                 { type: WindowRef },
-                { type: UrlService }
+                { type: SemanticPathService }
             ];
         };
-        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(UrlService)); }, token: RoutingService, providedIn: "root" });
+        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
     }());
 
@@ -11317,7 +11357,7 @@
          * @return {?}
          */
             function (commands) {
-                return this.urlService.generateUrl(commands);
+                return this.urlService.transform(commands);
             };
         UrlPipe.decorators = [
             { type: i0.Pipe, args: [{
@@ -11327,7 +11367,7 @@
         /** @nocollapse */
         UrlPipe.ctorParameters = function () {
             return [
-                { type: UrlService }
+                { type: SemanticPathService }
             ];
         };
         return UrlPipe;
@@ -26107,7 +26147,7 @@
     exports.RoutingConfig = RoutingConfig;
     exports.UrlModule = UrlModule;
     exports.UrlPipe = UrlPipe;
-    exports.UrlService = UrlService;
+    exports.SemanticPathService = SemanticPathService;
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
     exports.initConfigurableRoutes = initConfigurableRoutes;
     exports.ConfigurableRoutesModule = ConfigurableRoutesModule;

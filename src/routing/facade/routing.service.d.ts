@@ -5,13 +5,13 @@ import * as fromStore from '../store';
 import { PageContext } from '../models/page-context.model';
 import { WindowRef } from '../../window/window-ref';
 import { UrlCommands } from '../configurable-routes/url-translation/url-command';
-import { UrlService } from '../configurable-routes/url-translation/url.service';
+import { SemanticPathService } from '../configurable-routes/url-translation/semantic-path.service';
 import { RouterState } from '../store/reducers/router.reducer';
 export declare class RoutingService {
     protected store: Store<fromStore.RouterState>;
     protected winRef: WindowRef;
-    protected urlService: UrlService;
-    constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, urlService: UrlService);
+    protected semanticPathService: SemanticPathService;
+    constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, semanticPathService: SemanticPathService);
     /**
      * Get the current router state
      */

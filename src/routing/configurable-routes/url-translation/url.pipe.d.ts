@@ -1,8 +1,8 @@
 import { PipeTransform } from '@angular/core';
-import { UrlService } from './url.service';
+import { SemanticPathService } from './semantic-path.service';
 import { UrlCommands } from './url-command';
 export declare class UrlPipe implements PipeTransform {
     private urlService;
-    constructor(urlService: UrlService);
+    constructor(urlService: SemanticPathService);
     transform(commands: UrlCommands): any[];
 }
