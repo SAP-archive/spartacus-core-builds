@@ -6,14 +6,12 @@ import * as fromCartActions from './../../../cart/store/actions/index';
 import { AddMessage } from '../../../global-message/index';
 import { CartDeliveryConnector } from '../../../cart/connectors/delivery/cart-delivery.connector';
 import { CartPaymentConnector } from '../../../cart/connectors/payment/cart-payment.connector';
-import { CartConnector } from '../../../cart/connectors/cart/cart.connector';
-import { OrderConnector } from '../../../user/connectors/order/order.connector';
+import { CheckoutConnector } from '../../connectors/checkout/checkout.connector';
 export declare class CheckoutEffects {
     private actions$;
     private cartDeliveryConnector;
     private cartPaymentConnector;
-    private cartConnector;
-    private orderConnector;
+    private checkoutConnector;
     addDeliveryAddress$: Observable<fromUserActions.LoadUserAddresses | fromActions.SetDeliveryAddress | fromActions.AddDeliveryAddressFail>;
     setDeliveryAddress$: Observable<fromActions.SetDeliveryAddressSuccess | fromActions.LoadSupportedDeliveryModes | fromActions.SetDeliveryAddressFail>;
     loadSupportedDeliveryModes$: Observable<fromActions.LoadSupportedDeliveryModesSuccess | fromActions.LoadSupportedDeliveryModesFail>;
@@ -23,5 +21,5 @@ export declare class CheckoutEffects {
     placeOrder$: Observable<fromActions.PlaceOrderSuccess | AddMessage | fromActions.PlaceOrderFail>;
     loadCheckoutDetails$: Observable<fromActions.LoadCheckoutDetailsSuccess | fromActions.LoadCheckoutDetailsFail>;
     reloadDetailsOnMergeCart$: Observable<fromActions.LoadCheckoutDetails>;
-    constructor(actions$: Actions, cartDeliveryConnector: CartDeliveryConnector, cartPaymentConnector: CartPaymentConnector, cartConnector: CartConnector, orderConnector: OrderConnector);
+    constructor(actions$: Actions, cartDeliveryConnector: CartDeliveryConnector, cartPaymentConnector: CartPaymentConnector, checkoutConnector: CheckoutConnector);
 }

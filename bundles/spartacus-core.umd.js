@@ -4713,19 +4713,6 @@
             };
         /**
          * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        CartConnector.prototype.loadCheckoutDetails = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.adapter.loadCheckoutDetails(userId, cartId);
-            };
-        /**
-         * @param {?} userId
          * @param {?=} oldCartId
          * @param {?=} toMergeCartGuid
          * @return {?}
@@ -9243,18 +9230,18 @@
      */
     var /**
      * @abstract
-     */ OrderAdapter = /** @class */ (function () {
-        function OrderAdapter() {
+     */ CheckoutAdapter = /** @class */ (function () {
+        function CheckoutAdapter() {
         }
-        return OrderAdapter;
+        return CheckoutAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OrderConnector = /** @class */ (function () {
-        function OrderConnector(adapter) {
+    var CheckoutConnector = /** @class */ (function () {
+        function CheckoutConnector(adapter) {
             this.adapter = adapter;
         }
         /**
@@ -9262,57 +9249,40 @@
          * @param {?} cartId
          * @return {?}
          */
-        OrderConnector.prototype.place = /**
+        CheckoutConnector.prototype.placeOrder = /**
          * @param {?} userId
          * @param {?} cartId
          * @return {?}
          */
             function (userId, cartId) {
-                return this.adapter.place(userId, cartId);
+                return this.adapter.placeOrder(userId, cartId);
             };
         /**
          * @param {?} userId
-         * @param {?} orderCode
+         * @param {?} cartId
          * @return {?}
          */
-        OrderConnector.prototype.get = /**
+        CheckoutConnector.prototype.loadCheckoutDetails = /**
          * @param {?} userId
-         * @param {?} orderCode
+         * @param {?} cartId
          * @return {?}
          */
-            function (userId, orderCode) {
-                return this.adapter.load(userId, orderCode);
+            function (userId, cartId) {
+                return this.adapter.loadCheckoutDetails(userId, cartId);
             };
-        /**
-         * @param {?} userId
-         * @param {?=} pageSize
-         * @param {?=} currentPage
-         * @param {?=} sort
-         * @return {?}
-         */
-        OrderConnector.prototype.getHistory = /**
-         * @param {?} userId
-         * @param {?=} pageSize
-         * @param {?=} currentPage
-         * @param {?=} sort
-         * @return {?}
-         */
-            function (userId, pageSize, currentPage, sort) {
-                return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
-            };
-        OrderConnector.decorators = [
+        CheckoutConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        OrderConnector.ctorParameters = function () {
+        CheckoutConnector.ctorParameters = function () {
             return [
-                { type: OrderAdapter }
+                { type: CheckoutAdapter }
             ];
         };
-        /** @nocollapse */ OrderConnector.ngInjectableDef = i0.defineInjectable({ factory: function OrderConnector_Factory() { return new OrderConnector(i0.inject(OrderAdapter)); }, token: OrderConnector, providedIn: "root" });
-        return OrderConnector;
+        /** @nocollapse */ CheckoutConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.inject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+        return CheckoutConnector;
     }());
 
     /**
@@ -9320,13 +9290,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CheckoutEffects = /** @class */ (function () {
-        function CheckoutEffects(actions$, cartDeliveryConnector, cartPaymentConnector, cartConnector, orderConnector) {
+        function CheckoutEffects(actions$, cartDeliveryConnector, cartPaymentConnector, checkoutConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.cartDeliveryConnector = cartDeliveryConnector;
             this.cartPaymentConnector = cartPaymentConnector;
-            this.cartConnector = cartConnector;
-            this.orderConnector = orderConnector;
+            this.checkoutConnector = checkoutConnector;
             this.addDeliveryAddress$ = this.actions$.pipe(effects.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.cartDeliveryConnector
                     .createAddress(payload.userId, payload.cartId, payload.address)
@@ -9399,7 +9368,9 @@
                 }), operators.catchError(function (error) { return rxjs.of(new SetPaymentDetailsFail(error)); }));
             }));
             this.placeOrder$ = this.actions$.pipe(effects.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.orderConnector.place(payload.userId, payload.cartId).pipe(operators.switchMap(function (data) {
+                return _this.checkoutConnector
+                    .placeOrder(payload.userId, payload.cartId)
+                    .pipe(operators.switchMap(function (data) {
                     return [
                         new PlaceOrderSuccess(data),
                         new AddMessage({
@@ -9412,7 +9383,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(error)); }));
             }));
             this.loadCheckoutDetails$ = this.actions$.pipe(effects.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartConnector
+                return _this.checkoutConnector
                     .loadCheckoutDetails(payload.userId, payload.cartId)
                     .pipe(operators.map(function (data) {
                     return new LoadCheckoutDetailsSuccess(data);
@@ -9436,8 +9407,7 @@
                 { type: effects.Actions },
                 { type: CartDeliveryConnector },
                 { type: CartPaymentConnector },
-                { type: CartConnector },
-                { type: OrderConnector }
+                { type: CheckoutConnector }
             ];
         };
         __decorate([
@@ -17429,6 +17399,74 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ UserOrderAdapter = /** @class */ (function () {
+        function UserOrderAdapter() {
+        }
+        return UserOrderAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserOrderConnector = /** @class */ (function () {
+        function UserOrderConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+        UserOrderConnector.prototype.get = /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+            function (userId, orderCode) {
+                return this.adapter.load(userId, orderCode);
+            };
+        /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        UserOrderConnector.prototype.getHistory = /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+            function (userId, pageSize, currentPage, sort) {
+                return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
+            };
+        UserOrderConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserOrderConnector.ctorParameters = function () {
+            return [
+                { type: UserOrderAdapter }
+            ];
+        };
+        /** @nocollapse */ UserOrderConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.inject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+        return UserOrderConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var OrderDetailsEffect = /** @class */ (function () {
         function OrderDetailsEffect(actions$, orderConnector) {
             var _this = this;
@@ -17449,7 +17487,7 @@
         OrderDetailsEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OrderConnector }
+                { type: UserOrderConnector }
             ];
         };
         __decorate([
@@ -18141,7 +18179,7 @@
         UserOrdersEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: OrderConnector }
+                { type: UserOrderConnector }
             ];
         };
         __decorate([
@@ -18341,8 +18379,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
     /** @type {?} */
     var ORDER_HISTORY_NORMALIZER = new i0.InjectionToken('OrderHistoryNormalizer');
 
@@ -21115,8 +21151,6 @@
         'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(formattedValue),subTotal(formattedValue),' +
         'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
         'appliedVouchers,productDiscounts(formattedValue)';
-    /** @type {?} */
-    var CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
     var OccCartAdapter = /** @class */ (function () {
         function OccCartAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
@@ -21201,27 +21235,6 @@
                 else {
                     return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CART_NORMALIZER));
                 }
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartAdapter.prototype.loadCheckoutDetails = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                /** @type {?} */
-                var url = this.getCartEndpoint(userId) + cartId;
-                /** @type {?} */
-                var params = new http.HttpParams({
-                    fromString: "fields=" + CHECKOUT_PARAMS,
-                });
-                return this.http
-                    .get(url, { params: params })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
         /**
          * @param {?} userId
@@ -22937,11 +22950,18 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     // To be changed to a more optimised params after ticket: C3PO-1076
     /** @type {?} */
     var FULL_PARAMS = 'fields=FULL';
-    var OccOrderAdapter = /** @class */ (function () {
-        function OccOrderAdapter(http$$1, occEndpoints, converter) {
+    var OccUserOrderAdapter = /** @class */ (function () {
+        function OccUserOrderAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
@@ -22951,7 +22971,7 @@
          * @param {?} userId
          * @return {?}
          */
-        OccOrderAdapter.prototype.getOrderEndpoint = /**
+        OccUserOrderAdapter.prototype.getOrderEndpoint = /**
          * @protected
          * @param {?} userId
          * @return {?}
@@ -22963,33 +22983,10 @@
             };
         /**
          * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccOrderAdapter.prototype.place = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                /** @type {?} */
-                var url = this.getOrderEndpoint(userId);
-                /** @type {?} */
-                var params = new http.HttpParams({
-                    fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
-                });
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                return this.http.post(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(ORDER_NORMALIZER));
-            };
-        /**
-         * @param {?} userId
          * @param {?} orderCode
          * @return {?}
          */
-        OccOrderAdapter.prototype.load = /**
+        OccUserOrderAdapter.prototype.load = /**
          * @param {?} userId
          * @param {?} orderCode
          * @return {?}
@@ -23016,7 +23013,7 @@
          * @param {?=} sort
          * @return {?}
          */
-        OccOrderAdapter.prototype.loadHistory = /**
+        OccUserOrderAdapter.prototype.loadHistory = /**
          * @param {?} userId
          * @param {?=} pageSize
          * @param {?=} currentPage
@@ -23039,81 +23036,18 @@
                 }
                 return this.http.get(url, { params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
             };
-        OccOrderAdapter.decorators = [
+        OccUserOrderAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccOrderAdapter.ctorParameters = function () {
+        OccUserOrderAdapter.ctorParameters = function () {
             return [
                 { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
         };
-        return OccOrderAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OccOrderNormalizer = /** @class */ (function () {
-        function OccOrderNormalizer(converter) {
-            this.converter = converter;
-        }
-        /**
-         * @param {?} source
-         * @param {?=} target
-         * @return {?}
-         */
-        OccOrderNormalizer.prototype.convert = /**
-         * @param {?} source
-         * @param {?=} target
-         * @return {?}
-         */
-            function (source, target) {
-                var _this = this;
-                if (target === undefined) {
-                    target = __assign({}, (( /** @type {?} */(source))));
-                }
-                if (source.entries) {
-                    target.entries = source.entries.map(function (entry) {
-                        return _this.convertOrderEntry(entry);
-                    });
-                }
-                if (source.consignments) {
-                    target.consignments = source.consignments.map(function (consignment) { return (__assign({}, consignment, { entries: consignment.entries.map(function (entry) { return (__assign({}, entry, { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
-                }
-                if (source.unconsignedEntries) {
-                    target.unconsignedEntries = source.unconsignedEntries.map(function (entry) {
-                        return _this.convertOrderEntry(entry);
-                    });
-                }
-                return target;
-            };
-        /**
-         * @private
-         * @param {?} source
-         * @return {?}
-         */
-        OccOrderNormalizer.prototype.convertOrderEntry = /**
-         * @private
-         * @param {?} source
-         * @return {?}
-         */
-            function (source) {
-                return __assign({}, source, { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
-            };
-        OccOrderNormalizer.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccOrderNormalizer.ctorParameters = function () {
-            return [
-                { type: ConverterService }
-            ];
-        };
-        return OccOrderNormalizer;
+        return OccUserOrderAdapter;
     }());
 
     /**
@@ -23810,12 +23744,190 @@
                                 provide: UserPaymentAdapter,
                                 useClass: OccUserPaymentAdapter,
                             },
-                            { provide: OrderAdapter, useClass: OccOrderAdapter },
-                            { provide: ORDER_NORMALIZER, useClass: OccOrderNormalizer, multi: true },
+                            { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
                         ],
                     },] }
         ];
         return UserOccModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // To be changed to a more optimised params after ticket: C3PO-1076
+    /** @type {?} */
+    var FULL_PARAMS$1 = 'fields=FULL';
+    /** @type {?} */
+    var CHECKOUT_PARAMS = 'deliveryAddress(FULL),deliveryMode,paymentInfo(FULL)';
+    /** @type {?} */
+    var ORDERS_ENDPOINT = '/orders';
+    /** @type {?} */
+    var CARTS_ENDPOINT = '/carts/';
+    var OccCheckoutAdapter = /** @class */ (function () {
+        function OccCheckoutAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @param {?} subEndpoint
+         * @return {?}
+         */
+        OccCheckoutAdapter.prototype.getEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @param {?} subEndpoint
+         * @return {?}
+         */
+            function (userId, subEndpoint) {
+                /** @type {?} */
+                var orderEndpoint = 'users/' + userId + subEndpoint;
+                return this.occEndpoints.getEndpoint(orderEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutAdapter.prototype.placeOrder = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                /** @type {?} */
+                var url = this.getEndpoint(userId, ORDERS_ENDPOINT);
+                /** @type {?} */
+                var params = new http.HttpParams({
+                    fromString: 'cartId=' + cartId + '&' + FULL_PARAMS$1,
+                });
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http.post(url, {}, { headers: headers, params: params }).pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(ORDER_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutAdapter.prototype.loadCheckoutDetails = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                /** @type {?} */
+                var url = this.getEndpoint(userId, CARTS_ENDPOINT) + cartId;
+                /** @type {?} */
+                var params = new http.HttpParams({
+                    fromString: "fields=" + CHECKOUT_PARAMS,
+                });
+                return this.http
+                    .get(url, { params: params })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        OccCheckoutAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCheckoutAdapter.ctorParameters = function () {
+            return [
+                { type: http.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCheckoutAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccOrderNormalizer = /** @class */ (function () {
+        function OccOrderNormalizer(converter) {
+            this.converter = converter;
+        }
+        /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        OccOrderNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+            function (source, target) {
+                var _this = this;
+                if (target === undefined) {
+                    target = __assign({}, (( /** @type {?} */(source))));
+                }
+                if (source.entries) {
+                    target.entries = source.entries.map(function (entry) {
+                        return _this.convertOrderEntry(entry);
+                    });
+                }
+                if (source.consignments) {
+                    target.consignments = source.consignments.map(function (consignment) { return (__assign({}, consignment, { entries: consignment.entries.map(function (entry) { return (__assign({}, entry, { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }) })); });
+                }
+                if (source.unconsignedEntries) {
+                    target.unconsignedEntries = source.unconsignedEntries.map(function (entry) {
+                        return _this.convertOrderEntry(entry);
+                    });
+                }
+                return target;
+            };
+        /**
+         * @private
+         * @param {?} source
+         * @return {?}
+         */
+        OccOrderNormalizer.prototype.convertOrderEntry = /**
+         * @private
+         * @param {?} source
+         * @return {?}
+         */
+            function (source) {
+                return __assign({}, source, { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+            };
+        OccOrderNormalizer.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccOrderNormalizer.ctorParameters = function () {
+            return [
+                { type: ConverterService }
+            ];
+        };
+        return OccOrderNormalizer;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutOccModule = /** @class */ (function () {
+        function CheckoutOccModule() {
+        }
+        CheckoutOccModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        providers: [
+                            {
+                                provide: CheckoutAdapter,
+                                useClass: OccCheckoutAdapter,
+                            },
+                            { provide: ORDER_NORMALIZER, useClass: OccOrderNormalizer, multi: true },
+                        ],
+                    },] }
+        ];
+        return CheckoutOccModule;
     }());
 
     /**
@@ -23831,6 +23943,7 @@
                             ConfigModule.withConfig(defaultOccConfig),
                             CmsOccModule,
                             CartOccModule,
+                            CheckoutOccModule,
                             ProductOccModule,
                             SiteContextOccModule,
                             StoreFinderOccModule,
@@ -23844,6 +23957,16 @@
         ];
         return OccModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -23958,11 +24081,6 @@
         ];
         return ProductReferenceNormalizer;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -25866,6 +25984,9 @@
     exports.OccCmsComponentAdapter = OccCmsComponentAdapter;
     exports.OccCmsPageNormalizer = OccCmsPageNormalizer;
     exports.CmsOccModule = CmsOccModule;
+    exports.OccCheckoutAdapter = OccCheckoutAdapter;
+    exports.CheckoutOccModule = CheckoutOccModule;
+    exports.OccOrderNormalizer = OccOrderNormalizer;
     exports.ProductImageNormalizer = ProductImageNormalizer;
     exports.ProductReferenceNormalizer = ProductReferenceNormalizer;
     exports.OccProductSearchPageNormalizer = OccProductSearchPageNormalizer;
@@ -25886,8 +26007,7 @@
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
     exports.OccUserDetailsAdapter = OccUserDetailsAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
-    exports.OccOrderAdapter = OccOrderAdapter;
-    exports.OccOrderNormalizer = OccOrderNormalizer;
+    exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.UserOccModule = UserOccModule;
     exports.ProductConnector = ProductConnector;
     exports.ProductAdapter = ProductAdapter;
@@ -26376,9 +26496,8 @@
     exports.UserPaymentAdapter = UserPaymentAdapter;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
     exports.REGION_NORMALIZER = REGION_NORMALIZER;
-    exports.OrderConnector = OrderConnector;
-    exports.OrderAdapter = OrderAdapter;
-    exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
+    exports.UserOrderConnector = UserOrderConnector;
+    exports.UserOrderAdapter = UserOrderAdapter;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ConverterService = ConverterService;
     exports.WindowRef = WindowRef;
@@ -26414,6 +26533,9 @@
     exports.ɵbn = metaReducers$1;
     exports.ɵbl = reducerProvider$2;
     exports.ɵbk = reducerToken$2;
+    exports.ɵch = CheckoutAdapter;
+    exports.ɵcg = CheckoutConnector;
+    exports.ɵeh = ORDER_NORMALIZER;
     exports.ɵcf = CheckoutStoreModule;
     exports.ɵbz = AddressVerificationEffect;
     exports.ɵby = CardTypesEffects;
@@ -26423,72 +26545,72 @@
     exports.ɵbu = reducer$7;
     exports.ɵbt = getCardTypesEntites;
     exports.ɵbs = reducer$6;
-    exports.ɵcg = reducer$9;
+    exports.ɵci = reducer$9;
     exports.ɵcd = clearCheckoutState;
     exports.ɵca = getReducers$5;
     exports.ɵce = metaReducers$2;
     exports.ɵcc = reducerProvider$5;
     exports.ɵcb = reducerToken$5;
-    exports.ɵeq = PageMetaResolver;
-    exports.ɵcl = CmsStoreModule;
-    exports.ɵck = cmsStoreConfigFactory;
-    exports.ɵct = ComponentEffects;
-    exports.ɵcr = effects$6;
-    exports.ɵcu = NavigationEntryItemEffects;
-    exports.ɵcs = PageEffects;
-    exports.ɵcp = clearCmsState;
-    exports.ɵcm = getReducers$6;
-    exports.ɵcq = metaReducers$3;
-    exports.ɵco = reducerProvider$6;
-    exports.ɵcn = reducerToken$6;
-    exports.ɵcx = reducer$a;
-    exports.ɵcv = reducer$b;
-    exports.ɵcw = reducer$c;
-    exports.ɵdz = ServerConfig;
-    exports.ɵeg = provideConfigValidator;
-    exports.ɵdy = HttpErrorInterceptor;
-    exports.ɵdt = GlobalMessageStoreModule;
-    exports.ɵdx = reducer$8;
-    exports.ɵdu = getReducers$4;
-    exports.ɵdw = reducerProvider$4;
-    exports.ɵdv = reducerToken$4;
-    exports.ɵep = TranslationService;
-    exports.ɵea = defaultI18nConfig;
-    exports.ɵec = i18nextInit;
-    exports.ɵeb = i18nextProviders;
-    exports.ɵed = MockDatePipe;
-    exports.ɵee = MockTranslationService;
-    exports.ɵef = defaultOccProductConfig;
-    exports.ɵgw = defaultPersonalizationConfig;
-    exports.ɵgx = interceptors$2;
-    exports.ɵgy = OccPersonalizationIdInterceptor;
-    exports.ɵgz = OccPersonalizationTimeInterceptor;
-    exports.ɵgq = ProcessModule;
-    exports.ɵgs = PROCESS_FEATURE;
-    exports.ɵgr = ProcessStoreModule;
-    exports.ɵgt = getReducers$9;
-    exports.ɵgv = reducerProvider$9;
-    exports.ɵgu = reducerToken$9;
-    exports.ɵes = ProductSearchService;
-    exports.ɵde = effects$7;
-    exports.ɵdf = ProductReferencesEffects;
-    exports.ɵdg = ProductReviewsEffects;
-    exports.ɵdh = ProductsSearchEffects;
-    exports.ɵdi = ProductEffects;
-    exports.ɵei = ProductStoreModule;
-    exports.ɵeh = productStoreConfigFactory;
-    exports.ɵdm = clearProductsState;
-    exports.ɵdj = getReducers$7;
-    exports.ɵdn = metaReducers$4;
-    exports.ɵdl = reducerProvider$7;
-    exports.ɵdk = reducerToken$7;
-    exports.ɵeo = reducer$d;
-    exports.ɵen = reducer$e;
-    exports.ɵel = getAuxSearchResults;
-    exports.ɵem = getProductSuggestions;
-    exports.ɵek = getSearchResults;
-    exports.ɵej = reducer$f;
-    exports.ɵer = RoutingService;
+    exports.ɵet = PageMetaResolver;
+    exports.ɵcn = CmsStoreModule;
+    exports.ɵcm = cmsStoreConfigFactory;
+    exports.ɵcv = ComponentEffects;
+    exports.ɵct = effects$6;
+    exports.ɵcw = NavigationEntryItemEffects;
+    exports.ɵcu = PageEffects;
+    exports.ɵcr = clearCmsState;
+    exports.ɵco = getReducers$6;
+    exports.ɵcs = metaReducers$3;
+    exports.ɵcq = reducerProvider$6;
+    exports.ɵcp = reducerToken$6;
+    exports.ɵcz = reducer$a;
+    exports.ɵcx = reducer$b;
+    exports.ɵcy = reducer$c;
+    exports.ɵeb = ServerConfig;
+    exports.ɵej = provideConfigValidator;
+    exports.ɵea = HttpErrorInterceptor;
+    exports.ɵdv = GlobalMessageStoreModule;
+    exports.ɵdz = reducer$8;
+    exports.ɵdw = getReducers$4;
+    exports.ɵdy = reducerProvider$4;
+    exports.ɵdx = reducerToken$4;
+    exports.ɵes = TranslationService;
+    exports.ɵec = defaultI18nConfig;
+    exports.ɵee = i18nextInit;
+    exports.ɵed = i18nextProviders;
+    exports.ɵef = MockDatePipe;
+    exports.ɵeg = MockTranslationService;
+    exports.ɵei = defaultOccProductConfig;
+    exports.ɵgz = defaultPersonalizationConfig;
+    exports.ɵha = interceptors$2;
+    exports.ɵhb = OccPersonalizationIdInterceptor;
+    exports.ɵhc = OccPersonalizationTimeInterceptor;
+    exports.ɵgt = ProcessModule;
+    exports.ɵgv = PROCESS_FEATURE;
+    exports.ɵgu = ProcessStoreModule;
+    exports.ɵgw = getReducers$9;
+    exports.ɵgy = reducerProvider$9;
+    exports.ɵgx = reducerToken$9;
+    exports.ɵev = ProductSearchService;
+    exports.ɵdg = effects$7;
+    exports.ɵdh = ProductReferencesEffects;
+    exports.ɵdi = ProductReviewsEffects;
+    exports.ɵdj = ProductsSearchEffects;
+    exports.ɵdk = ProductEffects;
+    exports.ɵel = ProductStoreModule;
+    exports.ɵek = productStoreConfigFactory;
+    exports.ɵdo = clearProductsState;
+    exports.ɵdl = getReducers$7;
+    exports.ɵdp = metaReducers$4;
+    exports.ɵdn = reducerProvider$7;
+    exports.ɵdm = reducerToken$7;
+    exports.ɵer = reducer$d;
+    exports.ɵeq = reducer$e;
+    exports.ɵeo = getAuxSearchResults;
+    exports.ɵep = getProductSuggestions;
+    exports.ɵen = getSearchResults;
+    exports.ɵem = reducer$f;
+    exports.ɵeu = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26499,72 +26621,72 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵet = defaultSiteContextConfigFactory;
-    exports.ɵez = SiteContextParamsService;
-    exports.ɵfb = SiteContextRoutesHandler;
-    exports.ɵfa = SiteContextUrlSerializer;
-    exports.ɵdd = CurrenciesEffects;
-    exports.ɵdb = effects$3;
-    exports.ɵdc = LanguagesEffects;
-    exports.ɵey = reducer$5;
-    exports.ɵex = reducer$4;
-    exports.ɵcy = getReducers$3;
-    exports.ɵda = reducerProvider$3;
-    exports.ɵcz = reducerToken$3;
-    exports.ɵew = reducer$3;
-    exports.ɵev = SiteContextStoreModule;
-    exports.ɵeu = siteContextStoreConfigFactory;
-    exports.ɵfd = CmsTicketInterceptor;
-    exports.ɵfc = interceptors$1;
-    exports.ɵci = EntityFailAction;
-    exports.ɵch = EntityLoadAction;
-    exports.ɵfn = EntityResetAction;
-    exports.ɵcj = EntitySuccessAction;
+    exports.ɵew = defaultSiteContextConfigFactory;
+    exports.ɵfc = SiteContextParamsService;
+    exports.ɵfe = SiteContextRoutesHandler;
+    exports.ɵfd = SiteContextUrlSerializer;
+    exports.ɵdf = CurrenciesEffects;
+    exports.ɵdd = effects$3;
+    exports.ɵde = LanguagesEffects;
+    exports.ɵfb = reducer$5;
+    exports.ɵfa = reducer$4;
+    exports.ɵda = getReducers$3;
+    exports.ɵdc = reducerProvider$3;
+    exports.ɵdb = reducerToken$3;
+    exports.ɵez = reducer$3;
+    exports.ɵey = SiteContextStoreModule;
+    exports.ɵex = siteContextStoreConfigFactory;
+    exports.ɵfg = CmsTicketInterceptor;
+    exports.ɵff = interceptors$1;
+    exports.ɵck = EntityFailAction;
+    exports.ɵcj = EntityLoadAction;
+    exports.ɵfq = EntityResetAction;
+    exports.ɵcl = EntitySuccessAction;
     exports.ɵn = stateMetaReducers;
     exports.ɵo = getStorageSyncReducer;
     exports.ɵp = getTransferStateReducer;
-    exports.ɵff = defaultStoreFinderConfig;
-    exports.ɵfl = FindStoresEffect;
-    exports.ɵfk = effects$9;
-    exports.ɵfm = ViewAllStoresEffect;
-    exports.ɵfh = getReducers$a;
-    exports.ɵfj = reducerProvider$a;
-    exports.ɵfi = reducerToken$a;
-    exports.ɵfe = getStoreFinderState;
-    exports.ɵfg = StoreFinderStoreModule;
-    exports.ɵfq = BillingCountriesEffect;
-    exports.ɵfr = DeliveryCountriesEffects;
-    exports.ɵgc = ForgotPasswordEffects;
-    exports.ɵfp = effects$8;
-    exports.ɵfs = OrderDetailsEffect;
-    exports.ɵft = UserPaymentMethodsEffects;
-    exports.ɵfu = RegionsEffects;
-    exports.ɵfv = ResetPasswordEffects;
-    exports.ɵfw = TitlesEffects;
-    exports.ɵgd = UpdateEmailEffects;
-    exports.ɵge = UpdatePasswordEffects;
-    exports.ɵfx = UserAddressesEffects;
-    exports.ɵfy = UserConsentsEffect;
-    exports.ɵfz = UserDetailsEffects;
-    exports.ɵga = UserOrdersEffect;
-    exports.ɵgb = UserRegisterEffects;
-    exports.ɵgh = reducer$g;
-    exports.ɵgm = reducer$h;
-    exports.ɵdr = clearUserState;
-    exports.ɵdo = getReducers$8;
-    exports.ɵds = metaReducers$5;
-    exports.ɵdq = reducerProvider$8;
-    exports.ɵdp = reducerToken$8;
-    exports.ɵgl = reducer$i;
-    exports.ɵgj = reducer$j;
-    exports.ɵgo = reducer$k;
-    exports.ɵgp = reducer$l;
-    exports.ɵgn = reducer$m;
-    exports.ɵgg = reducer$n;
-    exports.ɵgi = reducer$o;
-    exports.ɵgf = reducer$p;
-    exports.ɵgk = reducer$q;
-    exports.ɵfo = UserStoreModule;
+    exports.ɵfi = defaultStoreFinderConfig;
+    exports.ɵfo = FindStoresEffect;
+    exports.ɵfn = effects$9;
+    exports.ɵfp = ViewAllStoresEffect;
+    exports.ɵfk = getReducers$a;
+    exports.ɵfm = reducerProvider$a;
+    exports.ɵfl = reducerToken$a;
+    exports.ɵfh = getStoreFinderState;
+    exports.ɵfj = StoreFinderStoreModule;
+    exports.ɵft = BillingCountriesEffect;
+    exports.ɵfu = DeliveryCountriesEffects;
+    exports.ɵgf = ForgotPasswordEffects;
+    exports.ɵfs = effects$8;
+    exports.ɵfv = OrderDetailsEffect;
+    exports.ɵfw = UserPaymentMethodsEffects;
+    exports.ɵfx = RegionsEffects;
+    exports.ɵfy = ResetPasswordEffects;
+    exports.ɵfz = TitlesEffects;
+    exports.ɵgg = UpdateEmailEffects;
+    exports.ɵgh = UpdatePasswordEffects;
+    exports.ɵga = UserAddressesEffects;
+    exports.ɵgb = UserConsentsEffect;
+    exports.ɵgc = UserDetailsEffects;
+    exports.ɵgd = UserOrdersEffect;
+    exports.ɵge = UserRegisterEffects;
+    exports.ɵgk = reducer$g;
+    exports.ɵgp = reducer$h;
+    exports.ɵdt = clearUserState;
+    exports.ɵdq = getReducers$8;
+    exports.ɵdu = metaReducers$5;
+    exports.ɵds = reducerProvider$8;
+    exports.ɵdr = reducerToken$8;
+    exports.ɵgo = reducer$i;
+    exports.ɵgm = reducer$j;
+    exports.ɵgr = reducer$k;
+    exports.ɵgs = reducer$l;
+    exports.ɵgq = reducer$m;
+    exports.ɵgj = reducer$n;
+    exports.ɵgl = reducer$o;
+    exports.ɵgi = reducer$p;
+    exports.ɵgn = reducer$q;
+    exports.ɵfr = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
