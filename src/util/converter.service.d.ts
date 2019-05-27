@@ -19,7 +19,7 @@ export interface Converter<S, T> {
     convert(source: S, target?: T): T;
 }
 export declare class ConverterService {
-    private injector;
+    protected injector: Injector;
     constructor(injector: Injector);
     private converters;
     private getConverters;
