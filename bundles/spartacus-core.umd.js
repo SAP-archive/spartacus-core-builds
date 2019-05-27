@@ -16517,18 +16517,16 @@
          */
         /**
          * Updates the user's details
-         * @param {?} username
          * @param {?} userDetails to be updated
          * @return {?}
          */
         UserService.prototype.updatePersonalDetails = /**
          * Updates the user's details
-         * @param {?} username
          * @param {?} userDetails to be updated
          * @return {?}
          */
-            function (username, userDetails) {
-                this.store.dispatch(new UpdateUserDetails({ username: username, userDetails: userDetails }));
+            function (userDetails) {
+                this.store.dispatch(new UpdateUserDetails({ username: USERID_CURRENT, userDetails: userDetails }));
             };
         /**
          * Returns the update user's personal details loading flag

@@ -13837,12 +13837,11 @@ class UserService {
     }
     /**
      * Updates the user's details
-     * @param {?} username
      * @param {?} userDetails to be updated
      * @return {?}
      */
-    updatePersonalDetails(username, userDetails) {
-        this.store.dispatch(new UpdateUserDetails({ username, userDetails }));
+    updatePersonalDetails(userDetails) {
+        this.store.dispatch(new UpdateUserDetails({ username: USERID_CURRENT, userDetails }));
     }
     /**
      * Returns the update user's personal details loading flag

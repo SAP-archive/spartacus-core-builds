@@ -190,7 +190,7 @@ export declare class UserService {
      * Updates the user's details
      * @param userDetails to be updated
      */
-    updatePersonalDetails(username: string, userDetails: User): void;
+    updatePersonalDetails(userDetails: User): void;
     /**
      * Returns the update user's personal details loading flag
      */
