@@ -15710,9 +15710,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$o = {
-        consentTemplates: [],
-    };
+    var initialState$o = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -15731,15 +15729,11 @@
             case GIVE_USER_CONSENT_SUCCESS: {
                 /** @type {?} */
                 var updatedConsentTemplate_1 = action.consentTemplate;
-                /** @type {?} */
-                var updatedTemplates = state.consentTemplates.map(function (consentTemplate) {
+                return state.map(function (consentTemplate) {
                     return consentTemplate.id === updatedConsentTemplate_1.id
                         ? updatedConsentTemplate_1
                         : consentTemplate;
                 });
-                return {
-                    consentTemplates: updatedTemplates,
-                };
             }
         }
         return state;
@@ -17372,45 +17366,6 @@
             function () {
                 return this.adapter.loadTitles();
             };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        UserAccountConnector.prototype.loadConsents = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                return this.adapter.loadConsents(userId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} consentTemplateId
-         * @param {?} consentTemplateVersion
-         * @return {?}
-         */
-        UserAccountConnector.prototype.giveConsent = /**
-         * @param {?} userId
-         * @param {?} consentTemplateId
-         * @param {?} consentTemplateVersion
-         * @return {?}
-         */
-            function (userId, consentTemplateId, consentTemplateVersion) {
-                return this.adapter.giveConsent(userId, consentTemplateId, consentTemplateVersion);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} consentCode
-         * @return {?}
-         */
-        UserAccountConnector.prototype.withdrawConsent = /**
-         * @param {?} userId
-         * @param {?} consentCode
-         * @return {?}
-         */
-            function (userId, consentCode) {
-                return this.adapter.withdrawConsent(userId, consentCode);
-            };
         UserAccountConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
@@ -17927,23 +17882,100 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ UserConsentAdapter = /** @class */ (function () {
+        function UserConsentAdapter() {
+        }
+        return UserConsentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserConsentConnector = /** @class */ (function () {
+        function UserConsentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserConsentConnector.prototype.loadConsents = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                return this.adapter.loadConsents(userId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+        UserConsentConnector.prototype.giveConsent = /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+            function (userId, consentTemplateId, consentTemplateVersion) {
+                return this.adapter.giveConsent(userId, consentTemplateId, consentTemplateVersion);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+        UserConsentConnector.prototype.withdrawConsent = /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+            function (userId, consentCode) {
+                return this.adapter.withdrawConsent(userId, consentCode);
+            };
+        UserConsentConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserConsentConnector.ctorParameters = function () {
+            return [
+                { type: UserConsentAdapter }
+            ];
+        };
+        /** @nocollapse */ UserConsentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(i0.inject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+        return UserConsentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserConsentsEffect = /** @class */ (function () {
-        function UserConsentsEffect(actions$, userAccountConnector) {
+        function UserConsentsEffect(actions$, userConsentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userAccountConnector = userAccountConnector;
+            this.userConsentConnector = userConsentConnector;
             this.getConsents$ = this.actions$.pipe(effects.ofType(LOAD_USER_CONSENTS), operators.map(function (action) { return action.payload; }), operators.switchMap(function (userId) {
-                return _this.userAccountConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(error)); }));
+                return _this.userConsentConnector.loadConsents(userId).pipe(operators.map(function (consents) { return new LoadUserConsentsSuccess(consents); }), operators.catchError(function (error) { return rxjs.of(new LoadUserConsentsFail(error)); }));
             }));
             this.giveConsent$ = this.actions$.pipe(effects.ofType(GIVE_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
                 var userId = _a.userId, consentTemplateId = _a.consentTemplateId, consentTemplateVersion = _a.consentTemplateVersion;
-                return _this.userAccountConnector
+                return _this.userConsentConnector
                     .giveConsent(userId, consentTemplateId, consentTemplateVersion)
                     .pipe(operators.map(function (consent) { return new GiveUserConsentSuccess(consent); }), operators.catchError(function (error) { return rxjs.of(new GiveUserConsentFail(error)); }));
             }));
             this.withdrawConsent$ = this.actions$.pipe(effects.ofType(WITHDRAW_USER_CONSENT), operators.map(function (action) { return action.payload; }), operators.switchMap(function (_a) {
                 var userId = _a.userId, consentCode = _a.consentCode;
-                return _this.userAccountConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function (_) { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(error)); }));
+                return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map(function (_) { return new WithdrawUserConsentSuccess(); }), operators.catchError(function (error) { return rxjs.of(new WithdrawUserConsentFail(error)); }));
             }));
         }
         UserConsentsEffect.decorators = [
@@ -17953,7 +17985,7 @@
         UserConsentsEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConsentConnector }
             ];
         };
         __decorate([
@@ -18259,6 +18291,18 @@
     var ADDRESS_SERIALIZER = new i0.InjectionToken('AddressSerializer');
     /** @type {?} */
     var ADDRESS_VALIDATION_NORMALIZER = new i0.InjectionToken('AddressValidationNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CONSENT_TEMPLATE_NORMALIZER = new i0.InjectionToken('ConsentTemplateNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -20286,7 +20330,27 @@
             Type["Product"] = "product";
             Type["Order"] = "order";
         })(Type = Occ.Type || (Occ.Type = {}));
+        /**
+         * @record
+         */
+        function ConsentTemplate() { }
+        Occ.ConsentTemplate = ConsentTemplate;
+        /**
+         * @record
+         */
+        function Consent() { }
+        Occ.Consent = Consent;
+        /**
+         * @record
+         */
+        function ConsentTemplateList() { }
+        Occ.ConsentTemplateList = ConsentTemplateList;
     })(exports.Occ || (exports.Occ = {}));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -23288,10 +23352,6 @@
     /** @type {?} */
     var UPDATE_PASSWORD_ENDPOINT = '/password';
     /** @type {?} */
-    var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
-    /** @type {?} */
-    var CONSENTS_ENDPOINT = '/consents';
-    /** @type {?} */
     var TITLES_ENDPOINT = 'titles';
     var OccUserAccountAdapter = /** @class */ (function () {
         function OccUserAccountAdapter(http$$1, occEndpoints, converter) {
@@ -23456,70 +23516,6 @@
                 return this.http
                     .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (titleList) { return titleList.titles; }), this.converter.pipeableMany(TITLE_NORMALIZER));
-            };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserAccountAdapter.prototype.loadConsents = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                /** @type {?} */
-                var url = this.getUserEndpoint() + userId + CONSENTS_TEMPLATES_ENDPOINT;
-                /** @type {?} */
-                var headers = new http.HttpHeaders({ 'Cache-Control': 'no-cache' });
-                return this.http
-                    .get(url, { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} consentTemplateId
-         * @param {?} consentTemplateVersion
-         * @return {?}
-         */
-        OccUserAccountAdapter.prototype.giveConsent = /**
-         * @param {?} userId
-         * @param {?} consentTemplateId
-         * @param {?} consentTemplateVersion
-         * @return {?}
-         */
-            function (userId, consentTemplateId, consentTemplateVersion) {
-                /** @type {?} */
-                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
-                /** @type {?} */
-                var httpParams = new http.HttpParams()
-                    .set('consentTemplateId', consentTemplateId)
-                    .set('consentTemplateVersion', consentTemplateVersion.toString());
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Cache-Control': 'no-cache',
-                });
-                return this.http
-                    .post(url, httpParams, { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} consentCode
-         * @return {?}
-         */
-        OccUserAccountAdapter.prototype.withdrawConsent = /**
-         * @param {?} userId
-         * @param {?} consentCode
-         * @return {?}
-         */
-            function (userId, consentCode) {
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Cache-Control': 'no-cache',
-                });
-                /** @type {?} */
-                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT + '/' + consentCode;
-                return this.http.delete(url, { headers: headers });
             };
         OccUserAccountAdapter.decorators = [
             { type: i0.Injectable }
@@ -23692,6 +23688,113 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var USER_ENDPOINT$4 = 'users/';
+    /** @type {?} */
+    var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
+    /** @type {?} */
+    var CONSENTS_ENDPOINT = '/consents';
+    var OccUserConsentAdapter = /** @class */ (function () {
+        function OccUserConsentAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @private
+         * @param {?=} userId
+         * @return {?}
+         */
+        OccUserConsentAdapter.prototype.getUserEndpoint = /**
+         * @private
+         * @param {?=} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var endpoint = userId ? "" + USER_ENDPOINT$4 + userId : USER_ENDPOINT$4;
+                return this.occEndpoints.getEndpoint(endpoint);
+            };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserConsentAdapter.prototype.loadConsents = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var url = this.getUserEndpoint(userId) + CONSENTS_TEMPLATES_ENDPOINT;
+                /** @type {?} */
+                var headers = new http.HttpHeaders({ 'Cache-Control': 'no-cache' });
+                return this.http.get(url, { headers: headers }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (consentList) { return consentList.consentTemplates; }), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+        OccUserConsentAdapter.prototype.giveConsent = /**
+         * @param {?} userId
+         * @param {?} consentTemplateId
+         * @param {?} consentTemplateVersion
+         * @return {?}
+         */
+            function (userId, consentTemplateId, consentTemplateVersion) {
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
+                /** @type {?} */
+                var httpParams = new http.HttpParams()
+                    .set('consentTemplateId', consentTemplateId)
+                    .set('consentTemplateVersion', consentTemplateVersion.toString());
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Cache-Control': 'no-cache',
+                });
+                return this.http
+                    .post(url, httpParams, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(CONSENT_TEMPLATE_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+        OccUserConsentAdapter.prototype.withdrawConsent = /**
+         * @param {?} userId
+         * @param {?} consentCode
+         * @return {?}
+         */
+            function (userId, consentCode) {
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Cache-Control': 'no-cache',
+                });
+                /** @type {?} */
+                var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT + '/' + consentCode;
+                return this.http.delete(url, { headers: headers });
+            };
+        OccUserConsentAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccUserConsentAdapter.ctorParameters = function () {
+            return [
+                { type: http.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccUserConsentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserOccModule = /** @class */ (function () {
         function UserOccModule() {
         }
@@ -23702,6 +23805,7 @@
                             { provide: UserDetailsAdapter, useClass: OccUserDetailsAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
                             { provide: UserAccountAdapter, useClass: OccUserAccountAdapter },
+                            { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
                             {
                                 provide: UserPaymentAdapter,
                                 useClass: OccUserPaymentAdapter,
@@ -25779,6 +25883,7 @@
     exports.OccStoreFinderAdapter = OccStoreFinderAdapter;
     exports.OccUserAddressAdapter = OccUserAddressAdapter;
     exports.OccUserAccountAdapter = OccUserAccountAdapter;
+    exports.OccUserConsentAdapter = OccUserConsentAdapter;
     exports.OccUserDetailsAdapter = OccUserDetailsAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
     exports.OccOrderAdapter = OccOrderAdapter;
@@ -26260,6 +26365,9 @@
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
+    exports.UserConsentConnector = UserConsentConnector;
+    exports.UserConsentAdapter = UserConsentAdapter;
+    exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.UserDetailsConnector = UserDetailsConnector;
     exports.UserDetailsAdapter = UserDetailsAdapter;
     exports.USER_NORMALIZER = USER_NORMALIZER;

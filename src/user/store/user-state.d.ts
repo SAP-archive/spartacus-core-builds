@@ -2,8 +2,8 @@ import { Address, Country, Region } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
 import { Title, User } from '../../model/misc.model';
 import { Order, OrderHistoryList } from '../../model/order.model';
-import { ConsentTemplateList } from '../../occ/occ-models/additional-occ.models';
 import { LoaderState } from '../../state';
+import { ConsentTemplate } from '../../model/consent.model';
 export declare const USER_FEATURE = "user";
 export declare const UPDATE_EMAIL_PROCESS_ID = "updateEmail";
 export declare const UPDATE_PASSWORD_PROCESS_ID = "updatePassword";
@@ -21,7 +21,7 @@ export interface StateWithUser {
 export interface UserState {
     account: UserDetailsState;
     addresses: LoaderState<Address[]>;
-    consents: LoaderState<ConsentTemplateList>;
+    consents: LoaderState<ConsentTemplate[]>;
     billingCountries: BillingCountriesState;
     countries: DeliveryCountriesState;
     payments: LoaderState<PaymentDetails[]>;

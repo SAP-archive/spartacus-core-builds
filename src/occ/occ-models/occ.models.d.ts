@@ -3766,4 +3766,19 @@ export declare namespace Occ {
         Product = "product",
         Order = "order"
     }
+    interface ConsentTemplate {
+        id?: string;
+        name?: string;
+        description?: string;
+        version?: number;
+        currentConsent?: Consent;
+    }
+    interface Consent {
+        code?: string;
+        consentGivenDate?: Date;
+        consentWithdrawnDate?: Date;
+    }
+    interface ConsentTemplateList {
+        consentTemplates?: ConsentTemplate[];
+    }
 }

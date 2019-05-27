@@ -4,9 +4,9 @@ import { Address, Country, Region } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
 import { Title, User, UserSignUp } from '../../model/misc.model';
 import { Order, OrderHistoryList } from '../../model/order.model';
-import { ConsentTemplateList } from '../../occ/occ-models/additional-occ.models';
 import * as fromProcessStore from '../../process/store/process-state';
 import * as fromStore from '../store/index';
+import { ConsentTemplate } from '../../model/consent.model';
 export declare class UserService {
     protected store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>;
     constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
@@ -269,7 +269,7 @@ export declare class UserService {
     /**
      * Returns all consents
      */
-    getConsents(): Observable<ConsentTemplateList>;
+    getConsents(): Observable<ConsentTemplate[]>;
     /**
      * Returns the consents loading flag
      */

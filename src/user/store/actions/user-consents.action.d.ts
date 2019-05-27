@@ -1,6 +1,6 @@
-import { ConsentTemplate, ConsentTemplateList } from '../../../occ/occ-models/additional-occ.models';
 import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { ConsentTemplate } from '../../../model/consent.model';
 export declare const LOAD_USER_CONSENTS = "[User] Load User Consents";
 export declare const LOAD_USER_CONSENTS_SUCCESS = "[User] Load User Consents Success";
 export declare const LOAD_USER_CONSENTS_FAIL = "[User] Load User Consents Fail";
@@ -24,9 +24,9 @@ export declare class LoadUserConsentsFail extends LoaderFailAction {
     constructor(payload: any);
 }
 export declare class LoadUserConsentsSuccess extends LoaderSuccessAction {
-    payload: ConsentTemplateList;
+    payload: ConsentTemplate[];
     readonly type = "[User] Load User Consents Success";
-    constructor(payload: ConsentTemplateList);
+    constructor(payload: ConsentTemplate[]);
 }
 export declare class ResetLoadUserConsents extends LoaderResetAction {
     readonly type = "[User] Reset Load User Consents";
