@@ -2,11 +2,11 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Address, Country, Region } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
+import { ConsentTemplate } from '../../model/consent.model';
 import { Title, User, UserSignUp } from '../../model/misc.model';
 import { Order, OrderHistoryList } from '../../model/order.model';
 import * as fromProcessStore from '../../process/store/process-state';
 import * as fromStore from '../store/index';
-import { ConsentTemplate } from '../../model/consent.model';
 export declare class UserService {
     protected store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>;
     constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
@@ -26,10 +26,8 @@ export declare class UserService {
     register(userRegisterFormData: UserSignUp): void;
     /**
      * Remove user account, that's also called close user's account
-     *
-     * @param userId
      */
-    remove(userId: string): void;
+    remove(): void;
     /**
      * Returns the remove user loading flag
      */

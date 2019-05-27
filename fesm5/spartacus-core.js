@@ -15715,23 +15715,17 @@ var UserService = /** @class */ (function () {
     };
     /**
      * Remove user account, that's also called close user's account
-     *
-     * @param userId
      */
     /**
      * Remove user account, that's also called close user's account
-     *
-     * @param {?} userId
      * @return {?}
      */
     UserService.prototype.remove = /**
      * Remove user account, that's also called close user's account
-     *
-     * @param {?} userId
      * @return {?}
      */
-    function (userId) {
-        this.store.dispatch(new RemoveUser(userId));
+    function () {
+        this.store.dispatch(new RemoveUser(USERID_CURRENT));
     };
     /**
      * Returns the remove user loading flag

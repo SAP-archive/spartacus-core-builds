@@ -13535,12 +13535,10 @@ class UserService {
     }
     /**
      * Remove user account, that's also called close user's account
-     *
-     * @param {?} userId
      * @return {?}
      */
-    remove(userId) {
-        this.store.dispatch(new RemoveUser(userId));
+    remove() {
+        this.store.dispatch(new RemoveUser(USERID_CURRENT));
     }
     /**
      * Returns the remove user loading flag
