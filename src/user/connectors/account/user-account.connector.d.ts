@@ -1,12 +1,11 @@
 import { Observable } from 'rxjs';
-import { Title, User } from '../../../model/misc.model';
+import { Title, User, UserSignUp } from '../../../model/misc.model';
 import { ConsentTemplate, ConsentTemplateList } from '../../../occ/occ-models/additional-occ.models';
-import { UserRegisterFormData } from '../../../user/model/user.model';
 import { UserAccountAdapter } from './user-account.adapter';
 export declare class UserAccountConnector {
     protected adapter: UserAccountAdapter;
     constructor(adapter: UserAccountAdapter);
-    register(user: UserRegisterFormData): Observable<User>;
+    register(user: UserSignUp): Observable<User>;
     requestForgotPasswordEmail(userEmailAddress: string): Observable<{}>;
     resetPassword(token: string, newPassword: string): Observable<{}>;
     updateEmail(userId: string, currentPassword: string, newUserId: string): Observable<{}>;

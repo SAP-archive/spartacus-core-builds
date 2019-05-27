@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { UserRegisterFormData } from '../../model/user.model';
 import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state';
+import { UserSignUp } from '../../../model/misc.model';
 export declare const REGISTER_USER = "[User] Register User";
 export declare const REGISTER_USER_FAIL = "[User] Register User Fail";
 export declare const REGISTER_USER_SUCCESS = "[User] Register User Success";
@@ -9,9 +9,9 @@ export declare const REMOVE_USER_FAIL = "[User] Remove User Fail";
 export declare const REMOVE_USER_SUCCESS = "[User] Remove User Success";
 export declare const REMOVE_USER_RESET = "[User] Reset Remove User Process State";
 export declare class RegisterUser implements Action {
-    payload: UserRegisterFormData;
+    payload: UserSignUp;
     readonly type = "[User] Register User";
-    constructor(payload: UserRegisterFormData);
+    constructor(payload: UserSignUp);
 }
 export declare class RegisterUserFail implements Action {
     payload: any;

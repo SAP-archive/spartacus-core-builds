@@ -18240,7 +18240,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_REGISTER_FORM_SERIALIZER = new i0.InjectionToken('UserRegisterFormSerializer');
+    var USER_SIGN_UP_SERIALIZER = new i0.InjectionToken('UserSignUpSerializer');
     /** @type {?} */
     var TITLE_NORMALIZER = new i0.InjectionToken('TitleNormalizer');
 
@@ -23330,7 +23330,7 @@
                     'Content-Type': 'application/json',
                 });
                 headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-                user = this.converter.convert(user, USER_REGISTER_FORM_SERIALIZER);
+                user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
                 return this.http.post(url, user, { headers: headers }).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(USER_NORMALIZER));
             };
         /**
@@ -26250,7 +26250,7 @@
     exports.UserModule = UserModule;
     exports.UserAccountConnector = UserAccountConnector;
     exports.UserAccountAdapter = UserAccountAdapter;
-    exports.USER_REGISTER_FORM_SERIALIZER = USER_REGISTER_FORM_SERIALIZER;
+    exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
     exports.UserAddressConnector = UserAddressConnector;
     exports.UserAddressAdapter = UserAddressAdapter;
