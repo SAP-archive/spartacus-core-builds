@@ -241,7 +241,7 @@ export declare class UserService {
      * @param oldPassword the current password that will be changed
      * @param newPassword the new password
      */
-    updatePassword(userId: string, oldPassword: string, newPassword: string): void;
+    updatePassword(oldPassword: string, newPassword: string): void;
     /**
      * Returns the update password loading flag
      */

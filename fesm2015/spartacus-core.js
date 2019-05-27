@@ -13930,13 +13930,16 @@ class UserService {
     }
     /**
      * Updates the password for an authenticated user
-     * @param {?} userId the user id for which the password will be updated
      * @param {?} oldPassword the current password that will be changed
      * @param {?} newPassword the new password
      * @return {?}
      */
-    updatePassword(userId, oldPassword, newPassword) {
-        this.store.dispatch(new UpdatePassword({ userId, oldPassword, newPassword }));
+    updatePassword(oldPassword, newPassword) {
+        this.store.dispatch(new UpdatePassword({
+            userId: USERID_CURRENT,
+            oldPassword,
+            newPassword,
+        }));
     }
     /**
      * Returns the update password loading flag

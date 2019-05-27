@@ -16506,20 +16506,22 @@ var UserService = /** @class */ (function () {
      */
     /**
      * Updates the password for an authenticated user
-     * @param {?} userId the user id for which the password will be updated
      * @param {?} oldPassword the current password that will be changed
      * @param {?} newPassword the new password
      * @return {?}
      */
     UserService.prototype.updatePassword = /**
      * Updates the password for an authenticated user
-     * @param {?} userId the user id for which the password will be updated
      * @param {?} oldPassword the current password that will be changed
      * @param {?} newPassword the new password
      * @return {?}
      */
-    function (userId, oldPassword, newPassword) {
-        this.store.dispatch(new UpdatePassword({ userId: userId, oldPassword: oldPassword, newPassword: newPassword }));
+    function (oldPassword, newPassword) {
+        this.store.dispatch(new UpdatePassword({
+            userId: USERID_CURRENT,
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+        }));
     };
     /**
      * Returns the update password loading flag
