@@ -4,7 +4,6 @@ import * as fromNgrxRouter from '@ngrx/router-store';
 import { ActionReducerMap, MemoizedSelector } from '@ngrx/store';
 import { PageContext } from '../../models/page-context.model';
 export interface RouterState extends fromNgrxRouter.RouterReducerState<ActivatedRouterStateSnapshot> {
-    redirectUrl: string;
     nextState?: ActivatedRouterStateSnapshot;
 }
 export declare const initialState: RouterState;
@@ -27,7 +26,6 @@ export declare const getRouterState: MemoizedSelector<any, RouterState>;
 export declare const getPageContext: MemoizedSelector<any, PageContext>;
 export declare const getNextPageContext: MemoizedSelector<any, PageContext>;
 export declare const isNavigating: MemoizedSelector<any, boolean>;
-export declare const getRedirectUrl: MemoizedSelector<any, string>;
 export declare class CustomSerializer implements fromNgrxRouter.RouterStateSerializer<ActivatedRouterStateSnapshot> {
     serialize(routerState: RouterStateSnapshot): ActivatedRouterStateSnapshot;
 }

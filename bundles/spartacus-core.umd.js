@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('i18next-xhr-backend'), require('i18next'), require('@angular/forms'), require('@angular/router'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
     typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', 'i18next-xhr-backend', 'i18next', '@angular/forms', '@angular/router', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
     (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.i18nextXhrBackend,global.i18next,global.ng.forms,global.ng.router,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i1,rxjs,i1$1,effects,i0,http,operators,i1$2) { 'use strict';
+}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i2,rxjs,i1,effects,i0,http,operators,i1$1) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
@@ -369,7 +369,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
+    var getAuthState = i1.createFeatureSelector(AUTH_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -378,16 +378,16 @@
     /** @type {?} */
     var getUserTokenSelector = function (state) { return state.token; };
     /** @type {?} */
-    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
+    var getUserTokenState = i1.createSelector(getAuthState, function (state) { return state.userToken; });
     /** @type {?} */
-    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
+    var getUserToken = i1.createSelector(getUserTokenState, getUserTokenSelector);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
+    var getClientTokenState = i1.createSelector(getAuthState, function (state) { return state.clientToken; });
 
     /**
      * @fileoverview added by tsickle
@@ -654,7 +654,7 @@
             };
         ConfigModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
+                        imports: [i1$1.CommonModule],
                         declarations: [],
                     },] }
         ];
@@ -673,69 +673,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var GO = '[Router] Go';
-    /** @type {?} */
-    var GO_BY_URL = '[Router] Go By Url';
-    /** @type {?} */
-    var BACK = '[Router] Back';
-    /** @type {?} */
-    var FORWARD = '[Router] Forward';
-    /** @type {?} */
-    var SAVE_REDIRECT_URL = '[Router] Save Redirect Url';
-    /** @type {?} */
-    var CLEAR_REDIRECT_URL = '[Router] Clear Redirect Url';
-    var Go = /** @class */ (function () {
-        function Go(payload) {
-            this.payload = payload;
-            this.type = GO;
-        }
-        return Go;
-    }());
-    var GoByUrl = /** @class */ (function () {
-        function GoByUrl(payload) {
-            this.payload = payload;
-            this.type = GO_BY_URL;
-        }
-        return GoByUrl;
-    }());
-    var Back = /** @class */ (function () {
-        function Back() {
-            this.type = BACK;
-        }
-        return Back;
-    }());
-    var Forward = /** @class */ (function () {
-        function Forward() {
-            this.type = FORWARD;
-        }
-        return Forward;
-    }());
-    var SaveRedirectUrl = /** @class */ (function () {
-        function SaveRedirectUrl(payload) {
-            this.payload = payload;
-            this.type = SAVE_REDIRECT_URL;
-        }
-        return SaveRedirectUrl;
-    }());
-    var ClearRedirectUrl = /** @class */ (function () {
-        function ClearRedirectUrl() {
-            this.type = CLEAR_REDIRECT_URL;
-        }
-        return ClearRedirectUrl;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var initialState = {
-        redirectUrl: '',
         navigationId: 0,
         state: {
             url: '',
@@ -766,12 +704,6 @@
             state = initialState;
         }
         switch (action.type) {
-            case SAVE_REDIRECT_URL: {
-                return __assign({}, state, { redirectUrl: action.payload });
-            }
-            case CLEAR_REDIRECT_URL: {
-                return __assign({}, state, { redirectUrl: '' });
-            }
             case fromNgrxRouter.ROUTER_NAVIGATION: {
                 return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
             }
@@ -780,28 +712,7 @@
                 return __assign({}, state, { nextState: undefined });
             }
             case fromNgrxRouter.ROUTER_NAVIGATED: {
-                /** @type {?} */
-                var currentUrl = action.payload.routerState
-                    ? action.payload.routerState.url
-                    : '';
-                /** @type {?} */
-                var contextId = action.payload.routerState
-                    ? action.payload.routerState.context.id
-                    : '';
-                /** @type {?} */
-                var redirectUrl = void 0;
-                if (
-                // TODO: Should be rafactored, utilizimg semantic pages configuration
-                contextId === '/login' ||
-                    contextId === '/login/register' ||
-                    currentUrl === state.redirectUrl) {
-                    redirectUrl = state.redirectUrl;
-                }
-                else {
-                    redirectUrl = '';
-                }
                 return {
-                    redirectUrl: redirectUrl,
                     state: action.payload.routerState,
                     navigationId: action.payload.event.id,
                     nextState: undefined,
@@ -820,21 +731,19 @@
         useFactory: getReducers,
     };
     /** @type {?} */
-    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
+    var getRouterFeatureState = i1.createFeatureSelector(ROUTING_FEATURE);
     /** @type {?} */
-    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state.router; });
+    var getRouterState = i1.createSelector(getRouterFeatureState, function (state) { return state.router; });
     /** @type {?} */
-    var getPageContext = i1$1.createSelector(getRouterState, function (routingState) {
+    var getPageContext = i1.createSelector(getRouterState, function (routingState) {
         return (routingState.state && routingState.state.context) || { id: '' };
     });
     /** @type {?} */
-    var getNextPageContext = i1$1.createSelector(getRouterState, function (routingState) {
+    var getNextPageContext = i1.createSelector(getRouterState, function (routingState) {
         return routingState.nextState && routingState.nextState.context;
     });
     /** @type {?} */
-    var isNavigating = i1$1.createSelector(getNextPageContext, function (context) { return !!context; });
-    /** @type {?} */
-    var getRedirectUrl = i1$1.createSelector(getRouterState, function (state) { return state.redirectUrl; });
+    var isNavigating = i1.createSelector(getNextPageContext, function (context) { return !!context; });
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
      */
@@ -924,6 +833,45 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var GO = '[Router] Go';
+    /** @type {?} */
+    var GO_BY_URL = '[Router] Go By Url';
+    /** @type {?} */
+    var BACK = '[Router] Back';
+    /** @type {?} */
+    var FORWARD = '[Router] Forward';
+    var Go = /** @class */ (function () {
+        function Go(payload) {
+            this.payload = payload;
+            this.type = GO;
+        }
+        return Go;
+    }());
+    var GoByUrl = /** @class */ (function () {
+        function GoByUrl(payload) {
+            this.payload = payload;
+            this.type = GO_BY_URL;
+        }
+        return GoByUrl;
+    }());
+    var Back = /** @class */ (function () {
+        function Back() {
+            this.type = BACK;
+        }
+        return Back;
+    }());
+    var Forward = /** @class */ (function () {
+        function Forward() {
+            this.type = FORWARD;
+        }
+        return Forward;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var LOAD_LANGUAGES = '[Site-context] Load Languages';
     /** @type {?} */
     var LOAD_LANGUAGES_FAIL = '[Site-context] Load Languages Fail';
@@ -1001,8 +949,8 @@
         RouterEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: i1.Router },
-                { type: i1$2.Location }
+                { type: i2.Router },
+                { type: i1$1.Location }
             ];
         };
         __decorate([
@@ -1034,6 +982,11 @@
      */
     /** @type {?} */
     var effects$1 = [RouterEffects];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -1090,10 +1043,10 @@
         /** @nocollapse */
         WindowRef.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] }
             ];
         };
-        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$2.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$1.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
         return WindowRef;
     }());
 
@@ -1132,8 +1085,8 @@
                 /** @type {?} */
                 var segments = tree.segments.map(function (s) { return s.path; });
                 /** @type {?} */
-                var childrenSegments = tree.children[i1.PRIMARY_OUTLET]
-                    ? this._getPrimarySegmentsFromUrlTree(tree.children[i1.PRIMARY_OUTLET])
+                var childrenSegments = tree.children[i2.PRIMARY_OUTLET]
+                    ? this._getPrimarySegmentsFromUrlTree(tree.children[i2.PRIMARY_OUTLET])
                     : [];
                 return segments.concat(childrenSegments);
             };
@@ -1143,10 +1096,10 @@
         /** @nocollapse */
         UrlParsingService.ctorParameters = function () {
             return [
-                { type: i1.Router }
+                { type: i2.Router }
             ];
         };
-        /** @nocollapse */ UrlParsingService.ngInjectableDef = i0.defineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.inject(i1.Router)); }, token: UrlParsingService, providedIn: "root" });
+        /** @nocollapse */ UrlParsingService.ngInjectableDef = i0.defineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(i0.inject(i2.Router)); }, token: UrlParsingService, providedIn: "root" });
         return UrlParsingService;
     }());
 
@@ -1552,7 +1505,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getRouterState));
+                return this.store.pipe(i1.select(getRouterState));
             };
         /**
          * Get the `PageContext` from the state
@@ -1566,7 +1519,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPageContext));
+                return this.store.pipe(i1.select(getPageContext));
             };
         /**
          * Get the next `PageContext` from the state
@@ -1580,7 +1533,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getNextPageContext));
+                return this.store.pipe(i1.select(getNextPageContext));
             };
         /**
          * Get the `isNavigating` info from the state
@@ -1594,7 +1547,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(isNavigating));
+                return this.store.pipe(i1.select(isNavigating));
             };
         /**
          * Navigation with a new state into history
@@ -1674,51 +1627,6 @@
                 this.store.dispatch(new Forward());
             };
         /**
-         * Get the redirect url from store
-         */
-        /**
-         * Get the redirect url from store
-         * @return {?}
-         */
-        RoutingService.prototype.getRedirectUrl = /**
-         * Get the redirect url from store
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1$1.select(getRedirectUrl));
-            };
-        /**
-         * Remove the redirect url from store
-         */
-        /**
-         * Remove the redirect url from store
-         * @return {?}
-         */
-        RoutingService.prototype.clearRedirectUrl = /**
-         * Remove the redirect url from store
-         * @return {?}
-         */
-            function () {
-                this.store.dispatch(new ClearRedirectUrl());
-            };
-        /**
-         * Put redirct url into store
-         * @param url: redirect url
-         */
-        /**
-         * Put redirct url into store
-         * @param {?} url
-         * @return {?}
-         */
-        RoutingService.prototype.saveRedirectUrl = /**
-         * Put redirct url into store
-         * @param {?} url
-         * @return {?}
-         */
-            function (url) {
-                this.store.dispatch(new SaveRedirectUrl(url));
-            };
-        /**
          * Navigation with a new state into history
          * @param path
          * @param query
@@ -1755,12 +1663,12 @@
         /** @nocollapse */
         RoutingService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: WindowRef },
                 { type: SemanticPathService }
             ];
         };
-        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1.Store), i0.inject(WindowRef), i0.inject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
     }());
 
@@ -1908,7 +1816,7 @@
             function () {
                 // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
                 /** @type {?} */
-                var router = this.injector.get(i1.Router);
+                var router = this.injector.get(i2.Router);
                 /** @type {?} */
                 var configuredRoutes = this.configureRoutes(router.config);
                 router.resetConfig(configuredRoutes);
@@ -2057,7 +1965,7 @@
         }
         ConfigurableRoutesModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
+                        imports: [i1$1.CommonModule],
                         providers: [
                             {
                                 provide: i0.APP_INITIALIZER,
@@ -2083,11 +1991,11 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             ConfigurableRoutesModule,
-                            i1.RouterModule.forRoot([], {
+                            i2.RouterModule.forRoot([], {
                                 scrollPositionRestoration: 'enabled',
                                 anchorScrolling: 'enabled',
                             }),
-                            i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                            i1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                             effects.EffectsModule.forFeature(effects$1),
                             fromNgrxRouter.StoreRouterConnectingModule.forRoot({
                                 stateKey: ROUTING_FEATURE,
@@ -2195,7 +2103,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getUserToken));
+                return this.store.pipe(i1.select(getUserToken));
             };
         /**
          * Refreshes the user token
@@ -2262,7 +2170,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1.select(getClientTokenState), operators.filter(function (state) {
                     if (_this.isClientTokenLoaded(state)) {
                         return true;
                     }
@@ -2291,7 +2199,7 @@
             function () {
                 var _this = this;
                 this.store.dispatch(new LoadClientToken());
-                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1.select(getClientTokenState), operators.filter(function (state) {
                     return _this.isClientTokenLoaded(state);
                 }), operators.map(function (state) { return state.value; }));
             };
@@ -2316,10 +2224,10 @@
         /** @nocollapse */
         AuthService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
-        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
+        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1.Store)); }, token: AuthService, providedIn: "root" });
         return AuthService;
     }());
 
@@ -2664,14 +2572,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, function (state) { return state.baseSite; });
+    var getActiveBaseSite = i1.createSelector(getSiteContextState, function (state) { return state.baseSite; });
 
     /**
      * @fileoverview added by tsickle
@@ -2715,7 +2623,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(Boolean));
+                return this.store.pipe(i1.select(getActiveBaseSite), operators.filter(Boolean));
             };
         /**
          * We currently don't support switching baseSite at run time
@@ -2742,7 +2650,7 @@
             function (baseSite) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
+                    .pipe(i1.select(getActiveBaseSite), operators.take(1))
                     .subscribe(function (activeBaseSite) {
                     if (activeBaseSite !== baseSite) {
                         _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -2771,7 +2679,7 @@
         /** @nocollapse */
         BaseSiteService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return BaseSiteService;
@@ -3369,16 +3277,16 @@
             return function (state, action) {
                 /** @type {?} */
                 var newState = __assign({}, state);
-                if (action.type === i1$1.INIT && !exists(newState)) {
+                if (action.type === i1.INIT && !exists(newState)) {
                     newState = reducer(state, action);
                 }
-                if (action.type === i1$1.INIT || action.type === i1$1.UPDATE) {
+                if (action.type === i1.INIT || action.type === i1.UPDATE) {
                     /** @type {?} */
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge(newState, rehydratedState);
                 }
                 newState = reducer(newState, action);
-                if (action.type !== i1$1.INIT) {
+                if (action.type !== i1.INIT) {
                     // handle local storage
                     /** @type {?} */
                     var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
@@ -3488,10 +3396,10 @@
             config.state &&
             config.state.ssrTransfer &&
             config.state.ssrTransfer.keys) {
-            if (i1$2.isPlatformBrowser(platformId)) {
+            if (i1$1.isPlatformBrowser(platformId)) {
                 return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
-            else if (i1$2.isPlatformServer(platformId)) {
+            else if (i1$1.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -3524,7 +3432,7 @@
     function getBrowserTransferStateReducer(transferState, keys) {
         return function (reducer) {
             return function (state, action) {
-                if (action.type === i1$1.INIT) {
+                if (action.type === i1.INIT) {
                     if (!state) {
                         state = reducer(state, action);
                     }
@@ -3601,13 +3509,13 @@
         StateModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.StoreModule.forRoot({}),
+                            i1.StoreModule.forRoot({}),
                             effects.EffectsModule.forRoot([]),
                             ConfigModule.withConfig(defaultStateConfig),
                         ],
                         providers: __spread(stateMetaReducers, [
                             {
-                                provide: i1$1.META_REDUCERS,
+                                provide: i1.META_REDUCERS,
                                 useFactory: ɵ0,
                                 deps: [[new i0.Optional(), META_REDUCER]],
                             },
@@ -3822,7 +3730,7 @@
      */
     function getReducers$1() {
         return {
-            userToken: i1$1.combineReducers({ token: reducer$1 }),
+            userToken: i1.combineReducers({ token: reducer$1 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
@@ -3875,10 +3783,10 @@
         AuthStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
+                            i1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
                             effects.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
@@ -3910,7 +3818,7 @@
         AuthModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
                             RoutingModule,
                             AuthStoreModule,
@@ -3926,32 +3834,135 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var AuthGuard = /** @class */ (function () {
-        function AuthGuard(routingService, authService) {
-            this.routingService = routingService;
-            this.authService = authService;
+    var AuthRedirectService = /** @class */ (function () {
+        /**
+         * This service is responsible for redirecting to the last page before authorization. "The last page" can be:
+         * 1. Just the previously opened page; or
+         * 2. The page that we just tried to open, but AuthGuard cancelled it
+         *
+         * For example:
+         * 1. The user opens the product page, then clicks /login link and signs in
+         *    -> Then we should redirect to the product page; or
+         * 2. The user opens the product page, then he clicks /my-account link,
+         *    but is automatically redirected to the login page by the AuthGuard, and he signs in
+         *    -> Then we should redirect to the my-account page, not the product page
+         */
+        function AuthRedirectService(routing, router) {
+            this.routing = routing;
+            this.router = router;
+            this.ignoredUrls = new Set();
         }
         /**
-         * @param {?} _route
-         * @param {?} state
+         * @return {?}
+         */
+        AuthRedirectService.prototype.redirect = /**
+         * @return {?}
+         */
+            function () {
+                if (this.redirectUrl === undefined) {
+                    this.routing.go('/');
+                }
+                else {
+                    this.routing.goByUrl(this.redirectUrl);
+                }
+                this.redirectUrl = undefined;
+                this.lastAuthGuardNavigation = undefined;
+            };
+        /**
+         * @return {?}
+         */
+        AuthRedirectService.prototype.reportAuthGuard = /**
+         * @return {?}
+         */
+            function () {
+                var _a = this.getCurrentNavigation(), url = _a.url, navigationId = _a.navigationId;
+                this.lastAuthGuardNavigation = { url: url, navigationId: navigationId };
+                this.redirectUrl = url;
+            };
+        /**
+         * @return {?}
+         */
+        AuthRedirectService.prototype.reportNotAuthGuard = /**
+         * @return {?}
+         */
+            function () {
+                var _a = this.getCurrentNavigation(), url = _a.url, initialUrl = _a.initialUrl, navigationId = _a.navigationId;
+                this.ignoredUrls.add(url);
+                // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
+                if (!this.ignoredUrls.has(initialUrl)) {
+                    // We compare the navigation id to find out if the url cancelled by AuthGuard (i.e. my-account) is more recent
+                    // than the last opened page
+                    if (!this.lastAuthGuardNavigation ||
+                        this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
+                        this.redirectUrl = initialUrl;
+                        this.lastAuthGuardNavigation = undefined;
+                    }
+                }
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        AuthRedirectService.prototype.getCurrentNavigation = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var initialUrl = this.router.url;
+                /** @type {?} */
+                var navigation = this.router.getCurrentNavigation();
+                /** @type {?} */
+                var url = this.router.serializeUrl(navigation.finalUrl);
+                return {
+                    navigationId: navigation.id,
+                    url: url,
+                    initialUrl: initialUrl,
+                };
+            };
+        AuthRedirectService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        AuthRedirectService.ctorParameters = function () {
+            return [
+                { type: RoutingService },
+                { type: i2.Router }
+            ];
+        };
+        /** @nocollapse */ AuthRedirectService.ngInjectableDef = i0.defineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.inject(RoutingService), i0.inject(i2.Router)); }, token: AuthRedirectService, providedIn: "root" });
+        return AuthRedirectService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AuthGuard = /** @class */ (function () {
+        function AuthGuard(routingService, authService, authRedirectService, router) {
+            this.routingService = routingService;
+            this.authService = authService;
+            this.authRedirectService = authRedirectService;
+            this.router = router;
+        }
+        /**
          * @return {?}
          */
         AuthGuard.prototype.canActivate = /**
-         * @param {?} _route
-         * @param {?} state
          * @return {?}
          */
-            function (_route, state) {
+            function () {
                 var _this = this;
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (!token.access_token) {
                         _this.routingService.go({ cxRoute: 'login' });
-                        _this.routingService.saveRedirectUrl(state.url);
+                        _this.authRedirectService.reportAuthGuard();
                     }
                     return !!token.access_token;
                 }));
             };
-        AuthGuard.GUARD_NAME = 'AuthGuard';
         AuthGuard.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
@@ -3961,10 +3972,12 @@
         AuthGuard.ctorParameters = function () {
             return [
                 { type: RoutingService },
-                { type: AuthService }
+                { type: AuthService },
+                { type: AuthRedirectService },
+                { type: i2.Router }
             ];
         };
-        /** @nocollapse */ AuthGuard.ngInjectableDef = i0.defineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.inject(RoutingService), i0.inject(AuthService)); }, token: AuthGuard, providedIn: "root" });
+        /** @nocollapse */ AuthGuard.ngInjectableDef = i0.defineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(i0.inject(RoutingService), i0.inject(AuthService), i0.inject(AuthRedirectService), i0.inject(i2.Router)); }, token: AuthGuard, providedIn: "root" });
         return AuthGuard;
     }());
 
@@ -3973,9 +3986,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var NotAuthGuard = /** @class */ (function () {
-        function NotAuthGuard(routingService, authService) {
+        function NotAuthGuard(routingService, authService, authRedirectService) {
             this.routingService = routingService;
             this.authService = authService;
+            this.authRedirectService = authRedirectService;
         }
         /**
          * @return {?}
@@ -3985,6 +3999,8 @@
          */
             function () {
                 var _this = this;
+                this.authRedirectService.reportNotAuthGuard();
+                // redirect, if user is already logged in:
                 return this.authService.getUserToken().pipe(operators.map(function (token) {
                     if (token.access_token) {
                         _this.routingService.go({ cxRoute: 'home' });
@@ -3992,7 +4008,6 @@
                     return !token.access_token;
                 }));
             };
-        NotAuthGuard.GUARD_NAME = 'NotAuthGuard';
         NotAuthGuard.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
@@ -4002,10 +4017,11 @@
         NotAuthGuard.ctorParameters = function () {
             return [
                 { type: RoutingService },
-                { type: AuthService }
+                { type: AuthService },
+                { type: AuthRedirectService }
             ];
         };
-        /** @nocollapse */ NotAuthGuard.ngInjectableDef = i0.defineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.inject(RoutingService), i0.inject(AuthService)); }, token: NotAuthGuard, providedIn: "root" });
+        /** @nocollapse */ NotAuthGuard.ngInjectableDef = i0.defineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(i0.inject(RoutingService), i0.inject(AuthService), i0.inject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
         return NotAuthGuard;
     }());
 
@@ -4291,35 +4307,35 @@
         return state.cartMergeComplete;
     };
     /** @type {?} */
-    var getCartsState = i1$1.createFeatureSelector(CART_FEATURE);
+    var getCartsState = i1.createFeatureSelector(CART_FEATURE);
     /** @type {?} */
-    var getActiveCartState = i1$1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
+    var getActiveCartState = i1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
     /** @type {?} */
-    var getCartState = i1$1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
+    var getCartState = i1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getCartContent = i1$1.createSelector(getCartState, getCartContentSelector);
+    var getCartContent = i1.createSelector(getCartState, getCartContentSelector);
     /** @type {?} */
-    var getRefresh = i1$1.createSelector(getCartState, getRefreshSelector);
+    var getRefresh = i1.createSelector(getCartState, getRefreshSelector);
     /** @type {?} */
-    var getLoaded = i1$1.createSelector(getActiveCartState, function (state) {
+    var getLoaded = i1.createSelector(getActiveCartState, function (state) {
         return loaderSuccessSelector(state) &&
             !loaderLoadingSelector(state) &&
             !loaderValueSelector(state).refresh;
     });
     /** @type {?} */
-    var getCartMergeComplete = i1$1.createSelector(getCartState, getCartMergeCompleteSelector);
+    var getCartMergeComplete = i1.createSelector(getCartState, getCartMergeCompleteSelector);
     /** @type {?} */
-    var getEntriesMap = i1$1.createSelector(getCartState, getEntriesSelector);
+    var getEntriesMap = i1.createSelector(getCartState, getEntriesSelector);
     /** @type {?} */
     var getEntrySelectorFactory = function (productCode) {
-        return i1$1.createSelector(getEntriesMap, function (entries) {
+        return i1.createSelector(getEntriesMap, function (entries) {
             if (entries) {
                 return entries[productCode];
             }
         });
     };
     /** @type {?} */
-    var getEntries = i1$1.createSelector(getEntriesMap, function (entities) {
+    var getEntries = i1.createSelector(getEntriesMap, function (entities) {
         return Object.keys(entities).map(function (code) { return entities[code]; });
     });
 
@@ -4430,7 +4446,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getCartContent));
+                return this.store.pipe(i1.select(getCartContent));
             };
         /**
          * @return {?}
@@ -4439,7 +4455,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getEntries));
+                return this.store.pipe(i1.select(getEntries));
             };
         /**
          * @return {?}
@@ -4448,7 +4464,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getCartMergeComplete));
+                return this.store.pipe(i1.select(getCartMergeComplete));
             };
         /**
          * @return {?}
@@ -4457,7 +4473,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getLoaded));
+                return this.store.pipe(i1.select(getLoaded));
             };
         /**
          * @protected
@@ -4469,7 +4485,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$1.select(getCartContent)).subscribe(function (cart) {
+                this.store.pipe(i1.select(getCartContent)).subscribe(function (cart) {
                     _this.cartData.cart = cart;
                     if (_this.callback) {
                         _this.callback();
@@ -4540,7 +4556,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1$1.select(getRefresh)).subscribe(function (refresh) {
+                this.store.pipe(i1.select(getRefresh)).subscribe(function (refresh) {
                     if (refresh) {
                         _this.store.dispatch(new LoadCart({
                             userId: _this.cartData.userId,
@@ -4655,7 +4671,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getEntrySelectorFactory(productCode)));
+                return this.store.pipe(i1.select(getEntrySelectorFactory(productCode)));
             };
         /**
          * @param {?} cart
@@ -4685,7 +4701,7 @@
         /** @nocollapse */
         CartService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: CartDataService },
                 { type: AuthService }
             ];
@@ -5796,13 +5812,13 @@
     /** @type {?} */
     var languagesEntitiesSelector = function (state) { return state.entities; };
     /** @type {?} */
-    var getLanguagesState = i1$1.createSelector(getSiteContextState, function (state) { return state.languages; });
+    var getLanguagesState = i1.createSelector(getSiteContextState, function (state) { return state.languages; });
     /** @type {?} */
-    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getLanguagesEntities = i1.createSelector(getLanguagesState, languagesEntitiesSelector);
     /** @type {?} */
-    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
+    var getActiveLanguage = i1.createSelector(getLanguagesState, activeLanguageSelector);
     /** @type {?} */
-    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, function (entities) {
+    var getAllLanguages = i1.createSelector(getLanguagesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -5817,13 +5833,13 @@
     /** @type {?} */
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     /** @type {?} */
-    var getCurrenciesState = i1$1.createSelector(getSiteContextState, function (state) { return state.currencies; });
+    var getCurrenciesState = i1.createSelector(getSiteContextState, function (state) { return state.currencies; });
     /** @type {?} */
-    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getCurrenciesEntities = i1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     /** @type {?} */
-    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getActiveCurrency = i1.createSelector(getCurrenciesState, activeCurrencySelector);
     /** @type {?} */
-    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, function (entities) {
+    var getAllCurrencies = i1.createSelector(getCurrenciesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -5864,7 +5880,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
+                return this.store.pipe(i1.select(getAllLanguages), operators.tap(function (languages) {
                     if (!languages) {
                         _this.store.dispatch(new LoadLanguages());
                     }
@@ -5882,7 +5898,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(Boolean));
+                return this.store.pipe(i1.select(getActiveLanguage), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -5900,7 +5916,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveLanguage), operators.take(1))
+                    .pipe(i1.select(getActiveLanguage), operators.take(1))
                     .subscribe(function (activeLanguage) {
                     if (activeLanguage !== isocode) {
                         _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -5940,7 +5956,7 @@
         /** @nocollapse */
         LanguageService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: WindowRef }
             ];
         };
@@ -5972,7 +5988,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
+                return this.store.pipe(i1.select(getAllCurrencies), operators.tap(function (currencies) {
                     if (!currencies) {
                         _this.store.dispatch(new LoadCurrencies());
                     }
@@ -5990,7 +6006,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(Boolean));
+                return this.store.pipe(i1.select(getActiveCurrency), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -6008,7 +6024,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1$1.select(getActiveCurrency), operators.take(1))
+                    .pipe(i1.select(getActiveCurrency), operators.take(1))
                     .subscribe(function (activeCurrency) {
                     if (activeCurrency !== isocode) {
                         _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -6048,7 +6064,7 @@
         /** @nocollapse */
         CurrencyService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: WindowRef }
             ];
         };
@@ -6086,9 +6102,9 @@
         SiteContextStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            i1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
                             effects.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
@@ -6878,7 +6894,7 @@
             ];
         };
         return SiteContextUrlSerializer;
-    }(i1.DefaultUrlSerializer));
+    }(i2.DefaultUrlSerializer));
 
     /**
      * @fileoverview added by tsickle
@@ -6900,8 +6916,8 @@
          * @return {?}
          */
             function () {
-                this.router = this.injector.get(i1.Router);
-                this.location = this.injector.get(i1$2.Location);
+                this.router = this.injector.get(i2.Router);
+                this.location = this.injector.get(i1$1.Location);
                 /** @type {?} */
                 var routingParams = this.siteContextParams.getContextParameters('route');
                 if (routingParams.length) {
@@ -6953,13 +6969,13 @@
                 var _this = this;
                 this.subscription.add(this.router.events
                     .pipe(operators.filter(function (event) {
-                    return event instanceof i1.NavigationStart ||
-                        event instanceof i1.NavigationEnd ||
-                        event instanceof i1.NavigationError ||
-                        event instanceof i1.NavigationCancel;
+                    return event instanceof i2.NavigationStart ||
+                        event instanceof i2.NavigationEnd ||
+                        event instanceof i2.NavigationError ||
+                        event instanceof i2.NavigationCancel;
                 }))
                     .subscribe(function (event) {
-                    _this.isNavigating = event instanceof i1.NavigationStart;
+                    _this.isNavigating = event instanceof i2.NavigationStart;
                     if (_this.isNavigating) {
                         _this.setContextParamsFromRoute(event.url);
                     }
@@ -7025,7 +7041,7 @@
     var siteContextParamsProviders = [
         SiteContextParamsService,
         SiteContextUrlSerializer,
-        { provide: i1.UrlSerializer, useExisting: SiteContextUrlSerializer },
+        { provide: i2.UrlSerializer, useExisting: SiteContextUrlSerializer },
         {
             provide: i0.APP_INITIALIZER,
             useFactory: initSiteContextRoutesHandler,
@@ -7247,9 +7263,9 @@
         CartStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1$1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            i1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
                             effects.EffectsModule.forFeature(effects$4),
                         ],
                         providers: [reducerProvider$2],
@@ -7384,25 +7400,25 @@
         return state.orderDetails;
     };
     /** @type {?} */
-    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1.createFeatureSelector(CHECKOUT_FEATURE);
     /** @type {?} */
-    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
+    var getCheckoutStepsState = i1.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
     /** @type {?} */
-    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
+    var getCheckoutSteps = i1.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryAddress = i1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     /** @type {?} */
-    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var getDeliveryMode = i1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
     /** @type {?} */
-    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSupportedDeliveryModes = i1.createSelector(getDeliveryMode, function (deliveryMode) {
         return Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; });
     });
     /** @type {?} */
-    var getSelectedCode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedCode = i1.createSelector(getDeliveryMode, function (deliveryMode) {
         return deliveryMode.selected;
     });
     /** @type {?} */
-    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedDeliveryMode = i1.createSelector(getDeliveryMode, function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
                 return null;
@@ -7411,11 +7427,11 @@
         }
     });
     /** @type {?} */
-    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getPaymentDetails = i1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
     /** @type {?} */
-    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var getCheckoutOrderDetails = i1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
     /** @type {?} */
-    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
+    var getCheckoutDetailsLoaded = i1.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -7459,11 +7475,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCardTypesState = i1$1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
+    var getCardTypesState = i1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
     /** @type {?} */
-    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
+    var getCardTypesEntites$1 = i1.createSelector(getCardTypesState, getCardTypesEntites);
     /** @type {?} */
-    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, function (entites) {
+    var getAllCardTypes = i1.createSelector(getCardTypesEntites$1, function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     });
 
@@ -7507,9 +7523,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
+    var getAddressVerificationResultsState = i1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
     /** @type {?} */
-    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResults$1 = i1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     /**
      * @fileoverview added by tsickle
@@ -8561,14 +8577,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+    var getGlobalMessageState = i1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
+    var getGlobalMessageEntities = i1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
@@ -8675,7 +8691,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+                return this.store.pipe(i1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
             };
         /**
          * Add one message into store
@@ -8732,7 +8748,7 @@
         /** @nocollapse */
         GlobalMessageService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return GlobalMessageService;
@@ -9210,7 +9226,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             StateModule,
-                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
+                            i1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
                         ],
                         providers: [reducerProvider$4],
                     },] }
@@ -9833,7 +9849,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes));
+                return this.checkoutStore.pipe(i1.select(getSupportedDeliveryModes));
             };
         /**
          * Get selected delivery mode
@@ -9847,7 +9863,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
+                return this.checkoutStore.pipe(i1.select(getSelectedDeliveryMode));
             };
         /**
          * Get selected delivery mode code
@@ -9861,7 +9877,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getSelectedCode));
+                return this.checkoutStore.pipe(i1.select(getSelectedCode));
             };
         /**
          * Get card types
@@ -9875,7 +9891,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
+                return this.checkoutStore.pipe(i1.select(getAllCardTypes));
             };
         /**
          * Get delivery address
@@ -9889,7 +9905,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
+                return this.checkoutStore.pipe(i1.select(getDeliveryAddress));
             };
         /**
          * Get address verification results
@@ -9903,7 +9919,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+                return this.checkoutStore.pipe(i1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
             };
         /**
          * Get payment details
@@ -9917,7 +9933,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
+                return this.checkoutStore.pipe(i1.select(getPaymentDetails));
             };
         /**
          * Get order details
@@ -9931,7 +9947,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
+                return this.checkoutStore.pipe(i1.select(getCheckoutOrderDetails));
             };
         /**
          * Create and set a delivery address using the address param
@@ -10188,7 +10204,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
+                return this.checkoutStore.pipe(i1.select(getCheckoutDetailsLoaded));
             };
         /**
          * @protected
@@ -10207,7 +10223,7 @@
         /** @nocollapse */
         CheckoutService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: CartDataService }
             ];
         };
@@ -11044,7 +11060,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1.createFeatureSelector(CMS_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -11119,32 +11135,32 @@
         return Array.from(componentTypes);
     };
     /** @type {?} */
-    var getPageState = i1$1.createSelector(getCmsState, function (state) { return state.page; });
+    var getPageState = i1.createSelector(getCmsState, function (state) { return state.page; });
     /** @type {?} */
-    var getPageStateIndex = i1$1.createSelector(getPageState, function (page) { return page.index; });
+    var getPageStateIndex = i1.createSelector(getPageState, function (page) { return page.index; });
     /** @type {?} */
     var getIndex = function (pageContext) {
-        return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
+        return i1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
     };
     /** @type {?} */
     var getIndexEntity = function (pageContext) {
-        return i1$1.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
+        return i1.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
     };
     /** @type {?} */
-    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageEntities = i1.createSelector(getPageState, getPageEntitiesSelector);
     /** @type {?} */
     var getPageData = function (pageContext) {
-        return i1$1.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
+        return i1.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
             return entities[entity.value];
         });
     };
     /** @type {?} */
     var getPageComponentTypes = function (pageContext) {
-        return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
+        return i1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
     };
     /** @type {?} */
     var currentSlotSelectorFactory = function (pageContext, position) {
-        return i1$1.createSelector(getPageData(pageContext), function (entity) {
+        return i1.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position];
             }
@@ -11163,16 +11179,16 @@
         }, {});
     };
     /** @type {?} */
-    var getComponentState = i1$1.createSelector(getCmsState, function (state) { return state.component; });
+    var getComponentState = i1.createSelector(getCmsState, function (state) { return state.component; });
     /** @type {?} */
-    var getComponentEntities = i1$1.createSelector(getComponentState, getComponentEntitiesSelector);
+    var getComponentEntities = i1.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
     var componentStateSelectorFactory = function (uid) {
-        return i1$1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
+        return i1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
     };
     /** @type {?} */
     var componentSelectorFactory = function (uid) {
-        return i1$1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
+        return i1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
     };
 
     /**
@@ -11180,14 +11196,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, function (state) { return state.navigation; });
+    var getNavigationEntryItemState = i1.createSelector(getCmsState, function (state) { return state.navigation; });
     /** @type {?} */
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
+        return i1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
     };
     /** @type {?} */
     var itemsSelectorFactory = function (nodeId) {
-        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     /**
@@ -11291,9 +11307,9 @@
      */
     function getReducers$6() {
         return {
-            page: i1$1.combineReducers({
+            page: i1.combineReducers({
                 pageData: reducer$b,
-                index: i1$1.combineReducers({
+                index: i1.combineReducers({
                     content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$c(PageType.CONTENT_PAGE)),
                     product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$c(PageType.PRODUCT_PAGE)),
                     category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$c(PageType.CATEGORY_PAGE)),
@@ -11382,7 +11398,7 @@
         }
         UrlModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule],
+                        imports: [i1$1.CommonModule],
                         declarations: [UrlPipe],
                         exports: [UrlPipe],
                     },] }
@@ -11677,7 +11693,7 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)))).pipe(operators.tap(function (_a) {
+                    this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(i1.select(componentStateSelectorFactory(uid)))).pipe(operators.tap(function (_a) {
                         var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
@@ -11709,7 +11725,7 @@
                 return this.routingService
                     .getPageContext()
                     .pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)));
+                    return _this.store.pipe(i1.select(currentSlotSelectorFactory(pageContext, position)));
                 }));
             };
         /**
@@ -11727,7 +11743,7 @@
          * @return {?}
          */
             function (navigationNodeUid) {
-                return this.store.pipe(i1$1.select(itemsSelectorFactory(navigationNodeUid)));
+                return this.store.pipe(i1.select(itemsSelectorFactory(navigationNodeUid)));
             };
         /**
          * Load navigation items data
@@ -11823,7 +11839,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$1.select(getPageData(pageContext)));
+                return this.store.pipe(i1.select(getPageData(pageContext)));
             };
         /**
          * Given pageContext, return the CMS page data
@@ -11840,7 +11856,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
+                return this.store.pipe(i1.select(getPageComponentTypes(pageContext)));
             };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -11863,7 +11879,7 @@
                 if (forceReload === void 0) {
                     forceReload = false;
                 }
-                return this.store.pipe(i1$1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
+                return this.store.pipe(i1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
                     /** @type {?} */
                     var attemptedLoad = entity.loading || entity.success || entity.error;
                     /** @type {?} */
@@ -11881,11 +11897,11 @@
         /** @nocollapse */
         CmsService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: RoutingService }
             ];
         };
-        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
+        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
         return CmsService;
     }());
 
@@ -12028,10 +12044,10 @@
         CmsStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
+                            i1.StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$6),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
@@ -12340,7 +12356,7 @@
                         _this.loadedWebComponents[path] = script;
                         script.setAttribute('src', path);
                         renderer.appendChild(_this.document.body, script);
-                        if (i1$2.isPlatformBrowser(_this.platform)) {
+                        if (i1$1.isPlatformBrowser(_this.platform)) {
                             script.onload = function () {
                                 script.onload = null;
                             };
@@ -12370,7 +12386,7 @@
             return [
                 { type: i0.ComponentFactoryResolver },
                 { type: CmsConfig },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] },
                 { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
             ];
         };
@@ -12614,9 +12630,9 @@
         CheckoutStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
+                            i1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$5),
                         ],
                         providers: [reducerProvider$5],
@@ -13534,17 +13550,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1.createFeatureSelector(PRODUCT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReferencesState = i1$1.createSelector(getProductsState, function (state) { return state.references; });
+    var getProductReferencesState = i1.createSelector(getProductsState, function (state) { return state.references; });
     /** @type {?} */
     var getSelectedProductReferencesFactory = function (productCode) {
-        return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
+        return i1.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
                 return referenceTypeData.list;
             }
@@ -13556,10 +13572,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
+    var getProductReviewsState = i1.createSelector(getProductsState, function (state) { return state.reviews; });
     /** @type {?} */
     var getSelectedProductReviewsFactory = function (productCode) {
-        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
+        return i1.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
@@ -13571,23 +13587,23 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
+    var getProductsSearchState = i1.createSelector(getProductsState, function (state) { return state.search; });
     /** @type {?} */
-    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
+    var getSearchResults$1 = i1.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
-    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getAuxSearchResults$1 = i1.createSelector(getProductsSearchState, getAuxSearchResults);
     /** @type {?} */
-    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
+    var getProductSuggestions$1 = i1.createSelector(getProductsSearchState, getProductSuggestions);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
+    var getProductState = i1.createSelector(getProductsState, function (state) { return state.details; });
     /** @type {?} */
     var getSelectedProductsFactory = function (codes) {
-        return i1$1.createSelector(getProductState, function (details) {
+        return i1.createSelector(getProductState, function (details) {
             return codes
                 .map(function (code) {
                 return details.entities[code] ? details.entities[code].value : undefined;
@@ -13597,26 +13613,26 @@
     };
     /** @type {?} */
     var getSelectedProductStateFactory = function (code) {
-        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+        return i1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
     };
     /** @type {?} */
     var getSelectedProductFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductLoadingFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductSuccessFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductErrorFactory = function (code) {
-        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
     };
     /** @type {?} */
-    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
+    var getAllProductCodes = i1.createSelector(getProductState, function (details) {
         return Object.keys(details.entities);
     });
 
@@ -13652,7 +13668,7 @@
          */
             function (productCode, referenceType, pageSize) {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getSelectedProductReferencesFactory(productCode)), operators.tap(function (references) {
+                return this.store.pipe(i1.select(getSelectedProductReferencesFactory(productCode)), operators.tap(function (references) {
                     if (references === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReferences({
                             productCode: productCode,
@@ -13668,7 +13684,7 @@
         /** @nocollapse */
         ProductReferenceService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return ProductReferenceService;
@@ -13694,7 +13710,7 @@
                 var _this = this;
                 /** @type {?} */
                 var selector = getSelectedProductReviewsFactory(productCode);
-                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
+                return this.store.pipe(i1.select(selector), operators.tap(function (reviews) {
                     if (reviews === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReviews(productCode));
                     }
@@ -13722,7 +13738,7 @@
         /** @nocollapse */
         ProductReviewService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return ProductReviewService;
@@ -13766,7 +13782,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getSearchResults$1));
+                return this.store.pipe(i1.select(getSearchResults$1));
             };
         /**
          * @return {?}
@@ -13785,8 +13801,8 @@
         /** @nocollapse */
         ProductSearchService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
-                { type: i1.Router }
+                { type: i1.Store },
+                { type: i2.Router }
             ];
         };
         return ProductSearchService;
@@ -13829,7 +13845,7 @@
             function (productCode) {
                 var _this = this;
                 if (!this.products[productCode]) {
-                    this.products[productCode] = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
+                    this.products[productCode] = this.store.pipe(i1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
                         /** @type {?} */
                         var attemptedLoad = productState.loading || productState.success || productState.error;
                         if (!attemptedLoad) {
@@ -13853,7 +13869,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode)));
+                return this.store.pipe(i1.select(getSelectedProductLoadingFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load success state
@@ -13869,7 +13885,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode)));
+                return this.store.pipe(i1.select(getSelectedProductSuccessFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load error state
@@ -13885,7 +13901,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode)));
+                return this.store.pipe(i1.select(getSelectedProductErrorFactory(productCode)));
             };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -13915,7 +13931,7 @@
         /** @nocollapse */
         ProductService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return ProductService;
@@ -13958,7 +13974,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAuxSearchResults$1));
+                return this.store.pipe(i1.select(getAuxSearchResults$1));
             };
         /**
          * clears the products and suggestions
@@ -13983,7 +13999,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProductSuggestions$1));
+                return this.store.pipe(i1.select(getProductSuggestions$1));
             };
         /**
          * @param {?} query
@@ -14006,7 +14022,7 @@
                         providedIn: 'root',
                     },] }
         ];
-        /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1$1.Store), i0.inject(i1.Router)); }, token: SearchboxService, providedIn: "root" });
+        /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1.Store), i0.inject(i2.Router)); }, token: SearchboxService, providedIn: "root" });
         return SearchboxService;
     }(ProductSearchService));
 
@@ -14072,7 +14088,7 @@
                 /** @type {?} */
                 var lang = this.getActiveLang();
                 try {
-                    i1$2.getLocaleId(lang);
+                    i1$1.getLocaleId(lang);
                     return lang;
                 }
                 catch (_a) {
@@ -14123,7 +14139,7 @@
             ];
         };
         return CxDatePipe;
-    }(i1$2.DatePipe));
+    }(i1$1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -14780,7 +14796,7 @@
             { type: i0.Pipe, args: [{ name: 'cxDate' },] }
         ];
         return MockDatePipe;
-    }(i1$2.DatePipe));
+    }(i1$1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -15224,9 +15240,9 @@
         ProductStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
+                            i1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$7),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
@@ -15290,32 +15306,32 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1.createFeatureSelector(USER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
+    var getBillingCountriesState = i1.createSelector(getUserState, function (state) { return state.billingCountries; });
     /** @type {?} */
-    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
+    var getBillingCountriesEntites = i1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllBillingCountries = i1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDeliveryCountriesState = i1$1.createSelector(getUserState, function (state) { return state.countries; });
+    var getDeliveryCountriesState = i1.createSelector(getUserState, function (state) { return state.countries; });
     /** @type {?} */
-    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
+    var getDeliveryCountriesEntites = i1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllDeliveryCountries = i1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
     /** @type {?} */
     var countrySelectorFactory = function (isocode) {
-        return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
+        return i1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
     };
 
     /**
@@ -15323,50 +15339,50 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrderState = i1$1.createSelector(getUserState, function (state) { return state.order; });
+    var getOrderState = i1.createSelector(getUserState, function (state) { return state.order; });
     /** @type {?} */
-    var getOrderDetails = i1$1.createSelector(getOrderState, function (state) { return state.order; });
+    var getOrderDetails = i1.createSelector(getOrderState, function (state) { return state.order; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
+    var getPaymentMethodsState = i1.createSelector(getUserState, function (state) { return state.payments; });
     /** @type {?} */
-    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
+    var getPaymentMethods = i1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+    var getPaymentMethodsLoading = i1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
+    var getRegionsState = i1.createSelector(getUserState, function (state) { return state.regions; });
     /** @type {?} */
-    var getAllRegions = i1$1.createSelector(getRegionsState, function (state) { return state.entities; });
+    var getAllRegions = i1.createSelector(getRegionsState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getResetPassword = i1$1.createSelector(getUserState, function (state) { return state.resetPassword; });
+    var getResetPassword = i1.createSelector(getUserState, function (state) { return state.resetPassword; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
+    var getTitlesState = i1.createSelector(getUserState, function (state) { return state.titles; });
     /** @type {?} */
-    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
+    var getTitlesEntites = i1.createSelector(getTitlesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+    var getAllTitles = i1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
     /** @type {?} */
     var titleSelectorFactory = function (code) {
-        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+        return i1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
     };
 
     /**
@@ -15374,46 +15390,46 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
+    var getAddressesLoaderState = i1.createSelector(getUserState, function (state) { return state.addresses; });
     /** @type {?} */
-    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+    var getAddresses = i1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+    var getAddressesLoading = i1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getConsentsState = i1$1.createSelector(getUserState, function (state) { return state.consents; });
+    var getConsentsState = i1.createSelector(getUserState, function (state) { return state.consents; });
     /** @type {?} */
-    var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
+    var getConsentsValue = i1.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
-    var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
+    var getConsentsLoading = i1.createSelector(getConsentsState, loaderLoadingSelector);
     /** @type {?} */
-    var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
+    var getConsentsSuccess = i1.createSelector(getConsentsState, loaderSuccessSelector);
     /** @type {?} */
-    var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
+    var getConsentsError = i1.createSelector(getConsentsState, loaderErrorSelector);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
+    var getDetailsState = i1.createSelector(getUserState, function (state) { return state.account; });
     /** @type {?} */
-    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
+    var getDetails = i1.createSelector(getDetailsState, function (state) { return state.details; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
+    var getOrdersState = i1.createSelector(getUserState, function (state) { return state.orders; });
     /** @type {?} */
-    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+    var getOrdersLoaded = i1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
     /** @type {?} */
-    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
+    var getOrders = i1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -15429,7 +15445,7 @@
      * @return {?}
      */
     function getProcessState() {
-        return i1$1.createFeatureSelector(PROCESS_FEATURE);
+        return i1.createFeatureSelector(PROCESS_FEATURE);
     }
 
     /**
@@ -15442,7 +15458,7 @@
      * @return {?}
      */
     function getProcessStateFactory(processId) {
-        return i1$1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
+        return i1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
     }
     /**
      * @template T
@@ -15450,7 +15466,7 @@
      * @return {?}
      */
     function getProcessLoadingFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     /**
      * @template T
@@ -15458,7 +15474,7 @@
      * @return {?}
      */
     function getProcessSuccessFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     /**
      * @template T
@@ -15466,7 +15482,7 @@
      * @return {?}
      */
     function getProcessErrorFactory(processId) {
-        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     /**
@@ -15816,7 +15832,7 @@
      */
     function getReducers$8() {
         return {
-            account: i1$1.combineReducers({
+            account: i1.combineReducers({
                 details: reducer$p,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$n),
@@ -15878,7 +15894,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getDetails));
+                return this.store.pipe(i1.select(getDetails));
             };
         /**
          * Loads the user's details
@@ -15942,7 +15958,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user failure outcome.
@@ -15956,7 +15972,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user process success outcome.
@@ -15970,7 +15986,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Resets the remove user process state. The state needs to be reset after the process
@@ -16001,7 +16017,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getOrderDetails));
+                return this.store.pipe(i1.select(getOrderDetails));
             };
         /**
          * Retrieves order's details
@@ -16060,7 +16076,7 @@
          */
             function (userId, pageSize) {
                 var _this = this;
-                return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
+                return this.store.pipe(i1.select(getOrdersState), operators.tap(function (orderListState) {
                     /** @type {?} */
                     var attemptedLoad = orderListState.loading ||
                         orderListState.success ||
@@ -16082,7 +16098,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getOrdersLoaded));
+                return this.store.pipe(i1.select(getOrdersLoaded));
             };
         /**
          * Loads all user's payment methods.
@@ -16113,7 +16129,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPaymentMethods));
+                return this.store.pipe(i1.select(getPaymentMethods));
             };
         /**
          * Returns a loading flag for payment methods
@@ -16127,7 +16143,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
+                return this.store.pipe(i1.select(getPaymentMethodsLoading));
             };
         /**
          * Sets the payment as a default one
@@ -16335,7 +16351,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAddresses));
+                return this.store.pipe(i1.select(getAddresses));
             };
         /**
          * Returns a loading flag for addresses
@@ -16349,7 +16365,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAddressesLoading));
+                return this.store.pipe(i1.select(getAddressesLoading));
             };
         /**
          * Returns titles
@@ -16363,7 +16379,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllTitles));
+                return this.store.pipe(i1.select(getAllTitles));
             };
         /**
          * Retrieves titles
@@ -16405,7 +16421,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllDeliveryCountries));
+                return this.store.pipe(i1.select(getAllDeliveryCountries));
             };
         /**
          * Returns a country based on the provided `isocode`
@@ -16422,7 +16438,7 @@
          * @return {?}
          */
             function (isocode) {
-                return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
+                return this.store.pipe(i1.select(countrySelectorFactory(isocode)));
             };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -16453,7 +16469,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllRegions));
+                return this.store.pipe(i1.select(getAllRegions));
             };
         /**
          * Returns all billing countries
@@ -16467,7 +16483,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getAllBillingCountries));
+                return this.store.pipe(i1.select(getAllBillingCountries));
             };
         /**
          * Retrieves billing countries
@@ -16509,7 +16525,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getResetPassword));
+                return this.store.pipe(i1.select(getResetPassword));
             };
         /**
          * Updates the user's details
@@ -16540,7 +16556,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details error flag
@@ -16554,7 +16570,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details success flag
@@ -16568,7 +16584,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Resets the update user details processing state
@@ -16657,7 +16673,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email error flag
@@ -16671,7 +16687,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email loading flag
@@ -16685,7 +16701,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Resets the update user's email processing state
@@ -16738,7 +16754,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password failure outcome.
@@ -16752,7 +16768,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password process success outcome.
@@ -16766,7 +16782,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Resets the update password process state. The state needs to be reset after the process
@@ -16814,7 +16830,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getConsentsValue));
+                return this.store.pipe(i1.select(getConsentsValue));
             };
         /**
          * Returns the consents loading flag
@@ -16828,7 +16844,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getConsentsLoading));
+                return this.store.pipe(i1.select(getConsentsLoading));
             };
         /**
          * Returns the consents success flag
@@ -16842,7 +16858,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getConsentsSuccess));
+                return this.store.pipe(i1.select(getConsentsSuccess));
             };
         /**
          * Returns the consents error flag
@@ -16856,7 +16872,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getConsentsError));
+                return this.store.pipe(i1.select(getConsentsError));
             };
         /**
          * Resets the processing state for consent retrieval
@@ -16911,7 +16927,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the give consent process success flag
@@ -16925,7 +16941,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the give consent process error flag
@@ -16939,7 +16955,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Resents the give consent process flags
@@ -16987,7 +17003,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the withdraw consent process success flag
@@ -17001,7 +17017,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the withdraw consent process error flag
@@ -17015,7 +17031,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Resets the process flags for withdraw consent
@@ -17037,7 +17053,7 @@
         /** @nocollapse */
         UserService.ctorParameters = function () {
             return [
-                { type: i1$1.Store }
+                { type: i1.Store }
             ];
         };
         return UserService;
@@ -17076,7 +17092,7 @@
         }
         ProcessStoreModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
+                        imports: [StateModule, i1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
                         providers: [reducerProvider$9],
                     },] }
         ];
@@ -18310,12 +18326,12 @@
         UserStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
+                            i1.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
                             effects.EffectsModule.forFeature(effects$8),
-                            i1.RouterModule,
+                            i2.RouterModule,
                         ],
                         providers: [reducerProvider$8],
                     },] }
@@ -21148,7 +21164,7 @@
         }
         CmsOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
                             ComponentMapperService,
                             {
@@ -21953,7 +21969,7 @@
         }
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: CartAdapter,
@@ -22571,7 +22587,7 @@
         ProductOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
                             ConfigModule.withConfig(defaultOccProductConfig),
                         ],
@@ -22729,7 +22745,7 @@
         }
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: SiteAdapter,
@@ -23768,7 +23784,7 @@
         }
         UserOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
                             { provide: UserDetailsAdapter, useClass: OccUserDetailsAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
@@ -23951,7 +23967,7 @@
         }
         CheckoutOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$2.CommonModule, http.HttpClientModule],
+                        imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: CheckoutAdapter,
@@ -24579,29 +24595,29 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
+    var getStoreFinderState = i1.createFeatureSelector(STORE_FINDER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getFindStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
+    var getFindStoresState = i1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
     /** @type {?} */
-    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
+    var getFindStoresEntities = i1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getStoresLoading = i1$1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getStoresLoading = i1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
+    var getViewAllStoresState = i1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
     /** @type {?} */
-    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
+    var getViewAllStoresEntities = i1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getViewAllStoresLoading = i1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -24689,7 +24705,7 @@
         /** @nocollapse */
         ExternalJsFileLoader.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$2.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] }
             ];
         };
         return ExternalJsFileLoader;
@@ -25208,7 +25224,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getStoresLoading));
+                return this.store.pipe(i1.select(getStoresLoading));
             };
         /**
          * Returns observable for store's entities
@@ -25222,7 +25238,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getFindStoresEntities));
+                return this.store.pipe(i1.select(getFindStoresEntities));
             };
         /**
          * Returns boolean observable for view all store's loading state
@@ -25236,7 +25252,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getViewAllStoresLoading));
+                return this.store.pipe(i1.select(getViewAllStoresLoading));
             };
         /**
          * Returns observable for view all store's entities
@@ -25250,7 +25266,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1$1.select(getViewAllStoresEntities));
+                return this.store.pipe(i1.select(getViewAllStoresEntities));
             };
         /**
          * Store finding action functionality
@@ -25371,7 +25387,7 @@
         /** @nocollapse */
         StoreFinderService.ctorParameters = function () {
             return [
-                { type: i1$1.Store },
+                { type: i1.Store },
                 { type: WindowRef }
             ];
         };
@@ -25393,9 +25409,9 @@
         StoreFinderStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$2.CommonModule,
+                            i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
+                            i1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
                             effects.EffectsModule.forFeature(effects$9),
                         ],
                         providers: [reducerProvider$a],
@@ -25512,7 +25528,7 @@
             function (request, next) {
                 var _this = this;
                 var _a;
-                if (i1$2.isPlatformServer(this.platform)) {
+                if (i1$1.isPlatformServer(this.platform)) {
                     return next.handle(request);
                 }
                 if (this.personalizationId &&
@@ -25581,7 +25597,7 @@
             function (request, next) {
                 var _this = this;
                 var _a;
-                if (i1$2.isPlatformServer(this.platform)) {
+                if (i1$1.isPlatformServer(this.platform)) {
                     return next.handle(request);
                 }
                 if (this.timestamp &&
@@ -25719,6 +25735,7 @@
     exports.AuthService = AuthService;
     exports.AuthGuard = AuthGuard;
     exports.NotAuthGuard = NotAuthGuard;
+    exports.AuthRedirectService = AuthRedirectService;
     exports.AuthServices = AuthServices;
     exports.CREATE_CART = CREATE_CART;
     exports.CREATE_CART_FAIL = CREATE_CART_FAIL;
@@ -26127,14 +26144,10 @@
     exports.GO_BY_URL = GO_BY_URL;
     exports.BACK = BACK;
     exports.FORWARD = FORWARD;
-    exports.SAVE_REDIRECT_URL = SAVE_REDIRECT_URL;
-    exports.CLEAR_REDIRECT_URL = CLEAR_REDIRECT_URL;
     exports.Go = Go;
     exports.GoByUrl = GoByUrl;
     exports.Back = Back;
     exports.Forward = Forward;
-    exports.SaveRedirectUrl = SaveRedirectUrl;
-    exports.ClearRedirectUrl = ClearRedirectUrl;
     exports.RoutingModule = RoutingModule;
     exports.RoutingService = RoutingService;
     exports.PageContext = PageContext;

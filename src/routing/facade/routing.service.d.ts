@@ -49,19 +49,6 @@ export declare class RoutingService {
      */
     forward(): void;
     /**
-     * Get the redirect url from store
-     */
-    getRedirectUrl(): Observable<string>;
-    /**
-     * Remove the redirect url from store
-     */
-    clearRedirectUrl(): void;
-    /**
-     * Put redirct url into store
-     * @param url: redirect url
-     */
-    saveRedirectUrl(url: string): void;
-    /**
      * Navigation with a new state into history
      * @param path
      * @param query
