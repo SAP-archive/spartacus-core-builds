@@ -252,10 +252,9 @@ export declare class UserService {
      */
     resetUpdatePasswordProcessState(): void;
     /**
-     * Retrieves all consents
-     * @param userId user ID for which to retrieve consents
+     * Retrieves all consents.
      */
-    loadConsents(userId: string): void;
+    loadConsents(): void;
     /**
      * Returns all consents
      */
@@ -278,11 +277,10 @@ export declare class UserService {
     resetConsentsProcessState(): void;
     /**
      * Give consent for specified consent template ID and version.
-     * @param userId and ID of a user giving the consent
      * @param consentTemplateId a template ID for which to give a consent
      * @param consentTemplateVersion a template version for which to give a consent
      */
-    giveConsent(userId: string, consentTemplateId: string, consentTemplateVersion: number): void;
+    giveConsent(consentTemplateId: string, consentTemplateVersion: number): void;
     /**
      * Returns the give consent process loading flag
      */
@@ -301,10 +299,9 @@ export declare class UserService {
     resetGiveConsentProcessState(): void;
     /**
      * Withdraw consent for the given `consentCode`
-     * @param userId a user ID for which to withdraw the consent
      * @param consentCode for which to withdraw the consent
      */
-    withdrawConsent(userId: string, consentCode: string): void;
+    withdrawConsent(consentCode: string): void;
     /**
      * Returns the withdraw consent process loading flag
      */

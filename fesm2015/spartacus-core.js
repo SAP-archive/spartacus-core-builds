@@ -14004,12 +14004,11 @@ class UserService {
         this.store.dispatch(new UpdatePasswordReset());
     }
     /**
-     * Retrieves all consents
-     * @param {?} userId user ID for which to retrieve consents
+     * Retrieves all consents.
      * @return {?}
      */
-    loadConsents(userId) {
-        this.store.dispatch(new LoadUserConsents(userId));
+    loadConsents() {
+        this.store.dispatch(new LoadUserConsents(USERID_CURRENT));
     }
     /**
      * Returns all consents
@@ -14048,14 +14047,13 @@ class UserService {
     }
     /**
      * Give consent for specified consent template ID and version.
-     * @param {?} userId and ID of a user giving the consent
      * @param {?} consentTemplateId a template ID for which to give a consent
      * @param {?} consentTemplateVersion a template version for which to give a consent
      * @return {?}
      */
-    giveConsent(userId, consentTemplateId, consentTemplateVersion) {
+    giveConsent(consentTemplateId, consentTemplateVersion) {
         this.store.dispatch(new GiveUserConsent({
-            userId,
+            userId: USERID_CURRENT,
             consentTemplateId,
             consentTemplateVersion,
         }));
@@ -14090,12 +14088,11 @@ class UserService {
     }
     /**
      * Withdraw consent for the given `consentCode`
-     * @param {?} userId a user ID for which to withdraw the consent
      * @param {?} consentCode for which to withdraw the consent
      * @return {?}
      */
-    withdrawConsent(userId, consentCode) {
-        this.store.dispatch(new WithdrawUserConsent({ userId, consentCode }));
+    withdrawConsent(consentCode) {
+        this.store.dispatch(new WithdrawUserConsent({ userId: USERID_CURRENT, consentCode }));
     }
     /**
      * Returns the withdraw consent process loading flag

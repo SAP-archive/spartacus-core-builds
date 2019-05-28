@@ -16789,21 +16789,18 @@
                 this.store.dispatch(new UpdatePasswordReset());
             };
         /**
-         * Retrieves all consents
-         * @param userId user ID for which to retrieve consents
+         * Retrieves all consents.
          */
         /**
-         * Retrieves all consents
-         * @param {?} userId user ID for which to retrieve consents
+         * Retrieves all consents.
          * @return {?}
          */
         UserService.prototype.loadConsents = /**
-         * Retrieves all consents
-         * @param {?} userId user ID for which to retrieve consents
+         * Retrieves all consents.
          * @return {?}
          */
-            function (userId) {
-                this.store.dispatch(new LoadUserConsents(userId));
+            function () {
+                this.store.dispatch(new LoadUserConsents(USERID_CURRENT));
             };
         /**
          * Returns all consents
@@ -16877,27 +16874,24 @@
             };
         /**
          * Give consent for specified consent template ID and version.
-         * @param userId and ID of a user giving the consent
          * @param consentTemplateId a template ID for which to give a consent
          * @param consentTemplateVersion a template version for which to give a consent
          */
         /**
          * Give consent for specified consent template ID and version.
-         * @param {?} userId and ID of a user giving the consent
          * @param {?} consentTemplateId a template ID for which to give a consent
          * @param {?} consentTemplateVersion a template version for which to give a consent
          * @return {?}
          */
         UserService.prototype.giveConsent = /**
          * Give consent for specified consent template ID and version.
-         * @param {?} userId and ID of a user giving the consent
          * @param {?} consentTemplateId a template ID for which to give a consent
          * @param {?} consentTemplateVersion a template version for which to give a consent
          * @return {?}
          */
-            function (userId, consentTemplateId, consentTemplateVersion) {
+            function (consentTemplateId, consentTemplateVersion) {
                 this.store.dispatch(new GiveUserConsent({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     consentTemplateId: consentTemplateId,
                     consentTemplateVersion: consentTemplateVersion,
                 }));
@@ -16960,23 +16954,20 @@
             };
         /**
          * Withdraw consent for the given `consentCode`
-         * @param userId a user ID for which to withdraw the consent
          * @param consentCode for which to withdraw the consent
          */
         /**
          * Withdraw consent for the given `consentCode`
-         * @param {?} userId a user ID for which to withdraw the consent
          * @param {?} consentCode for which to withdraw the consent
          * @return {?}
          */
         UserService.prototype.withdrawConsent = /**
          * Withdraw consent for the given `consentCode`
-         * @param {?} userId a user ID for which to withdraw the consent
          * @param {?} consentCode for which to withdraw the consent
          * @return {?}
          */
-            function (userId, consentCode) {
-                this.store.dispatch(new WithdrawUserConsent({ userId: userId, consentCode: consentCode }));
+            function (consentCode) {
+                this.store.dispatch(new WithdrawUserConsent({ userId: USERID_CURRENT, consentCode: consentCode }));
             };
         /**
          * Returns the withdraw consent process loading flag
