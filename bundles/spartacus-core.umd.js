@@ -16202,20 +16202,17 @@
             };
         /**
          * Loads all user's payment methods.
-         * @param userId a user ID
          */
         /**
          * Loads all user's payment methods.
-         * @param {?} userId a user ID
          * @return {?}
          */
         UserService.prototype.loadPaymentMethods = /**
          * Loads all user's payment methods.
-         * @param {?} userId a user ID
          * @return {?}
          */
-            function (userId) {
-                this.store.dispatch(new LoadUserPaymentMethods(userId));
+            function () {
+                this.store.dispatch(new LoadUserPaymentMethods(USERID_CURRENT));
             };
         /**
          * Returns all user's payment methods
@@ -16247,50 +16244,44 @@
             };
         /**
          * Sets the payment as a default one
-         * @param userId a user ID
          * @param paymentMethodId a payment method ID
          */
         /**
          * Sets the payment as a default one
-         * @param {?} userId a user ID
          * @param {?} paymentMethodId a payment method ID
          * @return {?}
          */
         UserService.prototype.setPaymentMethodAsDefault = /**
          * Sets the payment as a default one
-         * @param {?} userId a user ID
          * @param {?} paymentMethodId a payment method ID
          * @return {?}
          */
-            function (userId, paymentMethodId) {
+            function (paymentMethodId) {
                 this.store.dispatch(new SetDefaultUserPaymentMethod({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     paymentMethodId: paymentMethodId,
                 }));
             };
         /**
          * Deletes the payment method
          *
-         * @param userId a user ID
          * @param paymentMethodId a payment method ID
          */
         /**
          * Deletes the payment method
          *
-         * @param {?} userId a user ID
          * @param {?} paymentMethodId a payment method ID
          * @return {?}
          */
         UserService.prototype.deletePaymentMethod = /**
          * Deletes the payment method
          *
-         * @param {?} userId a user ID
          * @param {?} paymentMethodId a payment method ID
          * @return {?}
          */
-            function (userId, paymentMethodId) {
+            function (paymentMethodId) {
                 this.store.dispatch(new DeleteUserPaymentMethod({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     paymentMethodId: paymentMethodId,
                 }));
             };

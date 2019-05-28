@@ -8,7 +8,7 @@ import { __decorate, __metadata } from 'tslib';
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, StoreModule, combineReducers, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { InjectionToken, NgModule, Optional, Injectable, Inject, Pipe, APP_INITIALIZER, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { tap, map, filter, switchMap, take, catchError, mergeMap, exhaustMap, groupBy, pluck, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
@@ -13747,11 +13747,10 @@ class UserService {
     }
     /**
      * Loads all user's payment methods.
-     * @param {?} userId a user ID
      * @return {?}
      */
-    loadPaymentMethods(userId) {
-        this.store.dispatch(new LoadUserPaymentMethods(userId));
+    loadPaymentMethods() {
+        this.store.dispatch(new LoadUserPaymentMethods(USERID_CURRENT));
     }
     /**
      * Returns all user's payment methods
@@ -13769,26 +13768,24 @@ class UserService {
     }
     /**
      * Sets the payment as a default one
-     * @param {?} userId a user ID
      * @param {?} paymentMethodId a payment method ID
      * @return {?}
      */
-    setPaymentMethodAsDefault(userId, paymentMethodId) {
+    setPaymentMethodAsDefault(paymentMethodId) {
         this.store.dispatch(new SetDefaultUserPaymentMethod({
-            userId: userId,
+            userId: USERID_CURRENT,
             paymentMethodId,
         }));
     }
     /**
      * Deletes the payment method
      *
-     * @param {?} userId a user ID
      * @param {?} paymentMethodId a payment method ID
      * @return {?}
      */
-    deletePaymentMethod(userId, paymentMethodId) {
+    deletePaymentMethod(paymentMethodId) {
         this.store.dispatch(new DeleteUserPaymentMethod({
-            userId: userId,
+            userId: USERID_CURRENT,
             paymentMethodId,
         }));
     }

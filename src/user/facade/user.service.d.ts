@@ -69,9 +69,8 @@ export declare class UserService {
     getOrderHistoryListLoaded(): Observable<boolean>;
     /**
      * Loads all user's payment methods.
-     * @param userId a user ID
      */
-    loadPaymentMethods(userId: string): void;
+    loadPaymentMethods(): void;
     /**
      * Returns all user's payment methods
      */
@@ -82,17 +81,15 @@ export declare class UserService {
     getPaymentMethodsLoading(): Observable<boolean>;
     /**
      * Sets the payment as a default one
-     * @param userId a user ID
      * @param paymentMethodId a payment method ID
      */
-    setPaymentMethodAsDefault(userId: string, paymentMethodId: string): void;
+    setPaymentMethodAsDefault(paymentMethodId: string): void;
     /**
      * Deletes the payment method
      *
-     * @param userId a user ID
      * @param paymentMethodId a payment method ID
      */
-    deletePaymentMethod(userId: string, paymentMethodId: string): void;
+    deletePaymentMethod(paymentMethodId: string): void;
     /**
      * Retrieves an order list
      * @param pageSize page size
