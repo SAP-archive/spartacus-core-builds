@@ -1,3 +1,4 @@
 import * as fromBaseSite from '../actions/base-site.action';
-export declare const initialState = "";
-export declare function reducer(state: string, action: fromBaseSite.BaseSiteAction): string;
+import { BaseSiteState } from '../state';
+export declare const initialState: BaseSiteState;
+export declare function reducer(state: BaseSiteState, action: fromBaseSite.BaseSiteAction): BaseSiteState;

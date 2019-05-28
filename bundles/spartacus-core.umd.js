@@ -2579,16 +2579,44 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getActiveBaseSite = i1.createSelector(getSiteContextState, function (state) { return state.baseSite; });
+    var getActiveBaseSite = i1.createSelector(getSiteContextState, function (state) { return state.baseSite.activeSite; });
+    /** @type {?} */
+    var getBaseSiteData = i1.createSelector(getSiteContextState, function (state) { return state.baseSite.details; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var LOAD_BASE_SITE = '[Site-context] Load BaseSite';
+    /** @type {?} */
+    var LOAD_BASE_SITE_FAIL = '[Site-context] Load BaseSite Fail';
+    /** @type {?} */
+    var LOAD_BASE_SITE_SUCCESS = '[Site-context] Load BaseSite Success';
+    /** @type {?} */
     var SET_ACTIVE_BASE_SITE = '[Site-context] Set Active BaseSite';
     /** @type {?} */
     var BASE_SITE_CHANGE = '[Site-context] BaseSite Change';
+    var LoadBaseSite = /** @class */ (function () {
+        function LoadBaseSite() {
+            this.type = LOAD_BASE_SITE;
+        }
+        return LoadBaseSite;
+    }());
+    var LoadBaseSiteFail = /** @class */ (function () {
+        function LoadBaseSiteFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_BASE_SITE_FAIL;
+        }
+        return LoadBaseSiteFail;
+    }());
+    var LoadBaseSiteSuccess = /** @class */ (function () {
+        function LoadBaseSiteSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_BASE_SITE_SUCCESS;
+        }
+        return LoadBaseSiteSuccess;
+    }());
     var SetActiveBaseSite = /** @class */ (function () {
         function SetActiveBaseSite(payload) {
             this.payload = payload;
@@ -2612,14 +2640,14 @@
             this.store = store;
         }
         /**
-         * Represents the current baseSite.
+         * Represents the current baseSite uid.
          */
         /**
-         * Represents the current baseSite.
+         * Represents the current baseSite uid.
          * @return {?}
          */
         BaseSiteService.prototype.getActive = /**
-         * Represents the current baseSite.
+         * Represents the current baseSite uid.
          * @return {?}
          */
             function () {
@@ -2652,8 +2680,9 @@
                 return this.store
                     .pipe(i1.select(getActiveBaseSite), operators.take(1))
                     .subscribe(function (activeBaseSite) {
-                    if (activeBaseSite !== baseSite) {
+                    if (baseSite && activeBaseSite !== baseSite) {
                         _this.store.dispatch(new SetActiveBaseSite(baseSite));
+                        _this.store.dispatch(new LoadBaseSite());
                     }
                 });
             };
@@ -2672,6 +2701,20 @@
          */
             function (defaultBaseSite) {
                 this.setActive(defaultBaseSite);
+            };
+        /**
+         * Get the base site details data
+         */
+        /**
+         * Get the base site details data
+         * @return {?}
+         */
+        BaseSiteService.prototype.getBaseSiteData = /**
+         * Get the base site details data
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1.select(getBaseSiteData), operators.filter(Boolean));
             };
         BaseSiteService.decorators = [
             { type: i0.Injectable }
@@ -5395,7 +5438,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = '';
+    var initialState$5 = {
+        details: {},
+        activeSite: '',
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -5406,8 +5452,11 @@
             state = initialState$5;
         }
         switch (action.type) {
+            case LOAD_BASE_SITE_SUCCESS: {
+                return __assign({}, state, { details: action.payload });
+            }
             case SET_ACTIVE_BASE_SITE: {
-                return action.payload;
+                return __assign({}, state, { activeSite: action.payload });
             }
         }
         return state;
@@ -5480,6 +5529,15 @@
          */
             function () {
                 return this.adapter.loadCurrencies();
+            };
+        /**
+         * @return {?}
+         */
+        SiteConnector.prototype.getBaseSite = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadBaseSite();
             };
         SiteConnector.decorators = [
             { type: i0.Injectable, args: [{
@@ -5582,8 +5640,42 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var BaseSiteEffects = /** @class */ (function () {
+        function BaseSiteEffects(actions$, siteConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.siteConnector = siteConnector;
+            this.loadBaseSite$ = this.actions$.pipe(effects.ofType(LOAD_BASE_SITE), operators.exhaustMap(function () {
+                return _this.siteConnector.getBaseSite().pipe(operators.map(function (baseSite) { return new LoadBaseSiteSuccess(baseSite); }), operators.catchError(function (error) { return rxjs.of(new LoadBaseSiteFail(error)); }));
+            }));
+        }
+        BaseSiteEffects.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        BaseSiteEffects.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: SiteConnector }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+        return BaseSiteEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
-    var effects$3 = [LanguagesEffects, CurrenciesEffects];
+    var effects$3 = [
+        LanguagesEffects,
+        CurrenciesEffects,
+        BaseSiteEffects,
+    ];
 
     /**
      * @fileoverview added by tsickle
@@ -22170,6 +22262,31 @@
                     .get(this.occEndpoints.getEndpoint('currencies'))
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (currencyList) { return currencyList.currencies; }), this.converter.pipeableMany(CURRENCY_NORMALIZER));
             };
+        /**
+         * @return {?}
+         */
+        OccSiteAdapter.prototype.loadBaseSite = /**
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var baseUrl = this.occEndpoints.getBaseEndpoint();
+                /** @type {?} */
+                var urlSplits = baseUrl.split('/');
+                /** @type {?} */
+                var activeSite = urlSplits.pop();
+                /** @type {?} */
+                var url = urlSplits.join('/') + '/basesites';
+                /** @type {?} */
+                var params = new http.HttpParams({
+                    fromString: 'fields=FULL',
+                });
+                return this.http
+                    .get(url, { params: params })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), operators.map(function (siteList) {
+                    return siteList.baseSites.find(function (site) { return site.uid === activeSite; });
+                }));
+            };
         OccSiteAdapter.decorators = [
             { type: i0.Injectable }
         ];
@@ -24136,12 +24253,13 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var SmartEditService = /** @class */ (function () {
-        function SmartEditService(cmsService, routingService, zone, winRef) {
+        function SmartEditService(cmsService, routingService, baseSiteService, zone, winRef) {
             var _this = this;
             this.cmsService = cmsService;
             this.routingService = routingService;
+            this.baseSiteService = baseSiteService;
             this.zone = zone;
-            this.getPreviewPage = false;
+            this.isPreviewPage = false;
             this.getCmsTicket();
             this.addPageContract();
             if (winRef.nativeWindow) {
@@ -24186,8 +24304,27 @@
                         _this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
                         if (_this._cmsTicketId) {
                             _this.cmsService.launchInSmartEdit = true;
+                            _this.getDefaultPreviewCode();
                         }
                     }
+                });
+            };
+        /**
+         * @protected
+         * @return {?}
+         */
+        SmartEditService.prototype.getDefaultPreviewCode = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                this.baseSiteService
+                    .getBaseSiteData()
+                    .pipe(operators.filter(function (site) { return Object.keys(site).length !== 0; }), operators.take(1))
+                    .subscribe(function (site) {
+                    _this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
+                    _this.defaultPreviewProductCode = site.defaultPreviewProductCode;
                 });
             };
         /**
@@ -24203,7 +24340,7 @@
                 this.cmsService.getCurrentPage().subscribe(function (cmsPage) {
                     if (cmsPage && _this._cmsTicketId) {
                         _this._currentPageId = cmsPage.pageId;
-                        // before adding contract, we need redirect to preview page
+                        // before adding contract to page, we need redirect to that page
                         _this.goToPreviewPage(cmsPage);
                         // remove old page contract
                         /** @type {?} */
@@ -24234,19 +24371,21 @@
          * @return {?}
          */
             function (cmsPage) {
-                // the first page is the smartedit preview page
-                if (!this.getPreviewPage) {
-                    this.getPreviewPage = true;
-                    if (cmsPage.type === PageType.PRODUCT_PAGE) {
+                // only the first page is the smartedit preview page
+                if (!this.isPreviewPage) {
+                    this.isPreviewPage = true;
+                    if (cmsPage.type === PageType.PRODUCT_PAGE &&
+                        this.defaultPreviewProductCode) {
                         this.routingService.go({
                             cxRoute: 'product',
-                            params: { code: 2053367 },
+                            params: { code: this.defaultPreviewProductCode },
                         });
                     }
-                    else if (cmsPage.type === PageType.CATEGORY_PAGE) {
+                    else if (cmsPage.type === PageType.CATEGORY_PAGE &&
+                        this.defaultPreviewCategoryCode) {
                         this.routingService.go({
                             cxRoute: 'category',
-                            params: { code: 575 },
+                            params: { code: this.defaultPreviewCategoryCode },
                         });
                     }
                 }
@@ -24306,11 +24445,12 @@
             return [
                 { type: CmsService },
                 { type: RoutingService },
+                { type: BaseSiteService },
                 { type: i0.NgZone },
                 { type: WindowRef }
             ];
         };
-        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(i0.NgZone), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+        /** @nocollapse */ SmartEditService.ngInjectableDef = i0.defineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(i0.inject(CmsService), i0.inject(RoutingService), i0.inject(BaseSiteService), i0.inject(i0.NgZone), i0.inject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
         return SmartEditService;
     }());
 
@@ -26164,8 +26304,14 @@
     exports.LoadCurrenciesSuccess = LoadCurrenciesSuccess;
     exports.SetActiveCurrency = SetActiveCurrency;
     exports.CurrencyChange = CurrencyChange;
+    exports.LOAD_BASE_SITE = LOAD_BASE_SITE;
+    exports.LOAD_BASE_SITE_FAIL = LOAD_BASE_SITE_FAIL;
+    exports.LOAD_BASE_SITE_SUCCESS = LOAD_BASE_SITE_SUCCESS;
     exports.SET_ACTIVE_BASE_SITE = SET_ACTIVE_BASE_SITE;
     exports.BASE_SITE_CHANGE = BASE_SITE_CHANGE;
+    exports.LoadBaseSite = LoadBaseSite;
+    exports.LoadBaseSiteFail = LoadBaseSiteFail;
+    exports.LoadBaseSiteSuccess = LoadBaseSiteSuccess;
     exports.SetActiveBaseSite = SetActiveBaseSite;
     exports.BaseSiteChange = BaseSiteChange;
     exports.getSiteContextState = getSiteContextState;
@@ -26178,6 +26324,7 @@
     exports.getActiveCurrency = getActiveCurrency;
     exports.getAllCurrencies = getAllCurrencies;
     exports.getActiveBaseSite = getActiveBaseSite;
+    exports.getBaseSiteData = getBaseSiteData;
     exports.SmartEditModule = SmartEditModule;
     exports.SmartEditService = SmartEditService;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
@@ -26560,7 +26707,7 @@
     exports.ɵce = metaReducers$2;
     exports.ɵcc = reducerProvider$5;
     exports.ɵcb = reducerToken$5;
-    exports.ɵeq = PageMetaResolver;
+    exports.ɵer = PageMetaResolver;
     exports.ɵcl = CmsStoreModule;
     exports.ɵck = cmsStoreConfigFactory;
     exports.ɵct = ComponentEffects;
@@ -26575,51 +26722,51 @@
     exports.ɵcx = reducer$a;
     exports.ɵcv = reducer$b;
     exports.ɵcw = reducer$c;
-    exports.ɵdz = ServerConfig;
-    exports.ɵeg = provideConfigValidator;
-    exports.ɵdy = HttpErrorInterceptor;
-    exports.ɵdt = GlobalMessageStoreModule;
-    exports.ɵdx = reducer$8;
-    exports.ɵdu = getReducers$4;
-    exports.ɵdw = reducerProvider$4;
-    exports.ɵdv = reducerToken$4;
-    exports.ɵep = TranslationService;
-    exports.ɵea = defaultI18nConfig;
-    exports.ɵec = i18nextInit;
-    exports.ɵeb = i18nextProviders;
-    exports.ɵed = MockDatePipe;
-    exports.ɵee = MockTranslationService;
-    exports.ɵef = defaultOccProductConfig;
-    exports.ɵgw = defaultPersonalizationConfig;
-    exports.ɵgx = interceptors$2;
-    exports.ɵgy = OccPersonalizationIdInterceptor;
-    exports.ɵgz = OccPersonalizationTimeInterceptor;
-    exports.ɵgq = ProcessModule;
-    exports.ɵgs = PROCESS_FEATURE;
-    exports.ɵgr = ProcessStoreModule;
-    exports.ɵgt = getReducers$9;
-    exports.ɵgv = reducerProvider$9;
-    exports.ɵgu = reducerToken$9;
-    exports.ɵes = ProductSearchService;
-    exports.ɵde = effects$7;
-    exports.ɵdf = ProductReferencesEffects;
-    exports.ɵdg = ProductReviewsEffects;
-    exports.ɵdh = ProductsSearchEffects;
-    exports.ɵdi = ProductEffects;
-    exports.ɵei = ProductStoreModule;
-    exports.ɵeh = productStoreConfigFactory;
-    exports.ɵdm = clearProductsState;
-    exports.ɵdj = getReducers$7;
-    exports.ɵdn = metaReducers$4;
-    exports.ɵdl = reducerProvider$7;
-    exports.ɵdk = reducerToken$7;
-    exports.ɵeo = reducer$d;
-    exports.ɵen = reducer$e;
-    exports.ɵel = getAuxSearchResults;
-    exports.ɵem = getProductSuggestions;
-    exports.ɵek = getSearchResults;
-    exports.ɵej = reducer$f;
-    exports.ɵer = RoutingService;
+    exports.ɵea = ServerConfig;
+    exports.ɵeh = provideConfigValidator;
+    exports.ɵdz = HttpErrorInterceptor;
+    exports.ɵdu = GlobalMessageStoreModule;
+    exports.ɵdy = reducer$8;
+    exports.ɵdv = getReducers$4;
+    exports.ɵdx = reducerProvider$4;
+    exports.ɵdw = reducerToken$4;
+    exports.ɵeq = TranslationService;
+    exports.ɵeb = defaultI18nConfig;
+    exports.ɵed = i18nextInit;
+    exports.ɵec = i18nextProviders;
+    exports.ɵee = MockDatePipe;
+    exports.ɵef = MockTranslationService;
+    exports.ɵeg = defaultOccProductConfig;
+    exports.ɵgx = defaultPersonalizationConfig;
+    exports.ɵgy = interceptors$2;
+    exports.ɵgz = OccPersonalizationIdInterceptor;
+    exports.ɵha = OccPersonalizationTimeInterceptor;
+    exports.ɵgr = ProcessModule;
+    exports.ɵgt = PROCESS_FEATURE;
+    exports.ɵgs = ProcessStoreModule;
+    exports.ɵgu = getReducers$9;
+    exports.ɵgw = reducerProvider$9;
+    exports.ɵgv = reducerToken$9;
+    exports.ɵet = ProductSearchService;
+    exports.ɵdf = effects$7;
+    exports.ɵdg = ProductReferencesEffects;
+    exports.ɵdh = ProductReviewsEffects;
+    exports.ɵdi = ProductsSearchEffects;
+    exports.ɵdj = ProductEffects;
+    exports.ɵej = ProductStoreModule;
+    exports.ɵei = productStoreConfigFactory;
+    exports.ɵdn = clearProductsState;
+    exports.ɵdk = getReducers$7;
+    exports.ɵdo = metaReducers$4;
+    exports.ɵdm = reducerProvider$7;
+    exports.ɵdl = reducerToken$7;
+    exports.ɵep = reducer$d;
+    exports.ɵeo = reducer$e;
+    exports.ɵem = getAuxSearchResults;
+    exports.ɵen = getProductSuggestions;
+    exports.ɵel = getSearchResults;
+    exports.ɵek = reducer$f;
+    exports.ɵes = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26630,72 +26777,73 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵet = defaultSiteContextConfigFactory;
-    exports.ɵez = SiteContextParamsService;
-    exports.ɵfb = SiteContextRoutesHandler;
-    exports.ɵfa = SiteContextUrlSerializer;
+    exports.ɵeu = defaultSiteContextConfigFactory;
+    exports.ɵfa = SiteContextParamsService;
+    exports.ɵfc = SiteContextRoutesHandler;
+    exports.ɵfb = SiteContextUrlSerializer;
+    exports.ɵde = BaseSiteEffects;
     exports.ɵdd = CurrenciesEffects;
     exports.ɵdb = effects$3;
     exports.ɵdc = LanguagesEffects;
-    exports.ɵey = reducer$5;
-    exports.ɵex = reducer$4;
+    exports.ɵez = reducer$5;
+    exports.ɵey = reducer$4;
     exports.ɵcy = getReducers$3;
     exports.ɵda = reducerProvider$3;
     exports.ɵcz = reducerToken$3;
-    exports.ɵew = reducer$3;
-    exports.ɵev = SiteContextStoreModule;
-    exports.ɵeu = siteContextStoreConfigFactory;
-    exports.ɵfd = CmsTicketInterceptor;
-    exports.ɵfc = interceptors$1;
+    exports.ɵex = reducer$3;
+    exports.ɵew = SiteContextStoreModule;
+    exports.ɵev = siteContextStoreConfigFactory;
+    exports.ɵfe = CmsTicketInterceptor;
+    exports.ɵfd = interceptors$1;
     exports.ɵci = EntityFailAction;
     exports.ɵch = EntityLoadAction;
-    exports.ɵfn = EntityResetAction;
+    exports.ɵfo = EntityResetAction;
     exports.ɵcj = EntitySuccessAction;
     exports.ɵn = stateMetaReducers;
     exports.ɵo = getStorageSyncReducer;
     exports.ɵp = getTransferStateReducer;
-    exports.ɵff = defaultStoreFinderConfig;
-    exports.ɵfl = FindStoresEffect;
-    exports.ɵfk = effects$9;
-    exports.ɵfm = ViewAllStoresEffect;
-    exports.ɵfh = getReducers$a;
-    exports.ɵfj = reducerProvider$a;
-    exports.ɵfi = reducerToken$a;
-    exports.ɵfe = getStoreFinderState;
-    exports.ɵfg = StoreFinderStoreModule;
-    exports.ɵfq = BillingCountriesEffect;
-    exports.ɵfr = DeliveryCountriesEffects;
-    exports.ɵgc = ForgotPasswordEffects;
-    exports.ɵfp = effects$8;
-    exports.ɵfs = OrderDetailsEffect;
-    exports.ɵft = UserPaymentMethodsEffects;
-    exports.ɵfu = RegionsEffects;
-    exports.ɵfv = ResetPasswordEffects;
-    exports.ɵfw = TitlesEffects;
-    exports.ɵgd = UpdateEmailEffects;
-    exports.ɵge = UpdatePasswordEffects;
-    exports.ɵfx = UserAddressesEffects;
-    exports.ɵfy = UserConsentsEffect;
-    exports.ɵfz = UserDetailsEffects;
-    exports.ɵga = UserOrdersEffect;
-    exports.ɵgb = UserRegisterEffects;
-    exports.ɵgh = reducer$g;
-    exports.ɵgm = reducer$h;
-    exports.ɵdr = clearUserState;
-    exports.ɵdo = getReducers$8;
-    exports.ɵds = metaReducers$5;
-    exports.ɵdq = reducerProvider$8;
-    exports.ɵdp = reducerToken$8;
-    exports.ɵgl = reducer$i;
-    exports.ɵgj = reducer$j;
-    exports.ɵgo = reducer$k;
-    exports.ɵgp = reducer$l;
-    exports.ɵgn = reducer$m;
-    exports.ɵgg = reducer$n;
-    exports.ɵgi = reducer$o;
-    exports.ɵgf = reducer$p;
-    exports.ɵgk = reducer$q;
-    exports.ɵfo = UserStoreModule;
+    exports.ɵfg = defaultStoreFinderConfig;
+    exports.ɵfm = FindStoresEffect;
+    exports.ɵfl = effects$9;
+    exports.ɵfn = ViewAllStoresEffect;
+    exports.ɵfi = getReducers$a;
+    exports.ɵfk = reducerProvider$a;
+    exports.ɵfj = reducerToken$a;
+    exports.ɵff = getStoreFinderState;
+    exports.ɵfh = StoreFinderStoreModule;
+    exports.ɵfr = BillingCountriesEffect;
+    exports.ɵfs = DeliveryCountriesEffects;
+    exports.ɵgd = ForgotPasswordEffects;
+    exports.ɵfq = effects$8;
+    exports.ɵft = OrderDetailsEffect;
+    exports.ɵfu = UserPaymentMethodsEffects;
+    exports.ɵfv = RegionsEffects;
+    exports.ɵfw = ResetPasswordEffects;
+    exports.ɵfx = TitlesEffects;
+    exports.ɵge = UpdateEmailEffects;
+    exports.ɵgf = UpdatePasswordEffects;
+    exports.ɵfy = UserAddressesEffects;
+    exports.ɵfz = UserConsentsEffect;
+    exports.ɵga = UserDetailsEffects;
+    exports.ɵgb = UserOrdersEffect;
+    exports.ɵgc = UserRegisterEffects;
+    exports.ɵgi = reducer$g;
+    exports.ɵgn = reducer$h;
+    exports.ɵds = clearUserState;
+    exports.ɵdp = getReducers$8;
+    exports.ɵdt = metaReducers$5;
+    exports.ɵdr = reducerProvider$8;
+    exports.ɵdq = reducerToken$8;
+    exports.ɵgm = reducer$i;
+    exports.ɵgk = reducer$j;
+    exports.ɵgp = reducer$k;
+    exports.ɵgq = reducer$l;
+    exports.ɵgo = reducer$m;
+    exports.ɵgh = reducer$n;
+    exports.ɵgj = reducer$o;
+    exports.ɵgg = reducer$p;
+    exports.ɵgl = reducer$q;
+    exports.ɵfp = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
