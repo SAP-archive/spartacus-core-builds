@@ -4818,131 +4818,6 @@
      */
     var /**
      * @abstract
-     */ CartDeliveryAdapter = /** @class */ (function () {
-        function CartDeliveryAdapter() {
-        }
-        return CartDeliveryAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CartDeliveryConnector = /** @class */ (function () {
-        function CartDeliveryConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-        CartDeliveryConnector.prototype.createAddress = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-            function (userId, cartId, address) {
-                return this.adapter.createAddress(userId, cartId, address);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-        CartDeliveryConnector.prototype.setAddress = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-            function (userId, cartId, addressId) {
-                return this.adapter.setAddress(userId, cartId, addressId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-        CartDeliveryConnector.prototype.setMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-            function (userId, cartId, deliveryModeId) {
-                return this.adapter.setMode(userId, cartId, deliveryModeId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        CartDeliveryConnector.prototype.getMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.adapter.getMode(userId, cartId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        CartDeliveryConnector.prototype.getSupportedModes = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.adapter.getSupportedModes(userId, cartId);
-            };
-        CartDeliveryConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CartDeliveryConnector.ctorParameters = function () {
-            return [
-                { type: CartDeliveryAdapter }
-            ];
-        };
-        /** @nocollapse */ CartDeliveryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartDeliveryConnector_Factory() { return new CartDeliveryConnector(i0.inject(CartDeliveryAdapter)); }, token: CartDeliveryConnector, providedIn: "root" });
-        return CartDeliveryConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var DELIVERY_ADDRESS_NORMALIZER = new i0.InjectionToken('DeliveryAddressNormalizer');
-    /** @type {?} */
-    var DELIVERY_ADDRESS_SERIALIZER = new i0.InjectionToken('DeliveryAddressSerializer');
-    /** @type {?} */
-    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
      */ CartEntryAdapter = /** @class */ (function () {
         function CartEntryAdapter() {
         }
@@ -5029,99 +4904,6 @@
      */
     /** @type {?} */
     var CART_MODIFICATION_NORMALIZER = new i0.InjectionToken('CartModificationNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ CartPaymentAdapter = /** @class */ (function () {
-        function CartPaymentAdapter() {
-        }
-        return CartPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CartPaymentConnector = /** @class */ (function () {
-        function CartPaymentConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        CartPaymentConnector.prototype.create = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-            function (userId, cartId, paymentDetails) {
-                return this.adapter.create(userId, cartId, paymentDetails);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-        CartPaymentConnector.prototype.set = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-            function (userId, cartId, paymentDetailsId) {
-                return this.adapter.set(userId, cartId, paymentDetailsId);
-            };
-        /**
-         * @return {?}
-         */
-        CartPaymentConnector.prototype.getCardTypes = /**
-         * @return {?}
-         */
-            function () {
-                return this.adapter.loadCardTypes();
-            };
-        CartPaymentConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CartPaymentConnector.ctorParameters = function () {
-            return [
-                { type: CartPaymentAdapter }
-            ];
-        };
-        /** @nocollapse */ CartPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartPaymentConnector_Factory() { return new CartPaymentConnector(i0.inject(CartPaymentAdapter)); }, token: CartPaymentConnector, providedIn: "root" });
-        return CartPaymentConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
-    /** @type {?} */
-    var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
-    /** @type {?} */
-    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -7536,6 +7318,301 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CheckoutAdapter = /** @class */ (function () {
+        function CheckoutAdapter() {
+        }
+        return CheckoutAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutConnector = /** @class */ (function () {
+        function CheckoutConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutConnector.prototype.placeOrder = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.placeOrder(userId, cartId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutConnector.prototype.loadCheckoutDetails = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.loadCheckoutDetails(userId, cartId);
+            };
+        CheckoutConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutConnector.ctorParameters = function () {
+            return [
+                { type: CheckoutAdapter }
+            ];
+        };
+        /** @nocollapse */ CheckoutConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.inject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+        return CheckoutConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CheckoutDeliveryAdapter = /** @class */ (function () {
+        function CheckoutDeliveryAdapter() {
+        }
+        return CheckoutDeliveryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutDeliveryConnector = /** @class */ (function () {
+        function CheckoutDeliveryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+        CheckoutDeliveryConnector.prototype.createAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+            function (userId, cartId, address) {
+                return this.adapter.createAddress(userId, cartId, address);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+        CheckoutDeliveryConnector.prototype.setAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+            function (userId, cartId, addressId) {
+                return this.adapter.setAddress(userId, cartId, addressId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+        CheckoutDeliveryConnector.prototype.setMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+            function (userId, cartId, deliveryModeId) {
+                return this.adapter.setMode(userId, cartId, deliveryModeId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutDeliveryConnector.prototype.getMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.getMode(userId, cartId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutDeliveryConnector.prototype.getSupportedModes = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.adapter.getSupportedModes(userId, cartId);
+            };
+        CheckoutDeliveryConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutDeliveryConnector.ctorParameters = function () {
+            return [
+                { type: CheckoutDeliveryAdapter }
+            ];
+        };
+        /** @nocollapse */ CheckoutDeliveryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.inject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+        return CheckoutDeliveryConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var DELIVERY_MODE_NORMALIZER = new i0.InjectionToken('DeliveryModeNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ CheckoutPaymentAdapter = /** @class */ (function () {
+        function CheckoutPaymentAdapter() {
+        }
+        return CheckoutPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutPaymentConnector = /** @class */ (function () {
+        function CheckoutPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.create = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetails) {
+                return this.adapter.create(userId, cartId, paymentDetails);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.set = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetailsId) {
+                return this.adapter.set(userId, cartId, paymentDetailsId);
+            };
+        /**
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.getCardTypes = /**
+         * @return {?}
+         */
+            function () {
+                return this.adapter.loadCardTypes();
+            };
+        CheckoutPaymentConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutPaymentConnector.ctorParameters = function () {
+            return [
+                { type: CheckoutPaymentAdapter }
+            ];
+        };
+        /** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.inject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+        return CheckoutPaymentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PAYMENT_DETAILS_NORMALIZER = new i0.InjectionToken('PaymentDetailsNormalizer');
+    /** @type {?} */
+    var PAYMENT_DETAILS_SERIALIZER = new i0.InjectionToken('PaymentDetailsSerializer');
+    /** @type {?} */
+    var CARD_TYPE_NORMALIZER = new i0.InjectionToken('CardTypeNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
     /** @type {?} */
@@ -9281,79 +9358,15 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ CheckoutAdapter = /** @class */ (function () {
-        function CheckoutAdapter() {
-        }
-        return CheckoutAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CheckoutConnector = /** @class */ (function () {
-        function CheckoutConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        CheckoutConnector.prototype.placeOrder = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.adapter.placeOrder(userId, cartId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        CheckoutConnector.prototype.loadCheckoutDetails = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.adapter.loadCheckoutDetails(userId, cartId);
-            };
-        CheckoutConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CheckoutConnector.ctorParameters = function () {
-            return [
-                { type: CheckoutAdapter }
-            ];
-        };
-        /** @nocollapse */ CheckoutConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.inject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
-        return CheckoutConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CheckoutEffects = /** @class */ (function () {
-        function CheckoutEffects(actions$, cartDeliveryConnector, cartPaymentConnector, checkoutConnector) {
+        function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.cartDeliveryConnector = cartDeliveryConnector;
-            this.cartPaymentConnector = cartPaymentConnector;
+            this.checkoutDeliveryConnector = checkoutDeliveryConnector;
+            this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.checkoutConnector = checkoutConnector;
             this.addDeliveryAddress$ = this.actions$.pipe(effects.ofType(ADD_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartDeliveryConnector
+                return _this.checkoutDeliveryConnector
                     .createAddress(payload.userId, payload.cartId, payload.address)
                     .pipe(operators.mergeMap(function (address) {
                     address['titleCode'] = payload.address.titleCode;
@@ -9368,7 +9381,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new AddDeliveryAddressFail(error)); }));
             }));
             this.setDeliveryAddress$ = this.actions$.pipe(effects.ofType(SET_DELIVERY_ADDRESS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartDeliveryConnector
+                return _this.checkoutDeliveryConnector
                     .setAddress(payload.userId, payload.cartId, payload.address.id)
                     .pipe(operators.mergeMap(function () {
                     return [
@@ -9381,7 +9394,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new SetDeliveryAddressFail(error)); }));
             }));
             this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartDeliveryConnector
+                return _this.checkoutDeliveryConnector
                     .getSupportedModes(payload.userId, payload.cartId)
                     .pipe(operators.map(function (data) {
                     return new LoadSupportedDeliveryModesSuccess(data);
@@ -9390,7 +9403,7 @@
                 }));
             }));
             this.setDeliveryMode$ = this.actions$.pipe(effects.ofType(SET_DELIVERY_MODE), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartDeliveryConnector
+                return _this.checkoutDeliveryConnector
                     .setMode(payload.userId, payload.cartId, payload.selectedModeId)
                     .pipe(operators.mergeMap(function () {
                     return [
@@ -9405,7 +9418,7 @@
             }));
             this.createPaymentDetails$ = this.actions$.pipe(effects.ofType(CREATE_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 // get information for creating a subscription directly with payment provider
-                return _this.cartPaymentConnector
+                return _this.checkoutPaymentConnector
                     .create(payload.userId, payload.cartId, payload.paymentDetails)
                     .pipe(operators.mergeMap(function (details) {
                     return [
@@ -9417,7 +9430,7 @@
                 }));
             }));
             this.setPaymentDetails$ = this.actions$.pipe(effects.ofType(SET_PAYMENT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
-                return _this.cartPaymentConnector
+                return _this.checkoutPaymentConnector
                     .set(payload.userId, payload.cartId, payload.paymentDetails.id)
                     .pipe(operators.map(function () {
                     return new SetPaymentDetailsSuccess(payload.paymentDetails);
@@ -9461,8 +9474,8 @@
         CheckoutEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: CartDeliveryConnector },
-                { type: CartPaymentConnector },
+                { type: CheckoutDeliveryConnector },
+                { type: CheckoutPaymentConnector },
                 { type: CheckoutConnector }
             ];
         };
@@ -9510,12 +9523,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CardTypesEffects = /** @class */ (function () {
-        function CardTypesEffects(actions$, cartPaymentConnector) {
+        function CardTypesEffects(actions$, checkoutPaymentConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.cartPaymentConnector = cartPaymentConnector;
+            this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.loadCardTypes$ = this.actions$.pipe(effects.ofType(LOAD_CARD_TYPES), operators.switchMap(function () {
-                return _this.cartPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(error)); }));
+                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map(function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); }), operators.catchError(function (error) { return rxjs.of(new LoadCardTypesFail(error)); }));
             }));
         }
         CardTypesEffects.decorators = [
@@ -9525,7 +9538,7 @@
         CardTypesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: CartPaymentConnector }
+                { type: CheckoutPaymentConnector }
             ];
         };
         __decorate([
@@ -21335,133 +21348,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var OccCartDeliveryAdapter = /** @class */ (function () {
-        function OccCartDeliveryAdapter(http$$1, occEndpoints, converter) {
-            this.http = http$$1;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.getCartEndpoint = /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                /** @type {?} */
-                var cartEndpoint = 'users/' + userId + '/carts/';
-                return this.occEndpoints.getEndpoint(cartEndpoint);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.createAddress = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} address
-         * @return {?}
-         */
-            function (userId, cartId, address) {
-                address = this.converter.convert(address, DELIVERY_ADDRESS_SERIALIZER);
-                return this.http
-                    .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
-                    headers: new http.HttpHeaders().set('Content-Type', 'application/json'),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_ADDRESS_NORMALIZER));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.setAddress = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} addressId
-         * @return {?}
-         */
-            function (userId, cartId, addressId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
-                    params: { addressId: addressId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.setMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} deliveryModeId
-         * @return {?}
-         */
-            function (userId, cartId, deliveryModeId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
-                    params: { deliveryModeId: deliveryModeId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.getMode = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.http
-                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartDeliveryAdapter.prototype.getSupportedModes = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.http
-                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
-            };
-        OccCartDeliveryAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccCartDeliveryAdapter.ctorParameters = function () {
-            return [
-                { type: http.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccCartDeliveryAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccCartEntryAdapter = /** @class */ (function () {
         function OccCartEntryAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
@@ -21592,338 +21478,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CustomEncoder = /** @class */ (function () {
-        function CustomEncoder() {
-        }
-        /**
-         * @param {?} key
-         * @return {?}
-         */
-        CustomEncoder.prototype.encodeKey = /**
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                return encodeURIComponent(key);
-            };
-        /**
-         * @param {?} value
-         * @return {?}
-         */
-        CustomEncoder.prototype.encodeValue = /**
-         * @param {?} value
-         * @return {?}
-         */
-            function (value) {
-                return encodeURIComponent(value);
-            };
-        /**
-         * @param {?} key
-         * @return {?}
-         */
-        CustomEncoder.prototype.decodeKey = /**
-         * @param {?} key
-         * @return {?}
-         */
-            function (key) {
-                return decodeURIComponent(key);
-            };
-        /**
-         * @param {?} value
-         * @return {?}
-         */
-        CustomEncoder.prototype.decodeValue = /**
-         * @param {?} value
-         * @return {?}
-         */
-            function (value) {
-                return decodeURIComponent(value);
-            };
-        return CustomEncoder;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ENDPOINT_CARD_TYPES = 'cardtypes';
-    var OccCartPaymentAdapter = /** @class */ (function () {
-        function OccCartPaymentAdapter(http$$1, occEndpoints, converter) {
-            this.http = http$$1;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-            if (typeof DOMParser !== 'undefined') {
-                this.domparser = new DOMParser();
-            }
-        }
-        /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.getCartEndpoint = /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                /** @type {?} */
-                var cartEndpoint = 'users/' + userId + '/carts/';
-                return this.occEndpoints.getEndpoint(cartEndpoint);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.create = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-            function (userId, cartId, paymentDetails) {
-                var _this = this;
-                paymentDetails = this.converter.convert(paymentDetails, PAYMENT_DETAILS_SERIALIZER);
-                return this.getProviderSubInfo(userId, cartId).pipe(operators.map(function (data) {
-                    /** @type {?} */
-                    var labelsMap = _this.convertToMap(data.mappingLabels.entry);
-                    return {
-                        url: data.postUrl,
-                        parameters: _this.getParamsForPaymentProvider(paymentDetails, data.parameters.entry, labelsMap),
-                        mappingLabels: labelsMap,
-                    };
-                }), operators.mergeMap(function (sub) {
-                    // create a subscription directly with payment provider
-                    return _this.createSubWithProvider(sub.url, sub.parameters).pipe(operators.map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), operators.mergeMap(function (fromPaymentProvider) {
-                        fromPaymentProvider['savePaymentInfo'] = true;
-                        return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
-                    }));
-                }));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.set = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-            function (userId, cartId, paymentDetailsId) {
-                return this.http
-                    .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
-                    params: { paymentDetailsId: paymentDetailsId },
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.loadCardTypes = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (cardTypeList) { return cardTypeList.cardTypes; }), this.converter.pipeableMany(CARD_TYPE_NORMALIZER));
-            };
-        /**
-         * @protected
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.getProviderSubInfo = /**
-         * @protected
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-            function (userId, cartId) {
-                return this.http
-                    .get(this.getCartEndpoint(userId) +
-                    cartId +
-                    '/payment/sop/request?responseUrl=sampleUrl')
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
-            };
-        /**
-         * @protected
-         * @param {?} postUrl
-         * @param {?} parameters
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.createSubWithProvider = /**
-         * @protected
-         * @param {?} postUrl
-         * @param {?} parameters
-         * @return {?}
-         */
-            function (postUrl, parameters) {
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    Accept: 'text/html',
-                });
-                /** @type {?} */
-                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
-                Object.keys(parameters).forEach(function (key) {
-                    httpParams = httpParams.append(key, parameters[key]);
-                });
-                return this.http.post(postUrl, httpParams, {
-                    headers: headers,
-                    responseType: 'text',
-                });
-            };
-        /**
-         * @protected
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} parameters
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.createDetailsWithParameters = /**
-         * @protected
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} parameters
-         * @return {?}
-         */
-            function (userId, cartId, parameters) {
-                /** @type {?} */
-                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
-                Object.keys(parameters).forEach(function (key) {
-                    httpParams = httpParams.append(key, parameters[key]);
-                });
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                return this.http
-                    .post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} parameters
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.getParamsForPaymentProvider = /**
-         * @private
-         * @param {?} paymentDetails
-         * @param {?} parameters
-         * @param {?} mappingLabels
-         * @return {?}
-         */
-            function (paymentDetails, parameters, mappingLabels) {
-                /** @type {?} */
-                var params = this.convertToMap(parameters);
-                params[mappingLabels['hybris_account_holder_name']] =
-                    paymentDetails.accountHolderName;
-                params[mappingLabels['hybris_card_type']] = paymentDetails.cardType.code;
-                params[mappingLabels['hybris_card_number']] = paymentDetails.cardNumber;
-                if (mappingLabels['hybris_combined_expiry_date'] === 'true') {
-                    params[mappingLabels['hybris_card_expiry_date']] =
-                        paymentDetails.expiryMonth +
-                            mappingLabels['hybris_separator_expiry_date'] +
-                            paymentDetails.expiryYear;
-                }
-                else {
-                    params[mappingLabels['hybris_card_expiration_month']] =
-                        paymentDetails.expiryMonth;
-                    params[mappingLabels['hybris_card_expiration_year']] =
-                        paymentDetails.expiryYear;
-                }
-                params[mappingLabels['hybris_card_cvn']] = paymentDetails.cvn;
-                // billing address
-                params[mappingLabels['hybris_billTo_country']] =
-                    paymentDetails.billingAddress.country.isocode;
-                params[mappingLabels['hybris_billTo_firstname']] =
-                    paymentDetails.billingAddress.firstName;
-                params[mappingLabels['hybris_billTo_lastname']] =
-                    paymentDetails.billingAddress.lastName;
-                params[mappingLabels['hybris_billTo_street1']] =
-                    paymentDetails.billingAddress.line1 +
-                        ' ' +
-                        paymentDetails.billingAddress.line2;
-                params[mappingLabels['hybris_billTo_city']] =
-                    paymentDetails.billingAddress.town;
-                params[mappingLabels['hybris_billTo_postalcode']] =
-                    paymentDetails.billingAddress.postalCode;
-                return params;
-            };
-        /**
-         * @private
-         * @param {?} html
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.extractPaymentDetailsFromHtml = /**
-         * @private
-         * @param {?} html
-         * @return {?}
-         */
-            function (html) {
-                /** @type {?} */
-                var domdoc = this.domparser.parseFromString(html, 'text/xml');
-                /** @type {?} */
-                var responseForm = domdoc.getElementsByTagName('form')[0];
-                /** @type {?} */
-                var inputs = responseForm.getElementsByTagName('input');
-                /** @type {?} */
-                var values = {};
-                for (var i = 0; inputs[i]; i++) {
-                    /** @type {?} */
-                    var input = inputs[i];
-                    if (input.getAttribute('name') !== '{}' &&
-                        input.getAttribute('value') !== '') {
-                        values[input.getAttribute('name')] = input.getAttribute('value');
-                    }
-                }
-                return values;
-            };
-        /**
-         * @private
-         * @param {?} paramList
-         * @return {?}
-         */
-        OccCartPaymentAdapter.prototype.convertToMap = /**
-         * @private
-         * @param {?} paramList
-         * @return {?}
-         */
-            function (paramList) {
-                return paramList.reduce(function (result, item) {
-                    /** @type {?} */
-                    var key = item.key;
-                    result[key] = item.value;
-                    return result;
-                }, {});
-            };
-        OccCartPaymentAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccCartPaymentAdapter.ctorParameters = function () {
-            return [
-                { type: http.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccCartPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccCartNormalizer = /** @class */ (function () {
         function OccCartNormalizer(converter) {
             this.converter = converter;
@@ -21981,16 +21535,8 @@
                                 multi: true,
                             },
                             {
-                                provide: CartDeliveryAdapter,
-                                useClass: OccCartDeliveryAdapter,
-                            },
-                            {
                                 provide: CartEntryAdapter,
                                 useClass: OccCartEntryAdapter,
-                            },
-                            {
-                                provide: CartPaymentAdapter,
-                                useClass: OccCartPaymentAdapter,
                             },
                         ],
                     },] }
@@ -23000,13 +22546,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ORDER_NORMALIZER = new i0.InjectionToken('OrderNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     // To be changed to a more optimised params after ticket: C3PO-1076
     /** @type {?} */
     var FULL_PARAMS = 'fields=FULL';
@@ -23962,6 +23501,465 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var OccCheckoutDeliveryAdapter = /** @class */ (function () {
+        function OccCheckoutDeliveryAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.getCartEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var cartEndpoint = 'users/' + userId + '/carts/';
+                return this.occEndpoints.getEndpoint(cartEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.createAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} address
+         * @return {?}
+         */
+            function (userId, cartId, address) {
+                address = this.converter.convert(address, ADDRESS_SERIALIZER);
+                return this.http
+                    .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
+                    headers: new http.HttpHeaders().set('Content-Type', 'application/json'),
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(ADDRESS_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.setAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} addressId
+         * @return {?}
+         */
+            function (userId, cartId, addressId) {
+                return this.http
+                    .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
+                    params: { addressId: addressId },
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.setMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} deliveryModeId
+         * @return {?}
+         */
+            function (userId, cartId, deliveryModeId) {
+                return this.http
+                    .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
+                    params: { deliveryModeId: deliveryModeId },
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.getMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.http
+                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutDeliveryAdapter.prototype.getSupportedModes = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.http
+                    .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
+            };
+        OccCheckoutDeliveryAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCheckoutDeliveryAdapter.ctorParameters = function () {
+            return [
+                { type: http.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCheckoutDeliveryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CustomEncoder = /** @class */ (function () {
+        function CustomEncoder() {
+        }
+        /**
+         * @param {?} key
+         * @return {?}
+         */
+        CustomEncoder.prototype.encodeKey = /**
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                return encodeURIComponent(key);
+            };
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        CustomEncoder.prototype.encodeValue = /**
+         * @param {?} value
+         * @return {?}
+         */
+            function (value) {
+                return encodeURIComponent(value);
+            };
+        /**
+         * @param {?} key
+         * @return {?}
+         */
+        CustomEncoder.prototype.decodeKey = /**
+         * @param {?} key
+         * @return {?}
+         */
+            function (key) {
+                return decodeURIComponent(key);
+            };
+        /**
+         * @param {?} value
+         * @return {?}
+         */
+        CustomEncoder.prototype.decodeValue = /**
+         * @param {?} value
+         * @return {?}
+         */
+            function (value) {
+                return decodeURIComponent(value);
+            };
+        return CustomEncoder;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ENDPOINT_CARD_TYPES = 'cardtypes';
+    var OccCheckoutPaymentAdapter = /** @class */ (function () {
+        function OccCheckoutPaymentAdapter(http$$1, occEndpoints, converter) {
+            this.http = http$$1;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            if (typeof DOMParser !== 'undefined') {
+                this.domparser = new DOMParser();
+            }
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.getCartEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var cartEndpoint = 'users/' + userId + '/carts/';
+                return this.occEndpoints.getEndpoint(cartEndpoint);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.create = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetails) {
+                var _this = this;
+                paymentDetails = this.converter.convert(paymentDetails, PAYMENT_DETAILS_SERIALIZER);
+                return this.getProviderSubInfo(userId, cartId).pipe(operators.map(function (data) {
+                    /** @type {?} */
+                    var labelsMap = _this.convertToMap(data.mappingLabels.entry);
+                    return {
+                        url: data.postUrl,
+                        parameters: _this.getParamsForPaymentProvider(paymentDetails, data.parameters.entry, labelsMap),
+                        mappingLabels: labelsMap,
+                    };
+                }), operators.mergeMap(function (sub) {
+                    // create a subscription directly with payment provider
+                    return _this.createSubWithProvider(sub.url, sub.parameters).pipe(operators.map(function (response) { return _this.extractPaymentDetailsFromHtml(response); }), operators.mergeMap(function (fromPaymentProvider) {
+                        fromPaymentProvider['savePaymentInfo'] = true;
+                        return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
+                    }));
+                }));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.set = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+            function (userId, cartId, paymentDetailsId) {
+                return this.http
+                    .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
+                    params: { paymentDetailsId: paymentDetailsId },
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.loadCardTypes = /**
+         * @return {?}
+         */
+            function () {
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (cardTypeList) { return cardTypeList.cardTypes; }), this.converter.pipeableMany(CARD_TYPE_NORMALIZER));
+            };
+        /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.getProviderSubInfo = /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+            function (userId, cartId) {
+                return this.http
+                    .get(this.getCartEndpoint(userId) +
+                    cartId +
+                    '/payment/sop/request?responseUrl=sampleUrl')
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }));
+            };
+        /**
+         * @protected
+         * @param {?} postUrl
+         * @param {?} parameters
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.createSubWithProvider = /**
+         * @protected
+         * @param {?} postUrl
+         * @param {?} parameters
+         * @return {?}
+         */
+            function (postUrl, parameters) {
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    Accept: 'text/html',
+                });
+                /** @type {?} */
+                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
+                Object.keys(parameters).forEach(function (key) {
+                    httpParams = httpParams.append(key, parameters[key]);
+                });
+                return this.http.post(postUrl, httpParams, {
+                    headers: headers,
+                    responseType: 'text',
+                });
+            };
+        /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} parameters
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.createDetailsWithParameters = /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} parameters
+         * @return {?}
+         */
+            function (userId, cartId, parameters) {
+                /** @type {?} */
+                var httpParams = new http.HttpParams({ encoder: new CustomEncoder() });
+                Object.keys(parameters).forEach(function (key) {
+                    httpParams = httpParams.append(key, parameters[key]);
+                });
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http
+                    .post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} parameters
+         * @param {?} mappingLabels
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.getParamsForPaymentProvider = /**
+         * @private
+         * @param {?} paymentDetails
+         * @param {?} parameters
+         * @param {?} mappingLabels
+         * @return {?}
+         */
+            function (paymentDetails, parameters, mappingLabels) {
+                /** @type {?} */
+                var params = this.convertToMap(parameters);
+                params[mappingLabels['hybris_account_holder_name']] =
+                    paymentDetails.accountHolderName;
+                params[mappingLabels['hybris_card_type']] = paymentDetails.cardType.code;
+                params[mappingLabels['hybris_card_number']] = paymentDetails.cardNumber;
+                if (mappingLabels['hybris_combined_expiry_date'] === 'true') {
+                    params[mappingLabels['hybris_card_expiry_date']] =
+                        paymentDetails.expiryMonth +
+                            mappingLabels['hybris_separator_expiry_date'] +
+                            paymentDetails.expiryYear;
+                }
+                else {
+                    params[mappingLabels['hybris_card_expiration_month']] =
+                        paymentDetails.expiryMonth;
+                    params[mappingLabels['hybris_card_expiration_year']] =
+                        paymentDetails.expiryYear;
+                }
+                params[mappingLabels['hybris_card_cvn']] = paymentDetails.cvn;
+                // billing address
+                params[mappingLabels['hybris_billTo_country']] =
+                    paymentDetails.billingAddress.country.isocode;
+                params[mappingLabels['hybris_billTo_firstname']] =
+                    paymentDetails.billingAddress.firstName;
+                params[mappingLabels['hybris_billTo_lastname']] =
+                    paymentDetails.billingAddress.lastName;
+                params[mappingLabels['hybris_billTo_street1']] =
+                    paymentDetails.billingAddress.line1 +
+                        ' ' +
+                        paymentDetails.billingAddress.line2;
+                params[mappingLabels['hybris_billTo_city']] =
+                    paymentDetails.billingAddress.town;
+                params[mappingLabels['hybris_billTo_postalcode']] =
+                    paymentDetails.billingAddress.postalCode;
+                return params;
+            };
+        /**
+         * @private
+         * @param {?} html
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.extractPaymentDetailsFromHtml = /**
+         * @private
+         * @param {?} html
+         * @return {?}
+         */
+            function (html) {
+                /** @type {?} */
+                var domdoc = this.domparser.parseFromString(html, 'text/xml');
+                /** @type {?} */
+                var responseForm = domdoc.getElementsByTagName('form')[0];
+                /** @type {?} */
+                var inputs = responseForm.getElementsByTagName('input');
+                /** @type {?} */
+                var values = {};
+                for (var i = 0; inputs[i]; i++) {
+                    /** @type {?} */
+                    var input = inputs[i];
+                    if (input.getAttribute('name') !== '{}' &&
+                        input.getAttribute('value') !== '') {
+                        values[input.getAttribute('name')] = input.getAttribute('value');
+                    }
+                }
+                return values;
+            };
+        /**
+         * @private
+         * @param {?} paramList
+         * @return {?}
+         */
+        OccCheckoutPaymentAdapter.prototype.convertToMap = /**
+         * @private
+         * @param {?} paramList
+         * @return {?}
+         */
+            function (paramList) {
+                return paramList.reduce(function (result, item) {
+                    /** @type {?} */
+                    var key = item.key;
+                    result[key] = item.value;
+                    return result;
+                }, {});
+            };
+        OccCheckoutPaymentAdapter.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccCheckoutPaymentAdapter.ctorParameters = function () {
+            return [
+                { type: http.HttpClient },
+                { type: OccEndpointsService },
+                { type: ConverterService }
+            ];
+        };
+        return OccCheckoutPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CheckoutOccModule = /** @class */ (function () {
         function CheckoutOccModule() {
         }
@@ -23974,6 +23972,14 @@
                                 useClass: OccCheckoutAdapter,
                             },
                             { provide: ORDER_NORMALIZER, useClass: OccOrderNormalizer, multi: true },
+                            {
+                                provide: CheckoutDeliveryAdapter,
+                                useClass: OccCheckoutDeliveryAdapter,
+                            },
+                            {
+                                provide: CheckoutPaymentAdapter,
+                                useClass: OccCheckoutPaymentAdapter,
+                            },
                         ],
                     },] }
         ];
@@ -25794,19 +25800,9 @@
     exports.CartConnector = CartConnector;
     exports.CartAdapter = CartAdapter;
     exports.CART_NORMALIZER = CART_NORMALIZER;
-    exports.CartDeliveryConnector = CartDeliveryConnector;
-    exports.CartDeliveryAdapter = CartDeliveryAdapter;
-    exports.DELIVERY_ADDRESS_NORMALIZER = DELIVERY_ADDRESS_NORMALIZER;
-    exports.DELIVERY_ADDRESS_SERIALIZER = DELIVERY_ADDRESS_SERIALIZER;
-    exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.CartEntryConnector = CartEntryConnector;
     exports.CartEntryAdapter = CartEntryAdapter;
     exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
-    exports.CartPaymentConnector = CartPaymentConnector;
-    exports.CartPaymentAdapter = CartPaymentAdapter;
-    exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
-    exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
-    exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
     exports.CartModule = CartModule;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
@@ -25900,6 +25896,17 @@
     exports.getAllCardTypes = getAllCardTypes;
     exports.getAddressVerificationResultsState = getAddressVerificationResultsState;
     exports.getAddressVerificationResults = getAddressVerificationResults$1;
+    exports.CheckoutConnector = CheckoutConnector;
+    exports.CheckoutAdapter = CheckoutAdapter;
+    exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
+    exports.CheckoutDeliveryConnector = CheckoutDeliveryConnector;
+    exports.CheckoutDeliveryAdapter = CheckoutDeliveryAdapter;
+    exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.CheckoutPaymentConnector = CheckoutPaymentConnector;
+    exports.CheckoutPaymentAdapter = CheckoutPaymentAdapter;
+    exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
+    exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
+    exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
     exports.CheckoutService = CheckoutService;
     exports.CheckoutModule = CheckoutModule;
     exports.CartPageMetaResolver = CartPageMetaResolver;
@@ -26026,9 +26033,7 @@
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.InterceptorUtil = InterceptorUtil;
     exports.OccCartAdapter = OccCartAdapter;
-    exports.OccCartDeliveryAdapter = OccCartDeliveryAdapter;
     exports.OccCartEntryAdapter = OccCartEntryAdapter;
-    exports.OccCartPaymentAdapter = OccCartPaymentAdapter;
     exports.OccCartNormalizer = OccCartNormalizer;
     exports.CartOccModule = CartOccModule;
     exports.OccCmsPageAdapter = OccCmsPageAdapter;
@@ -26036,6 +26041,8 @@
     exports.OccCmsPageNormalizer = OccCmsPageNormalizer;
     exports.CmsOccModule = CmsOccModule;
     exports.OccCheckoutAdapter = OccCheckoutAdapter;
+    exports.OccCheckoutDeliveryAdapter = OccCheckoutDeliveryAdapter;
+    exports.OccCheckoutPaymentAdapter = OccCheckoutPaymentAdapter;
     exports.CheckoutOccModule = CheckoutOccModule;
     exports.OccOrderNormalizer = OccOrderNormalizer;
     exports.ProductImageNormalizer = ProductImageNormalizer;
@@ -26580,9 +26587,6 @@
     exports.ɵbn = metaReducers$1;
     exports.ɵbl = reducerProvider$2;
     exports.ɵbk = reducerToken$2;
-    exports.ɵch = CheckoutAdapter;
-    exports.ɵcg = CheckoutConnector;
-    exports.ɵeh = ORDER_NORMALIZER;
     exports.ɵcf = CheckoutStoreModule;
     exports.ɵbz = AddressVerificationEffect;
     exports.ɵby = CardTypesEffects;
@@ -26592,72 +26596,72 @@
     exports.ɵbu = reducer$7;
     exports.ɵbt = getCardTypesEntites;
     exports.ɵbs = reducer$6;
-    exports.ɵci = reducer$9;
+    exports.ɵcg = reducer$9;
     exports.ɵcd = clearCheckoutState;
     exports.ɵca = getReducers$5;
     exports.ɵce = metaReducers$2;
     exports.ɵcc = reducerProvider$5;
     exports.ɵcb = reducerToken$5;
-    exports.ɵet = PageMetaResolver;
-    exports.ɵcn = CmsStoreModule;
-    exports.ɵcm = cmsStoreConfigFactory;
-    exports.ɵcv = ComponentEffects;
-    exports.ɵct = effects$6;
-    exports.ɵcw = NavigationEntryItemEffects;
-    exports.ɵcu = PageEffects;
-    exports.ɵcr = clearCmsState;
-    exports.ɵco = getReducers$6;
-    exports.ɵcs = metaReducers$3;
-    exports.ɵcq = reducerProvider$6;
-    exports.ɵcp = reducerToken$6;
-    exports.ɵcz = reducer$a;
-    exports.ɵcx = reducer$b;
-    exports.ɵcy = reducer$c;
-    exports.ɵeb = ServerConfig;
-    exports.ɵej = provideConfigValidator;
-    exports.ɵea = HttpErrorInterceptor;
-    exports.ɵdv = GlobalMessageStoreModule;
-    exports.ɵdz = reducer$8;
-    exports.ɵdw = getReducers$4;
-    exports.ɵdy = reducerProvider$4;
-    exports.ɵdx = reducerToken$4;
-    exports.ɵes = TranslationService;
-    exports.ɵec = defaultI18nConfig;
-    exports.ɵee = i18nextInit;
-    exports.ɵed = i18nextProviders;
-    exports.ɵef = MockDatePipe;
-    exports.ɵeg = MockTranslationService;
-    exports.ɵei = defaultOccProductConfig;
-    exports.ɵgz = defaultPersonalizationConfig;
-    exports.ɵha = interceptors$2;
-    exports.ɵhb = OccPersonalizationIdInterceptor;
-    exports.ɵhc = OccPersonalizationTimeInterceptor;
-    exports.ɵgt = ProcessModule;
-    exports.ɵgv = PROCESS_FEATURE;
-    exports.ɵgu = ProcessStoreModule;
-    exports.ɵgw = getReducers$9;
-    exports.ɵgy = reducerProvider$9;
-    exports.ɵgx = reducerToken$9;
-    exports.ɵev = ProductSearchService;
-    exports.ɵdg = effects$7;
-    exports.ɵdh = ProductReferencesEffects;
-    exports.ɵdi = ProductReviewsEffects;
-    exports.ɵdj = ProductsSearchEffects;
-    exports.ɵdk = ProductEffects;
-    exports.ɵel = ProductStoreModule;
-    exports.ɵek = productStoreConfigFactory;
-    exports.ɵdo = clearProductsState;
-    exports.ɵdl = getReducers$7;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdn = reducerProvider$7;
-    exports.ɵdm = reducerToken$7;
-    exports.ɵer = reducer$d;
-    exports.ɵeq = reducer$e;
-    exports.ɵeo = getAuxSearchResults;
-    exports.ɵep = getProductSuggestions;
-    exports.ɵen = getSearchResults;
-    exports.ɵem = reducer$f;
-    exports.ɵeu = RoutingService;
+    exports.ɵeq = PageMetaResolver;
+    exports.ɵcl = CmsStoreModule;
+    exports.ɵck = cmsStoreConfigFactory;
+    exports.ɵct = ComponentEffects;
+    exports.ɵcr = effects$6;
+    exports.ɵcu = NavigationEntryItemEffects;
+    exports.ɵcs = PageEffects;
+    exports.ɵcp = clearCmsState;
+    exports.ɵcm = getReducers$6;
+    exports.ɵcq = metaReducers$3;
+    exports.ɵco = reducerProvider$6;
+    exports.ɵcn = reducerToken$6;
+    exports.ɵcx = reducer$a;
+    exports.ɵcv = reducer$b;
+    exports.ɵcw = reducer$c;
+    exports.ɵdz = ServerConfig;
+    exports.ɵeg = provideConfigValidator;
+    exports.ɵdy = HttpErrorInterceptor;
+    exports.ɵdt = GlobalMessageStoreModule;
+    exports.ɵdx = reducer$8;
+    exports.ɵdu = getReducers$4;
+    exports.ɵdw = reducerProvider$4;
+    exports.ɵdv = reducerToken$4;
+    exports.ɵep = TranslationService;
+    exports.ɵea = defaultI18nConfig;
+    exports.ɵec = i18nextInit;
+    exports.ɵeb = i18nextProviders;
+    exports.ɵed = MockDatePipe;
+    exports.ɵee = MockTranslationService;
+    exports.ɵef = defaultOccProductConfig;
+    exports.ɵgw = defaultPersonalizationConfig;
+    exports.ɵgx = interceptors$2;
+    exports.ɵgy = OccPersonalizationIdInterceptor;
+    exports.ɵgz = OccPersonalizationTimeInterceptor;
+    exports.ɵgq = ProcessModule;
+    exports.ɵgs = PROCESS_FEATURE;
+    exports.ɵgr = ProcessStoreModule;
+    exports.ɵgt = getReducers$9;
+    exports.ɵgv = reducerProvider$9;
+    exports.ɵgu = reducerToken$9;
+    exports.ɵes = ProductSearchService;
+    exports.ɵde = effects$7;
+    exports.ɵdf = ProductReferencesEffects;
+    exports.ɵdg = ProductReviewsEffects;
+    exports.ɵdh = ProductsSearchEffects;
+    exports.ɵdi = ProductEffects;
+    exports.ɵei = ProductStoreModule;
+    exports.ɵeh = productStoreConfigFactory;
+    exports.ɵdm = clearProductsState;
+    exports.ɵdj = getReducers$7;
+    exports.ɵdn = metaReducers$4;
+    exports.ɵdl = reducerProvider$7;
+    exports.ɵdk = reducerToken$7;
+    exports.ɵeo = reducer$d;
+    exports.ɵen = reducer$e;
+    exports.ɵel = getAuxSearchResults;
+    exports.ɵem = getProductSuggestions;
+    exports.ɵek = getSearchResults;
+    exports.ɵej = reducer$f;
+    exports.ɵer = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -26668,72 +26672,72 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵew = defaultSiteContextConfigFactory;
-    exports.ɵfc = SiteContextParamsService;
-    exports.ɵfe = SiteContextRoutesHandler;
-    exports.ɵfd = SiteContextUrlSerializer;
-    exports.ɵdf = CurrenciesEffects;
-    exports.ɵdd = effects$3;
-    exports.ɵde = LanguagesEffects;
-    exports.ɵfb = reducer$5;
-    exports.ɵfa = reducer$4;
-    exports.ɵda = getReducers$3;
-    exports.ɵdc = reducerProvider$3;
-    exports.ɵdb = reducerToken$3;
-    exports.ɵez = reducer$3;
-    exports.ɵey = SiteContextStoreModule;
-    exports.ɵex = siteContextStoreConfigFactory;
-    exports.ɵfg = CmsTicketInterceptor;
-    exports.ɵff = interceptors$1;
-    exports.ɵck = EntityFailAction;
-    exports.ɵcj = EntityLoadAction;
-    exports.ɵfq = EntityResetAction;
-    exports.ɵcl = EntitySuccessAction;
+    exports.ɵet = defaultSiteContextConfigFactory;
+    exports.ɵez = SiteContextParamsService;
+    exports.ɵfb = SiteContextRoutesHandler;
+    exports.ɵfa = SiteContextUrlSerializer;
+    exports.ɵdd = CurrenciesEffects;
+    exports.ɵdb = effects$3;
+    exports.ɵdc = LanguagesEffects;
+    exports.ɵey = reducer$5;
+    exports.ɵex = reducer$4;
+    exports.ɵcy = getReducers$3;
+    exports.ɵda = reducerProvider$3;
+    exports.ɵcz = reducerToken$3;
+    exports.ɵew = reducer$3;
+    exports.ɵev = SiteContextStoreModule;
+    exports.ɵeu = siteContextStoreConfigFactory;
+    exports.ɵfd = CmsTicketInterceptor;
+    exports.ɵfc = interceptors$1;
+    exports.ɵci = EntityFailAction;
+    exports.ɵch = EntityLoadAction;
+    exports.ɵfn = EntityResetAction;
+    exports.ɵcj = EntitySuccessAction;
     exports.ɵn = stateMetaReducers;
     exports.ɵo = getStorageSyncReducer;
     exports.ɵp = getTransferStateReducer;
-    exports.ɵfi = defaultStoreFinderConfig;
-    exports.ɵfo = FindStoresEffect;
-    exports.ɵfn = effects$9;
-    exports.ɵfp = ViewAllStoresEffect;
-    exports.ɵfk = getReducers$a;
-    exports.ɵfm = reducerProvider$a;
-    exports.ɵfl = reducerToken$a;
-    exports.ɵfh = getStoreFinderState;
-    exports.ɵfj = StoreFinderStoreModule;
-    exports.ɵft = BillingCountriesEffect;
-    exports.ɵfu = DeliveryCountriesEffects;
-    exports.ɵgf = ForgotPasswordEffects;
-    exports.ɵfs = effects$8;
-    exports.ɵfv = OrderDetailsEffect;
-    exports.ɵfw = UserPaymentMethodsEffects;
-    exports.ɵfx = RegionsEffects;
-    exports.ɵfy = ResetPasswordEffects;
-    exports.ɵfz = TitlesEffects;
-    exports.ɵgg = UpdateEmailEffects;
-    exports.ɵgh = UpdatePasswordEffects;
-    exports.ɵga = UserAddressesEffects;
-    exports.ɵgb = UserConsentsEffect;
-    exports.ɵgc = UserDetailsEffects;
-    exports.ɵgd = UserOrdersEffect;
-    exports.ɵge = UserRegisterEffects;
-    exports.ɵgk = reducer$g;
-    exports.ɵgp = reducer$h;
-    exports.ɵdt = clearUserState;
-    exports.ɵdq = getReducers$8;
-    exports.ɵdu = metaReducers$5;
-    exports.ɵds = reducerProvider$8;
-    exports.ɵdr = reducerToken$8;
-    exports.ɵgo = reducer$i;
-    exports.ɵgm = reducer$j;
-    exports.ɵgr = reducer$k;
-    exports.ɵgs = reducer$l;
-    exports.ɵgq = reducer$m;
-    exports.ɵgj = reducer$n;
-    exports.ɵgl = reducer$o;
-    exports.ɵgi = reducer$p;
-    exports.ɵgn = reducer$q;
-    exports.ɵfr = UserStoreModule;
+    exports.ɵff = defaultStoreFinderConfig;
+    exports.ɵfl = FindStoresEffect;
+    exports.ɵfk = effects$9;
+    exports.ɵfm = ViewAllStoresEffect;
+    exports.ɵfh = getReducers$a;
+    exports.ɵfj = reducerProvider$a;
+    exports.ɵfi = reducerToken$a;
+    exports.ɵfe = getStoreFinderState;
+    exports.ɵfg = StoreFinderStoreModule;
+    exports.ɵfq = BillingCountriesEffect;
+    exports.ɵfr = DeliveryCountriesEffects;
+    exports.ɵgc = ForgotPasswordEffects;
+    exports.ɵfp = effects$8;
+    exports.ɵfs = OrderDetailsEffect;
+    exports.ɵft = UserPaymentMethodsEffects;
+    exports.ɵfu = RegionsEffects;
+    exports.ɵfv = ResetPasswordEffects;
+    exports.ɵfw = TitlesEffects;
+    exports.ɵgd = UpdateEmailEffects;
+    exports.ɵge = UpdatePasswordEffects;
+    exports.ɵfx = UserAddressesEffects;
+    exports.ɵfy = UserConsentsEffect;
+    exports.ɵfz = UserDetailsEffects;
+    exports.ɵga = UserOrdersEffect;
+    exports.ɵgb = UserRegisterEffects;
+    exports.ɵgh = reducer$g;
+    exports.ɵgm = reducer$h;
+    exports.ɵdr = clearUserState;
+    exports.ɵdo = getReducers$8;
+    exports.ɵds = metaReducers$5;
+    exports.ɵdq = reducerProvider$8;
+    exports.ɵdp = reducerToken$8;
+    exports.ɵgl = reducer$i;
+    exports.ɵgj = reducer$j;
+    exports.ɵgo = reducer$k;
+    exports.ɵgp = reducer$l;
+    exports.ɵgn = reducer$m;
+    exports.ɵgg = reducer$n;
+    exports.ɵgi = reducer$o;
+    exports.ɵgf = reducer$p;
+    exports.ɵgk = reducer$q;
+    exports.ɵfo = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
