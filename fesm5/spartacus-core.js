@@ -15830,26 +15830,23 @@ var UserService = /** @class */ (function () {
     /**
      * Retrieves order's details
      *
-     * @param userId a user's ID
      * @param orderCode an order code
      */
     /**
      * Retrieves order's details
      *
-     * @param {?} userId a user's ID
      * @param {?} orderCode an order code
      * @return {?}
      */
     UserService.prototype.loadOrderDetails = /**
      * Retrieves order's details
      *
-     * @param {?} userId a user's ID
      * @param {?} orderCode an order code
      * @return {?}
      */
-    function (userId, orderCode) {
+    function (orderCode) {
         this.store.dispatch(new LoadOrderDetails({
-            userId: userId,
+            userId: USERID_CURRENT,
             orderCode: orderCode,
         }));
     };
@@ -15872,25 +15869,23 @@ var UserService = /** @class */ (function () {
      */
     /**
      * Returns order history list
-     * @param {?} userId
      * @param {?} pageSize
      * @return {?}
      */
     UserService.prototype.getOrderHistoryList = /**
      * Returns order history list
-     * @param {?} userId
      * @param {?} pageSize
      * @return {?}
      */
-    function (userId, pageSize) {
+    function (pageSize) {
         var _this = this;
         return this.store.pipe(select(getOrdersState), tap(function (orderListState) {
             /** @type {?} */
             var attemptedLoad = orderListState.loading ||
                 orderListState.success ||
                 orderListState.error;
-            if (!attemptedLoad && !!userId) {
-                _this.loadOrderList(userId, pageSize);
+            if (!attemptedLoad) {
+                _this.loadOrderList(pageSize);
             }
         }), map(function (orderListState) { return orderListState.value; }));
     };
@@ -16004,14 +15999,12 @@ var UserService = /** @class */ (function () {
     };
     /**
      * Retrieves an order list
-     * @param userId a user ID
      * @param pageSize page size
      * @param currentPage current page
      * @param sort sort
      */
     /**
      * Retrieves an order list
-     * @param {?} userId a user ID
      * @param {?} pageSize page size
      * @param {?=} currentPage current page
      * @param {?=} sort sort
@@ -16019,15 +16012,14 @@ var UserService = /** @class */ (function () {
      */
     UserService.prototype.loadOrderList = /**
      * Retrieves an order list
-     * @param {?} userId a user ID
      * @param {?} pageSize page size
      * @param {?=} currentPage current page
      * @param {?=} sort sort
      * @return {?}
      */
-    function (userId, pageSize, currentPage, sort) {
+    function (pageSize, currentPage, sort) {
         this.store.dispatch(new LoadUserOrders({
-            userId: userId,
+            userId: USERID_CURRENT,
             pageSize: pageSize,
             currentPage: currentPage,
             sort: sort,

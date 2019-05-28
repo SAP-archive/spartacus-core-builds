@@ -52,10 +52,9 @@ export declare class UserService {
     /**
      * Retrieves order's details
      *
-     * @param userId a user's ID
      * @param orderCode an order code
      */
-    loadOrderDetails(userId: string, orderCode: string): void;
+    loadOrderDetails(orderCode: string): void;
     /**
      * Clears order's details
      */
@@ -63,7 +62,7 @@ export declare class UserService {
     /**
      * Returns order history list
      */
-    getOrderHistoryList(userId: string, pageSize: number): Observable<OrderHistoryList>;
+    getOrderHistoryList(pageSize: number): Observable<OrderHistoryList>;
     /**
      * Returns a loaded flag for order history list
      */
@@ -96,12 +95,11 @@ export declare class UserService {
     deletePaymentMethod(userId: string, paymentMethodId: string): void;
     /**
      * Retrieves an order list
-     * @param userId a user ID
      * @param pageSize page size
      * @param currentPage current page
      * @param sort sort
      */
-    loadOrderList(userId: string, pageSize: number, currentPage?: number, sort?: string): void;
+    loadOrderList(pageSize: number, currentPage?: number, sort?: string): void;
     /**
      * Retrieves user's addresses
      * @param userId a user ID

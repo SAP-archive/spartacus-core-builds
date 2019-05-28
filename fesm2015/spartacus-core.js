@@ -13621,13 +13621,12 @@ class UserService {
     /**
      * Retrieves order's details
      *
-     * @param {?} userId a user's ID
      * @param {?} orderCode an order code
      * @return {?}
      */
-    loadOrderDetails(userId, orderCode) {
+    loadOrderDetails(orderCode) {
         this.store.dispatch(new LoadOrderDetails({
-            userId: userId,
+            userId: USERID_CURRENT,
             orderCode: orderCode,
         }));
     }
@@ -13640,18 +13639,17 @@ class UserService {
     }
     /**
      * Returns order history list
-     * @param {?} userId
      * @param {?} pageSize
      * @return {?}
      */
-    getOrderHistoryList(userId, pageSize) {
+    getOrderHistoryList(pageSize) {
         return this.store.pipe(select(getOrdersState), tap(orderListState => {
             /** @type {?} */
             const attemptedLoad = orderListState.loading ||
                 orderListState.success ||
                 orderListState.error;
-            if (!attemptedLoad && !!userId) {
-                this.loadOrderList(userId, pageSize);
+            if (!attemptedLoad) {
+                this.loadOrderList(pageSize);
             }
         }), map(orderListState => orderListState.value));
     }
@@ -13711,15 +13709,14 @@ class UserService {
     }
     /**
      * Retrieves an order list
-     * @param {?} userId a user ID
      * @param {?} pageSize page size
      * @param {?=} currentPage current page
      * @param {?=} sort sort
      * @return {?}
      */
-    loadOrderList(userId, pageSize, currentPage, sort) {
+    loadOrderList(pageSize, currentPage, sort) {
         this.store.dispatch(new LoadUserOrders({
-            userId: userId,
+            userId: USERID_CURRENT,
             pageSize: pageSize,
             currentPage: currentPage,
             sort: sort,
