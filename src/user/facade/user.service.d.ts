@@ -102,34 +102,29 @@ export declare class UserService {
     loadOrderList(pageSize: number, currentPage?: number, sort?: string): void;
     /**
      * Retrieves user's addresses
-     * @param userId a user ID
      */
-    loadAddresses(userId: string): void;
+    loadAddresses(): void;
     /**
      * Adds user address
-     * @param userId a user ID
      * @param address a user address
      */
-    addUserAddress(userId: string, address: Address): void;
+    addUserAddress(address: Address): void;
     /**
      * Sets user address as default
-     * @param userId a user ID
      * @param addressId a user address ID
      */
-    setAddressAsDefault(userId: string, addressId: string): void;
+    setAddressAsDefault(addressId: string): void;
     /**
      * Updates existing user address
-     * @param userId a user ID
      * @param addressId a user address ID
      * @param address a user address
      */
-    updateUserAddress(userId: string, addressId: string, address: Address): void;
+    updateUserAddress(addressId: string, address: Address): void;
     /**
      * Deletes existing user address
-     * @param userId a user ID
      * @param addressId a user address ID
      */
-    deleteUserAddress(userId: string, addressId: string): void;
+    deleteUserAddress(addressId: string): void;
     /**
      * Returns addresses
      */

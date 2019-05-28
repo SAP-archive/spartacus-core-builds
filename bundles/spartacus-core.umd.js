@@ -16232,115 +16232,100 @@
             };
         /**
          * Retrieves user's addresses
-         * @param userId a user ID
          */
         /**
          * Retrieves user's addresses
-         * @param {?} userId a user ID
          * @return {?}
          */
         UserService.prototype.loadAddresses = /**
          * Retrieves user's addresses
-         * @param {?} userId a user ID
          * @return {?}
          */
-            function (userId) {
-                this.store.dispatch(new LoadUserAddresses(userId));
+            function () {
+                this.store.dispatch(new LoadUserAddresses(USERID_CURRENT));
             };
         /**
          * Adds user address
-         * @param userId a user ID
          * @param address a user address
          */
         /**
          * Adds user address
-         * @param {?} userId a user ID
          * @param {?} address a user address
          * @return {?}
          */
         UserService.prototype.addUserAddress = /**
          * Adds user address
-         * @param {?} userId a user ID
          * @param {?} address a user address
          * @return {?}
          */
-            function (userId, address) {
+            function (address) {
                 this.store.dispatch(new AddUserAddress({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     address: address,
                 }));
             };
         /**
          * Sets user address as default
-         * @param userId a user ID
          * @param addressId a user address ID
          */
         /**
          * Sets user address as default
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @return {?}
          */
         UserService.prototype.setAddressAsDefault = /**
          * Sets user address as default
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @return {?}
          */
-            function (userId, addressId) {
+            function (addressId) {
                 this.store.dispatch(new UpdateUserAddress({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     addressId: addressId,
                     address: { defaultAddress: true },
                 }));
             };
         /**
          * Updates existing user address
-         * @param userId a user ID
          * @param addressId a user address ID
          * @param address a user address
          */
         /**
          * Updates existing user address
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @param {?} address a user address
          * @return {?}
          */
         UserService.prototype.updateUserAddress = /**
          * Updates existing user address
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @param {?} address a user address
          * @return {?}
          */
-            function (userId, addressId, address) {
+            function (addressId, address) {
                 this.store.dispatch(new UpdateUserAddress({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     addressId: addressId,
                     address: address,
                 }));
             };
         /**
          * Deletes existing user address
-         * @param userId a user ID
          * @param addressId a user address ID
          */
         /**
          * Deletes existing user address
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @return {?}
          */
         UserService.prototype.deleteUserAddress = /**
          * Deletes existing user address
-         * @param {?} userId a user ID
          * @param {?} addressId a user address ID
          * @return {?}
          */
-            function (userId, addressId) {
+            function (addressId) {
                 this.store.dispatch(new DeleteUserAddress({
-                    userId: userId,
+                    userId: USERID_CURRENT,
                     addressId: addressId,
                 }));
             };
@@ -17916,14 +17901,7 @@
          * @return {?}
          */
             function () {
-                var _this = this;
-                this.userService
-                    .get()
-                    .pipe(operators.take(1))
-                    .subscribe(function (_a) {
-                    var uid = _a.uid;
-                    _this.userService.loadAddresses(uid);
-                });
+                this.userService.loadAddresses();
             };
         UserAddressesEffects.decorators = [
             { type: i0.Injectable }

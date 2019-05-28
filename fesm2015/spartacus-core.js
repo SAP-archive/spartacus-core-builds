@@ -13724,60 +13724,55 @@ class UserService {
     }
     /**
      * Retrieves user's addresses
-     * @param {?} userId a user ID
      * @return {?}
      */
-    loadAddresses(userId) {
-        this.store.dispatch(new LoadUserAddresses(userId));
+    loadAddresses() {
+        this.store.dispatch(new LoadUserAddresses(USERID_CURRENT));
     }
     /**
      * Adds user address
-     * @param {?} userId a user ID
      * @param {?} address a user address
      * @return {?}
      */
-    addUserAddress(userId, address) {
+    addUserAddress(address) {
         this.store.dispatch(new AddUserAddress({
-            userId: userId,
+            userId: USERID_CURRENT,
             address: address,
         }));
     }
     /**
      * Sets user address as default
-     * @param {?} userId a user ID
      * @param {?} addressId a user address ID
      * @return {?}
      */
-    setAddressAsDefault(userId, addressId) {
+    setAddressAsDefault(addressId) {
         this.store.dispatch(new UpdateUserAddress({
-            userId: userId,
+            userId: USERID_CURRENT,
             addressId: addressId,
             address: { defaultAddress: true },
         }));
     }
     /**
      * Updates existing user address
-     * @param {?} userId a user ID
      * @param {?} addressId a user address ID
      * @param {?} address a user address
      * @return {?}
      */
-    updateUserAddress(userId, addressId, address) {
+    updateUserAddress(addressId, address) {
         this.store.dispatch(new UpdateUserAddress({
-            userId: userId,
+            userId: USERID_CURRENT,
             addressId: addressId,
             address: address,
         }));
     }
     /**
      * Deletes existing user address
-     * @param {?} userId a user ID
      * @param {?} addressId a user address ID
      * @return {?}
      */
-    deleteUserAddress(userId, addressId) {
+    deleteUserAddress(addressId) {
         this.store.dispatch(new DeleteUserAddress({
-            userId: userId,
+            userId: USERID_CURRENT,
             addressId: addressId,
         }));
     }
@@ -14855,12 +14850,7 @@ class UserAddressesEffects {
      * @return {?}
      */
     loadAddresses() {
-        this.userService
-            .get()
-            .pipe(take(1))
-            .subscribe(({ uid }) => {
-            this.userService.loadAddresses(uid);
-        });
+        this.userService.loadAddresses();
     }
 }
 UserAddressesEffects.decorators = [
