@@ -214,9 +214,8 @@ export declare class UserService {
     requestForgotPasswordEmail(userEmailAddress: string): void;
     /**
      * Updates the user's email
-     * @param uid to be updated
      */
-    updateEmail(uid: string, password: string, newUid: string): void;
+    updateEmail(password: string, newUid: string): void;
     /**
      * Returns the update user's email success flag
      */

@@ -16647,24 +16647,21 @@
             };
         /**
          * Updates the user's email
-         * @param uid to be updated
          */
         /**
          * Updates the user's email
-         * @param {?} uid to be updated
          * @param {?} password
          * @param {?} newUid
          * @return {?}
          */
         UserService.prototype.updateEmail = /**
          * Updates the user's email
-         * @param {?} uid to be updated
          * @param {?} password
          * @param {?} newUid
          * @return {?}
          */
-            function (uid, password, newUid) {
-                this.store.dispatch(new UpdateEmailAction({ uid: uid, password: password, newUid: newUid }));
+            function (password, newUid) {
+                this.store.dispatch(new UpdateEmailAction({ uid: USERID_CURRENT, password: password, newUid: newUid }));
             };
         /**
          * Returns the update user's email success flag

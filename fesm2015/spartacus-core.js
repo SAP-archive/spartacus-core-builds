@@ -13931,13 +13931,12 @@ class UserService {
     }
     /**
      * Updates the user's email
-     * @param {?} uid to be updated
      * @param {?} password
      * @param {?} newUid
      * @return {?}
      */
-    updateEmail(uid, password, newUid) {
-        this.store.dispatch(new UpdateEmailAction({ uid, password, newUid }));
+    updateEmail(password, newUid) {
+        this.store.dispatch(new UpdateEmailAction({ uid: USERID_CURRENT, password, newUid }));
     }
     /**
      * Returns the update user's email success flag
