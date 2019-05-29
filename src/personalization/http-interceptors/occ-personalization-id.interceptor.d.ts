@@ -10,6 +10,7 @@ export declare class OccPersonalizationIdInterceptor implements HttpInterceptor 
     private platform;
     private personalizationId;
     private requestHeader;
+    private enabled;
     constructor(config: PersonalizationConfig, occEndpoints: OccEndpointsService, winRef: WindowRef, platform: any);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
 }

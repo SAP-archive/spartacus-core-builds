@@ -1,6 +1,7 @@
 export declare abstract class PersonalizationConfig {
     personalization: {
-        httpHeaderName: {
+        enabled?: boolean;
+        httpHeaderName?: {
             id: string;
             timestamp: string;
         };

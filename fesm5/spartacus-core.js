@@ -25424,6 +25424,7 @@ PersonalizationConfig = /** @class */ (function () {
 /** @type {?} */
 var defaultPersonalizationConfig = {
     personalization: {
+        enabled: false,
         httpHeaderName: {
             id: 'Occ-Personalization-Id',
             timestamp: 'Occ-Personalization-Time',
@@ -25443,10 +25444,16 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
         this.platform = platform;
-        this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
-        this.personalizationId =
-            this.winRef.localStorage &&
-                this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
+        this.enabled = this.config.personalization.enabled || false;
+        if (this.enabled) {
+            this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
+            this.personalizationId =
+                this.winRef.localStorage &&
+                    this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
+        }
+        else if (this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY)) {
+            this.winRef.localStorage.removeItem(PERSONALIZATION_ID_KEY);
+        }
     }
     /**
      * @param {?} request
@@ -25461,7 +25468,7 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
     function (request, next) {
         var _this = this;
         var _a;
-        if (isPlatformServer(this.platform)) {
+        if (isPlatformServer(this.platform) || !this.enabled) {
             return next.handle(request);
         }
         if (this.personalizationId &&
@@ -25510,10 +25517,16 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
         this.platform = platform;
-        this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
-        this.timestamp =
-            this.winRef.localStorage &&
-                this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
+        this.enabled = this.config.personalization.enabled || false;
+        if (this.enabled) {
+            this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
+            this.timestamp =
+                this.winRef.localStorage &&
+                    this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
+        }
+        else if (this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY)) {
+            this.winRef.localStorage.removeItem(PERSONALIZATION_TIME_KEY);
+        }
     }
     /**
      * @param {?} request
@@ -25528,7 +25541,7 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
     function (request, next) {
         var _this = this;
         var _a;
-        if (isPlatformServer(this.platform)) {
+        if (isPlatformServer(this.platform) || !this.enabled) {
             return next.handle(request);
         }
         if (this.timestamp &&

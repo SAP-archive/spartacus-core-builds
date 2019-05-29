@@ -10,6 +10,7 @@ export declare class OccPersonalizationTimeInterceptor implements HttpIntercepto
     private platform;
     private timestamp;
     private requestHeader;
+    private enabled;
     constructor(config: PersonalizationConfig, occEndpoints: OccEndpointsService, winRef: WindowRef, platform: any);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
 }
