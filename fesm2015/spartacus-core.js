@@ -9720,9 +9720,10 @@ class LoadComponentFail extends EntityFailAction {
 class LoadComponentSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
+     * @param {?=} uid
      */
-    constructor(payload) {
-        super(COMPONENT_ENTITY, payload.uid);
+    constructor(payload, uid) {
+        super(COMPONENT_ENTITY, uid || payload.uid || '');
         this.payload = payload;
         this.type = LOAD_COMPONENT_SUCCESS;
     }
@@ -9850,7 +9851,7 @@ const getPageComponentTypes = (pageContext) => createSelector(getPageData(pageCo
 const currentSlotSelectorFactory = (pageContext, position) => {
     return createSelector(getPageData(pageContext), entity => {
         if (entity) {
-            return entity.slots[position];
+            return entity.slots[position] || { components: [] };
         }
     });
 };
@@ -10170,7 +10171,7 @@ class ComponentEffects {
         this.cmsComponentLoader = cmsComponentLoader;
         this.routingService = routingService;
         this.loadComponent$ = this.actions$.pipe(ofType(LOAD_COMPONENT), map((action) => action.payload), groupBy(uid => uid), mergeMap(group => group.pipe(switchMap(uid => {
-            return this.routingService.getRouterState().pipe(filter(routerState => routerState !== undefined), map(routerState => routerState.state.context), take(1), mergeMap(pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map(data => new LoadComponentSuccess(data)), catchError(error => of(new LoadComponentFail(uid, error))))));
+            return this.routingService.getRouterState().pipe(filter(routerState => routerState !== undefined), map(routerState => routerState.state.context), take(1), mergeMap(pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map(data => new LoadComponentSuccess(data, uid)), catchError(error => of(new LoadComponentFail(uid, error))))));
         }))));
     }
 }
@@ -10347,9 +10348,7 @@ class CmsService {
      * @return {?}
      */
     getContentSlot(position) {
-        return this.routingService
-            .getPageContext()
-            .pipe(switchMap(pageContext => this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)))));
+        return this.routingService.getPageContext().pipe(switchMap(pageContext => this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)), filter(Boolean))));
     }
     /**
      * Given navigation node uid, get items (with id and type) inside the navigation entries

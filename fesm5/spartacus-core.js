@@ -11156,8 +11156,8 @@ var  /**
  */
 LoadComponentSuccess = /** @class */ (function (_super) {
     __extends(LoadComponentSuccess, _super);
-    function LoadComponentSuccess(payload) {
-        var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
+    function LoadComponentSuccess(payload, uid) {
+        var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
         _this.payload = payload;
         _this.type = LOAD_COMPONENT_SUCCESS;
         return _this;
@@ -11322,7 +11322,7 @@ var getPageComponentTypes = function (pageContext) {
 var currentSlotSelectorFactory = function (pageContext, position) {
     return createSelector(getPageData(pageContext), function (entity) {
         if (entity) {
-            return entity.slots[position];
+            return entity.slots[position] || { components: [] };
         }
     });
 };
@@ -11652,7 +11652,7 @@ var ComponentEffects = /** @class */ (function () {
         this.loadComponent$ = this.actions$.pipe(ofType(LOAD_COMPONENT), map(function (action) { return action.payload; }), groupBy(function (uid) { return uid; }), mergeMap(function (group) {
             return group.pipe(switchMap(function (uid) {
                 return _this.routingService.getRouterState().pipe(filter(function (routerState) { return routerState !== undefined; }), map(function (routerState) { return routerState.state.context; }), take(1), mergeMap(function (pageContext) {
-                    return _this.cmsComponentLoader.get(uid, pageContext).pipe(map(function (data) { return new LoadComponentSuccess(data); }), catchError(function (error) {
+                    return _this.cmsComponentLoader.get(uid, pageContext).pipe(map(function (data) { return new LoadComponentSuccess(data, uid); }), catchError(function (error) {
                         return of(new LoadComponentFail(uid, error));
                     }));
                 }));
@@ -11884,10 +11884,8 @@ var CmsService = /** @class */ (function () {
      */
     function (position) {
         var _this = this;
-        return this.routingService
-            .getPageContext()
-            .pipe(switchMap(function (pageContext) {
-            return _this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)));
+        return this.routingService.getPageContext().pipe(switchMap(function (pageContext) {
+            return _this.store.pipe(select(currentSlotSelectorFactory(pageContext, position)), filter(Boolean));
         }));
     };
     /**

@@ -1,5 +1,5 @@
 import { MemoizedSelector } from '@ngrx/store';
-import { PageState, StateWithCms, IndexType } from '../cms-state';
+import { IndexType, PageState, StateWithCms } from '../cms-state';
 import { PageContext } from '../../../routing';
 import { LoaderState } from '../../../state';
 import { ContentSlotData } from '../../model/content-slot-data.model';

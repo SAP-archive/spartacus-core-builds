@@ -11290,8 +11290,8 @@
      * @template T
      */ LoadComponentSuccess = /** @class */ (function (_super) {
         __extends(LoadComponentSuccess, _super);
-        function LoadComponentSuccess(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.uid) || this;
+        function LoadComponentSuccess(payload, uid) {
+            var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
             _this.payload = payload;
             _this.type = LOAD_COMPONENT_SUCCESS;
             return _this;
@@ -11467,7 +11467,7 @@
     var currentSlotSelectorFactory = function (pageContext, position) {
         return i1.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
-                return entity.slots[position];
+                return entity.slots[position] || { components: [] };
             }
         });
     };
@@ -11792,7 +11792,7 @@
             this.loadComponent$ = this.actions$.pipe(effects.ofType(LOAD_COMPONENT), operators.map(function (action) { return action.payload; }), operators.groupBy(function (uid) { return uid; }), operators.mergeMap(function (group) {
                 return group.pipe(operators.switchMap(function (uid) {
                     return _this.routingService.getRouterState().pipe(operators.filter(function (routerState) { return routerState !== undefined; }), operators.map(function (routerState) { return routerState.state.context; }), operators.take(1), operators.mergeMap(function (pageContext) {
-                        return _this.cmsComponentLoader.get(uid, pageContext).pipe(operators.map(function (data) { return new LoadComponentSuccess(data); }), operators.catchError(function (error) {
+                        return _this.cmsComponentLoader.get(uid, pageContext).pipe(operators.map(function (data) { return new LoadComponentSuccess(data, uid); }), operators.catchError(function (error) {
                             return rxjs.of(new LoadComponentFail(uid, error));
                         }));
                     }));
@@ -12027,10 +12027,8 @@
          */
             function (position) {
                 var _this = this;
-                return this.routingService
-                    .getPageContext()
-                    .pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1.select(currentSlotSelectorFactory(pageContext, position)));
+                return this.routingService.getPageContext().pipe(operators.switchMap(function (pageContext) {
+                    return _this.store.pipe(i1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
                 }));
             };
         /**

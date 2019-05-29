@@ -17,7 +17,7 @@ export declare class LoadComponentFail extends EntityFailAction {
 export declare class LoadComponentSuccess<T extends CmsComponent> extends EntitySuccessAction {
     payload: T;
     readonly type = "[Cms] Load Component Success";
-    constructor(payload: T);
+    constructor(payload: T, uid?: string);
 }
 export declare class GetComponentFromPage<T extends CmsComponent> extends EntitySuccessAction {
     payload: T[];
