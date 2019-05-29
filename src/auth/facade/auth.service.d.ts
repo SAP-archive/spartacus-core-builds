@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { LoaderState } from '../../state/utils/loader/loader-state';
-import { ClientToken, UserToken } from '../models/token-types.model';
+import { ClientToken, OpenIdToken, UserToken } from '../models/token-types.model';
 import { StateWithAuth } from '../store/auth-state';
 export declare class AuthService {
     protected store: Store<StateWithAuth>;
@@ -39,5 +39,16 @@ export declare class AuthService {
      * The new clientToken is returned.
      */
     refreshClientToken(): Observable<ClientToken>;
+    /**
+     * Authorizes using the Kyma OAuth client with scope `openid`.
+     *
+     * @param username a username
+     * @param password a password
+     */
+    authorizeOpenId(username: string, password: string): void;
+    /**
+     * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
+     */
+    getOpenIdToken(): Observable<OpenIdToken>;
     protected isClientTokenLoaded(state: LoaderState<ClientToken>): boolean;
 }

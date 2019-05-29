@@ -13,4 +13,7 @@ export interface ClientToken {
     expires_in: number;
     scope: string;
 }
-export declare type AuthenticationToken = UserToken | ClientToken;
+export interface OpenIdToken extends UserToken {
+    id_token: string;
+}
+export declare type AuthenticationToken = UserToken | ClientToken | OpenIdToken;
