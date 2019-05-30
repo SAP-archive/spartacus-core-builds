@@ -17483,25 +17483,49 @@
      */
     var /**
      * @abstract
-     */ UserAccountAdapter = /** @class */ (function () {
-        function UserAccountAdapter() {
+     */ UserAdapter = /** @class */ (function () {
+        function UserAdapter() {
         }
-        return UserAccountAdapter;
+        return UserAdapter;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UserAccountConnector = /** @class */ (function () {
-        function UserAccountConnector(adapter) {
+    var UserConnector = /** @class */ (function () {
+        function UserConnector(adapter) {
             this.adapter = adapter;
         }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserConnector.prototype.get = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                return this.adapter.load(userId);
+            };
+        /**
+         * @param {?} username
+         * @param {?} user
+         * @return {?}
+         */
+        UserConnector.prototype.update = /**
+         * @param {?} username
+         * @param {?} user
+         * @return {?}
+         */
+            function (username, user) {
+                return this.adapter.update(username, user);
+            };
         /**
          * @param {?} user
          * @return {?}
          */
-        UserAccountConnector.prototype.register = /**
+        UserConnector.prototype.register = /**
          * @param {?} user
          * @return {?}
          */
@@ -17512,7 +17536,7 @@
          * @param {?} userEmailAddress
          * @return {?}
          */
-        UserAccountConnector.prototype.requestForgotPasswordEmail = /**
+        UserConnector.prototype.requestForgotPasswordEmail = /**
          * @param {?} userEmailAddress
          * @return {?}
          */
@@ -17524,7 +17548,7 @@
          * @param {?} newPassword
          * @return {?}
          */
-        UserAccountConnector.prototype.resetPassword = /**
+        UserConnector.prototype.resetPassword = /**
          * @param {?} token
          * @param {?} newPassword
          * @return {?}
@@ -17538,7 +17562,7 @@
          * @param {?} newUserId
          * @return {?}
          */
-        UserAccountConnector.prototype.updateEmail = /**
+        UserConnector.prototype.updateEmail = /**
          * @param {?} userId
          * @param {?} currentPassword
          * @param {?} newUserId
@@ -17553,7 +17577,7 @@
          * @param {?} newPassword
          * @return {?}
          */
-        UserAccountConnector.prototype.updatePassword = /**
+        UserConnector.prototype.updatePassword = /**
          * @param {?} userId
          * @param {?} oldPassword
          * @param {?} newPassword
@@ -17566,7 +17590,7 @@
          * @param {?} userId
          * @return {?}
          */
-        UserAccountConnector.prototype.remove = /**
+        UserConnector.prototype.remove = /**
          * @param {?} userId
          * @return {?}
          */
@@ -17576,25 +17600,25 @@
         /**
          * @return {?}
          */
-        UserAccountConnector.prototype.getTitles = /**
+        UserConnector.prototype.getTitles = /**
          * @return {?}
          */
             function () {
                 return this.adapter.loadTitles();
             };
-        UserAccountConnector.decorators = [
+        UserConnector.decorators = [
             { type: i0.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        UserAccountConnector.ctorParameters = function () {
+        UserConnector.ctorParameters = function () {
             return [
-                { type: UserAccountAdapter }
+                { type: UserAdapter }
             ];
         };
-        /** @nocollapse */ UserAccountConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserAccountConnector_Factory() { return new UserAccountConnector(i0.inject(UserAccountAdapter)); }, token: UserAccountConnector, providedIn: "root" });
-        return UserAccountConnector;
+        /** @nocollapse */ UserConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(i0.inject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+        return UserConnector;
     }());
 
     /**
@@ -17631,7 +17655,7 @@
         ForgotPasswordEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -17953,7 +17977,7 @@
         ResetPasswordEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18008,7 +18032,7 @@
         TitlesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18044,7 +18068,7 @@
         UpdateEmailEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18076,7 +18100,7 @@
         UpdatePasswordEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18359,84 +18383,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ UserDetailsAdapter = /** @class */ (function () {
-        function UserDetailsAdapter() {
-        }
-        return UserDetailsAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UserDetailsConnector = /** @class */ (function () {
-        function UserDetailsConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        UserDetailsConnector.prototype.get = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                return this.adapter.load(userId);
-            };
-        /**
-         * @param {?} username
-         * @param {?} user
-         * @return {?}
-         */
-        UserDetailsConnector.prototype.update = /**
-         * @param {?} username
-         * @param {?} user
-         * @return {?}
-         */
-            function (username, user) {
-                return this.adapter.update(username, user);
-            };
-        UserDetailsConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UserDetailsConnector.ctorParameters = function () {
-            return [
-                { type: UserDetailsAdapter }
-            ];
-        };
-        /** @nocollapse */ UserDetailsConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserDetailsConnector_Factory() { return new UserDetailsConnector(i0.inject(UserDetailsAdapter)); }, token: UserDetailsConnector, providedIn: "root" });
-        return UserDetailsConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var UserDetailsEffects = /** @class */ (function () {
-        function UserDetailsEffects(actions$, userDetailsConnector) {
+        function UserDetailsEffects(actions$, userConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userDetailsConnector = userDetailsConnector;
+            this.userConnector = userConnector;
             this.loadUserDetails$ = this.actions$.pipe(effects.ofType(LOAD_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
-                return _this.userDetailsConnector.get(userId).pipe(operators.map(function (user) {
+                return _this.userConnector.get(userId).pipe(operators.map(function (user) {
                     return new LoadUserDetailsSuccess(user);
                 }), operators.catchError(function (error) {
                     return rxjs.of(new LoadUserDetailsFail(error));
                 }));
             }));
             this.updateUserDetails$ = this.actions$.pipe(effects.ofType(UPDATE_USER_DETAILS), operators.map(function (action) { return action.payload; }), operators.concatMap(function (payload) {
-                return _this.userDetailsConnector
-                    .update(payload.username, payload.userDetails)
-                    .pipe(operators.map(function (_) {
+                return _this.userConnector.update(payload.username, payload.userDetails).pipe(operators.map(function (_) {
                     return new UpdateUserDetailsSuccess(payload.userDetails);
                 }), operators.catchError(function (error) {
                     return rxjs.of(new UpdateUserDetailsFail(error));
@@ -18450,7 +18410,7 @@
         UserDetailsEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserDetailsConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18512,12 +18472,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserRegisterEffects = /** @class */ (function () {
-        function UserRegisterEffects(actions$, userAccountConnector) {
+        function UserRegisterEffects(actions$, userConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userAccountConnector = userAccountConnector;
+            this.userConnector = userConnector;
             this.registerUser$ = this.actions$.pipe(effects.ofType(REGISTER_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (user) {
-                return _this.userAccountConnector.register(user).pipe(operators.switchMap(function (_result) {
+                return _this.userConnector.register(user).pipe(operators.switchMap(function (_result) {
                     return [
                         new LoadUserToken({
                             userId: user.uid,
@@ -18532,7 +18492,7 @@
                 }), operators.catchError(function (error) { return rxjs.of(new RegisterUserFail(error)); }));
             }));
             this.removeUser$ = this.actions$.pipe(effects.ofType(REMOVE_USER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (userId) {
-                return _this.userAccountConnector.remove(userId).pipe(operators.switchMap(function (_result) {
+                return _this.userConnector.remove(userId).pipe(operators.switchMap(function (_result) {
                     return [
                         new RemoveUserSuccess(),
                         new Logout(),
@@ -18547,7 +18507,7 @@
         UserRegisterEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserAccountConnector }
+                { type: UserConnector }
             ];
         };
         __decorate([
@@ -18628,6 +18588,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
+    /** @type {?} */
+    var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
+    /** @type {?} */
     var USER_SIGN_UP_SERIALIZER = new i0.InjectionToken('UserSignUpSerializer');
     /** @type {?} */
     var TITLE_NORMALIZER = new i0.InjectionToken('TitleNormalizer');
@@ -18659,20 +18623,6 @@
      */
     /** @type {?} */
     var CONSENT_TEMPLATE_NORMALIZER = new i0.InjectionToken('ConsentTemplateNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_NORMALIZER = new i0.InjectionToken('UserNormalizer');
-    /** @type {?} */
-    var USER_SERIALIZER = new i0.InjectionToken('UserSerializer');
 
     /**
      * @fileoverview added by tsickle
@@ -22955,78 +22905,6 @@
      */
     /** @type {?} */
     var USER_ENDPOINT = 'users/';
-    var OccUserDetailsAdapter = /** @class */ (function () {
-        function OccUserDetailsAdapter(http$$1, occEndpoints, converter) {
-            this.http = http$$1;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserDetailsAdapter.prototype.getUserEndpoint = /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                /** @type {?} */
-                var endpoint = "" + USER_ENDPOINT + userId;
-                return this.occEndpoints.getEndpoint(endpoint);
-            };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserDetailsAdapter.prototype.load = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                /** @type {?} */
-                var url = this.getUserEndpoint(userId);
-                return this.http.get(url).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(USER_NORMALIZER));
-            };
-        /**
-         * @param {?} userId
-         * @param {?} user
-         * @return {?}
-         */
-        OccUserDetailsAdapter.prototype.update = /**
-         * @param {?} userId
-         * @param {?} user
-         * @return {?}
-         */
-            function (userId, user) {
-                /** @type {?} */
-                var url = this.getUserEndpoint(userId);
-                user = this.converter.convert(user, USER_SERIALIZER);
-                return this.http
-                    .patch(url, user)
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        OccUserDetailsAdapter.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccUserDetailsAdapter.ctorParameters = function () {
-            return [
-                { type: http.HttpClient },
-                { type: OccEndpointsService },
-                { type: ConverterService }
-            ];
-        };
-        return OccUserDetailsAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_ENDPOINT$1 = 'users/';
     /** @type {?} */
     var ADDRESSES_ENDPOINT = '/addresses';
     /** @type {?} */
@@ -23049,7 +22927,7 @@
          */
             function (userId) {
                 /** @type {?} */
-                var endpoint = "" + USER_ENDPOINT$1 + userId;
+                var endpoint = "" + USER_ENDPOINT + userId;
                 return this.occEndpoints.getEndpoint(endpoint);
             };
         /**
@@ -23175,7 +23053,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_ENDPOINT$2 = 'users/';
+    var USER_ENDPOINT$1 = 'users/';
     /** @type {?} */
     var FORGOT_PASSWORD_ENDPOINT = '/forgottenpasswordtokens';
     /** @type {?} */
@@ -23186,8 +23064,8 @@
     var UPDATE_PASSWORD_ENDPOINT = '/password';
     /** @type {?} */
     var TITLES_ENDPOINT = 'titles';
-    var OccUserAccountAdapter = /** @class */ (function () {
-        function OccUserAccountAdapter(http$$1, occEndpoints, converter) {
+    var OccUserAdapter = /** @class */ (function () {
+        function OccUserAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
@@ -23197,21 +23075,52 @@
          * @param {?=} userId
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.getUserEndpoint = /**
+        OccUserAdapter.prototype.getUserEndpoint = /**
          * @private
          * @param {?=} userId
          * @return {?}
          */
             function (userId) {
                 /** @type {?} */
-                var endpoint = userId ? "" + USER_ENDPOINT$2 + userId : USER_ENDPOINT$2;
+                var endpoint = userId ? "" + USER_ENDPOINT$1 + userId : USER_ENDPOINT$1;
                 return this.occEndpoints.getEndpoint(endpoint);
+            };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserAdapter.prototype.load = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                /** @type {?} */
+                var url = this.getUserEndpoint(userId);
+                return this.http.get(url).pipe(operators.catchError(function (error) { return rxjs.throwError(error); }), this.converter.pipeable(USER_NORMALIZER));
+            };
+        /**
+         * @param {?} userId
+         * @param {?} user
+         * @return {?}
+         */
+        OccUserAdapter.prototype.update = /**
+         * @param {?} userId
+         * @param {?} user
+         * @return {?}
+         */
+            function (userId, user) {
+                /** @type {?} */
+                var url = this.getUserEndpoint(userId);
+                user = this.converter.convert(user, USER_SERIALIZER);
+                return this.http
+                    .patch(url, user)
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
             };
         /**
          * @param {?} user
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.register = /**
+        OccUserAdapter.prototype.register = /**
          * @param {?} user
          * @return {?}
          */
@@ -23230,7 +23139,7 @@
          * @param {?} userEmailAddress
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.requestForgotPasswordEmail = /**
+        OccUserAdapter.prototype.requestForgotPasswordEmail = /**
          * @param {?} userEmailAddress
          * @return {?}
          */
@@ -23253,7 +23162,7 @@
          * @param {?} newPassword
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.resetPassword = /**
+        OccUserAdapter.prototype.resetPassword = /**
          * @param {?} token
          * @param {?} newPassword
          * @return {?}
@@ -23276,7 +23185,7 @@
          * @param {?} newUserId
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.updateEmail = /**
+        OccUserAdapter.prototype.updateEmail = /**
          * @param {?} userId
          * @param {?} currentPassword
          * @param {?} newUserId
@@ -23303,7 +23212,7 @@
          * @param {?} newPassword
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.updatePassword = /**
+        OccUserAdapter.prototype.updatePassword = /**
          * @param {?} userId
          * @param {?} oldPassword
          * @param {?} newPassword
@@ -23328,7 +23237,7 @@
          * @param {?} userId
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.remove = /**
+        OccUserAdapter.prototype.remove = /**
          * @param {?} userId
          * @return {?}
          */
@@ -23342,7 +23251,7 @@
         /**
          * @return {?}
          */
-        OccUserAccountAdapter.prototype.loadTitles = /**
+        OccUserAdapter.prototype.loadTitles = /**
          * @return {?}
          */
             function () {
@@ -23350,18 +23259,18 @@
                     .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (titleList) { return titleList.titles; }), this.converter.pipeableMany(TITLE_NORMALIZER));
             };
-        OccUserAccountAdapter.decorators = [
+        OccUserAdapter.decorators = [
             { type: i0.Injectable }
         ];
         /** @nocollapse */
-        OccUserAccountAdapter.ctorParameters = function () {
+        OccUserAdapter.ctorParameters = function () {
             return [
                 { type: http.HttpClient },
                 { type: OccEndpointsService },
                 { type: ConverterService }
             ];
         };
-        return OccUserAccountAdapter;
+        return OccUserAdapter;
     }());
 
     /**
@@ -23369,7 +23278,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_ENDPOINT$3 = 'users/';
+    var USER_ENDPOINT$2 = 'users/';
     /** @type {?} */
     var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
     var OccUserPaymentAdapter = /** @class */ (function () {
@@ -23390,7 +23299,7 @@
          */
             function (userId) {
                 /** @type {?} */
-                var endpoint = "" + USER_ENDPOINT$3 + userId + PAYMENT_DETAILS_ENDPOINT;
+                var endpoint = "" + USER_ENDPOINT$2 + userId + PAYMENT_DETAILS_ENDPOINT;
                 return this.occEndpoints.getEndpoint(endpoint);
             };
         /**
@@ -23473,7 +23382,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_ENDPOINT$4 = 'users/';
+    var USER_ENDPOINT$3 = 'users/';
     /** @type {?} */
     var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
     /** @type {?} */
@@ -23496,7 +23405,7 @@
          */
             function (userId) {
                 /** @type {?} */
-                var endpoint = userId ? "" + USER_ENDPOINT$4 + userId : USER_ENDPOINT$4;
+                var endpoint = userId ? "" + USER_ENDPOINT$3 + userId : USER_ENDPOINT$3;
                 return this.occEndpoints.getEndpoint(endpoint);
             };
         /**
@@ -23586,9 +23495,8 @@
             { type: i0.NgModule, args: [{
                         imports: [i1$1.CommonModule, http.HttpClientModule],
                         providers: [
-                            { provide: UserDetailsAdapter, useClass: OccUserDetailsAdapter },
+                            { provide: UserAdapter, useClass: OccUserAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
-                            { provide: UserAccountAdapter, useClass: OccUserAccountAdapter },
                             { provide: UserConsentAdapter, useClass: OccUserConsentAdapter },
                             {
                                 provide: UserPaymentAdapter,
@@ -26370,9 +26278,8 @@
     exports.StoreFinderOccModule = StoreFinderOccModule;
     exports.OccStoreFinderAdapter = OccStoreFinderAdapter;
     exports.OccUserAddressAdapter = OccUserAddressAdapter;
-    exports.OccUserAccountAdapter = OccUserAccountAdapter;
+    exports.OccUserAdapter = OccUserAdapter;
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
-    exports.OccUserDetailsAdapter = OccUserDetailsAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.UserOccModule = UserOccModule;
@@ -26848,8 +26755,10 @@
     exports.USER_ADDRESSES = USER_ADDRESSES;
     exports.UserService = UserService;
     exports.UserModule = UserModule;
-    exports.UserAccountConnector = UserAccountConnector;
-    exports.UserAccountAdapter = UserAccountAdapter;
+    exports.UserConnector = UserConnector;
+    exports.UserAdapter = UserAdapter;
+    exports.USER_NORMALIZER = USER_NORMALIZER;
+    exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
     exports.UserAddressConnector = UserAddressConnector;
@@ -26860,10 +26769,6 @@
     exports.UserConsentConnector = UserConsentConnector;
     exports.UserConsentAdapter = UserConsentAdapter;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
-    exports.UserDetailsConnector = UserDetailsConnector;
-    exports.UserDetailsAdapter = UserDetailsAdapter;
-    exports.USER_NORMALIZER = USER_NORMALIZER;
-    exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.UserPaymentConnector = UserPaymentConnector;
     exports.UserPaymentAdapter = UserPaymentAdapter;
     exports.UserOrderConnector = UserOrderConnector;
