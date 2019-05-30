@@ -17,7 +17,7 @@ export declare class UserService {
     /**
      * Loads the user's details
      */
-    load(userId: string): void;
+    load(): void;
     /**
      * Register a new user
      *
@@ -225,8 +225,7 @@ export declare class UserService {
      */
     resetUpdateEmailResultState(): void;
     /**
-     * Updates the password for an authenticated user
-     * @param userId the user id for which the password will be updated
+     * Updates the password for the user
      * @param oldPassword the current password that will be changed
      * @param newPassword the new password
      */

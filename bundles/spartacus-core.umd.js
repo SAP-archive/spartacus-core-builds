@@ -16245,16 +16245,14 @@
          */
         /**
          * Loads the user's details
-         * @param {?} userId
          * @return {?}
          */
         UserService.prototype.load = /**
          * Loads the user's details
-         * @param {?} userId
          * @return {?}
          */
-            function (userId) {
-                this.store.dispatch(new LoadUserDetails(userId));
+            function () {
+                this.store.dispatch(new LoadUserDetails(USERID_CURRENT));
             };
         /**
          * Register a new user
@@ -17027,19 +17025,18 @@
                 this.store.dispatch(new ResetUpdateEmailAction());
             };
         /**
-         * Updates the password for an authenticated user
-         * @param userId the user id for which the password will be updated
+         * Updates the password for the user
          * @param oldPassword the current password that will be changed
          * @param newPassword the new password
          */
         /**
-         * Updates the password for an authenticated user
+         * Updates the password for the user
          * @param {?} oldPassword the current password that will be changed
          * @param {?} newPassword the new password
          * @return {?}
          */
         UserService.prototype.updatePassword = /**
-         * Updates the password for an authenticated user
+         * Updates the password for the user
          * @param {?} oldPassword the current password that will be changed
          * @param {?} newPassword the new password
          * @return {?}
