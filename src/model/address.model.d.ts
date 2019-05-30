@@ -3,6 +3,10 @@ export interface Country {
     isocode?: string;
     name?: string;
 }
+export declare enum CountryType {
+    BILLING = "BILLING",
+    SHIPPING = "SHIPPING"
+}
 export interface Region {
     countryIso?: string;
     isocode?: string;

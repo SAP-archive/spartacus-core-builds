@@ -12,6 +12,16 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @enum {string} */
+    var CountryType = {
+        BILLING: 'BILLING',
+        SHIPPING: 'SHIPPING',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
     var PageType = {
         CONTENT_PAGE: 'ContentPage',
         PRODUCT_PAGE: 'ProductPage',
@@ -45,6 +55,11 @@
      */
     /** @type {?} */
     var testestsd = 'sare';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -5731,6 +5746,28 @@
                 return this.adapter.loadCurrencies();
             };
         /**
+         * @param {?=} type
+         * @return {?}
+         */
+        SiteConnector.prototype.getCountries = /**
+         * @param {?=} type
+         * @return {?}
+         */
+            function (type) {
+                return this.adapter.loadCountries(type);
+            };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        SiteConnector.prototype.getRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                return this.adapter.loadRegions(countryIsoCode);
+            };
+        /**
          * @return {?}
          */
         SiteConnector.prototype.getBaseSite = /**
@@ -7162,6 +7199,10 @@
     var LANGUAGE_NORMALIZER = new i0.InjectionToken('LanguageNormalizer');
     /** @type {?} */
     var CURRENCY_NORMALIZER = new i0.InjectionToken('CurrencyNormalizer');
+    /** @type {?} */
+    var COUNTRY_NORMALIZER = new i0.InjectionToken('CountryNormalizer');
+    /** @type {?} */
+    var REGION_NORMALIZER = new i0.InjectionToken('RegionNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -17377,117 +17418,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ UserPaymentAdapter = /** @class */ (function () {
-        function UserPaymentAdapter() {
-        }
-        return UserPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UserPaymentConnector = /** @class */ (function () {
-        function UserPaymentConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.getAll = /**
-         * @param {?} userId
-         * @return {?}
-         */
-            function (userId) {
-                return this.adapter.loadAll(userId);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.delete = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-            function (userId, paymentMethodID) {
-                return this.adapter.delete(userId, paymentMethodID);
-            };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.setDefault = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-            function (userId, paymentMethodID) {
-                return this.adapter.setDefault(userId, paymentMethodID);
-            };
-        /**
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.getBillingCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.adapter.loadBillingCountries();
-            };
-        /**
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.getDeliveryCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.adapter.loadDeliveryCountries();
-            };
-        /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        UserPaymentConnector.prototype.getRegions = /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                return this.adapter.loadRegions(countryIsoCode);
-            };
-        UserPaymentConnector.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UserPaymentConnector.ctorParameters = function () {
-            return [
-                { type: UserPaymentAdapter }
-            ];
-        };
-        /** @nocollapse */ UserPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.inject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
-        return UserPaymentConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var BillingCountriesEffect = /** @class */ (function () {
-        function BillingCountriesEffect(actions$, userPaymentConnector) {
+        function BillingCountriesEffect(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userPaymentConnector = userPaymentConnector;
+            this.siteConnector = siteConnector;
             this.loadBillingCountries$ = this.actions$.pipe(effects.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap(function () {
-                return _this.userPaymentConnector.getBillingCountries().pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(error)); }));
+                return _this.siteConnector.getCountries(CountryType.BILLING).pipe(operators.map(function (countries) { return new LoadBillingCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadBillingCountriesFail(error)); }));
             }));
         }
         BillingCountriesEffect.decorators = [
@@ -17497,7 +17434,7 @@
         BillingCountriesEffect.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserPaymentConnector }
+                { type: SiteConnector }
             ];
         };
         __decorate([
@@ -17512,12 +17449,12 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var DeliveryCountriesEffects = /** @class */ (function () {
-        function DeliveryCountriesEffects(actions$, userPaymentConnector) {
+        function DeliveryCountriesEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userPaymentConnector = userPaymentConnector;
+            this.siteConnector = siteConnector;
             this.loadDeliveryCountries$ = this.actions$.pipe(effects.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap(function () {
-                return _this.userPaymentConnector.getDeliveryCountries().pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(error)); }));
+                return _this.siteConnector.getCountries(CountryType.SHIPPING).pipe(operators.map(function (countries) { return new LoadDeliveryCountriesSuccess(countries); }), operators.catchError(function (error) { return rxjs.of(new LoadDeliveryCountriesFail(error)); }));
             }));
         }
         DeliveryCountriesEffects.decorators = [
@@ -17527,7 +17464,7 @@
         DeliveryCountriesEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserPaymentConnector }
+                { type: SiteConnector }
             ];
         };
         __decorate([
@@ -17810,6 +17747,81 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ UserPaymentAdapter = /** @class */ (function () {
+        function UserPaymentAdapter() {
+        }
+        return UserPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserPaymentConnector = /** @class */ (function () {
+        function UserPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.getAll = /**
+         * @param {?} userId
+         * @return {?}
+         */
+            function (userId) {
+                return this.adapter.loadAll(userId);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+            function (userId, paymentMethodID) {
+                return this.adapter.delete(userId, paymentMethodID);
+            };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        UserPaymentConnector.prototype.setDefault = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+            function (userId, paymentMethodID) {
+                return this.adapter.setDefault(userId, paymentMethodID);
+            };
+        UserPaymentConnector.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserPaymentConnector.ctorParameters = function () {
+            return [
+                { type: UserPaymentAdapter }
+            ];
+        };
+        /** @nocollapse */ UserPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(i0.inject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+        return UserPaymentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserPaymentMethodsEffects = /** @class */ (function () {
         function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
             var _this = this;
@@ -17883,14 +17895,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var RegionsEffects = /** @class */ (function () {
-        function RegionsEffects(actions$, userPaymentConnector) {
+        function RegionsEffects(actions$, siteConnector) {
             var _this = this;
             this.actions$ = actions$;
-            this.userPaymentConnector = userPaymentConnector;
+            this.siteConnector = siteConnector;
             this.loadRegions$ = this.actions$.pipe(effects.ofType(LOAD_REGIONS), operators.map(function (action) {
                 return action.payload;
             }), operators.switchMap(function (countryCode) {
-                return _this.userPaymentConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess(regions); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
+                return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess(regions); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
             }));
         }
         RegionsEffects.decorators = [
@@ -17900,7 +17912,7 @@
         RegionsEffects.ctorParameters = function () {
             return [
                 { type: effects.Actions },
-                { type: UserPaymentConnector }
+                { type: SiteConnector }
             ];
         };
         __decorate([
@@ -18666,15 +18678,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var COUNTRY_NORMALIZER = new i0.InjectionToken('CountryNormalizer');
-    /** @type {?} */
-    var REGION_NORMALIZER = new i0.InjectionToken('RegionNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -22427,6 +22430,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var COUNTRIES_ENDPOINT = 'countries';
+    /** @type {?} */
+    var REGIONS_ENDPOINT = 'regions';
     var OccSiteAdapter = /** @class */ (function () {
         function OccSiteAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
@@ -22454,6 +22461,41 @@
                 return this.http
                     .get(this.occEndpoints.getEndpoint('currencies'))
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (currencyList) { return currencyList.currencies; }), this.converter.pipeableMany(CURRENCY_NORMALIZER));
+            };
+        /**
+         * @param {?=} type
+         * @return {?}
+         */
+        OccSiteAdapter.prototype.loadCountries = /**
+         * @param {?=} type
+         * @return {?}
+         */
+            function (type) {
+                /** @type {?} */
+                var params;
+                if (type) {
+                    params = new http.HttpParams().set('type', type);
+                }
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
+                    params: params,
+                })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (countryList) { return countryList.countries; }), this.converter.pipeableMany(COUNTRY_NORMALIZER));
+            };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        OccSiteAdapter.prototype.loadRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+            function (countryIsoCode) {
+                /** @type {?} */
+                var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT;
+                return this.http
+                    .get(this.occEndpoints.getEndpoint(regionsEndpoint))
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (regionList) { return regionList.regions; }), this.converter.pipeableMany(REGION_NORMALIZER));
             };
         /**
          * @return {?}
@@ -23330,14 +23372,6 @@
     var USER_ENDPOINT$3 = 'users/';
     /** @type {?} */
     var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
-    /** @type {?} */
-    var COUNTRIES_ENDPOINT = 'countries';
-    /** @type {?} */
-    var REGIONS_ENDPOINT = 'regions';
-    /** @type {?} */
-    var COUNTRIES_TYPE_BILLING = 'BILLING';
-    /** @type {?} */
-    var COUNTRIES_TYPE_SHIPPING = 'SHIPPING';
     var OccUserPaymentAdapter = /** @class */ (function () {
         function OccUserPaymentAdapter(http$$1, occEndpoints, converter) {
             this.http = http$$1;
@@ -23419,47 +23453,6 @@
                 // TODO: Remove billingAddress property
                 { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
                     .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.loadBillingCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
-                    params: new http.HttpParams().set('type', COUNTRIES_TYPE_BILLING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (countryList) { return countryList.countries; }), this.converter.pipeableMany(COUNTRY_NORMALIZER));
-            };
-        /**
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.loadDeliveryCountries = /**
-         * @return {?}
-         */
-            function () {
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
-                    params: new http.HttpParams().set('type', COUNTRIES_TYPE_SHIPPING),
-                })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (countryList) { return countryList.countries; }), this.converter.pipeableMany(COUNTRY_NORMALIZER));
-            };
-        /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.loadRegions = /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-            function (countryIsoCode) {
-                /** @type {?} */
-                var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT;
-                return this.http
-                    .get(this.occEndpoints.getEndpoint(regionsEndpoint))
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error.json()); }), operators.map(function (regionList) { return regionList.regions; }), this.converter.pipeableMany(REGION_NORMALIZER));
             };
         OccUserPaymentAdapter.decorators = [
             { type: i0.Injectable }
@@ -26007,6 +26000,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    exports.CountryType = CountryType;
     exports.PageType = PageType;
     exports.ImageType = ImageType;
     exports.PriceType = PriceType;
@@ -26500,6 +26494,8 @@
     exports.SiteAdapter = SiteAdapter;
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
+    exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
+    exports.REGION_NORMALIZER = REGION_NORMALIZER;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
     exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;
@@ -26870,8 +26866,6 @@
     exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.UserPaymentConnector = UserPaymentConnector;
     exports.UserPaymentAdapter = UserPaymentAdapter;
-    exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
-    exports.REGION_NORMALIZER = REGION_NORMALIZER;
     exports.UserOrderConnector = UserOrderConnector;
     exports.UserOrderAdapter = UserOrderAdapter;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
