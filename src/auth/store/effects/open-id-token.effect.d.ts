@@ -5,6 +5,7 @@ import * as fromActions from '../actions/open-id-token.action';
 export declare class OpenIdTokenEffect {
     private actions$;
     private openIdTokenService;
+    triggerOpenIdTokenLoading$: Observable<fromActions.LoadOpenIdToken>;
     loadOpenIdToken$: Observable<fromActions.OpenIdTokenActions>;
     constructor(actions$: Actions, openIdTokenService: OpenIdAuthenticationTokenService);
 }

@@ -7,10 +7,10 @@ import { Router, PRIMARY_OUTLET, RouterModule, NavigationStart, NavigationEnd, N
 import { Observable, of, throwError, Subscription, combineLatest } from 'rxjs';
 import { createFeatureSelector, createSelector, select, Store, StoreModule, combineReducers, INIT, UPDATE, META_REDUCERS } from '@ngrx/store';
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
-import { __decorate, __metadata, __assign, __spread, __extends, __values, __read } from 'tslib';
+import { __decorate, __metadata, __assign, __read, __spread, __extends, __values } from 'tslib';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, PLATFORM_ID, Injector, Pipe, defineInjectable, inject, INJECTOR, NgZone, ChangeDetectorRef, ComponentFactoryResolver } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, filter, switchMap, take, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
+import { tap, map, filter, switchMap, take, catchError, exhaustMap, withLatestFrom, mergeMap, groupBy, pluck, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 
 /**
@@ -3708,6 +3708,13 @@ var OpenIdTokenEffect = /** @class */ (function () {
         var _this = this;
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
+        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(function (_a) {
+            var _b = __read(_a, 2), loginAction = _b[1];
+            return new LoadOpenIdToken({
+                username: loginAction.payload.userId,
+                password: loginAction.payload.password,
+            });
+        }));
         this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map(function (action) { return action.payload; }), exhaustMap(function (payload) {
             return _this.openIdTokenService
                 .loadOpenIdAuthenticationToken(payload.username, payload.password)
@@ -3722,6 +3729,10 @@ var OpenIdTokenEffect = /** @class */ (function () {
         { type: Actions },
         { type: OpenIdAuthenticationTokenService }
     ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
@@ -3751,8 +3762,8 @@ var UserTokenEffects = /** @class */ (function () {
                 /** @type {?} */
                 var date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = USERID_CURRENT;
                 token.expiration_time = date;
+                token.userId = USERID_CURRENT;
                 return new LoadUserTokenSuccess(token);
             }), catchError(function (error) { return of(new LoadUserTokenFail(error)); }));
         }));
@@ -18262,10 +18273,6 @@ var UserRegisterEffects = /** @class */ (function () {
             return _this.userConnector.register(user).pipe(switchMap(function (_result) { return [
                 new LoadUserToken({
                     userId: user.uid,
-                    password: user.password,
-                }),
-                new LoadOpenIdToken({
-                    username: user.uid,
                     password: user.password,
                 }),
                 new RegisterUserSuccess(),

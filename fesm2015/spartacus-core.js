@@ -10,7 +10,7 @@ import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, Sto
 import { Effect, Actions, ofType, EffectsModule } from '@ngrx/effects';
 import { InjectionToken, NgModule, Optional, Injectable, Inject, APP_INITIALIZER, Pipe, PLATFORM_ID, Injector, NgZone, ChangeDetectorRef, ComponentFactoryResolver, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { tap, map, filter, switchMap, take, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
+import { tap, map, filter, switchMap, take, catchError, exhaustMap, withLatestFrom, mergeMap, groupBy, pluck, shareReplay, concatMap, takeWhile } from 'rxjs/operators';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 
 /**
@@ -3130,6 +3130,10 @@ class OpenIdTokenEffect {
     constructor(actions$, openIdTokenService) {
         this.actions$ = actions$;
         this.openIdTokenService = openIdTokenService;
+        this.triggerOpenIdTokenLoading$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), withLatestFrom(this.actions$.pipe(ofType(LOAD_USER_TOKEN))), map(([, loginAction]) => new LoadOpenIdToken({
+            username: loginAction.payload.userId,
+            password: loginAction.payload.password,
+        })));
         this.loadOpenIdToken$ = this.actions$.pipe(ofType(LOAD_OPEN_ID_TOKEN), map((action) => action.payload), exhaustMap(payload => {
             return this.openIdTokenService
                 .loadOpenIdAuthenticationToken(payload.username, payload.password)
@@ -3145,6 +3149,10 @@ OpenIdTokenEffect.ctorParameters = () => [
     { type: Actions },
     { type: OpenIdAuthenticationTokenService }
 ];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
@@ -3169,16 +3177,14 @@ class UserTokenEffects {
     constructor(actions$, userTokenService) {
         this.actions$ = actions$;
         this.userTokenService = userTokenService;
-        this.loadUserToken$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN), map((action) => action.payload), mergeMap(({ userId, password }) => {
-            return this.userTokenService.loadToken(userId, password).pipe(map((token) => {
-                /** @type {?} */
-                const date = new Date();
-                date.setSeconds(date.getSeconds() + token.expires_in);
-                token.userId = USERID_CURRENT;
-                token.expiration_time = date;
-                return new LoadUserTokenSuccess(token);
-            }), catchError(error => of(new LoadUserTokenFail(error))));
-        }));
+        this.loadUserToken$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN), map((action) => action.payload), mergeMap(({ userId, password }) => this.userTokenService.loadToken(userId, password).pipe(map((token) => {
+            /** @type {?} */
+            const date = new Date();
+            date.setSeconds(date.getSeconds() + token.expires_in);
+            token.expiration_time = date;
+            token.userId = USERID_CURRENT;
+            return new LoadUserTokenSuccess(token);
+        }), catchError(error => of(new LoadUserTokenFail(error))))));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map(() => new Login()));
         this.refreshUserToken$ = this.actions$.pipe(ofType(REFRESH_USER_TOKEN), map((action) => action.payload), switchMap(({ refreshToken }) => {
             return this.userTokenService.refreshToken(refreshToken).pipe(map((token) => {
@@ -15382,19 +15388,13 @@ class UserRegisterEffects {
     constructor(actions$, userConnector) {
         this.actions$ = actions$;
         this.userConnector = userConnector;
-        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => {
-            return this.userConnector.register(user).pipe(switchMap(_result => [
-                new LoadUserToken({
-                    userId: user.uid,
-                    password: user.password,
-                }),
-                new LoadOpenIdToken({
-                    username: user.uid,
-                    password: user.password,
-                }),
-                new RegisterUserSuccess(),
-            ]), catchError(error => of(new RegisterUserFail(error))));
-        }));
+        this.registerUser$ = this.actions$.pipe(ofType(REGISTER_USER), map((action) => action.payload), mergeMap((user) => this.userConnector.register(user).pipe(switchMap(_result => [
+            new LoadUserToken({
+                userId: user.uid,
+                password: user.password,
+            }),
+            new RegisterUserSuccess(),
+        ]), catchError(error => of(new RegisterUserFail(error))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((action) => action.payload), mergeMap((userId) => {
             return this.userConnector.remove(userId).pipe(switchMap(_result => [
                 new RemoveUserSuccess(),

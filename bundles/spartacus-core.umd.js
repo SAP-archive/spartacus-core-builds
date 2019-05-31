@@ -3820,6 +3820,13 @@
             var _this = this;
             this.actions$ = actions$;
             this.openIdTokenService = openIdTokenService;
+            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
+                var _b = __read(_a, 2), loginAction = _b[1];
+                return new LoadOpenIdToken({
+                    username: loginAction.payload.userId,
+                    password: loginAction.payload.password,
+                });
+            }));
             this.loadOpenIdToken$ = this.actions$.pipe(effects.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
                 return _this.openIdTokenService
                     .loadOpenIdAuthenticationToken(payload.username, payload.password)
@@ -3836,6 +3843,10 @@
                 { type: OpenIdAuthenticationTokenService }
             ];
         };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
         __decorate([
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
@@ -3865,8 +3876,8 @@
                     /** @type {?} */
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.userId = USERID_CURRENT;
                     token.expiration_time = date;
+                    token.userId = USERID_CURRENT;
                     return new LoadUserTokenSuccess(token);
                 }), operators.catchError(function (error) { return rxjs.of(new LoadUserTokenFail(error)); }));
             }));
@@ -18522,10 +18533,6 @@
                     return [
                         new LoadUserToken({
                             userId: user.uid,
-                            password: user.password,
-                        }),
-                        new LoadOpenIdToken({
-                            username: user.uid,
                             password: user.password,
                         }),
                         new RegisterUserSuccess(),
