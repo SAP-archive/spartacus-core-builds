@@ -12,6 +12,7 @@ export declare abstract class OccConfig extends ServerConfig {
             endpoints?: {
                 [endpoint: string]: string;
             };
+            legacy?: boolean;
         };
         media?: {
             /**

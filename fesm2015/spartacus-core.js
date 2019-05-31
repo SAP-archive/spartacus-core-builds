@@ -8286,17 +8286,15 @@ class BadRequestHandler extends HttpErrorHandler {
             // text: customError.customError.passwordMismatch,
         }
         else {
-            if (!request.url.includes('/cms/components')) {
-                // this is currently showing up in case we have a page not found. It should be a 404.
-                // see https://jira.hybris.com/browse/CMSX-8516
-                /** @type {?} */
-                const errorMessage = this.getErrorMessage(response);
-                /** @type {?} */
-                const textObj = errorMessage
-                    ? { raw: errorMessage }
-                    : { key: 'httpHandlers.unknownError' };
-                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
-            }
+            // this is currently showing up in case we have a page not found. It should be a 404.
+            // see https://jira.hybris.com/browse/CMSX-8516
+            /** @type {?} */
+            const errorMessage = this.getErrorMessage(response);
+            /** @type {?} */
+            const textObj = errorMessage
+                ? { raw: errorMessage }
+                : { key: 'httpHandlers.unknownError' };
+            this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
         }
     }
     /**
@@ -9228,6 +9226,7 @@ const defaultCmsModuleConfig = {
                 pages: 'cms/pages?fields=${fields}',
                 page: 'cms/pages/${id}?fields=${fields}',
             },
+            legacy: false,
         },
     },
 };
@@ -9576,10 +9575,12 @@ class CmsComponentConnector {
     /**
      * @param {?} cmsStructureConfigService
      * @param {?} adapter
+     * @param {?} config
      */
-    constructor(cmsStructureConfigService, adapter) {
+    constructor(cmsStructureConfigService, adapter, config) {
         this.cmsStructureConfigService = cmsStructureConfigService;
         this.adapter = adapter;
+        this.config = config;
     }
     /**
      * @template T
@@ -9610,9 +9611,9 @@ class CmsComponentConnector {
                 return acc;
             }, []);
             if (missingIds.length > 0) {
-                return this.adapter
-                    .findComponentsByIds(missingIds, pageContext)
-                    .pipe(map(loadedComponents => [
+                return (this.config.backend.occ.legacy
+                    ? this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
+                    : this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map(loadedComponents => [
                     ...configuredComponents.filter(Boolean),
                     ...loadedComponents,
                 ]));
@@ -9631,9 +9632,10 @@ CmsComponentConnector.decorators = [
 /** @nocollapse */
 CmsComponentConnector.ctorParameters = () => [
     { type: CmsStructureConfigService },
-    { type: CmsComponentAdapter }
+    { type: CmsComponentAdapter },
+    { type: OccConfig }
 ];
-/** @nocollapse */ CmsComponentConnector.ngInjectableDef = defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(inject(CmsStructureConfigService), inject(CmsComponentAdapter)); }, token: CmsComponentConnector, providedIn: "root" });
+/** @nocollapse */ CmsComponentConnector.ngInjectableDef = defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(inject(CmsStructureConfigService), inject(CmsComponentAdapter), inject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -17683,11 +17685,7 @@ class OccCmsComponentAdapter {
             .get(this.getComponentsEndpoint(requestParams, fields), {
             headers: this.headers,
         })
-            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER), catchError(error => {
-            if (error.status === 400) {
-                return this.searchComponentsByIds(ids, pageContext, fields, currentPage, pageSize, sort);
-            }
-        }));
+            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
     }
     /**
      * @param {?} ids
@@ -17698,7 +17696,7 @@ class OccCmsComponentAdapter {
      * @param {?=} sort
      * @return {?}
      */
-    searchComponentsByIds(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
+    findComponentsByIdsLegacy(ids, pageContext, fields = 'DEFAULT', currentPage = 0, pageSize = ids.length, sort) {
         /** @type {?} */
         const idList = { idList: ids };
         /** @type {?} */

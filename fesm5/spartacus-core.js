@@ -9286,17 +9286,15 @@ var BadRequestHandler = /** @class */ (function (_super) {
             // text: customError.customError.passwordMismatch,
         }
         else {
-            if (!request.url.includes('/cms/components')) {
-                // this is currently showing up in case we have a page not found. It should be a 404.
-                // see https://jira.hybris.com/browse/CMSX-8516
-                /** @type {?} */
-                var errorMessage = this.getErrorMessage(response);
-                /** @type {?} */
-                var textObj = errorMessage
-                    ? { raw: errorMessage }
-                    : { key: 'httpHandlers.unknownError' };
-                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
-            }
+            // this is currently showing up in case we have a page not found. It should be a 404.
+            // see https://jira.hybris.com/browse/CMSX-8516
+            /** @type {?} */
+            var errorMessage = this.getErrorMessage(response);
+            /** @type {?} */
+            var textObj = errorMessage
+                ? { raw: errorMessage }
+                : { key: 'httpHandlers.unknownError' };
+            this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
         }
     };
     /**
@@ -10477,6 +10475,7 @@ var defaultCmsModuleConfig = {
                 pages: 'cms/pages?fields=${fields}',
                 page: 'cms/pages/${id}?fields=${fields}',
             },
+            legacy: false,
         },
     },
 };
@@ -11009,9 +11008,10 @@ CmsComponentAdapter = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsComponentConnector = /** @class */ (function () {
-    function CmsComponentConnector(cmsStructureConfigService, adapter) {
+    function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
         this.cmsStructureConfigService = cmsStructureConfigService;
         this.adapter = adapter;
+        this.config = config;
     }
     /**
      * @template T
@@ -11057,9 +11057,9 @@ var CmsComponentConnector = /** @class */ (function () {
                 return acc;
             }, []);
             if (missingIds.length > 0) {
-                return _this.adapter
-                    .findComponentsByIds(missingIds, pageContext)
-                    .pipe(map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
+                return (_this.config.backend.occ.legacy
+                    ? _this.adapter.findComponentsByIdsLegacy(missingIds, pageContext)
+                    : _this.adapter.findComponentsByIds(missingIds, pageContext)).pipe(map(function (loadedComponents) { return __spread(configuredComponents.filter(Boolean), loadedComponents); }));
             }
             else {
                 return of(configuredComponents);
@@ -11074,9 +11074,10 @@ var CmsComponentConnector = /** @class */ (function () {
     /** @nocollapse */
     CmsComponentConnector.ctorParameters = function () { return [
         { type: CmsStructureConfigService },
-        { type: CmsComponentAdapter }
+        { type: CmsComponentAdapter },
+        { type: OccConfig }
     ]; };
-    /** @nocollapse */ CmsComponentConnector.ngInjectableDef = defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(inject(CmsStructureConfigService), inject(CmsComponentAdapter)); }, token: CmsComponentConnector, providedIn: "root" });
+    /** @nocollapse */ CmsComponentConnector.ngInjectableDef = defineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(inject(CmsStructureConfigService), inject(CmsComponentAdapter), inject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
     return CmsComponentConnector;
 }());
 
@@ -20610,7 +20611,6 @@ var OccCmsComponentAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (ids, pageContext, fields, currentPage, pageSize, sort) {
-        var _this = this;
         if (fields === void 0) { fields = 'DEFAULT'; }
         if (currentPage === void 0) { currentPage = 0; }
         if (pageSize === void 0) { pageSize = ids.length; }
@@ -20621,11 +20621,7 @@ var OccCmsComponentAdapter = /** @class */ (function () {
             .get(this.getComponentsEndpoint(requestParams, fields), {
             headers: this.headers,
         })
-            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER), catchError(function (error) {
-            if (error.status === 400) {
-                return _this.searchComponentsByIds(ids, pageContext, fields, currentPage, pageSize, sort);
-            }
-        }));
+            .pipe(pluck('component'), this.converter.pipeableMany(CMS_COMPONENT_NORMALIZER));
     };
     /**
      * @param {?} ids
@@ -20636,7 +20632,7 @@ var OccCmsComponentAdapter = /** @class */ (function () {
      * @param {?=} sort
      * @return {?}
      */
-    OccCmsComponentAdapter.prototype.searchComponentsByIds = /**
+    OccCmsComponentAdapter.prototype.findComponentsByIdsLegacy = /**
      * @param {?} ids
      * @param {?} pageContext
      * @param {?=} fields
