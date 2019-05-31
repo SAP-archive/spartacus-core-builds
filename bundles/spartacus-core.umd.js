@@ -11264,6 +11264,8 @@
     var LOAD_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
     /** @type {?} */
     var LOAD_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
+    /** @type {?} */
+    var SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
     var LoadPageData = /** @class */ (function (_super) {
         __extends(LoadPageData, _super);
         function LoadPageData(payload) {
@@ -11282,6 +11284,16 @@
             return _this;
         }
         return LoadPageDataFail;
+    }(EntityFailAction));
+    var SetPageFailIndex = /** @class */ (function (_super) {
+        __extends(SetPageFailIndex, _super);
+        function SetPageFailIndex(pageContext, payload) {
+            var _this = _super.call(this, pageContext.type, pageContext.id) || this;
+            _this.payload = payload;
+            _this.type = SET_PAGE_FAIL_INDEX;
+            return _this;
+        }
+        return SetPageFailIndex;
     }(EntityFailAction));
     var LoadPageDataSuccess = /** @class */ (function (_super) {
         __extends(LoadPageDataSuccess, _super);
@@ -11491,14 +11503,18 @@
     };
     /** @type {?} */
     var getIndexEntity = function (pageContext) {
-        return i1.createSelector(getIndex(pageContext), function (index) { return index.entities[pageContext.id] || {}; });
+        return i1.createSelector(getIndex(pageContext), function (indexState) { return entityStateSelector(indexState, pageContext.id); });
+    };
+    /** @type {?} */
+    var getIndexValue = function (pageContext) {
+        return i1.createSelector(getIndexEntity(pageContext), function (entity) { return loaderValueSelector(entity); });
     };
     /** @type {?} */
     var getPageEntities = i1.createSelector(getPageState, getPageEntitiesSelector);
     /** @type {?} */
     var getPageData = function (pageContext) {
-        return i1.createSelector(getPageEntities, getIndexEntity(pageContext), function (entities, entity) {
-            return entities[entity.value];
+        return i1.createSelector(getPageEntities, getIndexValue(pageContext), function (entities, indexValue) {
+            return entities[indexValue];
         });
     };
     /** @type {?} */
@@ -11638,6 +11654,9 @@
                     }
                     case LOAD_PAGE_DATA_FAIL: {
                         return initialState$c;
+                    }
+                    case SET_PAGE_FAIL_INDEX: {
+                        return action.payload;
                     }
                 }
             }
@@ -12233,6 +12252,30 @@
                         _this.store.dispatch(new LoadPageData(pageContext));
                     }
                 }), operators.filter(function (entity) { return entity.success || entity.error; }), operators.pluck('success'), operators.catchError(function () { return rxjs.of(false); }));
+            };
+        /**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        CmsService.prototype.getPageIndex = /**
+         * @param {?} pageContext
+         * @return {?}
+         */
+            function (pageContext) {
+                return this.store.pipe(i1.select(getIndexValue(pageContext)));
+            };
+        /**
+         * @param {?} pageContext
+         * @param {?} value
+         * @return {?}
+         */
+        CmsService.prototype.setPageFailIndex = /**
+         * @param {?} pageContext
+         * @param {?} value
+         * @return {?}
+         */
+            function (pageContext, value) {
+                this.store.dispatch(new SetPageFailIndex(pageContext, value));
             };
         CmsService.decorators = [
             { type: i0.Injectable, args: [{
@@ -26139,8 +26182,10 @@
     exports.LOAD_PAGE_DATA = LOAD_PAGE_DATA;
     exports.LOAD_PAGE_DATA_FAIL = LOAD_PAGE_DATA_FAIL;
     exports.LOAD_PAGE_DATA_SUCCESS = LOAD_PAGE_DATA_SUCCESS;
+    exports.SET_PAGE_FAIL_INDEX = SET_PAGE_FAIL_INDEX;
     exports.LoadPageData = LoadPageData;
     exports.LoadPageDataFail = LoadPageDataFail;
+    exports.SetPageFailIndex = SetPageFailIndex;
     exports.LoadPageDataSuccess = LoadPageDataSuccess;
     exports.LOAD_COMPONENT = LOAD_COMPONENT;
     exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
@@ -26163,6 +26208,7 @@
     exports.getPageStateIndex = getPageStateIndex;
     exports.getIndex = getIndex;
     exports.getIndexEntity = getIndexEntity;
+    exports.getIndexValue = getIndexValue;
     exports.getPageEntities = getPageEntities;
     exports.getPageData = getPageData;
     exports.getPageComponentTypes = getPageComponentTypes;

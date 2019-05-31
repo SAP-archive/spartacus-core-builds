@@ -14,6 +14,7 @@ export declare const getPageState: MemoizedSelector<StateWithCms, PageState>;
 export declare const getPageStateIndex: MemoizedSelector<StateWithCms, IndexType>;
 export declare const getIndex: (pageContext: PageContext) => MemoizedSelector<StateWithCms, import("../../../state").EntityState<LoaderState<string>>>;
 export declare const getIndexEntity: (pageContext: PageContext) => MemoizedSelector<StateWithCms, LoaderState<string>>;
+export declare const getIndexValue: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string>;
 export declare const getPageEntities: MemoizedSelector<StateWithCms, {
     [id: string]: Page;
 }>;
