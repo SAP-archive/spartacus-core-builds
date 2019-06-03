@@ -198,7 +198,7 @@
         for (var _i = 1; _i < arguments.length; _i++) {
             sources[_i - 1] = arguments[_i];
         }
-        var _a, _b;
+        var _a, _b, _c;
         if (!sources.length) {
             return target;
         }
@@ -206,14 +206,17 @@
         var source = sources.shift() || {};
         if (isObject(target) && isObject(source)) {
             for (var key in source) {
-                if (isObject(source[key])) {
+                if (source[key] instanceof Date) {
+                    Object.assign(target, (_a = {}, _a[key] = source[key], _a));
+                }
+                else if (isObject(source[key])) {
                     if (!target[key]) {
-                        Object.assign(target, (_a = {}, _a[key] = {}, _a));
+                        Object.assign(target, (_b = {}, _b[key] = {}, _b));
                     }
                     deepMerge(target[key], source[key]);
                 }
                 else {
-                    Object.assign(target, (_b = {}, _b[key] = source[key], _b));
+                    Object.assign(target, (_c = {}, _c[key] = source[key], _c));
                 }
             }
         }

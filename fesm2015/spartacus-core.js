@@ -138,7 +138,10 @@ function deepMerge(target = {}, ...sources) {
     const source = sources.shift() || {};
     if (isObject(target) && isObject(source)) {
         for (const key in source) {
-            if (isObject(source[key])) {
+            if (source[key] instanceof Date) {
+                Object.assign(target, { [key]: source[key] });
+            }
+            else if (isObject(source[key])) {
                 if (!target[key]) {
                     Object.assign(target, { [key]: {} });
                 }
