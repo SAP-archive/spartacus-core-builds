@@ -21433,6 +21433,20 @@ StoreFinderService.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const defaultStoreFinderConfig = {
+    googleMaps: {
+        apiUrl: 'https://maps.googleapis.com/maps/api/js',
+        apiKey: '',
+        scale: 12,
+        selectedMarkerScale: 16,
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class StoreFinderStoreModule {
 }
 StoreFinderStoreModule.decorators = [
@@ -21446,20 +21460,6 @@ StoreFinderStoreModule.decorators = [
                 providers: [reducerProvider$a],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const defaultStoreFinderConfig = {
-    googleMaps: {
-        apiUrl: 'https://maps.googleapis.com/maps/api/js',
-        apiKey: '',
-        scale: 12,
-        selectedMarkerScale: 16,
-    },
-};
 
 /**
  * @fileoverview added by tsickle

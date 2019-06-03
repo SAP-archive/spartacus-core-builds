@@ -25310,6 +25310,20 @@ var StoreFinderService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var defaultStoreFinderConfig = {
+    googleMaps: {
+        apiUrl: 'https://maps.googleapis.com/maps/api/js',
+        apiKey: '',
+        scale: 12,
+        selectedMarkerScale: 16,
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var StoreFinderStoreModule = /** @class */ (function () {
     function StoreFinderStoreModule() {
     }
@@ -25326,20 +25340,6 @@ var StoreFinderStoreModule = /** @class */ (function () {
     ];
     return StoreFinderStoreModule;
 }());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var defaultStoreFinderConfig = {
-    googleMaps: {
-        apiUrl: 'https://maps.googleapis.com/maps/api/js',
-        apiKey: '',
-        scale: 12,
-        selectedMarkerScale: 16,
-    },
-};
 
 /**
  * @fileoverview added by tsickle
