@@ -14709,7 +14709,6 @@ var defaultI18nConfig = {
             common: [
                 'common',
                 'spinner',
-                'header',
                 'searchBox',
                 'navigation',
                 'sorting',

@@ -12709,7 +12709,6 @@ const defaultI18nConfig = {
             common: [
                 'common',
                 'spinner',
-                'header',
                 'searchBox',
                 'navigation',
                 'sorting',

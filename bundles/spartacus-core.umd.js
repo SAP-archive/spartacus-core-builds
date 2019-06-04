@@ -14881,7 +14881,6 @@
                 common: [
                     'common',
                     'spinner',
-                    'header',
                     'searchBox',
                     'navigation',
                     'sorting',
