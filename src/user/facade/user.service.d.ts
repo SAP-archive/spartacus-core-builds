@@ -157,9 +157,13 @@ export declare class UserService {
      */
     loadRegions(countryIsoCode: string): void;
     /**
+     * Clear regions in store - useful when changing country
+     */
+    clearRegions(): void;
+    /**
      * Returns all regions
      */
-    getRegions(): Observable<Region[]>;
+    getRegions(countryIsoCode: string): Observable<Region[]>;
     /**
      * Returns all billing countries
      */

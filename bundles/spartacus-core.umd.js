@@ -8115,6 +8115,8 @@
     var USER_ORDERS = '[User] User Orders';
     /** @type {?} */
     var USER_ADDRESSES = '[User] User Addresses';
+    /** @type {?} */
+    var REGIONS = '[User] Regions';
 
     /**
      * @fileoverview added by tsickle
@@ -8239,26 +8241,43 @@
     var LOAD_REGIONS_SUCCESS = '[User] Load Regions Success';
     /** @type {?} */
     var LOAD_REGIONS_FAIL = '[User] Load Regions Fail';
-    var LoadRegions = /** @class */ (function () {
+    /** @type {?} */
+    var CLEAR_REGIONS = '[User] Clear Regions';
+    var LoadRegions = /** @class */ (function (_super) {
+        __extends(LoadRegions, _super);
         function LoadRegions(payload) {
-            this.payload = payload;
-            this.type = LOAD_REGIONS;
+            var _this = _super.call(this, REGIONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS;
+            return _this;
         }
         return LoadRegions;
-    }());
-    var LoadRegionsFail = /** @class */ (function () {
+    }(LoaderLoadAction));
+    var LoadRegionsFail = /** @class */ (function (_super) {
+        __extends(LoadRegionsFail, _super);
         function LoadRegionsFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_REGIONS_FAIL;
+            var _this = _super.call(this, REGIONS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS_FAIL;
+            return _this;
         }
         return LoadRegionsFail;
-    }());
-    var LoadRegionsSuccess = /** @class */ (function () {
+    }(LoaderFailAction));
+    var LoadRegionsSuccess = /** @class */ (function (_super) {
+        __extends(LoadRegionsSuccess, _super);
         function LoadRegionsSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_REGIONS_SUCCESS;
+            var _this = _super.call(this, REGIONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_REGIONS_SUCCESS;
+            return _this;
         }
         return LoadRegionsSuccess;
+    }(LoaderSuccessAction));
+    var ClearRegions = /** @class */ (function () {
+        function ClearRegions() {
+            this.type = CLEAR_REGIONS;
+        }
+        return ClearRegions;
     }());
 
     /**
@@ -15047,9 +15066,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsState = i1.createSelector(getUserState, function (state) { return state.regions; });
+    var getRegionsLoaderState = i1.createSelector(getUserState, function (state) { return state.regions; });
     /** @type {?} */
-    var getAllRegions = i1.createSelector(getRegionsState, function (state) { return state.entities; });
+    var getAllRegions = i1.createSelector(getRegionsLoaderState, function (state) {
+        return loaderValueSelector(state).entities;
+    });
+    /** @type {?} */
+    var getRegionsCountry = i1.createSelector(getRegionsLoaderState, function (state) { return loaderValueSelector(state).country; });
+    /** @type {?} */
+    var getRegionsLoading = i1.createSelector(getRegionsLoaderState, function (state) { return loaderLoadingSelector(state); });
+    /** @type {?} */
+    var getRegionsLoaded = i1.createSelector(getRegionsLoaderState, function (state) { return loaderSuccessSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -15306,6 +15333,7 @@
     /** @type {?} */
     var initialState$j = {
         entities: [],
+        country: null,
     };
     /**
      * @param {?=} state
@@ -15319,17 +15347,17 @@
         switch (action.type) {
             case LOAD_REGIONS_SUCCESS: {
                 /** @type {?} */
-                var entities = action.payload;
+                var entities = action.payload.entities;
+                /** @type {?} */
+                var country = action.payload.country;
                 if (entities) {
-                    return __assign({}, state, { entities: entities });
+                    return __assign({}, state, { entities: entities,
+                        country: country });
                 }
                 return initialState$j;
             }
             case LOAD_REGIONS: {
                 return __assign({}, state);
-            }
-            case CLEAR_MISCS_DATA: {
-                return __assign({}, initialState$j);
             }
         }
         return state;
@@ -15531,7 +15559,7 @@
             order: reducer$h,
             countries: reducer$g,
             titles: reducer$l,
-            regions: reducer$j,
+            regions: loaderReducer(REGIONS, reducer$j),
             resetPassword: reducer$k,
         };
     }
@@ -16112,18 +16140,53 @@
                 this.store.dispatch(new LoadRegions(countryIsoCode));
             };
         /**
+         * Clear regions in store - useful when changing country
+         */
+        /**
+         * Clear regions in store - useful when changing country
+         * @return {?}
+         */
+        UserService.prototype.clearRegions = /**
+         * Clear regions in store - useful when changing country
+         * @return {?}
+         */
+            function () {
+                this.store.dispatch(new ClearRegions());
+            };
+        /**
          * Returns all regions
          */
         /**
          * Returns all regions
+         * @param {?} countryIsoCode
          * @return {?}
          */
         UserService.prototype.getRegions = /**
          * Returns all regions
+         * @param {?} countryIsoCode
          * @return {?}
          */
-            function () {
-                return this.store.pipe(i1.select(getAllRegions));
+            function (countryIsoCode) {
+                var _this = this;
+                return rxjs.combineLatest(this.store.pipe(i1.select(getAllRegions)), this.store.pipe(i1.select(getRegionsCountry)), this.store.pipe(i1.select(getRegionsLoading)), this.store.pipe(i1.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
+                operators.map(function (_a) {
+                    var _b = __read(_a, 4), regions = _b[0], country = _b[1], loading = _b[2], loaded = _b[3];
+                    if (!countryIsoCode) {
+                        _this.clearRegions();
+                        return [];
+                    }
+                    else if (loading && !loaded) {
+                        // don't interrupt loading
+                        return [];
+                    }
+                    else if (!loading && countryIsoCode !== country) {
+                        // country changed - clear store and load new regions
+                        _this.clearRegions();
+                        _this.loadRegions(countryIsoCode);
+                        return [];
+                    }
+                    return regions;
+                }));
             };
         /**
          * Returns all billing countries
@@ -16783,6 +16846,33 @@
             __metadata("design:type", rxjs.Observable)
         ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
         return BillingCountriesEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ClearMiscsDataEffect = /** @class */ (function () {
+        function ClearMiscsDataEffect(actions$) {
+            this.actions$ = actions$;
+            this.clearMiscsData$ = this.actions$.pipe(effects.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map(function () {
+                return new ClearMiscsData();
+            }));
+        }
+        ClearMiscsDataEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        ClearMiscsDataEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
+        return ClearMiscsDataEffect;
     }());
 
     /**
@@ -18023,7 +18113,15 @@
             this.loadRegions$ = this.actions$.pipe(effects.ofType(LOAD_REGIONS), operators.map(function (action) {
                 return action.payload;
             }), operators.switchMap(function (countryCode) {
-                return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) { return new LoadRegionsSuccess(regions); }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
+                return _this.siteConnector.getRegions(countryCode).pipe(operators.map(function (regions) {
+                    return new LoadRegionsSuccess({
+                        entities: regions,
+                        country: countryCode,
+                    });
+                }), operators.catchError(function (error) { return rxjs.of(new LoadRegionsFail(error)); }));
+            }));
+            this.resetRegions$ = this.actions$.pipe(effects.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map(function () {
+                return new LoaderResetAction(REGIONS);
             }));
         }
         RegionsEffects.decorators = [
@@ -18040,6 +18138,10 @@
             effects.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], RegionsEffects.prototype, "loadRegions$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], RegionsEffects.prototype, "resetRegions$", void 0);
         return RegionsEffects;
     }());
 
@@ -18628,6 +18730,7 @@
      */
     /** @type {?} */
     var effects$8 = [
+        ClearMiscsDataEffect,
         DeliveryCountriesEffects,
         RegionsEffects,
         TitlesEffects,
@@ -26693,9 +26796,11 @@
     exports.LOAD_REGIONS = LOAD_REGIONS;
     exports.LOAD_REGIONS_SUCCESS = LOAD_REGIONS_SUCCESS;
     exports.LOAD_REGIONS_FAIL = LOAD_REGIONS_FAIL;
+    exports.CLEAR_REGIONS = CLEAR_REGIONS;
     exports.LoadRegions = LoadRegions;
     exports.LoadRegionsFail = LoadRegionsFail;
     exports.LoadRegionsSuccess = LoadRegionsSuccess;
+    exports.ClearRegions = ClearRegions;
     exports.RESET_PASSWORD = RESET_PASSWORD;
     exports.RESET_PASSWORD_SUCCESS = RESET_PASSWORD_SUCCESS;
     exports.RESET_PASSWORD_FAIL = RESET_PASSWORD_FAIL;
@@ -26821,8 +26926,11 @@
     exports.getPaymentMethodsState = getPaymentMethodsState;
     exports.getPaymentMethods = getPaymentMethods;
     exports.getPaymentMethodsLoading = getPaymentMethodsLoading;
-    exports.getRegionsState = getRegionsState;
+    exports.getRegionsLoaderState = getRegionsLoaderState;
     exports.getAllRegions = getAllRegions;
+    exports.getRegionsCountry = getRegionsCountry;
+    exports.getRegionsLoading = getRegionsLoading;
+    exports.getRegionsLoaded = getRegionsLoaded;
     exports.getResetPassword = getResetPassword;
     exports.getTitlesState = getTitlesState;
     exports.getTitlesEntites = getTitlesEntites;
@@ -26852,6 +26960,7 @@
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
     exports.USER_ORDERS = USER_ORDERS;
     exports.USER_ADDRESSES = USER_ADDRESSES;
+    exports.REGIONS = REGIONS;
     exports.UserService = UserService;
     exports.UserModule = UserModule;
     exports.UserConnector = UserConnector;
@@ -26955,16 +27064,16 @@
     exports.ɵeh = MockDatePipe;
     exports.ɵei = MockTranslationService;
     exports.ɵej = defaultOccProductConfig;
-    exports.ɵha = defaultPersonalizationConfig;
-    exports.ɵhb = interceptors$2;
-    exports.ɵhc = OccPersonalizationIdInterceptor;
-    exports.ɵhd = OccPersonalizationTimeInterceptor;
-    exports.ɵgu = ProcessModule;
-    exports.ɵgw = PROCESS_FEATURE;
-    exports.ɵgv = ProcessStoreModule;
-    exports.ɵgx = getReducers$8;
-    exports.ɵgz = reducerProvider$8;
-    exports.ɵgy = reducerToken$8;
+    exports.ɵhb = defaultPersonalizationConfig;
+    exports.ɵhc = interceptors$2;
+    exports.ɵhd = OccPersonalizationIdInterceptor;
+    exports.ɵhe = OccPersonalizationTimeInterceptor;
+    exports.ɵgv = ProcessModule;
+    exports.ɵgx = PROCESS_FEATURE;
+    exports.ɵgw = ProcessStoreModule;
+    exports.ɵgy = getReducers$8;
+    exports.ɵha = reducerProvider$8;
+    exports.ɵgz = reducerToken$8;
     exports.ɵew = ProductSearchService;
     exports.ɵdi = effects$7;
     exports.ɵdj = ProductReferencesEffects;
@@ -27030,37 +27139,38 @@
     exports.ɵfi = getStoreFinderState;
     exports.ɵfk = StoreFinderStoreModule;
     exports.ɵfu = BillingCountriesEffect;
+    exports.ɵgg = ClearMiscsDataEffect;
     exports.ɵfv = DeliveryCountriesEffects;
-    exports.ɵgg = ForgotPasswordEffects;
+    exports.ɵgh = ForgotPasswordEffects;
     exports.ɵft = effects$8;
     exports.ɵfw = OrderDetailsEffect;
     exports.ɵfx = UserPaymentMethodsEffects;
     exports.ɵfy = RegionsEffects;
     exports.ɵfz = ResetPasswordEffects;
     exports.ɵga = TitlesEffects;
-    exports.ɵgh = UpdateEmailEffects;
-    exports.ɵgi = UpdatePasswordEffects;
+    exports.ɵgi = UpdateEmailEffects;
+    exports.ɵgj = UpdatePasswordEffects;
     exports.ɵgb = UserAddressesEffects;
     exports.ɵgc = UserConsentsEffect;
     exports.ɵgd = UserDetailsEffects;
     exports.ɵge = UserOrdersEffect;
     exports.ɵgf = UserRegisterEffects;
-    exports.ɵgl = reducer$f;
-    exports.ɵgq = reducer$g;
+    exports.ɵgm = reducer$f;
+    exports.ɵgr = reducer$g;
     exports.ɵdv = clearUserState;
     exports.ɵds = getReducers$7;
     exports.ɵdw = metaReducers$5;
     exports.ɵdu = reducerProvider$7;
     exports.ɵdt = reducerToken$7;
-    exports.ɵgp = reducer$h;
-    exports.ɵgn = reducer$i;
-    exports.ɵgs = reducer$j;
-    exports.ɵgt = reducer$k;
-    exports.ɵgr = reducer$l;
-    exports.ɵgk = reducer$m;
-    exports.ɵgm = reducer$n;
-    exports.ɵgj = reducer$o;
-    exports.ɵgo = reducer$p;
+    exports.ɵgq = reducer$h;
+    exports.ɵgo = reducer$i;
+    exports.ɵgt = reducer$j;
+    exports.ɵgu = reducer$k;
+    exports.ɵgs = reducer$l;
+    exports.ɵgl = reducer$m;
+    exports.ɵgn = reducer$n;
+    exports.ɵgk = reducer$o;
+    exports.ɵgp = reducer$p;
     exports.ɵfs = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });

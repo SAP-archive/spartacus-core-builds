@@ -11,3 +11,4 @@ export * from './user-consents.effect';
 export * from './user-details.effect';
 export * from './user-orders.effect';
 export * from './user-register.effect';
+export * from './clear-miscs-data.effect';
