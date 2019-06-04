@@ -15435,7 +15435,12 @@ var UserService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.store.pipe(select(getDetails));
+        var _this = this;
+        return this.store.pipe(select(getDetails)).pipe(tap(function (details) {
+            if (Object.keys(details).length === 0) {
+                _this.load();
+            }
+        }));
     };
     /**
      * Loads the user's details

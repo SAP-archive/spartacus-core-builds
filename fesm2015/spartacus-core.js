@@ -13324,7 +13324,11 @@ class UserService {
      * @return {?}
      */
     get() {
-        return this.store.pipe(select(getDetails));
+        return this.store.pipe(select(getDetails)).pipe(tap(details => {
+            if (Object.keys(details).length === 0) {
+                this.load();
+            }
+        }));
     }
     /**
      * Loads the user's details
