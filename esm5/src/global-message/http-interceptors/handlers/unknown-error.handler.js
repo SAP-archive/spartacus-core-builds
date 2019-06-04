@@ -4,15 +4,19 @@
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
-import { GlobalMessageType } from '../../models/global-message.model';
+import { GlobalMessageService } from '../../facade/global-message.service';
+import { ServerConfig } from '../../../config/server-config/server-config';
 import { HttpResponseStatus } from '../../models/response-status.model';
 import { HttpErrorHandler } from './http-error.handler';
 import * as i0 from "@angular/core";
-import * as i1 from "../../facade/global-message.service";
+import * as i1 from "../../../config/server-config/server-config";
+import * as i2 from "../../facade/global-message.service";
 var UnknownErrorHandler = /** @class */ (function (_super) {
     tslib_1.__extends(UnknownErrorHandler, _super);
-    function UnknownErrorHandler() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
+    function UnknownErrorHandler(config, globalMessageService) {
+        var _this = _super.call(this, globalMessageService) || this;
+        _this.config = config;
+        _this.globalMessageService = globalMessageService;
         _this.responseStatus = HttpResponseStatus.UNKNOWN;
         return _this;
     }
@@ -23,19 +27,36 @@ var UnknownErrorHandler = /** @class */ (function (_super) {
      * @return {?}
      */
     function () {
-        this.globalMessageService.add({ key: 'httpHandlers.unknownError' }, GlobalMessageType.MSG_TYPE_ERROR);
+        if (!this.config.production) {
+            console.warn("Unknown http response error: " + this.responseStatus);
+        }
     };
     UnknownErrorHandler.decorators = [
         { type: Injectable, args: [{
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.inject(i1.GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+    /** @nocollapse */
+    UnknownErrorHandler.ctorParameters = function () { return [
+        { type: ServerConfig },
+        { type: GlobalMessageService }
+    ]; };
+    /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.inject(i1.ServerConfig), i0.inject(i2.GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
     return UnknownErrorHandler;
 }(HttpErrorHandler));
 export { UnknownErrorHandler };
 if (false) {
     /** @type {?} */
     UnknownErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @private
+     */
+    UnknownErrorHandler.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UnknownErrorHandler.prototype.globalMessageService;
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidW5rbm93bi1lcnJvci5oYW5kbGVyLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL2h0dHAtaW50ZXJjZXB0b3JzL2hhbmRsZXJzL3Vua25vd24tZXJyb3IuaGFuZGxlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDM0MsT0FBTyxFQUFFLGlCQUFpQixFQUFFLE1BQU0sbUNBQW1DLENBQUM7QUFDdEUsT0FBTyxFQUFFLGtCQUFrQixFQUFFLE1BQU0sb0NBQW9DLENBQUM7QUFDeEUsT0FBTyxFQUFFLGdCQUFnQixFQUFFLE1BQU0sc0JBQXNCLENBQUM7OztBQUV4RDtJQUd5QywrQ0FBZ0I7SUFIekQ7UUFBQSxxRUFZQztRQVJDLG9CQUFjLEdBQUcsa0JBQWtCLENBQUMsT0FBTyxDQUFDOztLQVE3Qzs7OztJQU5DLHlDQUFXOzs7SUFBWDtRQUNFLElBQUksQ0FBQyxvQkFBb0IsQ0FBQyxHQUFHLENBQzNCLEVBQUUsR0FBRyxFQUFFLDJCQUEyQixFQUFFLEVBQ3BDLGlCQUFpQixDQUFDLGNBQWMsQ0FDakMsQ0FBQztJQUNKLENBQUM7O2dCQVhGLFVBQVUsU0FBQztvQkFDVixVQUFVLEVBQUUsTUFBTTtpQkFDbkI7Ozs4QkFQRDtDQWlCQyxBQVpELENBR3lDLGdCQUFnQixHQVN4RDtTQVRZLG1CQUFtQjs7O0lBQzlCLDZDQUE0QyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IEdsb2JhbE1lc3NhZ2VUeXBlIH0gZnJvbSAnLi4vLi4vbW9kZWxzL2dsb2JhbC1tZXNzYWdlLm1vZGVsJztcbmltcG9ydCB7IEh0dHBSZXNwb25zZVN0YXR1cyB9IGZyb20gJy4uLy4uL21vZGVscy9yZXNwb25zZS1zdGF0dXMubW9kZWwnO1xuaW1wb3J0IHsgSHR0cEVycm9ySGFuZGxlciB9IGZyb20gJy4vaHR0cC1lcnJvci5oYW5kbGVyJztcblxuQEluamVjdGFibGUoe1xuICBwcm92aWRlZEluOiAncm9vdCcsXG59KVxuZXhwb3J0IGNsYXNzIFVua25vd25FcnJvckhhbmRsZXIgZXh0ZW5kcyBIdHRwRXJyb3JIYW5kbGVyIHtcbiAgcmVzcG9uc2VTdGF0dXMgPSBIdHRwUmVzcG9uc2VTdGF0dXMuVU5LTk9XTjtcblxuICBoYW5kbGVFcnJvcigpIHtcbiAgICB0aGlzLmdsb2JhbE1lc3NhZ2VTZXJ2aWNlLmFkZChcbiAgICAgIHsga2V5OiAnaHR0cEhhbmRsZXJzLnVua25vd25FcnJvcicgfSxcbiAgICAgIEdsb2JhbE1lc3NhZ2VUeXBlLk1TR19UWVBFX0VSUk9SXG4gICAgKTtcbiAgfVxufVxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidW5rbm93bi1lcnJvci5oYW5kbGVyLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL2h0dHAtaW50ZXJjZXB0b3JzL2hhbmRsZXJzL3Vua25vd24tZXJyb3IuaGFuZGxlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDM0MsT0FBTyxFQUFFLG9CQUFvQixFQUFFLE1BQU0scUNBQXFDLENBQUM7QUFDM0UsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLDZDQUE2QyxDQUFDO0FBQzNFLE9BQU8sRUFBRSxrQkFBa0IsRUFBRSxNQUFNLG9DQUFvQyxDQUFDO0FBQ3hFLE9BQU8sRUFBRSxnQkFBZ0IsRUFBRSxNQUFNLHNCQUFzQixDQUFDOzs7O0FBRXhEO0lBR3lDLCtDQUFnQjtJQUN2RCw2QkFDVSxNQUFvQixFQUNsQixvQkFBMEM7UUFGdEQsWUFJRSxrQkFBTSxvQkFBb0IsQ0FBQyxTQUM1QjtRQUpTLFlBQU0sR0FBTixNQUFNLENBQWM7UUFDbEIsMEJBQW9CLEdBQXBCLG9CQUFvQixDQUFzQjtRQUl0RCxvQkFBYyxHQUFHLGtCQUFrQixDQUFDLE9BQU8sQ0FBQzs7SUFENUMsQ0FBQzs7OztJQUdELHlDQUFXOzs7SUFBWDtRQUNFLElBQUksQ0FBQyxJQUFJLENBQUMsTUFBTSxDQUFDLFVBQVUsRUFBRTtZQUMzQixPQUFPLENBQUMsSUFBSSxDQUFDLGtDQUFnQyxJQUFJLENBQUMsY0FBZ0IsQ0FBQyxDQUFDO1NBQ3JFO0lBQ0gsQ0FBQzs7Z0JBaEJGLFVBQVUsU0FBQztvQkFDVixVQUFVLEVBQUUsTUFBTTtpQkFDbkI7Ozs7Z0JBTlEsWUFBWTtnQkFEWixvQkFBb0I7Ozs4QkFEN0I7Q0F1QkMsQUFqQkQsQ0FHeUMsZ0JBQWdCLEdBY3hEO1NBZFksbUJBQW1COzs7SUFPOUIsNkNBQTRDOzs7OztJQUwxQyxxQ0FBNEI7Ozs7O0lBQzVCLG1EQUFvRCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbmltcG9ydCB7IEdsb2JhbE1lc3NhZ2VTZXJ2aWNlIH0gZnJvbSAnLi4vLi4vZmFjYWRlL2dsb2JhbC1tZXNzYWdlLnNlcnZpY2UnO1xuaW1wb3J0IHsgU2VydmVyQ29uZmlnIH0gZnJvbSAnLi4vLi4vLi4vY29uZmlnL3NlcnZlci1jb25maWcvc2VydmVyLWNvbmZpZyc7XG5pbXBvcnQgeyBIdHRwUmVzcG9uc2VTdGF0dXMgfSBmcm9tICcuLi8uLi9tb2RlbHMvcmVzcG9uc2Utc3RhdHVzLm1vZGVsJztcbmltcG9ydCB7IEh0dHBFcnJvckhhbmRsZXIgfSBmcm9tICcuL2h0dHAtZXJyb3IuaGFuZGxlcic7XG5cbkBJbmplY3RhYmxlKHtcbiAgcHJvdmlkZWRJbjogJ3Jvb3QnLFxufSlcbmV4cG9ydCBjbGFzcyBVbmtub3duRXJyb3JIYW5kbGVyIGV4dGVuZHMgSHR0cEVycm9ySGFuZGxlciB7XG4gIGNvbnN0cnVjdG9yKFxuICAgIHByaXZhdGUgY29uZmlnOiBTZXJ2ZXJDb25maWcsXG4gICAgcHJvdGVjdGVkIGdsb2JhbE1lc3NhZ2VTZXJ2aWNlOiBHbG9iYWxNZXNzYWdlU2VydmljZVxuICApIHtcbiAgICBzdXBlcihnbG9iYWxNZXNzYWdlU2VydmljZSk7XG4gIH1cbiAgcmVzcG9uc2VTdGF0dXMgPSBIdHRwUmVzcG9uc2VTdGF0dXMuVU5LTk9XTjtcblxuICBoYW5kbGVFcnJvcigpIHtcbiAgICBpZiAoIXRoaXMuY29uZmlnLnByb2R1Y3Rpb24pIHtcbiAgICAgIGNvbnNvbGUud2FybihgVW5rbm93biBodHRwIHJlc3BvbnNlIGVycm9yOiAke3RoaXMucmVzcG9uc2VTdGF0dXN9YCk7XG4gICAgfVxuICB9XG59XG4iXX0=

@@ -8956,833 +8956,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var GLOBAL_MESSAGE_FEATURE = 'global-message';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ADD_MESSAGE = '[Global-message] Add a Message';
-    /** @type {?} */
-    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
-    /** @type {?} */
-    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-    var AddMessage = /** @class */ (function () {
-        function AddMessage(payload) {
-            this.payload = payload;
-            this.type = ADD_MESSAGE;
-        }
-        return AddMessage;
-    }());
-    var RemoveMessage = /** @class */ (function () {
-        function RemoveMessage(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGE;
-        }
-        return RemoveMessage;
-    }());
-    var RemoveMessagesByType = /** @class */ (function () {
-        function RemoveMessagesByType(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGES_BY_TYPE;
-        }
-        return RemoveMessagesByType;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getGlobalMessageState = i1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getGlobalMessageEntities = i1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} objA
-     * @param {?} objB
-     * @return {?}
-     */
-    function shallowEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true;
-        }
-        if (!objA || !objB) {
-            return false;
-        }
-        /** @type {?} */
-        var aKeys = Object.keys(objA);
-        /** @type {?} */
-        var bKeys = Object.keys(objB);
-        /** @type {?} */
-        var aKeysLen = aKeys.length;
-        /** @type {?} */
-        var bKeysLen = bKeys.length;
-        if (aKeysLen !== bKeysLen) {
-            return false;
-        }
-        for (var i = 0; i < aKeysLen; i++) {
-            /** @type {?} */
-            var key = aKeys[i];
-            if (objA[key] !== objB[key]) {
-                return false;
-            }
-        }
-        return true;
-    }
-    /**
-     * @param {?} objA
-     * @param {?} objB
-     * @return {?}
-     */
-    function deepEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true; // if both objA and objB are null or undefined and exactly the same
-        }
-        else if (!(objA instanceof Object) || !(objB instanceof Object)) {
-            return false; // if they are not strictly equal, they both need to be Objects
-        }
-        else if (objA.constructor !== objB.constructor) {
-            // they must have the exact same prototype chain, the closest we can do is
-            // test their constructor.
-            return false;
-        }
-        else {
-            for (var key in objA) {
-                if (!objA.hasOwnProperty(key)) {
-                    continue; // other properties were tested using objA.constructor === y.constructor
-                }
-                if (!objB.hasOwnProperty(key)) {
-                    return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
-                }
-                if (objA[key] === objB[key]) {
-                    continue; // if they have the same strict value or identity then they are equal
-                }
-                if (typeof objA[key] !== 'object') {
-                    return false; // Numbers, Strings, Functions, Booleans must be strictly equal
-                }
-                if (!deepEqualObjects(objA[key], objB[key])) {
-                    return false;
-                }
-            }
-            for (var key in objB) {
-                if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$8 = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$8(state, action) {
-        if (state === void 0) {
-            state = initialState$8;
-        }
-        var _a, _b, _c, _d;
-        switch (action.type) {
-            case ADD_MESSAGE: {
-                /** @type {?} */
-                var message_1 = action.payload;
-                if (state.entities[message_1.type] === undefined) {
-                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message_1.type] = [message_1.text], _a)) });
-                }
-                else {
-                    /** @type {?} */
-                    var messages = state.entities[message_1.type];
-                    if (!messages.some(function (msg) { return deepEqualObjects(msg, message_1.text); })) {
-                        return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message_1.type] = __spread(messages, [message_1.text]), _b)) });
-                    }
-                }
-                return state;
-            }
-            case REMOVE_MESSAGE: {
-                /** @type {?} */
-                var msgType = action.payload.type;
-                /** @type {?} */
-                var msgIndex = action.payload.index;
-                if (Object.keys(state.entities).length === 0 ||
-                    !state.entities[msgType]) {
-                    return state;
-                }
-                /** @type {?} */
-                var messages = __spread(state.entities[msgType]);
-                messages.splice(msgIndex, 1);
-                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
-            }
-            case REMOVE_MESSAGES_BY_TYPE: {
-                /** @type {?} */
-                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
-                return __assign({}, state, { entities: entities });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$4() {
-        return reducer$8;
-    }
-    /** @type {?} */
-    var reducerToken$4 = new i0.InjectionToken('GlobalMessageReducers');
-    /** @type {?} */
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageService = /** @class */ (function () {
-        function GlobalMessageService(store) {
-            this.store = store;
-        }
-        /**
-         * Get all global messages
-         */
-        /**
-         * Get all global messages
-         * @return {?}
-         */
-        GlobalMessageService.prototype.get = /**
-         * Get all global messages
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
-            };
-        /**
-         * Add one message into store
-         * @param text: string | Translatable
-         * @param type: GlobalMessageType object
-         */
-        /**
-         * Add one message into store
-         * @param {?} text
-         * @param {?} type
-         * @return {?}
-         */
-        GlobalMessageService.prototype.add = /**
-         * Add one message into store
-         * @param {?} text
-         * @param {?} type
-         * @return {?}
-         */
-            function (text, type) {
-                this.store.dispatch(new AddMessage({
-                    text: typeof text === 'string' ? { raw: text } : text,
-                    type: type,
-                }));
-            };
-        /**
-         * Remove message(s) from store
-         * @param type: GlobalMessageType
-         * @param index:optional. Without it, messages will be removed by type; otherwise,
-         * message will be removed from list by index.
-         */
-        /**
-         * Remove message(s) from store
-         * @param {?} type
-         * @param {?=} index
-         * @return {?}
-         */
-        GlobalMessageService.prototype.remove = /**
-         * Remove message(s) from store
-         * @param {?} type
-         * @param {?=} index
-         * @return {?}
-         */
-            function (type, index) {
-                this.store.dispatch(index !== undefined
-                    ? new RemoveMessage({
-                        type: type,
-                        index: index,
-                    })
-                    : new RemoveMessagesByType(type));
-            };
-        GlobalMessageService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        GlobalMessageService.ctorParameters = function () {
-            return [
-                { type: i1.Store }
-            ];
-        };
-        return GlobalMessageService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {number} */
-    var HttpResponseStatus = {
-        UNKNOWN: -1,
-        BAD_REQUEST: 400,
-        FORBIDDEN: 403,
-        NOT_FOUND: 404,
-        CONFLICT: 409,
-        BAD_GATEWAY: 502,
-        GATEWAY_TIMEOUT: 504,
-    };
-    HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
-    HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
-    HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
-    HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
-    HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-    HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
-    HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var HttpErrorHandler = /** @class */ (function () {
-        function HttpErrorHandler(globalMessageService) {
-            this.globalMessageService = globalMessageService;
-        }
-        HttpErrorHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        HttpErrorHandler.ctorParameters = function () {
-            return [
-                { type: GlobalMessageService }
-            ];
-        };
-        /** @nocollapse */ HttpErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.inject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-        return HttpErrorHandler;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var HttpErrorInterceptor = /** @class */ (function () {
-        function HttpErrorInterceptor(handlers) {
-            this.handlers = handlers;
-            // We reverse the handlers to allow for custom handlers
-            // that replace standard handlers
-            this.handlers.reverse();
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-            function (request, next) {
-                var _this = this;
-                return next.handle(request).pipe(operators.catchError(function (response) {
-                    if (response instanceof http.HttpErrorResponse) {
-                        _this.handleErrorResponse(request, response);
-                        return rxjs.throwError(response);
-                    }
-                }));
-            };
-        /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.handleErrorResponse = /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-            function (request, response) {
-                /** @type {?} */
-                var handler = this.getResponseHandler(response);
-                if (handler) {
-                    handler.handleError(request, response);
-                }
-            };
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         */
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.getResponseHandler = /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-            function (response) {
-                /** @type {?} */
-                var status = response.status;
-                /** @type {?} */
-                var handler = this.handlers.find(function (h) { return h.responseStatus === status; });
-                if (!handler) {
-                    handler = this.handlers.find(function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; });
-                }
-                return handler;
-            };
-        HttpErrorInterceptor.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        HttpErrorInterceptor.ctorParameters = function () {
-            return [
-                { type: Array, decorators: [{ type: i0.Inject, args: [HttpErrorHandler,] }] }
-            ];
-        };
-        return HttpErrorInterceptor;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var GlobalMessageType = {
-        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
-        MSG_TYPE_ERROR: '[GlobalMessage] Error',
-        MSG_TYPE_INFO: '[GlobalMessage] Information',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UnknownErrorHandler = /** @class */ (function (_super) {
-        __extends(UnknownErrorHandler, _super);
-        function UnknownErrorHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.UNKNOWN;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        UnknownErrorHandler.prototype.handleError = /**
-         * @return {?}
-         */
-            function () {
-                this.globalMessageService.add({ key: 'httpHandlers.unknownError' }, GlobalMessageType.MSG_TYPE_ERROR);
-            };
-        UnknownErrorHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.inject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-        return UnknownErrorHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var BadGatewayHandler = /** @class */ (function (_super) {
-        __extends(BadGatewayHandler, _super);
-        function BadGatewayHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        BadGatewayHandler.prototype.handleError = /**
-         * @return {?}
-         */
-            function () {
-                this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
-            };
-        BadGatewayHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ BadGatewayHandler.ngInjectableDef = i0.defineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(i0.inject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-        return BadGatewayHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var OAUTH_ENDPOINT$4 = '/authorizationserver/oauth/token';
-    var BadRequestHandler = /** @class */ (function (_super) {
-        __extends(BadRequestHandler, _super);
-        function BadRequestHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
-            return _this;
-        }
-        /**
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        BadRequestHandler.prototype.handleError = /**
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-            function (request, response) {
-                if (response.url.includes(OAUTH_ENDPOINT$4) &&
-                    response.error.error === 'invalid_grant') {
-                    if (request.body.get('grant_type') === 'password') {
-                        this.globalMessageService.add({
-                            key: 'httpHandlers.badRequestPleaseLoginAgain',
-                            params: { errorMessage: this.getErrorMessage(response) },
-                        }, GlobalMessageType.MSG_TYPE_ERROR);
-                        this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                    }
-                }
-                else if (response.error.errors[0].type === 'PasswordMismatchError') {
-                    // uses en translation error message instead of backend exception error
-                    // @todo: this condition could be removed if backend gives better message
-                    this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
-                    // text: customError.customError.passwordMismatch,
-                }
-                else {
-                    // this is currently showing up in case we have a page not found. It should be a 404.
-                    // see https://jira.hybris.com/browse/CMSX-8516
-                    /** @type {?} */
-                    var errorMessage = this.getErrorMessage(response);
-                    /** @type {?} */
-                    var textObj = errorMessage
-                        ? { raw: errorMessage }
-                        : { key: 'httpHandlers.unknownError' };
-                    this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
-                }
-            };
-        /**
-         * @protected
-         * @param {?} resp
-         * @return {?}
-         */
-        BadRequestHandler.prototype.getErrorMessage = /**
-         * @protected
-         * @param {?} resp
-         * @return {?}
-         */
-            function (resp) {
-                /** @type {?} */
-                var errMsg = resp.message;
-                if (resp.error) {
-                    if (resp.error.errors && resp.error.errors instanceof Array) {
-                        errMsg = resp.error.errors[0].message;
-                    }
-                    else if (resp.error.error_description) {
-                        errMsg = resp.error.error_description;
-                    }
-                }
-                return errMsg || '';
-            };
-        BadRequestHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ BadRequestHandler.ngInjectableDef = i0.defineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(i0.inject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-        return BadRequestHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ConflictHandler = /** @class */ (function (_super) {
-        __extends(ConflictHandler, _super);
-        function ConflictHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.CONFLICT;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        ConflictHandler.prototype.handleError = /**
-         * @return {?}
-         */
-            function () {
-                this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
-            };
-        ConflictHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ ConflictHandler.ngInjectableDef = i0.defineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(i0.inject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-        return ConflictHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ForbiddenHandler = /** @class */ (function (_super) {
-        __extends(ForbiddenHandler, _super);
-        function ForbiddenHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        ForbiddenHandler.prototype.handleError = /**
-         * @return {?}
-         */
-            function () {
-                this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
-            };
-        ForbiddenHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ ForbiddenHandler.ngInjectableDef = i0.defineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.inject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-        return ForbiddenHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GatewayTimeoutHandler = /** @class */ (function (_super) {
-        __extends(GatewayTimeoutHandler, _super);
-        function GatewayTimeoutHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        GatewayTimeoutHandler.prototype.handleError = /**
-         * @return {?}
-         */
-            function () {
-                this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
-            };
-        GatewayTimeoutHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.inject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-        return GatewayTimeoutHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var NotFoundHandler = /** @class */ (function (_super) {
-        __extends(NotFoundHandler, _super);
-        function NotFoundHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
-            return _this;
-        }
-        // empty error handler to avoid we fallabck to the unknown error handler
-        // empty error handler to avoid we fallabck to the unknown error handler
-        /**
-         * @return {?}
-         */
-        NotFoundHandler.prototype.handleError =
-            // empty error handler to avoid we fallabck to the unknown error handler
-            /**
-             * @return {?}
-             */
-            function () { };
-        NotFoundHandler.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.inject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-        return NotFoundHandler;
-    }(HttpErrorHandler));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var errorHandlers = [
-        {
-            provide: HttpErrorHandler,
-            useExisting: UnknownErrorHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: BadGatewayHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: BadRequestHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: ConflictHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: ForbiddenHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: GatewayTimeoutHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: NotFoundHandler,
-            multi: true,
-        },
-    ];
-    /** @type {?} */
-    var httpErrorInterceptors = [
-        {
-            provide: http.HTTP_INTERCEPTORS,
-            useClass: HttpErrorInterceptor,
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageStoreModule = /** @class */ (function () {
-        function GlobalMessageStoreModule() {
-        }
-        GlobalMessageStoreModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            StateModule,
-                            i1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$4),
-                        ],
-                        providers: [reducerProvider$4],
-                    },] }
-        ];
-        return GlobalMessageStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageModule = /** @class */ (function () {
-        function GlobalMessageModule() {
-        }
-        /**
-         * @return {?}
-         */
-        GlobalMessageModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: GlobalMessageModule,
-                    providers: __spread(errorHandlers, httpErrorInterceptors),
-                };
-            };
-        GlobalMessageModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [GlobalMessageStoreModule],
-                        providers: [GlobalMessageService],
-                    },] }
-        ];
-        return GlobalMessageModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CheckoutEffects = /** @class */ (function () {
         function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
             var _this = this;
@@ -9864,17 +9037,7 @@
             this.placeOrder$ = this.actions$.pipe(effects.ofType(PLACE_ORDER), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutConnector
                     .placeOrder(payload.userId, payload.cartId)
-                    .pipe(operators.switchMap(function (data) {
-                    return [
-                        new PlaceOrderSuccess(data),
-                        new AddMessage({
-                            text: {
-                                key: 'checkoutOrderConfirmation.orderPlacedSuccessfully',
-                            },
-                            type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
-                        }),
-                    ];
-                }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(error)); }));
+                    .pipe(operators.switchMap(function (data) { return [new PlaceOrderSuccess(data)]; }), operators.catchError(function (error) { return rxjs.of(new PlaceOrderFail(error)); }));
             }));
             this.loadCheckoutDetails$ = this.actions$.pipe(effects.ofType(LOAD_CHECKOUT_DETAILS), operators.map(function (action) { return action.payload; }), operators.mergeMap(function (payload) {
                 return _this.checkoutConnector
@@ -10124,7 +9287,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$9 = {
+    var initialState$8 = {
         address: {},
         deliveryMode: {
             supported: {},
@@ -10138,9 +9301,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$9(state, action) {
+    function reducer$8(state, action) {
         if (state === void 0) {
-            state = initialState$9;
+            state = initialState$8;
         }
         switch (action.type) {
             case ADD_DELIVERY_ADDRESS_SUCCESS:
@@ -10185,7 +9348,7 @@
                 return __assign({}, state, { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$9;
+                return initialState$8;
             }
             case CLEAR_CHECKOUT_STEP: {
                 /** @type {?} */
@@ -10221,19 +9384,19 @@
     /**
      * @return {?}
      */
-    function getReducers$5() {
+    function getReducers$4() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$9),
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$8),
             cardTypes: reducer$6,
             addressVerification: reducer$7,
         };
     }
     /** @type {?} */
-    var reducerToken$5 = new i0.InjectionToken('CheckoutReducers');
+    var reducerToken$4 = new i0.InjectionToken('CheckoutReducers');
     /** @type {?} */
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
     /**
      * @param {?} reducer
@@ -11673,15 +10836,15 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$a = undefined;
+    var initialState$9 = undefined;
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$a(state, action) {
+    function reducer$9(state, action) {
         if (state === void 0) {
-            state = initialState$a;
+            state = initialState$9;
         }
         switch (action.type) {
             case LOAD_NAVIGATION_ITEMS_SUCCESS: {
@@ -11705,15 +10868,15 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$b = { entities: {} };
+    var initialState$a = { entities: {} };
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$b(state, action) {
+    function reducer$a(state, action) {
         if (state === void 0) {
-            state = initialState$b;
+            state = initialState$a;
         }
         var _a;
         switch (action.type) {
@@ -11731,15 +10894,15 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$c = undefined;
+    var initialState$b = undefined;
     /**
      * @param {?} entityType
      * @return {?}
      */
-    function reducer$c(entityType) {
+    function reducer$b(entityType) {
         return function (state, action) {
             if (state === void 0) {
-                state = initialState$c;
+                state = initialState$b;
             }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
@@ -11747,7 +10910,7 @@
                         return action.payload.pageId;
                     }
                     case LOAD_PAGE_DATA_FAIL: {
-                        return initialState$c;
+                        return initialState$b;
                     }
                     case SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -11765,27 +10928,27 @@
     /**
      * @return {?}
      */
-    function getReducers$6() {
+    function getReducers$5() {
         return {
             page: i1.combineReducers({
-                pageData: reducer$b,
+                pageData: reducer$a,
                 index: i1.combineReducers({
-                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$c(PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$c(PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$c(PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$c(PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$b(PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$b(PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$b(PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$b(PageType.CATALOG_PAGE)),
                 }),
             }),
             component: entityLoaderReducer(COMPONENT_ENTITY),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$a),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$9),
         };
     }
     /** @type {?} */
-    var reducerToken$6 = new i0.InjectionToken('CmsReducers');
+    var reducerToken$5 = new i0.InjectionToken('CmsReducers');
     /** @type {?} */
-    var reducerProvider$6 = {
-        provide: reducerToken$6,
-        useFactory: getReducers$6,
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
     /**
      * @param {?} reducer
@@ -12529,11 +11692,11 @@
                             i1$1.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            i1.StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
+                            i1.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$6),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$6],
+                        providers: [reducerProvider$5],
                     },] }
         ];
         return CmsStoreModule;
@@ -13114,10 +12277,10 @@
                         imports: [
                             i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
+                            i1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$5),
                         ],
-                        providers: [reducerProvider$5],
+                        providers: [reducerProvider$4],
                     },] }
         ];
         return CheckoutStoreModule;
@@ -13884,7 +13047,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$d = {
+    var initialState$c = {
         productCode: '',
         list: [],
     };
@@ -13893,9 +13056,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$d(state, action) {
+    function reducer$c(state, action) {
         if (state === void 0) {
-            state = initialState$d;
+            state = initialState$c;
         }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
@@ -13915,7 +13078,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$e = {
+    var initialState$d = {
         productCode: '',
         list: [],
     };
@@ -13924,9 +13087,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$e(state, action) {
+    function reducer$d(state, action) {
         if (state === void 0) {
-            state = initialState$e;
+            state = initialState$d;
         }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
@@ -13946,7 +13109,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$f = {
+    var initialState$e = {
         results: {},
         suggestions: [],
         auxResults: {},
@@ -13956,9 +13119,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$f(state, action) {
+    function reducer$e(state, action) {
         if (state === void 0) {
-            state = initialState$f;
+            state = initialState$e;
         }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
@@ -13997,20 +13160,20 @@
     /**
      * @return {?}
      */
-    function getReducers$7() {
+    function getReducers$6() {
         return {
-            search: reducer$f,
+            search: reducer$e,
             details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$e,
-            references: reducer$d,
+            reviews: reducer$d,
+            references: reducer$c,
         };
     }
     /** @type {?} */
-    var reducerToken$7 = new i0.InjectionToken('ProductReducers');
+    var reducerToken$6 = new i0.InjectionToken('ProductReducers');
     /** @type {?} */
-    var reducerProvider$7 = {
-        provide: reducerToken$7,
-        useFactory: getReducers$7,
+    var reducerProvider$6 = {
+        provide: reducerToken$6,
+        useFactory: getReducers$6,
     };
     /**
      * @param {?} reducer
@@ -14622,6 +13785,86 @@
         };
         return CxDatePipe;
     }(i1$1.DatePipe));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function shallowEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true;
+        }
+        if (!objA || !objB) {
+            return false;
+        }
+        /** @type {?} */
+        var aKeys = Object.keys(objA);
+        /** @type {?} */
+        var bKeys = Object.keys(objB);
+        /** @type {?} */
+        var aKeysLen = aKeys.length;
+        /** @type {?} */
+        var bKeysLen = bKeys.length;
+        if (aKeysLen !== bKeysLen) {
+            return false;
+        }
+        for (var i = 0; i < aKeysLen; i++) {
+            /** @type {?} */
+            var key = aKeys[i];
+            if (objA[key] !== objB[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function deepEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true; // if both objA and objB are null or undefined and exactly the same
+        }
+        else if (!(objA instanceof Object) || !(objB instanceof Object)) {
+            return false; // if they are not strictly equal, they both need to be Objects
+        }
+        else if (objA.constructor !== objB.constructor) {
+            // they must have the exact same prototype chain, the closest we can do is
+            // test their constructor.
+            return false;
+        }
+        else {
+            for (var key in objA) {
+                if (!objA.hasOwnProperty(key)) {
+                    continue; // other properties were tested using objA.constructor === y.constructor
+                }
+                if (!objB.hasOwnProperty(key)) {
+                    return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
+                }
+                if (objA[key] === objB[key]) {
+                    continue; // if they have the same strict value or identity then they are equal
+                }
+                if (typeof objA[key] !== 'object') {
+                    return false; // Numbers, Strings, Functions, Booleans must be strictly equal
+                }
+                if (!deepEqualObjects(objA[key], objB[key])) {
+                    return false;
+                }
+            }
+            for (var key in objB) {
+                if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -15687,11 +14930,11 @@
                         imports: [
                             i1$1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$7, { metaReducers: metaReducers$4 }),
+                            i1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$6, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$7),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$7],
+                        providers: [reducerProvider$6],
                     },] }
         ];
         return ProductStoreModule;
@@ -15935,6 +15178,41 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var initialState$f = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$f(state, action) {
+        if (state === void 0) {
+            state = initialState$f;
+        }
+        switch (action.type) {
+            case LOAD_BILLING_COUNTRIES_SUCCESS: {
+                /** @type {?} */
+                var billingCountries = action.payload;
+                /** @type {?} */
+                var entities = billingCountries.reduce(function (countryEntities, name) {
+                    var _a;
+                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
+                }, __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case CLEAR_MISCS_DATA: {
+                return initialState$f;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var initialState$g = {
         entities: {},
     };
@@ -15948,13 +15226,13 @@
             state = initialState$g;
         }
         switch (action.type) {
-            case LOAD_BILLING_COUNTRIES_SUCCESS: {
+            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 /** @type {?} */
-                var billingCountries = action.payload;
+                var deliveryCountries = action.payload;
                 /** @type {?} */
-                var entities = billingCountries.reduce(function (countryEntities, name) {
+                var entities = deliveryCountries.reduce(function (countryEntities, country) {
                     var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
+                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
                 }, __assign({}, state.entities));
                 return __assign({}, state, { entities: entities });
             }
@@ -15971,7 +15249,7 @@
      */
     /** @type {?} */
     var initialState$h = {
-        entities: {},
+        order: {},
     };
     /**
      * @param {?=} state
@@ -15983,17 +15261,12 @@
             state = initialState$h;
         }
         switch (action.type) {
-            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+            case LOAD_ORDER_DETAILS_SUCCESS: {
                 /** @type {?} */
-                var deliveryCountries = action.payload;
-                /** @type {?} */
-                var entities = deliveryCountries.reduce(function (countryEntities, country) {
-                    var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
-                }, __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
+                var order = action.payload;
+                return __assign({}, state, { order: order });
             }
-            case CLEAR_MISCS_DATA: {
+            case CLEAR_ORDER_DETAILS: {
                 return initialState$h;
             }
         }
@@ -16005,9 +15278,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$i = {
-        order: {},
-    };
+    var initialState$i = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -16018,12 +15289,10 @@
             state = initialState$i;
         }
         switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
-                /** @type {?} */
-                var order = action.payload;
-                return __assign({}, state, { order: order });
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$i;
             }
-            case CLEAR_ORDER_DETAILS: {
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
                 return initialState$i;
             }
         }
@@ -16035,7 +15304,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$j = [];
+    var initialState$j = {
+        entities: [],
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -16046,11 +15317,19 @@
             state = initialState$j;
         }
         switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$j;
-            }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload;
+                if (entities) {
+                    return __assign({}, state, { entities: entities });
+                }
                 return initialState$j;
+            }
+            case LOAD_REGIONS: {
+                return __assign({}, state);
+            }
+            case CLEAR_MISCS_DATA: {
+                return __assign({}, initialState$j);
             }
         }
         return state;
@@ -16061,9 +15340,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$k = {
-        entities: [],
-    };
+    var initialState$k = false;
     /**
      * @param {?=} state
      * @param {?=} action
@@ -16072,40 +15349,6 @@
     function reducer$k(state, action) {
         if (state === void 0) {
             state = initialState$k;
-        }
-        switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload;
-                if (entities) {
-                    return __assign({}, state, { entities: entities });
-                }
-                return initialState$k;
-            }
-            case LOAD_REGIONS: {
-                return __assign({}, state);
-            }
-            case CLEAR_MISCS_DATA: {
-                return __assign({}, initialState$k);
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$l = false;
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$l(state, action) {
-        if (state === void 0) {
-            state = initialState$l;
         }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
@@ -16120,7 +15363,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$m = {
+    var initialState$l = {
         entities: {},
     };
     /**
@@ -16128,9 +15371,9 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$m(state, action) {
+    function reducer$l(state, action) {
         if (state === void 0) {
-            state = initialState$m;
+            state = initialState$l;
         }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
@@ -16144,7 +15387,33 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_MISCS_DATA: {
+                return initialState$l;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$m = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$m(state, action) {
+        if (state === void 0) {
+            state = initialState$m;
+        }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$m;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$m;
             }
         }
         return state;
@@ -16166,36 +15435,10 @@
             state = initialState$n;
         }
         switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
-                return initialState$n;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$n;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$o = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$o(state, action) {
-        if (state === void 0) {
-            state = initialState$o;
-        }
-        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 /** @type {?} */
                 var consents = action.payload;
-                return consents ? consents : initialState$o;
+                return consents ? consents : initialState$n;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 /** @type {?} */
@@ -16215,15 +15458,15 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$p = ( /** @type {?} */({}));
+    var initialState$o = ( /** @type {?} */({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$p(state, action) {
+    function reducer$o(state, action) {
         if (state === void 0) {
-            state = initialState$p;
+            state = initialState$o;
         }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
@@ -16243,7 +15486,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$q = {
+    var initialState$p = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -16253,16 +15496,16 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$q(state, action) {
+    function reducer$p(state, action) {
         if (state === void 0) {
-            state = initialState$q;
+            state = initialState$p;
         }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
+                return action.payload ? action.payload : initialState$p;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$q;
+                return initialState$p;
             }
         }
         return state;
@@ -16275,29 +15518,29 @@
     /**
      * @return {?}
      */
-    function getReducers$8() {
+    function getReducers$7() {
         return {
             account: i1.combineReducers({
-                details: reducer$p,
+                details: reducer$o,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$n),
-            billingCountries: reducer$g,
-            consents: loaderReducer(USER_CONSENTS, reducer$o),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
-            orders: loaderReducer(USER_ORDERS, reducer$q),
-            order: reducer$i,
-            countries: reducer$h,
-            titles: reducer$m,
-            regions: reducer$k,
-            resetPassword: reducer$l,
+            addresses: loaderReducer(USER_ADDRESSES, reducer$m),
+            billingCountries: reducer$f,
+            consents: loaderReducer(USER_CONSENTS, reducer$n),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$i),
+            orders: loaderReducer(USER_ORDERS, reducer$p),
+            order: reducer$h,
+            countries: reducer$g,
+            titles: reducer$l,
+            regions: reducer$j,
+            resetPassword: reducer$k,
         };
     }
     /** @type {?} */
-    var reducerToken$8 = new i0.InjectionToken('UserReducers');
+    var reducerToken$7 = new i0.InjectionToken('UserReducers');
     /** @type {?} */
-    var reducerProvider$8 = {
-        provide: reducerToken$8,
-        useFactory: getReducers$8,
+    var reducerProvider$7 = {
+        provide: reducerToken$7,
+        useFactory: getReducers$7,
     };
     /**
      * @param {?} reducer
@@ -17470,15 +16713,15 @@
      * @template T
      * @return {?}
      */
-    function getReducers$9() {
+    function getReducers$8() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
     /** @type {?} */
-    var reducerToken$9 = new i0.InjectionToken('ProcessReducers');
+    var reducerToken$8 = new i0.InjectionToken('ProcessReducers');
     /** @type {?} */
-    var reducerProvider$9 = {
-        provide: reducerToken$9,
-        useFactory: getReducers$9,
+    var reducerProvider$8 = {
+        provide: reducerToken$8,
+        useFactory: getReducers$8,
     };
 
     /**
@@ -17490,8 +16733,8 @@
         }
         ProcessStoreModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [StateModule, i1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$9)],
-                        providers: [reducerProvider$9],
+                        imports: [StateModule, i1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                        providers: [reducerProvider$8],
                     },] }
         ];
         return ProcessStoreModule;
@@ -17571,6 +16814,762 @@
         ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
         return DeliveryCountriesEffects;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var GLOBAL_MESSAGE_FEATURE = 'global-message';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ADD_MESSAGE = '[Global-message] Add a Message';
+    /** @type {?} */
+    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
+    /** @type {?} */
+    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+    var AddMessage = /** @class */ (function () {
+        function AddMessage(payload) {
+            this.payload = payload;
+            this.type = ADD_MESSAGE;
+        }
+        return AddMessage;
+    }());
+    var RemoveMessage = /** @class */ (function () {
+        function RemoveMessage(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGE;
+        }
+        return RemoveMessage;
+    }());
+    var RemoveMessagesByType = /** @class */ (function () {
+        function RemoveMessagesByType(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGES_BY_TYPE;
+        }
+        return RemoveMessagesByType;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getGlobalMessageState = i1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getGlobalMessageEntities = i1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$q = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$q(state, action) {
+        if (state === void 0) {
+            state = initialState$q;
+        }
+        var _a, _b, _c, _d;
+        switch (action.type) {
+            case ADD_MESSAGE: {
+                /** @type {?} */
+                var message_1 = action.payload;
+                if (state.entities[message_1.type] === undefined) {
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message_1.type] = [message_1.text], _a)) });
+                }
+                else {
+                    /** @type {?} */
+                    var messages = state.entities[message_1.type];
+                    if (!messages.some(function (msg) { return deepEqualObjects(msg, message_1.text); })) {
+                        return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message_1.type] = __spread(messages, [message_1.text]), _b)) });
+                    }
+                }
+                return state;
+            }
+            case REMOVE_MESSAGE: {
+                /** @type {?} */
+                var msgType = action.payload.type;
+                /** @type {?} */
+                var msgIndex = action.payload.index;
+                if (Object.keys(state.entities).length === 0 ||
+                    !state.entities[msgType]) {
+                    return state;
+                }
+                /** @type {?} */
+                var messages = __spread(state.entities[msgType]);
+                messages.splice(msgIndex, 1);
+                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
+            }
+            case REMOVE_MESSAGES_BY_TYPE: {
+                /** @type {?} */
+                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
+                return __assign({}, state, { entities: entities });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$9() {
+        return reducer$q;
+    }
+    /** @type {?} */
+    var reducerToken$9 = new i0.InjectionToken('GlobalMessageReducers');
+    /** @type {?} */
+    var reducerProvider$9 = {
+        provide: reducerToken$9,
+        useFactory: getReducers$9,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageService = /** @class */ (function () {
+        function GlobalMessageService(store) {
+            this.store = store;
+        }
+        /**
+         * Get all global messages
+         */
+        /**
+         * Get all global messages
+         * @return {?}
+         */
+        GlobalMessageService.prototype.get = /**
+         * Get all global messages
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+            };
+        /**
+         * Add one message into store
+         * @param text: string | Translatable
+         * @param type: GlobalMessageType object
+         */
+        /**
+         * Add one message into store
+         * @param {?} text
+         * @param {?} type
+         * @return {?}
+         */
+        GlobalMessageService.prototype.add = /**
+         * Add one message into store
+         * @param {?} text
+         * @param {?} type
+         * @return {?}
+         */
+            function (text, type) {
+                this.store.dispatch(new AddMessage({
+                    text: typeof text === 'string' ? { raw: text } : text,
+                    type: type,
+                }));
+            };
+        /**
+         * Remove message(s) from store
+         * @param type: GlobalMessageType
+         * @param index:optional. Without it, messages will be removed by type; otherwise,
+         * message will be removed from list by index.
+         */
+        /**
+         * Remove message(s) from store
+         * @param {?} type
+         * @param {?=} index
+         * @return {?}
+         */
+        GlobalMessageService.prototype.remove = /**
+         * Remove message(s) from store
+         * @param {?} type
+         * @param {?=} index
+         * @return {?}
+         */
+            function (type, index) {
+                this.store.dispatch(index !== undefined
+                    ? new RemoveMessage({
+                        type: type,
+                        index: index,
+                    })
+                    : new RemoveMessagesByType(type));
+            };
+        GlobalMessageService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        GlobalMessageService.ctorParameters = function () {
+            return [
+                { type: i1.Store }
+            ];
+        };
+        return GlobalMessageService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {number} */
+    var HttpResponseStatus = {
+        UNKNOWN: -1,
+        BAD_REQUEST: 400,
+        FORBIDDEN: 403,
+        NOT_FOUND: 404,
+        CONFLICT: 409,
+        BAD_GATEWAY: 502,
+        GATEWAY_TIMEOUT: 504,
+    };
+    HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
+    HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
+    HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
+    HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
+    HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
+    HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
+    HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var HttpErrorHandler = /** @class */ (function () {
+        function HttpErrorHandler(globalMessageService) {
+            this.globalMessageService = globalMessageService;
+        }
+        HttpErrorHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        HttpErrorHandler.ctorParameters = function () {
+            return [
+                { type: GlobalMessageService }
+            ];
+        };
+        /** @nocollapse */ HttpErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.inject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+        return HttpErrorHandler;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var HttpErrorInterceptor = /** @class */ (function () {
+        function HttpErrorInterceptor(handlers) {
+            this.handlers = handlers;
+            // We reverse the handlers to allow for custom handlers
+            // that replace standard handlers
+            this.handlers.reverse();
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                var _this = this;
+                return next.handle(request).pipe(operators.catchError(function (response) {
+                    if (response instanceof http.HttpErrorResponse) {
+                        _this.handleErrorResponse(request, response);
+                        return rxjs.throwError(response);
+                    }
+                }));
+            };
+        /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.handleErrorResponse = /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+            function (request, response) {
+                /** @type {?} */
+                var handler = this.getResponseHandler(response);
+                if (handler) {
+                    handler.handleError(request, response);
+                }
+            };
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         */
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.getResponseHandler = /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+            function (response) {
+                /** @type {?} */
+                var status = response.status;
+                /** @type {?} */
+                var handler = this.handlers.find(function (h) { return h.responseStatus === status; });
+                if (!handler) {
+                    handler = this.handlers.find(function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; });
+                }
+                return handler;
+            };
+        HttpErrorInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        HttpErrorInterceptor.ctorParameters = function () {
+            return [
+                { type: Array, decorators: [{ type: i0.Inject, args: [HttpErrorHandler,] }] }
+            ];
+        };
+        return HttpErrorInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UnknownErrorHandler = /** @class */ (function (_super) {
+        __extends(UnknownErrorHandler, _super);
+        function UnknownErrorHandler(config, globalMessageService) {
+            var _this = _super.call(this, globalMessageService) || this;
+            _this.config = config;
+            _this.globalMessageService = globalMessageService;
+            _this.responseStatus = HttpResponseStatus.UNKNOWN;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        UnknownErrorHandler.prototype.handleError = /**
+         * @return {?}
+         */
+            function () {
+                if (!this.config.production) {
+                    console.warn("Unknown http response error: " + this.responseStatus);
+                }
+            };
+        UnknownErrorHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UnknownErrorHandler.ctorParameters = function () {
+            return [
+                { type: ServerConfig },
+                { type: GlobalMessageService }
+            ];
+        };
+        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.inject(ServerConfig), i0.inject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+        return UnknownErrorHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var GlobalMessageType = {
+        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
+        MSG_TYPE_ERROR: '[GlobalMessage] Error',
+        MSG_TYPE_INFO: '[GlobalMessage] Information',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var BadGatewayHandler = /** @class */ (function (_super) {
+        __extends(BadGatewayHandler, _super);
+        function BadGatewayHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        BadGatewayHandler.prototype.handleError = /**
+         * @return {?}
+         */
+            function () {
+                this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
+            };
+        BadGatewayHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ BadGatewayHandler.ngInjectableDef = i0.defineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(i0.inject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+        return BadGatewayHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var OAUTH_ENDPOINT$4 = '/authorizationserver/oauth/token';
+    var BadRequestHandler = /** @class */ (function (_super) {
+        __extends(BadRequestHandler, _super);
+        function BadRequestHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+            return _this;
+        }
+        /**
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        BadRequestHandler.prototype.handleError = /**
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+            function (request, response) {
+                if (response.url.includes(OAUTH_ENDPOINT$4) &&
+                    response.error.error === 'invalid_grant') {
+                    if (request.body.get('grant_type') === 'password') {
+                        this.globalMessageService.add({
+                            key: 'httpHandlers.badRequestPleaseLoginAgain',
+                            params: { errorMessage: this.getErrorMessage(response) },
+                        }, GlobalMessageType.MSG_TYPE_ERROR);
+                        this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
+                    }
+                }
+                else if (response.error.errors[0].type === 'PasswordMismatchError') {
+                    // uses en translation error message instead of backend exception error
+                    // @todo: this condition could be removed if backend gives better message
+                    this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
+                    // text: customError.customError.passwordMismatch,
+                }
+                else {
+                    // this is currently showing up in case we have a page not found. It should be a 404.
+                    // see https://jira.hybris.com/browse/CMSX-8516
+                    /** @type {?} */
+                    var errorMessage = this.getErrorMessage(response);
+                    if (errorMessage) {
+                        this.globalMessageService.add({ raw: errorMessage }, GlobalMessageType.MSG_TYPE_ERROR);
+                    }
+                }
+            };
+        /**
+         * @protected
+         * @param {?} resp
+         * @return {?}
+         */
+        BadRequestHandler.prototype.getErrorMessage = /**
+         * @protected
+         * @param {?} resp
+         * @return {?}
+         */
+            function (resp) {
+                /** @type {?} */
+                var errMsg = resp.message;
+                if (resp.error) {
+                    if (resp.error.errors && resp.error.errors instanceof Array) {
+                        errMsg = resp.error.errors[0].message;
+                    }
+                    else if (resp.error.error_description) {
+                        errMsg = resp.error.error_description;
+                    }
+                }
+                return errMsg || '';
+            };
+        BadRequestHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ BadRequestHandler.ngInjectableDef = i0.defineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(i0.inject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+        return BadRequestHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ConflictHandler = /** @class */ (function (_super) {
+        __extends(ConflictHandler, _super);
+        function ConflictHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.CONFLICT;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        ConflictHandler.prototype.handleError = /**
+         * @return {?}
+         */
+            function () {
+                this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
+            };
+        ConflictHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ ConflictHandler.ngInjectableDef = i0.defineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(i0.inject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+        return ConflictHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ForbiddenHandler = /** @class */ (function (_super) {
+        __extends(ForbiddenHandler, _super);
+        function ForbiddenHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        ForbiddenHandler.prototype.handleError = /**
+         * @return {?}
+         */
+            function () {
+                this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
+            };
+        ForbiddenHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ ForbiddenHandler.ngInjectableDef = i0.defineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.inject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+        return ForbiddenHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GatewayTimeoutHandler = /** @class */ (function (_super) {
+        __extends(GatewayTimeoutHandler, _super);
+        function GatewayTimeoutHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        GatewayTimeoutHandler.prototype.handleError = /**
+         * @return {?}
+         */
+            function () {
+                this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
+            };
+        GatewayTimeoutHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.inject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+        return GatewayTimeoutHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var NotFoundHandler = /** @class */ (function (_super) {
+        __extends(NotFoundHandler, _super);
+        function NotFoundHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
+            return _this;
+        }
+        // empty error handler to avoid we fallabck to the unknown error handler
+        // empty error handler to avoid we fallabck to the unknown error handler
+        /**
+         * @return {?}
+         */
+        NotFoundHandler.prototype.handleError =
+            // empty error handler to avoid we fallabck to the unknown error handler
+            /**
+             * @return {?}
+             */
+            function () { };
+        NotFoundHandler.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.inject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+        return NotFoundHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var errorHandlers = [
+        {
+            provide: HttpErrorHandler,
+            useExisting: UnknownErrorHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: BadGatewayHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: BadRequestHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: ConflictHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: ForbiddenHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: GatewayTimeoutHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: NotFoundHandler,
+            multi: true,
+        },
+    ];
+    /** @type {?} */
+    var httpErrorInterceptors = [
+        {
+            provide: http.HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageStoreModule = /** @class */ (function () {
+        function GlobalMessageStoreModule() {
+        }
+        GlobalMessageStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            StateModule,
+                            i1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$9),
+                        ],
+                        providers: [reducerProvider$9],
+                    },] }
+        ];
+        return GlobalMessageStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageModule = /** @class */ (function () {
+        function GlobalMessageModule() {
+        }
+        /**
+         * @return {?}
+         */
+        GlobalMessageModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: GlobalMessageModule,
+                    providers: __spread(errorHandlers, httpErrorInterceptors),
+                };
+            };
+        GlobalMessageModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [GlobalMessageStoreModule],
+                        providers: [GlobalMessageService],
+                    },] }
+        ];
+        return GlobalMessageModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -18239,7 +18238,15 @@
                 return _this.userAddressConnector
                     .update(payload.userId, payload.addressId, payload.address)
                     .pipe(operators.map(function (data) {
-                    return new UpdateUserAddressSuccess(data);
+                    // don't show the message if just setting address as default
+                    if (payload.address &&
+                        Object.keys(payload.address).length === 1 &&
+                        payload.address.defaultAddress) {
+                        return new LoadUserAddresses(USERID_CURRENT);
+                    }
+                    else {
+                        return new UpdateUserAddressSuccess(data);
+                    }
                 }), operators.catchError(function (error) {
                     return rxjs.of(new UpdateUserAddressFail(error));
                 }));
@@ -18651,11 +18658,11 @@
                             i1$1.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            i1.StoreModule.forFeature(USER_FEATURE, reducerToken$8, { metaReducers: metaReducers$5 }),
+                            i1.StoreModule.forFeature(USER_FEATURE, reducerToken$7, { metaReducers: metaReducers$5 }),
                             effects.EffectsModule.forFeature(effects$8),
                             i2.RouterModule,
                         ],
-                        providers: [reducerProvider$8],
+                        providers: [reducerProvider$7],
                     },] }
         ];
         return UserStoreModule;
@@ -26912,12 +26919,12 @@
     exports.ɵbx = reducer$7;
     exports.ɵbw = getCardTypesEntites;
     exports.ɵbv = reducer$6;
-    exports.ɵcj = reducer$9;
+    exports.ɵcj = reducer$8;
     exports.ɵcg = clearCheckoutState;
-    exports.ɵcd = getReducers$5;
+    exports.ɵcd = getReducers$4;
     exports.ɵch = metaReducers$2;
-    exports.ɵcf = reducerProvider$5;
-    exports.ɵce = reducerToken$5;
+    exports.ɵcf = reducerProvider$4;
+    exports.ɵce = reducerToken$4;
     exports.ɵeu = PageMetaResolver;
     exports.ɵco = CmsStoreModule;
     exports.ɵcn = cmsStoreConfigFactory;
@@ -26926,21 +26933,21 @@
     exports.ɵcx = NavigationEntryItemEffects;
     exports.ɵcv = PageEffects;
     exports.ɵcs = clearCmsState;
-    exports.ɵcp = getReducers$6;
+    exports.ɵcp = getReducers$5;
     exports.ɵct = metaReducers$3;
-    exports.ɵcr = reducerProvider$6;
-    exports.ɵcq = reducerToken$6;
-    exports.ɵda = reducer$a;
-    exports.ɵcy = reducer$b;
-    exports.ɵcz = reducer$c;
+    exports.ɵcr = reducerProvider$5;
+    exports.ɵcq = reducerToken$5;
+    exports.ɵda = reducer$9;
+    exports.ɵcy = reducer$a;
+    exports.ɵcz = reducer$b;
     exports.ɵed = ServerConfig;
     exports.ɵek = provideConfigValidator;
     exports.ɵec = HttpErrorInterceptor;
     exports.ɵdx = GlobalMessageStoreModule;
-    exports.ɵeb = reducer$8;
-    exports.ɵdy = getReducers$4;
-    exports.ɵea = reducerProvider$4;
-    exports.ɵdz = reducerToken$4;
+    exports.ɵeb = reducer$q;
+    exports.ɵdy = getReducers$9;
+    exports.ɵea = reducerProvider$9;
+    exports.ɵdz = reducerToken$9;
     exports.ɵet = TranslationService;
     exports.ɵee = defaultI18nConfig;
     exports.ɵeg = i18nextInit;
@@ -26955,9 +26962,9 @@
     exports.ɵgu = ProcessModule;
     exports.ɵgw = PROCESS_FEATURE;
     exports.ɵgv = ProcessStoreModule;
-    exports.ɵgx = getReducers$9;
-    exports.ɵgz = reducerProvider$9;
-    exports.ɵgy = reducerToken$9;
+    exports.ɵgx = getReducers$8;
+    exports.ɵgz = reducerProvider$8;
+    exports.ɵgy = reducerToken$8;
     exports.ɵew = ProductSearchService;
     exports.ɵdi = effects$7;
     exports.ɵdj = ProductReferencesEffects;
@@ -26967,16 +26974,16 @@
     exports.ɵem = ProductStoreModule;
     exports.ɵel = productStoreConfigFactory;
     exports.ɵdq = clearProductsState;
-    exports.ɵdn = getReducers$7;
+    exports.ɵdn = getReducers$6;
     exports.ɵdr = metaReducers$4;
-    exports.ɵdp = reducerProvider$7;
-    exports.ɵdo = reducerToken$7;
-    exports.ɵes = reducer$d;
-    exports.ɵer = reducer$e;
+    exports.ɵdp = reducerProvider$6;
+    exports.ɵdo = reducerToken$6;
+    exports.ɵes = reducer$c;
+    exports.ɵer = reducer$d;
     exports.ɵep = getAuxSearchResults;
     exports.ɵeq = getProductSuggestions;
     exports.ɵeo = getSearchResults;
-    exports.ɵen = reducer$f;
+    exports.ɵen = reducer$e;
     exports.ɵev = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
@@ -27038,22 +27045,22 @@
     exports.ɵgd = UserDetailsEffects;
     exports.ɵge = UserOrdersEffect;
     exports.ɵgf = UserRegisterEffects;
-    exports.ɵgl = reducer$g;
-    exports.ɵgq = reducer$h;
+    exports.ɵgl = reducer$f;
+    exports.ɵgq = reducer$g;
     exports.ɵdv = clearUserState;
-    exports.ɵds = getReducers$8;
+    exports.ɵds = getReducers$7;
     exports.ɵdw = metaReducers$5;
-    exports.ɵdu = reducerProvider$8;
-    exports.ɵdt = reducerToken$8;
-    exports.ɵgp = reducer$i;
-    exports.ɵgn = reducer$j;
-    exports.ɵgs = reducer$k;
-    exports.ɵgt = reducer$l;
-    exports.ɵgr = reducer$m;
-    exports.ɵgk = reducer$n;
-    exports.ɵgm = reducer$o;
-    exports.ɵgj = reducer$p;
-    exports.ɵgo = reducer$q;
+    exports.ɵdu = reducerProvider$7;
+    exports.ɵdt = reducerToken$7;
+    exports.ɵgp = reducer$h;
+    exports.ɵgn = reducer$i;
+    exports.ɵgs = reducer$j;
+    exports.ɵgt = reducer$k;
+    exports.ɵgr = reducer$l;
+    exports.ɵgk = reducer$m;
+    exports.ɵgm = reducer$n;
+    exports.ɵgj = reducer$o;
+    exports.ɵgo = reducer$p;
     exports.ɵfs = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
