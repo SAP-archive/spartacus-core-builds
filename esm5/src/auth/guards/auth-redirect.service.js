@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { RoutingService } from '../../routing/facade/routing.service';
@@ -104,7 +104,7 @@ var AuthRedirectService = /** @class */ (function () {
         { type: RoutingService },
         { type: Router }
     ]; };
-    /** @nocollapse */ AuthRedirectService.ngInjectableDef = i0.defineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.inject(i1.RoutingService), i0.inject(i2.Router)); }, token: AuthRedirectService, providedIn: "root" });
+    /** @nocollapse */ AuthRedirectService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(i0.ɵɵinject(i1.RoutingService), i0.ɵɵinject(i2.Router)); }, token: AuthRedirectService, providedIn: "root" });
     return AuthRedirectService;
 }());
 export { AuthRedirectService };

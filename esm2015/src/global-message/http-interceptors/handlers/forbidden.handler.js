@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { GlobalMessageType } from '../../models/global-message.model';
@@ -25,7 +25,7 @@ ForbiddenHandler.decorators = [
                 providedIn: 'root',
             },] }
 ];
-/** @nocollapse */ ForbiddenHandler.ngInjectableDef = i0.defineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.inject(i1.GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+/** @nocollapse */ ForbiddenHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
     ForbiddenHandler.prototype.responseStatus;

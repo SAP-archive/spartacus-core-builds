@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { CheckoutAdapter } from './checkout.adapter';
@@ -45,7 +45,7 @@ var CheckoutConnector = /** @class */ (function () {
     CheckoutConnector.ctorParameters = function () { return [
         { type: CheckoutAdapter }
     ]; };
-    /** @nocollapse */ CheckoutConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.inject(i1.CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+    /** @nocollapse */ CheckoutConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(i0.ɵɵinject(i1.CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
     return CheckoutConnector;
 }());
 export { CheckoutConnector };

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
@@ -55,7 +55,7 @@ var RoutingConfigService = /** @class */ (function () {
     RoutingConfigService.ctorParameters = function () { return [
         { type: RoutingConfig }
     ]; };
-    /** @nocollapse */ RoutingConfigService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(i0.inject(i1.RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+    /** @nocollapse */ RoutingConfigService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(i0.ɵɵinject(i1.RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
     return RoutingConfigService;
 }());
 export { RoutingConfigService };

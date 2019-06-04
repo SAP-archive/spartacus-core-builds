@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
@@ -30,7 +30,7 @@ var GatewayTimeoutHandler = /** @class */ (function (_super) {
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.inject(i1.GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+    /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
     return GatewayTimeoutHandler;
 }(HttpErrorHandler));
 export { GatewayTimeoutHandler };

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { GlobalMessageType } from '../../models/global-message.model';
@@ -25,7 +25,7 @@ GatewayTimeoutHandler.decorators = [
                 providedIn: 'root',
             },] }
 ];
-/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.defineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.inject(i1.GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
     GatewayTimeoutHandler.prototype.responseStatus;

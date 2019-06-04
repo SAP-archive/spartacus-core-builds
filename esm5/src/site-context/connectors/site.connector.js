@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { SiteAdapter } from './site.adapter';
@@ -68,7 +68,7 @@ var SiteConnector = /** @class */ (function () {
     SiteConnector.ctorParameters = function () { return [
         { type: SiteAdapter }
     ]; };
-    /** @nocollapse */ SiteConnector.ngInjectableDef = i0.defineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(i0.inject(i1.SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+    /** @nocollapse */ SiteConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(i0.ɵɵinject(i1.SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
     return SiteConnector;
 }());
 export { SiteConnector };

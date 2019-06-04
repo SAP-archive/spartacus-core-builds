@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { CheckoutPaymentAdapter } from './checkout-payment.adapter';
@@ -47,7 +47,7 @@ CheckoutPaymentConnector.decorators = [
 CheckoutPaymentConnector.ctorParameters = () => [
     { type: CheckoutPaymentAdapter }
 ];
-/** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.inject(i1.CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+/** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(i0.ɵɵinject(i1.CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

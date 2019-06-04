@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { UserOrderAdapter } from './user-order.adapter';
@@ -41,7 +41,7 @@ UserOrderConnector.decorators = [
 UserOrderConnector.ctorParameters = () => [
     { type: UserOrderAdapter }
 ];
-/** @nocollapse */ UserOrderConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.inject(i1.UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+/** @nocollapse */ UserOrderConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(i0.ɵɵinject(i1.UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

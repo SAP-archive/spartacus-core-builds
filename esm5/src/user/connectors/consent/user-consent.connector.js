@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { UserConsentAdapter } from './user-consent.adapter';
@@ -58,7 +58,7 @@ var UserConsentConnector = /** @class */ (function () {
     UserConsentConnector.ctorParameters = function () { return [
         { type: UserConsentAdapter }
     ]; };
-    /** @nocollapse */ UserConsentConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(i0.inject(i1.UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+    /** @nocollapse */ UserConsentConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(i0.ɵɵinject(i1.UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
     return UserConsentConnector;
 }());
 export { UserConsentConnector };

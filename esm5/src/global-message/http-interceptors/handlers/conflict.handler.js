@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
@@ -30,7 +30,7 @@ var ConflictHandler = /** @class */ (function (_super) {
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ ConflictHandler.ngInjectableDef = i0.defineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(i0.inject(i1.GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+    /** @nocollapse */ ConflictHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
     return ConflictHandler;
 }(HttpErrorHandler));
 export { ConflictHandler };

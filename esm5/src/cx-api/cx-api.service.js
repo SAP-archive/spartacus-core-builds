@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable, Optional } from '@angular/core';
 import { AuthService } from '../auth/index';
@@ -52,7 +52,7 @@ var CxApiService = /** @class */ (function () {
         { type: UserService, decorators: [{ type: Optional }] },
         { type: TranslationService, decorators: [{ type: Optional }] }
     ]; };
-    /** @nocollapse */ CxApiService.ngInjectableDef = i0.defineInjectable({ factory: function CxApiService_Factory() { return new CxApiService(i0.inject(i1.AuthService, 8), i0.inject(i2.CmsService, 8), i0.inject(i3.RoutingService, 8), i0.inject(i4.CurrencyService, 8), i0.inject(i5.LanguageService, 8), i0.inject(i6.ProductService, 8), i0.inject(i7.ProductSearchService, 8), i0.inject(i8.ProductReviewService, 8), i0.inject(i9.UserService, 8), i0.inject(i10.TranslationService, 8)); }, token: CxApiService, providedIn: "root" });
+    /** @nocollapse */ CxApiService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CxApiService_Factory() { return new CxApiService(i0.ɵɵinject(i1.AuthService, 8), i0.ɵɵinject(i2.CmsService, 8), i0.ɵɵinject(i3.RoutingService, 8), i0.ɵɵinject(i4.CurrencyService, 8), i0.ɵɵinject(i5.LanguageService, 8), i0.ɵɵinject(i6.ProductService, 8), i0.ɵɵinject(i7.ProductSearchService, 8), i0.ɵɵinject(i8.ProductReviewService, 8), i0.ɵɵinject(i9.UserService, 8), i0.ɵɵinject(i10.TranslationService, 8)); }, token: CxApiService, providedIn: "root" });
     return CxApiService;
 }());
 export { CxApiService };

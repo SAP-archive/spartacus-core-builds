@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
@@ -91,7 +91,7 @@ var SearchboxService = /** @class */ (function (_super) {
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1.Store), i0.inject(i2.Router)); }, token: SearchboxService, providedIn: "root" });
+    /** @nocollapse */ SearchboxService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.ɵɵinject(i1.Store), i0.ɵɵinject(i2.Router)); }, token: SearchboxService, providedIn: "root" });
     return SearchboxService;
 }(ProductSearchService));
 export { SearchboxService };

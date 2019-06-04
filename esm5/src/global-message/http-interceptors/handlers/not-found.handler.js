@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import * as tslib_1 from "tslib";
 import { Injectable } from '@angular/core';
@@ -31,7 +31,7 @@ var NotFoundHandler = /** @class */ (function (_super) {
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.inject(i1.GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+    /** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
     return NotFoundHandler;
 }(HttpErrorHandler));
 export { NotFoundHandler };

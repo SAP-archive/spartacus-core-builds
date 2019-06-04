@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { GlobalMessageType } from '../../models/global-message.model';
@@ -25,7 +25,7 @@ BadGatewayHandler.decorators = [
                 providedIn: 'root',
             },] }
 ];
-/** @nocollapse */ BadGatewayHandler.ngInjectableDef = i0.defineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(i0.inject(i1.GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+/** @nocollapse */ BadGatewayHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
     BadGatewayHandler.prototype.responseStatus;

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
@@ -190,7 +190,7 @@ var RoutingService = /** @class */ (function () {
         { type: WindowRef },
         { type: SemanticPathService }
     ]; };
-    /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1.Store), i0.inject(i2.WindowRef), i0.inject(i3.SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+    /** @nocollapse */ RoutingService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.ɵɵinject(i1.Store), i0.ɵɵinject(i2.WindowRef), i0.ɵɵinject(i3.SemanticPathService)); }, token: RoutingService, providedIn: "root" });
     return RoutingService;
 }());
 export { RoutingService };

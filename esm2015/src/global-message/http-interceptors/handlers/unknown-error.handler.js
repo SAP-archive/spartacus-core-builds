@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { GlobalMessageService } from '../../facade/global-message.service';
@@ -40,7 +40,7 @@ UnknownErrorHandler.ctorParameters = () => [
     { type: ServerConfig },
     { type: GlobalMessageService }
 ];
-/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.inject(i1.ServerConfig), i0.inject(i2.GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(i0.ɵɵinject(i1.ServerConfig), i0.ɵɵinject(i2.GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
     UnknownErrorHandler.prototype.responseStatus;

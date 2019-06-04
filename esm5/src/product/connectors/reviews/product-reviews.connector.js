@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { ProductReviewsAdapter } from './product-reviews.adapter';
@@ -45,7 +45,7 @@ var ProductReviewsConnector = /** @class */ (function () {
     ProductReviewsConnector.ctorParameters = function () { return [
         { type: ProductReviewsAdapter }
     ]; };
-    /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.inject(i1.ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+    /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(i0.ɵɵinject(i1.ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
     return ProductReviewsConnector;
 }());
 export { ProductReviewsConnector };

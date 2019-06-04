@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { GlobalMessageService } from '../../facade/global-message.service';
 import { Injectable } from '@angular/core';
@@ -22,7 +22,7 @@ var HttpErrorHandler = /** @class */ (function () {
     HttpErrorHandler.ctorParameters = function () { return [
         { type: GlobalMessageService }
     ]; };
-    /** @nocollapse */ HttpErrorHandler.ngInjectableDef = i0.defineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.inject(i1.GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+    /** @nocollapse */ HttpErrorHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
     return HttpErrorHandler;
 }());
 export { HttpErrorHandler };

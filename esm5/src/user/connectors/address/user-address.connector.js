@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { UserAddressAdapter } from './user-address.adapter';
@@ -84,7 +84,7 @@ var UserAddressConnector = /** @class */ (function () {
     UserAddressConnector.ctorParameters = function () { return [
         { type: UserAddressAdapter }
     ]; };
-    /** @nocollapse */ UserAddressConnector.ngInjectableDef = i0.defineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(i0.inject(i1.UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+    /** @nocollapse */ UserAddressConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(i0.ɵɵinject(i1.UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
     return UserAddressConnector;
 }());
 export { UserAddressConnector };

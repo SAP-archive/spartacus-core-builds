@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { HttpResponseStatus } from '../../models/response-status.model';
@@ -23,7 +23,7 @@ NotFoundHandler.decorators = [
                 providedIn: 'root',
             },] }
 ];
-/** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.defineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.inject(i1.GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+/** @nocollapse */ NotFoundHandler.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(i0.ɵɵinject(i1.GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
     NotFoundHandler.prototype.responseStatus;

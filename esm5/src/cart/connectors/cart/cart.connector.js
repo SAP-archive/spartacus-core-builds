@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { CartAdapter } from './cart.adapter';
@@ -62,7 +62,7 @@ var CartConnector = /** @class */ (function () {
     CartConnector.ctorParameters = function () { return [
         { type: CartAdapter }
     ]; };
-    /** @nocollapse */ CartConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(i0.inject(i1.CartAdapter)); }, token: CartConnector, providedIn: "root" });
+    /** @nocollapse */ CartConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(i0.ɵɵinject(i1.CartAdapter)); }, token: CartConnector, providedIn: "root" });
     return CartConnector;
 }());
 export { CartConnector };

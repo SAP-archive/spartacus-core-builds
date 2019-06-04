@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { ProductSearchAdapter } from './product-search.adapter';
@@ -45,7 +45,7 @@ var ProductSearchConnector = /** @class */ (function () {
     ProductSearchConnector.ctorParameters = function () { return [
         { type: ProductSearchAdapter }
     ]; };
-    /** @nocollapse */ ProductSearchConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.inject(i1.ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+    /** @nocollapse */ ProductSearchConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(i0.ɵɵinject(i1.ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
     return ProductSearchConnector;
 }());
 export { ProductSearchConnector };

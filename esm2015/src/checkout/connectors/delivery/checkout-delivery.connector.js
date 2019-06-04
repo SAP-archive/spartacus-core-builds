@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { CheckoutDeliveryAdapter } from './checkout-delivery.adapter';
@@ -66,7 +66,7 @@ CheckoutDeliveryConnector.decorators = [
 CheckoutDeliveryConnector.ctorParameters = () => [
     { type: CheckoutDeliveryAdapter }
 ];
-/** @nocollapse */ CheckoutDeliveryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.inject(i1.CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+/** @nocollapse */ CheckoutDeliveryConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(i0.ɵɵinject(i1.CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

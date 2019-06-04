@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { StoreFinderAdapter } from './store-finder.adapter';
@@ -43,7 +43,7 @@ StoreFinderConnector.decorators = [
 StoreFinderConnector.ctorParameters = () => [
     { type: StoreFinderAdapter }
 ];
-/** @nocollapse */ StoreFinderConnector.ngInjectableDef = i0.defineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(i0.inject(i1.StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+/** @nocollapse */ StoreFinderConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(i0.ɵɵinject(i1.StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

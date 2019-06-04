@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { CartEntryAdapter } from './cart-entry.adapter';
@@ -53,7 +53,7 @@ CartEntryConnector.decorators = [
 CartEntryConnector.ctorParameters = () => [
     { type: CartEntryAdapter }
 ];
-/** @nocollapse */ CartEntryConnector.ngInjectableDef = i0.defineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(i0.inject(i1.CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+/** @nocollapse */ CartEntryConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(i0.ɵɵinject(i1.CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
 if (false) {
     /**
      * @type {?}

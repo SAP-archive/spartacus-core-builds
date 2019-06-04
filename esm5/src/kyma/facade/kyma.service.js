@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { select, Store } from '@ngrx/store';
@@ -58,7 +58,7 @@ var KymaService = /** @class */ (function () {
     KymaService.ctorParameters = function () { return [
         { type: Store }
     ]; };
-    /** @nocollapse */ KymaService.ngInjectableDef = i0.defineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.inject(i1.Store)); }, token: KymaService, providedIn: "root" });
+    /** @nocollapse */ KymaService.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.ɵɵinject(i1.Store)); }, token: KymaService, providedIn: "root" });
     return KymaService;
 }());
 export { KymaService };

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 import { Injectable } from '@angular/core';
 import { ProductReferencesAdapter } from './product-references.adapter';
@@ -34,7 +34,7 @@ var ProductReferencesConnector = /** @class */ (function () {
     ProductReferencesConnector.ctorParameters = function () { return [
         { type: ProductReferencesAdapter }
     ]; };
-    /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = i0.defineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(i0.inject(i1.ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+    /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = i0.ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(i0.ɵɵinject(i1.ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
     return ProductReferencesConnector;
 }());
 export { ProductReferencesConnector };
