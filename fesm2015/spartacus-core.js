@@ -10032,7 +10032,10 @@ class ContentPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolve() {
-        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(page => combineLatest([this.resolveTitle(page), this.resolveBreadcrumbs(page)])), map(([title, breadcrumbs]) => ({ title, breadcrumbs })));
+        return this.cms.getCurrentPage().pipe(filter(Boolean), switchMap(page => combineLatest([
+            this.resolveTitle(page),
+            this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(page, label))),
+        ])), map(([title, breadcrumbs]) => ({ title, breadcrumbs })));
     }
     /**
      * @param {?} page
@@ -10044,13 +10047,20 @@ class ContentPageMetaResolver extends PageMetaResolver {
         });
     }
     /**
-     * @param {?} _page
      * @return {?}
      */
-    resolveBreadcrumbs(_page) {
+    resolveBreadcrumbLabel() {
+        return this.translation.translate('common.home');
+    }
+    /**
+     * @param {?} _page
+     * @param {?} breadcrumbLabel
+     * @return {?}
+     */
+    resolveBreadcrumbs(_page, breadcrumbLabel) {
         // as long as we do not have CMSX-8689 in place
         // we need specific resolvers for nested pages
-        return of([{ label: 'Home', link: '/' }]);
+        return of([{ label: breadcrumbLabel, link: '/' }]);
     }
 }
 ContentPageMetaResolver.decorators = [
@@ -12408,7 +12418,7 @@ class CategoryPageMetaResolver extends PageMetaResolver {
             if (this.hasProductListComponent(page)) {
                 return this.productSearchService.getResults().pipe(filter(data => data.breadcrumbs && data.breadcrumbs.length > 0), switchMap(data => combineLatest([
                     this.resolveTitle(data),
-                    this.resolveBreadcrumbs(data),
+                    this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(data, label))),
                 ])), map(([title, breadcrumbs]) => ({ title, breadcrumbs })));
             }
             else {
@@ -12429,13 +12439,20 @@ class CategoryPageMetaResolver extends PageMetaResolver {
         });
     }
     /**
-     * @param {?} data
      * @return {?}
      */
-    resolveBreadcrumbs(data) {
+    resolveBreadcrumbLabel() {
+        return this.translation.translate('common.home');
+    }
+    /**
+     * @param {?} data
+     * @param {?} breadcrumbLabel
+     * @return {?}
+     */
+    resolveBreadcrumbs(data, breadcrumbLabel) {
         /** @type {?} */
         const breadcrumbs = [];
-        breadcrumbs.push({ label: 'Home', link: '/' });
+        breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
         for (const br of data.breadcrumbs) {
             if (br.facetCode === 'category') {
                 breadcrumbs.push({
@@ -12501,7 +12518,7 @@ class ProductPageMetaResolver extends PageMetaResolver {
             this.resolveHeading(p),
             this.resolveTitle(p),
             this.resolveDescription(p),
-            this.resolveBreadcrumbs(p),
+            this.resolveBreadcrumbLabel().pipe(switchMap(label => this.resolveBreadcrumbs(p, label))),
             this.resolveImage(p),
         ])), map(([heading, title, description, breadcrumbs, image]) => ({
             heading,
@@ -12543,13 +12560,20 @@ class ProductPageMetaResolver extends PageMetaResolver {
         });
     }
     /**
-     * @param {?} product
      * @return {?}
      */
-    resolveBreadcrumbs(product) {
+    resolveBreadcrumbLabel() {
+        return this.translation.translate('common.home');
+    }
+    /**
+     * @param {?} product
+     * @param {?} breadcrumbLabel
+     * @return {?}
+     */
+    resolveBreadcrumbs(product, breadcrumbLabel) {
         /** @type {?} */
         const breadcrumbs = [];
-        breadcrumbs.push({ label: 'Home', link: '/' });
+        breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
         for (const c of product.categories) {
             breadcrumbs.push({
                 label: c.name || c.code,

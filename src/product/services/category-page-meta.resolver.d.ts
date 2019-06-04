@@ -15,6 +15,7 @@ export declare class CategoryPageMetaResolver extends PageMetaResolver implement
     constructor(routingService: RoutingService, productSearchService: ProductSearchService, cms: CmsService, translation: TranslationService);
     resolve(): Observable<PageMeta>;
     resolveTitle(data: ProductSearchPage): Observable<string>;
-    resolveBreadcrumbs(data: ProductSearchPage): Observable<any[]>;
+    resolveBreadcrumbLabel(): Observable<string>;
+    resolveBreadcrumbs(data: ProductSearchPage, breadcrumbLabel: string): Observable<any[]>;
     private hasProductListComponent;
 }

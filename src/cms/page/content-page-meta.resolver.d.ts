@@ -10,5 +10,6 @@ export declare class ContentPageMetaResolver extends PageMetaResolver implements
     constructor(cms: CmsService, translation: TranslationService);
     resolve(): Observable<PageMeta>;
     resolveTitle(page: Page): Observable<string>;
-    resolveBreadcrumbs(_page: Page): Observable<any[]>;
+    resolveBreadcrumbLabel(): Observable<string>;
+    resolveBreadcrumbs(_page: Page, breadcrumbLabel: string): Observable<any[]>;
 }

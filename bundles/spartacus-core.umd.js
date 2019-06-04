@@ -11758,7 +11758,10 @@
             function () {
                 var _this = this;
                 return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap(function (page) {
-                    return rxjs.combineLatest([_this.resolveTitle(page), _this.resolveBreadcrumbs(page)]);
+                    return rxjs.combineLatest([
+                        _this.resolveTitle(page),
+                        _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(page, label); })),
+                    ]);
                 }), operators.map(function (_a) {
                     var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
                     return ({ title: title, breadcrumbs: breadcrumbs });
@@ -11778,17 +11781,28 @@
                 });
             };
         /**
+         * @return {?}
+         */
+        ContentPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @return {?}
+         */
+            function () {
+                return this.translation.translate('common.home');
+            };
+        /**
          * @param {?} _page
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
         ContentPageMetaResolver.prototype.resolveBreadcrumbs = /**
          * @param {?} _page
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
-            function (_page) {
+            function (_page, breadcrumbLabel) {
                 // as long as we do not have CMSX-8689 in place
                 // we need specific resolvers for nested pages
-                return rxjs.of([{ label: 'Home', link: '/' }]);
+                return rxjs.of([{ label: breadcrumbLabel, link: '/' }]);
             };
         ContentPageMetaResolver.decorators = [
             { type: i0.Injectable, args: [{
@@ -14559,7 +14573,7 @@
                         return _this.productSearchService.getResults().pipe(operators.filter(function (data) { return data.breadcrumbs && data.breadcrumbs.length > 0; }), operators.switchMap(function (data) {
                             return rxjs.combineLatest([
                                 _this.resolveTitle(data),
-                                _this.resolveBreadcrumbs(data),
+                                _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(data, label); })),
                             ]);
                         }), operators.map(function (_a) {
                             var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
@@ -14588,18 +14602,29 @@
                 });
             };
         /**
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @return {?}
+         */
+            function () {
+                return this.translation.translate('common.home');
+            };
+        /**
          * @param {?} data
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
          * @param {?} data
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
-            function (data) {
+            function (data, breadcrumbLabel) {
                 var e_1, _a;
                 /** @type {?} */
                 var breadcrumbs = [];
-                breadcrumbs.push({ label: 'Home', link: '/' });
+                breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
                 try {
                     for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
                         var br = _c.value;
@@ -14693,7 +14718,7 @@
                         _this.resolveHeading(p),
                         _this.resolveTitle(p),
                         _this.resolveDescription(p),
-                        _this.resolveBreadcrumbs(p),
+                        _this.resolveBreadcrumbLabel().pipe(operators.switchMap(function (label) { return _this.resolveBreadcrumbs(p, label); })),
                         _this.resolveImage(p),
                     ]);
                 }), operators.map(function (_a) {
@@ -14751,18 +14776,29 @@
                 });
             };
         /**
+         * @return {?}
+         */
+        ProductPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @return {?}
+         */
+            function () {
+                return this.translation.translate('common.home');
+            };
+        /**
          * @param {?} product
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveBreadcrumbs = /**
          * @param {?} product
+         * @param {?} breadcrumbLabel
          * @return {?}
          */
-            function (product) {
+            function (product, breadcrumbLabel) {
                 var e_1, _a;
                 /** @type {?} */
                 var breadcrumbs = [];
-                breadcrumbs.push({ label: 'Home', link: '/' });
+                breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
                 try {
                     for (var _b = __values(product.categories), _c = _b.next(); !_c.done; _c = _b.next()) {
                         var c = _c.value;

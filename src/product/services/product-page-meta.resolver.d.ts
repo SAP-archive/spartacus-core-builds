@@ -15,7 +15,8 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     resolveHeading(product: Product): Observable<string>;
     resolveTitle(product: Product): Observable<string>;
     resolveDescription(product: Product): Observable<string>;
-    resolveBreadcrumbs(product: Product): Observable<any[]>;
+    resolveBreadcrumbLabel(): Observable<string>;
+    resolveBreadcrumbs(product: Product, breadcrumbLabel: string): Observable<any[]>;
     resolveImage(product: any): Observable<string>;
     private resolveFirstCategory;
     private resolveManufacturer;
