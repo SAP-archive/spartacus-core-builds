@@ -14883,6 +14883,7 @@
                     'spinner',
                     'header',
                     'searchBox',
+                    'navigation',
                     'sorting',
                     'httpHandlers',
                     'pageMetaResolver',

@@ -14711,6 +14711,7 @@ var defaultI18nConfig = {
                 'spinner',
                 'header',
                 'searchBox',
+                'navigation',
                 'sorting',
                 'httpHandlers',
                 'pageMetaResolver',
