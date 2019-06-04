@@ -1,65 +1,11 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('i18next-xhr-backend'), require('i18next'), require('@angular/forms'), require('@angular/router'), require('rxjs'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', 'i18next-xhr-backend', 'i18next', '@angular/forms', '@angular/router', 'rxjs', '@ngrx/store', '@ngrx/effects', '@angular/core', '@angular/common/http', 'rxjs/operators', '@angular/common'], factory) :
-    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.i18nextXhrBackend,global.i18next,global.ng.forms,global.ng.router,global.rxjs,global.store,global.effects,global.ng.core,global.ng.common.http,global.rxjs.operators,global.ng.common));
-}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i2,rxjs,i1,effects,i0,http,operators,i1$1) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@ngrx/router-store'), require('@angular/platform-browser'), require('i18next-xhr-backend'), require('i18next'), require('@angular/forms'), require('@angular/router'), require('rxjs'), require('rxjs/operators'), require('@angular/core'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/store'), require('@ngrx/effects')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@ngrx/router-store', '@angular/platform-browser', 'i18next-xhr-backend', 'i18next', '@angular/forms', '@angular/router', 'rxjs', 'rxjs/operators', '@angular/core', '@angular/common', '@angular/common/http', '@ngrx/store', '@ngrx/effects'], factory) :
+    (factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}),global.fromNgrxRouter,global.ng.platformBrowser,global.i18nextXhrBackend,global.i18next,global.ng.forms,global.ng.router,global.rxjs,global.rxjs.operators,global.ng.core,global.ng.common,global.ng.common.http,global.store,global.effects));
+}(this, (function (exports,fromNgrxRouter,platformBrowser,i18nextXhrBackend,i18next,forms,i2,rxjs,operators,i0,i1,http,i1$1,effects) { 'use strict';
 
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var CountryType = {
-        BILLING: 'BILLING',
-        SHIPPING: 'SHIPPING',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var PageType = {
-        CONTENT_PAGE: 'ContentPage',
-        PRODUCT_PAGE: 'ProductPage',
-        CATEGORY_PAGE: 'CategoryPage',
-        CATALOG_PAGE: 'CatalogPage',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var ImageType = {
-        PRIMARY: 'PRIMARY',
-        GALLERY: 'GALLERY',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var PriceType = {
-        BUY: 'BUY',
-        FROM: 'FROM',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var testestsd = 'sare';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -420,12 +366,24 @@
             };
         ConfigModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule],
+                        imports: [i1.CommonModule],
                         declarations: [],
                     },] }
         ];
         return ConfigModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var PageType = {
+        CONTENT_PAGE: 'ContentPage',
+        PRODUCT_PAGE: 'ProductPage',
+        CATEGORY_PAGE: 'CategoryPage',
+        CATALOG_PAGE: 'CatalogPage',
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -497,19 +455,19 @@
         useFactory: getReducers,
     };
     /** @type {?} */
-    var getRouterFeatureState = i1.createFeatureSelector(ROUTING_FEATURE);
+    var getRouterFeatureState = i1$1.createFeatureSelector(ROUTING_FEATURE);
     /** @type {?} */
-    var getRouterState = i1.createSelector(getRouterFeatureState, function (state) { return state.router; });
+    var getRouterState = i1$1.createSelector(getRouterFeatureState, function (state) { return state.router; });
     /** @type {?} */
-    var getPageContext = i1.createSelector(getRouterState, function (routingState) {
+    var getPageContext = i1$1.createSelector(getRouterState, function (routingState) {
         return (routingState.state && routingState.state.context) || { id: '' };
     });
     /** @type {?} */
-    var getNextPageContext = i1.createSelector(getRouterState, function (routingState) {
+    var getNextPageContext = i1$1.createSelector(getRouterState, function (routingState) {
         return routingState.nextState && routingState.nextState.context;
     });
     /** @type {?} */
-    var isNavigating = i1.createSelector(getNextPageContext, function (context) { return !!context; });
+    var isNavigating = i1$1.createSelector(getNextPageContext, function (context) { return !!context; });
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
      */
@@ -737,7 +695,7 @@
             return [
                 { type: effects.Actions },
                 { type: i2.Router },
-                { type: i1$1.Location }
+                { type: i1.Location }
             ];
         };
         __decorate([
@@ -830,10 +788,10 @@
         /** @nocollapse */
         WindowRef.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
             ];
         };
-        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1$1.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        /** @nocollapse */ WindowRef.ngInjectableDef = i0.defineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(i0.inject(i1.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
         return WindowRef;
     }());
 
@@ -1292,7 +1250,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getRouterState));
+                return this.store.pipe(i1$1.select(getRouterState));
             };
         /**
          * Get the `PageContext` from the state
@@ -1306,7 +1264,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getPageContext));
+                return this.store.pipe(i1$1.select(getPageContext));
             };
         /**
          * Get the next `PageContext` from the state
@@ -1320,7 +1278,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getNextPageContext));
+                return this.store.pipe(i1$1.select(getNextPageContext));
             };
         /**
          * Get the `isNavigating` info from the state
@@ -1334,7 +1292,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(isNavigating));
+                return this.store.pipe(i1$1.select(isNavigating));
             };
         /**
          * Navigation with a new state into history
@@ -1450,12 +1408,12 @@
         /** @nocollapse */
         RoutingService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: WindowRef },
                 { type: SemanticPathService }
             ];
         };
-        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1.Store), i0.inject(WindowRef), i0.inject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+        /** @nocollapse */ RoutingService.ngInjectableDef = i0.defineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(i0.inject(i1$1.Store), i0.inject(WindowRef), i0.inject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
     }());
 
@@ -1752,7 +1710,7 @@
         }
         ConfigurableRoutesModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule],
+                        imports: [i1.CommonModule],
                         providers: [
                             {
                                 provide: i0.APP_INITIALIZER,
@@ -1782,7 +1740,7 @@
                                 scrollPositionRestoration: 'enabled',
                                 anchorScrolling: 'enabled',
                             }),
-                            i1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                            i1$1.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                             effects.EffectsModule.forFeature(effects$1),
                             fromNgrxRouter.StoreRouterConnectingModule.forRoot({
                                 stateKey: ROUTING_FEATURE,
@@ -1844,8 +1802,6 @@
         authentication: {
             client_id: 'mobile_android',
             client_secret: 'secret',
-            kyma_client_id: 'client4kyma',
-            kyma_client_secret: 'secret',
         },
     };
 
@@ -1857,8 +1813,6 @@
     var AUTH_FEATURE = 'auth';
     /** @type {?} */
     var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-    /** @type {?} */
-    var OPEN_ID_TOKEN_DATA = '[Auth] Open ID Token Data';
 
     /**
      * @fileoverview added by tsickle
@@ -1993,47 +1947,6 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var LOAD_OPEN_ID_TOKEN = '[Token] Create Open ID Token';
-    /** @type {?} */
-    var LOAD_OPEN_ID_TOKEN_FAIL = '[Token] Create Open ID Token Fail';
-    /** @type {?} */
-    var LOAD_OPEN_ID_TOKEN_SUCCESS = '[Token] Create Open ID Token Success';
-    var LoadOpenIdToken = /** @class */ (function (_super) {
-        __extends(LoadOpenIdToken, _super);
-        function LoadOpenIdToken(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN;
-            return _this;
-        }
-        return LoadOpenIdToken;
-    }(LoaderLoadAction));
-    var LoadOpenIdTokenFail = /** @class */ (function (_super) {
-        __extends(LoadOpenIdTokenFail, _super);
-        function LoadOpenIdTokenFail(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN_FAIL;
-            return _this;
-        }
-        return LoadOpenIdTokenFail;
-    }(LoaderFailAction));
-    var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadOpenIdTokenSuccess, _super);
-        function LoadOpenIdTokenSuccess(payload) {
-            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_OPEN_ID_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadOpenIdTokenSuccess;
-    }(LoaderSuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var LOAD_USER_TOKEN = '[Auth] Load User Token';
     /** @type {?} */
     var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
@@ -2093,66 +2006,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAuthState = i1.createFeatureSelector(AUTH_FEATURE);
+    var getAuthState = i1$1.createFeatureSelector(AUTH_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getClientTokenState = i1.createSelector(getAuthState, function (state) { return state.clientToken; });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderValueSelector(state) {
-        return state.value;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderLoadingSelector(state) {
-        return state.loading;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderErrorSelector(state) {
-        return state.error;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderSuccessSelector(state) {
-        return state.success;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getOpenIdTokenState = i1.createSelector(getAuthState, function (state) { return state.openIdToken; });
-    /** @type {?} */
-    var getOpenIdTokenValue = i1.createSelector(getOpenIdTokenState, loaderValueSelector);
-    /** @type {?} */
-    var getOpenIdTokenLoading = i1.createSelector(getOpenIdTokenState, loaderLoadingSelector);
-    /** @type {?} */
-    var getOpenIdTokenSuccess = i1.createSelector(getOpenIdTokenState, loaderSuccessSelector);
-    /** @type {?} */
-    var getOpenIdTokenError = i1.createSelector(getOpenIdTokenState, loaderErrorSelector);
+    var getClientTokenState = i1$1.createSelector(getAuthState, function (state) { return state.clientToken; });
 
     /**
      * @fileoverview added by tsickle
@@ -2161,9 +2022,9 @@
     /** @type {?} */
     var getUserTokenSelector = function (state) { return state.token; };
     /** @type {?} */
-    var getUserTokenState = i1.createSelector(getAuthState, function (state) { return state.userToken; });
+    var getUserTokenState = i1$1.createSelector(getAuthState, function (state) { return state.userToken; });
     /** @type {?} */
-    var getUserToken = i1.createSelector(getUserTokenState, getUserTokenSelector);
+    var getUserToken = i1$1.createSelector(getUserTokenState, getUserTokenSelector);
 
     /**
      * @fileoverview added by tsickle
@@ -2208,7 +2069,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getUserToken));
+                return this.store.pipe(i1$1.select(getUserToken));
             };
         /**
          * Refreshes the user token
@@ -2275,7 +2136,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
                     if (_this.isClientTokenLoaded(state)) {
                         return true;
                     }
@@ -2304,46 +2165,9 @@
             function () {
                 var _this = this;
                 this.store.dispatch(new LoadClientToken());
-                return this.store.pipe(i1.select(getClientTokenState), operators.filter(function (state) {
+                return this.store.pipe(i1$1.select(getClientTokenState), operators.filter(function (state) {
                     return _this.isClientTokenLoaded(state);
                 }), operators.map(function (state) { return state.value; }));
-            };
-        /**
-         * Authorizes using the Kyma OAuth client with scope `openid`.
-         *
-         * @param username a username
-         * @param password a password
-         */
-        /**
-         * Authorizes using the Kyma OAuth client with scope `openid`.
-         *
-         * @param {?} username a username
-         * @param {?} password a password
-         * @return {?}
-         */
-        AuthService.prototype.authorizeOpenId = /**
-         * Authorizes using the Kyma OAuth client with scope `openid`.
-         *
-         * @param {?} username a username
-         * @param {?} password a password
-         * @return {?}
-         */
-            function (username, password) {
-                this.store.dispatch(new LoadOpenIdToken({ username: username, password: password }));
-            };
-        /**
-         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-         */
-        /**
-         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-         * @return {?}
-         */
-        AuthService.prototype.getOpenIdToken = /**
-         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
-         * @return {?}
-         */
-            function () {
-                return this.store.pipe(i1.select(getOpenIdTokenValue));
             };
         /**
          * @protected
@@ -2366,10 +2190,10 @@
         /** @nocollapse */
         AuthService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
-        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1.Store)); }, token: AuthService, providedIn: "root" });
+        /** @nocollapse */ AuthService.ngInjectableDef = i0.defineInjectable({ factory: function AuthService_Factory() { return new AuthService(i0.inject(i1$1.Store)); }, token: AuthService, providedIn: "root" });
         return AuthService;
     }());
 
@@ -2714,16 +2538,16 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getSiteContextState = i1.createFeatureSelector(SITE_CONTEXT_FEATURE);
+    var getSiteContextState = i1$1.createFeatureSelector(SITE_CONTEXT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getActiveBaseSite = i1.createSelector(getSiteContextState, function (state) { return state.baseSite.activeSite; });
+    var getActiveBaseSite = i1$1.createSelector(getSiteContextState, function (state) { return state.baseSite.activeSite; });
     /** @type {?} */
-    var getBaseSiteData = i1.createSelector(getSiteContextState, function (state) { return state.baseSite.details; });
+    var getBaseSiteData = i1$1.createSelector(getSiteContextState, function (state) { return state.baseSite.details; });
 
     /**
      * @fileoverview added by tsickle
@@ -2793,7 +2617,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getActiveBaseSite), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveBaseSite), operators.filter(Boolean));
             };
         /**
          * We currently don't support switching baseSite at run time
@@ -2820,7 +2644,7 @@
             function (baseSite) {
                 var _this = this;
                 return this.store
-                    .pipe(i1.select(getActiveBaseSite), operators.take(1))
+                    .pipe(i1$1.select(getActiveBaseSite), operators.take(1))
                     .subscribe(function (activeBaseSite) {
                     if (baseSite && activeBaseSite !== baseSite) {
                         _this.store.dispatch(new SetActiveBaseSite(baseSite));
@@ -2856,7 +2680,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getBaseSiteData), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getBaseSiteData), operators.filter(Boolean));
             };
         BaseSiteService.decorators = [
             { type: i0.Injectable }
@@ -2864,7 +2688,7 @@
         /** @nocollapse */
         BaseSiteService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return BaseSiteService;
@@ -3222,70 +3046,6 @@
      */
     /** @type {?} */
     var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
-    var OpenIdAuthenticationTokenService = /** @class */ (function () {
-        function OpenIdAuthenticationTokenService(config, http$$1) {
-            this.config = config;
-            this.http = http$$1;
-        }
-        /**
-         * @param {?} username
-         * @param {?} password
-         * @return {?}
-         */
-        OpenIdAuthenticationTokenService.prototype.loadOpenIdAuthenticationToken = /**
-         * @param {?} username
-         * @param {?} password
-         * @return {?}
-         */
-            function (username, password) {
-                /** @type {?} */
-                var url = this.getOAuthEndpoint();
-                /** @type {?} */
-                var params = new http.HttpParams()
-                    .set('client_id', encodeURIComponent(this.config.authentication.kyma_client_id))
-                    .set('client_secret', encodeURIComponent(this.config.authentication.kyma_client_secret))
-                    .set('grant_type', 'password') // authorization_code, client_credentials, password
-                    .set('username', username)
-                    .set('password', password)
-                    .set('scope', 'openid');
-                /** @type {?} */
-                var headers = new http.HttpHeaders({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                });
-                return this.http
-                    .post(url, params, { headers: headers })
-                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        OpenIdAuthenticationTokenService.prototype.getOAuthEndpoint = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
-            };
-        OpenIdAuthenticationTokenService.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OpenIdAuthenticationTokenService.ctorParameters = function () {
-            return [
-                { type: AuthConfig },
-                { type: http.HttpClient }
-            ];
-        };
-        return OpenIdAuthenticationTokenService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var OAUTH_ENDPOINT$3 = '/authorizationserver/oauth/token';
     var UserAuthenticationTokenService = /** @class */ (function () {
         function UserAuthenticationTokenService(http$$1, config) {
             this.http = http$$1;
@@ -3353,7 +3113,7 @@
          * @return {?}
          */
             function () {
-                return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$3;
+                return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
             };
         UserAuthenticationTokenService.decorators = [
             { type: i0.Injectable }
@@ -3378,7 +3138,6 @@
         ClientErrorHandlingService,
         UserAuthenticationTokenService,
         UserErrorHandlingService,
-        OpenIdAuthenticationTokenService,
     ];
 
     /**
@@ -3527,16 +3286,16 @@
             return function (state, action) {
                 /** @type {?} */
                 var newState = __assign({}, state);
-                if (action.type === i1.INIT && !exists(newState)) {
+                if (action.type === i1$1.INIT && !exists(newState)) {
                     newState = reducer(state, action);
                 }
-                if (action.type === i1.INIT || action.type === i1.UPDATE) {
+                if (action.type === i1$1.INIT || action.type === i1$1.UPDATE) {
                     /** @type {?} */
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge(newState, rehydratedState);
                 }
                 newState = reducer(newState, action);
-                if (action.type !== i1.INIT) {
+                if (action.type !== i1$1.INIT) {
                     // handle local storage
                     /** @type {?} */
                     var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
@@ -3646,10 +3405,10 @@
             config.state &&
             config.state.ssrTransfer &&
             config.state.ssrTransfer.keys) {
-            if (i1$1.isPlatformBrowser(platformId)) {
+            if (i1.isPlatformBrowser(platformId)) {
                 return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
-            else if (i1$1.isPlatformServer(platformId)) {
+            else if (i1.isPlatformServer(platformId)) {
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
@@ -3682,7 +3441,7 @@
     function getBrowserTransferStateReducer(transferState, keys) {
         return function (reducer) {
             return function (state, action) {
-                if (action.type === i1.INIT) {
+                if (action.type === i1$1.INIT) {
                     if (!state) {
                         state = reducer(state, action);
                     }
@@ -3759,13 +3518,13 @@
         StateModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1.StoreModule.forRoot({}),
+                            i1$1.StoreModule.forRoot({}),
                             effects.EffectsModule.forRoot([]),
                             ConfigModule.withConfig(defaultStateConfig),
                         ],
                         providers: __spread(stateMetaReducers, [
                             {
-                                provide: i1.META_REDUCERS,
+                                provide: i1$1.META_REDUCERS,
                                 useFactory: ɵ0,
                                 deps: [[new i0.Optional(), META_REDUCER]],
                             },
@@ -3812,49 +3571,6 @@
             __metadata("design:type", rxjs.Observable)
         ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
         return ClientTokenEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OpenIdTokenEffect = /** @class */ (function () {
-        function OpenIdTokenEffect(actions$, openIdTokenService) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.openIdTokenService = openIdTokenService;
-            this.triggerOpenIdTokenLoading$ = this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
-                var _b = __read(_a, 2), loginAction = _b[1];
-                return new LoadOpenIdToken({
-                    username: loginAction.payload.userId,
-                    password: loginAction.payload.password,
-                });
-            }));
-            this.loadOpenIdToken$ = this.actions$.pipe(effects.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
-                return _this.openIdTokenService
-                    .loadOpenIdAuthenticationToken(payload.username, payload.password)
-                    .pipe(operators.map(function (token) { return new LoadOpenIdTokenSuccess(token); }), operators.catchError(function (error) { return rxjs.of(new LoadOpenIdTokenFail(error)); }));
-            }));
-        }
-        OpenIdTokenEffect.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OpenIdTokenEffect.ctorParameters = function () {
-            return [
-                { type: effects.Actions },
-                { type: OpenIdAuthenticationTokenService }
-            ];
-        };
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
-        __decorate([
-            effects.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
-        return OpenIdTokenEffect;
     }());
 
     /**
@@ -3927,11 +3643,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$2 = [
-        UserTokenEffects,
-        ClientTokenEffect,
-        OpenIdTokenEffect,
-    ];
+    var effects$2 = [UserTokenEffects, ClientTokenEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -4032,9 +3744,8 @@
      */
     function getReducers$1() {
         return {
-            userToken: i1.combineReducers({ token: reducer$1 }),
+            userToken: i1$1.combineReducers({ token: reducer$1 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
-            openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
         };
     }
     /** @type {?} */
@@ -4051,7 +3762,7 @@
     function clearAuthState(reducer) {
         return function (state, action) {
             if (action.type === LOGOUT) {
-                state = __assign({}, state, { userToken: undefined, openIdToken: undefined });
+                state = __assign({}, state, { userToken: undefined });
             }
             return reducer(state, action);
         };
@@ -4074,7 +3785,6 @@
                 storageSync: {
                     keys: {
                         'auth.userToken.token': StorageSyncType.LOCAL_STORAGE,
-                        'auth.openIdToken.value': StorageSyncType.LOCAL_STORAGE,
                     },
                 },
             },
@@ -4087,10 +3797,10 @@
         AuthStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            i1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
+                            i1$1.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
                             effects.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
@@ -4122,7 +3832,7 @@
         AuthModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
                             RoutingModule,
                             AuthStoreModule,
@@ -4568,6 +4278,43 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderValueSelector(state) {
+        return state.value;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderLoadingSelector(state) {
+        return state.loading;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderErrorSelector(state) {
+        return state.error;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderSuccessSelector(state) {
+        return state.success;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var getCartContentSelector = function (state) { return state.content; };
     /** @type {?} */
@@ -4579,35 +4326,35 @@
         return state.cartMergeComplete;
     };
     /** @type {?} */
-    var getCartsState = i1.createFeatureSelector(CART_FEATURE);
+    var getCartsState = i1$1.createFeatureSelector(CART_FEATURE);
     /** @type {?} */
-    var getActiveCartState = i1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
+    var getActiveCartState = i1$1.createSelector(getCartsState, function (cartsState) { return cartsState.active; });
     /** @type {?} */
-    var getCartState = i1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
+    var getCartState = i1$1.createSelector(getActiveCartState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getCartContent = i1.createSelector(getCartState, getCartContentSelector);
+    var getCartContent = i1$1.createSelector(getCartState, getCartContentSelector);
     /** @type {?} */
-    var getRefresh = i1.createSelector(getCartState, getRefreshSelector);
+    var getRefresh = i1$1.createSelector(getCartState, getRefreshSelector);
     /** @type {?} */
-    var getLoaded = i1.createSelector(getActiveCartState, function (state) {
+    var getLoaded = i1$1.createSelector(getActiveCartState, function (state) {
         return loaderSuccessSelector(state) &&
             !loaderLoadingSelector(state) &&
             !loaderValueSelector(state).refresh;
     });
     /** @type {?} */
-    var getCartMergeComplete = i1.createSelector(getCartState, getCartMergeCompleteSelector);
+    var getCartMergeComplete = i1$1.createSelector(getCartState, getCartMergeCompleteSelector);
     /** @type {?} */
-    var getEntriesMap = i1.createSelector(getCartState, getEntriesSelector);
+    var getEntriesMap = i1$1.createSelector(getCartState, getEntriesSelector);
     /** @type {?} */
     var getEntrySelectorFactory = function (productCode) {
-        return i1.createSelector(getEntriesMap, function (entries) {
+        return i1$1.createSelector(getEntriesMap, function (entries) {
             if (entries) {
                 return entries[productCode];
             }
         });
     };
     /** @type {?} */
-    var getEntries = i1.createSelector(getEntriesMap, function (entities) {
+    var getEntries = i1$1.createSelector(getEntriesMap, function (entities) {
         return Object.keys(entities).map(function (code) { return entities[code]; });
     });
 
@@ -4718,7 +4465,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getCartContent));
+                return this.store.pipe(i1$1.select(getCartContent));
             };
         /**
          * @return {?}
@@ -4727,7 +4474,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getEntries));
+                return this.store.pipe(i1$1.select(getEntries));
             };
         /**
          * @return {?}
@@ -4736,7 +4483,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getCartMergeComplete));
+                return this.store.pipe(i1$1.select(getCartMergeComplete));
             };
         /**
          * @return {?}
@@ -4745,7 +4492,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getLoaded));
+                return this.store.pipe(i1$1.select(getLoaded));
             };
         /**
          * @protected
@@ -4757,7 +4504,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1.select(getCartContent)).subscribe(function (cart) {
+                this.store.pipe(i1$1.select(getCartContent)).subscribe(function (cart) {
                     _this.cartData.cart = cart;
                     if (_this.callback) {
                         _this.callback();
@@ -4828,7 +4575,7 @@
          */
             function () {
                 var _this = this;
-                this.store.pipe(i1.select(getRefresh)).subscribe(function (refresh) {
+                this.store.pipe(i1$1.select(getRefresh)).subscribe(function (refresh) {
                     if (refresh) {
                         _this.store.dispatch(new LoadCart({
                             userId: _this.cartData.userId,
@@ -4943,7 +4690,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1.select(getEntrySelectorFactory(productCode)));
+                return this.store.pipe(i1$1.select(getEntrySelectorFactory(productCode)));
             };
         /**
          * @param {?} cart
@@ -4973,7 +4720,7 @@
         /** @nocollapse */
         CartService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: CartDataService },
                 { type: AuthService }
             ];
@@ -5937,13 +5684,13 @@
     /** @type {?} */
     var languagesEntitiesSelector = function (state) { return state.entities; };
     /** @type {?} */
-    var getLanguagesState = i1.createSelector(getSiteContextState, function (state) { return state.languages; });
+    var getLanguagesState = i1$1.createSelector(getSiteContextState, function (state) { return state.languages; });
     /** @type {?} */
-    var getLanguagesEntities = i1.createSelector(getLanguagesState, languagesEntitiesSelector);
+    var getLanguagesEntities = i1$1.createSelector(getLanguagesState, languagesEntitiesSelector);
     /** @type {?} */
-    var getActiveLanguage = i1.createSelector(getLanguagesState, activeLanguageSelector);
+    var getActiveLanguage = i1$1.createSelector(getLanguagesState, activeLanguageSelector);
     /** @type {?} */
-    var getAllLanguages = i1.createSelector(getLanguagesEntities, function (entities) {
+    var getAllLanguages = i1$1.createSelector(getLanguagesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -5958,13 +5705,13 @@
     /** @type {?} */
     var activeCurrencySelector = function (state) { return state.activeCurrency; };
     /** @type {?} */
-    var getCurrenciesState = i1.createSelector(getSiteContextState, function (state) { return state.currencies; });
+    var getCurrenciesState = i1$1.createSelector(getSiteContextState, function (state) { return state.currencies; });
     /** @type {?} */
-    var getCurrenciesEntities = i1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    var getCurrenciesEntities = i1$1.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     /** @type {?} */
-    var getActiveCurrency = i1.createSelector(getCurrenciesState, activeCurrencySelector);
+    var getActiveCurrency = i1$1.createSelector(getCurrenciesState, activeCurrencySelector);
     /** @type {?} */
-    var getAllCurrencies = i1.createSelector(getCurrenciesEntities, function (entities) {
+    var getAllCurrencies = i1$1.createSelector(getCurrenciesEntities, function (entities) {
         return entities
             ? Object.keys(entities).map(function (isocode) { return entities[isocode]; })
             : null;
@@ -6005,7 +5752,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1.select(getAllLanguages), operators.tap(function (languages) {
+                return this.store.pipe(i1$1.select(getAllLanguages), operators.tap(function (languages) {
                     if (!languages) {
                         _this.store.dispatch(new LoadLanguages());
                     }
@@ -6023,7 +5770,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getActiveLanguage), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveLanguage), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -6041,7 +5788,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1.select(getActiveLanguage), operators.take(1))
+                    .pipe(i1$1.select(getActiveLanguage), operators.take(1))
                     .subscribe(function (activeLanguage) {
                     if (activeLanguage !== isocode) {
                         _this.store.dispatch(new SetActiveLanguage(isocode));
@@ -6081,7 +5828,7 @@
         /** @nocollapse */
         LanguageService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -6113,7 +5860,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1.select(getAllCurrencies), operators.tap(function (currencies) {
+                return this.store.pipe(i1$1.select(getAllCurrencies), operators.tap(function (currencies) {
                     if (!currencies) {
                         _this.store.dispatch(new LoadCurrencies());
                     }
@@ -6131,7 +5878,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getActiveCurrency), operators.filter(Boolean));
+                return this.store.pipe(i1$1.select(getActiveCurrency), operators.filter(Boolean));
             };
         /**
          * Sets the active language.
@@ -6149,7 +5896,7 @@
             function (isocode) {
                 var _this = this;
                 return this.store
-                    .pipe(i1.select(getActiveCurrency), operators.take(1))
+                    .pipe(i1$1.select(getActiveCurrency), operators.take(1))
                     .subscribe(function (activeCurrency) {
                     if (activeCurrency !== isocode) {
                         _this.store.dispatch(new SetActiveCurrency(isocode));
@@ -6189,7 +5936,7 @@
         /** @nocollapse */
         CurrencyService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -6227,9 +5974,9 @@
         SiteContextStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            i1$1.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
                             effects.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
@@ -7042,7 +6789,7 @@
          */
             function () {
                 this.router = this.injector.get(i2.Router);
-                this.location = this.injector.get(i1$1.Location);
+                this.location = this.injector.get(i1.Location);
                 /** @type {?} */
                 var routingParams = this.siteContextParams.getContextParameters('route');
                 if (routingParams.length) {
@@ -7392,9 +7139,9 @@
         CartStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            i1$1.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
                             effects.EffectsModule.forFeature(effects$4),
                         ],
                         providers: [reducerProvider$2],
@@ -7529,25 +7276,25 @@
         return state.orderDetails;
     };
     /** @type {?} */
-    var getCheckoutState = i1.createFeatureSelector(CHECKOUT_FEATURE);
+    var getCheckoutState = i1$1.createFeatureSelector(CHECKOUT_FEATURE);
     /** @type {?} */
-    var getCheckoutStepsState = i1.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
+    var getCheckoutStepsState = i1$1.createSelector(getCheckoutState, function (checkoutState) { return checkoutState.steps; });
     /** @type {?} */
-    var getCheckoutSteps = i1.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
+    var getCheckoutSteps = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getDeliveryAddress = i1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
+    var getDeliveryAddress = i1$1.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     /** @type {?} */
-    var getDeliveryMode = i1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
+    var getDeliveryMode = i1$1.createSelector(getCheckoutSteps, getDeliveryModeSelector);
     /** @type {?} */
-    var getSupportedDeliveryModes = i1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSupportedDeliveryModes = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         return Object.keys(deliveryMode.supported).map(function (code) { return deliveryMode.supported[code]; });
     });
     /** @type {?} */
-    var getSelectedCode = i1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedCode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         return deliveryMode.selected;
     });
     /** @type {?} */
-    var getSelectedDeliveryMode = i1.createSelector(getDeliveryMode, function (deliveryMode) {
+    var getSelectedDeliveryMode = i1$1.createSelector(getDeliveryMode, function (deliveryMode) {
         if (deliveryMode.selected !== '') {
             if (Object.keys(deliveryMode.supported).length === 0) {
                 return null;
@@ -7556,11 +7303,11 @@
         }
     });
     /** @type {?} */
-    var getPaymentDetails = i1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
+    var getPaymentDetails = i1$1.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
     /** @type {?} */
-    var getCheckoutOrderDetails = i1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
+    var getCheckoutOrderDetails = i1$1.createSelector(getCheckoutSteps, getOrderDetailsSelector);
     /** @type {?} */
-    var getCheckoutDetailsLoaded = i1.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
+    var getCheckoutDetailsLoaded = i1$1.createSelector(getCheckoutStepsState, function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -7604,11 +7351,11 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCardTypesState = i1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
+    var getCardTypesState = i1$1.createSelector(getCheckoutState, function (state) { return state.cardTypes; });
     /** @type {?} */
-    var getCardTypesEntites$1 = i1.createSelector(getCardTypesState, getCardTypesEntites);
+    var getCardTypesEntites$1 = i1$1.createSelector(getCardTypesState, getCardTypesEntites);
     /** @type {?} */
-    var getAllCardTypes = i1.createSelector(getCardTypesEntites$1, function (entites) {
+    var getAllCardTypes = i1$1.createSelector(getCardTypesEntites$1, function (entites) {
         return Object.keys(entites).map(function (code) { return entites[code]; });
     });
 
@@ -7652,9 +7399,9 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressVerificationResultsState = i1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
+    var getAddressVerificationResultsState = i1$1.createSelector(getCheckoutState, function (state) { return state.addressVerification; });
     /** @type {?} */
-    var getAddressVerificationResults$1 = i1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
+    var getAddressVerificationResults$1 = i1$1.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
     /**
      * @fileoverview added by tsickle
@@ -9469,7 +9216,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getSupportedDeliveryModes));
+                return this.checkoutStore.pipe(i1$1.select(getSupportedDeliveryModes));
             };
         /**
          * Get selected delivery mode
@@ -9483,7 +9230,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getSelectedDeliveryMode));
+                return this.checkoutStore.pipe(i1$1.select(getSelectedDeliveryMode));
             };
         /**
          * Get selected delivery mode code
@@ -9497,7 +9244,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getSelectedCode));
+                return this.checkoutStore.pipe(i1$1.select(getSelectedCode));
             };
         /**
          * Get card types
@@ -9511,7 +9258,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getAllCardTypes));
+                return this.checkoutStore.pipe(i1$1.select(getAllCardTypes));
             };
         /**
          * Get delivery address
@@ -9525,7 +9272,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getDeliveryAddress));
+                return this.checkoutStore.pipe(i1$1.select(getDeliveryAddress));
             };
         /**
          * Get address verification results
@@ -9539,7 +9286,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
+                return this.checkoutStore.pipe(i1$1.select(getAddressVerificationResults$1), operators.filter(function (results) { return Object.keys(results).length !== 0; }));
             };
         /**
          * Get payment details
@@ -9553,7 +9300,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getPaymentDetails));
+                return this.checkoutStore.pipe(i1$1.select(getPaymentDetails));
             };
         /**
          * Get order details
@@ -9567,7 +9314,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getCheckoutOrderDetails));
+                return this.checkoutStore.pipe(i1$1.select(getCheckoutOrderDetails));
             };
         /**
          * Create and set a delivery address using the address param
@@ -9824,7 +9571,7 @@
          * @return {?}
          */
             function () {
-                return this.checkoutStore.pipe(i1.select(getCheckoutDetailsLoaded));
+                return this.checkoutStore.pipe(i1$1.select(getCheckoutDetailsLoaded));
             };
         /**
          * @protected
@@ -9843,7 +9590,7 @@
         /** @nocollapse */
         CheckoutService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: CartDataService }
             ];
         };
@@ -10695,7 +10442,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getCmsState = i1.createFeatureSelector(CMS_FEATURE);
+    var getCmsState = i1$1.createFeatureSelector(CMS_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -10770,36 +10517,36 @@
         return Array.from(componentTypes);
     };
     /** @type {?} */
-    var getPageState = i1.createSelector(getCmsState, function (state) { return state.page; });
+    var getPageState = i1$1.createSelector(getCmsState, function (state) { return state.page; });
     /** @type {?} */
-    var getPageStateIndex = i1.createSelector(getPageState, function (page) { return page.index; });
+    var getPageStateIndex = i1$1.createSelector(getPageState, function (page) { return page.index; });
     /** @type {?} */
     var getIndex = function (pageContext) {
-        return i1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
+        return i1$1.createSelector(getPageStateIndex, function (index) { return getIndexByType(index, pageContext.type); });
     };
     /** @type {?} */
     var getIndexEntity = function (pageContext) {
-        return i1.createSelector(getIndex(pageContext), function (indexState) { return entityStateSelector(indexState, pageContext.id); });
+        return i1$1.createSelector(getIndex(pageContext), function (indexState) { return entityStateSelector(indexState, pageContext.id); });
     };
     /** @type {?} */
     var getIndexValue = function (pageContext) {
-        return i1.createSelector(getIndexEntity(pageContext), function (entity) { return loaderValueSelector(entity); });
+        return i1$1.createSelector(getIndexEntity(pageContext), function (entity) { return loaderValueSelector(entity); });
     };
     /** @type {?} */
-    var getPageEntities = i1.createSelector(getPageState, getPageEntitiesSelector);
+    var getPageEntities = i1$1.createSelector(getPageState, getPageEntitiesSelector);
     /** @type {?} */
     var getPageData = function (pageContext) {
-        return i1.createSelector(getPageEntities, getIndexValue(pageContext), function (entities, indexValue) {
+        return i1$1.createSelector(getPageEntities, getIndexValue(pageContext), function (entities, indexValue) {
             return entities[indexValue];
         });
     };
     /** @type {?} */
     var getPageComponentTypes = function (pageContext) {
-        return i1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
+        return i1$1.createSelector(getPageData(pageContext), function (pageData) { return getPageComponentTypesSelector(pageData); });
     };
     /** @type {?} */
     var currentSlotSelectorFactory = function (pageContext, position) {
-        return i1.createSelector(getPageData(pageContext), function (entity) {
+        return i1$1.createSelector(getPageData(pageContext), function (entity) {
             if (entity) {
                 return entity.slots[position] || { components: [] };
             }
@@ -10818,16 +10565,16 @@
         }, {});
     };
     /** @type {?} */
-    var getComponentState = i1.createSelector(getCmsState, function (state) { return state.component; });
+    var getComponentState = i1$1.createSelector(getCmsState, function (state) { return state.component; });
     /** @type {?} */
-    var getComponentEntities = i1.createSelector(getComponentState, getComponentEntitiesSelector);
+    var getComponentEntities = i1$1.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
     var componentStateSelectorFactory = function (uid) {
-        return i1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
+        return i1$1.createSelector(getComponentState, function (entities) { return entityStateSelector(entities, uid); });
     };
     /** @type {?} */
     var componentSelectorFactory = function (uid) {
-        return i1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
+        return i1$1.createSelector(componentStateSelectorFactory(uid), function (state) { return loaderValueSelector(state); });
     };
 
     /**
@@ -10835,14 +10582,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getNavigationEntryItemState = i1.createSelector(getCmsState, function (state) { return state.navigation; });
+    var getNavigationEntryItemState = i1$1.createSelector(getCmsState, function (state) { return state.navigation; });
     /** @type {?} */
     var getSelectedNavigationEntryItemState = function (nodeId) {
-        return i1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
+        return i1$1.createSelector(getNavigationEntryItemState, function (nodes) { return entityStateSelector(nodes, nodeId); });
     };
     /** @type {?} */
     var itemsSelectorFactory = function (nodeId) {
-        return i1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
+        return i1$1.createSelector(getSelectedNavigationEntryItemState(nodeId), function (itemState) { return loaderValueSelector(itemState); });
     };
 
     /**
@@ -10949,9 +10696,9 @@
      */
     function getReducers$5() {
         return {
-            page: i1.combineReducers({
+            page: i1$1.combineReducers({
                 pageData: reducer$a,
-                index: i1.combineReducers({
+                index: i1$1.combineReducers({
                     content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$b(PageType.CONTENT_PAGE)),
                     product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$b(PageType.PRODUCT_PAGE)),
                     category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$b(PageType.CATEGORY_PAGE)),
@@ -11040,7 +10787,7 @@
         }
         UrlModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule],
+                        imports: [i1.CommonModule],
                         declarations: [UrlPipe],
                         exports: [UrlPipe],
                     },] }
@@ -11335,7 +11082,7 @@
             function (uid) {
                 var _this = this;
                 if (!this.components[uid]) {
-                    this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(i1.select(componentStateSelectorFactory(uid)))).pipe(operators.tap(function (_a) {
+                    this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(i1$1.select(componentStateSelectorFactory(uid)))).pipe(operators.tap(function (_a) {
                         var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
                         /** @type {?} */
                         var attemptedLoad = componentState.loading ||
@@ -11365,7 +11112,7 @@
             function (position) {
                 var _this = this;
                 return this.routingService.getPageContext().pipe(operators.switchMap(function (pageContext) {
-                    return _this.store.pipe(i1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
+                    return _this.store.pipe(i1$1.select(currentSlotSelectorFactory(pageContext, position)), operators.filter(Boolean));
                 }));
             };
         /**
@@ -11383,7 +11130,7 @@
          * @return {?}
          */
             function (navigationNodeUid) {
-                return this.store.pipe(i1.select(itemsSelectorFactory(navigationNodeUid)));
+                return this.store.pipe(i1$1.select(itemsSelectorFactory(navigationNodeUid)));
             };
         /**
          * Load navigation items data
@@ -11479,7 +11226,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1.select(getPageData(pageContext)));
+                return this.store.pipe(i1$1.select(getPageData(pageContext)));
             };
         /**
          * Given pageContext, return the CMS page data
@@ -11496,7 +11243,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1.select(getPageComponentTypes(pageContext)));
+                return this.store.pipe(i1$1.select(getPageComponentTypes(pageContext)));
             };
         /**
          * Given pageContext, return whether the CMS page data exists or not
@@ -11519,7 +11266,7 @@
                 if (forceReload === void 0) {
                     forceReload = false;
                 }
-                return this.store.pipe(i1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
+                return this.store.pipe(i1$1.select(getIndexEntity(pageContext)), operators.tap(function (entity) {
                     /** @type {?} */
                     var attemptedLoad = entity.loading || entity.success || entity.error;
                     /** @type {?} */
@@ -11538,7 +11285,7 @@
          * @return {?}
          */
             function (pageContext) {
-                return this.store.pipe(i1.select(getIndexValue(pageContext)));
+                return this.store.pipe(i1$1.select(getIndexValue(pageContext)));
             };
         /**
          * @param {?} pageContext
@@ -11561,11 +11308,11 @@
         /** @nocollapse */
         CmsService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: RoutingService }
             ];
         };
-        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
+        /** @nocollapse */ CmsService.ngInjectableDef = i0.defineInjectable({ factory: function CmsService_Factory() { return new CmsService(i0.inject(i1$1.Store), i0.inject(RoutingService)); }, token: CmsService, providedIn: "root" });
         return CmsService;
     }());
 
@@ -11708,10 +11455,10 @@
         CmsStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            i1.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
+                            i1$1.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
                             effects.EffectsModule.forFeature(effects$6),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
@@ -12034,7 +11781,7 @@
                         _this.loadedWebComponents[path] = script;
                         script.setAttribute('src', path);
                         renderer.appendChild(_this.document.body, script);
-                        if (i1$1.isPlatformBrowser(_this.platform)) {
+                        if (i1.isPlatformBrowser(_this.platform)) {
                             script.onload = function () {
                                 script.onload = null;
                             };
@@ -12064,7 +11811,7 @@
             return [
                 { type: i0.ComponentFactoryResolver },
                 { type: CmsConfig },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] },
                 { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
             ];
         };
@@ -12308,9 +12055,9 @@
         CheckoutStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
+                            i1$1.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
                             effects.EffectsModule.forFeature(effects$5),
                         ],
                         providers: [reducerProvider$4],
@@ -13228,17 +12975,17 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsState = i1.createFeatureSelector(PRODUCT_FEATURE);
+    var getProductsState = i1$1.createFeatureSelector(PRODUCT_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReferencesState = i1.createSelector(getProductsState, function (state) { return state.references; });
+    var getProductReferencesState = i1$1.createSelector(getProductsState, function (state) { return state.references; });
     /** @type {?} */
     var getSelectedProductReferencesFactory = function (productCode) {
-        return i1.createSelector(getProductReferencesState, function (referenceTypeData) {
+        return i1$1.createSelector(getProductReferencesState, function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
                 return referenceTypeData.list;
             }
@@ -13250,10 +12997,10 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductReviewsState = i1.createSelector(getProductsState, function (state) { return state.reviews; });
+    var getProductReviewsState = i1$1.createSelector(getProductsState, function (state) { return state.reviews; });
     /** @type {?} */
     var getSelectedProductReviewsFactory = function (productCode) {
-        return i1.createSelector(getProductReviewsState, function (reviewData) {
+        return i1$1.createSelector(getProductReviewsState, function (reviewData) {
             if (reviewData.productCode === productCode) {
                 return reviewData.list;
             }
@@ -13265,23 +13012,23 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductsSearchState = i1.createSelector(getProductsState, function (state) { return state.search; });
+    var getProductsSearchState = i1$1.createSelector(getProductsState, function (state) { return state.search; });
     /** @type {?} */
-    var getSearchResults$1 = i1.createSelector(getProductsSearchState, getSearchResults);
+    var getSearchResults$1 = i1$1.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
-    var getAuxSearchResults$1 = i1.createSelector(getProductsSearchState, getAuxSearchResults);
+    var getAuxSearchResults$1 = i1$1.createSelector(getProductsSearchState, getAuxSearchResults);
     /** @type {?} */
-    var getProductSuggestions$1 = i1.createSelector(getProductsSearchState, getProductSuggestions);
+    var getProductSuggestions$1 = i1$1.createSelector(getProductsSearchState, getProductSuggestions);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getProductState = i1.createSelector(getProductsState, function (state) { return state.details; });
+    var getProductState = i1$1.createSelector(getProductsState, function (state) { return state.details; });
     /** @type {?} */
     var getSelectedProductsFactory = function (codes) {
-        return i1.createSelector(getProductState, function (details) {
+        return i1$1.createSelector(getProductState, function (details) {
             return codes
                 .map(function (code) {
                 return details.entities[code] ? details.entities[code].value : undefined;
@@ -13291,26 +13038,26 @@
     };
     /** @type {?} */
     var getSelectedProductStateFactory = function (code) {
-        return i1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
+        return i1$1.createSelector(getProductState, function (details) { return entityStateSelector(details, code); });
     };
     /** @type {?} */
     var getSelectedProductFactory = function (code) {
-        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderValueSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductLoadingFactory = function (code) {
-        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderLoadingSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductSuccessFactory = function (code) {
-        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderSuccessSelector(productState); });
     };
     /** @type {?} */
     var getSelectedProductErrorFactory = function (code) {
-        return i1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
+        return i1$1.createSelector(getSelectedProductStateFactory(code), function (productState) { return loaderErrorSelector(productState); });
     };
     /** @type {?} */
-    var getAllProductCodes = i1.createSelector(getProductState, function (details) {
+    var getAllProductCodes = i1$1.createSelector(getProductState, function (details) {
         return Object.keys(details.entities);
     });
 
@@ -13346,7 +13093,7 @@
          */
             function (productCode, referenceType, pageSize) {
                 var _this = this;
-                return this.store.pipe(i1.select(getSelectedProductReferencesFactory(productCode)), operators.tap(function (references) {
+                return this.store.pipe(i1$1.select(getSelectedProductReferencesFactory(productCode)), operators.tap(function (references) {
                     if (references === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReferences({
                             productCode: productCode,
@@ -13362,7 +13109,7 @@
         /** @nocollapse */
         ProductReferenceService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return ProductReferenceService;
@@ -13388,7 +13135,7 @@
                 var _this = this;
                 /** @type {?} */
                 var selector = getSelectedProductReviewsFactory(productCode);
-                return this.store.pipe(i1.select(selector), operators.tap(function (reviews) {
+                return this.store.pipe(i1$1.select(selector), operators.tap(function (reviews) {
                     if (reviews === undefined && productCode !== undefined) {
                         _this.store.dispatch(new LoadProductReviews(productCode));
                     }
@@ -13416,7 +13163,7 @@
         /** @nocollapse */
         ProductReviewService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return ProductReviewService;
@@ -13460,7 +13207,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getSearchResults$1));
+                return this.store.pipe(i1$1.select(getSearchResults$1));
             };
         /**
          * @return {?}
@@ -13479,7 +13226,7 @@
         /** @nocollapse */
         ProductSearchService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: i2.Router }
             ];
         };
@@ -13523,7 +13270,7 @@
             function (productCode) {
                 var _this = this;
                 if (!this.products[productCode]) {
-                    this.products[productCode] = this.store.pipe(i1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
+                    this.products[productCode] = this.store.pipe(i1$1.select(getSelectedProductStateFactory(productCode)), operators.tap(function (productState) {
                         /** @type {?} */
                         var attemptedLoad = productState.loading || productState.success || productState.error;
                         if (!attemptedLoad) {
@@ -13547,7 +13294,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1.select(getSelectedProductLoadingFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductLoadingFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load success state
@@ -13563,7 +13310,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1.select(getSelectedProductSuccessFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductSuccessFactory(productCode)));
             };
         /**
          * Returns boolean observable for product's load error state
@@ -13579,7 +13326,7 @@
          * @return {?}
          */
             function (productCode) {
-                return this.store.pipe(i1.select(getSelectedProductErrorFactory(productCode)));
+                return this.store.pipe(i1$1.select(getSelectedProductErrorFactory(productCode)));
             };
         /**
          * Reloads the product. The product is loaded implicetly
@@ -13609,7 +13356,7 @@
         /** @nocollapse */
         ProductService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return ProductService;
@@ -13652,7 +13399,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAuxSearchResults$1));
+                return this.store.pipe(i1$1.select(getAuxSearchResults$1));
             };
         /**
          * clears the products and suggestions
@@ -13677,7 +13424,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProductSuggestions$1));
+                return this.store.pipe(i1$1.select(getProductSuggestions$1));
             };
         /**
          * @param {?} query
@@ -13700,7 +13447,7 @@
                         providedIn: 'root',
                     },] }
         ];
-        /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1.Store), i0.inject(i2.Router)); }, token: SearchboxService, providedIn: "root" });
+        /** @nocollapse */ SearchboxService.ngInjectableDef = i0.defineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(i0.inject(i1$1.Store), i0.inject(i2.Router)); }, token: SearchboxService, providedIn: "root" });
         return SearchboxService;
     }(ProductSearchService));
 
@@ -13766,7 +13513,7 @@
                 /** @type {?} */
                 var lang = this.getActiveLang();
                 try {
-                    i1$1.getLocaleId(lang);
+                    i1.getLocaleId(lang);
                     return lang;
                 }
                 catch (_a) {
@@ -13817,7 +13564,7 @@
             ];
         };
         return CxDatePipe;
-    }(i1$1.DatePipe));
+    }(i1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -14517,7 +14264,7 @@
             { type: i0.Pipe, args: [{ name: 'cxDate' },] }
         ];
         return MockDatePipe;
-    }(i1$1.DatePipe));
+    }(i1.DatePipe));
 
     /**
      * @fileoverview added by tsickle
@@ -14983,9 +14730,9 @@
         ProductStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$6, { metaReducers: metaReducers$4 }),
+                            i1$1.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$6, { metaReducers: metaReducers$4 }),
                             effects.EffectsModule.forFeature(effects$7),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
@@ -15049,32 +14796,32 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getUserState = i1.createFeatureSelector(USER_FEATURE);
+    var getUserState = i1$1.createFeatureSelector(USER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getBillingCountriesState = i1.createSelector(getUserState, function (state) { return state.billingCountries; });
+    var getBillingCountriesState = i1$1.createSelector(getUserState, function (state) { return state.billingCountries; });
     /** @type {?} */
-    var getBillingCountriesEntites = i1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
+    var getBillingCountriesEntites = i1$1.createSelector(getBillingCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllBillingCountries = i1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllBillingCountries = i1$1.createSelector(getBillingCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDeliveryCountriesState = i1.createSelector(getUserState, function (state) { return state.countries; });
+    var getDeliveryCountriesState = i1$1.createSelector(getUserState, function (state) { return state.countries; });
     /** @type {?} */
-    var getDeliveryCountriesEntites = i1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
+    var getDeliveryCountriesEntites = i1$1.createSelector(getDeliveryCountriesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllDeliveryCountries = i1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
+    var getAllDeliveryCountries = i1$1.createSelector(getDeliveryCountriesEntites, function (entites) { return Object.keys(entites).map(function (isocode) { return entites[isocode]; }); });
     /** @type {?} */
     var countrySelectorFactory = function (isocode) {
-        return i1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
+        return i1$1.createSelector(getDeliveryCountriesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[isocode] : null); });
     };
 
     /**
@@ -15082,58 +14829,58 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrderState = i1.createSelector(getUserState, function (state) { return state.order; });
+    var getOrderState = i1$1.createSelector(getUserState, function (state) { return state.order; });
     /** @type {?} */
-    var getOrderDetails = i1.createSelector(getOrderState, function (state) { return state.order; });
+    var getOrderDetails = i1$1.createSelector(getOrderState, function (state) { return state.order; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getPaymentMethodsState = i1.createSelector(getUserState, function (state) { return state.payments; });
+    var getPaymentMethodsState = i1$1.createSelector(getUserState, function (state) { return state.payments; });
     /** @type {?} */
-    var getPaymentMethods = i1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
+    var getPaymentMethods = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getPaymentMethodsLoading = i1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
+    var getPaymentMethodsLoading = i1$1.createSelector(getPaymentMethodsState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getRegionsLoaderState = i1.createSelector(getUserState, function (state) { return state.regions; });
+    var getRegionsLoaderState = i1$1.createSelector(getUserState, function (state) { return state.regions; });
     /** @type {?} */
-    var getAllRegions = i1.createSelector(getRegionsLoaderState, function (state) {
+    var getAllRegions = i1$1.createSelector(getRegionsLoaderState, function (state) {
         return loaderValueSelector(state).entities;
     });
     /** @type {?} */
-    var getRegionsCountry = i1.createSelector(getRegionsLoaderState, function (state) { return loaderValueSelector(state).country; });
+    var getRegionsCountry = i1$1.createSelector(getRegionsLoaderState, function (state) { return loaderValueSelector(state).country; });
     /** @type {?} */
-    var getRegionsLoading = i1.createSelector(getRegionsLoaderState, function (state) { return loaderLoadingSelector(state); });
+    var getRegionsLoading = i1$1.createSelector(getRegionsLoaderState, function (state) { return loaderLoadingSelector(state); });
     /** @type {?} */
-    var getRegionsLoaded = i1.createSelector(getRegionsLoaderState, function (state) { return loaderSuccessSelector(state); });
+    var getRegionsLoaded = i1$1.createSelector(getRegionsLoaderState, function (state) { return loaderSuccessSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getResetPassword = i1.createSelector(getUserState, function (state) { return state.resetPassword; });
+    var getResetPassword = i1$1.createSelector(getUserState, function (state) { return state.resetPassword; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getTitlesState = i1.createSelector(getUserState, function (state) { return state.titles; });
+    var getTitlesState = i1$1.createSelector(getUserState, function (state) { return state.titles; });
     /** @type {?} */
-    var getTitlesEntites = i1.createSelector(getTitlesState, function (state) { return state.entities; });
+    var getTitlesEntites = i1$1.createSelector(getTitlesState, function (state) { return state.entities; });
     /** @type {?} */
-    var getAllTitles = i1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
+    var getAllTitles = i1$1.createSelector(getTitlesEntites, function (entites) { return Object.keys(entites).map(function (code) { return entites[code]; }); });
     /** @type {?} */
     var titleSelectorFactory = function (code) {
-        return i1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
+        return i1$1.createSelector(getTitlesEntites, function (entities) { return (Object.keys(entities).length !== 0 ? entities[code] : null); });
     };
 
     /**
@@ -15141,46 +14888,46 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAddressesLoaderState = i1.createSelector(getUserState, function (state) { return state.addresses; });
+    var getAddressesLoaderState = i1$1.createSelector(getUserState, function (state) { return state.addresses; });
     /** @type {?} */
-    var getAddresses = i1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
+    var getAddresses = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getAddressesLoading = i1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
+    var getAddressesLoading = i1$1.createSelector(getAddressesLoaderState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getConsentsState = i1.createSelector(getUserState, function (state) { return state.consents; });
+    var getConsentsState = i1$1.createSelector(getUserState, function (state) { return state.consents; });
     /** @type {?} */
-    var getConsentsValue = i1.createSelector(getConsentsState, loaderValueSelector);
+    var getConsentsValue = i1$1.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
-    var getConsentsLoading = i1.createSelector(getConsentsState, loaderLoadingSelector);
+    var getConsentsLoading = i1$1.createSelector(getConsentsState, loaderLoadingSelector);
     /** @type {?} */
-    var getConsentsSuccess = i1.createSelector(getConsentsState, loaderSuccessSelector);
+    var getConsentsSuccess = i1$1.createSelector(getConsentsState, loaderSuccessSelector);
     /** @type {?} */
-    var getConsentsError = i1.createSelector(getConsentsState, loaderErrorSelector);
+    var getConsentsError = i1$1.createSelector(getConsentsState, loaderErrorSelector);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getDetailsState = i1.createSelector(getUserState, function (state) { return state.account; });
+    var getDetailsState = i1$1.createSelector(getUserState, function (state) { return state.account; });
     /** @type {?} */
-    var getDetails = i1.createSelector(getDetailsState, function (state) { return state.details; });
+    var getDetails = i1$1.createSelector(getDetailsState, function (state) { return state.details; });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getOrdersState = i1.createSelector(getUserState, function (state) { return state.orders; });
+    var getOrdersState = i1$1.createSelector(getUserState, function (state) { return state.orders; });
     /** @type {?} */
-    var getOrdersLoaded = i1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
+    var getOrdersLoaded = i1$1.createSelector(getOrdersState, function (state) { return loaderSuccessSelector(state); });
     /** @type {?} */
-    var getOrders = i1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
+    var getOrders = i1$1.createSelector(getOrdersState, function (state) { return loaderValueSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -15196,7 +14943,7 @@
      * @return {?}
      */
     function getProcessState() {
-        return i1.createFeatureSelector(PROCESS_FEATURE);
+        return i1$1.createFeatureSelector(PROCESS_FEATURE);
     }
 
     /**
@@ -15209,7 +14956,7 @@
      * @return {?}
      */
     function getProcessStateFactory(processId) {
-        return i1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
+        return i1$1.createSelector(getProcessState(), function (entityState) { return entityStateSelector(entityState, processId); });
     }
     /**
      * @template T
@@ -15217,7 +14964,7 @@
      * @return {?}
      */
     function getProcessLoadingFactory(processId) {
-        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderLoadingSelector(loaderState); });
     }
     /**
      * @template T
@@ -15225,7 +14972,7 @@
      * @return {?}
      */
     function getProcessSuccessFactory(processId) {
-        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderSuccessSelector(loaderState); });
     }
     /**
      * @template T
@@ -15233,7 +14980,7 @@
      * @return {?}
      */
     function getProcessErrorFactory(processId) {
-        return i1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
+        return i1$1.createSelector(getProcessStateFactory(processId), function (loaderState) { return loaderErrorSelector(loaderState); });
     }
 
     /**
@@ -15584,7 +15331,7 @@
      */
     function getReducers$7() {
         return {
-            account: i1.combineReducers({
+            account: i1$1.combineReducers({
                 details: reducer$o,
             }),
             addresses: loaderReducer(USER_ADDRESSES, reducer$m),
@@ -15647,7 +15394,7 @@
          */
             function () {
                 var _this = this;
-                return this.store.pipe(i1.select(getDetails)).pipe(operators.tap(function (details) {
+                return this.store.pipe(i1$1.select(getDetails)).pipe(operators.tap(function (details) {
                     if (Object.keys(details).length === 0) {
                         _this.load();
                     }
@@ -15713,7 +15460,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user failure outcome.
@@ -15727,7 +15474,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Returns the remove user process success outcome.
@@ -15741,7 +15488,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
             };
         /**
          * Resets the remove user process state. The state needs to be reset after the process
@@ -15772,7 +15519,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getOrderDetails));
+                return this.store.pipe(i1$1.select(getOrderDetails));
             };
         /**
          * Retrieves order's details
@@ -15826,7 +15573,7 @@
          */
             function (pageSize) {
                 var _this = this;
-                return this.store.pipe(i1.select(getOrdersState), operators.tap(function (orderListState) {
+                return this.store.pipe(i1$1.select(getOrdersState), operators.tap(function (orderListState) {
                     /** @type {?} */
                     var attemptedLoad = orderListState.loading ||
                         orderListState.success ||
@@ -15848,7 +15595,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getOrdersLoaded));
+                return this.store.pipe(i1$1.select(getOrdersLoaded));
             };
         /**
          * Loads all user's payment methods.
@@ -15876,7 +15623,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getPaymentMethods));
+                return this.store.pipe(i1$1.select(getPaymentMethods));
             };
         /**
          * Returns a loading flag for payment methods
@@ -15890,7 +15637,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getPaymentMethodsLoading));
+                return this.store.pipe(i1$1.select(getPaymentMethodsLoading));
             };
         /**
          * Sets the payment as a default one
@@ -16074,7 +15821,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAddresses));
+                return this.store.pipe(i1$1.select(getAddresses));
             };
         /**
          * Returns a loading flag for addresses
@@ -16088,7 +15835,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAddressesLoading));
+                return this.store.pipe(i1$1.select(getAddressesLoading));
             };
         /**
          * Returns titles
@@ -16102,7 +15849,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAllTitles));
+                return this.store.pipe(i1$1.select(getAllTitles));
             };
         /**
          * Retrieves titles
@@ -16144,7 +15891,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAllDeliveryCountries));
+                return this.store.pipe(i1$1.select(getAllDeliveryCountries));
             };
         /**
          * Returns a country based on the provided `isocode`
@@ -16161,7 +15908,7 @@
          * @return {?}
          */
             function (isocode) {
-                return this.store.pipe(i1.select(countrySelectorFactory(isocode)));
+                return this.store.pipe(i1$1.select(countrySelectorFactory(isocode)));
             };
         /**
          * Retrieves regions for specified country by `countryIsoCode`
@@ -16209,7 +15956,7 @@
          */
             function (countryIsoCode) {
                 var _this = this;
-                return rxjs.combineLatest(this.store.pipe(i1.select(getAllRegions)), this.store.pipe(i1.select(getRegionsCountry)), this.store.pipe(i1.select(getRegionsLoading)), this.store.pipe(i1.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
+                return rxjs.combineLatest(this.store.pipe(i1$1.select(getAllRegions)), this.store.pipe(i1$1.select(getRegionsCountry)), this.store.pipe(i1$1.select(getRegionsLoading)), this.store.pipe(i1$1.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
                 operators.map(function (_a) {
                     var _b = __read(_a, 4), regions = _b[0], country = _b[1], loading = _b[2], loaded = _b[3];
                     if (!countryIsoCode) {
@@ -16241,7 +15988,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getAllBillingCountries));
+                return this.store.pipe(i1$1.select(getAllBillingCountries));
             };
         /**
          * Retrieves billing countries
@@ -16283,7 +16030,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getResetPassword));
+                return this.store.pipe(i1$1.select(getResetPassword));
             };
         /**
          * Updates the user's details
@@ -16314,7 +16061,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details error flag
@@ -16328,7 +16075,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Returns the update user's personal details success flag
@@ -16342,7 +16089,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
             };
         /**
          * Resets the update user details processing state
@@ -16428,7 +16175,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email error flag
@@ -16442,7 +16189,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Returns the update user's email loading flag
@@ -16456,7 +16203,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
             };
         /**
          * Resets the update user's email processing state
@@ -16508,7 +16255,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password failure outcome.
@@ -16522,7 +16269,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Returns the update password process success outcome.
@@ -16536,7 +16283,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
             };
         /**
          * Resets the update password process state. The state needs to be reset after the process
@@ -16581,7 +16328,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getConsentsValue));
+                return this.store.pipe(i1$1.select(getConsentsValue));
             };
         /**
          * Returns the consents loading flag
@@ -16595,7 +16342,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getConsentsLoading));
+                return this.store.pipe(i1$1.select(getConsentsLoading));
             };
         /**
          * Returns the consents success flag
@@ -16609,7 +16356,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getConsentsSuccess));
+                return this.store.pipe(i1$1.select(getConsentsSuccess));
             };
         /**
          * Returns the consents error flag
@@ -16623,7 +16370,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getConsentsError));
+                return this.store.pipe(i1$1.select(getConsentsError));
             };
         /**
          * Resets the processing state for consent retrieval
@@ -16675,7 +16422,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the give consent process success flag
@@ -16689,7 +16436,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the give consent process error flag
@@ -16703,7 +16450,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(GIVE_CONSENT_PROCESS_ID)));
             };
         /**
          * Resents the give consent process flags
@@ -16748,7 +16495,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessLoadingFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the withdraw consent process success flag
@@ -16762,7 +16509,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessSuccessFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Returns the withdraw consent process error flag
@@ -16776,7 +16523,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
+                return this.store.pipe(i1$1.select(getProcessErrorFactory(WITHDRAW_CONSENT_PROCESS_ID)));
             };
         /**
          * Resets the process flags for withdraw consent
@@ -16798,7 +16545,7 @@
         /** @nocollapse */
         UserService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return UserService;
@@ -16837,7 +16584,7 @@
         }
         ProcessStoreModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [StateModule, i1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                        imports: [StateModule, i1$1.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
                         providers: [reducerProvider$8],
                     },] }
         ];
@@ -16858,6 +16605,16 @@
         ];
         return ProcessModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var CountryType = {
+        BILLING: 'BILLING',
+        SHIPPING: 'SHIPPING',
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -16995,14 +16752,14 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageState = i1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+    var getGlobalMessageState = i1$1.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getGlobalMessageEntities = i1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
+    var getGlobalMessageEntities = i1$1.createSelector(getGlobalMessageState, function (state) { return state.entities; });
 
     /**
      * @fileoverview added by tsickle
@@ -17109,7 +16866,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
+                return this.store.pipe(i1$1.select(getGlobalMessageEntities), operators.filter(function (data) { return data !== undefined; }));
             };
         /**
          * Add one message into store
@@ -17166,7 +16923,7 @@
         /** @nocollapse */
         GlobalMessageService.ctorParameters = function () {
             return [
-                { type: i1.Store }
+                { type: i1$1.Store }
             ];
         };
         return GlobalMessageService;
@@ -17394,7 +17151,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var OAUTH_ENDPOINT$4 = '/authorizationserver/oauth/token';
+    var OAUTH_ENDPOINT$3 = '/authorizationserver/oauth/token';
     var BadRequestHandler = /** @class */ (function (_super) {
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
@@ -17413,7 +17170,7 @@
          * @return {?}
          */
             function (request, response) {
-                if (response.url.includes(OAUTH_ENDPOINT$4) &&
+                if (response.url.includes(OAUTH_ENDPOINT$3) &&
                     response.error.error === 'invalid_grant') {
                     if (request.body.get('grant_type') === 'password') {
                         this.globalMessageService.add({
@@ -17651,7 +17408,7 @@
             { type: i0.NgModule, args: [{
                         imports: [
                             StateModule,
-                            i1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$9),
+                            i1$1.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$9),
                         ],
                         providers: [reducerProvider$9],
                     },] }
@@ -18799,10 +18556,10 @@
         UserStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            i1.StoreModule.forFeature(USER_FEATURE, reducerToken$7, { metaReducers: metaReducers$5 }),
+                            i1$1.StoreModule.forFeature(USER_FEATURE, reducerToken$7, { metaReducers: metaReducers$5 }),
                             effects.EffectsModule.forFeature(effects$8),
                             i2.RouterModule,
                         ],
@@ -18941,6 +18698,439 @@
         /** @nocollapse */ CxApiService.ngInjectableDef = i0.defineInjectable({ factory: function CxApiService_Factory() { return new CxApiService(i0.inject(AuthService, 8), i0.inject(CmsService, 8), i0.inject(RoutingService, 8), i0.inject(CurrencyService, 8), i0.inject(LanguageService, 8), i0.inject(ProductService, 8), i0.inject(ProductSearchService, 8), i0.inject(ProductReviewService, 8), i0.inject(UserService, 8), i0.inject(TranslationService, 8)); }, token: CxApiService, providedIn: "root" });
         return CxApiService;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ KymaConfig = /** @class */ (function (_super) {
+        __extends(KymaConfig, _super);
+        function KymaConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return KymaConfig;
+    }(OccConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var KYMA_FEATURE = 'kyma';
+    /** @type {?} */
+    var OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_OPEN_ID_TOKEN = '[Kyma] Load Open ID Token';
+    /** @type {?} */
+    var LOAD_OPEN_ID_TOKEN_FAIL = '[Kyma] Load Open ID Token Fail';
+    /** @type {?} */
+    var LOAD_OPEN_ID_TOKEN_SUCCESS = '[Kyma] Load Open ID Token Success';
+    var LoadOpenIdToken = /** @class */ (function (_super) {
+        __extends(LoadOpenIdToken, _super);
+        function LoadOpenIdToken(payload) {
+            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_OPEN_ID_TOKEN;
+            return _this;
+        }
+        return LoadOpenIdToken;
+    }(LoaderLoadAction));
+    var LoadOpenIdTokenFail = /** @class */ (function (_super) {
+        __extends(LoadOpenIdTokenFail, _super);
+        function LoadOpenIdTokenFail(payload) {
+            var _this = _super.call(this, OPEN_ID_TOKEN_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_OPEN_ID_TOKEN_FAIL;
+            return _this;
+        }
+        return LoadOpenIdTokenFail;
+    }(LoaderFailAction));
+    var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
+        __extends(LoadOpenIdTokenSuccess, _super);
+        function LoadOpenIdTokenSuccess(payload) {
+            var _this = _super.call(this, OPEN_ID_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_OPEN_ID_TOKEN_SUCCESS;
+            return _this;
+        }
+        return LoadOpenIdTokenSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getKymaState = i1$1.createFeatureSelector(KYMA_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getOpenIdTokenState = i1$1.createSelector(getKymaState, function (state) { return state.openIdToken; });
+    /** @type {?} */
+    var getOpenIdTokenValue = i1$1.createSelector(getOpenIdTokenState, loaderValueSelector);
+    /** @type {?} */
+    var getOpenIdTokenLoading = i1$1.createSelector(getOpenIdTokenState, loaderLoadingSelector);
+    /** @type {?} */
+    var getOpenIdTokenSuccess = i1$1.createSelector(getOpenIdTokenState, loaderSuccessSelector);
+    /** @type {?} */
+    var getOpenIdTokenError = i1$1.createSelector(getOpenIdTokenState, loaderErrorSelector);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var KymaService = /** @class */ (function () {
+        function KymaService(store) {
+            this.store = store;
+        }
+        /**
+         * Authorizes using the Kyma OAuth client with scope `openid`.
+         *
+         * @param username a username
+         * @param password a password
+         */
+        /**
+         * Authorizes using the Kyma OAuth client with scope `openid`.
+         *
+         * @param {?} username a username
+         * @param {?} password a password
+         * @return {?}
+         */
+        KymaService.prototype.authorizeOpenId = /**
+         * Authorizes using the Kyma OAuth client with scope `openid`.
+         *
+         * @param {?} username a username
+         * @param {?} password a password
+         * @return {?}
+         */
+            function (username, password) {
+                this.store.dispatch(new LoadOpenIdToken({ username: username, password: password }));
+            };
+        /**
+         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
+         */
+        /**
+         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
+         * @return {?}
+         */
+        KymaService.prototype.getOpenIdToken = /**
+         * Returns the `OpenIdToken`, which was previously retrieved using `authorizeOpenId` method.
+         * @return {?}
+         */
+            function () {
+                return this.store.pipe(i1$1.select(getOpenIdTokenValue));
+            };
+        KymaService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        KymaService.ctorParameters = function () {
+            return [
+                { type: i1$1.Store }
+            ];
+        };
+        /** @nocollapse */ KymaService.ngInjectableDef = i0.defineInjectable({ factory: function KymaService_Factory() { return new KymaService(i0.inject(i1$1.Store)); }, token: KymaService, providedIn: "root" });
+        return KymaService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultKymaConfig = {
+        authentication: {
+            kyma_enabled: false,
+            kyma_client_id: 'client4kyma',
+            kyma_client_secret: 'secret',
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var OAUTH_ENDPOINT$4 = '/authorizationserver/oauth/token';
+    var OpenIdAuthenticationTokenService = /** @class */ (function () {
+        function OpenIdAuthenticationTokenService(config, http$$1) {
+            this.config = config;
+            this.http = http$$1;
+        }
+        /**
+         * @param {?} username
+         * @param {?} password
+         * @return {?}
+         */
+        OpenIdAuthenticationTokenService.prototype.loadOpenIdAuthenticationToken = /**
+         * @param {?} username
+         * @param {?} password
+         * @return {?}
+         */
+            function (username, password) {
+                /** @type {?} */
+                var url = this.getOAuthEndpoint();
+                /** @type {?} */
+                var params = new http.HttpParams()
+                    .set('client_id', encodeURIComponent(this.config.authentication.kyma_client_id))
+                    .set('client_secret', encodeURIComponent(this.config.authentication.kyma_client_secret))
+                    .set('grant_type', 'password') // authorization_code, client_credentials, password
+                    .set('username', username)
+                    .set('password', password)
+                    .set('scope', 'openid');
+                /** @type {?} */
+                var headers = new http.HttpHeaders({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                });
+                return this.http
+                    .post(url, params, { headers: headers })
+                    .pipe(operators.catchError(function (error) { return rxjs.throwError(error); }));
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        OpenIdAuthenticationTokenService.prototype.getOAuthEndpoint = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$4;
+            };
+        OpenIdAuthenticationTokenService.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OpenIdAuthenticationTokenService.ctorParameters = function () {
+            return [
+                { type: KymaConfig },
+                { type: http.HttpClient }
+            ];
+        };
+        return OpenIdAuthenticationTokenService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var KymaServices = [OpenIdAuthenticationTokenService];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OpenIdTokenEffect = /** @class */ (function () {
+        function OpenIdTokenEffect(actions$, openIdTokenService, config) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.openIdTokenService = openIdTokenService;
+            this.config = config;
+            this.triggerOpenIdTokenLoading$ = rxjs.iif(function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }, this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects.ofType(LOAD_USER_TOKEN))), operators.map(function (_a) {
+                var _b = __read(_a, 2), loginAction = _b[1];
+                return new LoadOpenIdToken({
+                    username: loginAction.payload.userId,
+                    password: loginAction.payload.password,
+                });
+            })));
+            this.loadOpenIdToken$ = this.actions$.pipe(effects.ofType(LOAD_OPEN_ID_TOKEN), operators.map(function (action) { return action.payload; }), operators.exhaustMap(function (payload) {
+                return _this.openIdTokenService
+                    .loadOpenIdAuthenticationToken(payload.username, payload.password)
+                    .pipe(operators.map(function (token) { return new LoadOpenIdTokenSuccess(token); }), operators.catchError(function (error) { return rxjs.of(new LoadOpenIdTokenFail(error)); }));
+            }));
+        }
+        OpenIdTokenEffect.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OpenIdTokenEffect.ctorParameters = function () {
+            return [
+                { type: effects.Actions },
+                { type: OpenIdAuthenticationTokenService },
+                { type: KymaConfig }
+            ];
+        };
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
+        __decorate([
+            effects.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
+        return OpenIdTokenEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$9 = [OpenIdTokenEffect];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$a() {
+        return {
+            openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
+        };
+    }
+    /** @type {?} */
+    var reducerToken$a = new i0.InjectionToken('KymaReducers');
+    /** @type {?} */
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
+    };
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearKymaState(reducer) {
+        return function (state, action) {
+            if (action.type === LOGOUT) {
+                state = __assign({}, state, { openIdToken: undefined });
+            }
+            return reducer(state, action);
+        };
+    }
+    /** @type {?} */
+    var metaReducers$6 = [clearKymaState];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function kymaStoreConfigFactory() {
+        // if we want to reuse KYMA_FEATURE const in config, we have to use factory instead of plain object
+        /** @type {?} */
+        var config = {
+            state: {
+                storageSync: {
+                    keys: {
+                        'kyma.openIdToken.value': StorageSyncType.LOCAL_STORAGE,
+                    },
+                },
+            },
+        };
+        return config;
+    }
+    var KymaStoreModule = /** @class */ (function () {
+        function KymaStoreModule() {
+        }
+        KymaStoreModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1.CommonModule,
+                            http.HttpClientModule,
+                            StateModule,
+                            i1$1.StoreModule.forFeature(KYMA_FEATURE, reducerToken$a, { metaReducers: metaReducers$6 }),
+                            effects.EffectsModule.forFeature(effects$9),
+                            ConfigModule.withConfigFactory(kymaStoreConfigFactory),
+                        ],
+                        providers: [reducerProvider$a],
+                    },] }
+        ];
+        return KymaStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var KymaModule = /** @class */ (function () {
+        function KymaModule() {
+        }
+        KymaModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            i1.CommonModule,
+                            http.HttpClientModule,
+                            RoutingModule,
+                            KymaStoreModule,
+                            ConfigModule.withConfig(defaultKymaConfig),
+                        ],
+                        providers: __spread(KymaServices, [{ provide: KymaConfig, useExisting: Config }]),
+                    },] }
+        ];
+        return KymaModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var ImageType = {
+        PRIMARY: 'PRIMARY',
+        GALLERY: 'GALLERY',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var PriceType = {
+        BUY: 'BUY',
+        FROM: 'FROM',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var testestsd = 'sare';
 
     /**
      * @fileoverview added by tsickle
@@ -21613,7 +21803,7 @@
         }
         CmsOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule, http.HttpClientModule],
+                        imports: [i1.CommonModule, http.HttpClientModule],
                         providers: [
                             ComponentMapperService,
                             {
@@ -21959,7 +22149,7 @@
         }
         CartOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule, http.HttpClientModule],
+                        imports: [i1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: CartAdapter,
@@ -22569,7 +22759,7 @@
         ProductOccModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
                             ConfigModule.withConfig(defaultOccProductConfig),
                         ],
@@ -22791,7 +22981,7 @@
         }
         SiteContextOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule, http.HttpClientModule],
+                        imports: [i1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: SiteAdapter,
@@ -23733,7 +23923,7 @@
         }
         UserOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule, http.HttpClientModule],
+                        imports: [i1.CommonModule, http.HttpClientModule],
                         providers: [
                             { provide: UserAdapter, useClass: OccUserAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
@@ -24374,7 +24564,7 @@
         }
         CheckoutOccModule.decorators = [
             { type: i0.NgModule, args: [{
-                        imports: [i1$1.CommonModule, http.HttpClientModule],
+                        imports: [i1.CommonModule, http.HttpClientModule],
                         providers: [
                             {
                                 provide: CheckoutAdapter,
@@ -24576,6 +24766,237 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var /**
+     * @abstract
+     */ PersonalizationConfig = /** @class */ (function () {
+        function PersonalizationConfig() {
+        }
+        return PersonalizationConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultPersonalizationConfig = {
+        personalization: {
+            enabled: false,
+            httpHeaderName: {
+                id: 'Occ-Personalization-Id',
+                timestamp: 'Occ-Personalization-Time',
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PERSONALIZATION_ID_KEY = 'personalization-id';
+    var OccPersonalizationIdInterceptor = /** @class */ (function () {
+        function OccPersonalizationIdInterceptor(config, occEndpoints, winRef, platform) {
+            this.config = config;
+            this.occEndpoints = occEndpoints;
+            this.winRef = winRef;
+            this.platform = platform;
+            this.enabled = this.config.personalization.enabled || false;
+            if (this.enabled) {
+                this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
+                this.personalizationId =
+                    this.winRef.localStorage &&
+                        this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
+            }
+            else if (this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY)) {
+                this.winRef.localStorage.removeItem(PERSONALIZATION_ID_KEY);
+            }
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        OccPersonalizationIdInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                var _this = this;
+                var _a;
+                if (i1.isPlatformServer(this.platform) || !this.enabled) {
+                    return next.handle(request);
+                }
+                if (this.personalizationId &&
+                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
+                    request = request.clone({
+                        setHeaders: (_a = {},
+                            _a[this.requestHeader] = this.personalizationId,
+                            _a),
+                    });
+                }
+                return next.handle(request).pipe(operators.tap(function (event) {
+                    if (event instanceof http.HttpResponse) {
+                        if (event.headers.keys().includes(_this.requestHeader)) {
+                            /** @type {?} */
+                            var receivedId = event.headers.get(_this.requestHeader);
+                            if (_this.personalizationId !== receivedId) {
+                                _this.personalizationId = receivedId;
+                                _this.winRef.localStorage.setItem(PERSONALIZATION_ID_KEY, _this.personalizationId);
+                            }
+                        }
+                    }
+                }));
+            };
+        OccPersonalizationIdInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccPersonalizationIdInterceptor.ctorParameters = function () {
+            return [
+                { type: PersonalizationConfig },
+                { type: OccEndpointsService },
+                { type: WindowRef },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+            ];
+        };
+        return OccPersonalizationIdInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var PERSONALIZATION_TIME_KEY = 'personalization-time';
+    var OccPersonalizationTimeInterceptor = /** @class */ (function () {
+        function OccPersonalizationTimeInterceptor(config, occEndpoints, winRef, platform) {
+            this.config = config;
+            this.occEndpoints = occEndpoints;
+            this.winRef = winRef;
+            this.platform = platform;
+            this.enabled = this.config.personalization.enabled || false;
+            if (this.enabled) {
+                this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
+                this.timestamp =
+                    this.winRef.localStorage &&
+                        this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
+            }
+            else if (this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY)) {
+                this.winRef.localStorage.removeItem(PERSONALIZATION_TIME_KEY);
+            }
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        OccPersonalizationTimeInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+            function (request, next) {
+                var _this = this;
+                var _a;
+                if (i1.isPlatformServer(this.platform) || !this.enabled) {
+                    return next.handle(request);
+                }
+                if (this.timestamp &&
+                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
+                    request = request.clone({
+                        setHeaders: (_a = {},
+                            _a[this.requestHeader] = this.timestamp,
+                            _a),
+                    });
+                }
+                return next.handle(request).pipe(operators.tap(function (event) {
+                    if (event instanceof http.HttpResponse) {
+                        if (event.headers.keys().includes(_this.requestHeader)) {
+                            /** @type {?} */
+                            var receivedTimestamp = event.headers.get(_this.requestHeader);
+                            if (_this.timestamp !== receivedTimestamp) {
+                                _this.timestamp = receivedTimestamp;
+                                _this.winRef.localStorage.setItem(PERSONALIZATION_TIME_KEY, _this.timestamp);
+                            }
+                        }
+                    }
+                }));
+            };
+        OccPersonalizationTimeInterceptor.decorators = [
+            { type: i0.Injectable }
+        ];
+        /** @nocollapse */
+        OccPersonalizationTimeInterceptor.ctorParameters = function () {
+            return [
+                { type: PersonalizationConfig },
+                { type: OccEndpointsService },
+                { type: WindowRef },
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
+            ];
+        };
+        return OccPersonalizationTimeInterceptor;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var interceptors$1 = [
+        {
+            provide: http.HTTP_INTERCEPTORS,
+            useClass: OccPersonalizationIdInterceptor,
+            multi: true,
+        },
+        {
+            provide: http.HTTP_INTERCEPTORS,
+            useClass: OccPersonalizationTimeInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var PersonalizationModule = /** @class */ (function () {
+        function PersonalizationModule() {
+        }
+        /**
+         * @return {?}
+         */
+        PersonalizationModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: PersonalizationModule,
+                    providers: __spread(interceptors$1),
+                };
+            };
+        PersonalizationModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
+                        providers: [{ provide: PersonalizationConfig, useExisting: Config }],
+                    },] }
+        ];
+        return PersonalizationModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -24833,7 +25254,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var interceptors$1 = [
+    var interceptors$2 = [
         {
             provide: http.HTTP_INTERCEPTORS,
             useClass: CmsTicketInterceptor,
@@ -24857,7 +25278,7 @@
             function () {
                 return {
                     ngModule: SmartEditModule,
-                    providers: __spread(interceptors$1),
+                    providers: __spread(interceptors$2),
                 };
             };
         SmartEditModule.decorators = [
@@ -25033,29 +25454,29 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getStoreFinderState = i1.createFeatureSelector(STORE_FINDER_FEATURE);
+    var getStoreFinderState = i1$1.createFeatureSelector(STORE_FINDER_FEATURE);
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getFindStoresState = i1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
+    var getFindStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.findStores; });
     /** @type {?} */
-    var getFindStoresEntities = i1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
+    var getFindStoresEntities = i1$1.createSelector(getFindStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getStoresLoading = i1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getStoresLoading = i1$1.createSelector(getFindStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getViewAllStoresState = i1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
+    var getViewAllStoresState = i1$1.createSelector(getStoreFinderState, function (storesState) { return storesState.viewAllStores; });
     /** @type {?} */
-    var getViewAllStoresEntities = i1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
+    var getViewAllStoresEntities = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderValueSelector(state); });
     /** @type {?} */
-    var getViewAllStoresLoading = i1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
+    var getViewAllStoresLoading = i1$1.createSelector(getViewAllStoresState, function (state) { return loaderLoadingSelector(state); });
 
     /**
      * @fileoverview added by tsickle
@@ -25143,7 +25564,7 @@
         /** @nocollapse */
         ExternalJsFileLoader.ctorParameters = function () {
             return [
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i1$1.DOCUMENT,] }] }
+                { type: undefined, decorators: [{ type: i0.Inject, args: [i1.DOCUMENT,] }] }
             ];
         };
         return ExternalJsFileLoader;
@@ -25612,7 +26033,7 @@
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
+    var effects$a = [FindStoresEffect, ViewAllStoresEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -25621,18 +26042,18 @@
     /**
      * @return {?}
      */
-    function getReducers$a() {
+    function getReducers$b() {
         return {
             findStores: loaderReducer(STORE_FINDER_DATA),
             viewAllStores: loaderReducer(STORE_FINDER_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken$a = new i0.InjectionToken('StoreFinderReducers');
+    var reducerToken$b = new i0.InjectionToken('StoreFinderReducers');
     /** @type {?} */
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
     };
 
     /**
@@ -25662,7 +26083,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getStoresLoading));
+                return this.store.pipe(i1$1.select(getStoresLoading));
             };
         /**
          * Returns observable for store's entities
@@ -25676,7 +26097,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getFindStoresEntities));
+                return this.store.pipe(i1$1.select(getFindStoresEntities));
             };
         /**
          * Returns boolean observable for view all store's loading state
@@ -25690,7 +26111,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getViewAllStoresLoading));
+                return this.store.pipe(i1$1.select(getViewAllStoresLoading));
             };
         /**
          * Returns observable for view all store's entities
@@ -25704,7 +26125,7 @@
          * @return {?}
          */
             function () {
-                return this.store.pipe(i1.select(getViewAllStoresEntities));
+                return this.store.pipe(i1$1.select(getViewAllStoresEntities));
             };
         /**
          * Store finding action functionality
@@ -25825,7 +26246,7 @@
         /** @nocollapse */
         StoreFinderService.ctorParameters = function () {
             return [
-                { type: i1.Store },
+                { type: i1$1.Store },
                 { type: WindowRef }
             ];
         };
@@ -25861,12 +26282,12 @@
         StoreFinderStoreModule.decorators = [
             { type: i0.NgModule, args: [{
                         imports: [
-                            i1$1.CommonModule,
+                            i1.CommonModule,
                             http.HttpClientModule,
-                            i1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
-                            effects.EffectsModule.forFeature(effects$9),
+                            i1$1.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
+                            effects.EffectsModule.forFeature(effects$a),
                         ],
-                        providers: [reducerProvider$a],
+                        providers: [reducerProvider$b],
                     },] }
         ];
         return StoreFinderStoreModule;
@@ -25911,248 +26332,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var /**
-     * @abstract
-     */ PersonalizationConfig = /** @class */ (function () {
-        function PersonalizationConfig() {
-        }
-        return PersonalizationConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultPersonalizationConfig = {
-        personalization: {
-            enabled: false,
-            httpHeaderName: {
-                id: 'Occ-Personalization-Id',
-                timestamp: 'Occ-Personalization-Time',
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PERSONALIZATION_ID_KEY = 'personalization-id';
-    var OccPersonalizationIdInterceptor = /** @class */ (function () {
-        function OccPersonalizationIdInterceptor(config, occEndpoints, winRef, platform) {
-            this.config = config;
-            this.occEndpoints = occEndpoints;
-            this.winRef = winRef;
-            this.platform = platform;
-            this.enabled = this.config.personalization.enabled || false;
-            if (this.enabled) {
-                this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
-                this.personalizationId =
-                    this.winRef.localStorage &&
-                        this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
-            }
-            else if (this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY)) {
-                this.winRef.localStorage.removeItem(PERSONALIZATION_ID_KEY);
-            }
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        OccPersonalizationIdInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-            function (request, next) {
-                var _this = this;
-                var _a;
-                if (i1$1.isPlatformServer(this.platform) || !this.enabled) {
-                    return next.handle(request);
-                }
-                if (this.personalizationId &&
-                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
-                    request = request.clone({
-                        setHeaders: (_a = {},
-                            _a[this.requestHeader] = this.personalizationId,
-                            _a),
-                    });
-                }
-                return next.handle(request).pipe(operators.tap(function (event) {
-                    if (event instanceof http.HttpResponse) {
-                        if (event.headers.keys().includes(_this.requestHeader)) {
-                            /** @type {?} */
-                            var receivedId = event.headers.get(_this.requestHeader);
-                            if (_this.personalizationId !== receivedId) {
-                                _this.personalizationId = receivedId;
-                                _this.winRef.localStorage.setItem(PERSONALIZATION_ID_KEY, _this.personalizationId);
-                            }
-                        }
-                    }
-                }));
-            };
-        OccPersonalizationIdInterceptor.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccPersonalizationIdInterceptor.ctorParameters = function () {
-            return [
-                { type: PersonalizationConfig },
-                { type: OccEndpointsService },
-                { type: WindowRef },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
-            ];
-        };
-        return OccPersonalizationIdInterceptor;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PERSONALIZATION_TIME_KEY = 'personalization-time';
-    var OccPersonalizationTimeInterceptor = /** @class */ (function () {
-        function OccPersonalizationTimeInterceptor(config, occEndpoints, winRef, platform) {
-            this.config = config;
-            this.occEndpoints = occEndpoints;
-            this.winRef = winRef;
-            this.platform = platform;
-            this.enabled = this.config.personalization.enabled || false;
-            if (this.enabled) {
-                this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
-                this.timestamp =
-                    this.winRef.localStorage &&
-                        this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
-            }
-            else if (this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY)) {
-                this.winRef.localStorage.removeItem(PERSONALIZATION_TIME_KEY);
-            }
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        OccPersonalizationTimeInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-            function (request, next) {
-                var _this = this;
-                var _a;
-                if (i1$1.isPlatformServer(this.platform) || !this.enabled) {
-                    return next.handle(request);
-                }
-                if (this.timestamp &&
-                    request.url.includes(this.occEndpoints.getBaseEndpoint())) {
-                    request = request.clone({
-                        setHeaders: (_a = {},
-                            _a[this.requestHeader] = this.timestamp,
-                            _a),
-                    });
-                }
-                return next.handle(request).pipe(operators.tap(function (event) {
-                    if (event instanceof http.HttpResponse) {
-                        if (event.headers.keys().includes(_this.requestHeader)) {
-                            /** @type {?} */
-                            var receivedTimestamp = event.headers.get(_this.requestHeader);
-                            if (_this.timestamp !== receivedTimestamp) {
-                                _this.timestamp = receivedTimestamp;
-                                _this.winRef.localStorage.setItem(PERSONALIZATION_TIME_KEY, _this.timestamp);
-                            }
-                        }
-                    }
-                }));
-            };
-        OccPersonalizationTimeInterceptor.decorators = [
-            { type: i0.Injectable }
-        ];
-        /** @nocollapse */
-        OccPersonalizationTimeInterceptor.ctorParameters = function () {
-            return [
-                { type: PersonalizationConfig },
-                { type: OccEndpointsService },
-                { type: WindowRef },
-                { type: undefined, decorators: [{ type: i0.Inject, args: [i0.PLATFORM_ID,] }] }
-            ];
-        };
-        return OccPersonalizationTimeInterceptor;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var interceptors$2 = [
-        {
-            provide: http.HTTP_INTERCEPTORS,
-            useClass: OccPersonalizationIdInterceptor,
-            multi: true,
-        },
-        {
-            provide: http.HTTP_INTERCEPTORS,
-            useClass: OccPersonalizationTimeInterceptor,
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var PersonalizationModule = /** @class */ (function () {
-        function PersonalizationModule() {
-        }
-        /**
-         * @return {?}
-         */
-        PersonalizationModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: PersonalizationModule,
-                    providers: __spread(interceptors$2),
-                };
-            };
-        PersonalizationModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [ConfigModule.withConfig(defaultPersonalizationConfig)],
-                        providers: [{ provide: PersonalizationConfig, useExisting: Config }],
-                    },] }
-        ];
-        return PersonalizationModule;
-    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    exports.CountryType = CountryType;
-    exports.PageType = PageType;
-    exports.ImageType = ImageType;
-    exports.PriceType = PriceType;
-    exports.testestsd = testestsd;
     exports.AuthModule = AuthModule;
     exports.AuthConfig = AuthConfig;
     exports.AuthService = AuthService;
@@ -26169,12 +26354,6 @@
     exports.LOGOUT = LOGOUT;
     exports.Login = Login;
     exports.Logout = Logout;
-    exports.LOAD_OPEN_ID_TOKEN = LOAD_OPEN_ID_TOKEN;
-    exports.LOAD_OPEN_ID_TOKEN_FAIL = LOAD_OPEN_ID_TOKEN_FAIL;
-    exports.LOAD_OPEN_ID_TOKEN_SUCCESS = LOAD_OPEN_ID_TOKEN_SUCCESS;
-    exports.LoadOpenIdToken = LoadOpenIdToken;
-    exports.LoadOpenIdTokenFail = LoadOpenIdTokenFail;
-    exports.LoadOpenIdTokenSuccess = LoadOpenIdTokenSuccess;
     exports.LOAD_USER_TOKEN = LOAD_USER_TOKEN;
     exports.LOAD_USER_TOKEN_FAIL = LOAD_USER_TOKEN_FAIL;
     exports.LOAD_USER_TOKEN_SUCCESS = LOAD_USER_TOKEN_SUCCESS;
@@ -26189,14 +26368,8 @@
     exports.RefreshUserTokenFail = RefreshUserTokenFail;
     exports.AUTH_FEATURE = AUTH_FEATURE;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
-    exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.getClientTokenState = getClientTokenState;
     exports.getAuthState = getAuthState;
-    exports.getOpenIdTokenState = getOpenIdTokenState;
-    exports.getOpenIdTokenValue = getOpenIdTokenValue;
-    exports.getOpenIdTokenLoading = getOpenIdTokenLoading;
-    exports.getOpenIdTokenSuccess = getOpenIdTokenSuccess;
-    exports.getOpenIdTokenError = getOpenIdTokenError;
     exports.getUserTokenSelector = getUserTokenSelector;
     exports.getUserTokenState = getUserTokenState;
     exports.getUserToken = getUserToken;
@@ -26479,6 +26652,29 @@
     exports.I18nextTranslationService = I18nextTranslationService;
     exports.I18nTestingModule = I18nTestingModule;
     exports.MockTranslatePipe = MockTranslatePipe;
+    exports.KymaConfig = KymaConfig;
+    exports.KymaService = KymaService;
+    exports.KymaModule = KymaModule;
+    exports.KymaServices = KymaServices;
+    exports.LOAD_OPEN_ID_TOKEN = LOAD_OPEN_ID_TOKEN;
+    exports.LOAD_OPEN_ID_TOKEN_FAIL = LOAD_OPEN_ID_TOKEN_FAIL;
+    exports.LOAD_OPEN_ID_TOKEN_SUCCESS = LOAD_OPEN_ID_TOKEN_SUCCESS;
+    exports.LoadOpenIdToken = LoadOpenIdToken;
+    exports.LoadOpenIdTokenFail = LoadOpenIdTokenFail;
+    exports.LoadOpenIdTokenSuccess = LoadOpenIdTokenSuccess;
+    exports.KYMA_FEATURE = KYMA_FEATURE;
+    exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
+    exports.getKymaState = getKymaState;
+    exports.getOpenIdTokenState = getOpenIdTokenState;
+    exports.getOpenIdTokenValue = getOpenIdTokenValue;
+    exports.getOpenIdTokenLoading = getOpenIdTokenLoading;
+    exports.getOpenIdTokenSuccess = getOpenIdTokenSuccess;
+    exports.getOpenIdTokenError = getOpenIdTokenError;
+    exports.CountryType = CountryType;
+    exports.PageType = PageType;
+    exports.ImageType = ImageType;
+    exports.PriceType = PriceType;
+    exports.testestsd = testestsd;
     exports.occServerConfigFromMetaTagFactory = occServerConfigFromMetaTagFactory;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.OCC_BASE_URL_META_TAG_NAME = OCC_BASE_URL_META_TAG_NAME;
@@ -26526,6 +26722,8 @@
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.UserOccModule = UserOccModule;
+    exports.PersonalizationModule = PersonalizationModule;
+    exports.PersonalizationConfig = PersonalizationConfig;
     exports.ProductConnector = ProductConnector;
     exports.ProductAdapter = ProductAdapter;
     exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
@@ -27025,116 +27223,123 @@
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ConverterService = ConverterService;
     exports.WindowRef = WindowRef;
-    exports.PersonalizationModule = PersonalizationModule;
-    exports.PersonalizationConfig = PersonalizationConfig;
-    exports.ɵbd = defaultAuthConfig;
-    exports.ɵbk = AuthErrorInterceptor;
-    exports.ɵbi = ClientTokenInterceptor;
-    exports.ɵbh = interceptors;
-    exports.ɵbj = UserTokenInterceptor;
-    exports.ɵba = ClientAuthenticationTokenService;
-    exports.ɵbf = ClientErrorHandlingService;
-    exports.ɵbe = AuthServices;
-    exports.ɵbb = OpenIdAuthenticationTokenService;
-    exports.ɵz = UserAuthenticationTokenService;
-    exports.ɵbg = UserErrorHandlingService;
+    exports.ɵbb = defaultAuthConfig;
+    exports.ɵbi = AuthErrorInterceptor;
+    exports.ɵbg = ClientTokenInterceptor;
+    exports.ɵbf = interceptors;
+    exports.ɵbh = UserTokenInterceptor;
+    exports.ɵz = ClientAuthenticationTokenService;
+    exports.ɵbd = ClientErrorHandlingService;
+    exports.ɵbc = AuthServices;
+    exports.ɵy = UserAuthenticationTokenService;
+    exports.ɵbe = UserErrorHandlingService;
     exports.ɵm = AuthStoreModule;
     exports.ɵl = authStoreConfigFactory;
     exports.ɵw = ClientTokenEffect;
     exports.ɵv = effects$2;
-    exports.ɵx = OpenIdTokenEffect;
-    exports.ɵy = UserTokenEffects;
+    exports.ɵx = UserTokenEffects;
     exports.ɵt = clearAuthState;
     exports.ɵq = getReducers$1;
     exports.ɵu = metaReducers;
     exports.ɵs = reducerProvider$1;
     exports.ɵr = reducerToken$1;
-    exports.ɵbc = reducer$1;
-    exports.ɵbl = CartStoreModule;
-    exports.ɵbt = CartEntryEffects;
-    exports.ɵbs = CartEffects;
-    exports.ɵbr = effects$4;
-    exports.ɵbu = reducer$2;
-    exports.ɵbp = clearCartState;
-    exports.ɵbm = getReducers$2;
-    exports.ɵbq = metaReducers$1;
-    exports.ɵbo = reducerProvider$2;
-    exports.ɵbn = reducerToken$2;
-    exports.ɵci = CheckoutStoreModule;
-    exports.ɵcc = AddressVerificationEffect;
-    exports.ɵcb = CardTypesEffects;
-    exports.ɵca = CheckoutEffects;
-    exports.ɵbz = effects$5;
-    exports.ɵby = getAddressVerificationResults;
-    exports.ɵbx = reducer$7;
-    exports.ɵbw = getCardTypesEntites;
-    exports.ɵbv = reducer$6;
-    exports.ɵcj = reducer$8;
-    exports.ɵcg = clearCheckoutState;
-    exports.ɵcd = getReducers$4;
-    exports.ɵch = metaReducers$2;
-    exports.ɵcf = reducerProvider$4;
-    exports.ɵce = reducerToken$4;
-    exports.ɵeu = PageMetaResolver;
-    exports.ɵco = CmsStoreModule;
-    exports.ɵcn = cmsStoreConfigFactory;
-    exports.ɵcw = ComponentEffects;
-    exports.ɵcu = effects$6;
-    exports.ɵcx = NavigationEntryItemEffects;
-    exports.ɵcv = PageEffects;
-    exports.ɵcs = clearCmsState;
-    exports.ɵcp = getReducers$5;
-    exports.ɵct = metaReducers$3;
-    exports.ɵcr = reducerProvider$5;
-    exports.ɵcq = reducerToken$5;
-    exports.ɵda = reducer$9;
-    exports.ɵcy = reducer$a;
-    exports.ɵcz = reducer$b;
-    exports.ɵed = ServerConfig;
-    exports.ɵek = provideConfigValidator;
-    exports.ɵec = HttpErrorInterceptor;
-    exports.ɵdx = GlobalMessageStoreModule;
-    exports.ɵeb = reducer$q;
-    exports.ɵdy = getReducers$9;
-    exports.ɵea = reducerProvider$9;
-    exports.ɵdz = reducerToken$9;
-    exports.ɵet = TranslationService;
-    exports.ɵee = defaultI18nConfig;
-    exports.ɵeg = i18nextInit;
-    exports.ɵef = i18nextProviders;
-    exports.ɵeh = MockDatePipe;
-    exports.ɵei = MockTranslationService;
-    exports.ɵej = defaultOccProductConfig;
-    exports.ɵhb = defaultPersonalizationConfig;
-    exports.ɵhc = interceptors$2;
-    exports.ɵhd = OccPersonalizationIdInterceptor;
-    exports.ɵhe = OccPersonalizationTimeInterceptor;
-    exports.ɵgv = ProcessModule;
-    exports.ɵgx = PROCESS_FEATURE;
-    exports.ɵgw = ProcessStoreModule;
-    exports.ɵgy = getReducers$8;
-    exports.ɵha = reducerProvider$8;
-    exports.ɵgz = reducerToken$8;
-    exports.ɵew = ProductSearchService;
-    exports.ɵdi = effects$7;
-    exports.ɵdj = ProductReferencesEffects;
-    exports.ɵdk = ProductReviewsEffects;
-    exports.ɵdl = ProductsSearchEffects;
-    exports.ɵdm = ProductEffects;
-    exports.ɵem = ProductStoreModule;
-    exports.ɵel = productStoreConfigFactory;
-    exports.ɵdq = clearProductsState;
-    exports.ɵdn = getReducers$6;
-    exports.ɵdr = metaReducers$4;
-    exports.ɵdp = reducerProvider$6;
-    exports.ɵdo = reducerToken$6;
-    exports.ɵes = reducer$c;
-    exports.ɵer = reducer$d;
-    exports.ɵep = getAuxSearchResults;
-    exports.ɵeq = getProductSuggestions;
-    exports.ɵeo = getSearchResults;
-    exports.ɵen = reducer$e;
-    exports.ɵev = RoutingService;
+    exports.ɵba = reducer$1;
+    exports.ɵbj = CartStoreModule;
+    exports.ɵbr = CartEntryEffects;
+    exports.ɵbq = CartEffects;
+    exports.ɵbp = effects$4;
+    exports.ɵbs = reducer$2;
+    exports.ɵbn = clearCartState;
+    exports.ɵbk = getReducers$2;
+    exports.ɵbo = metaReducers$1;
+    exports.ɵbm = reducerProvider$2;
+    exports.ɵbl = reducerToken$2;
+    exports.ɵcg = CheckoutStoreModule;
+    exports.ɵca = AddressVerificationEffect;
+    exports.ɵbz = CardTypesEffects;
+    exports.ɵby = CheckoutEffects;
+    exports.ɵbx = effects$5;
+    exports.ɵbw = getAddressVerificationResults;
+    exports.ɵbv = reducer$7;
+    exports.ɵbu = getCardTypesEntites;
+    exports.ɵbt = reducer$6;
+    exports.ɵch = reducer$8;
+    exports.ɵce = clearCheckoutState;
+    exports.ɵcb = getReducers$4;
+    exports.ɵcf = metaReducers$2;
+    exports.ɵcd = reducerProvider$4;
+    exports.ɵcc = reducerToken$4;
+    exports.ɵfh = PageMetaResolver;
+    exports.ɵcm = CmsStoreModule;
+    exports.ɵcl = cmsStoreConfigFactory;
+    exports.ɵcu = ComponentEffects;
+    exports.ɵcs = effects$6;
+    exports.ɵcv = NavigationEntryItemEffects;
+    exports.ɵct = PageEffects;
+    exports.ɵcq = clearCmsState;
+    exports.ɵcn = getReducers$5;
+    exports.ɵcr = metaReducers$3;
+    exports.ɵcp = reducerProvider$5;
+    exports.ɵco = reducerToken$5;
+    exports.ɵcy = reducer$9;
+    exports.ɵcw = reducer$a;
+    exports.ɵcx = reducer$b;
+    exports.ɵeb = ServerConfig;
+    exports.ɵet = provideConfigValidator;
+    exports.ɵea = HttpErrorInterceptor;
+    exports.ɵdv = GlobalMessageStoreModule;
+    exports.ɵdz = reducer$q;
+    exports.ɵdw = getReducers$9;
+    exports.ɵdy = reducerProvider$9;
+    exports.ɵdx = reducerToken$9;
+    exports.ɵfg = TranslationService;
+    exports.ɵec = defaultI18nConfig;
+    exports.ɵee = i18nextInit;
+    exports.ɵed = i18nextProviders;
+    exports.ɵef = MockDatePipe;
+    exports.ɵeg = MockTranslationService;
+    exports.ɵer = defaultKymaConfig;
+    exports.ɵeq = OpenIdAuthenticationTokenService;
+    exports.ɵeo = effects$9;
+    exports.ɵep = OpenIdTokenEffect;
+    exports.ɵei = KymaStoreModule;
+    exports.ɵeh = kymaStoreConfigFactory;
+    exports.ɵem = clearKymaState;
+    exports.ɵej = getReducers$a;
+    exports.ɵen = metaReducers$6;
+    exports.ɵel = reducerProvider$a;
+    exports.ɵek = reducerToken$a;
+    exports.ɵes = defaultOccProductConfig;
+    exports.ɵeu = defaultPersonalizationConfig;
+    exports.ɵev = interceptors$1;
+    exports.ɵew = OccPersonalizationIdInterceptor;
+    exports.ɵex = OccPersonalizationTimeInterceptor;
+    exports.ɵhi = ProcessModule;
+    exports.ɵhk = PROCESS_FEATURE;
+    exports.ɵhj = ProcessStoreModule;
+    exports.ɵhl = getReducers$8;
+    exports.ɵhn = reducerProvider$8;
+    exports.ɵhm = reducerToken$8;
+    exports.ɵfj = ProductSearchService;
+    exports.ɵdg = effects$7;
+    exports.ɵdh = ProductReferencesEffects;
+    exports.ɵdi = ProductReviewsEffects;
+    exports.ɵdj = ProductsSearchEffects;
+    exports.ɵdk = ProductEffects;
+    exports.ɵez = ProductStoreModule;
+    exports.ɵey = productStoreConfigFactory;
+    exports.ɵdo = clearProductsState;
+    exports.ɵdl = getReducers$6;
+    exports.ɵdp = metaReducers$4;
+    exports.ɵdn = reducerProvider$6;
+    exports.ɵdm = reducerToken$6;
+    exports.ɵff = reducer$c;
+    exports.ɵfe = reducer$d;
+    exports.ɵfc = getAuxSearchResults;
+    exports.ɵfd = getProductSuggestions;
+    exports.ɵfb = getSearchResults;
+    exports.ɵfa = reducer$e;
+    exports.ɵfi = RoutingService;
     exports.ɵa = UrlMatcherFactoryService;
     exports.ɵk = UrlParsingService;
     exports.ɵh = effects$1;
@@ -27145,74 +27350,74 @@
     exports.ɵf = reducerProvider;
     exports.ɵe = reducerToken;
     exports.ɵb = ROUTING_FEATURE;
-    exports.ɵex = defaultSiteContextConfigFactory;
-    exports.ɵfd = SiteContextParamsService;
-    exports.ɵff = SiteContextRoutesHandler;
-    exports.ɵfe = SiteContextUrlSerializer;
-    exports.ɵdh = BaseSiteEffects;
-    exports.ɵdg = CurrenciesEffects;
-    exports.ɵde = effects$3;
-    exports.ɵdf = LanguagesEffects;
-    exports.ɵfc = reducer$5;
-    exports.ɵfb = reducer$4;
-    exports.ɵdb = getReducers$3;
-    exports.ɵdd = reducerProvider$3;
-    exports.ɵdc = reducerToken$3;
-    exports.ɵfa = reducer$3;
-    exports.ɵez = SiteContextStoreModule;
-    exports.ɵey = siteContextStoreConfigFactory;
-    exports.ɵfh = CmsTicketInterceptor;
-    exports.ɵfg = interceptors$1;
-    exports.ɵcl = EntityFailAction;
-    exports.ɵck = EntityLoadAction;
-    exports.ɵfr = EntityResetAction;
-    exports.ɵcm = EntitySuccessAction;
+    exports.ɵfk = defaultSiteContextConfigFactory;
+    exports.ɵfq = SiteContextParamsService;
+    exports.ɵfs = SiteContextRoutesHandler;
+    exports.ɵfr = SiteContextUrlSerializer;
+    exports.ɵdf = BaseSiteEffects;
+    exports.ɵde = CurrenciesEffects;
+    exports.ɵdc = effects$3;
+    exports.ɵdd = LanguagesEffects;
+    exports.ɵfp = reducer$5;
+    exports.ɵfo = reducer$4;
+    exports.ɵcz = getReducers$3;
+    exports.ɵdb = reducerProvider$3;
+    exports.ɵda = reducerToken$3;
+    exports.ɵfn = reducer$3;
+    exports.ɵfm = SiteContextStoreModule;
+    exports.ɵfl = siteContextStoreConfigFactory;
+    exports.ɵfu = CmsTicketInterceptor;
+    exports.ɵft = interceptors$2;
+    exports.ɵcj = EntityFailAction;
+    exports.ɵci = EntityLoadAction;
+    exports.ɵge = EntityResetAction;
+    exports.ɵck = EntitySuccessAction;
     exports.ɵn = stateMetaReducers;
     exports.ɵo = getStorageSyncReducer;
     exports.ɵp = getTransferStateReducer;
-    exports.ɵfj = defaultStoreFinderConfig;
-    exports.ɵfp = FindStoresEffect;
-    exports.ɵfo = effects$9;
-    exports.ɵfq = ViewAllStoresEffect;
-    exports.ɵfl = getReducers$a;
-    exports.ɵfn = reducerProvider$a;
-    exports.ɵfm = reducerToken$a;
-    exports.ɵfi = getStoreFinderState;
-    exports.ɵfk = StoreFinderStoreModule;
-    exports.ɵfu = BillingCountriesEffect;
-    exports.ɵgg = ClearMiscsDataEffect;
-    exports.ɵfv = DeliveryCountriesEffects;
-    exports.ɵgh = ForgotPasswordEffects;
-    exports.ɵft = effects$8;
-    exports.ɵfw = OrderDetailsEffect;
-    exports.ɵfx = UserPaymentMethodsEffects;
-    exports.ɵfy = RegionsEffects;
-    exports.ɵfz = ResetPasswordEffects;
-    exports.ɵga = TitlesEffects;
-    exports.ɵgi = UpdateEmailEffects;
-    exports.ɵgj = UpdatePasswordEffects;
-    exports.ɵgb = UserAddressesEffects;
-    exports.ɵgc = UserConsentsEffect;
-    exports.ɵgd = UserDetailsEffects;
-    exports.ɵge = UserOrdersEffect;
-    exports.ɵgf = UserRegisterEffects;
-    exports.ɵgm = reducer$f;
-    exports.ɵgr = reducer$g;
-    exports.ɵdv = clearUserState;
-    exports.ɵds = getReducers$7;
-    exports.ɵdw = metaReducers$5;
-    exports.ɵdu = reducerProvider$7;
-    exports.ɵdt = reducerToken$7;
-    exports.ɵgq = reducer$h;
-    exports.ɵgo = reducer$i;
-    exports.ɵgt = reducer$j;
-    exports.ɵgu = reducer$k;
-    exports.ɵgs = reducer$l;
-    exports.ɵgl = reducer$m;
-    exports.ɵgn = reducer$n;
-    exports.ɵgk = reducer$o;
-    exports.ɵgp = reducer$p;
-    exports.ɵfs = UserStoreModule;
+    exports.ɵfw = defaultStoreFinderConfig;
+    exports.ɵgc = FindStoresEffect;
+    exports.ɵgb = effects$a;
+    exports.ɵgd = ViewAllStoresEffect;
+    exports.ɵfy = getReducers$b;
+    exports.ɵga = reducerProvider$b;
+    exports.ɵfz = reducerToken$b;
+    exports.ɵfv = getStoreFinderState;
+    exports.ɵfx = StoreFinderStoreModule;
+    exports.ɵgh = BillingCountriesEffect;
+    exports.ɵgt = ClearMiscsDataEffect;
+    exports.ɵgi = DeliveryCountriesEffects;
+    exports.ɵgu = ForgotPasswordEffects;
+    exports.ɵgg = effects$8;
+    exports.ɵgj = OrderDetailsEffect;
+    exports.ɵgk = UserPaymentMethodsEffects;
+    exports.ɵgl = RegionsEffects;
+    exports.ɵgm = ResetPasswordEffects;
+    exports.ɵgn = TitlesEffects;
+    exports.ɵgv = UpdateEmailEffects;
+    exports.ɵgw = UpdatePasswordEffects;
+    exports.ɵgo = UserAddressesEffects;
+    exports.ɵgp = UserConsentsEffect;
+    exports.ɵgq = UserDetailsEffects;
+    exports.ɵgr = UserOrdersEffect;
+    exports.ɵgs = UserRegisterEffects;
+    exports.ɵgz = reducer$f;
+    exports.ɵhe = reducer$g;
+    exports.ɵdt = clearUserState;
+    exports.ɵdq = getReducers$7;
+    exports.ɵdu = metaReducers$5;
+    exports.ɵds = reducerProvider$7;
+    exports.ɵdr = reducerToken$7;
+    exports.ɵhd = reducer$h;
+    exports.ɵhb = reducer$i;
+    exports.ɵhg = reducer$j;
+    exports.ɵhh = reducer$k;
+    exports.ɵhf = reducer$l;
+    exports.ɵgy = reducer$m;
+    exports.ɵha = reducer$n;
+    exports.ɵgx = reducer$o;
+    exports.ɵhc = reducer$p;
+    exports.ɵgf = UserStoreModule;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

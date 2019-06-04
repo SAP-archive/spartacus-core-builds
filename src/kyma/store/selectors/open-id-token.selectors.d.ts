@@ -1,0 +1,9 @@
+import { MemoizedSelector } from '@ngrx/store';
+import { LoaderState } from '../../../state/utils/loader/loader-state';
+import { OpenIdToken } from '../../models/kyma-token-types.model';
+import { StateWithKyma } from '../kyma-state';
+export declare const getOpenIdTokenState: MemoizedSelector<StateWithKyma, LoaderState<OpenIdToken>>;
+export declare const getOpenIdTokenValue: MemoizedSelector<StateWithKyma, OpenIdToken>;
+export declare const getOpenIdTokenLoading: MemoizedSelector<StateWithKyma, boolean>;
+export declare const getOpenIdTokenSuccess: MemoizedSelector<StateWithKyma, boolean>;
+export declare const getOpenIdTokenError: MemoizedSelector<StateWithKyma, boolean>;

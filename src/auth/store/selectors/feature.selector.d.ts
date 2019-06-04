@@ -1,3 +1,3 @@
 import { MemoizedSelector } from '@ngrx/store';
-import { AuthState } from '../auth-state';
-export declare const getAuthState: MemoizedSelector<any, AuthState>;
+import { AuthState, StateWithAuth } from '../auth-state';
+export declare const getAuthState: MemoizedSelector<StateWithAuth, AuthState>;
