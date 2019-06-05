@@ -18320,53 +18320,63 @@
          * @return {?}
          */
         function (request, response) {
+            var _this = this;
             if (response.url.includes(OAUTH_ENDPOINT$3) &&
                 response.error.error === 'invalid_grant' &&
                 request.body.get('grant_type') === 'password') {
                 this.globalMessageService.add({
                     key: 'httpHandlers.badRequestPleaseLoginAgain',
-                    params: { errorMessage: this.getErrorMessage(response) },
+                    params: {
+                        errorMessage: this.getErrorMessage(response, 0),
+                    },
                 }, GlobalMessageType.MSG_TYPE_ERROR);
                 this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }
-            else if (response.error.errors[0].type === 'PasswordMismatchError') {
-                // uses en translation error message instead of backend exception error
-                // @todo: this condition could be removed if backend gives better message
-                this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
-                // text: customError.customError.passwordMismatch,
-            }
-            else if (response.error.errors[0].subjectType === 'cart' &&
-                response.error.errors[0].reason === 'notFound') {
-                /** @type {?} */
-                var textObj = { key: 'httpHandlers.cartNotFound' };
-                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
-            }
             else {
-                // this is currently showing up in case we have a page not found. It should be a 404.
-                // see https://jira.hybris.com/browse/CMSX-8516
-                /** @type {?} */
-                var errorMessage = this.getErrorMessage(response);
-                if (errorMessage) {
-                    this.globalMessageService.add({ raw: errorMessage }, GlobalMessageType.MSG_TYPE_ERROR);
-                }
+                response.error.errors.forEach((/**
+                 * @param {?} error
+                 * @param {?} index
+                 * @return {?}
+                 */
+                function (error, index) {
+                    /** @type {?} */
+                    var errorMessage;
+                    if (error.type === 'PasswordMismatchError') {
+                        // uses en translation error message instead of backend exception error
+                        // @todo: this condition could be removed if backend gives better message
+                        errorMessage = { key: 'httpHandlers.badRequestOldPasswordIncorrect' };
+                    }
+                    else if (error.subjectType === 'cart' &&
+                        error.reason === 'notFound') {
+                        errorMessage = { key: 'httpHandlers.cartNotFound' };
+                    }
+                    else {
+                        // this is currently showing up in case we have a page not found. It should be a 404.
+                        // see https://jira.hybris.com/browse/CMSX-8516
+                        errorMessage = { raw: _this.getErrorMessage(response, index) };
+                    }
+                    _this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
+                }));
             }
         };
         /**
          * @protected
          * @param {?} resp
+         * @param {?} index
          * @return {?}
          */
         BadRequestHandler.prototype.getErrorMessage = /**
          * @protected
          * @param {?} resp
+         * @param {?} index
          * @return {?}
          */
-        function (resp) {
+        function (resp, index) {
             /** @type {?} */
             var errMsg = resp.message;
             if (resp.error) {
                 if (resp.error.errors && resp.error.errors instanceof Array) {
-                    errMsg = resp.error.errors[0].message;
+                    errMsg = resp.error.errors[index].message;
                 }
                 else if (resp.error.error_description) {
                     errMsg = resp.error.error_description;
