@@ -2,12 +2,12 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { GlobalMessageService } from '../../../global-message/index';
 import { UserAddressConnector } from '../../connectors/address/user-address.connector';
-import { UserService } from '../../facade/index';
+import { UserAddressService } from '../../facade/user-address.service';
 import * as fromUserAddressesAction from '../actions/user-addresses.action';
 export declare class UserAddressesEffects {
     private actions$;
     private userAddressConnector;
-    private userService;
+    private userAddressService;
     private messageService;
     loadUserAddresses$: Observable<fromUserAddressesAction.UserAddressesAction>;
     addUserAddress$: Observable<fromUserAddressesAction.UserAddressesAction>;
@@ -25,7 +25,7 @@ export declare class UserAddressesEffects {
      *  Reload addresses and notify about delete success
      */
     showGlobalMessageOnDeleteSuccess$: Observable<never>;
-    constructor(actions$: Actions, userAddressConnector: UserAddressConnector, userService: UserService, messageService: GlobalMessageService);
+    constructor(actions$: Actions, userAddressConnector: UserAddressConnector, userAddressService: UserAddressService, messageService: GlobalMessageService);
     /**
      * Show global confirmation message with provided text
      */

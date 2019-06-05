@@ -16426,344 +16426,6 @@
             this.store.dispatch(new RemoveUserReset());
         };
         /**
-         * Returns an order's detail
-         */
-        /**
-         * Returns an order's detail
-         * @return {?}
-         */
-        UserService.prototype.getOrderDetails = /**
-         * Returns an order's detail
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getOrderDetails));
-        };
-        /**
-         * Retrieves order's details
-         *
-         * @param orderCode an order code
-         */
-        /**
-         * Retrieves order's details
-         *
-         * @param {?} orderCode an order code
-         * @return {?}
-         */
-        UserService.prototype.loadOrderDetails = /**
-         * Retrieves order's details
-         *
-         * @param {?} orderCode an order code
-         * @return {?}
-         */
-        function (orderCode) {
-            this.store.dispatch(new LoadOrderDetails({
-                userId: USERID_CURRENT,
-                orderCode: orderCode,
-            }));
-        };
-        /**
-         * Clears order's details
-         */
-        /**
-         * Clears order's details
-         * @return {?}
-         */
-        UserService.prototype.clearOrderDetails = /**
-         * Clears order's details
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new ClearOrderDetails());
-        };
-        /**
-         * Returns order history list
-         */
-        /**
-         * Returns order history list
-         * @param {?} pageSize
-         * @return {?}
-         */
-        UserService.prototype.getOrderHistoryList = /**
-         * Returns order history list
-         * @param {?} pageSize
-         * @return {?}
-         */
-        function (pageSize) {
-            var _this = this;
-            return this.store.pipe(store.select(getOrdersState), operators.tap((/**
-             * @param {?} orderListState
-             * @return {?}
-             */
-            function (orderListState) {
-                /** @type {?} */
-                var attemptedLoad = orderListState.loading ||
-                    orderListState.success ||
-                    orderListState.error;
-                if (!attemptedLoad) {
-                    _this.loadOrderList(pageSize);
-                }
-            })), operators.map((/**
-             * @param {?} orderListState
-             * @return {?}
-             */
-            function (orderListState) { return orderListState.value; })));
-        };
-        /**
-         * Returns a loaded flag for order history list
-         */
-        /**
-         * Returns a loaded flag for order history list
-         * @return {?}
-         */
-        UserService.prototype.getOrderHistoryListLoaded = /**
-         * Returns a loaded flag for order history list
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getOrdersLoaded));
-        };
-        /**
-         * Loads all user's payment methods.
-         */
-        /**
-         * Loads all user's payment methods.
-         * @return {?}
-         */
-        UserService.prototype.loadPaymentMethods = /**
-         * Loads all user's payment methods.
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new LoadUserPaymentMethods(USERID_CURRENT));
-        };
-        /**
-         * Returns all user's payment methods
-         */
-        /**
-         * Returns all user's payment methods
-         * @return {?}
-         */
-        UserService.prototype.getPaymentMethods = /**
-         * Returns all user's payment methods
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getPaymentMethods));
-        };
-        /**
-         * Returns a loading flag for payment methods
-         */
-        /**
-         * Returns a loading flag for payment methods
-         * @return {?}
-         */
-        UserService.prototype.getPaymentMethodsLoading = /**
-         * Returns a loading flag for payment methods
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getPaymentMethodsLoading));
-        };
-        /**
-         * Sets the payment as a default one
-         * @param paymentMethodId a payment method ID
-         */
-        /**
-         * Sets the payment as a default one
-         * @param {?} paymentMethodId a payment method ID
-         * @return {?}
-         */
-        UserService.prototype.setPaymentMethodAsDefault = /**
-         * Sets the payment as a default one
-         * @param {?} paymentMethodId a payment method ID
-         * @return {?}
-         */
-        function (paymentMethodId) {
-            this.store.dispatch(new SetDefaultUserPaymentMethod({
-                userId: USERID_CURRENT,
-                paymentMethodId: paymentMethodId,
-            }));
-        };
-        /**
-         * Deletes the payment method
-         *
-         * @param paymentMethodId a payment method ID
-         */
-        /**
-         * Deletes the payment method
-         *
-         * @param {?} paymentMethodId a payment method ID
-         * @return {?}
-         */
-        UserService.prototype.deletePaymentMethod = /**
-         * Deletes the payment method
-         *
-         * @param {?} paymentMethodId a payment method ID
-         * @return {?}
-         */
-        function (paymentMethodId) {
-            this.store.dispatch(new DeleteUserPaymentMethod({
-                userId: USERID_CURRENT,
-                paymentMethodId: paymentMethodId,
-            }));
-        };
-        /**
-         * Retrieves an order list
-         * @param pageSize page size
-         * @param currentPage current page
-         * @param sort sort
-         */
-        /**
-         * Retrieves an order list
-         * @param {?} pageSize page size
-         * @param {?=} currentPage current page
-         * @param {?=} sort sort
-         * @return {?}
-         */
-        UserService.prototype.loadOrderList = /**
-         * Retrieves an order list
-         * @param {?} pageSize page size
-         * @param {?=} currentPage current page
-         * @param {?=} sort sort
-         * @return {?}
-         */
-        function (pageSize, currentPage, sort) {
-            this.store.dispatch(new LoadUserOrders({
-                userId: USERID_CURRENT,
-                pageSize: pageSize,
-                currentPage: currentPage,
-                sort: sort,
-            }));
-        };
-        /**
-         * Retrieves user's addresses
-         */
-        /**
-         * Retrieves user's addresses
-         * @return {?}
-         */
-        UserService.prototype.loadAddresses = /**
-         * Retrieves user's addresses
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new LoadUserAddresses(USERID_CURRENT));
-        };
-        /**
-         * Adds user address
-         * @param address a user address
-         */
-        /**
-         * Adds user address
-         * @param {?} address a user address
-         * @return {?}
-         */
-        UserService.prototype.addUserAddress = /**
-         * Adds user address
-         * @param {?} address a user address
-         * @return {?}
-         */
-        function (address) {
-            this.store.dispatch(new AddUserAddress({
-                userId: USERID_CURRENT,
-                address: address,
-            }));
-        };
-        /**
-         * Sets user address as default
-         * @param addressId a user address ID
-         */
-        /**
-         * Sets user address as default
-         * @param {?} addressId a user address ID
-         * @return {?}
-         */
-        UserService.prototype.setAddressAsDefault = /**
-         * Sets user address as default
-         * @param {?} addressId a user address ID
-         * @return {?}
-         */
-        function (addressId) {
-            this.store.dispatch(new UpdateUserAddress({
-                userId: USERID_CURRENT,
-                addressId: addressId,
-                address: { defaultAddress: true },
-            }));
-        };
-        /**
-         * Updates existing user address
-         * @param addressId a user address ID
-         * @param address a user address
-         */
-        /**
-         * Updates existing user address
-         * @param {?} addressId a user address ID
-         * @param {?} address a user address
-         * @return {?}
-         */
-        UserService.prototype.updateUserAddress = /**
-         * Updates existing user address
-         * @param {?} addressId a user address ID
-         * @param {?} address a user address
-         * @return {?}
-         */
-        function (addressId, address) {
-            this.store.dispatch(new UpdateUserAddress({
-                userId: USERID_CURRENT,
-                addressId: addressId,
-                address: address,
-            }));
-        };
-        /**
-         * Deletes existing user address
-         * @param addressId a user address ID
-         */
-        /**
-         * Deletes existing user address
-         * @param {?} addressId a user address ID
-         * @return {?}
-         */
-        UserService.prototype.deleteUserAddress = /**
-         * Deletes existing user address
-         * @param {?} addressId a user address ID
-         * @return {?}
-         */
-        function (addressId) {
-            this.store.dispatch(new DeleteUserAddress({
-                userId: USERID_CURRENT,
-                addressId: addressId,
-            }));
-        };
-        /**
-         * Returns addresses
-         */
-        /**
-         * Returns addresses
-         * @return {?}
-         */
-        UserService.prototype.getAddresses = /**
-         * Returns addresses
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getAddresses));
-        };
-        /**
-         * Returns a loading flag for addresses
-         */
-        /**
-         * Returns a loading flag for addresses
-         * @return {?}
-         */
-        UserService.prototype.getAddressesLoading = /**
-         * Returns a loading flag for addresses
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getAddressesLoading));
-        };
-        /**
          * Returns titles
          */
         /**
@@ -16790,163 +16452,6 @@
          */
         function () {
             this.store.dispatch(new LoadTitles());
-        };
-        /**
-         * Retrieves delivery countries
-         */
-        /**
-         * Retrieves delivery countries
-         * @return {?}
-         */
-        UserService.prototype.loadDeliveryCountries = /**
-         * Retrieves delivery countries
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new LoadDeliveryCountries());
-        };
-        /**
-         * Returns all delivery countries
-         */
-        /**
-         * Returns all delivery countries
-         * @return {?}
-         */
-        UserService.prototype.getDeliveryCountries = /**
-         * Returns all delivery countries
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getAllDeliveryCountries));
-        };
-        /**
-         * Returns a country based on the provided `isocode`
-         * @param isocode an isocode for a country
-         */
-        /**
-         * Returns a country based on the provided `isocode`
-         * @param {?} isocode an isocode for a country
-         * @return {?}
-         */
-        UserService.prototype.getCountry = /**
-         * Returns a country based on the provided `isocode`
-         * @param {?} isocode an isocode for a country
-         * @return {?}
-         */
-        function (isocode) {
-            return this.store.pipe(store.select(countrySelectorFactory(isocode)));
-        };
-        /**
-         * Retrieves regions for specified country by `countryIsoCode`
-         * @param countryIsoCode
-         */
-        /**
-         * Retrieves regions for specified country by `countryIsoCode`
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        UserService.prototype.loadRegions = /**
-         * Retrieves regions for specified country by `countryIsoCode`
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        function (countryIsoCode) {
-            this.store.dispatch(new LoadRegions(countryIsoCode));
-        };
-        /**
-         * Clear regions in store - useful when changing country
-         */
-        /**
-         * Clear regions in store - useful when changing country
-         * @return {?}
-         */
-        UserService.prototype.clearRegions = /**
-         * Clear regions in store - useful when changing country
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new ClearRegions());
-        };
-        /**
-         * Returns all regions
-         */
-        /**
-         * Returns all regions
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        UserService.prototype.getRegions = /**
-         * Returns all regions
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        function (countryIsoCode) {
-            var _this = this;
-            return rxjs.combineLatest(this.store.pipe(store.select(getAllRegions)), this.store.pipe(store.select(getRegionsCountry)), this.store.pipe(store.select(getRegionsLoading)), this.store.pipe(store.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
-            operators.map((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            function (_a) {
-                var _b = __read(_a, 4), regions = _b[0], country = _b[1], loading = _b[2], loaded = _b[3];
-                if (!countryIsoCode) {
-                    _this.clearRegions();
-                    return [];
-                }
-                else if (loading && !loaded) {
-                    // don't interrupt loading
-                    return [];
-                }
-                else if (!loading && countryIsoCode !== country) {
-                    // country changed - clear store and load new regions
-                    _this.clearRegions();
-                    _this.loadRegions(countryIsoCode);
-                    return [];
-                }
-                return regions;
-            })));
-        };
-        /**
-         * Returns all billing countries
-         */
-        /**
-         * Returns all billing countries
-         * @return {?}
-         */
-        UserService.prototype.getAllBillingCountries = /**
-         * Returns all billing countries
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getAllBillingCountries));
-        };
-        /**
-         * Retrieves billing countries
-         */
-        /**
-         * Retrieves billing countries
-         * @return {?}
-         */
-        UserService.prototype.loadBillingCountries = /**
-         * Retrieves billing countries
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new LoadBillingCountries());
-        };
-        /**
-         * Cleaning order list
-         */
-        /**
-         * Cleaning order list
-         * @return {?}
-         */
-        UserService.prototype.clearOrderList = /**
-         * Cleaning order list
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new ClearUserOrders());
         };
         /**
          * Return whether user's password is successfully reset
@@ -17232,6 +16737,287 @@
         function () {
             this.store.dispatch(new UpdatePasswordReset());
         };
+        UserService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        UserService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        return UserService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserAddressService = /** @class */ (function () {
+        function UserAddressService(store) {
+            this.store = store;
+        }
+        /**
+         * Retrieves user's addresses
+         */
+        /**
+         * Retrieves user's addresses
+         * @return {?}
+         */
+        UserAddressService.prototype.loadAddresses = /**
+         * Retrieves user's addresses
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LoadUserAddresses(USERID_CURRENT));
+        };
+        /**
+         * Adds user address
+         * @param address a user address
+         */
+        /**
+         * Adds user address
+         * @param {?} address a user address
+         * @return {?}
+         */
+        UserAddressService.prototype.addUserAddress = /**
+         * Adds user address
+         * @param {?} address a user address
+         * @return {?}
+         */
+        function (address) {
+            this.store.dispatch(new AddUserAddress({
+                userId: USERID_CURRENT,
+                address: address,
+            }));
+        };
+        /**
+         * Sets user address as default
+         * @param addressId a user address ID
+         */
+        /**
+         * Sets user address as default
+         * @param {?} addressId a user address ID
+         * @return {?}
+         */
+        UserAddressService.prototype.setAddressAsDefault = /**
+         * Sets user address as default
+         * @param {?} addressId a user address ID
+         * @return {?}
+         */
+        function (addressId) {
+            this.store.dispatch(new UpdateUserAddress({
+                userId: USERID_CURRENT,
+                addressId: addressId,
+                address: { defaultAddress: true },
+            }));
+        };
+        /**
+         * Updates existing user address
+         * @param addressId a user address ID
+         * @param address a user address
+         */
+        /**
+         * Updates existing user address
+         * @param {?} addressId a user address ID
+         * @param {?} address a user address
+         * @return {?}
+         */
+        UserAddressService.prototype.updateUserAddress = /**
+         * Updates existing user address
+         * @param {?} addressId a user address ID
+         * @param {?} address a user address
+         * @return {?}
+         */
+        function (addressId, address) {
+            this.store.dispatch(new UpdateUserAddress({
+                userId: USERID_CURRENT,
+                addressId: addressId,
+                address: address,
+            }));
+        };
+        /**
+         * Deletes existing user address
+         * @param addressId a user address ID
+         */
+        /**
+         * Deletes existing user address
+         * @param {?} addressId a user address ID
+         * @return {?}
+         */
+        UserAddressService.prototype.deleteUserAddress = /**
+         * Deletes existing user address
+         * @param {?} addressId a user address ID
+         * @return {?}
+         */
+        function (addressId) {
+            this.store.dispatch(new DeleteUserAddress({
+                userId: USERID_CURRENT,
+                addressId: addressId,
+            }));
+        };
+        /**
+         * Returns addresses
+         */
+        /**
+         * Returns addresses
+         * @return {?}
+         */
+        UserAddressService.prototype.getAddresses = /**
+         * Returns addresses
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAddresses));
+        };
+        /**
+         * Returns a loading flag for addresses
+         */
+        /**
+         * Returns a loading flag for addresses
+         * @return {?}
+         */
+        UserAddressService.prototype.getAddressesLoading = /**
+         * Returns a loading flag for addresses
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAddressesLoading));
+        };
+        /**
+         * Retrieves delivery countries
+         */
+        /**
+         * Retrieves delivery countries
+         * @return {?}
+         */
+        UserAddressService.prototype.loadDeliveryCountries = /**
+         * Retrieves delivery countries
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LoadDeliveryCountries());
+        };
+        /**
+         * Returns all delivery countries
+         */
+        /**
+         * Returns all delivery countries
+         * @return {?}
+         */
+        UserAddressService.prototype.getDeliveryCountries = /**
+         * Returns all delivery countries
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAllDeliveryCountries));
+        };
+        /**
+         * Returns a country based on the provided `isocode`
+         * @param isocode an isocode for a country
+         */
+        /**
+         * Returns a country based on the provided `isocode`
+         * @param {?} isocode an isocode for a country
+         * @return {?}
+         */
+        UserAddressService.prototype.getCountry = /**
+         * Returns a country based on the provided `isocode`
+         * @param {?} isocode an isocode for a country
+         * @return {?}
+         */
+        function (isocode) {
+            return this.store.pipe(store.select(countrySelectorFactory(isocode)));
+        };
+        /**
+         * Retrieves regions for specified country by `countryIsoCode`
+         * @param countryIsoCode
+         */
+        /**
+         * Retrieves regions for specified country by `countryIsoCode`
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        UserAddressService.prototype.loadRegions = /**
+         * Retrieves regions for specified country by `countryIsoCode`
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        function (countryIsoCode) {
+            this.store.dispatch(new LoadRegions(countryIsoCode));
+        };
+        /**
+         * Clear regions in store - useful when changing country
+         */
+        /**
+         * Clear regions in store - useful when changing country
+         * @return {?}
+         */
+        UserAddressService.prototype.clearRegions = /**
+         * Clear regions in store - useful when changing country
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearRegions());
+        };
+        /**
+         * Returns all regions
+         */
+        /**
+         * Returns all regions
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        UserAddressService.prototype.getRegions = /**
+         * Returns all regions
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        function (countryIsoCode) {
+            var _this = this;
+            return rxjs.combineLatest(this.store.pipe(store.select(getAllRegions)), this.store.pipe(store.select(getRegionsCountry)), this.store.pipe(store.select(getRegionsLoading)), this.store.pipe(store.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
+            operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 4), regions = _b[0], country = _b[1], loading = _b[2], loaded = _b[3];
+                if (!countryIsoCode) {
+                    _this.clearRegions();
+                    return [];
+                }
+                else if (loading && !loaded) {
+                    // don't interrupt loading
+                    return [];
+                }
+                else if (!loading && countryIsoCode !== country) {
+                    // country changed - clear store and load new regions
+                    _this.clearRegions();
+                    _this.loadRegions(countryIsoCode);
+                    return [];
+                }
+                return regions;
+            })));
+        };
+        UserAddressService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserAddressService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ UserAddressService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(core.ɵɵinject(store.Store)); }, token: UserAddressService, providedIn: "root" });
+        return UserAddressService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserConsentService = /** @class */ (function () {
+        function UserConsentService(store) {
+            this.store = store;
+        }
         /**
          * Retrieves all consents.
          */
@@ -17239,7 +17025,7 @@
          * Retrieves all consents.
          * @return {?}
          */
-        UserService.prototype.loadConsents = /**
+        UserConsentService.prototype.loadConsents = /**
          * Retrieves all consents.
          * @return {?}
          */
@@ -17253,7 +17039,7 @@
          * Returns all consents
          * @return {?}
          */
-        UserService.prototype.getConsents = /**
+        UserConsentService.prototype.getConsents = /**
          * Returns all consents
          * @return {?}
          */
@@ -17267,7 +17053,7 @@
          * Returns the consents loading flag
          * @return {?}
          */
-        UserService.prototype.getConsentsResultLoading = /**
+        UserConsentService.prototype.getConsentsResultLoading = /**
          * Returns the consents loading flag
          * @return {?}
          */
@@ -17281,7 +17067,7 @@
          * Returns the consents success flag
          * @return {?}
          */
-        UserService.prototype.getConsentsResultSuccess = /**
+        UserConsentService.prototype.getConsentsResultSuccess = /**
          * Returns the consents success flag
          * @return {?}
          */
@@ -17295,7 +17081,7 @@
          * Returns the consents error flag
          * @return {?}
          */
-        UserService.prototype.getConsentsResultError = /**
+        UserConsentService.prototype.getConsentsResultError = /**
          * Returns the consents error flag
          * @return {?}
          */
@@ -17309,7 +17095,7 @@
          * Resets the processing state for consent retrieval
          * @return {?}
          */
-        UserService.prototype.resetConsentsProcessState = /**
+        UserConsentService.prototype.resetConsentsProcessState = /**
          * Resets the processing state for consent retrieval
          * @return {?}
          */
@@ -17327,7 +17113,7 @@
          * @param {?} consentTemplateVersion a template version for which to give a consent
          * @return {?}
          */
-        UserService.prototype.giveConsent = /**
+        UserConsentService.prototype.giveConsent = /**
          * Give consent for specified consent template ID and version.
          * @param {?} consentTemplateId a template ID for which to give a consent
          * @param {?} consentTemplateVersion a template version for which to give a consent
@@ -17347,7 +17133,7 @@
          * Returns the give consent process loading flag
          * @return {?}
          */
-        UserService.prototype.getGiveConsentResultLoading = /**
+        UserConsentService.prototype.getGiveConsentResultLoading = /**
          * Returns the give consent process loading flag
          * @return {?}
          */
@@ -17361,7 +17147,7 @@
          * Returns the give consent process success flag
          * @return {?}
          */
-        UserService.prototype.getGiveConsentResultSuccess = /**
+        UserConsentService.prototype.getGiveConsentResultSuccess = /**
          * Returns the give consent process success flag
          * @return {?}
          */
@@ -17375,7 +17161,7 @@
          * Returns the give consent process error flag
          * @return {?}
          */
-        UserService.prototype.getGiveConsentResultError = /**
+        UserConsentService.prototype.getGiveConsentResultError = /**
          * Returns the give consent process error flag
          * @return {?}
          */
@@ -17389,7 +17175,7 @@
          * Resents the give consent process flags
          * @return {?}
          */
-        UserService.prototype.resetGiveConsentProcessState = /**
+        UserConsentService.prototype.resetGiveConsentProcessState = /**
          * Resents the give consent process flags
          * @return {?}
          */
@@ -17405,7 +17191,7 @@
          * @param {?} consentCode for which to withdraw the consent
          * @return {?}
          */
-        UserService.prototype.withdrawConsent = /**
+        UserConsentService.prototype.withdrawConsent = /**
          * Withdraw consent for the given `consentCode`
          * @param {?} consentCode for which to withdraw the consent
          * @return {?}
@@ -17420,7 +17206,7 @@
          * Returns the withdraw consent process loading flag
          * @return {?}
          */
-        UserService.prototype.getWithdrawConsentResultLoading = /**
+        UserConsentService.prototype.getWithdrawConsentResultLoading = /**
          * Returns the withdraw consent process loading flag
          * @return {?}
          */
@@ -17434,7 +17220,7 @@
          * Returns the withdraw consent process success flag
          * @return {?}
          */
-        UserService.prototype.getWithdrawConsentResultSuccess = /**
+        UserConsentService.prototype.getWithdrawConsentResultSuccess = /**
          * Returns the withdraw consent process success flag
          * @return {?}
          */
@@ -17448,7 +17234,7 @@
          * Returns the withdraw consent process error flag
          * @return {?}
          */
-        UserService.prototype.getWithdrawConsentResultError = /**
+        UserConsentService.prototype.getWithdrawConsentResultError = /**
          * Returns the withdraw consent process error flag
          * @return {?}
          */
@@ -17462,21 +17248,319 @@
          * Resets the process flags for withdraw consent
          * @return {?}
          */
-        UserService.prototype.resetWithdrawConsentProcessState = /**
+        UserConsentService.prototype.resetWithdrawConsentProcessState = /**
          * Resets the process flags for withdraw consent
          * @return {?}
          */
         function () {
             return this.store.dispatch(new ResetWithdrawUserConsentProcess());
         };
-        UserService.decorators = [
-            { type: core.Injectable }
+        UserConsentService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
         ];
         /** @nocollapse */
-        UserService.ctorParameters = function () { return [
+        UserConsentService.ctorParameters = function () { return [
             { type: store.Store }
         ]; };
-        return UserService;
+        /** @nocollapse */ UserConsentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(core.ɵɵinject(store.Store)); }, token: UserConsentService, providedIn: "root" });
+        return UserConsentService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserPaymentService = /** @class */ (function () {
+        function UserPaymentService(store) {
+            this.store = store;
+        }
+        /**
+         * Loads all user's payment methods.
+         */
+        /**
+         * Loads all user's payment methods.
+         * @return {?}
+         */
+        UserPaymentService.prototype.loadPaymentMethods = /**
+         * Loads all user's payment methods.
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LoadUserPaymentMethods(USERID_CURRENT));
+        };
+        /**
+         * Returns all user's payment methods
+         */
+        /**
+         * Returns all user's payment methods
+         * @return {?}
+         */
+        UserPaymentService.prototype.getPaymentMethods = /**
+         * Returns all user's payment methods
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getPaymentMethods));
+        };
+        /**
+         * Returns a loading flag for payment methods
+         */
+        /**
+         * Returns a loading flag for payment methods
+         * @return {?}
+         */
+        UserPaymentService.prototype.getPaymentMethodsLoading = /**
+         * Returns a loading flag for payment methods
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getPaymentMethodsLoading));
+        };
+        /**
+         * Sets the payment as a default one
+         * @param paymentMethodId a payment method ID
+         */
+        /**
+         * Sets the payment as a default one
+         * @param {?} paymentMethodId a payment method ID
+         * @return {?}
+         */
+        UserPaymentService.prototype.setPaymentMethodAsDefault = /**
+         * Sets the payment as a default one
+         * @param {?} paymentMethodId a payment method ID
+         * @return {?}
+         */
+        function (paymentMethodId) {
+            this.store.dispatch(new SetDefaultUserPaymentMethod({
+                userId: USERID_CURRENT,
+                paymentMethodId: paymentMethodId,
+            }));
+        };
+        /**
+         * Deletes the payment method
+         *
+         * @param paymentMethodId a payment method ID
+         */
+        /**
+         * Deletes the payment method
+         *
+         * @param {?} paymentMethodId a payment method ID
+         * @return {?}
+         */
+        UserPaymentService.prototype.deletePaymentMethod = /**
+         * Deletes the payment method
+         *
+         * @param {?} paymentMethodId a payment method ID
+         * @return {?}
+         */
+        function (paymentMethodId) {
+            this.store.dispatch(new DeleteUserPaymentMethod({
+                userId: USERID_CURRENT,
+                paymentMethodId: paymentMethodId,
+            }));
+        };
+        /**
+         * Returns all billing countries
+         */
+        /**
+         * Returns all billing countries
+         * @return {?}
+         */
+        UserPaymentService.prototype.getAllBillingCountries = /**
+         * Returns all billing countries
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAllBillingCountries));
+        };
+        /**
+         * Retrieves billing countries
+         */
+        /**
+         * Retrieves billing countries
+         * @return {?}
+         */
+        UserPaymentService.prototype.loadBillingCountries = /**
+         * Retrieves billing countries
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LoadBillingCountries());
+        };
+        UserPaymentService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserPaymentService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ UserPaymentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core.ɵɵinject(store.Store)); }, token: UserPaymentService, providedIn: "root" });
+        return UserPaymentService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserOrderService = /** @class */ (function () {
+        function UserOrderService(store) {
+            this.store = store;
+        }
+        /**
+         * Returns an order's detail
+         */
+        /**
+         * Returns an order's detail
+         * @return {?}
+         */
+        UserOrderService.prototype.getOrderDetails = /**
+         * Returns an order's detail
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getOrderDetails));
+        };
+        /**
+         * Retrieves order's details
+         *
+         * @param orderCode an order code
+         */
+        /**
+         * Retrieves order's details
+         *
+         * @param {?} orderCode an order code
+         * @return {?}
+         */
+        UserOrderService.prototype.loadOrderDetails = /**
+         * Retrieves order's details
+         *
+         * @param {?} orderCode an order code
+         * @return {?}
+         */
+        function (orderCode) {
+            this.store.dispatch(new LoadOrderDetails({
+                userId: USERID_CURRENT,
+                orderCode: orderCode,
+            }));
+        };
+        /**
+         * Clears order's details
+         */
+        /**
+         * Clears order's details
+         * @return {?}
+         */
+        UserOrderService.prototype.clearOrderDetails = /**
+         * Clears order's details
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearOrderDetails());
+        };
+        /**
+         * Returns order history list
+         */
+        /**
+         * Returns order history list
+         * @param {?} pageSize
+         * @return {?}
+         */
+        UserOrderService.prototype.getOrderHistoryList = /**
+         * Returns order history list
+         * @param {?} pageSize
+         * @return {?}
+         */
+        function (pageSize) {
+            var _this = this;
+            return this.store.pipe(store.select(getOrdersState), operators.tap((/**
+             * @param {?} orderListState
+             * @return {?}
+             */
+            function (orderListState) {
+                /** @type {?} */
+                var attemptedLoad = orderListState.loading ||
+                    orderListState.success ||
+                    orderListState.error;
+                if (!attemptedLoad) {
+                    _this.loadOrderList(pageSize);
+                }
+            })), operators.map((/**
+             * @param {?} orderListState
+             * @return {?}
+             */
+            function (orderListState) { return orderListState.value; })));
+        };
+        /**
+         * Returns a loaded flag for order history list
+         */
+        /**
+         * Returns a loaded flag for order history list
+         * @return {?}
+         */
+        UserOrderService.prototype.getOrderHistoryListLoaded = /**
+         * Returns a loaded flag for order history list
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getOrdersLoaded));
+        };
+        /**
+         * Retrieves an order list
+         * @param pageSize page size
+         * @param currentPage current page
+         * @param sort sort
+         */
+        /**
+         * Retrieves an order list
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        UserOrderService.prototype.loadOrderList = /**
+         * Retrieves an order list
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        function (pageSize, currentPage, sort) {
+            this.store.dispatch(new LoadUserOrders({
+                userId: USERID_CURRENT,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+            }));
+        };
+        /**
+         * Cleaning order list
+         */
+        /**
+         * Cleaning order list
+         * @return {?}
+         */
+        UserOrderService.prototype.clearOrderList = /**
+         * Cleaning order list
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearUserOrders());
+        };
+        UserOrderService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserOrderService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ UserOrderService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(core.ɵɵinject(store.Store)); }, token: UserOrderService, providedIn: "root" });
+        return UserOrderService;
     }());
 
     /**
@@ -19416,11 +19500,11 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserAddressesEffects = /** @class */ (function () {
-        function UserAddressesEffects(actions$, userAddressConnector, userService, messageService) {
+        function UserAddressesEffects(actions$, userAddressConnector, userAddressService, messageService) {
             var _this = this;
             this.actions$ = actions$;
             this.userAddressConnector = userAddressConnector;
-            this.userService = userService;
+            this.userAddressService = userAddressService;
             this.messageService = messageService;
             this.loadUserAddresses$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_ADDRESSES), operators.map((/**
              * @param {?} action
@@ -19586,7 +19670,7 @@
          * @return {?}
          */
         function () {
-            this.userService.loadAddresses();
+            this.userAddressService.loadAddresses();
         };
         UserAddressesEffects.decorators = [
             { type: core.Injectable }
@@ -19595,7 +19679,7 @@
         UserAddressesEffects.ctorParameters = function () { return [
             { type: effects$a.Actions },
             { type: UserAddressConnector },
-            { type: UserService },
+            { type: UserAddressService },
             { type: GlobalMessageService }
         ]; };
         __decorate([
@@ -29724,15 +29808,19 @@
     exports.UserAdapter = UserAdapter;
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.UserAddressConnector = UserAddressConnector;
+    exports.UserAddressService = UserAddressService;
     exports.UserConnector = UserConnector;
     exports.UserConsentAdapter = UserConsentAdapter;
     exports.UserConsentConnector = UserConsentConnector;
+    exports.UserConsentService = UserConsentService;
     exports.UserModule = UserModule;
     exports.UserOccModule = UserOccModule;
     exports.UserOrderAdapter = UserOrderAdapter;
     exports.UserOrderConnector = UserOrderConnector;
+    exports.UserOrderService = UserOrderService;
     exports.UserPaymentAdapter = UserPaymentAdapter;
     exports.UserPaymentConnector = UserPaymentConnector;
+    exports.UserPaymentService = UserPaymentService;
     exports.UserService = UserService;
     exports.VERIFY_ADDRESS = VERIFY_ADDRESS;
     exports.VERIFY_ADDRESS_FAIL = VERIFY_ADDRESS_FAIL;
