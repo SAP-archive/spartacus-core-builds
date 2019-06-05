@@ -18271,6 +18271,12 @@ var BadRequestHandler = /** @class */ (function (_super) {
                     error.reason === 'notFound') {
                     errorMessage = { key: 'httpHandlers.cartNotFound' };
                 }
+                else if (response.error.errors[0].type === 'ValidationError') {
+                    // build translation key in case of backend field validation error
+                    errorMessage = {
+                        key: "httpHandlers.validationErrors." + error.reason + "." + error.subject,
+                    };
+                }
                 else {
                     // this is currently showing up in case we have a page not found. It should be a 404.
                     // see https://jira.hybris.com/browse/CMSX-8516
