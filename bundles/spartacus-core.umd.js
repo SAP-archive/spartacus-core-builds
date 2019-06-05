@@ -6368,44 +6368,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @return {?}
-     */
-    function siteContextStoreConfigFactory() {
-        var _a;
-        // if we want to reuse SITE_CONTEXT_FEATURE const in config, we have to use factory instead of plain object
-        /** @type {?} */
-        var config = {
-            state: {
-                ssrTransfer: {
-                    keys: (_a = {}, _a[SITE_CONTEXT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
-                },
-            },
-        };
-        return config;
-    }
-    var SiteContextStoreModule = /** @class */ (function () {
-        function SiteContextStoreModule() {
-        }
-        SiteContextStoreModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            common.CommonModule,
-                            http.HttpClientModule,
-                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
-                            effects$a.EffectsModule.forFeature(effects$2),
-                            ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
-                        ],
-                        providers: [reducerProvider$3],
-                    },] }
-        ];
-        return SiteContextStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -7427,10 +7389,64 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @return {?}
+     */
+    function siteContextStoreConfigFactory() {
+        var _a;
+        // if we want to reuse SITE_CONTEXT_FEATURE const in config, we have to use factory instead of plain object
+        /** @type {?} */
+        var config = {
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[SITE_CONTEXT_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
+        };
+        return config;
+    }
+    var SiteContextStoreModule = /** @class */ (function () {
+        function SiteContextStoreModule() {
+        }
+        SiteContextStoreModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            effects$a.EffectsModule.forFeature(effects$2),
+                            ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
+                        ],
+                        providers: [reducerProvider$3],
+                    },] }
+        ];
+        return SiteContextStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     // @dynamic
     var SiteContextModule = /** @class */ (function () {
         function SiteContextModule() {
         }
+        /**
+         * @return {?}
+         */
+        SiteContextModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: SiteContextModule,
+                providers: __spread([
+                    contextServiceMapProvider
+                ], contextServiceProviders, siteContextParamsProviders, [
+                    { provide: SiteContextConfig, useExisting: Config },
+                ]),
+            };
+        };
         SiteContextModule.decorators = [
             { type: core.NgModule, args: [{
                         imports: [
@@ -7438,11 +7454,6 @@
                             StateModule,
                             SiteContextStoreModule,
                         ],
-                        providers: __spread([
-                            contextServiceMapProvider
-                        ], contextServiceProviders, siteContextParamsProviders, [
-                            { provide: SiteContextConfig, useExisting: Config },
-                        ]),
                     },] }
         ];
         return SiteContextModule;
@@ -12655,40 +12666,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @return {?}
-     */
-    function cmsStoreConfigFactory() {
-        var _a;
-        // if we want to reuse CMS_FEATURE const in config, we have to use factory instead of plain object
-        /** @type {?} */
-        var config = {
-            state: {
-                ssrTransfer: {
-                    keys: (_a = {}, _a[CMS_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
-                },
-            },
-        };
-        return config;
-    }
-    var CmsStoreModule = /** @class */ (function () {
-        function CmsStoreModule() {
-        }
-        CmsStoreModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            common.CommonModule,
-                            http.HttpClientModule,
-                            StateModule,
-                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
-                            effects$a.EffectsModule.forFeature(effects$5),
-                            ConfigModule.withConfigFactory(cmsStoreConfigFactory),
-                        ],
-                        providers: [reducerProvider$5],
-                    },] }
-        ];
-        return CmsStoreModule;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -12825,6 +12802,40 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @return {?}
+     */
+    function cmsStoreConfigFactory() {
+        var _a;
+        // if we want to reuse CMS_FEATURE const in config, we have to use factory instead of plain object
+        /** @type {?} */
+        var config = {
+            state: {
+                ssrTransfer: {
+                    keys: (_a = {}, _a[CMS_FEATURE] = StateTransferType.TRANSFER_STATE, _a),
+                },
+            },
+        };
+        return config;
+    }
+    var CmsStoreModule = /** @class */ (function () {
+        function CmsStoreModule() {
+        }
+        CmsStoreModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            StateModule,
+                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
+                            effects$a.EffectsModule.forFeature(effects$5),
+                            ConfigModule.withConfigFactory(cmsStoreConfigFactory),
+                        ],
+                        providers: [reducerProvider$5],
+                    },] }
+        ];
+        return CmsStoreModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -12835,8 +12846,16 @@
         }
         CmsModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [CmsStoreModule, CmsPageTitleModule],
-                        providers: [CmsService, { provide: CmsStructureConfig, useExisting: Config }],
+                        imports: [
+                            CmsStoreModule,
+                            ConfigModule.withConfig(defaultCmsModuleConfig),
+                            CmsPageTitleModule,
+                        ],
+                        providers: [
+                            CmsService,
+                            { provide: CmsConfig, useExisting: Config },
+                            { provide: CmsStructureConfig, useExisting: Config },
+                        ],
                     },] }
         ];
         return CmsModule;
@@ -21645,6 +21664,15 @@
         var metaTag = meta.getTag("name=\"" + name + "\"");
         return metaTag && metaTag.content;
     }
+    /**
+     * @return {?}
+     */
+    function provideConfigFromMetaTags() {
+        return [
+            provideConfigFactory(occServerConfigFromMetaTagFactory, [platformBrowser.Meta]),
+            provideConfigFactory(mediaServerConfigFromMetaTagFactory, [platformBrowser.Meta]),
+        ];
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -30043,6 +30071,7 @@
     exports.ofLoaderSuccess = ofLoaderSuccess;
     exports.provideConfig = provideConfig;
     exports.provideConfigFactory = provideConfigFactory;
+    exports.provideConfigFromMetaTags = provideConfigFromMetaTags;
     exports.provideConfigValidator = provideConfigValidator;
     exports.resetMeta = resetMeta;
     exports.serviceMapFactory = serviceMapFactory;
@@ -30155,80 +30184,81 @@
     exports.ɵer = OpenIdTokenEffect;
     exports.ɵes = OpenIdAuthenticationTokenService;
     exports.ɵet = defaultKymaConfig;
-    exports.ɵeu = defaultOccProductConfig;
-    exports.ɵev = provideConfigValidator;
-    exports.ɵew = defaultPersonalizationConfig;
-    exports.ɵex = interceptors$1;
-    exports.ɵey = OccPersonalizationIdInterceptor;
-    exports.ɵez = OccPersonalizationTimeInterceptor;
+    exports.ɵeu = provideConfigFactory;
+    exports.ɵev = defaultOccProductConfig;
+    exports.ɵew = provideConfigValidator;
+    exports.ɵex = defaultPersonalizationConfig;
+    exports.ɵey = interceptors$1;
+    exports.ɵez = OccPersonalizationIdInterceptor;
     exports.ɵf = reducerProvider;
-    exports.ɵfa = productStoreConfigFactory;
-    exports.ɵfb = ProductStoreModule;
-    exports.ɵfc = reducer$e;
-    exports.ɵfd = getSearchResults;
-    exports.ɵfe = getAuxSearchResults;
-    exports.ɵff = getProductSuggestions;
-    exports.ɵfg = reducer$d;
-    exports.ɵfh = reducer$c;
-    exports.ɵfi = PageMetaResolver;
-    exports.ɵfj = defaultSiteContextConfigFactory;
-    exports.ɵfk = siteContextStoreConfigFactory;
-    exports.ɵfl = SiteContextStoreModule;
-    exports.ɵfm = reducer$3;
-    exports.ɵfn = reducer$4;
-    exports.ɵfo = reducer$5;
-    exports.ɵfp = SiteContextParamsService;
-    exports.ɵfq = SiteContextUrlSerializer;
-    exports.ɵfr = SiteContextRoutesHandler;
-    exports.ɵfs = interceptors$2;
-    exports.ɵft = CmsTicketInterceptor;
-    exports.ɵfu = getStoreFinderState;
-    exports.ɵfv = defaultStoreFinderConfig;
-    exports.ɵfw = StoreFinderStoreModule;
-    exports.ɵfx = getReducers$b;
-    exports.ɵfy = reducerToken$b;
-    exports.ɵfz = reducerProvider$b;
+    exports.ɵfa = OccPersonalizationTimeInterceptor;
+    exports.ɵfb = productStoreConfigFactory;
+    exports.ɵfc = ProductStoreModule;
+    exports.ɵfd = reducer$e;
+    exports.ɵfe = getSearchResults;
+    exports.ɵff = getAuxSearchResults;
+    exports.ɵfg = getProductSuggestions;
+    exports.ɵfh = reducer$d;
+    exports.ɵfi = reducer$c;
+    exports.ɵfj = PageMetaResolver;
+    exports.ɵfk = defaultSiteContextConfigFactory;
+    exports.ɵfl = siteContextStoreConfigFactory;
+    exports.ɵfm = SiteContextStoreModule;
+    exports.ɵfn = reducer$3;
+    exports.ɵfo = reducer$4;
+    exports.ɵfp = reducer$5;
+    exports.ɵfq = SiteContextParamsService;
+    exports.ɵfr = SiteContextUrlSerializer;
+    exports.ɵfs = SiteContextRoutesHandler;
+    exports.ɵft = interceptors$2;
+    exports.ɵfu = CmsTicketInterceptor;
+    exports.ɵfv = getStoreFinderState;
+    exports.ɵfw = defaultStoreFinderConfig;
+    exports.ɵfx = StoreFinderStoreModule;
+    exports.ɵfy = getReducers$b;
+    exports.ɵfz = reducerToken$b;
     exports.ɵg = CustomSerializer;
-    exports.ɵga = effects$9;
-    exports.ɵgb = FindStoresEffect;
-    exports.ɵgc = ViewAllStoresEffect;
-    exports.ɵgd = EntityResetAction;
-    exports.ɵge = UserStoreModule;
-    exports.ɵgf = effects$7;
-    exports.ɵgg = BillingCountriesEffect;
-    exports.ɵgh = DeliveryCountriesEffects;
-    exports.ɵgi = OrderDetailsEffect;
-    exports.ɵgj = UserPaymentMethodsEffects;
-    exports.ɵgk = RegionsEffects;
-    exports.ɵgl = ResetPasswordEffects;
-    exports.ɵgm = TitlesEffects;
-    exports.ɵgn = UserAddressesEffects;
-    exports.ɵgo = UserConsentsEffect;
-    exports.ɵgp = UserDetailsEffects;
-    exports.ɵgq = UserOrdersEffect;
-    exports.ɵgr = UserRegisterEffects;
-    exports.ɵgs = ClearMiscsDataEffect;
-    exports.ɵgt = ForgotPasswordEffects;
-    exports.ɵgu = UpdateEmailEffects;
-    exports.ɵgv = UpdatePasswordEffects;
-    exports.ɵgw = reducer$o;
-    exports.ɵgx = reducer$m;
-    exports.ɵgy = reducer$f;
-    exports.ɵgz = reducer$n;
+    exports.ɵga = reducerProvider$b;
+    exports.ɵgb = effects$9;
+    exports.ɵgc = FindStoresEffect;
+    exports.ɵgd = ViewAllStoresEffect;
+    exports.ɵge = EntityResetAction;
+    exports.ɵgf = UserStoreModule;
+    exports.ɵgg = effects$7;
+    exports.ɵgh = BillingCountriesEffect;
+    exports.ɵgi = DeliveryCountriesEffects;
+    exports.ɵgj = OrderDetailsEffect;
+    exports.ɵgk = UserPaymentMethodsEffects;
+    exports.ɵgl = RegionsEffects;
+    exports.ɵgm = ResetPasswordEffects;
+    exports.ɵgn = TitlesEffects;
+    exports.ɵgo = UserAddressesEffects;
+    exports.ɵgp = UserConsentsEffect;
+    exports.ɵgq = UserDetailsEffects;
+    exports.ɵgr = UserOrdersEffect;
+    exports.ɵgs = UserRegisterEffects;
+    exports.ɵgt = ClearMiscsDataEffect;
+    exports.ɵgu = ForgotPasswordEffects;
+    exports.ɵgv = UpdateEmailEffects;
+    exports.ɵgw = UpdatePasswordEffects;
+    exports.ɵgx = reducer$o;
+    exports.ɵgy = reducer$m;
+    exports.ɵgz = reducer$f;
     exports.ɵh = effects;
-    exports.ɵha = reducer$i;
-    exports.ɵhb = reducer$p;
-    exports.ɵhc = reducer$h;
-    exports.ɵhd = reducer$g;
-    exports.ɵhe = reducer$l;
-    exports.ɵhf = reducer$j;
-    exports.ɵhg = reducer$k;
-    exports.ɵhh = ProcessModule;
-    exports.ɵhi = ProcessStoreModule;
-    exports.ɵhj = PROCESS_FEATURE;
-    exports.ɵhk = getReducers$8;
-    exports.ɵhl = reducerToken$8;
-    exports.ɵhm = reducerProvider$8;
+    exports.ɵha = reducer$n;
+    exports.ɵhb = reducer$i;
+    exports.ɵhc = reducer$p;
+    exports.ɵhd = reducer$h;
+    exports.ɵhe = reducer$g;
+    exports.ɵhf = reducer$l;
+    exports.ɵhg = reducer$j;
+    exports.ɵhh = reducer$k;
+    exports.ɵhi = ProcessModule;
+    exports.ɵhj = ProcessStoreModule;
+    exports.ɵhk = PROCESS_FEATURE;
+    exports.ɵhl = getReducers$8;
+    exports.ɵhm = reducerToken$8;
+    exports.ɵhn = reducerProvider$8;
     exports.ɵi = RouterEffects;
     exports.ɵk = UrlParsingService;
     exports.ɵl = authStoreConfigFactory;

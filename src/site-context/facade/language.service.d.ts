@@ -1,9 +1,9 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromStore from '../store/index';
-import { WindowRef } from '../../window/window-ref';
-import { SiteContext } from './site-context.interface';
 import { Language } from '../../model/misc.model';
+import { WindowRef } from '../../window/window-ref';
+import * as fromStore from '../store/index';
+import { SiteContext } from './site-context.interface';
 /**
  * Facade that provides easy access to language state, actions and selectors.
  */
