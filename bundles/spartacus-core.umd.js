@@ -17712,6 +17712,30 @@
     function (state) { return state.entities; };
     /** @type {?} */
     var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$s));
+    /** @type {?} */
+    var getGlobalMessageEntitiesByType = (/**
+     * @param {?} type
+     * @return {?}
+     */
+    function (type) {
+        return store.createSelector(getGlobalMessageEntities, (/**
+         * @param {?} entities
+         * @return {?}
+         */
+        function (entities) { return entities && entities[type]; }));
+    });
+    /** @type {?} */
+    var getGlobalMessageCountByType = (/**
+     * @param {?} type
+     * @return {?}
+     */
+    function (type) {
+        return store.createSelector(getGlobalMessageEntitiesByType(type), (/**
+         * @param {?} entities
+         * @return {?}
+         */
+        function (entities) { return entities && entities.length; }));
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -18213,20 +18237,25 @@
          */
         function (request, response) {
             if (response.url.includes(OAUTH_ENDPOINT$3) &&
-                response.error.error === 'invalid_grant') {
-                if (request.body.get('grant_type') === 'password') {
-                    this.globalMessageService.add({
-                        key: 'httpHandlers.badRequestPleaseLoginAgain',
-                        params: { errorMessage: this.getErrorMessage(response) },
-                    }, GlobalMessageType.MSG_TYPE_ERROR);
-                    this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-                }
+                response.error.error === 'invalid_grant' &&
+                request.body.get('grant_type') === 'password') {
+                this.globalMessageService.add({
+                    key: 'httpHandlers.badRequestPleaseLoginAgain',
+                    params: { errorMessage: this.getErrorMessage(response) },
+                }, GlobalMessageType.MSG_TYPE_ERROR);
+                this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
             }
             else if (response.error.errors[0].type === 'PasswordMismatchError') {
                 // uses en translation error message instead of backend exception error
                 // @todo: this condition could be removed if backend gives better message
                 this.globalMessageService.add({ key: 'httpHandlers.badRequestOldPasswordIncorrect' }, GlobalMessageType.MSG_TYPE_ERROR);
                 // text: customError.customError.passwordMismatch,
+            }
+            else if (response.error.errors[0].subjectType === 'cart' &&
+                response.error.errors[0].reason === 'notFound') {
+                /** @type {?} */
+                var textObj = { key: 'httpHandlers.cartNotFound' };
+                this.globalMessageService.add(textObj, GlobalMessageType.MSG_TYPE_ERROR);
             }
             else {
                 // this is currently showing up in case we have a page not found. It should be a 404.
@@ -18462,6 +18491,96 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    GlobalMessageConfig = /** @class */ (function (_super) {
+        __extends(GlobalMessageConfig, _super);
+        function GlobalMessageConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return GlobalMessageConfig;
+    }(ServerConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageEffect = /** @class */ (function () {
+        function GlobalMessageEffect(actions$, store, config) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.store = store;
+            this.config = config;
+            this.hideAfterDelay$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.mergeMap((/**
+             * @param {?} type
+             * @return {?}
+             */
+            function (type) {
+                /** @type {?} */
+                var config = _this.config.globalMessages[type];
+                return _this.store.select(getGlobalMessageCountByType(type)).pipe(operators.filter((/**
+                 * @param {?} count
+                 * @return {?}
+                 */
+                function (count) {
+                    return config && config.timeout !== undefined && count && count > 0;
+                })), operators.switchMap((/**
+                 * @param {?} count
+                 * @return {?}
+                 */
+                function (count) {
+                    return rxjs.of(new RemoveMessage({
+                        type: type,
+                        index: count - 1,
+                    })).pipe(operators.delay(config.timeout));
+                })));
+            })));
+        }
+        GlobalMessageEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        GlobalMessageEffect.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: store.Store },
+            { type: GlobalMessageConfig }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
+        return GlobalMessageEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function defaultGlobalMessageConfigFactory() {
+        var _a;
+        return {
+            globalMessages: (_a = {},
+                _a[GlobalMessageType.MSG_TYPE_CONFIRMATION] = {
+                    timeout: 3000,
+                },
+                _a[GlobalMessageType.MSG_TYPE_INFO] = {
+                    timeout: 10000,
+                },
+                _a),
+        };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var GlobalMessageModule = /** @class */ (function () {
         function GlobalMessageModule() {
         }
@@ -18479,8 +18598,15 @@
         };
         GlobalMessageModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [GlobalMessageStoreModule],
-                        providers: [GlobalMessageService],
+                        imports: [
+                            GlobalMessageStoreModule,
+                            effects$a.EffectsModule.forFeature([GlobalMessageEffect]),
+                            ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
+                        ],
+                        providers: [
+                            GlobalMessageService,
+                            { provide: GlobalMessageConfig, useExisting: Config },
+                        ],
                     },] }
         ];
         return GlobalMessageModule;
@@ -19449,11 +19575,6 @@
          * @return {?}
          */
         function (text) {
-            // ----------
-            // todo: handle automatic removal of outdated messages
-            this.messageService.remove(GlobalMessageType.MSG_TYPE_ERROR);
-            this.messageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-            // ----------
             this.messageService.add({ key: text }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
         };
         /**
@@ -29144,6 +29265,7 @@
     exports.GiveUserConsent = GiveUserConsent;
     exports.GiveUserConsentFail = GiveUserConsentFail;
     exports.GiveUserConsentSuccess = GiveUserConsentSuccess;
+    exports.GlobalMessageConfig = GlobalMessageConfig;
     exports.GlobalMessageModule = GlobalMessageModule;
     exports.GlobalMessageService = GlobalMessageService;
     exports.GlobalMessageType = GlobalMessageType;
@@ -29721,7 +29843,9 @@
     exports.getEntrySelectorFactory = getEntrySelectorFactory;
     exports.getFindStoresEntities = getFindStoresEntities;
     exports.getFindStoresState = getFindStoresState;
+    exports.getGlobalMessageCountByType = getGlobalMessageCountByType;
     exports.getGlobalMessageEntities = getGlobalMessageEntities;
+    exports.getGlobalMessageEntitiesByType = getGlobalMessageEntitiesByType;
     exports.getGlobalMessageState = getGlobalMessageState;
     exports.getIndex = getIndex;
     exports.getIndexByType = getIndexByType;
@@ -29907,98 +30031,100 @@
     exports.ɵdy = reducerProvider$9;
     exports.ɵdz = reducer$q;
     exports.ɵe = reducerToken;
-    exports.ɵea = HttpErrorInterceptor;
-    exports.ɵeb = ServerConfig;
-    exports.ɵec = defaultI18nConfig;
-    exports.ɵed = i18nextProviders;
-    exports.ɵee = i18nextInit;
-    exports.ɵef = MockDatePipe;
-    exports.ɵeg = MockTranslationService;
-    exports.ɵeh = kymaStoreConfigFactory;
-    exports.ɵei = KymaStoreModule;
-    exports.ɵej = getReducers$a;
-    exports.ɵek = reducerToken$a;
-    exports.ɵel = reducerProvider$a;
-    exports.ɵem = clearKymaState;
-    exports.ɵen = metaReducers$6;
-    exports.ɵeo = effects$8;
-    exports.ɵep = OpenIdTokenEffect;
-    exports.ɵeq = OpenIdAuthenticationTokenService;
-    exports.ɵer = defaultKymaConfig;
-    exports.ɵes = defaultOccProductConfig;
-    exports.ɵet = provideConfigValidator;
-    exports.ɵeu = defaultPersonalizationConfig;
-    exports.ɵev = interceptors$1;
-    exports.ɵew = OccPersonalizationIdInterceptor;
-    exports.ɵex = OccPersonalizationTimeInterceptor;
-    exports.ɵey = productStoreConfigFactory;
-    exports.ɵez = ProductStoreModule;
+    exports.ɵea = GlobalMessageEffect;
+    exports.ɵeb = defaultGlobalMessageConfigFactory;
+    exports.ɵec = HttpErrorInterceptor;
+    exports.ɵed = ServerConfig;
+    exports.ɵee = defaultI18nConfig;
+    exports.ɵef = i18nextProviders;
+    exports.ɵeg = i18nextInit;
+    exports.ɵeh = MockDatePipe;
+    exports.ɵei = MockTranslationService;
+    exports.ɵej = kymaStoreConfigFactory;
+    exports.ɵek = KymaStoreModule;
+    exports.ɵel = getReducers$a;
+    exports.ɵem = reducerToken$a;
+    exports.ɵen = reducerProvider$a;
+    exports.ɵeo = clearKymaState;
+    exports.ɵep = metaReducers$6;
+    exports.ɵeq = effects$8;
+    exports.ɵer = OpenIdTokenEffect;
+    exports.ɵes = OpenIdAuthenticationTokenService;
+    exports.ɵet = defaultKymaConfig;
+    exports.ɵeu = defaultOccProductConfig;
+    exports.ɵev = provideConfigValidator;
+    exports.ɵew = defaultPersonalizationConfig;
+    exports.ɵex = interceptors$1;
+    exports.ɵey = OccPersonalizationIdInterceptor;
+    exports.ɵez = OccPersonalizationTimeInterceptor;
     exports.ɵf = reducerProvider;
-    exports.ɵfa = reducer$e;
-    exports.ɵfb = getSearchResults;
-    exports.ɵfc = getAuxSearchResults;
-    exports.ɵfd = getProductSuggestions;
-    exports.ɵfe = reducer$d;
-    exports.ɵff = reducer$c;
-    exports.ɵfg = PageMetaResolver;
-    exports.ɵfh = defaultSiteContextConfigFactory;
-    exports.ɵfi = siteContextStoreConfigFactory;
-    exports.ɵfj = SiteContextStoreModule;
-    exports.ɵfk = reducer$3;
-    exports.ɵfl = reducer$4;
-    exports.ɵfm = reducer$5;
-    exports.ɵfn = SiteContextParamsService;
-    exports.ɵfo = SiteContextUrlSerializer;
-    exports.ɵfp = SiteContextRoutesHandler;
-    exports.ɵfq = interceptors$2;
-    exports.ɵfr = CmsTicketInterceptor;
-    exports.ɵfs = getStoreFinderState;
-    exports.ɵft = defaultStoreFinderConfig;
-    exports.ɵfu = StoreFinderStoreModule;
-    exports.ɵfv = getReducers$b;
-    exports.ɵfw = reducerToken$b;
-    exports.ɵfx = reducerProvider$b;
-    exports.ɵfy = effects$9;
-    exports.ɵfz = FindStoresEffect;
+    exports.ɵfa = productStoreConfigFactory;
+    exports.ɵfb = ProductStoreModule;
+    exports.ɵfc = reducer$e;
+    exports.ɵfd = getSearchResults;
+    exports.ɵfe = getAuxSearchResults;
+    exports.ɵff = getProductSuggestions;
+    exports.ɵfg = reducer$d;
+    exports.ɵfh = reducer$c;
+    exports.ɵfi = PageMetaResolver;
+    exports.ɵfj = defaultSiteContextConfigFactory;
+    exports.ɵfk = siteContextStoreConfigFactory;
+    exports.ɵfl = SiteContextStoreModule;
+    exports.ɵfm = reducer$3;
+    exports.ɵfn = reducer$4;
+    exports.ɵfo = reducer$5;
+    exports.ɵfp = SiteContextParamsService;
+    exports.ɵfq = SiteContextUrlSerializer;
+    exports.ɵfr = SiteContextRoutesHandler;
+    exports.ɵfs = interceptors$2;
+    exports.ɵft = CmsTicketInterceptor;
+    exports.ɵfu = getStoreFinderState;
+    exports.ɵfv = defaultStoreFinderConfig;
+    exports.ɵfw = StoreFinderStoreModule;
+    exports.ɵfx = getReducers$b;
+    exports.ɵfy = reducerToken$b;
+    exports.ɵfz = reducerProvider$b;
     exports.ɵg = CustomSerializer;
-    exports.ɵga = ViewAllStoresEffect;
-    exports.ɵgb = EntityResetAction;
-    exports.ɵgc = UserStoreModule;
-    exports.ɵgd = effects$7;
-    exports.ɵge = BillingCountriesEffect;
-    exports.ɵgf = DeliveryCountriesEffects;
-    exports.ɵgg = OrderDetailsEffect;
-    exports.ɵgh = UserPaymentMethodsEffects;
-    exports.ɵgi = RegionsEffects;
-    exports.ɵgj = ResetPasswordEffects;
-    exports.ɵgk = TitlesEffects;
-    exports.ɵgl = UserAddressesEffects;
-    exports.ɵgm = UserConsentsEffect;
-    exports.ɵgn = UserDetailsEffects;
-    exports.ɵgo = UserOrdersEffect;
-    exports.ɵgp = UserRegisterEffects;
-    exports.ɵgq = ClearMiscsDataEffect;
-    exports.ɵgr = ForgotPasswordEffects;
-    exports.ɵgs = UpdateEmailEffects;
-    exports.ɵgt = UpdatePasswordEffects;
-    exports.ɵgu = reducer$o;
-    exports.ɵgv = reducer$m;
-    exports.ɵgw = reducer$f;
-    exports.ɵgx = reducer$n;
-    exports.ɵgy = reducer$i;
-    exports.ɵgz = reducer$p;
+    exports.ɵga = effects$9;
+    exports.ɵgb = FindStoresEffect;
+    exports.ɵgc = ViewAllStoresEffect;
+    exports.ɵgd = EntityResetAction;
+    exports.ɵge = UserStoreModule;
+    exports.ɵgf = effects$7;
+    exports.ɵgg = BillingCountriesEffect;
+    exports.ɵgh = DeliveryCountriesEffects;
+    exports.ɵgi = OrderDetailsEffect;
+    exports.ɵgj = UserPaymentMethodsEffects;
+    exports.ɵgk = RegionsEffects;
+    exports.ɵgl = ResetPasswordEffects;
+    exports.ɵgm = TitlesEffects;
+    exports.ɵgn = UserAddressesEffects;
+    exports.ɵgo = UserConsentsEffect;
+    exports.ɵgp = UserDetailsEffects;
+    exports.ɵgq = UserOrdersEffect;
+    exports.ɵgr = UserRegisterEffects;
+    exports.ɵgs = ClearMiscsDataEffect;
+    exports.ɵgt = ForgotPasswordEffects;
+    exports.ɵgu = UpdateEmailEffects;
+    exports.ɵgv = UpdatePasswordEffects;
+    exports.ɵgw = reducer$o;
+    exports.ɵgx = reducer$m;
+    exports.ɵgy = reducer$f;
+    exports.ɵgz = reducer$n;
     exports.ɵh = effects;
-    exports.ɵha = reducer$h;
-    exports.ɵhb = reducer$g;
-    exports.ɵhc = reducer$l;
-    exports.ɵhd = reducer$j;
-    exports.ɵhe = reducer$k;
-    exports.ɵhf = ProcessModule;
-    exports.ɵhg = ProcessStoreModule;
-    exports.ɵhh = PROCESS_FEATURE;
-    exports.ɵhi = getReducers$8;
-    exports.ɵhj = reducerToken$8;
-    exports.ɵhk = reducerProvider$8;
+    exports.ɵha = reducer$i;
+    exports.ɵhb = reducer$p;
+    exports.ɵhc = reducer$h;
+    exports.ɵhd = reducer$g;
+    exports.ɵhe = reducer$l;
+    exports.ɵhf = reducer$j;
+    exports.ɵhg = reducer$k;
+    exports.ɵhh = ProcessModule;
+    exports.ɵhi = ProcessStoreModule;
+    exports.ɵhj = PROCESS_FEATURE;
+    exports.ɵhk = getReducers$8;
+    exports.ɵhl = reducerToken$8;
+    exports.ɵhm = reducerProvider$8;
     exports.ɵi = RouterEffects;
     exports.ɵk = UrlParsingService;
     exports.ɵl = authStoreConfigFactory;
