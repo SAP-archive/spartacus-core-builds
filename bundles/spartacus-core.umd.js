@@ -10026,224 +10026,6 @@
             this.cartData = cartData;
         }
         /**
-         * Get supported delivery modes
-         */
-        /**
-         * Get supported delivery modes
-         * @return {?}
-         */
-        CheckoutService.prototype.getSupportedDeliveryModes = /**
-         * Get supported delivery modes
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes));
-        };
-        /**
-         * Get selected delivery mode
-         */
-        /**
-         * Get selected delivery mode
-         * @return {?}
-         */
-        CheckoutService.prototype.getSelectedDeliveryMode = /**
-         * Get selected delivery mode
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getSelectedDeliveryMode));
-        };
-        /**
-         * Get selected delivery mode code
-         */
-        /**
-         * Get selected delivery mode code
-         * @return {?}
-         */
-        CheckoutService.prototype.getSelectedDeliveryModeCode = /**
-         * Get selected delivery mode code
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getSelectedCode));
-        };
-        /**
-         * Get card types
-         */
-        /**
-         * Get card types
-         * @return {?}
-         */
-        CheckoutService.prototype.getCardTypes = /**
-         * Get card types
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getAllCardTypes));
-        };
-        /**
-         * Get delivery address
-         */
-        /**
-         * Get delivery address
-         * @return {?}
-         */
-        CheckoutService.prototype.getDeliveryAddress = /**
-         * Get delivery address
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getDeliveryAddress));
-        };
-        /**
-         * Get address verification results
-         */
-        /**
-         * Get address verification results
-         * @return {?}
-         */
-        CheckoutService.prototype.getAddressVerificationResults = /**
-         * Get address verification results
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getAddressVerificationResults$1), operators.filter((/**
-             * @param {?} results
-             * @return {?}
-             */
-            function (results) { return Object.keys(results).length !== 0; })));
-        };
-        /**
-         * Get payment details
-         */
-        /**
-         * Get payment details
-         * @return {?}
-         */
-        CheckoutService.prototype.getPaymentDetails = /**
-         * Get payment details
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getPaymentDetails));
-        };
-        /**
-         * Get order details
-         */
-        /**
-         * Get order details
-         * @return {?}
-         */
-        CheckoutService.prototype.getOrderDetails = /**
-         * Get order details
-         * @return {?}
-         */
-        function () {
-            return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
-        };
-        /**
-         * Create and set a delivery address using the address param
-         * @param address : the Address to be created and set
-         */
-        /**
-         * Create and set a delivery address using the address param
-         * @param {?} address : the Address to be created and set
-         * @return {?}
-         */
-        CheckoutService.prototype.createAndSetAddress = /**
-         * Create and set a delivery address using the address param
-         * @param {?} address : the Address to be created and set
-         * @return {?}
-         */
-        function (address) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new AddDeliveryAddress({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    address: address,
-                }));
-            }
-        };
-        /**
-         * Load supported delivery modes
-         */
-        /**
-         * Load supported delivery modes
-         * @return {?}
-         */
-        CheckoutService.prototype.loadSupportedDeliveryModes = /**
-         * Load supported delivery modes
-         * @return {?}
-         */
-        function () {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                }));
-            }
-        };
-        /**
-         * Set delivery mode
-         * @param mode : The delivery mode to be set
-         */
-        /**
-         * Set delivery mode
-         * @param {?} mode : The delivery mode to be set
-         * @return {?}
-         */
-        CheckoutService.prototype.setDeliveryMode = /**
-         * Set delivery mode
-         * @param {?} mode : The delivery mode to be set
-         * @return {?}
-         */
-        function (mode) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new SetDeliveryMode({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    selectedModeId: mode,
-                }));
-            }
-        };
-        /**
-         * Load the supported card types
-         */
-        /**
-         * Load the supported card types
-         * @return {?}
-         */
-        CheckoutService.prototype.loadSupportedCardTypes = /**
-         * Load the supported card types
-         * @return {?}
-         */
-        function () {
-            this.checkoutStore.dispatch(new LoadCardTypes());
-        };
-        /**
-         * Create payment details using the given paymentDetails param
-         * @param paymentDetails: the PaymentDetails to be created
-         */
-        /**
-         * Create payment details using the given paymentDetails param
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        CheckoutService.prototype.createPaymentDetails = /**
-         * Create payment details using the given paymentDetails param
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        function (paymentDetails) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new CreatePaymentDetails({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    paymentDetails: paymentDetails,
-                }));
-            }
-        };
-        /**
          * Places an order
          */
         /**
@@ -10261,88 +10043,6 @@
                     cartId: this.cartData.cartId,
                 }));
             }
-        };
-        /**
-         * Verifies the address
-         * @param address : the address to be verified
-         */
-        /**
-         * Verifies the address
-         * @param {?} address : the address to be verified
-         * @return {?}
-         */
-        CheckoutService.prototype.verifyAddress = /**
-         * Verifies the address
-         * @param {?} address : the address to be verified
-         * @return {?}
-         */
-        function (address) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new VerifyAddress({
-                    userId: this.cartData.userId,
-                    address: address,
-                }));
-            }
-        };
-        /**
-         * Set delivery address
-         * @param address : The address to be set
-         */
-        /**
-         * Set delivery address
-         * @param {?} address : The address to be set
-         * @return {?}
-         */
-        CheckoutService.prototype.setDeliveryAddress = /**
-         * Set delivery address
-         * @param {?} address : The address to be set
-         * @return {?}
-         */
-        function (address) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new SetDeliveryAddress({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cart.code,
-                    address: address,
-                }));
-            }
-        };
-        /**
-         * Set payment details
-         * @param paymentDetails : the PaymentDetails to be set
-         */
-        /**
-         * Set payment details
-         * @param {?} paymentDetails : the PaymentDetails to be set
-         * @return {?}
-         */
-        CheckoutService.prototype.setPaymentDetails = /**
-         * Set payment details
-         * @param {?} paymentDetails : the PaymentDetails to be set
-         * @return {?}
-         */
-        function (paymentDetails) {
-            if (this.actionAllowed()) {
-                this.checkoutStore.dispatch(new SetPaymentDetails({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cart.code,
-                    paymentDetails: paymentDetails,
-                }));
-            }
-        };
-        /**
-         * Clear address verification results
-         */
-        /**
-         * Clear address verification results
-         * @return {?}
-         */
-        CheckoutService.prototype.clearAddressVerificationResults = /**
-         * Clear address verification results
-         * @return {?}
-         */
-        function () {
-            this.checkoutStore.dispatch(new ClearAddressVerificationResults());
         };
         /**
          * Clear checkout data
@@ -10399,6 +10099,20 @@
             return this.checkoutStore.pipe(store.select(getCheckoutDetailsLoaded));
         };
         /**
+         * Get order details
+         */
+        /**
+         * Get order details
+         * @return {?}
+         */
+        CheckoutService.prototype.getOrderDetails = /**
+         * Get order details
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getCheckoutOrderDetails));
+        };
+        /**
          * @protected
          * @return {?}
          */
@@ -10418,6 +10132,360 @@
             { type: CartDataService }
         ]; };
         return CheckoutService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutDeliveryService = /** @class */ (function () {
+        function CheckoutDeliveryService(checkoutStore, cartData) {
+            this.checkoutStore = checkoutStore;
+            this.cartData = cartData;
+        }
+        /**
+         * Get supported delivery modes
+         */
+        /**
+         * Get supported delivery modes
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getSupportedDeliveryModes = /**
+         * Get supported delivery modes
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes));
+        };
+        /**
+         * Get selected delivery mode
+         */
+        /**
+         * Get selected delivery mode
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getSelectedDeliveryMode = /**
+         * Get selected delivery mode
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getSelectedDeliveryMode));
+        };
+        /**
+         * Get selected delivery mode code
+         */
+        /**
+         * Get selected delivery mode code
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getSelectedDeliveryModeCode = /**
+         * Get selected delivery mode code
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getSelectedCode));
+        };
+        /**
+         * Get delivery address
+         */
+        /**
+         * Get delivery address
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getDeliveryAddress = /**
+         * Get delivery address
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getDeliveryAddress));
+        };
+        /**
+         * Get address verification results
+         */
+        /**
+         * Get address verification results
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getAddressVerificationResults = /**
+         * Get address verification results
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getAddressVerificationResults$1), operators.filter((/**
+             * @param {?} results
+             * @return {?}
+             */
+            function (results) { return Object.keys(results).length !== 0; })));
+        };
+        /**
+         * Create and set a delivery address using the address param
+         * @param address : the Address to be created and set
+         */
+        /**
+         * Create and set a delivery address using the address param
+         * @param {?} address : the Address to be created and set
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.createAndSetAddress = /**
+         * Create and set a delivery address using the address param
+         * @param {?} address : the Address to be created and set
+         * @return {?}
+         */
+        function (address) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new AddDeliveryAddress({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    address: address,
+                }));
+            }
+        };
+        /**
+         * Load supported delivery modes
+         */
+        /**
+         * Load supported delivery modes
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.loadSupportedDeliveryModes = /**
+         * Load supported delivery modes
+         * @return {?}
+         */
+        function () {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new LoadSupportedDeliveryModes({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                }));
+            }
+        };
+        /**
+         * Set delivery mode
+         * @param mode : The delivery mode to be set
+         */
+        /**
+         * Set delivery mode
+         * @param {?} mode : The delivery mode to be set
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.setDeliveryMode = /**
+         * Set delivery mode
+         * @param {?} mode : The delivery mode to be set
+         * @return {?}
+         */
+        function (mode) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new SetDeliveryMode({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    selectedModeId: mode,
+                }));
+            }
+        };
+        /**
+         * Verifies the address
+         * @param address : the address to be verified
+         */
+        /**
+         * Verifies the address
+         * @param {?} address : the address to be verified
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.verifyAddress = /**
+         * Verifies the address
+         * @param {?} address : the address to be verified
+         * @return {?}
+         */
+        function (address) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new VerifyAddress({
+                    userId: this.cartData.userId,
+                    address: address,
+                }));
+            }
+        };
+        /**
+         * Set delivery address
+         * @param address : The address to be set
+         */
+        /**
+         * Set delivery address
+         * @param {?} address : The address to be set
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.setDeliveryAddress = /**
+         * Set delivery address
+         * @param {?} address : The address to be set
+         * @return {?}
+         */
+        function (address) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new SetDeliveryAddress({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cart.code,
+                    address: address,
+                }));
+            }
+        };
+        /**
+         * Clear address verification results
+         */
+        /**
+         * Clear address verification results
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.clearAddressVerificationResults = /**
+         * Clear address verification results
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ClearAddressVerificationResults());
+        };
+        /**
+         * @protected
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.actionAllowed = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            return this.cartData.userId !== ANONYMOUS_USERID;
+        };
+        CheckoutDeliveryService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutDeliveryService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: CartDataService }
+        ]; };
+        /** @nocollapse */ CheckoutDeliveryService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(core.ɵɵinject(store.Store), core.ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+        return CheckoutDeliveryService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutPaymentService = /** @class */ (function () {
+        function CheckoutPaymentService(checkoutStore, cartData) {
+            this.checkoutStore = checkoutStore;
+            this.cartData = cartData;
+        }
+        /**
+         * Get card types
+         */
+        /**
+         * Get card types
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.getCardTypes = /**
+         * Get card types
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getAllCardTypes));
+        };
+        /**
+         * Get payment details
+         */
+        /**
+         * Get payment details
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.getPaymentDetails = /**
+         * Get payment details
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getPaymentDetails));
+        };
+        /**
+         * Load the supported card types
+         */
+        /**
+         * Load the supported card types
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.loadSupportedCardTypes = /**
+         * Load the supported card types
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new LoadCardTypes());
+        };
+        /**
+         * Create payment details using the given paymentDetails param
+         * @param paymentDetails: the PaymentDetails to be created
+         */
+        /**
+         * Create payment details using the given paymentDetails param
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.createPaymentDetails = /**
+         * Create payment details using the given paymentDetails param
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        function (paymentDetails) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new CreatePaymentDetails({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    paymentDetails: paymentDetails,
+                }));
+            }
+        };
+        /**
+         * Set payment details
+         * @param paymentDetails : the PaymentDetails to be set
+         */
+        /**
+         * Set payment details
+         * @param {?} paymentDetails : the PaymentDetails to be set
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.setPaymentDetails = /**
+         * Set payment details
+         * @param {?} paymentDetails : the PaymentDetails to be set
+         * @return {?}
+         */
+        function (paymentDetails) {
+            if (this.actionAllowed()) {
+                this.checkoutStore.dispatch(new SetPaymentDetails({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cart.code,
+                    paymentDetails: paymentDetails,
+                }));
+            }
+        };
+        /**
+         * @protected
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.actionAllowed = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            return this.cartData.userId !== ANONYMOUS_USERID;
+        };
+        CheckoutPaymentService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutPaymentService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: CartDataService }
+        ]; };
+        /** @nocollapse */ CheckoutPaymentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(CartDataService)); }, token: CheckoutPaymentService, providedIn: "root" });
+        return CheckoutPaymentService;
     }());
 
     /**
@@ -28956,11 +29024,13 @@
     exports.CheckoutConnector = CheckoutConnector;
     exports.CheckoutDeliveryAdapter = CheckoutDeliveryAdapter;
     exports.CheckoutDeliveryConnector = CheckoutDeliveryConnector;
+    exports.CheckoutDeliveryService = CheckoutDeliveryService;
     exports.CheckoutModule = CheckoutModule;
     exports.CheckoutOccModule = CheckoutOccModule;
     exports.CheckoutPageMetaResolver = CheckoutPageMetaResolver;
     exports.CheckoutPaymentAdapter = CheckoutPaymentAdapter;
     exports.CheckoutPaymentConnector = CheckoutPaymentConnector;
+    exports.CheckoutPaymentService = CheckoutPaymentService;
     exports.CheckoutService = CheckoutService;
     exports.ClearAddressVerificationResults = ClearAddressVerificationResults;
     exports.ClearCheckoutData = ClearCheckoutData;
