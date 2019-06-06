@@ -2694,7 +2694,6 @@ var BaseSiteService = /** @class */ (function () {
         function (activeBaseSite) {
             if (baseSite && activeBaseSite !== baseSite) {
                 _this.store.dispatch(new SetActiveBaseSite(baseSite));
-                _this.store.dispatch(new LoadBaseSite());
             }
         }));
     };
@@ -2726,7 +2725,16 @@ var BaseSiteService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.store.pipe(select(getBaseSiteData), filter(Boolean));
+        var _this = this;
+        return this.store.pipe(select(getBaseSiteData), tap((/**
+         * @param {?} baseSite
+         * @return {?}
+         */
+        function (baseSite) {
+            if (Object.keys(baseSite).length === 0) {
+                _this.store.dispatch(new LoadBaseSite());
+            }
+        })));
     };
     BaseSiteService.decorators = [
         { type: Injectable }
@@ -16248,7 +16256,7 @@ var UserService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        return this.store.pipe(select(getDetails)).pipe(tap((/**
+        return this.store.pipe(select(getDetails), tap((/**
          * @param {?} details
          * @return {?}
          */
@@ -27689,7 +27697,10 @@ var SmartEditService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
+        combineLatest([
+            this.cmsService.getCurrentPage(),
+            this.routingService.getRouterState(),
+        ])
             .pipe(takeWhile((/**
          * @param {?} __0
          * @return {?}

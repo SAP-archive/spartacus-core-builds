@@ -2773,7 +2773,6 @@
             function (activeBaseSite) {
                 if (baseSite && activeBaseSite !== baseSite) {
                     _this.store.dispatch(new SetActiveBaseSite(baseSite));
-                    _this.store.dispatch(new LoadBaseSite());
                 }
             }));
         };
@@ -2805,7 +2804,16 @@
          * @return {?}
          */
         function () {
-            return this.store.pipe(store.select(getBaseSiteData), operators.filter(Boolean));
+            var _this = this;
+            return this.store.pipe(store.select(getBaseSiteData), operators.tap((/**
+             * @param {?} baseSite
+             * @return {?}
+             */
+            function (baseSite) {
+                if (Object.keys(baseSite).length === 0) {
+                    _this.store.dispatch(new LoadBaseSite());
+                }
+            })));
         };
         BaseSiteService.decorators = [
             { type: core.Injectable }
@@ -16327,7 +16335,7 @@
          */
         function () {
             var _this = this;
-            return this.store.pipe(store.select(getDetails)).pipe(operators.tap((/**
+            return this.store.pipe(store.select(getDetails), operators.tap((/**
              * @param {?} details
              * @return {?}
              */
@@ -27768,7 +27776,10 @@
          */
         function () {
             var _this = this;
-            rxjs.combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
+            rxjs.combineLatest([
+                this.cmsService.getCurrentPage(),
+                this.routingService.getRouterState(),
+            ])
                 .pipe(operators.takeWhile((/**
              * @param {?} __0
              * @return {?}

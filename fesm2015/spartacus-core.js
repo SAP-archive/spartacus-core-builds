@@ -2222,7 +2222,6 @@ class BaseSiteService {
         activeBaseSite => {
             if (baseSite && activeBaseSite !== baseSite) {
                 this.store.dispatch(new SetActiveBaseSite(baseSite));
-                this.store.dispatch(new LoadBaseSite());
             }
         }));
     }
@@ -2239,7 +2238,15 @@ class BaseSiteService {
      * @return {?}
      */
     getBaseSiteData() {
-        return this.store.pipe(select(getBaseSiteData), filter(Boolean));
+        return this.store.pipe(select(getBaseSiteData), tap((/**
+         * @param {?} baseSite
+         * @return {?}
+         */
+        baseSite => {
+            if (Object.keys(baseSite).length === 0) {
+                this.store.dispatch(new LoadBaseSite());
+            }
+        })));
     }
 }
 BaseSiteService.decorators = [
@@ -14288,7 +14295,7 @@ class UserService {
      * @return {?}
      */
     get() {
-        return this.store.pipe(select(getDetails)).pipe(tap((/**
+        return this.store.pipe(select(getDetails), tap((/**
          * @param {?} details
          * @return {?}
          */
@@ -24040,7 +24047,10 @@ class SmartEditService {
      * @return {?}
      */
     getCmsTicket() {
-        combineLatest(this.cmsService.getCurrentPage(), this.routingService.getRouterState())
+        combineLatest([
+            this.cmsService.getCurrentPage(),
+            this.routingService.getRouterState(),
+        ])
             .pipe(takeWhile((/**
          * @param {?} __0
          * @return {?}
