@@ -15724,7 +15724,7 @@ class BadRequestHandler extends HttpErrorHandler {
                     error.reason === 'notFound') {
                     errorMessage = { key: 'httpHandlers.cartNotFound' };
                 }
-                else if (response.error.errors[0].type === 'ValidationError') {
+                else if (error.type === 'ValidationError') {
                     // build translation key in case of backend field validation error
                     errorMessage = {
                         key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
