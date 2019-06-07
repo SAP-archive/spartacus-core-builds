@@ -4747,767 +4747,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CartService = /** @class */ (function () {
-        function CartService(store, cartData, authService) {
-            this.store = store;
-            this.cartData = cartData;
-            this.authService = authService;
-            this.init();
-        }
-        /**
-         * @return {?}
-         */
-        CartService.prototype.getActive = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getCartContent));
-        };
-        /**
-         * @return {?}
-         */
-        CartService.prototype.getEntries = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getEntries));
-        };
-        /**
-         * @return {?}
-         */
-        CartService.prototype.getCartMergeComplete = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getCartMergeComplete));
-        };
-        /**
-         * @return {?}
-         */
-        CartService.prototype.getLoaded = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getLoaded));
-        };
-        /**
-         * @protected
-         * @return {?}
-         */
-        CartService.prototype.init = /**
-         * @protected
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            this.store.pipe(store.select(getCartContent)).subscribe((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            function (cart) {
-                _this.cartData.cart = cart;
-                if (_this.callback) {
-                    _this.callback();
-                    _this.callback = null;
-                }
-            }));
-            this.authService
-                .getUserToken()
-                .pipe(operators.filter((/**
-             * @param {?} userToken
-             * @return {?}
-             */
-            function (userToken) { return _this.cartData.userId !== userToken.userId; })))
-                .subscribe((/**
-             * @param {?} userToken
-             * @return {?}
-             */
-            function (userToken) {
-                _this.setUserId(userToken);
-                _this.loadOrMerge();
-            }));
-            this.refresh();
-        };
-        /**
-         * @protected
-         * @param {?} userToken
-         * @return {?}
-         */
-        CartService.prototype.setUserId = /**
-         * @protected
-         * @param {?} userToken
-         * @return {?}
-         */
-        function (userToken) {
-            if (Object.keys(userToken).length !== 0) {
-                this.cartData.userId = userToken.userId;
-            }
-            else {
-                this.cartData.userId = ANONYMOUS_USERID;
-            }
-        };
-        /**
-         * @protected
-         * @return {?}
-         */
-        CartService.prototype.loadOrMerge = /**
-         * @protected
-         * @return {?}
-         */
-        function () {
-            this.cartData.getDetails = true;
-            // for login user, whenever there's an existing cart, we will load the user
-            // current cart and merge it into the existing cart
-            if (this.cartData.userId !== ANONYMOUS_USERID) {
-                if (!this.isCreated(this.cartData.cart)) {
-                    this.store.dispatch(new LoadCart({
-                        userId: this.cartData.userId,
-                        cartId: 'current',
-                    }));
-                }
-                else {
-                    this.store.dispatch(new MergeCart({
-                        userId: this.cartData.userId,
-                        cartId: this.cartData.cart.guid,
-                    }));
-                }
-            }
-        };
-        /**
-         * @protected
-         * @return {?}
-         */
-        CartService.prototype.refresh = /**
-         * @protected
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            this.store.pipe(store.select(getRefresh)).subscribe((/**
-             * @param {?} refresh
-             * @return {?}
-             */
-            function (refresh) {
-                if (refresh) {
-                    _this.store.dispatch(new LoadCart({
-                        userId: _this.cartData.userId,
-                        cartId: _this.cartData.cartId,
-                        details: true,
-                    }));
-                }
-            }));
-        };
-        /**
-         * @return {?}
-         */
-        CartService.prototype.loadDetails = /**
-         * @return {?}
-         */
-        function () {
-            this.cartData.getDetails = true;
-            if (this.cartData.userId !== ANONYMOUS_USERID) {
-                this.store.dispatch(new LoadCart({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId ? this.cartData.cartId : 'current',
-                    details: true,
-                }));
-            }
-            else if (this.cartData.cartId) {
-                this.store.dispatch(new LoadCart({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    details: true,
-                }));
-            }
-        };
-        /**
-         * @param {?} productCode
-         * @param {?} quantity
-         * @return {?}
-         */
-        CartService.prototype.addEntry = /**
-         * @param {?} productCode
-         * @param {?} quantity
-         * @return {?}
-         */
-        function (productCode, quantity) {
-            if (!this.isCreated(this.cartData.cart)) {
-                this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
-                this.callback = (/**
-                 * @return {?}
-                 */
-                function () {
-                    this.store.dispatch(new AddEntry({
-                        userId: this.cartData.userId,
-                        cartId: this.cartData.cartId,
-                        productCode: productCode,
-                        quantity: quantity,
-                    }));
-                });
-            }
-            else {
-                this.store.dispatch(new AddEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    productCode: productCode,
-                    quantity: quantity,
-                }));
-            }
-        };
-        /**
-         * @param {?} entry
-         * @return {?}
-         */
-        CartService.prototype.removeEntry = /**
-         * @param {?} entry
-         * @return {?}
-         */
-        function (entry) {
-            this.store.dispatch(new RemoveEntry({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                entry: entry.entryNumber,
-            }));
-        };
-        /**
-         * @param {?} entryNumber
-         * @param {?} quantity
-         * @return {?}
-         */
-        CartService.prototype.updateEntry = /**
-         * @param {?} entryNumber
-         * @param {?} quantity
-         * @return {?}
-         */
-        function (entryNumber, quantity) {
-            if (+quantity > 0) {
-                this.store.dispatch(new UpdateEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    entry: entryNumber,
-                    qty: quantity,
-                }));
-            }
-            else {
-                this.store.dispatch(new RemoveEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    entry: entryNumber,
-                }));
-            }
-        };
-        /**
-         * @param {?} productCode
-         * @return {?}
-         */
-        CartService.prototype.getEntry = /**
-         * @param {?} productCode
-         * @return {?}
-         */
-        function (productCode) {
-            return this.store.pipe(store.select(getEntrySelectorFactory(productCode)));
-        };
-        /**
-         * @param {?} cart
-         * @return {?}
-         */
-        CartService.prototype.isCreated = /**
-         * @param {?} cart
-         * @return {?}
-         */
-        function (cart) {
-            return cart && !!Object.keys(cart).length;
-        };
-        /**
-         * @param {?} cart
-         * @return {?}
-         */
-        CartService.prototype.isEmpty = /**
-         * @param {?} cart
-         * @return {?}
-         */
-        function (cart) {
-            return cart && !cart.totalItems;
-        };
-        CartService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CartService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: CartDataService },
-            { type: AuthService }
-        ]; };
-        return CartService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var services = [CartService, CartDataService];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    CartAdapter = /** @class */ (function () {
-        function CartAdapter() {
-        }
-        return CartAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CartConnector = /** @class */ (function () {
-        function CartConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?=} details
-         * @return {?}
-         */
-        CartConnector.prototype.loadAll = /**
-         * @param {?} userId
-         * @param {?=} details
-         * @return {?}
-         */
-        function (userId, details) {
-            return this.adapter.loadAll(userId, details);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?=} details
-         * @return {?}
-         */
-        CartConnector.prototype.load = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?=} details
-         * @return {?}
-         */
-        function (userId, cartId, details) {
-            return this.adapter.load(userId, cartId, details);
-        };
-        /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-        CartConnector.prototype.create = /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-        function (userId, oldCartId, toMergeCartGuid) {
-            return this.adapter.create(userId, oldCartId, toMergeCartGuid);
-        };
-        CartConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CartConnector.ctorParameters = function () { return [
-            { type: CartAdapter }
-        ]; };
-        /** @nocollapse */ CartConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(core.ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
-        return CartConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CART_NORMALIZER = new core.InjectionToken('CartNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    CartEntryAdapter = /** @class */ (function () {
-        function CartEntryAdapter() {
-        }
-        return CartEntryAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CartEntryConnector = /** @class */ (function () {
-        function CartEntryConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        CartEntryConnector.prototype.add = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        function (userId, cartId, productCode, quantity) {
-            return this.adapter.add(userId, cartId, productCode, quantity);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        CartEntryConnector.prototype.update = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber, qty, pickupStore) {
-            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        CartEntryConnector.prototype.remove = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber) {
-            return this.adapter.remove(userId, cartId, entryNumber);
-        };
-        CartEntryConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CartEntryConnector.ctorParameters = function () { return [
-            { type: CartEntryAdapter }
-        ]; };
-        /** @nocollapse */ CartEntryConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-        return CartEntryConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CART_MODIFICATION_NORMALIZER = new core.InjectionToken('CartModificationNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CHECKOUT_FEATURE = 'checkout';
-    /** @type {?} */
-    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
-    /** @type {?} */
-    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
-    /** @type {?} */
-    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
-    /** @type {?} */
-    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
-    /** @type {?} */
-    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
-    /** @type {?} */
-    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
-    /** @type {?} */
-    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
-    /** @type {?} */
-    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
-    /** @type {?} */
-    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
-    /** @type {?} */
-    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
-    /** @type {?} */
-    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
-    /** @type {?} */
-    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
-    /** @type {?} */
-    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
-    /** @type {?} */
-    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
-    /** @type {?} */
-    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
-    /** @type {?} */
-    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
-    /** @type {?} */
-    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
-    /** @type {?} */
-    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
-    /** @type {?} */
-    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
-    /** @type {?} */
-    var PLACE_ORDER = '[Checkout] Place Order';
-    /** @type {?} */
-    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
-    /** @type {?} */
-    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
-    /** @type {?} */
-    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
-    /** @type {?} */
-    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
-    /** @type {?} */
-    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
-    /** @type {?} */
-    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
-    /** @type {?} */
-    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
-    var AddDeliveryAddress = /** @class */ (function () {
-        function AddDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS;
-        }
-        return AddDeliveryAddress;
-    }());
-    var AddDeliveryAddressFail = /** @class */ (function () {
-        function AddDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_FAIL;
-        }
-        return AddDeliveryAddressFail;
-    }());
-    var AddDeliveryAddressSuccess = /** @class */ (function () {
-        function AddDeliveryAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return AddDeliveryAddressSuccess;
-    }());
-    var SetDeliveryAddress = /** @class */ (function () {
-        function SetDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS;
-        }
-        return SetDeliveryAddress;
-    }());
-    var SetDeliveryAddressFail = /** @class */ (function () {
-        function SetDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS_FAIL;
-        }
-        return SetDeliveryAddressFail;
-    }());
-    var SetDeliveryAddressSuccess = /** @class */ (function () {
-        function SetDeliveryAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS_SUCCESS;
-        }
-        return SetDeliveryAddressSuccess;
-    }());
-    var LoadSupportedDeliveryModes = /** @class */ (function () {
-        function LoadSupportedDeliveryModes(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES;
-        }
-        return LoadSupportedDeliveryModes;
-    }());
-    var LoadSupportedDeliveryModesFail = /** @class */ (function () {
-        function LoadSupportedDeliveryModesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-        }
-        return LoadSupportedDeliveryModesFail;
-    }());
-    var LoadSupportedDeliveryModesSuccess = /** @class */ (function () {
-        function LoadSupportedDeliveryModesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
-        }
-        return LoadSupportedDeliveryModesSuccess;
-    }());
-    var SetDeliveryMode = /** @class */ (function () {
-        function SetDeliveryMode(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE;
-        }
-        return SetDeliveryMode;
-    }());
-    var SetDeliveryModeFail = /** @class */ (function () {
-        function SetDeliveryModeFail(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE_FAIL;
-        }
-        return SetDeliveryModeFail;
-    }());
-    var SetDeliveryModeSuccess = /** @class */ (function () {
-        function SetDeliveryModeSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE_SUCCESS;
-        }
-        return SetDeliveryModeSuccess;
-    }());
-    var CreatePaymentDetails = /** @class */ (function () {
-        function CreatePaymentDetails(payload) {
-            this.payload = payload;
-            this.type = CREATE_PAYMENT_DETAILS;
-        }
-        return CreatePaymentDetails;
-    }());
-    var CreatePaymentDetailsFail = /** @class */ (function () {
-        function CreatePaymentDetailsFail(payload) {
-            this.payload = payload;
-            this.type = CREATE_PAYMENT_DETAILS_FAIL;
-        }
-        return CreatePaymentDetailsFail;
-    }());
-    var CreatePaymentDetailsSuccess = /** @class */ (function () {
-        function CreatePaymentDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
-        }
-        return CreatePaymentDetailsSuccess;
-    }());
-    var SetPaymentDetails = /** @class */ (function () {
-        function SetPaymentDetails(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS;
-        }
-        return SetPaymentDetails;
-    }());
-    var SetPaymentDetailsFail = /** @class */ (function () {
-        function SetPaymentDetailsFail(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS_FAIL;
-        }
-        return SetPaymentDetailsFail;
-    }());
-    var SetPaymentDetailsSuccess = /** @class */ (function () {
-        function SetPaymentDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS_SUCCESS;
-        }
-        return SetPaymentDetailsSuccess;
-    }());
-    var PlaceOrder = /** @class */ (function () {
-        function PlaceOrder(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER;
-        }
-        return PlaceOrder;
-    }());
-    var PlaceOrderFail = /** @class */ (function () {
-        function PlaceOrderFail(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_FAIL;
-        }
-        return PlaceOrderFail;
-    }());
-    var PlaceOrderSuccess = /** @class */ (function () {
-        function PlaceOrderSuccess(payload) {
-            this.payload = payload;
-            this.type = PLACE_ORDER_SUCCESS;
-        }
-        return PlaceOrderSuccess;
-    }());
-    var ClearSupportedDeliveryModes = /** @class */ (function () {
-        function ClearSupportedDeliveryModes() {
-            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
-        }
-        return ClearSupportedDeliveryModes;
-    }());
-    var ClearCheckoutStep = /** @class */ (function () {
-        function ClearCheckoutStep(payload) {
-            this.payload = payload;
-            this.type = CLEAR_CHECKOUT_STEP;
-        }
-        return ClearCheckoutStep;
-    }());
-    var ClearCheckoutData = /** @class */ (function () {
-        function ClearCheckoutData() {
-            this.type = CLEAR_CHECKOUT_DATA;
-        }
-        return ClearCheckoutData;
-    }());
-    var LoadCheckoutDetails = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetails, _super);
-        function LoadCheckoutDetails(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS;
-            return _this;
-        }
-        return LoadCheckoutDetails;
-    }(LoaderLoadAction));
-    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsFail, _super);
-        function LoadCheckoutDetailsFail(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
-            return _this;
-        }
-        return LoadCheckoutDetailsFail;
-    }(LoaderFailAction));
-    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
-        __extends(LoadCheckoutDetailsSuccess, _super);
-        function LoadCheckoutDetailsSuccess(payload) {
-            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
-            return _this;
-        }
-        return LoadCheckoutDetailsSuccess;
-    }(LoaderSuccessAction));
 
     /**
      * @fileoverview added by tsickle
@@ -5515,106 +4754,6 @@
      */
     /** @type {?} */
     var initialState$2 = {
-        content: {},
-        entries: {},
-        refresh: false,
-        cartMergeComplete: false,
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
-        switch (action.type) {
-            case MERGE_CART: {
-                return __assign({}, state, { cartMergeComplete: false });
-            }
-            case MERGE_CART_SUCCESS: {
-                return __assign({}, state, { cartMergeComplete: true, refresh: true });
-            }
-            case LOAD_CART_SUCCESS:
-            case CREATE_CART_SUCCESS: {
-                /** @type {?} */
-                var content = __assign({}, action.payload);
-                /** @type {?} */
-                var entries = {};
-                if (content.entries) {
-                    entries = content.entries.reduce((/**
-                     * @param {?} entryMap
-                     * @param {?} entry
-                     * @return {?}
-                     */
-                    function (entryMap, entry) {
-                        var _a;
-                        return __assign({}, entryMap, (_a = {}, _a[entry.product.code] = state.entries[entry.product.code]
-                            ? __assign({}, state.entries[entry.product.code], entry) : entry, _a));
-                    }), __assign({}, entries));
-                    delete content['entries'];
-                }
-                return __assign({}, state, { content: content,
-                    entries: entries, refresh: false });
-            }
-            case REMOVE_ENTRY_SUCCESS:
-            case UPDATE_ENTRY_SUCCESS:
-            case ADD_ENTRY_SUCCESS: {
-                return __assign({}, state, { refresh: true });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$2() {
-        return {
-            active: loaderReducer(CART_DATA, reducer$2),
-        };
-    }
-    /** @type {?} */
-    var reducerToken$2 = new core.InjectionToken('CartReducers');
-    /** @type {?} */
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
-    };
-    /**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function clearCartState(reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (action.type === LOGOUT || action.type === PLACE_ORDER_SUCCESS) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        });
-    }
-    /** @type {?} */
-    var metaReducers$1 = [clearCartState];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$3 = {
         entities: null,
         activeLanguage: null,
     };
@@ -5623,8 +4762,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 /** @type {?} */
@@ -5703,7 +4842,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$4 = {
+    var initialState$3 = {
         entities: null,
         activeCurrency: null,
     };
@@ -5712,8 +4851,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 /** @type {?} */
@@ -5744,7 +4883,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = {
+    var initialState$4 = {
         details: {},
         activeSite: '',
     };
@@ -5753,8 +4892,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return __assign({}, state, { details: action.payload });
@@ -5773,19 +4912,19 @@
     /**
      * @return {?}
      */
-    function getReducers$3() {
+    function getReducers$2() {
         return {
-            languages: reducer$3,
-            currencies: reducer$4,
-            baseSite: reducer$5,
+            languages: reducer$2,
+            currencies: reducer$3,
+            baseSite: reducer$4,
         };
     }
     /** @type {?} */
-    var reducerToken$3 = new core.InjectionToken('SiteContextReducers');
+    var reducerToken$2 = new core.InjectionToken('SiteContextReducers');
     /** @type {?} */
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
 
     /**
@@ -7421,11 +6560,11 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$3),
+                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
                             effects$a.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$3],
+                        providers: [reducerProvider$2],
                     },] }
         ];
         return SiteContextStoreModule;
@@ -7494,6 +6633,875 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartService = /** @class */ (function () {
+        function CartService(store, cartData, authService, baseSiteService) {
+            this.store = store;
+            this.cartData = cartData;
+            this.authService = authService;
+            this.baseSiteService = baseSiteService;
+            this.init();
+        }
+        /**
+         * @return {?}
+         */
+        CartService.prototype.getActive = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCartContent));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.getEntries = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getEntries));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.getCartMergeComplete = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCartMergeComplete));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.getLoaded = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getLoaded));
+        };
+        /**
+         * @protected
+         * @return {?}
+         */
+        CartService.prototype.init = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            this.store.pipe(store.select(getCartContent)).subscribe((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            function (cart) {
+                _this.cartData.cart = cart;
+                if (_this.callback) {
+                    _this.callback();
+                    _this.callback = null;
+                }
+            }));
+            rxjs.combineLatest([
+                this.baseSiteService.getActive(),
+                this.authService.getUserToken(),
+            ])
+                .pipe(operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), userToken = _b[1];
+                return _this.cartData.userId !== userToken.userId;
+            })))
+                .subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), userToken = _b[1];
+                _this.setUserId(userToken);
+                _this.loadOrMerge();
+            }));
+            this.refresh();
+        };
+        /**
+         * @protected
+         * @param {?} userToken
+         * @return {?}
+         */
+        CartService.prototype.setUserId = /**
+         * @protected
+         * @param {?} userToken
+         * @return {?}
+         */
+        function (userToken) {
+            if (Object.keys(userToken).length !== 0) {
+                this.cartData.userId = userToken.userId;
+            }
+            else {
+                this.cartData.userId = ANONYMOUS_USERID;
+            }
+        };
+        /**
+         * @protected
+         * @return {?}
+         */
+        CartService.prototype.loadOrMerge = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            this.cartData.getDetails = true;
+            // for login user, whenever there's an existing cart, we will load the user
+            // current cart and merge it into the existing cart
+            if (this.cartData.userId !== ANONYMOUS_USERID) {
+                if (!this.isCreated(this.cartData.cart)) {
+                    this.store.dispatch(new LoadCart({
+                        userId: this.cartData.userId,
+                        cartId: 'current',
+                    }));
+                }
+                else {
+                    this.store.dispatch(new MergeCart({
+                        userId: this.cartData.userId,
+                        cartId: this.cartData.cart.guid,
+                    }));
+                }
+            }
+        };
+        /**
+         * @protected
+         * @return {?}
+         */
+        CartService.prototype.refresh = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            this.store.pipe(store.select(getRefresh)).subscribe((/**
+             * @param {?} refresh
+             * @return {?}
+             */
+            function (refresh) {
+                if (refresh) {
+                    _this.store.dispatch(new LoadCart({
+                        userId: _this.cartData.userId,
+                        cartId: _this.cartData.cartId,
+                        details: true,
+                    }));
+                }
+            }));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.loadDetails = /**
+         * @return {?}
+         */
+        function () {
+            this.cartData.getDetails = true;
+            if (this.cartData.userId !== ANONYMOUS_USERID) {
+                this.store.dispatch(new LoadCart({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId ? this.cartData.cartId : 'current',
+                    details: true,
+                }));
+            }
+            else if (this.cartData.cartId) {
+                this.store.dispatch(new LoadCart({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    details: true,
+                }));
+            }
+        };
+        /**
+         * @param {?} productCode
+         * @param {?} quantity
+         * @return {?}
+         */
+        CartService.prototype.addEntry = /**
+         * @param {?} productCode
+         * @param {?} quantity
+         * @return {?}
+         */
+        function (productCode, quantity) {
+            if (!this.isCreated(this.cartData.cart)) {
+                this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
+                this.callback = (/**
+                 * @return {?}
+                 */
+                function () {
+                    this.store.dispatch(new AddEntry({
+                        userId: this.cartData.userId,
+                        cartId: this.cartData.cartId,
+                        productCode: productCode,
+                        quantity: quantity,
+                    }));
+                });
+            }
+            else {
+                this.store.dispatch(new AddEntry({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    productCode: productCode,
+                    quantity: quantity,
+                }));
+            }
+        };
+        /**
+         * @param {?} entry
+         * @return {?}
+         */
+        CartService.prototype.removeEntry = /**
+         * @param {?} entry
+         * @return {?}
+         */
+        function (entry) {
+            this.store.dispatch(new RemoveEntry({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                entry: entry.entryNumber,
+            }));
+        };
+        /**
+         * @param {?} entryNumber
+         * @param {?} quantity
+         * @return {?}
+         */
+        CartService.prototype.updateEntry = /**
+         * @param {?} entryNumber
+         * @param {?} quantity
+         * @return {?}
+         */
+        function (entryNumber, quantity) {
+            if (+quantity > 0) {
+                this.store.dispatch(new UpdateEntry({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    entry: entryNumber,
+                    qty: quantity,
+                }));
+            }
+            else {
+                this.store.dispatch(new RemoveEntry({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    entry: entryNumber,
+                }));
+            }
+        };
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        CartService.prototype.getEntry = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        function (productCode) {
+            return this.store.pipe(store.select(getEntrySelectorFactory(productCode)));
+        };
+        /**
+         * @param {?} cart
+         * @return {?}
+         */
+        CartService.prototype.isCreated = /**
+         * @param {?} cart
+         * @return {?}
+         */
+        function (cart) {
+            return cart && !!Object.keys(cart).length;
+        };
+        /**
+         * @param {?} cart
+         * @return {?}
+         */
+        CartService.prototype.isEmpty = /**
+         * @param {?} cart
+         * @return {?}
+         */
+        function (cart) {
+            return cart && !cart.totalItems;
+        };
+        CartService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: CartDataService },
+            { type: AuthService },
+            { type: BaseSiteService }
+        ]; };
+        return CartService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var services = [CartService, CartDataService];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    CartAdapter = /** @class */ (function () {
+        function CartAdapter() {
+        }
+        return CartAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartConnector = /** @class */ (function () {
+        function CartConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+        CartConnector.prototype.loadAll = /**
+         * @param {?} userId
+         * @param {?=} details
+         * @return {?}
+         */
+        function (userId, details) {
+            return this.adapter.loadAll(userId, details);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+        CartConnector.prototype.load = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} details
+         * @return {?}
+         */
+        function (userId, cartId, details) {
+            return this.adapter.load(userId, cartId, details);
+        };
+        /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        CartConnector.prototype.create = /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        function (userId, oldCartId, toMergeCartGuid) {
+            return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+        };
+        CartConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartConnector.ctorParameters = function () { return [
+            { type: CartAdapter }
+        ]; };
+        /** @nocollapse */ CartConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(core.ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+        return CartConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_NORMALIZER = new core.InjectionToken('CartNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    CartEntryAdapter = /** @class */ (function () {
+        function CartEntryAdapter() {
+        }
+        return CartEntryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartEntryConnector = /** @class */ (function () {
+        function CartEntryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        CartEntryConnector.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        function (userId, cartId, productCode, quantity) {
+            return this.adapter.add(userId, cartId, productCode, quantity);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        CartEntryConnector.prototype.update = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber, qty, pickupStore) {
+            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        CartEntryConnector.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber) {
+            return this.adapter.remove(userId, cartId, entryNumber);
+        };
+        CartEntryConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartEntryConnector.ctorParameters = function () { return [
+            { type: CartEntryAdapter }
+        ]; };
+        /** @nocollapse */ CartEntryConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+        return CartEntryConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_MODIFICATION_NORMALIZER = new core.InjectionToken('CartModificationNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CHECKOUT_FEATURE = 'checkout';
+    /** @type {?} */
+    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
+    /** @type {?} */
+    var ADD_DELIVERY_ADDRESS_FAIL = '[Checkout] Add Delivery Address Fail';
+    /** @type {?} */
+    var ADD_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Add Delivery Address Success';
+    /** @type {?} */
+    var SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
+    /** @type {?} */
+    var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
+    /** @type {?} */
+    var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+    /** @type {?} */
+    var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
+    /** @type {?} */
+    var LOAD_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Load Supported Delivery Modes Fail';
+    /** @type {?} */
+    var LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Load Supported Delivery Modes Success';
+    /** @type {?} */
+    var CLEAR_SUPPORTED_DELIVERY_MODES = '[Checkout] Clear Supported Delivery Modes';
+    /** @type {?} */
+    var SET_DELIVERY_MODE = '[Checkout] Set Delivery Mode';
+    /** @type {?} */
+    var SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
+    /** @type {?} */
+    var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
+    /** @type {?} */
+    var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
+    /** @type {?} */
+    var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
+    /** @type {?} */
+    var CREATE_PAYMENT_DETAILS_SUCCESS = '[Checkout] Create Payment Details Success';
+    /** @type {?} */
+    var SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
+    /** @type {?} */
+    var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
+    /** @type {?} */
+    var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+    /** @type {?} */
+    var PLACE_ORDER = '[Checkout] Place Order';
+    /** @type {?} */
+    var PLACE_ORDER_FAIL = '[Checkout] Place Order Fail';
+    /** @type {?} */
+    var PLACE_ORDER_SUCCESS = '[Checkout] Place Order Success';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_STEP = '[Checkout] Clear One Checkout Step';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DATA = '[Checkout] Clear Checkout Data';
+    /** @type {?} */
+    var LOAD_CHECKOUT_DETAILS = '[Checkout] Load Checkout Details';
+    /** @type {?} */
+    var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
+    /** @type {?} */
+    var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+    var AddDeliveryAddress = /** @class */ (function () {
+        function AddDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS;
+        }
+        return AddDeliveryAddress;
+    }());
+    var AddDeliveryAddressFail = /** @class */ (function () {
+        function AddDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_FAIL;
+        }
+        return AddDeliveryAddressFail;
+    }());
+    var AddDeliveryAddressSuccess = /** @class */ (function () {
+        function AddDeliveryAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return AddDeliveryAddressSuccess;
+    }());
+    var SetDeliveryAddress = /** @class */ (function () {
+        function SetDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_ADDRESS;
+        }
+        return SetDeliveryAddress;
+    }());
+    var SetDeliveryAddressFail = /** @class */ (function () {
+        function SetDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_ADDRESS_FAIL;
+        }
+        return SetDeliveryAddressFail;
+    }());
+    var SetDeliveryAddressSuccess = /** @class */ (function () {
+        function SetDeliveryAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return SetDeliveryAddressSuccess;
+    }());
+    var LoadSupportedDeliveryModes = /** @class */ (function () {
+        function LoadSupportedDeliveryModes(payload) {
+            this.payload = payload;
+            this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+        }
+        return LoadSupportedDeliveryModes;
+    }());
+    var LoadSupportedDeliveryModesFail = /** @class */ (function () {
+        function LoadSupportedDeliveryModesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+        }
+        return LoadSupportedDeliveryModesFail;
+    }());
+    var LoadSupportedDeliveryModesSuccess = /** @class */ (function () {
+        function LoadSupportedDeliveryModesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+        }
+        return LoadSupportedDeliveryModesSuccess;
+    }());
+    var SetDeliveryMode = /** @class */ (function () {
+        function SetDeliveryMode(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_MODE;
+        }
+        return SetDeliveryMode;
+    }());
+    var SetDeliveryModeFail = /** @class */ (function () {
+        function SetDeliveryModeFail(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_MODE_FAIL;
+        }
+        return SetDeliveryModeFail;
+    }());
+    var SetDeliveryModeSuccess = /** @class */ (function () {
+        function SetDeliveryModeSuccess(payload) {
+            this.payload = payload;
+            this.type = SET_DELIVERY_MODE_SUCCESS;
+        }
+        return SetDeliveryModeSuccess;
+    }());
+    var CreatePaymentDetails = /** @class */ (function () {
+        function CreatePaymentDetails(payload) {
+            this.payload = payload;
+            this.type = CREATE_PAYMENT_DETAILS;
+        }
+        return CreatePaymentDetails;
+    }());
+    var CreatePaymentDetailsFail = /** @class */ (function () {
+        function CreatePaymentDetailsFail(payload) {
+            this.payload = payload;
+            this.type = CREATE_PAYMENT_DETAILS_FAIL;
+        }
+        return CreatePaymentDetailsFail;
+    }());
+    var CreatePaymentDetailsSuccess = /** @class */ (function () {
+        function CreatePaymentDetailsSuccess(payload) {
+            this.payload = payload;
+            this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
+        }
+        return CreatePaymentDetailsSuccess;
+    }());
+    var SetPaymentDetails = /** @class */ (function () {
+        function SetPaymentDetails(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_DETAILS;
+        }
+        return SetPaymentDetails;
+    }());
+    var SetPaymentDetailsFail = /** @class */ (function () {
+        function SetPaymentDetailsFail(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_DETAILS_FAIL;
+        }
+        return SetPaymentDetailsFail;
+    }());
+    var SetPaymentDetailsSuccess = /** @class */ (function () {
+        function SetPaymentDetailsSuccess(payload) {
+            this.payload = payload;
+            this.type = SET_PAYMENT_DETAILS_SUCCESS;
+        }
+        return SetPaymentDetailsSuccess;
+    }());
+    var PlaceOrder = /** @class */ (function () {
+        function PlaceOrder(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER;
+        }
+        return PlaceOrder;
+    }());
+    var PlaceOrderFail = /** @class */ (function () {
+        function PlaceOrderFail(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER_FAIL;
+        }
+        return PlaceOrderFail;
+    }());
+    var PlaceOrderSuccess = /** @class */ (function () {
+        function PlaceOrderSuccess(payload) {
+            this.payload = payload;
+            this.type = PLACE_ORDER_SUCCESS;
+        }
+        return PlaceOrderSuccess;
+    }());
+    var ClearSupportedDeliveryModes = /** @class */ (function () {
+        function ClearSupportedDeliveryModes() {
+            this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
+        }
+        return ClearSupportedDeliveryModes;
+    }());
+    var ClearCheckoutStep = /** @class */ (function () {
+        function ClearCheckoutStep(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_STEP;
+        }
+        return ClearCheckoutStep;
+    }());
+    var ClearCheckoutData = /** @class */ (function () {
+        function ClearCheckoutData() {
+            this.type = CLEAR_CHECKOUT_DATA;
+        }
+        return ClearCheckoutData;
+    }());
+    var LoadCheckoutDetails = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetails, _super);
+        function LoadCheckoutDetails(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS;
+            return _this;
+        }
+        return LoadCheckoutDetails;
+    }(LoaderLoadAction));
+    var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsFail, _super);
+        function LoadCheckoutDetailsFail(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadCheckoutDetailsFail;
+    }(LoaderFailAction));
+    var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCheckoutDetailsSuccess, _super);
+        function LoadCheckoutDetailsSuccess(payload) {
+            var _this = _super.call(this, CHECKOUT_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadCheckoutDetailsSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$5 = {
+        content: {},
+        entries: {},
+        refresh: false,
+        cartMergeComplete: false,
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
+        switch (action.type) {
+            case MERGE_CART: {
+                return __assign({}, state, { cartMergeComplete: false });
+            }
+            case MERGE_CART_SUCCESS: {
+                return __assign({}, state, { cartMergeComplete: true, refresh: true });
+            }
+            case LOAD_CART_SUCCESS:
+            case CREATE_CART_SUCCESS: {
+                /** @type {?} */
+                var content = __assign({}, action.payload);
+                /** @type {?} */
+                var entries = {};
+                if (content.entries) {
+                    entries = content.entries.reduce((/**
+                     * @param {?} entryMap
+                     * @param {?} entry
+                     * @return {?}
+                     */
+                    function (entryMap, entry) {
+                        var _a;
+                        return __assign({}, entryMap, (_a = {}, _a[entry.product.code] = state.entries[entry.product.code]
+                            ? __assign({}, state.entries[entry.product.code], entry) : entry, _a));
+                    }), __assign({}, entries));
+                    delete content['entries'];
+                }
+                return __assign({}, state, { content: content,
+                    entries: entries, refresh: false });
+            }
+            case REMOVE_ENTRY_SUCCESS:
+            case UPDATE_ENTRY_SUCCESS:
+            case ADD_ENTRY_SUCCESS: {
+                return __assign({}, state, { refresh: true });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$3() {
+        return {
+            active: loaderReducer(CART_DATA, reducer$5),
+        };
+    }
+    /** @type {?} */
+    var reducerToken$3 = new core.InjectionToken('CartReducers');
+    /** @type {?} */
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
+    };
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearCartState(reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === LOGOUT || action.type === PLACE_ORDER_SUCCESS) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        });
+    }
+    /** @type {?} */
+    var metaReducers$1 = [clearCartState];
 
     /**
      * @fileoverview added by tsickle
@@ -7747,10 +7755,10 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
                             effects$a.EffectsModule.forFeature(effects$3),
                         ],
-                        providers: [reducerProvider$2],
+                        providers: [reducerProvider$3],
                     },] }
         ];
         return CartStoreModule;
@@ -29881,15 +29889,15 @@
     exports.ɵbh = UserTokenInterceptor;
     exports.ɵbi = AuthErrorInterceptor;
     exports.ɵbj = CartStoreModule;
-    exports.ɵbk = getReducers$2;
-    exports.ɵbl = reducerToken$2;
-    exports.ɵbm = reducerProvider$2;
+    exports.ɵbk = getReducers$3;
+    exports.ɵbl = reducerToken$3;
+    exports.ɵbm = reducerProvider$3;
     exports.ɵbn = clearCartState;
     exports.ɵbo = metaReducers$1;
     exports.ɵbp = effects$3;
     exports.ɵbq = CartEffects;
     exports.ɵbr = CartEntryEffects;
-    exports.ɵbs = reducer$2;
+    exports.ɵbs = reducer$5;
     exports.ɵbt = reducer$6;
     exports.ɵbu = getCardTypesEntites;
     exports.ɵbv = reducer$7;
@@ -29923,10 +29931,10 @@
     exports.ɵcw = reducer$a;
     exports.ɵcx = reducer$b;
     exports.ɵcy = reducer$9;
-    exports.ɵcz = getReducers$3;
+    exports.ɵcz = getReducers$2;
     exports.ɵd = reducer;
-    exports.ɵda = reducerToken$3;
-    exports.ɵdb = reducerProvider$3;
+    exports.ɵda = reducerToken$2;
+    exports.ɵdb = reducerProvider$2;
     exports.ɵdc = effects$2;
     exports.ɵdd = LanguagesEffects;
     exports.ɵde = CurrenciesEffects;
@@ -29992,9 +30000,9 @@
     exports.ɵfk = defaultSiteContextConfigFactory;
     exports.ɵfl = siteContextStoreConfigFactory;
     exports.ɵfm = SiteContextStoreModule;
-    exports.ɵfn = reducer$3;
-    exports.ɵfo = reducer$4;
-    exports.ɵfp = reducer$5;
+    exports.ɵfn = reducer$2;
+    exports.ɵfo = reducer$3;
+    exports.ɵfp = reducer$4;
     exports.ɵfq = SiteContextParamsService;
     exports.ɵfr = SiteContextUrlSerializer;
     exports.ɵfs = SiteContextRoutesHandler;

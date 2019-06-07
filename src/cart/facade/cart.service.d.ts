@@ -5,12 +5,14 @@ import { CartDataService } from './cart-data.service';
 import { StateWithCart } from '../store/cart-state';
 import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
+import { BaseSiteService } from '../../site-context/index';
 export declare class CartService {
     protected store: Store<StateWithCart>;
     protected cartData: CartDataService;
     protected authService: AuthService;
+    protected baseSiteService: BaseSiteService;
     private callback;
-    constructor(store: Store<StateWithCart>, cartData: CartDataService, authService: AuthService);
+    constructor(store: Store<StateWithCart>, cartData: CartDataService, authService: AuthService, baseSiteService: BaseSiteService);
     getActive(): Observable<Cart>;
     getEntries(): Observable<OrderEntry[]>;
     getCartMergeComplete(): Observable<boolean>;
