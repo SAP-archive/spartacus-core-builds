@@ -15476,23 +15476,35 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return ({
+        loaded: loaderSuccessSelector(state),
+        loading: loaderLoadingSelector(state),
+        regions: loaderValueSelector(state).entities,
+        country: loaderValueSelector(state).country,
+    }); };
+    /** @type {?} */
+    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$8));
+    var ɵ3$5 = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return loaderValueSelector(state).country; };
     /** @type {?} */
-    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ2$8));
-    var ɵ3$5 = /**
+    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$5));
+    var ɵ4$1 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getRegionsLoading = store.createSelector(getRegionsLoaderState, (ɵ3$5));
-    var ɵ4$1 = /**
+    var getRegionsLoading = store.createSelector(getRegionsLoaderState, (ɵ4$1));
+    var ɵ5$1 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderSuccessSelector(state); };
     /** @type {?} */
-    var getRegionsLoaded = store.createSelector(getRegionsLoaderState, (ɵ4$1));
+    var getRegionsLoaded = store.createSelector(getRegionsLoaderState, (ɵ5$1));
 
     /**
      * @fileoverview added by tsickle
@@ -15864,9 +15876,6 @@
                         country: country });
                 }
                 return initialState$j;
-            }
-            case LOAD_REGIONS: {
-                return __assign({}, state);
             }
         }
         return state;
@@ -16787,14 +16796,13 @@
          */
         function (countryIsoCode) {
             var _this = this;
-            return rxjs.combineLatest(this.store.pipe(store.select(getAllRegions)), this.store.pipe(store.select(getRegionsCountry)), this.store.pipe(store.select(getRegionsLoading)), this.store.pipe(store.select(getRegionsLoaded))).pipe(operators.debounceTime(1), // fix for inconsistent result on store mutations
-            operators.map((/**
+            return this.store.select(getRegionsDataAndLoading).pipe(operators.map((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
-                var _b = __read(_a, 4), regions = _b[0], country = _b[1], loading = _b[2], loaded = _b[3];
-                if (!countryIsoCode) {
+                var regions = _a.regions, country = _a.country, loading = _a.loading, loaded = _a.loaded;
+                if (!countryIsoCode && (loading || loaded)) {
                     _this.clearRegions();
                     return [];
                 }
@@ -16802,9 +16810,11 @@
                     // don't interrupt loading
                     return [];
                 }
-                else if (!loading && countryIsoCode !== country) {
+                else if (!loading && countryIsoCode !== country && countryIsoCode) {
                     // country changed - clear store and load new regions
-                    _this.clearRegions();
+                    if (country) {
+                        _this.clearRegions();
+                    }
                     _this.loadRegions(countryIsoCode);
                     return [];
                 }
@@ -29816,6 +29826,7 @@
     exports.getRefresh = getRefresh;
     exports.getRefreshSelector = getRefreshSelector;
     exports.getRegionsCountry = getRegionsCountry;
+    exports.getRegionsDataAndLoading = getRegionsDataAndLoading;
     exports.getRegionsLoaded = getRegionsLoaded;
     exports.getRegionsLoaderState = getRegionsLoaderState;
     exports.getRegionsLoading = getRegionsLoading;
