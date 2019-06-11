@@ -15861,7 +15861,10 @@ function defaultGlobalMessageConfigFactory() {
                 timeout: 3000,
             },
             [GlobalMessageType.MSG_TYPE_INFO]: {
-                timeout: 10000,
+                timeout: 3000,
+            },
+            [GlobalMessageType.MSG_TYPE_ERROR]: {
+                timeout: 7000,
             },
         },
     };

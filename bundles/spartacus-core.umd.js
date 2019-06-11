@@ -18495,7 +18495,10 @@
                     timeout: 3000,
                 },
                 _a[GlobalMessageType.MSG_TYPE_INFO] = {
-                    timeout: 10000,
+                    timeout: 3000,
+                },
+                _a[GlobalMessageType.MSG_TYPE_ERROR] = {
+                    timeout: 7000,
                 },
                 _a),
         };
