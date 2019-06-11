@@ -27248,15 +27248,18 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
         this.platform = platform;
-        this.enabled = this.config.personalization.enabled || false;
-        if (this.enabled) {
-            this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
-            this.personalizationId =
-                this.winRef.localStorage &&
-                    this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
-        }
-        else if (this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY)) {
-            this.winRef.localStorage.removeItem(PERSONALIZATION_ID_KEY);
+        this.enabled = false;
+        if (isPlatformBrowser(this.platform)) {
+            this.enabled =
+                (this.winRef.localStorage && this.config.personalization.enabled) ||
+                    false;
+            if (this.enabled) {
+                this.requestHeader = this.config.personalization.httpHeaderName.id.toLowerCase();
+                this.personalizationId = this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY);
+            }
+            else if (this.winRef.localStorage.getItem(PERSONALIZATION_ID_KEY)) {
+                this.winRef.localStorage.removeItem(PERSONALIZATION_ID_KEY);
+            }
         }
     }
     /**
@@ -27272,7 +27275,7 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
     function (request, next) {
         var _this = this;
         var _a;
-        if (isPlatformServer(this.platform) || !this.enabled) {
+        if (!this.enabled) {
             return next.handle(request);
         }
         if (this.personalizationId &&
@@ -27325,15 +27328,18 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
         this.occEndpoints = occEndpoints;
         this.winRef = winRef;
         this.platform = platform;
-        this.enabled = this.config.personalization.enabled || false;
-        if (this.enabled) {
-            this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
-            this.timestamp =
-                this.winRef.localStorage &&
-                    this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
-        }
-        else if (this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY)) {
-            this.winRef.localStorage.removeItem(PERSONALIZATION_TIME_KEY);
+        this.enabled = false;
+        if (isPlatformBrowser(this.platform)) {
+            this.enabled =
+                (this.winRef.localStorage && this.config.personalization.enabled) ||
+                    false;
+            if (this.enabled) {
+                this.requestHeader = this.config.personalization.httpHeaderName.timestamp.toLowerCase();
+                this.timestamp = this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY);
+            }
+            else if (this.winRef.localStorage.getItem(PERSONALIZATION_TIME_KEY)) {
+                this.winRef.localStorage.removeItem(PERSONALIZATION_TIME_KEY);
+            }
         }
     }
     /**
@@ -27349,7 +27355,7 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
     function (request, next) {
         var _this = this;
         var _a;
-        if (isPlatformServer(this.platform) || !this.enabled) {
+        if (!this.enabled) {
             return next.handle(request);
         }
         if (this.timestamp &&
