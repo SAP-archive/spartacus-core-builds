@@ -12,12 +12,12 @@ export declare const getIndexByType: (index: IndexType, type: PageType) => impor
 export declare const getPageComponentTypesSelector: (page: Page) => string[];
 export declare const getPageState: MemoizedSelector<StateWithCms, PageState>;
 export declare const getPageStateIndex: MemoizedSelector<StateWithCms, IndexType>;
-export declare const getIndex: (pageContext: PageContext) => MemoizedSelector<StateWithCms, import("../../../state").EntityState<LoaderState<string>>>;
-export declare const getIndexEntity: (pageContext: PageContext) => MemoizedSelector<StateWithCms, LoaderState<string>>;
-export declare const getIndexValue: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string>;
+export declare const getIndex: (pageContext: PageContext) => MemoizedSelector<StateWithCms, import("../../../state").EntityState<LoaderState<string>>, import("@ngrx/store/src/selector").DefaultProjectorFn<import("../../../state").EntityState<LoaderState<string>>>>;
+export declare const getIndexEntity: (pageContext: PageContext) => MemoizedSelector<StateWithCms, LoaderState<string>, import("@ngrx/store/src/selector").DefaultProjectorFn<LoaderState<string>>>;
+export declare const getIndexValue: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string, import("@ngrx/store/src/selector").DefaultProjectorFn<string>>;
 export declare const getPageEntities: MemoizedSelector<StateWithCms, {
     [id: string]: Page;
 }>;
-export declare const getPageData: (pageContext: PageContext) => MemoizedSelector<StateWithCms, Page>;
-export declare const getPageComponentTypes: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string[]>;
-export declare const currentSlotSelectorFactory: (pageContext: PageContext, position: string) => MemoizedSelector<StateWithCms, ContentSlotData>;
+export declare const getPageData: (pageContext: PageContext) => MemoizedSelector<StateWithCms, Page, import("@ngrx/store/src/selector").DefaultProjectorFn<Page>>;
+export declare const getPageComponentTypes: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string[], import("@ngrx/store/src/selector").DefaultProjectorFn<string[]>>;
+export declare const currentSlotSelectorFactory: (pageContext: PageContext, position: string) => MemoizedSelector<StateWithCms, ContentSlotData, import("@ngrx/store/src/selector").DefaultProjectorFn<ContentSlotData>>;

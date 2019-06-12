@@ -6,5 +6,5 @@ export declare const getComponentState: MemoizedSelector<StateWithCms, Component
 export declare const getComponentEntities: MemoizedSelector<StateWithCms, {
     [id: string]: any;
 }>;
-export declare const componentStateSelectorFactory: (uid: string) => MemoizedSelector<StateWithCms, LoaderState<any>>;
-export declare const componentSelectorFactory: (uid: string) => MemoizedSelector<StateWithCms, any>;
+export declare const componentStateSelectorFactory: (uid: string) => MemoizedSelector<StateWithCms, LoaderState<any>, import("@ngrx/store/src/selector").DefaultProjectorFn<LoaderState<any>>>;
+export declare const componentSelectorFactory: (uid: string) => MemoizedSelector<StateWithCms, any, import("@ngrx/store/src/selector").DefaultProjectorFn<any>>;

@@ -3324,14 +3324,19 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var META_REDUCER = new core.InjectionToken('metaReducer');
-    /**
-     * @param {?} metaReducers
-     * @return {?}
-     */
-    function metaReducersFactory(metaReducers) {
-        return (metaReducers || []).filter(Boolean);
-    }
+    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+    /** @type {?} */
+    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+    /** @type {?} */
+    var defaultStateConfig = {
+        state: {
+            storageSync: {
+                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+                keys: {},
+            },
+        },
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -3454,7 +3459,7 @@
                 if (action.type === store.INIT || action.type === store.UPDATE) {
                     /** @type {?} */
                     var rehydratedState = rehydrate(config, winRef);
-                    return deepMerge(newState, rehydratedState);
+                    return deepMerge({}, newState, rehydratedState);
                 }
                 newState = reducer(newState, action);
                 if (action.type !== store.INIT) {
@@ -3578,7 +3583,11 @@
                 return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
             }
         }
-        return undefined;
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) { return reducer; });
     }
     /**
      * @param {?} transferState
@@ -3656,7 +3665,7 @@
     /** @type {?} */
     var stateMetaReducers = [
         {
-            provide: META_REDUCER,
+            provide: store.META_REDUCERS,
             useFactory: ɵ0$4,
             deps: [
                 core.PLATFORM_ID,
@@ -3666,7 +3675,7 @@
             multi: true,
         },
         {
-            provide: META_REDUCER,
+            provide: store.META_REDUCERS,
             useFactory: ɵ1$2,
             deps: [WindowRef, [new core.Optional(), Config]],
             multi: true,
@@ -3677,26 +3686,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-    /** @type {?} */
-    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-    /** @type {?} */
-    var defaultStateConfig = {
-        state: {
-            storageSync: {
-                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-                keys: {},
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$5 = metaReducersFactory;
     var StateModule = /** @class */ (function () {
         function StateModule() {
         }
@@ -3707,13 +3696,7 @@
                             effects$a.EffectsModule.forRoot([]),
                             ConfigModule.withConfig(defaultStateConfig),
                         ],
-                        providers: __spread(stateMetaReducers, [
-                            {
-                                provide: store.META_REDUCERS,
-                                useFactory: ɵ0$5,
-                                deps: [[new core.Optional(), META_REDUCER]],
-                            },
-                        ]),
+                        providers: __spread(stateMetaReducers),
                     },] }
         ];
         return StateModule;
@@ -3801,7 +3784,7 @@
                     /** @type {?} */
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
-                    token.expiration_time = date;
+                    token.expiration_time = date.toJSON();
                     token.userId = USERID_CURRENT;
                     return new LoadUserTokenSuccess(token);
                 })), operators.catchError((/**
@@ -3832,8 +3815,8 @@
                     /** @type {?} */
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
+                    token.expiration_time = date.toJSON();
                     token.userId = USERID_CURRENT;
-                    token.expiration_time = date;
                     return new RefreshUserTokenSuccess(token);
                 }), operators.catchError((/**
                  * @param {?} error
@@ -4583,13 +4566,13 @@
     });
     /** @type {?} */
     var getCartsState = store.createFeatureSelector(CART_FEATURE);
-    var ɵ0$6 = /**
+    var ɵ0$5 = /**
      * @param {?} cartsState
      * @return {?}
      */
     function (cartsState) { return cartsState.active; };
     /** @type {?} */
-    var getActiveCartState = store.createSelector(getCartsState, (ɵ0$6));
+    var getActiveCartState = store.createSelector(getCartsState, (ɵ0$5));
     var ɵ1$3 = /**
      * @param {?} state
      * @return {?}
@@ -7907,13 +7890,13 @@
     });
     /** @type {?} */
     var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ0$7 = /**
+    var ɵ0$6 = /**
      * @param {?} checkoutState
      * @return {?}
      */
     function (checkoutState) { return checkoutState.steps; };
     /** @type {?} */
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, (ɵ0$7));
+    var getCheckoutStepsState = store.createSelector(getCheckoutState, (ɵ0$6));
     var ɵ1$4 = /**
      * @param {?} state
      * @return {?}
@@ -8021,13 +8004,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$8 = /**
+    var ɵ0$7 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.cardTypes; };
     /** @type {?} */
-    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$8));
+    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$7));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
     var ɵ1$5 = /**
@@ -8085,13 +8068,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$9 = /**
+    var ɵ0$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addressVerification; };
     /** @type {?} */
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$9));
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$8));
     /** @type {?} */
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -11486,13 +11469,13 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ0$a = /**
+    var ɵ0$9 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.page; };
     /** @type {?} */
-    var getPageState = store.createSelector(getCmsState, (ɵ0$a));
+    var getPageState = store.createSelector(getCmsState, (ɵ0$9));
     var ɵ1$6 = /**
      * @param {?} page
      * @return {?}
@@ -11603,13 +11586,13 @@
             return acc;
         }), {});
     });
-    var ɵ0$b = /**
+    var ɵ0$a = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
     /** @type {?} */
-    var getComponentState = store.createSelector(getCmsState, (ɵ0$b));
+    var getComponentState = store.createSelector(getCmsState, (ɵ0$a));
     /** @type {?} */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
@@ -11641,13 +11624,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$c = /**
+    var ɵ0$b = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.navigation; };
     /** @type {?} */
-    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$c));
+    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$b));
     /** @type {?} */
     var getSelectedNavigationEntryItemState = (/**
      * @param {?} nodeId
@@ -14187,13 +14170,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$d = /**
+    var ɵ0$c = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.references; };
     /** @type {?} */
-    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$d));
+    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$c));
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
@@ -14215,13 +14198,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$e = /**
+    var ɵ0$d = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.reviews; };
     /** @type {?} */
-    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$e));
+    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$d));
     /** @type {?} */
     var getSelectedProductReviewsFactory = (/**
      * @param {?} productCode
@@ -14243,13 +14226,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$f = /**
+    var ɵ0$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.search; };
     /** @type {?} */
-    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$f));
+    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$e));
     /** @type {?} */
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
@@ -14261,13 +14244,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$g = /**
+    var ɵ0$f = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getProductState = store.createSelector(getProductsState, (ɵ0$g));
+    var getProductState = store.createSelector(getProductsState, (ɵ0$f));
     /** @type {?} */
     var getSelectedProductsFactory = (/**
      * @param {?} codes
@@ -15339,13 +15322,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$h = /**
+    var ɵ0$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.billingCountries; };
     /** @type {?} */
-    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$h));
+    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$g));
     var ɵ1$8 = /**
      * @param {?} state
      * @return {?}
@@ -15369,13 +15352,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$i = /**
+    var ɵ0$h = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.countries; };
     /** @type {?} */
-    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$i));
+    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$h));
     var ɵ1$9 = /**
      * @param {?} state
      * @return {?}
@@ -15411,13 +15394,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$j = /**
+    var ɵ0$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderState = store.createSelector(getUserState, (ɵ0$j));
+    var getOrderState = store.createSelector(getUserState, (ɵ0$i));
     var ɵ1$a = /**
      * @param {?} state
      * @return {?}
@@ -15430,13 +15413,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$k = /**
+    var ɵ0$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.payments; };
     /** @type {?} */
-    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$k));
+    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$j));
     var ɵ1$b = /**
      * @param {?} state
      * @return {?}
@@ -15456,13 +15439,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$l = /**
+    var ɵ0$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.regions; };
     /** @type {?} */
-    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$l));
+    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$k));
     var ɵ1$c = /**
      * @param {?} state
      * @return {?}
@@ -15510,25 +15493,25 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$m = /**
+    var ɵ0$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.resetPassword; };
     /** @type {?} */
-    var getResetPassword = store.createSelector(getUserState, (ɵ0$m));
+    var getResetPassword = store.createSelector(getUserState, (ɵ0$l));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$n = /**
+    var ɵ0$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.titles; };
     /** @type {?} */
-    var getTitlesState = store.createSelector(getUserState, (ɵ0$n));
+    var getTitlesState = store.createSelector(getUserState, (ɵ0$m));
     var ɵ1$d = /**
      * @param {?} state
      * @return {?}
@@ -15564,13 +15547,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$o = /**
+    var ɵ0$n = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addresses; };
     /** @type {?} */
-    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$o));
+    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$n));
     var ɵ1$e = /**
      * @param {?} state
      * @return {?}
@@ -15590,13 +15573,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$p = /**
+    var ɵ0$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getConsentsState = store.createSelector(getUserState, (ɵ0$p));
+    var getConsentsState = store.createSelector(getUserState, (ɵ0$o));
     /** @type {?} */
     var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
@@ -15610,13 +15593,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$q = /**
+    var ɵ0$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.account; };
     /** @type {?} */
-    var getDetailsState = store.createSelector(getUserState, (ɵ0$q));
+    var getDetailsState = store.createSelector(getUserState, (ɵ0$p));
     var ɵ1$f = /**
      * @param {?} state
      * @return {?}
@@ -15629,13 +15612,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$r = /**
+    var ɵ0$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.orders; };
     /** @type {?} */
-    var getOrdersState = store.createSelector(getUserState, (ɵ0$r));
+    var getOrdersState = store.createSelector(getUserState, (ɵ0$q));
     var ɵ1$g = /**
      * @param {?} state
      * @return {?}
@@ -17613,13 +17596,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$s = /**
+    var ɵ0$r = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$s));
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$r));
     /** @type {?} */
     var getGlobalMessageEntitiesByType = (/**
      * @param {?} type
@@ -20457,12 +20440,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$t = i18nextInit;
+    var ɵ0$s = i18nextInit;
     /** @type {?} */
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$t,
+            useFactory: ɵ0$s,
             deps: [I18nConfig, LanguageService],
             multi: true,
         },
@@ -21002,13 +20985,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$u = /**
+    var ɵ0$t = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.openIdToken; };
     /** @type {?} */
-    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$u));
+    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$t));
     /** @type {?} */
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     /** @type {?} */
@@ -28048,13 +28031,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$v = /**
+    var ɵ0$u = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
-    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$v));
+    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$u));
     var ɵ1$h = /**
      * @param {?} state
      * @return {?}
@@ -28074,13 +28057,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$w = /**
+    var ɵ0$v = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.viewAllStores; };
     /** @type {?} */
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$w));
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$v));
     var ɵ1$i = /**
      * @param {?} state
      * @return {?}
@@ -29405,7 +29388,6 @@
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.MERGE_CART = MERGE_CART;
     exports.MERGE_CART_SUCCESS = MERGE_CART_SUCCESS;
-    exports.META_REDUCER = META_REDUCER;
     exports.MergeCart = MergeCart;
     exports.MergeCartSuccess = MergeCartSuccess;
     exports.MockDatePipe = MockDatePipe;
@@ -29880,7 +29862,6 @@
     exports.loaderSuccessSelector = loaderSuccessSelector;
     exports.loaderValueSelector = loaderValueSelector;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
-    exports.metaReducersFactory = metaReducersFactory;
     exports.occConfigValidator = occConfigValidator;
     exports.occServerConfigFromMetaTagFactory = occServerConfigFromMetaTagFactory;
     exports.ofLoaderFail = ofLoaderFail;
