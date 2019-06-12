@@ -3452,16 +3452,12 @@
              */
             function (state, action) {
                 /** @type {?} */
-                var newState = __assign({}, state);
-                if (action.type === store.INIT && !exists(newState)) {
-                    newState = reducer(state, action);
-                }
+                var newState = reducer(state, action);
                 if (action.type === store.INIT || action.type === store.UPDATE) {
                     /** @type {?} */
                     var rehydratedState = rehydrate(config, winRef);
                     return deepMerge({}, newState, rehydratedState);
                 }
-                newState = reducer(newState, action);
                 if (action.type !== store.INIT) {
                     // handle local storage
                     /** @type {?} */
@@ -3504,24 +3500,6 @@
         /** @type {?} */
         var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
         return deepMerge(localStorageValue, sessionStorageValue);
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    function exists(value) {
-        if (value != null) {
-            if (typeof value === 'object') {
-                return Object.keys(value).length !== 0;
-            }
-            else if (value === '') {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-        return false;
     }
     /**
      * @param {?} configKey

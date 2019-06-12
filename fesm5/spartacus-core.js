@@ -3373,16 +3373,12 @@ function getStorageSyncReducer(winRef, config) {
          */
         function (state, action) {
             /** @type {?} */
-            var newState = __assign({}, state);
-            if (action.type === INIT && !exists(newState)) {
-                newState = reducer(state, action);
-            }
+            var newState = reducer(state, action);
             if (action.type === INIT || action.type === UPDATE) {
                 /** @type {?} */
                 var rehydratedState = rehydrate(config, winRef);
                 return deepMerge({}, newState, rehydratedState);
             }
-            newState = reducer(newState, action);
             if (action.type !== INIT) {
                 // handle local storage
                 /** @type {?} */
@@ -3425,24 +3421,6 @@ function rehydrate(config, winRef) {
     /** @type {?} */
     var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
     return deepMerge(localStorageValue, sessionStorageValue);
-}
-/**
- * @param {?} value
- * @return {?}
- */
-function exists(value) {
-    if (value != null) {
-        if (typeof value === 'object') {
-            return Object.keys(value).length !== 0;
-        }
-        else if (value === '') {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    return false;
 }
 /**
  * @param {?} configKey
