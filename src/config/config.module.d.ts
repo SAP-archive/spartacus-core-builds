@@ -33,18 +33,18 @@ export declare class ConfigModule {
      *
      * @param config Config object to merge with the global configuration
      */
-    static withConfig(config: object): ModuleWithProviders;
+    static withConfig(config: object): ModuleWithProviders<ConfigModule>;
     /**
      * Import ConfigModule and contribute config to the global configuration using factory function
      *
      * @param configFactory Factory function that will generate configuration
      * @param deps Optional dependencies to factory function
      */
-    static withConfigFactory(configFactory: Function, deps?: any[]): ModuleWithProviders;
+    static withConfigFactory(configFactory: Function, deps?: any[]): ModuleWithProviders<ConfigModule>;
     /**
      * Module with providers, should be imported only once, if possible, at the root of the app.
      *
      * @param config
      */
-    static forRoot(config?: any): ModuleWithProviders;
+    static forRoot(config?: any): ModuleWithProviders<ConfigModule>;
 }

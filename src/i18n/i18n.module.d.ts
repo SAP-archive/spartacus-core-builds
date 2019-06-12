@@ -1,4 +1,4 @@
 import { ModuleWithProviders } from '@angular/core';
 export declare class I18nModule {
-    static forRoot(): ModuleWithProviders;
+    static forRoot(): ModuleWithProviders<I18nModule>;
 }
