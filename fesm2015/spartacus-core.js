@@ -23817,6 +23817,7 @@ class SmartEditService {
         this.routingService = routingService;
         this.baseSiteService = baseSiteService;
         this.zone = zone;
+        this.winRef = winRef;
         this.isPreviewPage = false;
         this.getCmsTicket();
         this.addPageContract();
@@ -23910,7 +23911,7 @@ class SmartEditService {
                 // remove old page contract
                 /** @type {?} */
                 const previousContract = [];
-                Array.from(document.body.classList).forEach((/**
+                Array.from(this.winRef.document.body.classList).forEach((/**
                  * @param {?} attr
                  * @return {?}
                  */
@@ -23919,7 +23920,7 @@ class SmartEditService {
                  * @param {?} attr
                  * @return {?}
                  */
-                attr => document.body.classList.remove(attr)));
+                attr => this.winRef.document.body.classList.remove(attr)));
                 // add new page contract
                 if (cmsPage.properties && cmsPage.properties.smartedit) {
                     /** @type {?} */
@@ -23929,7 +23930,7 @@ class SmartEditService {
                      * @return {?}
                      */
                     classItem => {
-                        document.body.classList.add(classItem);
+                        this.winRef.document.body.classList.add(classItem);
                     }));
                 }
             }

@@ -27472,6 +27472,7 @@
             this.routingService = routingService;
             this.baseSiteService = baseSiteService;
             this.zone = zone;
+            this.winRef = winRef;
             this.isPreviewPage = false;
             this.getCmsTicket();
             this.addPageContract();
@@ -27588,7 +27589,7 @@
                     // remove old page contract
                     /** @type {?} */
                     var previousContract_1 = [];
-                    Array.from(document.body.classList).forEach((/**
+                    Array.from(_this.winRef.document.body.classList).forEach((/**
                      * @param {?} attr
                      * @return {?}
                      */
@@ -27599,7 +27600,9 @@
                      * @param {?} attr
                      * @return {?}
                      */
-                    function (attr) { return document.body.classList.remove(attr); }));
+                    function (attr) {
+                        return _this.winRef.document.body.classList.remove(attr);
+                    }));
                     // add new page contract
                     if (cmsPage.properties && cmsPage.properties.smartedit) {
                         /** @type {?} */
@@ -27609,7 +27612,7 @@
                          * @return {?}
                          */
                         function (classItem) {
-                            document.body.classList.add(classItem);
+                            _this.winRef.document.body.classList.add(classItem);
                         }));
                     }
                 }

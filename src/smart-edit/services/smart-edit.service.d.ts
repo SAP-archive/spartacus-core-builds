@@ -9,6 +9,7 @@ export declare class SmartEditService {
     protected routingService: RoutingService;
     protected baseSiteService: BaseSiteService;
     protected zone: NgZone;
+    protected winRef: WindowRef;
     private _cmsTicketId;
     private isPreviewPage;
     private _currentPageId;
