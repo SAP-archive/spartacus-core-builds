@@ -2969,16 +2969,8 @@ var ClientTokenInterceptor = /** @class */ (function () {
  */
 var UserTokenInterceptor = /** @class */ (function () {
     function UserTokenInterceptor(authService, occEndpoints) {
-        var _this = this;
         this.authService = authService;
         this.occEndpoints = occEndpoints;
-        this.authService.getUserToken().subscribe((/**
-         * @param {?} token
-         * @return {?}
-         */
-        function (token) {
-            _this.userToken = token;
-        }));
     }
     /**
      * @param {?} request
@@ -2991,16 +2983,23 @@ var UserTokenInterceptor = /** @class */ (function () {
      * @return {?}
      */
     function (request, next) {
-        if (this.userToken &&
-            this.isOccUrl(request.url) &&
-            !request.headers.get('Authorization')) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: this.userToken.token_type + " " + this.userToken.access_token,
-                },
-            });
-        }
-        return next.handle(request);
+        var _this = this;
+        return this.authService.getUserToken().pipe(take(1), switchMap((/**
+         * @param {?} token
+         * @return {?}
+         */
+        function (token) {
+            if (token &&
+                _this.isOccUrl(request.url) &&
+                !request.headers.get('Authorization')) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: token.token_type + " " + token.access_token,
+                    },
+                });
+            }
+            return next.handle(request);
+        })));
     };
     /**
      * @private

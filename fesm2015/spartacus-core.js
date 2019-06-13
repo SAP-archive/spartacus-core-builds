@@ -2458,13 +2458,6 @@ class UserTokenInterceptor {
     constructor(authService, occEndpoints) {
         this.authService = authService;
         this.occEndpoints = occEndpoints;
-        this.authService.getUserToken().subscribe((/**
-         * @param {?} token
-         * @return {?}
-         */
-        (token) => {
-            this.userToken = token;
-        }));
     }
     /**
      * @param {?} request
@@ -2472,16 +2465,22 @@ class UserTokenInterceptor {
      * @return {?}
      */
     intercept(request, next) {
-        if (this.userToken &&
-            this.isOccUrl(request.url) &&
-            !request.headers.get('Authorization')) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: `${this.userToken.token_type} ${this.userToken.access_token}`,
-                },
-            });
-        }
-        return next.handle(request);
+        return this.authService.getUserToken().pipe(take(1), switchMap((/**
+         * @param {?} token
+         * @return {?}
+         */
+        token => {
+            if (token &&
+                this.isOccUrl(request.url) &&
+                !request.headers.get('Authorization')) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: `${token.token_type} ${token.access_token}`,
+                    },
+                });
+            }
+            return next.handle(request);
+        })));
     }
     /**
      * @private
