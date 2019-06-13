@@ -12871,11 +12871,9 @@ var DynamicAttributeService = /** @class */ (function () {
  */
 var CartPageMetaResolver = /** @class */ (function (_super) {
     __extends(CartPageMetaResolver, _super);
-    function CartPageMetaResolver(cartService, cms, translation) {
+    function CartPageMetaResolver(cms) {
         var _this = _super.call(this) || this;
-        _this.cartService = cartService;
         _this.cms = cms;
-        _this.translation = translation;
         _this.pageType = PageType.CONTENT_PAGE;
         _this.pageTemplate = 'CartPageTemplate';
         return _this;
@@ -12916,17 +12914,7 @@ var CartPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (page) {
-        var _this = this;
-        return this.cartService.getActive().pipe(switchMap((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        function (cart) {
-            return _this.translation.translate('pageMetaResolver.cart.title', {
-                title: page.title,
-                code: (cart && cart.code) || '',
-            });
-        })));
+        return of(page.title);
     };
     /**
      * @return {?}
@@ -12944,11 +12932,9 @@ var CartPageMetaResolver = /** @class */ (function (_super) {
     ];
     /** @nocollapse */
     CartPageMetaResolver.ctorParameters = function () { return [
-        { type: CartService },
-        { type: CmsService },
-        { type: TranslationService }
+        { type: CmsService }
     ]; };
-    /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CartService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CartPageMetaResolver, providedIn: "root" });
+    /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
     return CartPageMetaResolver;
 }(PageMetaResolver));
 

@@ -11266,15 +11266,11 @@ DynamicAttributeService.decorators = [
  */
 class CartPageMetaResolver extends PageMetaResolver {
     /**
-     * @param {?} cartService
      * @param {?} cms
-     * @param {?} translation
      */
-    constructor(cartService, cms, translation) {
+    constructor(cms) {
         super();
-        this.cartService = cartService;
         this.cms = cms;
-        this.translation = translation;
         this.pageType = PageType.CONTENT_PAGE;
         this.pageTemplate = 'CartPageTemplate';
     }
@@ -11301,14 +11297,7 @@ class CartPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolveTitle(page) {
-        return this.cartService.getActive().pipe(switchMap((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        cart => this.translation.translate('pageMetaResolver.cart.title', {
-            title: page.title,
-            code: (cart && cart.code) || '',
-        }))));
+        return of(page.title);
     }
     /**
      * @return {?}
@@ -11324,11 +11313,9 @@ CartPageMetaResolver.decorators = [
 ];
 /** @nocollapse */
 CartPageMetaResolver.ctorParameters = () => [
-    { type: CartService },
-    { type: CmsService },
-    { type: TranslationService }
+    { type: CmsService }
 ];
-/** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CartService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CartPageMetaResolver, providedIn: "root" });
+/** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle

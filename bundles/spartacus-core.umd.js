@@ -12950,11 +12950,9 @@
      */
     var CartPageMetaResolver = /** @class */ (function (_super) {
         __extends(CartPageMetaResolver, _super);
-        function CartPageMetaResolver(cartService, cms, translation) {
+        function CartPageMetaResolver(cms) {
             var _this = _super.call(this) || this;
-            _this.cartService = cartService;
             _this.cms = cms;
-            _this.translation = translation;
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'CartPageTemplate';
             return _this;
@@ -12995,17 +12993,7 @@
          * @return {?}
          */
         function (page) {
-            var _this = this;
-            return this.cartService.getActive().pipe(operators.switchMap((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            function (cart) {
-                return _this.translation.translate('pageMetaResolver.cart.title', {
-                    title: page.title,
-                    code: (cart && cart.code) || '',
-                });
-            })));
+            return rxjs.of(page.title);
         };
         /**
          * @return {?}
@@ -13023,11 +13011,9 @@
         ];
         /** @nocollapse */
         CartPageMetaResolver.ctorParameters = function () { return [
-            { type: CartService },
-            { type: CmsService },
-            { type: TranslationService }
+            { type: CmsService }
         ]; };
-        /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(core.ɵɵinject(CartService), core.ɵɵinject(CmsService), core.ɵɵinject(TranslationService)); }, token: CartPageMetaResolver, providedIn: "root" });
+        /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(core.ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
         return CartPageMetaResolver;
     }(PageMetaResolver));
 
