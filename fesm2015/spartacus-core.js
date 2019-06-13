@@ -15517,67 +15517,54 @@ class BadRequestHandler extends HttpErrorHandler {
      */
     handleError(request, response) {
         if (response.url.includes(OAUTH_ENDPOINT$3) &&
+            response.error &&
             response.error.error === 'invalid_grant' &&
             request.body.get('grant_type') === 'password') {
             this.globalMessageService.add({
                 key: 'httpHandlers.badRequestPleaseLoginAgain',
                 params: {
-                    errorMessage: this.getErrorMessage(response, 0),
+                    errorMessage: response.error.error_description || response.message || '',
                 },
             }, GlobalMessageType.MSG_TYPE_ERROR);
             this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
         }
         else {
-            response.error.errors.forEach((/**
-             * @param {?} error
-             * @param {?} index
-             * @return {?}
-             */
-            (error, index) => {
-                /** @type {?} */
-                let errorMessage;
-                if (error.type === 'PasswordMismatchError') {
-                    // uses en translation error message instead of backend exception error
-                    // @todo: this condition could be removed if backend gives better message
-                    errorMessage = { key: 'httpHandlers.badRequestOldPasswordIncorrect' };
-                }
-                else if (error.subjectType === 'cart' &&
-                    error.reason === 'notFound') {
-                    errorMessage = { key: 'httpHandlers.cartNotFound' };
-                }
-                else if (error.type === 'ValidationError') {
-                    // build translation key in case of backend field validation error
-                    errorMessage = {
-                        key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
-                    };
-                }
-                else {
-                    // this is currently showing up in case we have a page not found. It should be a 404.
-                    // see https://jira.hybris.com/browse/CMSX-8516
-                    errorMessage = { raw: this.getErrorMessage(response, index) };
-                }
-                this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
-            }));
-        }
-    }
-    /**
-     * @protected
-     * @param {?} resp
-     * @param {?} index
-     * @return {?}
-     */
-    getErrorMessage(resp, index) {
-        /** @type {?} */
-        let errMsg = resp.message;
-        if (resp.error) {
-            if (resp.error.errors && resp.error.errors instanceof Array) {
-                errMsg = resp.error.errors[index].message;
-            }
-            else if (resp.error.error_description) {
-                errMsg = resp.error.error_description;
+            if (response.error &&
+                response.error.errors &&
+                response.error.errors instanceof Array) {
+                response.error.errors.forEach((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                (error) => {
+                    /** @type {?} */
+                    let errorMessage;
+                    if (error.type === 'PasswordMismatchError') {
+                        // uses en translation error message instead of backend exception error
+                        // @todo: this condition could be removed if backend gives better message
+                        errorMessage = {
+                            key: 'httpHandlers.badRequestOldPasswordIncorrect',
+                        };
+                    }
+                    else if (error.subjectType === 'cart' &&
+                        error.reason === 'notFound') {
+                        errorMessage = { key: 'httpHandlers.cartNotFound' };
+                    }
+                    else if (error.type === 'ValidationError') {
+                        // build translation key in case of backend field validation error
+                        errorMessage = {
+                            key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
+                        };
+                    }
+                    else {
+                        // this is currently showing up in case we have a page not found. It should be a 404.
+                        // see https://jira.hybris.com/browse/CMSX-8516
+                        errorMessage = { raw: error.message || '' };
+                    }
+                    this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
+                }));
             }
         }
-        return errMsg || '';
     }
 }
 BadRequestHandler.decorators = [
