@@ -11056,7 +11056,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var CMS_PAGE_NORMALIZE = new core.InjectionToken('CmsPageNormalizer');
+    var CMS_PAGE_NORMALIZER = new core.InjectionToken('CmsPageNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -23936,7 +23936,7 @@
                 }), {
                     headers: this.headers,
                 })
-                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+                    .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
             }
             // load page by PageContext
             /** @type {?} */
@@ -23945,7 +23945,7 @@
                 .get(this.getPagesEndpoint(httpParams, fields), {
                 headers: this.headers,
             })
-                .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZE));
+                .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
         };
         /**
          * @private
@@ -24016,7 +24016,7 @@
                                 useClass: OccCmsPageAdapter,
                             },
                             {
-                                provide: CMS_PAGE_NORMALIZE,
+                                provide: CMS_PAGE_NORMALIZER,
                                 useClass: OccCmsPageNormalizer,
                                 multi: true,
                             },
@@ -28993,7 +28993,7 @@
     exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
     exports.CMS_FEATURE = CMS_FEATURE;
     exports.CMS_FLEX_COMPONENT_TYPE = CMS_FLEX_COMPONENT_TYPE;
-    exports.CMS_PAGE_NORMALIZE = CMS_PAGE_NORMALIZE;
+    exports.CMS_PAGE_NORMALIZER = CMS_PAGE_NORMALIZER;
     exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
