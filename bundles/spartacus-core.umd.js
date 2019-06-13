@@ -9506,12 +9506,10 @@
                  * @param {?} details
                  * @return {?}
                  */
-                function (details) {
-                    return [
-                        new LoadUserPaymentMethods(payload.userId),
-                        new CreatePaymentDetailsSuccess(details),
-                    ];
-                })), operators.catchError((/**
+                function (details) { return [
+                    new LoadUserPaymentMethods(payload.userId),
+                    new CreatePaymentDetailsSuccess(details),
+                ]; })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -26784,6 +26782,8 @@
                  * @return {?}
                  */
                 function (fromPaymentProvider) {
+                    fromPaymentProvider['defaultPayment'] =
+                        paymentDetails.defaultPayment;
                     fromPaymentProvider['savePaymentInfo'] = true;
                     return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
                 })));

@@ -9427,12 +9427,10 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} details
              * @return {?}
              */
-            function (details) {
-                return [
-                    new LoadUserPaymentMethods(payload.userId),
-                    new CreatePaymentDetailsSuccess(details),
-                ];
-            })), catchError((/**
+            function (details) { return [
+                new LoadUserPaymentMethods(payload.userId),
+                new CreatePaymentDetailsSuccess(details),
+            ]; })), catchError((/**
              * @param {?} error
              * @return {?}
              */
@@ -26705,6 +26703,8 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
              * @return {?}
              */
             function (fromPaymentProvider) {
+                fromPaymentProvider['defaultPayment'] =
+                    paymentDetails.defaultPayment;
                 fromPaymentProvider['savePaymentInfo'] = true;
                 return _this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(_this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
             })));

@@ -8497,12 +8497,10 @@ class CheckoutEffects {
              * @param {?} details
              * @return {?}
              */
-            details => {
-                return [
-                    new LoadUserPaymentMethods(payload.userId),
-                    new CreatePaymentDetailsSuccess(details),
-                ];
-            })), catchError((/**
+            details => [
+                new LoadUserPaymentMethods(payload.userId),
+                new CreatePaymentDetailsSuccess(details),
+            ])), catchError((/**
              * @param {?} error
              * @return {?}
              */
@@ -23220,6 +23218,8 @@ class OccCheckoutPaymentAdapter {
              * @return {?}
              */
             fromPaymentProvider => {
+                fromPaymentProvider['defaultPayment'] =
+                    paymentDetails.defaultPayment;
                 fromPaymentProvider['savePaymentInfo'] = true;
                 return this.createDetailsWithParameters(userId, cartId, fromPaymentProvider).pipe(this.converter.pipeable(PAYMENT_DETAILS_NORMALIZER));
             })));
