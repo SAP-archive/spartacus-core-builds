@@ -2801,7 +2801,11 @@ function getStorageSyncReducer(winRef, config) {
         !config.state ||
         !config.state.storageSync ||
         !config.state.storageSync.keys) {
-        return undefined;
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        reducer => reducer);
     }
     /** @type {?} */
     const storageSyncConfig = config.state.storageSync;

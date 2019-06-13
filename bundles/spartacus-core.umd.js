@@ -3436,7 +3436,11 @@
             !config.state ||
             !config.state.storageSync ||
             !config.state.storageSync.keys) {
-            return undefined;
+            return (/**
+             * @param {?} reducer
+             * @return {?}
+             */
+            function (reducer) { return reducer; });
         }
         /** @type {?} */
         var storageSyncConfig = config.state.storageSync;
