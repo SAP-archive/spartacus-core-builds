@@ -11584,7 +11584,15 @@
          * @param {?} entities
          * @return {?}
          */
-        function (entities) { return entityStateSelector(entities, uid); }));
+        function (entities) {
+            // the whole component entities are emtpy
+            if (Object.keys(entities.entities).length === 0) {
+                return undefined;
+            }
+            else {
+                return entityStateSelector(entities, uid);
+            }
+        }));
     });
     /** @type {?} */
     var componentSelectorFactory = (/**
@@ -11596,7 +11604,14 @@
          * @param {?} state
          * @return {?}
          */
-        function (state) { return loaderValueSelector(state); }));
+        function (state) {
+            if (state) {
+                return loaderValueSelector(state);
+            }
+            else {
+                return undefined;
+            }
+        }));
     });
 
     /**
@@ -12258,24 +12273,31 @@
         function (uid) {
             var _this = this;
             if (!this.components[uid]) {
-                this.components[uid] = rxjs.combineLatest(this.routingService.isNavigating(), this.store.pipe(store.select(componentStateSelectorFactory(uid)))).pipe(operators.tap((/**
+                this.components[uid] = rxjs.combineLatest([
+                    this.routingService.isNavigating(),
+                    this.store.pipe(store.select(componentStateSelectorFactory(uid))),
+                ]).pipe(operators.tap((/**
                  * @param {?} __0
                  * @return {?}
                  */
                 function (_a) {
                     var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
-                    /** @type {?} */
-                    var attemptedLoad = componentState.loading ||
-                        componentState.success ||
-                        componentState.error;
-                    if (!attemptedLoad && !isNavigating) {
-                        _this.store.dispatch(new LoadComponent(uid));
+                    // componentState is undefined when the whole components entities are empty.
+                    // In this case, we don't load component one by one, but extract component data from cms page
+                    if (componentState !== undefined) {
+                        /** @type {?} */
+                        var attemptedLoad = componentState.loading ||
+                            componentState.success ||
+                            componentState.error;
+                        if (!attemptedLoad && !isNavigating) {
+                            _this.store.dispatch(new LoadComponent(uid));
+                        }
                     }
                 })), operators.pluck(1), operators.filter((/**
                  * @param {?} componentState
                  * @return {?}
                  */
-                function (componentState) { return componentState.success; })), operators.pluck('value'), operators.shareReplay({ bufferSize: 1, refCount: true }));
+                function (componentState) { return componentState && componentState.success; })), operators.pluck('value'), operators.shareReplay({ bufferSize: 1, refCount: true }));
             }
             return (/** @type {?} */ (this.components[uid]));
         };

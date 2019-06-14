@@ -10133,7 +10133,15 @@ const componentStateSelectorFactory = (/**
      * @param {?} entities
      * @return {?}
      */
-    entities => entityStateSelector(entities, uid)));
+    entities => {
+        // the whole component entities are emtpy
+        if (Object.keys(entities.entities).length === 0) {
+            return undefined;
+        }
+        else {
+            return entityStateSelector(entities, uid);
+        }
+    }));
 });
 /** @type {?} */
 const componentSelectorFactory = (/**
@@ -10145,7 +10153,14 @@ const componentSelectorFactory = (/**
      * @param {?} state
      * @return {?}
      */
-    state => loaderValueSelector(state)));
+    state => {
+        if (state) {
+            return loaderValueSelector(state);
+        }
+        else {
+            return undefined;
+        }
+    }));
 });
 
 /**
@@ -10755,23 +10770,30 @@ class CmsService {
      */
     getComponentData(uid) {
         if (!this.components[uid]) {
-            this.components[uid] = combineLatest(this.routingService.isNavigating(), this.store.pipe(select(componentStateSelectorFactory(uid)))).pipe(tap((/**
+            this.components[uid] = combineLatest([
+                this.routingService.isNavigating(),
+                this.store.pipe(select(componentStateSelectorFactory(uid))),
+            ]).pipe(tap((/**
              * @param {?} __0
              * @return {?}
              */
             ([isNavigating, componentState]) => {
-                /** @type {?} */
-                const attemptedLoad = componentState.loading ||
-                    componentState.success ||
-                    componentState.error;
-                if (!attemptedLoad && !isNavigating) {
-                    this.store.dispatch(new LoadComponent(uid));
+                // componentState is undefined when the whole components entities are empty.
+                // In this case, we don't load component one by one, but extract component data from cms page
+                if (componentState !== undefined) {
+                    /** @type {?} */
+                    const attemptedLoad = componentState.loading ||
+                        componentState.success ||
+                        componentState.error;
+                    if (!attemptedLoad && !isNavigating) {
+                        this.store.dispatch(new LoadComponent(uid));
+                    }
                 }
             })), pluck(1), filter((/**
              * @param {?} componentState
              * @return {?}
              */
-            componentState => componentState.success)), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
+            componentState => componentState && componentState.success)), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     }
