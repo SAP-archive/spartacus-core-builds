@@ -10884,6 +10884,8 @@ class CmsService {
      * @return {?}
      */
     hasPage(pageContext, forceReload = false) {
+        /** @type {?} */
+        let loaded = false;
         return this.store.pipe(select(getIndexEntity(pageContext)), tap((/**
          * @param {?} entity
          * @return {?}
@@ -10892,9 +10894,10 @@ class CmsService {
             /** @type {?} */
             const attemptedLoad = entity.loading || entity.success || entity.error;
             /** @type {?} */
-            const shouldReload = forceReload && !entity.loading;
+            const shouldReload = forceReload && !entity.loading && !loaded;
             if (!attemptedLoad || shouldReload) {
                 this.store.dispatch(new LoadPageData(pageContext));
+                loaded = true;
             }
         })), filter((/**
          * @param {?} entity

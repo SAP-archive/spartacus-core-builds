@@ -12478,6 +12478,8 @@
         function (pageContext, forceReload) {
             var _this = this;
             if (forceReload === void 0) { forceReload = false; }
+            /** @type {?} */
+            var loaded = false;
             return this.store.pipe(store.select(getIndexEntity(pageContext)), operators.tap((/**
              * @param {?} entity
              * @return {?}
@@ -12486,9 +12488,10 @@
                 /** @type {?} */
                 var attemptedLoad = entity.loading || entity.success || entity.error;
                 /** @type {?} */
-                var shouldReload = forceReload && !entity.loading;
+                var shouldReload = forceReload && !entity.loading && !loaded;
                 if (!attemptedLoad || shouldReload) {
                     _this.store.dispatch(new LoadPageData(pageContext));
+                    loaded = true;
                 }
             })), operators.filter((/**
              * @param {?} entity
