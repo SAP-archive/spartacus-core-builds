@@ -3312,11 +3312,7 @@
         }
         StateModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [
-                            store.StoreModule.forRoot({}),
-                            effects$a.EffectsModule.forRoot([]),
-                            ConfigModule.withConfig(defaultStateConfig),
-                        ],
+                        imports: [ConfigModule.withConfig(defaultStateConfig)],
                         providers: __spread(stateMetaReducers),
                     },] }
         ];

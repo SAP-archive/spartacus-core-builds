@@ -4,7 +4,7 @@ import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClie
 import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
 import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
-import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, combineReducers } from '@ngrx/store';
+import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { Effect, ofType, Actions, EffectsModule } from '@ngrx/effects';
@@ -3233,11 +3233,7 @@ var StateModule = /** @class */ (function () {
     }
     StateModule.decorators = [
         { type: NgModule, args: [{
-                    imports: [
-                        StoreModule.forRoot({}),
-                        EffectsModule.forRoot([]),
-                        ConfigModule.withConfig(defaultStateConfig),
-                    ],
+                    imports: [ConfigModule.withConfig(defaultStateConfig)],
                     providers: __spread(stateMetaReducers),
                 },] }
     ];
