@@ -12500,7 +12500,14 @@
              * @param {?} entity
              * @return {?}
              */
-            function (entity) { return entity.success || entity.error; })), operators.pluck('success'), operators.catchError((/**
+            function (entity) {
+                if (!entity.hasOwnProperty('value')) {
+                    // if we have incomplete state from srr failed load transfer state,
+                    // we should wait for reload and actual value
+                    return false;
+                }
+                return entity.success || (entity.error && !entity.loading);
+            })), operators.pluck('success'), operators.catchError((/**
              * @return {?}
              */
             function () { return rxjs.of(false); })));

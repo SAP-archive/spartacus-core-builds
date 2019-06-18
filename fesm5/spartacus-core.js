@@ -12421,7 +12421,14 @@ var CmsService = /** @class */ (function () {
          * @param {?} entity
          * @return {?}
          */
-        function (entity) { return entity.success || entity.error; })), pluck('success'), catchError((/**
+        function (entity) {
+            if (!entity.hasOwnProperty('value')) {
+                // if we have incomplete state from srr failed load transfer state,
+                // we should wait for reload and actual value
+                return false;
+            }
+            return entity.success || (entity.error && !entity.loading);
+        })), pluck('success'), catchError((/**
          * @return {?}
          */
         function () { return of(false); })));
