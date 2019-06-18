@@ -1,13 +1,13 @@
-import { InjectionToken, Optional, NgModule, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, Injector, INJECTOR, APP_INITIALIZER, PLATFORM_ID, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
-import { createFeatureSelector, createSelector, select, Store, StoreModule, INIT, UPDATE, META_REDUCERS, combineReducers } from '@ngrx/store';
-import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
-import { __decorate, __metadata } from 'tslib';
-import { Router, PRIMARY_OUTLET, RouterModule, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer } from '@angular/router';
+import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { map, tap, filter, take, switchMap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, combineReducers } from '@ngrx/store';
+import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { __decorate, __metadata } from 'tslib';
+import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
+import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import i18next from 'i18next';
@@ -213,6 +213,476 @@ ConfigModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @abstract
+ */
+class OccConfig extends ServerConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class AuthConfig extends OccConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const defaultAuthConfig = {
+    authentication: {
+        client_id: 'mobile_android',
+        client_secret: 'secret',
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const AUTH_FEATURE = 'auth';
+/** @type {?} */
+const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOADER_LOAD_ACTION = '[LOADER] LOAD';
+/** @type {?} */
+const LOADER_FAIL_ACTION = '[LOADER] FAIL';
+/** @type {?} */
+const LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
+/** @type {?} */
+const LOADER_RESET_ACTION = '[LOADER] RESET';
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function loadMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {
+            load: true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @param {?=} error
+ * @return {?}
+ */
+function failMeta(entityType, error) {
+    return {
+        entityType: entityType,
+        loader: {
+            error: error ? error : true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function successMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {
+            success: true,
+        },
+    };
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function resetMeta(entityType) {
+    return {
+        entityType: entityType,
+        loader: {},
+    };
+}
+class LoaderLoadAction {
+    /**
+     * @param {?} entityType
+     */
+    constructor(entityType) {
+        this.type = LOADER_LOAD_ACTION;
+        this.meta = loadMeta(entityType);
+    }
+}
+class LoaderFailAction {
+    /**
+     * @param {?} entityType
+     * @param {?=} error
+     */
+    constructor(entityType, error) {
+        this.type = LOADER_FAIL_ACTION;
+        this.meta = failMeta(entityType, error);
+    }
+}
+class LoaderSuccessAction {
+    /**
+     * @param {?} entityType
+     */
+    constructor(entityType) {
+        this.type = LOADER_SUCCESS_ACTION;
+        this.meta = successMeta(entityType);
+    }
+}
+class LoaderResetAction {
+    /**
+     * @param {?} entityType
+     */
+    constructor(entityType) {
+        this.type = LOADER_RESET_ACTION;
+        this.meta = resetMeta(entityType);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
+/** @type {?} */
+const LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
+/** @type {?} */
+const LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
+class LoadClientToken extends LoaderLoadAction {
+    constructor() {
+        super(CLIENT_TOKEN_DATA);
+        this.type = LOAD_CLIENT_TOKEN;
+    }
+}
+class LoadClientTokenFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CLIENT_TOKEN_DATA, payload);
+        this.payload = payload;
+        this.type = LOAD_CLIENT_TOKEN_FAIL;
+    }
+}
+class LoadClientTokenSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CLIENT_TOKEN_DATA);
+        this.payload = payload;
+        this.type = LOAD_CLIENT_TOKEN_SUCCESS;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOGIN = '[Auth] Login';
+/** @type {?} */
+const LOGOUT = '[Auth] Logout';
+class Login {
+    constructor() {
+        this.type = LOGIN;
+    }
+}
+class Logout {
+    constructor() {
+        this.type = LOGOUT;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_USER_TOKEN = '[Auth] Load User Token';
+/** @type {?} */
+const LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
+/** @type {?} */
+const LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
+/** @type {?} */
+const REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
+/** @type {?} */
+const REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
+/** @type {?} */
+const REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
+class LoadUserToken {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_TOKEN;
+    }
+}
+class LoadUserTokenFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_TOKEN_FAIL;
+    }
+}
+class LoadUserTokenSuccess {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_USER_TOKEN_SUCCESS;
+    }
+}
+class RefreshUserToken {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REFRESH_USER_TOKEN;
+    }
+}
+class RefreshUserTokenSuccess {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REFRESH_USER_TOKEN_SUCCESS;
+    }
+}
+class RefreshUserTokenFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REFRESH_USER_TOKEN_FAIL;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getAuthState = createFeatureSelector(AUTH_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.clientToken;
+/** @type {?} */
+const getClientTokenState = createSelector(getAuthState, (ɵ0));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getUserTokenSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.token);
+const ɵ0$1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.userToken;
+/** @type {?} */
+const getUserTokenState = createSelector(getAuthState, (ɵ0$1));
+/** @type {?} */
+const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AuthService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Loads a new user token
+     * @param {?} userId
+     * @param {?} password
+     * @return {?}
+     */
+    authorize(userId, password) {
+        this.store.dispatch(new LoadUserToken({
+            userId: userId,
+            password: password,
+        }));
+    }
+    /**
+     * Returns the user's token
+     * @return {?}
+     */
+    getUserToken() {
+        return this.store.pipe(select(getUserToken));
+    }
+    /**
+     * Refreshes the user token
+     * @param {?} token a user token to refresh
+     * @return {?}
+     */
+    refreshUserToken(token) {
+        this.store.dispatch(new RefreshUserToken({
+            refreshToken: token.refresh_token,
+        }));
+    }
+    /**
+     * Store the provided token
+     * @param {?} token
+     * @return {?}
+     */
+    authorizeWithToken(token) {
+        this.store.dispatch(new LoadUserTokenSuccess(token));
+    }
+    /**
+     * Logout
+     * @return {?}
+     */
+    logout() {
+        this.store.dispatch(new Logout());
+    }
+    /**
+     * Returns a client token.  The client token from the store is returned if there is one.
+     * Otherwise, an new token is fetched from the backend and saved in the store.
+     * @return {?}
+     */
+    getClientToken() {
+        return this.store.pipe(select(getClientTokenState), filter((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => {
+            if (this.isClientTokenLoaded(state)) {
+                return true;
+            }
+            else {
+                if (!state.loading) {
+                    this.store.dispatch(new LoadClientToken());
+                }
+                return false;
+            }
+        })), map((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => state.value)));
+    }
+    /**
+     * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
+     * The new clientToken is returned.
+     * @return {?}
+     */
+    refreshClientToken() {
+        this.store.dispatch(new LoadClientToken());
+        return this.store.pipe(select(getClientTokenState), filter((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => this.isClientTokenLoaded(state))), map((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => state.value)));
+    }
+    /**
+     * @protected
+     * @param {?} state
+     * @return {?}
+     */
+    isClientTokenLoaded(state) {
+        return (state.success || state.error) && !state.loading;
+    }
+}
+AuthService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+AuthService.ctorParameters = () => [
+    { type: Store }
+];
+/** @nocollapse */ AuthService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ClientErrorHandlingService {
+    /**
+     * @param {?} authService
+     */
+    constructor(authService) {
+        this.authService = authService;
+    }
+    /**
+     * @param {?} request
+     * @param {?} next
+     * @return {?}
+     */
+    handleExpiredClientToken(request, next) {
+        return this.authService.refreshClientToken().pipe(take(1), switchMap((/**
+         * @param {?} token
+         * @return {?}
+         */
+        (token) => {
+            return next.handle(this.createNewRequestWithNewToken(request, token));
+        })));
+    }
+    /**
+     * @protected
+     * @param {?} request
+     * @param {?} token
+     * @return {?}
+     */
+    createNewRequestWithNewToken(request, token) {
+        request = request.clone({
+            setHeaders: {
+                Authorization: `${token.token_type} ${token.access_token}`,
+            },
+        });
+        return request;
+    }
+}
+ClientErrorHandlingService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ClientErrorHandlingService.ctorParameters = () => [
+    { type: AuthService }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @enum {string} */
 const PageType = {
     CONTENT_PAGE: 'ContentPage',
@@ -289,13 +759,13 @@ const reducerProvider = {
 };
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0 = /**
+const ɵ0$2 = /**
  * @param {?} state
  * @return {?}
  */
 state => state.router;
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (ɵ0));
+const getRouterState = createSelector(getRouterFeatureState, (ɵ0$2));
 const ɵ1 = /**
  * @param {?} routingState
  * @return {?}
@@ -404,6 +874,11 @@ class CustomSerializer {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 const GO = '[Router] Go';
 /** @type {?} */
@@ -445,20 +920,6 @@ class Forward {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const LOGIN = '[Auth] Login';
-/** @type {?} */
-const LOGOUT = '[Auth] Logout';
-class Login {
-    constructor() {
-        this.type = LOGIN;
-    }
-}
-class Logout {
-    constructor() {
-        this.type = LOGOUT;
-    }
-}
 
 /**
  * @fileoverview added by tsickle
@@ -609,16 +1070,6 @@ __decorate([
  */
 /** @type {?} */
 const effects = [RouterEffects];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -1110,754 +1561,6 @@ RoutingService.ctorParameters = () => [
     { type: SemanticPathService }
 ];
 /** @nocollapse */ RoutingService.ngInjectableDef = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class UrlMatcherFactoryService {
-    /**
-     * @return {?}
-     */
-    getFalsyUrlMatcher() {
-        return (/**
-         * @return {?}
-         */
-        function falsyUrlMatcher() {
-            return null;
-        });
-    }
-    /**
-     * @param {?} paths
-     * @return {?}
-     */
-    getMultiplePathsUrlMatcher(paths) {
-        /** @type {?} */
-        const self = this;
-        /** @type {?} */
-        const matcher = (/**
-         * @param {?} segments
-         * @param {?} segmentGroup
-         * @param {?} route
-         * @return {?}
-         */
-        function multiplePathsUrlMatcher(segments, segmentGroup, route) {
-            for (let i = 0; i < paths.length; i++) {
-                /** @type {?} */
-                const result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
-                if (result) {
-                    return result;
-                }
-            }
-            return null;
-        });
-        matcher.paths = paths; // property added for easier debugging of routes
-        return matcher;
-    }
-    // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-    /**
-     * @private
-     * @param {?=} path
-     * @return {?}
-     */
-    getPathUrlMatcher(path = '') {
-        return (/**
-         * @param {?} segments
-         * @param {?} segmentGroup
-         * @param {?} route
-         * @return {?}
-         */
-        (segments, segmentGroup, route) => {
-            /** @type {?} */
-            const parts = path.split('/');
-            if (parts.length > segments.length) {
-                // The actual URL is shorter than the config, no match
-                return null;
-            }
-            if (route.pathMatch === 'full' &&
-                (segmentGroup.hasChildren() || parts.length < segments.length)) {
-                // The config is longer than the actual URL but we are looking for a full match, return null
-                return null;
-            }
-            /** @type {?} */
-            const posParams = {};
-            // Check each config part against the actual URL
-            for (let index = 0; index < parts.length; index++) {
-                /** @type {?} */
-                const part = parts[index];
-                /** @type {?} */
-                const segment = segments[index];
-                /** @type {?} */
-                const isParameter = part.startsWith(':');
-                if (isParameter) {
-                    posParams[part.substring(1)] = segment;
-                }
-                else if (part !== segment.path) {
-                    // The actual URL part does not match the config, no match
-                    return null;
-                }
-            }
-            return { consumed: segments.slice(0, parts.length), posParams };
-        });
-    }
-}
-UrlMatcherFactoryService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ConfigurableRoutesService {
-    /**
-     * @param {?} config
-     * @param {?} injector
-     * @param {?} routingConfigService
-     * @param {?} urlMatcherFactory
-     */
-    constructor(config, injector, routingConfigService, urlMatcherFactory) {
-        this.config = config;
-        this.injector = injector;
-        this.routingConfigService = routingConfigService;
-        this.urlMatcherFactory = urlMatcherFactory;
-        this.initCalled = false; // guard not to call init() more than once
-    }
-    // guard not to call init() more than once
-    /**
-     * Configures all existing Routes in the Router
-     * @return {?}
-     */
-    init() {
-        if (!this.initCalled) {
-            this.initCalled = true;
-            this.configureRouter();
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    configureRouter() {
-        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-        /** @type {?} */
-        const router = this.injector.get(Router);
-        /** @type {?} */
-        const configuredRoutes = this.configureRoutes(router.config);
-        router.resetConfig(configuredRoutes);
-    }
-    /**
-     * @private
-     * @param {?} routes
-     * @return {?}
-     */
-    configureRoutes(routes) {
-        /** @type {?} */
-        const result = [];
-        routes.forEach((/**
-         * @param {?} route
-         * @return {?}
-         */
-        route => {
-            /** @type {?} */
-            const configuredRoute = this.configureRoute(route);
-            if (route.children && route.children.length) {
-                configuredRoute.children = this.configureRoutes(route.children);
-            }
-            result.push(configuredRoute);
-        }));
-        return result;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @return {?}
-     */
-    configureRoute(route) {
-        if (this.getRouteName(route)) {
-            /** @type {?} */
-            const paths = this.getConfiguredPaths(route);
-            switch (paths.length) {
-                case 0:
-                    delete route.path;
-                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-                case 1:
-                    delete route.matcher;
-                    return Object.assign({}, route, { path: paths[0] });
-                default:
-                    delete route.path;
-                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
-            }
-        }
-        return route; // if route doesn't have a name, just pass the original route
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @return {?}
-     */
-    getRouteName(route) {
-        return route.data && route.data.cxRoute;
-    }
-    /**
-     * @private
-     * @param {?} route
-     * @return {?}
-     */
-    getConfiguredPaths(route) {
-        /** @type {?} */
-        const routeName = this.getRouteName(route);
-        /** @type {?} */
-        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
-        if (routeConfig === undefined) {
-            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined key '${routeName}' in the routes config`);
-            return [];
-        }
-        if (routeConfig && routeConfig.paths === undefined) {
-            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined 'paths' for the named route '${routeName}' in the routes config`);
-            return [];
-        }
-        // routeConfig or routeConfig.paths can be null - which means switching off the route
-        return (routeConfig && routeConfig.paths) || [];
-    }
-    /**
-     * @private
-     * @param {...?} args
-     * @return {?}
-     */
-    warn(...args) {
-        if (!this.config.production) {
-            console.warn(...args);
-        }
-    }
-}
-ConfigurableRoutesService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-/** @nocollapse */
-ConfigurableRoutesService.ctorParameters = () => [
-    { type: ServerConfig },
-    { type: Injector },
-    { type: RoutingConfigService },
-    { type: UrlMatcherFactoryService }
-];
-/** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(ServerConfig), ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} service
- * @return {?}
- */
-function initConfigurableRoutes(service) {
-    /** @type {?} */
-    const result = (/**
-     * @return {?}
-     */
-    () => service.init());
-    return result;
-}
-class ConfigurableRoutesModule {
-}
-ConfigurableRoutesModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [CommonModule],
-                providers: [
-                    {
-                        provide: APP_INITIALIZER,
-                        useFactory: initConfigurableRoutes,
-                        deps: [ConfigurableRoutesService],
-                        multi: true,
-                    },
-                    { provide: RoutingConfig, useExisting: Config },
-                ],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class RoutingModule {
-}
-RoutingModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    ConfigurableRoutesModule,
-                    RouterModule.forRoot([], {
-                        scrollPositionRestoration: 'enabled',
-                        anchorScrolling: 'enabled',
-                    }),
-                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
-                    EffectsModule.forFeature(effects),
-                    StoreRouterConnectingModule.forRoot({
-                        stateKey: ROUTING_FEATURE,
-                    }),
-                ],
-                providers: [
-                    RoutingService,
-                    reducerProvider,
-                    {
-                        provide: RouterStateSerializer,
-                        useClass: CustomSerializer,
-                    },
-                ],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class OccConfig extends ServerConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class AuthConfig extends OccConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const defaultAuthConfig = {
-    authentication: {
-        client_id: 'mobile_android',
-        client_secret: 'secret',
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const AUTH_FEATURE = 'auth';
-/** @type {?} */
-const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOADER_LOAD_ACTION = '[LOADER] LOAD';
-/** @type {?} */
-const LOADER_FAIL_ACTION = '[LOADER] FAIL';
-/** @type {?} */
-const LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
-/** @type {?} */
-const LOADER_RESET_ACTION = '[LOADER] RESET';
-/**
- * @param {?} entityType
- * @return {?}
- */
-function loadMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {
-            load: true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @param {?=} error
- * @return {?}
- */
-function failMeta(entityType, error) {
-    return {
-        entityType: entityType,
-        loader: {
-            error: error ? error : true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function successMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {
-            success: true,
-        },
-    };
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function resetMeta(entityType) {
-    return {
-        entityType: entityType,
-        loader: {},
-    };
-}
-class LoaderLoadAction {
-    /**
-     * @param {?} entityType
-     */
-    constructor(entityType) {
-        this.type = LOADER_LOAD_ACTION;
-        this.meta = loadMeta(entityType);
-    }
-}
-class LoaderFailAction {
-    /**
-     * @param {?} entityType
-     * @param {?=} error
-     */
-    constructor(entityType, error) {
-        this.type = LOADER_FAIL_ACTION;
-        this.meta = failMeta(entityType, error);
-    }
-}
-class LoaderSuccessAction {
-    /**
-     * @param {?} entityType
-     */
-    constructor(entityType) {
-        this.type = LOADER_SUCCESS_ACTION;
-        this.meta = successMeta(entityType);
-    }
-}
-class LoaderResetAction {
-    /**
-     * @param {?} entityType
-     */
-    constructor(entityType) {
-        this.type = LOADER_RESET_ACTION;
-        this.meta = resetMeta(entityType);
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
-/** @type {?} */
-const LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
-/** @type {?} */
-const LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
-class LoadClientToken extends LoaderLoadAction {
-    constructor() {
-        super(CLIENT_TOKEN_DATA);
-        this.type = LOAD_CLIENT_TOKEN;
-    }
-}
-class LoadClientTokenFail extends LoaderFailAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CLIENT_TOKEN_DATA, payload);
-        this.payload = payload;
-        this.type = LOAD_CLIENT_TOKEN_FAIL;
-    }
-}
-class LoadClientTokenSuccess extends LoaderSuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CLIENT_TOKEN_DATA);
-        this.payload = payload;
-        this.type = LOAD_CLIENT_TOKEN_SUCCESS;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_USER_TOKEN = '[Auth] Load User Token';
-/** @type {?} */
-const LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
-/** @type {?} */
-const LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
-/** @type {?} */
-const REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
-/** @type {?} */
-const REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
-/** @type {?} */
-const REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
-class LoadUserToken {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN;
-    }
-}
-class LoadUserTokenFail {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN_FAIL;
-    }
-}
-class LoadUserTokenSuccess {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_USER_TOKEN_SUCCESS;
-    }
-}
-class RefreshUserToken {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN;
-    }
-}
-class RefreshUserTokenSuccess {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN_SUCCESS;
-    }
-}
-class RefreshUserTokenFail {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REFRESH_USER_TOKEN_FAIL;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getAuthState = createFeatureSelector(AUTH_FEATURE);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$1 = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.clientToken;
-/** @type {?} */
-const getClientTokenState = createSelector(getAuthState, (ɵ0$1));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getUserTokenSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.token);
-const ɵ0$2 = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.userToken;
-/** @type {?} */
-const getUserTokenState = createSelector(getAuthState, (ɵ0$2));
-/** @type {?} */
-const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class AuthService {
-    /**
-     * @param {?} store
-     */
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Loads a new user token
-     * @param {?} userId
-     * @param {?} password
-     * @return {?}
-     */
-    authorize(userId, password) {
-        this.store.dispatch(new LoadUserToken({
-            userId: userId,
-            password: password,
-        }));
-    }
-    /**
-     * Returns the user's token
-     * @return {?}
-     */
-    getUserToken() {
-        return this.store.pipe(select(getUserToken));
-    }
-    /**
-     * Refreshes the user token
-     * @param {?} token a user token to refresh
-     * @return {?}
-     */
-    refreshUserToken(token) {
-        this.store.dispatch(new RefreshUserToken({
-            refreshToken: token.refresh_token,
-        }));
-    }
-    /**
-     * Store the provided token
-     * @param {?} token
-     * @return {?}
-     */
-    authorizeWithToken(token) {
-        this.store.dispatch(new LoadUserTokenSuccess(token));
-    }
-    /**
-     * Logout
-     * @return {?}
-     */
-    logout() {
-        this.store.dispatch(new Logout());
-    }
-    /**
-     * Returns a client token.  The client token from the store is returned if there is one.
-     * Otherwise, an new token is fetched from the backend and saved in the store.
-     * @return {?}
-     */
-    getClientToken() {
-        return this.store.pipe(select(getClientTokenState), filter((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => {
-            if (this.isClientTokenLoaded(state)) {
-                return true;
-            }
-            else {
-                if (!state.loading) {
-                    this.store.dispatch(new LoadClientToken());
-                }
-                return false;
-            }
-        })), map((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => state.value)));
-    }
-    /**
-     * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-     * The new clientToken is returned.
-     * @return {?}
-     */
-    refreshClientToken() {
-        this.store.dispatch(new LoadClientToken());
-        return this.store.pipe(select(getClientTokenState), filter((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => this.isClientTokenLoaded(state))), map((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => state.value)));
-    }
-    /**
-     * @protected
-     * @param {?} state
-     * @return {?}
-     */
-    isClientTokenLoaded(state) {
-        return (state.success || state.error) && !state.loading;
-    }
-}
-AuthService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-AuthService.ctorParameters = () => [
-    { type: Store }
-];
-/** @nocollapse */ AuthService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ClientErrorHandlingService {
-    /**
-     * @param {?} authService
-     */
-    constructor(authService) {
-        this.authService = authService;
-    }
-    /**
-     * @param {?} request
-     * @param {?} next
-     * @return {?}
-     */
-    handleExpiredClientToken(request, next) {
-        return this.authService.refreshClientToken().pipe(take(1), switchMap((/**
-         * @param {?} token
-         * @return {?}
-         */
-        (token) => {
-            return next.handle(this.createNewRequestWithNewToken(request, token));
-        })));
-    }
-    /**
-     * @protected
-     * @param {?} request
-     * @param {?} token
-     * @return {?}
-     */
-    createNewRequestWithNewToken(request, token) {
-        request = request.clone({
-            setHeaders: {
-                Authorization: `${token.token_type} ${token.access_token}`,
-            },
-        });
-        return request;
-    }
-}
-ClientErrorHandlingService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-ClientErrorHandlingService.ctorParameters = () => [
-    { type: AuthService }
-];
 
 /**
  * @fileoverview added by tsickle
@@ -3384,7 +3087,6 @@ AuthModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    RoutingModule,
                     AuthStoreModule,
                     ConfigModule.withConfig(defaultAuthConfig),
                 ],
@@ -10343,6 +10045,298 @@ function clearCmsState(reducer) {
 }
 /** @type {?} */
 const metaReducers$3 = [clearCmsState];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class UrlMatcherFactoryService {
+    /**
+     * @return {?}
+     */
+    getFalsyUrlMatcher() {
+        return (/**
+         * @return {?}
+         */
+        function falsyUrlMatcher() {
+            return null;
+        });
+    }
+    /**
+     * @param {?} paths
+     * @return {?}
+     */
+    getMultiplePathsUrlMatcher(paths) {
+        /** @type {?} */
+        const self = this;
+        /** @type {?} */
+        const matcher = (/**
+         * @param {?} segments
+         * @param {?} segmentGroup
+         * @param {?} route
+         * @return {?}
+         */
+        function multiplePathsUrlMatcher(segments, segmentGroup, route) {
+            for (let i = 0; i < paths.length; i++) {
+                /** @type {?} */
+                const result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        });
+        matcher.paths = paths; // property added for easier debugging of routes
+        return matcher;
+    }
+    // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+    /**
+     * @private
+     * @param {?=} path
+     * @return {?}
+     */
+    getPathUrlMatcher(path = '') {
+        return (/**
+         * @param {?} segments
+         * @param {?} segmentGroup
+         * @param {?} route
+         * @return {?}
+         */
+        (segments, segmentGroup, route) => {
+            /** @type {?} */
+            const parts = path.split('/');
+            if (parts.length > segments.length) {
+                // The actual URL is shorter than the config, no match
+                return null;
+            }
+            if (route.pathMatch === 'full' &&
+                (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                // The config is longer than the actual URL but we are looking for a full match, return null
+                return null;
+            }
+            /** @type {?} */
+            const posParams = {};
+            // Check each config part against the actual URL
+            for (let index = 0; index < parts.length; index++) {
+                /** @type {?} */
+                const part = parts[index];
+                /** @type {?} */
+                const segment = segments[index];
+                /** @type {?} */
+                const isParameter = part.startsWith(':');
+                if (isParameter) {
+                    posParams[part.substring(1)] = segment;
+                }
+                else if (part !== segment.path) {
+                    // The actual URL part does not match the config, no match
+                    return null;
+                }
+            }
+            return { consumed: segments.slice(0, parts.length), posParams };
+        });
+    }
+}
+UrlMatcherFactoryService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ConfigurableRoutesService {
+    /**
+     * @param {?} config
+     * @param {?} injector
+     * @param {?} routingConfigService
+     * @param {?} urlMatcherFactory
+     */
+    constructor(config, injector, routingConfigService, urlMatcherFactory) {
+        this.config = config;
+        this.injector = injector;
+        this.routingConfigService = routingConfigService;
+        this.urlMatcherFactory = urlMatcherFactory;
+        this.initCalled = false; // guard not to call init() more than once
+    }
+    // guard not to call init() more than once
+    /**
+     * Configures all existing Routes in the Router
+     * @return {?}
+     */
+    init() {
+        if (!this.initCalled) {
+            this.initCalled = true;
+            this.configureRouter();
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    configureRouter() {
+        // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
+        /** @type {?} */
+        const router = this.injector.get(Router);
+        /** @type {?} */
+        const configuredRoutes = this.configureRoutes(router.config);
+        router.resetConfig(configuredRoutes);
+    }
+    /**
+     * @private
+     * @param {?} routes
+     * @return {?}
+     */
+    configureRoutes(routes) {
+        /** @type {?} */
+        const result = [];
+        routes.forEach((/**
+         * @param {?} route
+         * @return {?}
+         */
+        route => {
+            /** @type {?} */
+            const configuredRoute = this.configureRoute(route);
+            if (route.children && route.children.length) {
+                configuredRoute.children = this.configureRoutes(route.children);
+            }
+            result.push(configuredRoute);
+        }));
+        return result;
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    configureRoute(route) {
+        if (this.getRouteName(route)) {
+            /** @type {?} */
+            const paths = this.getConfiguredPaths(route);
+            switch (paths.length) {
+                case 0:
+                    delete route.path;
+                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                case 1:
+                    delete route.matcher;
+                    return Object.assign({}, route, { path: paths[0] });
+                default:
+                    delete route.path;
+                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+            }
+        }
+        return route; // if route doesn't have a name, just pass the original route
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    getRouteName(route) {
+        return route.data && route.data.cxRoute;
+    }
+    /**
+     * @private
+     * @param {?} route
+     * @return {?}
+     */
+    getConfiguredPaths(route) {
+        /** @type {?} */
+        const routeName = this.getRouteName(route);
+        /** @type {?} */
+        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+        if (routeConfig === undefined) {
+            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined key '${routeName}' in the routes config`);
+            return [];
+        }
+        if (routeConfig && routeConfig.paths === undefined) {
+            this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined 'paths' for the named route '${routeName}' in the routes config`);
+            return [];
+        }
+        // routeConfig or routeConfig.paths can be null - which means switching off the route
+        return (routeConfig && routeConfig.paths) || [];
+    }
+    /**
+     * @private
+     * @param {...?} args
+     * @return {?}
+     */
+    warn(...args) {
+        if (!this.config.production) {
+            console.warn(...args);
+        }
+    }
+}
+ConfigurableRoutesService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */
+ConfigurableRoutesService.ctorParameters = () => [
+    { type: ServerConfig },
+    { type: Injector },
+    { type: RoutingConfigService },
+    { type: UrlMatcherFactoryService }
+];
+/** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(ServerConfig), ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} service
+ * @return {?}
+ */
+function initConfigurableRoutes(service) {
+    /** @type {?} */
+    const result = (/**
+     * @return {?}
+     */
+    () => service.init());
+    return result;
+}
+class ConfigurableRoutesModule {
+}
+ConfigurableRoutesModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule],
+                providers: [
+                    {
+                        provide: APP_INITIALIZER,
+                        useFactory: initConfigurableRoutes,
+                        deps: [ConfigurableRoutesService],
+                        multi: true,
+                    },
+                    { provide: RoutingConfig, useExisting: Config },
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class RoutingModule {
+}
+RoutingModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    ConfigurableRoutesModule,
+                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                    EffectsModule.forFeature(effects),
+                    StoreRouterConnectingModule.forRoot({
+                        stateKey: ROUTING_FEATURE,
+                    }),
+                ],
+                providers: [
+                    reducerProvider,
+                    {
+                        provide: RouterStateSerializer,
+                        useClass: CustomSerializer,
+                    },
+                ],
+            },] }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -18347,7 +18341,6 @@ KymaModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    RoutingModule,
                     KymaStoreModule,
                     ConfigModule.withConfig(defaultKymaConfig),
                 ],
@@ -25024,5 +25017,5 @@ StoreFinderCoreModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartMergeComplete, getCartMergeCompleteSelector, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntries, getEntriesMap, getEntriesSelector, getEntrySelectorFactory, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getLoaded, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefresh, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, services, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, UrlMatcherFactoryService as ɵa, ROUTING_FEATURE as ɵb, reducer$1 as ɵba, defaultAuthConfig as ɵbb, AuthServices as ɵbc, ClientErrorHandlingService as ɵbd, UserErrorHandlingService as ɵbe, interceptors as ɵbf, ClientTokenInterceptor as ɵbg, UserTokenInterceptor as ɵbh, AuthErrorInterceptor as ɵbi, CartStoreModule as ɵbj, getReducers$3 as ɵbk, reducerToken$3 as ɵbl, reducerProvider$3 as ɵbm, clearCartState as ɵbn, metaReducers$1 as ɵbo, effects$3 as ɵbp, CartEffects as ɵbq, CartEntryEffects as ɵbr, reducer$5 as ɵbs, reducer$6 as ɵbt, getCardTypesEntites as ɵbu, reducer$7 as ɵbv, getAddressVerificationResults as ɵbw, effects$4 as ɵbx, CheckoutEffects as ɵby, CardTypesEffects as ɵbz, getReducers as ɵc, AddressVerificationEffect as ɵca, getReducers$4 as ɵcb, reducerToken$4 as ɵcc, reducerProvider$4 as ɵcd, clearCheckoutState as ɵce, metaReducers$2 as ɵcf, CheckoutStoreModule as ɵcg, reducer$8 as ɵch, EntityLoadAction as ɵci, EntityFailAction as ɵcj, EntitySuccessAction as ɵck, cmsStoreConfigFactory as ɵcl, CmsStoreModule as ɵcm, getReducers$5 as ɵcn, reducerToken$5 as ɵco, reducerProvider$5 as ɵcp, clearCmsState as ɵcq, metaReducers$3 as ɵcr, effects$5 as ɵcs, PageEffects as ɵct, ComponentEffects as ɵcu, NavigationEntryItemEffects as ɵcv, reducer$a as ɵcw, reducer$b as ɵcx, reducer$9 as ɵcy, getReducers$2 as ɵcz, reducer as ɵd, reducerToken$2 as ɵda, reducerProvider$2 as ɵdb, effects$2 as ɵdc, LanguagesEffects as ɵdd, CurrenciesEffects as ɵde, BaseSiteEffects as ɵdf, effects$6 as ɵdg, ProductReferencesEffects as ɵdh, ProductReviewsEffects as ɵdi, ProductsSearchEffects as ɵdj, ProductEffects as ɵdk, getReducers$6 as ɵdl, reducerToken$6 as ɵdm, reducerProvider$6 as ɵdn, clearProductsState as ɵdo, metaReducers$4 as ɵdp, getReducers$7 as ɵdq, reducerToken$7 as ɵdr, reducerProvider$7 as ɵds, clearUserState as ɵdt, metaReducers$5 as ɵdu, GlobalMessageStoreModule as ɵdv, getReducers$9 as ɵdw, reducerToken$9 as ɵdx, reducerProvider$9 as ɵdy, reducer$q as ɵdz, reducerToken as ɵe, GlobalMessageEffect as ɵea, defaultGlobalMessageConfigFactory as ɵeb, HttpErrorInterceptor as ɵec, ServerConfig as ɵed, defaultI18nConfig as ɵee, i18nextProviders as ɵef, i18nextInit as ɵeg, MockTranslationService as ɵeh, kymaStoreConfigFactory as ɵei, KymaStoreModule as ɵej, getReducers$a as ɵek, reducerToken$a as ɵel, reducerProvider$a as ɵem, clearKymaState as ɵen, metaReducers$6 as ɵeo, effects$8 as ɵep, OpenIdTokenEffect as ɵeq, OpenIdAuthenticationTokenService as ɵer, defaultKymaConfig as ɵes, provideConfigFactory as ɵet, defaultOccProductConfig as ɵeu, provideConfigValidator as ɵev, defaultPersonalizationConfig as ɵew, interceptors$1 as ɵex, OccPersonalizationIdInterceptor as ɵey, OccPersonalizationTimeInterceptor as ɵez, reducerProvider as ɵf, productStoreConfigFactory as ɵfa, ProductStoreModule as ɵfb, reducer$e as ɵfc, getSearchResults as ɵfd, getAuxSearchResults as ɵfe, getProductSuggestions as ɵff, reducer$d as ɵfg, reducer$c as ɵfh, PageMetaResolver as ɵfi, defaultSiteContextConfigFactory as ɵfj, siteContextStoreConfigFactory as ɵfk, SiteContextStoreModule as ɵfl, reducer$2 as ɵfm, reducer$3 as ɵfn, reducer$4 as ɵfo, SiteContextParamsService as ɵfp, SiteContextUrlSerializer as ɵfq, SiteContextRoutesHandler as ɵfr, interceptors$2 as ɵfs, CmsTicketInterceptor as ɵft, getStoreFinderState as ɵfu, defaultStoreFinderConfig as ɵfv, StoreFinderStoreModule as ɵfw, getReducers$b as ɵfx, reducerToken$b as ɵfy, reducerProvider$b as ɵfz, CustomSerializer as ɵg, effects$9 as ɵga, FindStoresEffect as ɵgb, ViewAllStoresEffect as ɵgc, EntityResetAction as ɵgd, UserStoreModule as ɵge, effects$7 as ɵgf, BillingCountriesEffect as ɵgg, DeliveryCountriesEffects as ɵgh, OrderDetailsEffect as ɵgi, UserPaymentMethodsEffects as ɵgj, RegionsEffects as ɵgk, ResetPasswordEffects as ɵgl, TitlesEffects as ɵgm, UserAddressesEffects as ɵgn, UserConsentsEffect as ɵgo, UserDetailsEffects as ɵgp, UserOrdersEffect as ɵgq, UserRegisterEffects as ɵgr, ClearMiscsDataEffect as ɵgs, ForgotPasswordEffects as ɵgt, UpdateEmailEffects as ɵgu, UpdatePasswordEffects as ɵgv, reducer$o as ɵgw, reducer$m as ɵgx, reducer$f as ɵgy, reducer$n as ɵgz, effects as ɵh, reducer$i as ɵha, reducer$p as ɵhb, reducer$h as ɵhc, reducer$g as ɵhd, reducer$l as ɵhe, reducer$j as ɵhf, reducer$k as ɵhg, ProcessModule as ɵhh, ProcessStoreModule as ɵhi, PROCESS_FEATURE as ɵhj, getReducers$8 as ɵhk, reducerToken$8 as ɵhl, reducerProvider$8 as ɵhm, RouterEffects as ɵi, UrlParsingService as ɵk, authStoreConfigFactory as ɵl, AuthStoreModule as ɵm, stateMetaReducers as ɵn, getStorageSyncReducer as ɵo, getTransferStateReducer as ɵp, getReducers$1 as ɵq, reducerToken$1 as ɵr, reducerProvider$1 as ɵs, clearAuthState as ɵt, metaReducers as ɵu, effects$1 as ɵv, ClientTokenEffect as ɵw, UserTokenEffects as ɵx, UserAuthenticationTokenService as ɵy, ClientAuthenticationTokenService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartMergeComplete, getCartMergeCompleteSelector, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntries, getEntriesMap, getEntriesSelector, getEntrySelectorFactory, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getLoaded, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefresh, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, services, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCartState as ɵbe, metaReducers$1 as ɵbf, effects$3 as ɵbg, CartEffects as ɵbh, CartEntryEffects as ɵbi, reducer$5 as ɵbj, reducer$6 as ɵbk, getCardTypesEntites as ɵbl, reducer$7 as ɵbm, getAddressVerificationResults as ɵbn, effects$4 as ɵbo, CheckoutEffects as ɵbp, CardTypesEffects as ɵbq, AddressVerificationEffect as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCheckoutState as ɵbv, metaReducers$2 as ɵbw, CheckoutStoreModule as ɵbx, reducer$8 as ɵby, EntityLoadAction as ɵbz, stateMetaReducers as ɵc, EntityFailAction as ɵca, EntitySuccessAction as ɵcb, cmsStoreConfigFactory as ɵcc, CmsStoreModule as ɵcd, getReducers$5 as ɵce, reducerToken$5 as ɵcf, reducerProvider$5 as ɵcg, clearCmsState as ɵch, metaReducers$3 as ɵci, effects$5 as ɵcj, PageEffects as ɵck, ComponentEffects as ɵcl, NavigationEntryItemEffects as ɵcm, reducer$a as ɵcn, reducer$b as ɵco, reducer$9 as ɵcp, getReducers$2 as ɵcq, reducerToken$2 as ɵcr, reducerProvider$2 as ɵcs, effects$2 as ɵct, LanguagesEffects as ɵcu, CurrenciesEffects as ɵcv, BaseSiteEffects as ɵcw, effects$6 as ɵcx, ProductReferencesEffects as ɵcy, ProductReviewsEffects as ɵcz, getStorageSyncReducer as ɵd, ProductsSearchEffects as ɵda, ProductEffects as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, clearProductsState as ɵdf, metaReducers$4 as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearUserState as ɵdk, metaReducers$5 as ɵdl, GlobalMessageStoreModule as ɵdm, getReducers$9 as ɵdn, reducerToken$9 as ɵdo, reducerProvider$9 as ɵdp, reducer$q as ɵdq, GlobalMessageEffect as ɵdr, defaultGlobalMessageConfigFactory as ɵds, HttpErrorInterceptor as ɵdt, ServerConfig as ɵdu, defaultI18nConfig as ɵdv, i18nextProviders as ɵdw, i18nextInit as ɵdx, MockTranslationService as ɵdy, kymaStoreConfigFactory as ɵdz, getTransferStateReducer as ɵe, KymaStoreModule as ɵea, getReducers$a as ɵeb, reducerToken$a as ɵec, reducerProvider$a as ɵed, clearKymaState as ɵee, metaReducers$6 as ɵef, effects$8 as ɵeg, OpenIdTokenEffect as ɵeh, OpenIdAuthenticationTokenService as ɵei, defaultKymaConfig as ɵej, provideConfigFactory as ɵek, defaultOccProductConfig as ɵel, provideConfigValidator as ɵem, defaultPersonalizationConfig as ɵen, interceptors$1 as ɵeo, OccPersonalizationIdInterceptor as ɵep, OccPersonalizationTimeInterceptor as ɵeq, productStoreConfigFactory as ɵer, ProductStoreModule as ɵes, reducer$e as ɵet, getSearchResults as ɵeu, getAuxSearchResults as ɵev, getProductSuggestions as ɵew, reducer$d as ɵex, reducer$c as ɵey, PageMetaResolver as ɵez, getReducers$1 as ɵf, UrlMatcherFactoryService as ɵfa, ROUTING_FEATURE as ɵfb, getReducers as ɵfc, reducer as ɵfd, reducerToken as ɵfe, reducerProvider as ɵff, CustomSerializer as ɵfg, effects as ɵfh, RouterEffects as ɵfi, defaultSiteContextConfigFactory as ɵfj, siteContextStoreConfigFactory as ɵfk, SiteContextStoreModule as ɵfl, reducer$2 as ɵfm, reducer$3 as ɵfn, reducer$4 as ɵfo, SiteContextParamsService as ɵfp, SiteContextUrlSerializer as ɵfq, SiteContextRoutesHandler as ɵfr, interceptors$2 as ɵfs, CmsTicketInterceptor as ɵft, getStoreFinderState as ɵfu, defaultStoreFinderConfig as ɵfv, StoreFinderStoreModule as ɵfw, getReducers$b as ɵfx, reducerToken$b as ɵfy, reducerProvider$b as ɵfz, reducerToken$1 as ɵg, effects$9 as ɵga, FindStoresEffect as ɵgb, ViewAllStoresEffect as ɵgc, EntityResetAction as ɵgd, UserStoreModule as ɵge, effects$7 as ɵgf, BillingCountriesEffect as ɵgg, DeliveryCountriesEffects as ɵgh, OrderDetailsEffect as ɵgi, UserPaymentMethodsEffects as ɵgj, RegionsEffects as ɵgk, ResetPasswordEffects as ɵgl, TitlesEffects as ɵgm, UserAddressesEffects as ɵgn, UserConsentsEffect as ɵgo, UserDetailsEffects as ɵgp, UserOrdersEffect as ɵgq, UserRegisterEffects as ɵgr, ClearMiscsDataEffect as ɵgs, ForgotPasswordEffects as ɵgt, UpdateEmailEffects as ɵgu, UpdatePasswordEffects as ɵgv, reducer$o as ɵgw, reducer$m as ɵgx, reducer$f as ɵgy, reducer$n as ɵgz, reducerProvider$1 as ɵh, reducer$i as ɵha, reducer$p as ɵhb, reducer$h as ɵhc, reducer$g as ɵhd, reducer$l as ɵhe, reducer$j as ɵhf, reducer$k as ɵhg, ProcessModule as ɵhh, ProcessStoreModule as ɵhi, PROCESS_FEATURE as ɵhj, getReducers$8 as ɵhk, reducerToken$8 as ɵhl, reducerProvider$8 as ɵhm, clearAuthState as ɵi, metaReducers as ɵj, effects$1 as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer$1 as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵv, interceptors as ɵw, ClientTokenInterceptor as ɵx, UserTokenInterceptor as ɵy, AuthErrorInterceptor as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

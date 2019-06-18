@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@angular/common/http'), require('@ngrx/router-store'), require('@ngrx/store'), require('@ngrx/effects'), require('@angular/router'), require('rxjs'), require('rxjs/operators'), require('@angular/platform-browser'), require('@angular/forms'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@angular/common/http', '@ngrx/router-store', '@ngrx/store', '@ngrx/effects', '@angular/router', 'rxjs', 'rxjs/operators', '@angular/platform-browser', '@angular/forms', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.ng.common.http, global.fromNgrxRouter, global.store, global.effects, global.ng.router, global.rxjs, global.rxjs.operators, global.ng.platformBrowser, global.ng.forms, global.i18next, global.i18nextXhrBackend));
-}(this, function (exports, core, common, http, routerStore, store, effects$a, router, rxjs, operators, platformBrowser, forms, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@ngrx/router-store'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/forms'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@ngrx/router-store', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@angular/forms', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.fromNgrxRouter, global.ng.router, global.effects, global.ng.platformBrowser, global.ng.forms, global.i18next, global.i18nextXhrBackend));
+}(this, function (exports, common, http, core, rxjs, operators, store, routerStore, router, effects$a, platformBrowser, forms, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -355,6 +355,553 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    OccConfig = /** @class */ (function (_super) {
+        __extends(OccConfig, _super);
+        function OccConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return OccConfig;
+    }(ServerConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    AuthConfig = /** @class */ (function (_super) {
+        __extends(AuthConfig, _super);
+        function AuthConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return AuthConfig;
+    }(OccConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultAuthConfig = {
+        authentication: {
+            client_id: 'mobile_android',
+            client_secret: 'secret',
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var AUTH_FEATURE = 'auth';
+    /** @type {?} */
+    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
+    /** @type {?} */
+    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
+    /** @type {?} */
+    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
+    /** @type {?} */
+    var LOADER_RESET_ACTION = '[LOADER] RESET';
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function loadMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                load: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @param {?=} error
+     * @return {?}
+     */
+    function failMeta(entityType, error) {
+        return {
+            entityType: entityType,
+            loader: {
+                error: error ? error : true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function successMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {
+                success: true,
+            },
+        };
+    }
+    /**
+     * @param {?} entityType
+     * @return {?}
+     */
+    function resetMeta(entityType) {
+        return {
+            entityType: entityType,
+            loader: {},
+        };
+    }
+    var LoaderLoadAction = /** @class */ (function () {
+        function LoaderLoadAction(entityType) {
+            this.type = LOADER_LOAD_ACTION;
+            this.meta = loadMeta(entityType);
+        }
+        return LoaderLoadAction;
+    }());
+    var LoaderFailAction = /** @class */ (function () {
+        function LoaderFailAction(entityType, error) {
+            this.type = LOADER_FAIL_ACTION;
+            this.meta = failMeta(entityType, error);
+        }
+        return LoaderFailAction;
+    }());
+    var LoaderSuccessAction = /** @class */ (function () {
+        function LoaderSuccessAction(entityType) {
+            this.type = LOADER_SUCCESS_ACTION;
+            this.meta = successMeta(entityType);
+        }
+        return LoaderSuccessAction;
+    }());
+    var LoaderResetAction = /** @class */ (function () {
+        function LoaderResetAction(entityType) {
+            this.type = LOADER_RESET_ACTION;
+            this.meta = resetMeta(entityType);
+        }
+        return LoaderResetAction;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
+    var LoadClientToken = /** @class */ (function (_super) {
+        __extends(LoadClientToken, _super);
+        function LoadClientToken() {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.type = LOAD_CLIENT_TOKEN;
+            return _this;
+        }
+        return LoadClientToken;
+    }(LoaderLoadAction));
+    var LoadClientTokenFail = /** @class */ (function (_super) {
+        __extends(LoadClientTokenFail, _super);
+        function LoadClientTokenFail(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_FAIL;
+            return _this;
+        }
+        return LoadClientTokenFail;
+    }(LoaderFailAction));
+    var LoadClientTokenSuccess = /** @class */ (function (_super) {
+        __extends(LoadClientTokenSuccess, _super);
+        function LoadClientTokenSuccess(payload) {
+            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
+            return _this;
+        }
+        return LoadClientTokenSuccess;
+    }(LoaderSuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOGIN = '[Auth] Login';
+    /** @type {?} */
+    var LOGOUT = '[Auth] Logout';
+    var Login = /** @class */ (function () {
+        function Login() {
+            this.type = LOGIN;
+        }
+        return Login;
+    }());
+    var Logout = /** @class */ (function () {
+        function Logout() {
+            this.type = LOGOUT;
+        }
+        return Logout;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_USER_TOKEN = '[Auth] Load User Token';
+    /** @type {?} */
+    var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
+    /** @type {?} */
+    var LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
+    /** @type {?} */
+    var REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
+    var LoadUserToken = /** @class */ (function () {
+        function LoadUserToken(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN;
+        }
+        return LoadUserToken;
+    }());
+    var LoadUserTokenFail = /** @class */ (function () {
+        function LoadUserTokenFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN_FAIL;
+        }
+        return LoadUserTokenFail;
+    }());
+    var LoadUserTokenSuccess = /** @class */ (function () {
+        function LoadUserTokenSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_USER_TOKEN_SUCCESS;
+        }
+        return LoadUserTokenSuccess;
+    }());
+    var RefreshUserToken = /** @class */ (function () {
+        function RefreshUserToken(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN;
+        }
+        return RefreshUserToken;
+    }());
+    var RefreshUserTokenSuccess = /** @class */ (function () {
+        function RefreshUserTokenSuccess(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN_SUCCESS;
+        }
+        return RefreshUserTokenSuccess;
+    }());
+    var RefreshUserTokenFail = /** @class */ (function () {
+        function RefreshUserTokenFail(payload) {
+            this.payload = payload;
+            this.type = REFRESH_USER_TOKEN_FAIL;
+        }
+        return RefreshUserTokenFail;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getAuthState = store.createFeatureSelector(AUTH_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.clientToken; };
+    /** @type {?} */
+    var getClientTokenState = store.createSelector(getAuthState, (ɵ0));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getUserTokenSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.token; });
+    var ɵ0$1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.userToken; };
+    /** @type {?} */
+    var getUserTokenState = store.createSelector(getAuthState, (ɵ0$1));
+    /** @type {?} */
+    var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AuthService = /** @class */ (function () {
+        function AuthService(store) {
+            this.store = store;
+        }
+        /**
+         * Loads a new user token
+         * @param userId
+         * @param password
+         */
+        /**
+         * Loads a new user token
+         * @param {?} userId
+         * @param {?} password
+         * @return {?}
+         */
+        AuthService.prototype.authorize = /**
+         * Loads a new user token
+         * @param {?} userId
+         * @param {?} password
+         * @return {?}
+         */
+        function (userId, password) {
+            this.store.dispatch(new LoadUserToken({
+                userId: userId,
+                password: password,
+            }));
+        };
+        /**
+         * Returns the user's token
+         */
+        /**
+         * Returns the user's token
+         * @return {?}
+         */
+        AuthService.prototype.getUserToken = /**
+         * Returns the user's token
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getUserToken));
+        };
+        /**
+         * Refreshes the user token
+         * @param token a user token to refresh
+         */
+        /**
+         * Refreshes the user token
+         * @param {?} token a user token to refresh
+         * @return {?}
+         */
+        AuthService.prototype.refreshUserToken = /**
+         * Refreshes the user token
+         * @param {?} token a user token to refresh
+         * @return {?}
+         */
+        function (token) {
+            this.store.dispatch(new RefreshUserToken({
+                refreshToken: token.refresh_token,
+            }));
+        };
+        /**
+         * Store the provided token
+         */
+        /**
+         * Store the provided token
+         * @param {?} token
+         * @return {?}
+         */
+        AuthService.prototype.authorizeWithToken = /**
+         * Store the provided token
+         * @param {?} token
+         * @return {?}
+         */
+        function (token) {
+            this.store.dispatch(new LoadUserTokenSuccess(token));
+        };
+        /**
+         * Logout
+         */
+        /**
+         * Logout
+         * @return {?}
+         */
+        AuthService.prototype.logout = /**
+         * Logout
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new Logout());
+        };
+        /**
+         * Returns a client token.  The client token from the store is returned if there is one.
+         * Otherwise, an new token is fetched from the backend and saved in the store.
+         */
+        /**
+         * Returns a client token.  The client token from the store is returned if there is one.
+         * Otherwise, an new token is fetched from the backend and saved in the store.
+         * @return {?}
+         */
+        AuthService.prototype.getClientToken = /**
+         * Returns a client token.  The client token from the store is returned if there is one.
+         * Otherwise, an new token is fetched from the backend and saved in the store.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getClientTokenState), operators.filter((/**
+             * @param {?} state
+             * @return {?}
+             */
+            function (state) {
+                if (_this.isClientTokenLoaded(state)) {
+                    return true;
+                }
+                else {
+                    if (!state.loading) {
+                        _this.store.dispatch(new LoadClientToken());
+                    }
+                    return false;
+                }
+            })), operators.map((/**
+             * @param {?} state
+             * @return {?}
+             */
+            function (state) { return state.value; })));
+        };
+        /**
+         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
+         * The new clientToken is returned.
+         */
+        /**
+         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
+         * The new clientToken is returned.
+         * @return {?}
+         */
+        AuthService.prototype.refreshClientToken = /**
+         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
+         * The new clientToken is returned.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            this.store.dispatch(new LoadClientToken());
+            return this.store.pipe(store.select(getClientTokenState), operators.filter((/**
+             * @param {?} state
+             * @return {?}
+             */
+            function (state) {
+                return _this.isClientTokenLoaded(state);
+            })), operators.map((/**
+             * @param {?} state
+             * @return {?}
+             */
+            function (state) { return state.value; })));
+        };
+        /**
+         * @protected
+         * @param {?} state
+         * @return {?}
+         */
+        AuthService.prototype.isClientTokenLoaded = /**
+         * @protected
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return (state.success || state.error) && !state.loading;
+        };
+        AuthService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        AuthService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ AuthService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(core.ɵɵinject(store.Store)); }, token: AuthService, providedIn: "root" });
+        return AuthService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ClientErrorHandlingService = /** @class */ (function () {
+        function ClientErrorHandlingService(authService) {
+            this.authService = authService;
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        ClientErrorHandlingService.prototype.handleExpiredClientToken = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        function (request, next) {
+            var _this = this;
+            return this.authService.refreshClientToken().pipe(operators.take(1), operators.switchMap((/**
+             * @param {?} token
+             * @return {?}
+             */
+            function (token) {
+                return next.handle(_this.createNewRequestWithNewToken(request, token));
+            })));
+        };
+        /**
+         * @protected
+         * @param {?} request
+         * @param {?} token
+         * @return {?}
+         */
+        ClientErrorHandlingService.prototype.createNewRequestWithNewToken = /**
+         * @protected
+         * @param {?} request
+         * @param {?} token
+         * @return {?}
+         */
+        function (request, token) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: token.token_type + " " + token.access_token,
+                },
+            });
+            return request;
+        };
+        ClientErrorHandlingService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ClientErrorHandlingService.ctorParameters = function () { return [
+            { type: AuthService }
+        ]; };
+        return ClientErrorHandlingService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @enum {string} */
     var PageType = {
         CONTENT_PAGE: 'ContentPage',
@@ -432,13 +979,13 @@
     };
     /** @type {?} */
     var getRouterFeatureState = store.createFeatureSelector(ROUTING_FEATURE);
-    var ɵ0 = /**
+    var ɵ0$2 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.router; };
     /** @type {?} */
-    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0));
+    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$2));
     var ɵ1 = /**
      * @param {?} routingState
      * @return {?}
@@ -561,6 +1108,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var GO = '[Router] Go';
     /** @type {?} */
@@ -600,22 +1152,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var LOGIN = '[Auth] Login';
-    /** @type {?} */
-    var LOGOUT = '[Auth] Logout';
-    var Login = /** @class */ (function () {
-        function Login() {
-            this.type = LOGIN;
-        }
-        return Login;
-    }());
-    var Logout = /** @class */ (function () {
-        function Logout() {
-            this.type = LOGOUT;
-        }
-        return Logout;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -760,16 +1296,6 @@
      */
     /** @type {?} */
     var effects = [RouterEffects];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -1460,892 +1986,6 @@
         ]; };
         /** @nocollapse */ RoutingService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(core.ɵɵinject(store.Store), core.ɵɵinject(WindowRef), core.ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
         return RoutingService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UrlMatcherFactoryService = /** @class */ (function () {
-        function UrlMatcherFactoryService() {
-        }
-        /**
-         * @return {?}
-         */
-        UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = /**
-         * @return {?}
-         */
-        function () {
-            return (/**
-             * @return {?}
-             */
-            function falsyUrlMatcher() {
-                return null;
-            });
-        };
-        /**
-         * @param {?} paths
-         * @return {?}
-         */
-        UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = /**
-         * @param {?} paths
-         * @return {?}
-         */
-        function (paths) {
-            /** @type {?} */
-            var self = this;
-            /** @type {?} */
-            var matcher = (/**
-             * @param {?} segments
-             * @param {?} segmentGroup
-             * @param {?} route
-             * @return {?}
-             */
-            function multiplePathsUrlMatcher(segments, segmentGroup, route) {
-                for (var i = 0; i < paths.length; i++) {
-                    /** @type {?} */
-                    var result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
-                    if (result) {
-                        return result;
-                    }
-                }
-                return null;
-            });
-            matcher.paths = paths; // property added for easier debugging of routes
-            return matcher;
-        };
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-        /**
-         * @private
-         * @param {?=} path
-         * @return {?}
-         */
-        UrlMatcherFactoryService.prototype.getPathUrlMatcher = 
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-        /**
-         * @private
-         * @param {?=} path
-         * @return {?}
-         */
-        function (path) {
-            if (path === void 0) { path = ''; }
-            return (/**
-             * @param {?} segments
-             * @param {?} segmentGroup
-             * @param {?} route
-             * @return {?}
-             */
-            function (segments, segmentGroup, route) {
-                /** @type {?} */
-                var parts = path.split('/');
-                if (parts.length > segments.length) {
-                    // The actual URL is shorter than the config, no match
-                    return null;
-                }
-                if (route.pathMatch === 'full' &&
-                    (segmentGroup.hasChildren() || parts.length < segments.length)) {
-                    // The config is longer than the actual URL but we are looking for a full match, return null
-                    return null;
-                }
-                /** @type {?} */
-                var posParams = {};
-                // Check each config part against the actual URL
-                for (var index = 0; index < parts.length; index++) {
-                    /** @type {?} */
-                    var part = parts[index];
-                    /** @type {?} */
-                    var segment = segments[index];
-                    /** @type {?} */
-                    var isParameter = part.startsWith(':');
-                    if (isParameter) {
-                        posParams[part.substring(1)] = segment;
-                    }
-                    else if (part !== segment.path) {
-                        // The actual URL part does not match the config, no match
-                        return null;
-                    }
-                }
-                return { consumed: segments.slice(0, parts.length), posParams: posParams };
-            });
-        };
-        UrlMatcherFactoryService.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root' },] }
-        ];
-        /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
-        return UrlMatcherFactoryService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ConfigurableRoutesService = /** @class */ (function () {
-        function ConfigurableRoutesService(config, injector, routingConfigService, urlMatcherFactory) {
-            this.config = config;
-            this.injector = injector;
-            this.routingConfigService = routingConfigService;
-            this.urlMatcherFactory = urlMatcherFactory;
-            this.initCalled = false; // guard not to call init() more than once
-        }
-        /**
-         * Configures all existing Routes in the Router
-         */
-        // guard not to call init() more than once
-        /**
-         * Configures all existing Routes in the Router
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.init = 
-        // guard not to call init() more than once
-        /**
-         * Configures all existing Routes in the Router
-         * @return {?}
-         */
-        function () {
-            if (!this.initCalled) {
-                this.initCalled = true;
-                this.configureRouter();
-            }
-        };
-        /**
-         * @private
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.configureRouter = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
-            /** @type {?} */
-            var router$1 = this.injector.get(router.Router);
-            /** @type {?} */
-            var configuredRoutes = this.configureRoutes(router$1.config);
-            router$1.resetConfig(configuredRoutes);
-        };
-        /**
-         * @private
-         * @param {?} routes
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.configureRoutes = /**
-         * @private
-         * @param {?} routes
-         * @return {?}
-         */
-        function (routes) {
-            var _this = this;
-            /** @type {?} */
-            var result = [];
-            routes.forEach((/**
-             * @param {?} route
-             * @return {?}
-             */
-            function (route) {
-                /** @type {?} */
-                var configuredRoute = _this.configureRoute(route);
-                if (route.children && route.children.length) {
-                    configuredRoute.children = _this.configureRoutes(route.children);
-                }
-                result.push(configuredRoute);
-            }));
-            return result;
-        };
-        /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.configureRoute = /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        function (route) {
-            if (this.getRouteName(route)) {
-                /** @type {?} */
-                var paths = this.getConfiguredPaths(route);
-                switch (paths.length) {
-                    case 0:
-                        delete route.path;
-                        return __assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-                    case 1:
-                        delete route.matcher;
-                        return __assign({}, route, { path: paths[0] });
-                    default:
-                        delete route.path;
-                        return __assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
-                }
-            }
-            return route; // if route doesn't have a name, just pass the original route
-        };
-        /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.getRouteName = /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        function (route) {
-            return route.data && route.data.cxRoute;
-        };
-        /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.getConfiguredPaths = /**
-         * @private
-         * @param {?} route
-         * @return {?}
-         */
-        function (route) {
-            /** @type {?} */
-            var routeName = this.getRouteName(route);
-            /** @type {?} */
-            var routeConfig = this.routingConfigService.getRouteConfig(routeName);
-            if (routeConfig === undefined) {
-                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in the routes config");
-                return [];
-            }
-            if (routeConfig && routeConfig.paths === undefined) {
-                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined 'paths' for the named route '" + routeName + "' in the routes config");
-                return [];
-            }
-            // routeConfig or routeConfig.paths can be null - which means switching off the route
-            return (routeConfig && routeConfig.paths) || [];
-        };
-        /**
-         * @private
-         * @param {...?} args
-         * @return {?}
-         */
-        ConfigurableRoutesService.prototype.warn = /**
-         * @private
-         * @param {...?} args
-         * @return {?}
-         */
-        function () {
-            var args = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i] = arguments[_i];
-            }
-            if (!this.config.production) {
-                console.warn.apply(console, __spread(args));
-            }
-        };
-        ConfigurableRoutesService.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root' },] }
-        ];
-        /** @nocollapse */
-        ConfigurableRoutesService.ctorParameters = function () { return [
-            { type: ServerConfig },
-            { type: core.Injector },
-            { type: RoutingConfigService },
-            { type: UrlMatcherFactoryService }
-        ]; };
-        /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(ServerConfig), core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
-        return ConfigurableRoutesService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} service
-     * @return {?}
-     */
-    function initConfigurableRoutes(service) {
-        /** @type {?} */
-        var result = (/**
-         * @return {?}
-         */
-        function () { return service.init(); });
-        return result;
-    }
-    var ConfigurableRoutesModule = /** @class */ (function () {
-        function ConfigurableRoutesModule() {
-        }
-        ConfigurableRoutesModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [common.CommonModule],
-                        providers: [
-                            {
-                                provide: core.APP_INITIALIZER,
-                                useFactory: initConfigurableRoutes,
-                                deps: [ConfigurableRoutesService],
-                                multi: true,
-                            },
-                            { provide: RoutingConfig, useExisting: Config },
-                        ],
-                    },] }
-        ];
-        return ConfigurableRoutesModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var RoutingModule = /** @class */ (function () {
-        function RoutingModule() {
-        }
-        RoutingModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            ConfigurableRoutesModule,
-                            router.RouterModule.forRoot([], {
-                                scrollPositionRestoration: 'enabled',
-                                anchorScrolling: 'enabled',
-                            }),
-                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
-                            effects$a.EffectsModule.forFeature(effects),
-                            routerStore.StoreRouterConnectingModule.forRoot({
-                                stateKey: ROUTING_FEATURE,
-                            }),
-                        ],
-                        providers: [
-                            RoutingService,
-                            reducerProvider,
-                            {
-                                provide: routerStore.RouterStateSerializer,
-                                useClass: CustomSerializer,
-                            },
-                        ],
-                    },] }
-        ];
-        return RoutingModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    OccConfig = /** @class */ (function (_super) {
-        __extends(OccConfig, _super);
-        function OccConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return OccConfig;
-    }(ServerConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    AuthConfig = /** @class */ (function (_super) {
-        __extends(AuthConfig, _super);
-        function AuthConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return AuthConfig;
-    }(OccConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var defaultAuthConfig = {
-        authentication: {
-            client_id: 'mobile_android',
-            client_secret: 'secret',
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var AUTH_FEATURE = 'auth';
-    /** @type {?} */
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOADER_LOAD_ACTION = '[LOADER] LOAD';
-    /** @type {?} */
-    var LOADER_FAIL_ACTION = '[LOADER] FAIL';
-    /** @type {?} */
-    var LOADER_SUCCESS_ACTION = '[LOADER] SUCCESS';
-    /** @type {?} */
-    var LOADER_RESET_ACTION = '[LOADER] RESET';
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function loadMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                load: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @param {?=} error
-     * @return {?}
-     */
-    function failMeta(entityType, error) {
-        return {
-            entityType: entityType,
-            loader: {
-                error: error ? error : true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function successMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {
-                success: true,
-            },
-        };
-    }
-    /**
-     * @param {?} entityType
-     * @return {?}
-     */
-    function resetMeta(entityType) {
-        return {
-            entityType: entityType,
-            loader: {},
-        };
-    }
-    var LoaderLoadAction = /** @class */ (function () {
-        function LoaderLoadAction(entityType) {
-            this.type = LOADER_LOAD_ACTION;
-            this.meta = loadMeta(entityType);
-        }
-        return LoaderLoadAction;
-    }());
-    var LoaderFailAction = /** @class */ (function () {
-        function LoaderFailAction(entityType, error) {
-            this.type = LOADER_FAIL_ACTION;
-            this.meta = failMeta(entityType, error);
-        }
-        return LoaderFailAction;
-    }());
-    var LoaderSuccessAction = /** @class */ (function () {
-        function LoaderSuccessAction(entityType) {
-            this.type = LOADER_SUCCESS_ACTION;
-            this.meta = successMeta(entityType);
-        }
-        return LoaderSuccessAction;
-    }());
-    var LoaderResetAction = /** @class */ (function () {
-        function LoaderResetAction(entityType) {
-            this.type = LOADER_RESET_ACTION;
-            this.meta = resetMeta(entityType);
-        }
-        return LoaderResetAction;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
-    /** @type {?} */
-    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
-    var LoadClientToken = /** @class */ (function (_super) {
-        __extends(LoadClientToken, _super);
-        function LoadClientToken() {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.type = LOAD_CLIENT_TOKEN;
-            return _this;
-        }
-        return LoadClientToken;
-    }(LoaderLoadAction));
-    var LoadClientTokenFail = /** @class */ (function (_super) {
-        __extends(LoadClientTokenFail, _super);
-        function LoadClientTokenFail(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_FAIL;
-            return _this;
-        }
-        return LoadClientTokenFail;
-    }(LoaderFailAction));
-    var LoadClientTokenSuccess = /** @class */ (function (_super) {
-        __extends(LoadClientTokenSuccess, _super);
-        function LoadClientTokenSuccess(payload) {
-            var _this = _super.call(this, CLIENT_TOKEN_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CLIENT_TOKEN_SUCCESS;
-            return _this;
-        }
-        return LoadClientTokenSuccess;
-    }(LoaderSuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_USER_TOKEN = '[Auth] Load User Token';
-    /** @type {?} */
-    var LOAD_USER_TOKEN_FAIL = '[Auth] Load User Token Fail';
-    /** @type {?} */
-    var LOAD_USER_TOKEN_SUCCESS = '[Auth] Load User Token Success';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN = '[Auth] Refresh User Token';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN_FAIL = '[Auth] Refresh User Token Fail';
-    /** @type {?} */
-    var REFRESH_USER_TOKEN_SUCCESS = '[Auth] Refresh User Token Success';
-    var LoadUserToken = /** @class */ (function () {
-        function LoadUserToken(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN;
-        }
-        return LoadUserToken;
-    }());
-    var LoadUserTokenFail = /** @class */ (function () {
-        function LoadUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_FAIL;
-        }
-        return LoadUserTokenFail;
-    }());
-    var LoadUserTokenSuccess = /** @class */ (function () {
-        function LoadUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_USER_TOKEN_SUCCESS;
-        }
-        return LoadUserTokenSuccess;
-    }());
-    var RefreshUserToken = /** @class */ (function () {
-        function RefreshUserToken(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN;
-        }
-        return RefreshUserToken;
-    }());
-    var RefreshUserTokenSuccess = /** @class */ (function () {
-        function RefreshUserTokenSuccess(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_SUCCESS;
-        }
-        return RefreshUserTokenSuccess;
-    }());
-    var RefreshUserTokenFail = /** @class */ (function () {
-        function RefreshUserTokenFail(payload) {
-            this.payload = payload;
-            this.type = REFRESH_USER_TOKEN_FAIL;
-        }
-        return RefreshUserTokenFail;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getAuthState = store.createFeatureSelector(AUTH_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$1 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.clientToken; };
-    /** @type {?} */
-    var getClientTokenState = store.createSelector(getAuthState, (ɵ0$1));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getUserTokenSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.token; });
-    var ɵ0$2 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.userToken; };
-    /** @type {?} */
-    var getUserTokenState = store.createSelector(getAuthState, (ɵ0$2));
-    /** @type {?} */
-    var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var AuthService = /** @class */ (function () {
-        function AuthService(store) {
-            this.store = store;
-        }
-        /**
-         * Loads a new user token
-         * @param userId
-         * @param password
-         */
-        /**
-         * Loads a new user token
-         * @param {?} userId
-         * @param {?} password
-         * @return {?}
-         */
-        AuthService.prototype.authorize = /**
-         * Loads a new user token
-         * @param {?} userId
-         * @param {?} password
-         * @return {?}
-         */
-        function (userId, password) {
-            this.store.dispatch(new LoadUserToken({
-                userId: userId,
-                password: password,
-            }));
-        };
-        /**
-         * Returns the user's token
-         */
-        /**
-         * Returns the user's token
-         * @return {?}
-         */
-        AuthService.prototype.getUserToken = /**
-         * Returns the user's token
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getUserToken));
-        };
-        /**
-         * Refreshes the user token
-         * @param token a user token to refresh
-         */
-        /**
-         * Refreshes the user token
-         * @param {?} token a user token to refresh
-         * @return {?}
-         */
-        AuthService.prototype.refreshUserToken = /**
-         * Refreshes the user token
-         * @param {?} token a user token to refresh
-         * @return {?}
-         */
-        function (token) {
-            this.store.dispatch(new RefreshUserToken({
-                refreshToken: token.refresh_token,
-            }));
-        };
-        /**
-         * Store the provided token
-         */
-        /**
-         * Store the provided token
-         * @param {?} token
-         * @return {?}
-         */
-        AuthService.prototype.authorizeWithToken = /**
-         * Store the provided token
-         * @param {?} token
-         * @return {?}
-         */
-        function (token) {
-            this.store.dispatch(new LoadUserTokenSuccess(token));
-        };
-        /**
-         * Logout
-         */
-        /**
-         * Logout
-         * @return {?}
-         */
-        AuthService.prototype.logout = /**
-         * Logout
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new Logout());
-        };
-        /**
-         * Returns a client token.  The client token from the store is returned if there is one.
-         * Otherwise, an new token is fetched from the backend and saved in the store.
-         */
-        /**
-         * Returns a client token.  The client token from the store is returned if there is one.
-         * Otherwise, an new token is fetched from the backend and saved in the store.
-         * @return {?}
-         */
-        AuthService.prototype.getClientToken = /**
-         * Returns a client token.  The client token from the store is returned if there is one.
-         * Otherwise, an new token is fetched from the backend and saved in the store.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getClientTokenState), operators.filter((/**
-             * @param {?} state
-             * @return {?}
-             */
-            function (state) {
-                if (_this.isClientTokenLoaded(state)) {
-                    return true;
-                }
-                else {
-                    if (!state.loading) {
-                        _this.store.dispatch(new LoadClientToken());
-                    }
-                    return false;
-                }
-            })), operators.map((/**
-             * @param {?} state
-             * @return {?}
-             */
-            function (state) { return state.value; })));
-        };
-        /**
-         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-         * The new clientToken is returned.
-         */
-        /**
-         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-         * The new clientToken is returned.
-         * @return {?}
-         */
-        AuthService.prototype.refreshClientToken = /**
-         * Fetches a clientToken from the backend ans saves it in the store where getClientToken can use it.
-         * The new clientToken is returned.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            this.store.dispatch(new LoadClientToken());
-            return this.store.pipe(store.select(getClientTokenState), operators.filter((/**
-             * @param {?} state
-             * @return {?}
-             */
-            function (state) {
-                return _this.isClientTokenLoaded(state);
-            })), operators.map((/**
-             * @param {?} state
-             * @return {?}
-             */
-            function (state) { return state.value; })));
-        };
-        /**
-         * @protected
-         * @param {?} state
-         * @return {?}
-         */
-        AuthService.prototype.isClientTokenLoaded = /**
-         * @protected
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return (state.success || state.error) && !state.loading;
-        };
-        AuthService.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        AuthService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        /** @nocollapse */ AuthService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(core.ɵɵinject(store.Store)); }, token: AuthService, providedIn: "root" });
-        return AuthService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ClientErrorHandlingService = /** @class */ (function () {
-        function ClientErrorHandlingService(authService) {
-            this.authService = authService;
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        ClientErrorHandlingService.prototype.handleExpiredClientToken = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        function (request, next) {
-            var _this = this;
-            return this.authService.refreshClientToken().pipe(operators.take(1), operators.switchMap((/**
-             * @param {?} token
-             * @return {?}
-             */
-            function (token) {
-                return next.handle(_this.createNewRequestWithNewToken(request, token));
-            })));
-        };
-        /**
-         * @protected
-         * @param {?} request
-         * @param {?} token
-         * @return {?}
-         */
-        ClientErrorHandlingService.prototype.createNewRequestWithNewToken = /**
-         * @protected
-         * @param {?} request
-         * @param {?} token
-         * @return {?}
-         */
-        function (request, token) {
-            request = request.clone({
-                setHeaders: {
-                    Authorization: token.token_type + " " + token.access_token,
-                },
-            });
-            return request;
-        };
-        ClientErrorHandlingService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ClientErrorHandlingService.ctorParameters = function () { return [
-            { type: AuthService }
-        ]; };
-        return ClientErrorHandlingService;
     }());
 
     /**
@@ -4031,7 +3671,6 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            RoutingModule,
                             AuthStoreModule,
                             ConfigModule.withConfig(defaultAuthConfig),
                         ],
@@ -11799,6 +11438,361 @@
     }
     /** @type {?} */
     var metaReducers$3 = [clearCmsState];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UrlMatcherFactoryService = /** @class */ (function () {
+        function UrlMatcherFactoryService() {
+        }
+        /**
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = /**
+         * @return {?}
+         */
+        function () {
+            return (/**
+             * @return {?}
+             */
+            function falsyUrlMatcher() {
+                return null;
+            });
+        };
+        /**
+         * @param {?} paths
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = /**
+         * @param {?} paths
+         * @return {?}
+         */
+        function (paths) {
+            /** @type {?} */
+            var self = this;
+            /** @type {?} */
+            var matcher = (/**
+             * @param {?} segments
+             * @param {?} segmentGroup
+             * @param {?} route
+             * @return {?}
+             */
+            function multiplePathsUrlMatcher(segments, segmentGroup, route) {
+                for (var i = 0; i < paths.length; i++) {
+                    /** @type {?} */
+                    var result = self.getPathUrlMatcher(paths[i])(segments, segmentGroup, route);
+                    if (result) {
+                        return result;
+                    }
+                }
+                return null;
+            });
+            matcher.paths = paths; // property added for easier debugging of routes
+            return matcher;
+        };
+        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+        /**
+         * @private
+         * @param {?=} path
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getPathUrlMatcher = 
+        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
+        /**
+         * @private
+         * @param {?=} path
+         * @return {?}
+         */
+        function (path) {
+            if (path === void 0) { path = ''; }
+            return (/**
+             * @param {?} segments
+             * @param {?} segmentGroup
+             * @param {?} route
+             * @return {?}
+             */
+            function (segments, segmentGroup, route) {
+                /** @type {?} */
+                var parts = path.split('/');
+                if (parts.length > segments.length) {
+                    // The actual URL is shorter than the config, no match
+                    return null;
+                }
+                if (route.pathMatch === 'full' &&
+                    (segmentGroup.hasChildren() || parts.length < segments.length)) {
+                    // The config is longer than the actual URL but we are looking for a full match, return null
+                    return null;
+                }
+                /** @type {?} */
+                var posParams = {};
+                // Check each config part against the actual URL
+                for (var index = 0; index < parts.length; index++) {
+                    /** @type {?} */
+                    var part = parts[index];
+                    /** @type {?} */
+                    var segment = segments[index];
+                    /** @type {?} */
+                    var isParameter = part.startsWith(':');
+                    if (isParameter) {
+                        posParams[part.substring(1)] = segment;
+                    }
+                    else if (part !== segment.path) {
+                        // The actual URL part does not match the config, no match
+                        return null;
+                    }
+                }
+                return { consumed: segments.slice(0, parts.length), posParams: posParams };
+            });
+        };
+        UrlMatcherFactoryService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+        return UrlMatcherFactoryService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ConfigurableRoutesService = /** @class */ (function () {
+        function ConfigurableRoutesService(config, injector, routingConfigService, urlMatcherFactory) {
+            this.config = config;
+            this.injector = injector;
+            this.routingConfigService = routingConfigService;
+            this.urlMatcherFactory = urlMatcherFactory;
+            this.initCalled = false; // guard not to call init() more than once
+        }
+        /**
+         * Configures all existing Routes in the Router
+         */
+        // guard not to call init() more than once
+        /**
+         * Configures all existing Routes in the Router
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.init = 
+        // guard not to call init() more than once
+        /**
+         * Configures all existing Routes in the Router
+         * @return {?}
+         */
+        function () {
+            if (!this.initCalled) {
+                this.initCalled = true;
+                this.configureRouter();
+            }
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.configureRouter = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            // Router could not be injected in constructor due to cyclic dependency with APP_INITIALIZER:
+            /** @type {?} */
+            var router$1 = this.injector.get(router.Router);
+            /** @type {?} */
+            var configuredRoutes = this.configureRoutes(router$1.config);
+            router$1.resetConfig(configuredRoutes);
+        };
+        /**
+         * @private
+         * @param {?} routes
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.configureRoutes = /**
+         * @private
+         * @param {?} routes
+         * @return {?}
+         */
+        function (routes) {
+            var _this = this;
+            /** @type {?} */
+            var result = [];
+            routes.forEach((/**
+             * @param {?} route
+             * @return {?}
+             */
+            function (route) {
+                /** @type {?} */
+                var configuredRoute = _this.configureRoute(route);
+                if (route.children && route.children.length) {
+                    configuredRoute.children = _this.configureRoutes(route.children);
+                }
+                result.push(configuredRoute);
+            }));
+            return result;
+        };
+        /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.configureRoute = /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        function (route) {
+            if (this.getRouteName(route)) {
+                /** @type {?} */
+                var paths = this.getConfiguredPaths(route);
+                switch (paths.length) {
+                    case 0:
+                        delete route.path;
+                        return __assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+                    case 1:
+                        delete route.matcher;
+                        return __assign({}, route, { path: paths[0] });
+                    default:
+                        delete route.path;
+                        return __assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+                }
+            }
+            return route; // if route doesn't have a name, just pass the original route
+        };
+        /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.getRouteName = /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        function (route) {
+            return route.data && route.data.cxRoute;
+        };
+        /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.getConfiguredPaths = /**
+         * @private
+         * @param {?} route
+         * @return {?}
+         */
+        function (route) {
+            /** @type {?} */
+            var routeName = this.getRouteName(route);
+            /** @type {?} */
+            var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+            if (routeConfig === undefined) {
+                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in the routes config");
+                return [];
+            }
+            if (routeConfig && routeConfig.paths === undefined) {
+                this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined 'paths' for the named route '" + routeName + "' in the routes config");
+                return [];
+            }
+            // routeConfig or routeConfig.paths can be null - which means switching off the route
+            return (routeConfig && routeConfig.paths) || [];
+        };
+        /**
+         * @private
+         * @param {...?} args
+         * @return {?}
+         */
+        ConfigurableRoutesService.prototype.warn = /**
+         * @private
+         * @param {...?} args
+         * @return {?}
+         */
+        function () {
+            var args = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                args[_i] = arguments[_i];
+            }
+            if (!this.config.production) {
+                console.warn.apply(console, __spread(args));
+            }
+        };
+        ConfigurableRoutesService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        ConfigurableRoutesService.ctorParameters = function () { return [
+            { type: ServerConfig },
+            { type: core.Injector },
+            { type: RoutingConfigService },
+            { type: UrlMatcherFactoryService }
+        ]; };
+        /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(ServerConfig), core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+        return ConfigurableRoutesService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} service
+     * @return {?}
+     */
+    function initConfigurableRoutes(service) {
+        /** @type {?} */
+        var result = (/**
+         * @return {?}
+         */
+        function () { return service.init(); });
+        return result;
+    }
+    var ConfigurableRoutesModule = /** @class */ (function () {
+        function ConfigurableRoutesModule() {
+        }
+        ConfigurableRoutesModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [common.CommonModule],
+                        providers: [
+                            {
+                                provide: core.APP_INITIALIZER,
+                                useFactory: initConfigurableRoutes,
+                                deps: [ConfigurableRoutesService],
+                                multi: true,
+                            },
+                            { provide: RoutingConfig, useExisting: Config },
+                        ],
+                    },] }
+        ];
+        return ConfigurableRoutesModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var RoutingModule = /** @class */ (function () {
+        function RoutingModule() {
+        }
+        RoutingModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            ConfigurableRoutesModule,
+                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
+                            effects$a.EffectsModule.forFeature(effects),
+                            routerStore.StoreRouterConnectingModule.forRoot({
+                                stateKey: ROUTING_FEATURE,
+                            }),
+                        ],
+                        providers: [
+                            reducerProvider,
+                            {
+                                provide: routerStore.RouterStateSerializer,
+                                useClass: CustomSerializer,
+                            },
+                        ],
+                    },] }
+        ];
+        return RoutingModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -21285,7 +21279,6 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            RoutingModule,
                             KymaStoreModule,
                             ConfigModule.withConfig(defaultKymaConfig),
                         ],
@@ -29855,125 +29848,125 @@
     exports.testestsd = testestsd;
     exports.titleSelectorFactory = titleSelectorFactory;
     exports.validateConfig = validateConfig;
-    exports.ɵa = UrlMatcherFactoryService;
-    exports.ɵb = ROUTING_FEATURE;
-    exports.ɵba = reducer$1;
-    exports.ɵbb = defaultAuthConfig;
-    exports.ɵbc = AuthServices;
-    exports.ɵbd = ClientErrorHandlingService;
-    exports.ɵbe = UserErrorHandlingService;
-    exports.ɵbf = interceptors;
-    exports.ɵbg = ClientTokenInterceptor;
-    exports.ɵbh = UserTokenInterceptor;
-    exports.ɵbi = AuthErrorInterceptor;
-    exports.ɵbj = CartStoreModule;
-    exports.ɵbk = getReducers$3;
-    exports.ɵbl = reducerToken$3;
-    exports.ɵbm = reducerProvider$3;
-    exports.ɵbn = clearCartState;
-    exports.ɵbo = metaReducers$1;
-    exports.ɵbp = effects$3;
-    exports.ɵbq = CartEffects;
-    exports.ɵbr = CartEntryEffects;
-    exports.ɵbs = reducer$5;
-    exports.ɵbt = reducer$6;
-    exports.ɵbu = getCardTypesEntites;
-    exports.ɵbv = reducer$7;
-    exports.ɵbw = getAddressVerificationResults;
-    exports.ɵbx = effects$4;
-    exports.ɵby = CheckoutEffects;
-    exports.ɵbz = CardTypesEffects;
-    exports.ɵc = getReducers;
-    exports.ɵca = AddressVerificationEffect;
-    exports.ɵcb = getReducers$4;
-    exports.ɵcc = reducerToken$4;
-    exports.ɵcd = reducerProvider$4;
-    exports.ɵce = clearCheckoutState;
-    exports.ɵcf = metaReducers$2;
-    exports.ɵcg = CheckoutStoreModule;
-    exports.ɵch = reducer$8;
-    exports.ɵci = EntityLoadAction;
-    exports.ɵcj = EntityFailAction;
-    exports.ɵck = EntitySuccessAction;
-    exports.ɵcl = cmsStoreConfigFactory;
-    exports.ɵcm = CmsStoreModule;
-    exports.ɵcn = getReducers$5;
-    exports.ɵco = reducerToken$5;
-    exports.ɵcp = reducerProvider$5;
-    exports.ɵcq = clearCmsState;
-    exports.ɵcr = metaReducers$3;
-    exports.ɵcs = effects$5;
-    exports.ɵct = PageEffects;
-    exports.ɵcu = ComponentEffects;
-    exports.ɵcv = NavigationEntryItemEffects;
-    exports.ɵcw = reducer$a;
-    exports.ɵcx = reducer$b;
-    exports.ɵcy = reducer$9;
-    exports.ɵcz = getReducers$2;
-    exports.ɵd = reducer;
-    exports.ɵda = reducerToken$2;
-    exports.ɵdb = reducerProvider$2;
-    exports.ɵdc = effects$2;
-    exports.ɵdd = LanguagesEffects;
-    exports.ɵde = CurrenciesEffects;
-    exports.ɵdf = BaseSiteEffects;
-    exports.ɵdg = effects$6;
-    exports.ɵdh = ProductReferencesEffects;
-    exports.ɵdi = ProductReviewsEffects;
-    exports.ɵdj = ProductsSearchEffects;
-    exports.ɵdk = ProductEffects;
-    exports.ɵdl = getReducers$6;
-    exports.ɵdm = reducerToken$6;
-    exports.ɵdn = reducerProvider$6;
-    exports.ɵdo = clearProductsState;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdq = getReducers$7;
-    exports.ɵdr = reducerToken$7;
-    exports.ɵds = reducerProvider$7;
-    exports.ɵdt = clearUserState;
-    exports.ɵdu = metaReducers$5;
-    exports.ɵdv = GlobalMessageStoreModule;
-    exports.ɵdw = getReducers$9;
-    exports.ɵdx = reducerToken$9;
-    exports.ɵdy = reducerProvider$9;
-    exports.ɵdz = reducer$q;
-    exports.ɵe = reducerToken;
-    exports.ɵea = GlobalMessageEffect;
-    exports.ɵeb = defaultGlobalMessageConfigFactory;
-    exports.ɵec = HttpErrorInterceptor;
-    exports.ɵed = ServerConfig;
-    exports.ɵee = defaultI18nConfig;
-    exports.ɵef = i18nextProviders;
-    exports.ɵeg = i18nextInit;
-    exports.ɵeh = MockTranslationService;
-    exports.ɵei = kymaStoreConfigFactory;
-    exports.ɵej = KymaStoreModule;
-    exports.ɵek = getReducers$a;
-    exports.ɵel = reducerToken$a;
-    exports.ɵem = reducerProvider$a;
-    exports.ɵen = clearKymaState;
-    exports.ɵeo = metaReducers$6;
-    exports.ɵep = effects$8;
-    exports.ɵeq = OpenIdTokenEffect;
-    exports.ɵer = OpenIdAuthenticationTokenService;
-    exports.ɵes = defaultKymaConfig;
-    exports.ɵet = provideConfigFactory;
-    exports.ɵeu = defaultOccProductConfig;
-    exports.ɵev = provideConfigValidator;
-    exports.ɵew = defaultPersonalizationConfig;
-    exports.ɵex = interceptors$1;
-    exports.ɵey = OccPersonalizationIdInterceptor;
-    exports.ɵez = OccPersonalizationTimeInterceptor;
-    exports.ɵf = reducerProvider;
-    exports.ɵfa = productStoreConfigFactory;
-    exports.ɵfb = ProductStoreModule;
-    exports.ɵfc = reducer$e;
-    exports.ɵfd = getSearchResults;
-    exports.ɵfe = getAuxSearchResults;
-    exports.ɵff = getProductSuggestions;
-    exports.ɵfg = reducer$d;
-    exports.ɵfh = reducer$c;
-    exports.ɵfi = PageMetaResolver;
+    exports.ɵa = authStoreConfigFactory;
+    exports.ɵb = AuthStoreModule;
+    exports.ɵba = CartStoreModule;
+    exports.ɵbb = getReducers$3;
+    exports.ɵbc = reducerToken$3;
+    exports.ɵbd = reducerProvider$3;
+    exports.ɵbe = clearCartState;
+    exports.ɵbf = metaReducers$1;
+    exports.ɵbg = effects$3;
+    exports.ɵbh = CartEffects;
+    exports.ɵbi = CartEntryEffects;
+    exports.ɵbj = reducer$5;
+    exports.ɵbk = reducer$6;
+    exports.ɵbl = getCardTypesEntites;
+    exports.ɵbm = reducer$7;
+    exports.ɵbn = getAddressVerificationResults;
+    exports.ɵbo = effects$4;
+    exports.ɵbp = CheckoutEffects;
+    exports.ɵbq = CardTypesEffects;
+    exports.ɵbr = AddressVerificationEffect;
+    exports.ɵbs = getReducers$4;
+    exports.ɵbt = reducerToken$4;
+    exports.ɵbu = reducerProvider$4;
+    exports.ɵbv = clearCheckoutState;
+    exports.ɵbw = metaReducers$2;
+    exports.ɵbx = CheckoutStoreModule;
+    exports.ɵby = reducer$8;
+    exports.ɵbz = EntityLoadAction;
+    exports.ɵc = stateMetaReducers;
+    exports.ɵca = EntityFailAction;
+    exports.ɵcb = EntitySuccessAction;
+    exports.ɵcc = cmsStoreConfigFactory;
+    exports.ɵcd = CmsStoreModule;
+    exports.ɵce = getReducers$5;
+    exports.ɵcf = reducerToken$5;
+    exports.ɵcg = reducerProvider$5;
+    exports.ɵch = clearCmsState;
+    exports.ɵci = metaReducers$3;
+    exports.ɵcj = effects$5;
+    exports.ɵck = PageEffects;
+    exports.ɵcl = ComponentEffects;
+    exports.ɵcm = NavigationEntryItemEffects;
+    exports.ɵcn = reducer$a;
+    exports.ɵco = reducer$b;
+    exports.ɵcp = reducer$9;
+    exports.ɵcq = getReducers$2;
+    exports.ɵcr = reducerToken$2;
+    exports.ɵcs = reducerProvider$2;
+    exports.ɵct = effects$2;
+    exports.ɵcu = LanguagesEffects;
+    exports.ɵcv = CurrenciesEffects;
+    exports.ɵcw = BaseSiteEffects;
+    exports.ɵcx = effects$6;
+    exports.ɵcy = ProductReferencesEffects;
+    exports.ɵcz = ProductReviewsEffects;
+    exports.ɵd = getStorageSyncReducer;
+    exports.ɵda = ProductsSearchEffects;
+    exports.ɵdb = ProductEffects;
+    exports.ɵdc = getReducers$6;
+    exports.ɵdd = reducerToken$6;
+    exports.ɵde = reducerProvider$6;
+    exports.ɵdf = clearProductsState;
+    exports.ɵdg = metaReducers$4;
+    exports.ɵdh = getReducers$7;
+    exports.ɵdi = reducerToken$7;
+    exports.ɵdj = reducerProvider$7;
+    exports.ɵdk = clearUserState;
+    exports.ɵdl = metaReducers$5;
+    exports.ɵdm = GlobalMessageStoreModule;
+    exports.ɵdn = getReducers$9;
+    exports.ɵdo = reducerToken$9;
+    exports.ɵdp = reducerProvider$9;
+    exports.ɵdq = reducer$q;
+    exports.ɵdr = GlobalMessageEffect;
+    exports.ɵds = defaultGlobalMessageConfigFactory;
+    exports.ɵdt = HttpErrorInterceptor;
+    exports.ɵdu = ServerConfig;
+    exports.ɵdv = defaultI18nConfig;
+    exports.ɵdw = i18nextProviders;
+    exports.ɵdx = i18nextInit;
+    exports.ɵdy = MockTranslationService;
+    exports.ɵdz = kymaStoreConfigFactory;
+    exports.ɵe = getTransferStateReducer;
+    exports.ɵea = KymaStoreModule;
+    exports.ɵeb = getReducers$a;
+    exports.ɵec = reducerToken$a;
+    exports.ɵed = reducerProvider$a;
+    exports.ɵee = clearKymaState;
+    exports.ɵef = metaReducers$6;
+    exports.ɵeg = effects$8;
+    exports.ɵeh = OpenIdTokenEffect;
+    exports.ɵei = OpenIdAuthenticationTokenService;
+    exports.ɵej = defaultKymaConfig;
+    exports.ɵek = provideConfigFactory;
+    exports.ɵel = defaultOccProductConfig;
+    exports.ɵem = provideConfigValidator;
+    exports.ɵen = defaultPersonalizationConfig;
+    exports.ɵeo = interceptors$1;
+    exports.ɵep = OccPersonalizationIdInterceptor;
+    exports.ɵeq = OccPersonalizationTimeInterceptor;
+    exports.ɵer = productStoreConfigFactory;
+    exports.ɵes = ProductStoreModule;
+    exports.ɵet = reducer$e;
+    exports.ɵeu = getSearchResults;
+    exports.ɵev = getAuxSearchResults;
+    exports.ɵew = getProductSuggestions;
+    exports.ɵex = reducer$d;
+    exports.ɵey = reducer$c;
+    exports.ɵez = PageMetaResolver;
+    exports.ɵf = getReducers$1;
+    exports.ɵfa = UrlMatcherFactoryService;
+    exports.ɵfb = ROUTING_FEATURE;
+    exports.ɵfc = getReducers;
+    exports.ɵfd = reducer;
+    exports.ɵfe = reducerToken;
+    exports.ɵff = reducerProvider;
+    exports.ɵfg = CustomSerializer;
+    exports.ɵfh = effects;
+    exports.ɵfi = RouterEffects;
     exports.ɵfj = defaultSiteContextConfigFactory;
     exports.ɵfk = siteContextStoreConfigFactory;
     exports.ɵfl = SiteContextStoreModule;
@@ -29991,7 +29984,7 @@
     exports.ɵfx = getReducers$b;
     exports.ɵfy = reducerToken$b;
     exports.ɵfz = reducerProvider$b;
-    exports.ɵg = CustomSerializer;
+    exports.ɵg = reducerToken$1;
     exports.ɵga = effects$9;
     exports.ɵgb = FindStoresEffect;
     exports.ɵgc = ViewAllStoresEffect;
@@ -30018,7 +30011,7 @@
     exports.ɵgx = reducer$m;
     exports.ɵgy = reducer$f;
     exports.ɵgz = reducer$n;
-    exports.ɵh = effects;
+    exports.ɵh = reducerProvider$1;
     exports.ɵha = reducer$i;
     exports.ɵhb = reducer$p;
     exports.ɵhc = reducer$h;
@@ -30032,23 +30025,23 @@
     exports.ɵhk = getReducers$8;
     exports.ɵhl = reducerToken$8;
     exports.ɵhm = reducerProvider$8;
-    exports.ɵi = RouterEffects;
-    exports.ɵk = UrlParsingService;
-    exports.ɵl = authStoreConfigFactory;
-    exports.ɵm = AuthStoreModule;
-    exports.ɵn = stateMetaReducers;
-    exports.ɵo = getStorageSyncReducer;
-    exports.ɵp = getTransferStateReducer;
-    exports.ɵq = getReducers$1;
-    exports.ɵr = reducerToken$1;
-    exports.ɵs = reducerProvider$1;
-    exports.ɵt = clearAuthState;
-    exports.ɵu = metaReducers;
-    exports.ɵv = effects$1;
-    exports.ɵw = ClientTokenEffect;
-    exports.ɵx = UserTokenEffects;
-    exports.ɵy = UserAuthenticationTokenService;
-    exports.ɵz = ClientAuthenticationTokenService;
+    exports.ɵi = clearAuthState;
+    exports.ɵj = metaReducers;
+    exports.ɵk = effects$1;
+    exports.ɵl = ClientTokenEffect;
+    exports.ɵm = UserTokenEffects;
+    exports.ɵn = UserAuthenticationTokenService;
+    exports.ɵo = ClientAuthenticationTokenService;
+    exports.ɵp = reducer$1;
+    exports.ɵq = defaultAuthConfig;
+    exports.ɵr = AuthServices;
+    exports.ɵs = ClientErrorHandlingService;
+    exports.ɵt = UserErrorHandlingService;
+    exports.ɵv = UrlParsingService;
+    exports.ɵw = interceptors;
+    exports.ɵx = ClientTokenInterceptor;
+    exports.ɵy = UserTokenInterceptor;
+    exports.ɵz = AuthErrorInterceptor;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
