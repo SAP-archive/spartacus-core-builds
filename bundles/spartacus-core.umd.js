@@ -12744,9 +12744,7 @@
          * @return {?}
          */
         function (page) {
-            return this.translation.translate('pageMetaResolver.content.title', {
-                content: page.title,
-            });
+            return rxjs.of(page.title);
         };
         /**
          * @return {?}

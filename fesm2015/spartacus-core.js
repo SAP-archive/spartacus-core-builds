@@ -11098,9 +11098,7 @@ class ContentPageMetaResolver extends PageMetaResolver {
      * @return {?}
      */
     resolveTitle(page) {
-        return this.translation.translate('pageMetaResolver.content.title', {
-            content: page.title,
-        });
+        return of(page.title);
     }
     /**
      * @return {?}

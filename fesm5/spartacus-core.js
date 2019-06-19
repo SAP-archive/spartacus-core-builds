@@ -12665,9 +12665,7 @@ var ContentPageMetaResolver = /** @class */ (function (_super) {
      * @return {?}
      */
     function (page) {
-        return this.translation.translate('pageMetaResolver.content.title', {
-            content: page.title,
-        });
+        return of(page.title);
     };
     /**
      * @return {?}
