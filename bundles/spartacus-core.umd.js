@@ -14183,7 +14183,7 @@
          */
         function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
-                return referenceTypeData.list;
+                return !!referenceTypeData.list ? referenceTypeData.list : [];
             }
         }));
     });
