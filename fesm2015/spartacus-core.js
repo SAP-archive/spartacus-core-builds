@@ -13134,10 +13134,10 @@ class ProductPageMetaResolver extends PageMetaResolver {
         /** @type {?} */
         const breadcrumbs = [];
         breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
-        for (const c of product.categories) {
+        for (const { name, code, url } of product.categories) {
             breadcrumbs.push({
-                label: c.name || c.code,
-                link: '/c/' + c.code,
+                label: name || code,
+                link: url,
             });
         }
         return of(breadcrumbs);
@@ -21673,7 +21673,7 @@ const defaultOccProductConfig = {
     backend: {
         occ: {
             endpoints: {
-                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews,categories(FULL)',
                 productReviews: 'products/${productCode}/reviews',
                 // Uncomment this when occ gets configured
                 // productReferences:

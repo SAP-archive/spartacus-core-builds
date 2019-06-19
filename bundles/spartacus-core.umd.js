@@ -15052,10 +15052,10 @@
             breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
             try {
                 for (var _b = __values(product.categories), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var c = _c.value;
+                    var _d = _c.value, name_1 = _d.name, code = _d.code, url = _d.url;
                     breadcrumbs.push({
-                        label: c.name || c.code,
-                        link: '/c/' + c.code,
+                        label: name_1 || code,
+                        link: url,
                     });
                 }
             }
@@ -24972,7 +24972,7 @@
         backend: {
             occ: {
                 endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews',
+                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews,categories(FULL)',
                     productReviews: 'products/${productCode}/reviews',
                     // Uncomment this when occ gets configured
                     // productReferences:
