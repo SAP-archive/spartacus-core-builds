@@ -1,10 +1,10 @@
-import { SiteAdapter } from '../../../site-context/connectors/site.adapter';
-import { Observable } from 'rxjs';
-import { Currency, Language, BaseSite } from '../../../model/misc.model';
 import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import { ConverterService } from '../../../util/converter.service';
+import { Observable } from 'rxjs';
 import { Country, CountryType, Region } from '../../../model/address.model';
+import { BaseSite, Currency, Language } from '../../../model/misc.model';
+import { SiteAdapter } from '../../../site-context/connectors/site.adapter';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccSiteAdapter implements SiteAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

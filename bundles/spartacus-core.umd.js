@@ -25135,7 +25135,7 @@
          */
         function (countryIsoCode) {
             /** @type {?} */
-            var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT;
+            var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT + "?fields=regions(name,isocode,isocodeShort)";
             return this.http
                 .get(this.occEndpoints.getEndpoint(regionsEndpoint))
                 .pipe(operators.catchError((/**
@@ -26968,6 +26968,8 @@
                     paymentDetails.billingAddress.line2;
             params[mappingLabels['hybris_billTo_city']] =
                 paymentDetails.billingAddress.town;
+            params[mappingLabels['hybris_billTo_region']] =
+                paymentDetails.billingAddress.region.isocodeShort;
             params[mappingLabels['hybris_billTo_postalcode']] =
                 paymentDetails.billingAddress.postalCode;
             return params;
