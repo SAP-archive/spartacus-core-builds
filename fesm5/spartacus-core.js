@@ -4175,98 +4175,6 @@ var getEntries = createSelector(getEntriesMap, (ɵ3$1));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-var ANONYMOUS_USERID = 'anonymous';
-var CartDataService = /** @class */ (function () {
-    function CartDataService() {
-        this._userId = ANONYMOUS_USERID;
-        this._getDetails = false;
-    }
-    Object.defineProperty(CartDataService.prototype, "hasCart", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return !!this._cart;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CartDataService.prototype, "userId", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._userId;
-        },
-        set: /**
-         * @param {?} val
-         * @return {?}
-         */
-        function (val) {
-            this._userId = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CartDataService.prototype, "cart", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._cart;
-        },
-        set: /**
-         * @param {?} val
-         * @return {?}
-         */
-        function (val) {
-            this._cart = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CartDataService.prototype, "getDetails", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._getDetails;
-        },
-        set: /**
-         * @param {?} val
-         * @return {?}
-         */
-        function (val) {
-            this._getDetails = val;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(CartDataService.prototype, "cartId", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            if (this.hasCart) {
-                return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-    CartDataService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    CartDataService.ctorParameters = function () { return []; };
-    return CartDataService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -6158,6 +6066,98 @@ var REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var ANONYMOUS_USERID = 'anonymous';
+var CartDataService = /** @class */ (function () {
+    function CartDataService() {
+        this._userId = ANONYMOUS_USERID;
+        this._getDetails = false;
+    }
+    Object.defineProperty(CartDataService.prototype, "hasCart", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return !!this._cart;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(CartDataService.prototype, "userId", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._userId;
+        },
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            this._userId = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(CartDataService.prototype, "cart", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._cart;
+        },
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            this._cart = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(CartDataService.prototype, "getDetails", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._getDetails;
+        },
+        set: /**
+         * @param {?} val
+         * @return {?}
+         */
+        function (val) {
+            this._getDetails = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(CartDataService.prototype, "cartId", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            if (this.hasCart) {
+                return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    CartDataService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CartDataService.ctorParameters = function () { return []; };
+    return CartDataService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var CartService = /** @class */ (function () {
     function CartService(store, cartData, authService, baseSiteService) {
         this.store = store;
@@ -6218,10 +6218,6 @@ var CartService = /** @class */ (function () {
          */
         function (cart) {
             _this.cartData.cart = cart;
-            if (_this.callback) {
-                _this.callback();
-                _this.callback = null;
-            }
         }));
         combineLatest([
             this.baseSiteService.getActive(),
@@ -6349,28 +6345,33 @@ var CartService = /** @class */ (function () {
      * @return {?}
      */
     function (productCode, quantity) {
-        if (!this.isCreated(this.cartData.cart)) {
-            this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
-            this.callback = (/**
-             * @return {?}
-             */
-            function () {
-                this.store.dispatch(new AddEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    productCode: productCode,
-                    quantity: quantity,
-                }));
-            });
-        }
-        else {
-            this.store.dispatch(new AddEntry({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
+        var _this = this;
+        this.store
+            .pipe(select(getActiveCartState), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) {
+            if (!_this.isCreated(cartState.value.content) && !cartState.loading) {
+                _this.store.dispatch(new CreateCart({ userId: _this.cartData.userId }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) { return _this.isCreated(cartState.value.content); })), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        function (_) {
+            _this.store.dispatch(new AddEntry({
+                userId: _this.cartData.userId,
+                cartId: _this.cartData.cartId,
                 productCode: productCode,
                 quantity: quantity,
             }));
-        }
+        }));
     };
     /**
      * @param {?} entry

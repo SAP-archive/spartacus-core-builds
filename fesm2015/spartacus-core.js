@@ -3651,77 +3651,6 @@ const getEntries = createSelector(getEntriesMap, (ɵ3$1));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const ANONYMOUS_USERID = 'anonymous';
-class CartDataService {
-    constructor() {
-        this._userId = ANONYMOUS_USERID;
-        this._getDetails = false;
-    }
-    /**
-     * @return {?}
-     */
-    get hasCart() {
-        return !!this._cart;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set userId(val) {
-        this._userId = val;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set cart(val) {
-        this._cart = val;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set getDetails(val) {
-        this._getDetails = val;
-    }
-    /**
-     * @return {?}
-     */
-    get userId() {
-        return this._userId;
-    }
-    /**
-     * @return {?}
-     */
-    get cart() {
-        return this._cart;
-    }
-    /**
-     * @return {?}
-     */
-    get getDetails() {
-        return this._getDetails;
-    }
-    /**
-     * @return {?}
-     */
-    get cartId() {
-        if (this.hasCart) {
-            return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
-        }
-    }
-}
-CartDataService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartDataService.ctorParameters = () => [];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -5446,6 +5375,77 @@ const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const ANONYMOUS_USERID = 'anonymous';
+class CartDataService {
+    constructor() {
+        this._userId = ANONYMOUS_USERID;
+        this._getDetails = false;
+    }
+    /**
+     * @return {?}
+     */
+    get hasCart() {
+        return !!this._cart;
+    }
+    /**
+     * @param {?} val
+     * @return {?}
+     */
+    set userId(val) {
+        this._userId = val;
+    }
+    /**
+     * @param {?} val
+     * @return {?}
+     */
+    set cart(val) {
+        this._cart = val;
+    }
+    /**
+     * @param {?} val
+     * @return {?}
+     */
+    set getDetails(val) {
+        this._getDetails = val;
+    }
+    /**
+     * @return {?}
+     */
+    get userId() {
+        return this._userId;
+    }
+    /**
+     * @return {?}
+     */
+    get cart() {
+        return this._cart;
+    }
+    /**
+     * @return {?}
+     */
+    get getDetails() {
+        return this._getDetails;
+    }
+    /**
+     * @return {?}
+     */
+    get cartId() {
+        if (this.hasCart) {
+            return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
+        }
+    }
+}
+CartDataService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartDataService.ctorParameters = () => [];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class CartService {
     /**
      * @param {?} store
@@ -5495,10 +5495,6 @@ class CartService {
          */
         cart => {
             this.cartData.cart = cart;
-            if (this.callback) {
-                this.callback();
-                this.callback = null;
-            }
         }));
         combineLatest([
             this.baseSiteService.getActive(),
@@ -5600,28 +5596,32 @@ class CartService {
      * @return {?}
      */
     addEntry(productCode, quantity) {
-        if (!this.isCreated(this.cartData.cart)) {
-            this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
-            this.callback = (/**
-             * @return {?}
-             */
-            function () {
-                this.store.dispatch(new AddEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    productCode: productCode,
-                    quantity: quantity,
-                }));
-            });
-        }
-        else {
+        this.store
+            .pipe(select(getActiveCartState), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            if (!this.isCreated(cartState.value.content) && !cartState.loading) {
+                this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => this.isCreated(cartState.value.content))), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        _ => {
             this.store.dispatch(new AddEntry({
                 userId: this.cartData.userId,
                 cartId: this.cartData.cartId,
                 productCode: productCode,
                 quantity: quantity,
             }));
-        }
+        }));
     }
     /**
      * @param {?} entry
