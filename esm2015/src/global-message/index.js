@@ -1,0 +1,14 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { GLOBAL_MESSAGE_FEATURE } from './store/global-message-state';
+export { ADD_MESSAGE, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, AddMessage, RemoveMessage, RemoveMessagesByType } from './store/actions/index';
+export { getGlobalMessageState, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageCountByType } from './store/selectors/index';
+export { GlobalMessageModule } from './global-message.module';
+export { GlobalMessageService } from './facade/index';
+export { GlobalMessageConfig } from './config/global-message-config';
+export { GlobalMessageType } from './models/global-message.model';
+export { errorHandlers, httpErrorInterceptors } from './http-interceptors/index';
+export { BadGatewayHandler, BadRequestHandler, ConflictHandler, ForbiddenHandler, GatewayTimeoutHandler, NotFoundHandler, HttpErrorHandler, UnknownErrorHandler } from './http-interceptors/handlers/index';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvZ2xvYmFsLW1lc3NhZ2UvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHVDQUFjLDhCQUE4QixDQUFDO0FBQzdDLHNIQUFjLHVCQUF1QixDQUFDO0FBQ3RDLDZIQUFjLHlCQUF5QixDQUFDO0FBRXhDLG9DQUFjLHlCQUF5QixDQUFDO0FBQ3hDLHFDQUFjLGdCQUFnQixDQUFDO0FBQy9CLG9DQUFjLGdDQUFnQyxDQUFDO0FBQy9DLGtDQUFjLCtCQUErQixDQUFDO0FBQzlDLHFEQUFjLDJCQUEyQixDQUFDO0FBQzFDLHVLQUFjLG9DQUFvQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9zdG9yZS9nbG9iYWwtbWVzc2FnZS1zdGF0ZSc7XG5leHBvcnQgKiBmcm9tICcuL3N0b3JlL2FjdGlvbnMvaW5kZXgnO1xuZXhwb3J0ICogZnJvbSAnLi9zdG9yZS9zZWxlY3RvcnMvaW5kZXgnO1xuXG5leHBvcnQgKiBmcm9tICcuL2dsb2JhbC1tZXNzYWdlLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL2ZhY2FkZS9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL2NvbmZpZy9nbG9iYWwtbWVzc2FnZS1jb25maWcnO1xuZXhwb3J0ICogZnJvbSAnLi9tb2RlbHMvZ2xvYmFsLW1lc3NhZ2UubW9kZWwnO1xuZXhwb3J0ICogZnJvbSAnLi9odHRwLWludGVyY2VwdG9ycy9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL2h0dHAtaW50ZXJjZXB0b3JzL2hhbmRsZXJzL2luZGV4JztcbiJdfQ==

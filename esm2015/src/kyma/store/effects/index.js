@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { OpenIdTokenEffect } from './open-id-token.effect';
+/** @type {?} */
+export const effects = [OpenIdTokenEffect];
+export { OpenIdTokenEffect } from './open-id-token.effect';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMva3ltYS9zdG9yZS9lZmZlY3RzL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxPQUFPLEVBQUUsaUJBQWlCLEVBQUUsTUFBTSx3QkFBd0IsQ0FBQzs7QUFFM0QsTUFBTSxPQUFPLE9BQU8sR0FBVSxDQUFDLGlCQUFpQixDQUFDO0FBRWpELGtDQUFjLHdCQUF3QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgT3BlbklkVG9rZW5FZmZlY3QgfSBmcm9tICcuL29wZW4taWQtdG9rZW4uZWZmZWN0JztcblxuZXhwb3J0IGNvbnN0IGVmZmVjdHM6IGFueVtdID0gW09wZW5JZFRva2VuRWZmZWN0XTtcblxuZXhwb3J0ICogZnJvbSAnLi9vcGVuLWlkLXRva2VuLmVmZmVjdCc7XG4iXX0=

@@ -1,0 +1,58 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { createSelector } from '@ngrx/store';
+import { getUserState } from './feature.selector';
+import { loaderValueSelector, loaderLoadingSelector, loaderSuccessSelector, } from '../../../state/utils/loader/loader.selectors';
+const ɵ0 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.regions;
+/** @type {?} */
+export const getRegionsLoaderState = createSelector(getUserState, (ɵ0));
+const ɵ1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => {
+    return loaderValueSelector(state).entities;
+};
+/** @type {?} */
+export const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1));
+const ɵ2 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => ({
+    loaded: loaderSuccessSelector(state),
+    loading: loaderLoadingSelector(state),
+    regions: loaderValueSelector(state).entities,
+    country: loaderValueSelector(state).country,
+});
+/** @type {?} */
+export const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2));
+const ɵ3 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderValueSelector(state).country;
+/** @type {?} */
+export const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3));
+const ɵ4 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderLoadingSelector(state);
+/** @type {?} */
+export const getRegionsLoading = createSelector(getRegionsLoaderState, (ɵ4));
+const ɵ5 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderSuccessSelector(state);
+/** @type {?} */
+export const getRegionsLoaded = createSelector(getRegionsLoaderState, (ɵ5));
+export { ɵ0, ɵ1, ɵ2, ɵ3, ɵ4, ɵ5 };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVnaW9ucy5zZWxlY3RvcnMuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9zdG9yZS9zZWxlY3RvcnMvcmVnaW9ucy5zZWxlY3RvcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBb0IsY0FBYyxFQUFFLE1BQU0sYUFBYSxDQUFDO0FBRy9ELE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxvQkFBb0IsQ0FBQztBQUdsRCxPQUFPLEVBQ0wsbUJBQW1CLEVBQ25CLHFCQUFxQixFQUNyQixxQkFBcUIsR0FDdEIsTUFBTSw4Q0FBOEMsQ0FBQzs7Ozs7QUFPcEQsQ0FBQyxLQUFnQixFQUFFLEVBQUUsQ0FBQyxLQUFLLENBQUMsT0FBTzs7QUFMckMsTUFBTSxPQUFPLHFCQUFxQixHQUc5QixjQUFjLENBQ2hCLFlBQVksT0FFYjs7Ozs7QUFPQyxDQUFDLEtBQWdDLEVBQUUsRUFBRTtJQUNuQyxPQUFPLG1CQUFtQixDQUFDLEtBQUssQ0FBQyxDQUFDLFFBQVEsQ0FBQztBQUM3QyxDQUFDOztBQVBILE1BQU0sT0FBTyxhQUFhLEdBR3RCLGNBQWMsQ0FDaEIscUJBQXFCLE9BSXRCOzs7OztBQVlDLENBQUMsS0FBZ0MsRUFBRSxFQUFFLENBQUMsQ0FBQztJQUNyQyxNQUFNLEVBQUUscUJBQXFCLENBQUMsS0FBSyxDQUFDO0lBQ3BDLE9BQU8sRUFBRSxxQkFBcUIsQ0FBQyxLQUFLLENBQUM7SUFDckMsT0FBTyxFQUFFLG1CQUFtQixDQUFDLEtBQUssQ0FBQyxDQUFDLFFBQVE7SUFDNUMsT0FBTyxFQUFFLG1CQUFtQixDQUFDLEtBQUssQ0FBQyxDQUFDLE9BQU87Q0FDNUMsQ0FBQzs7QUFmSixNQUFNLE9BQU8sd0JBQXdCLEdBUWpDLGNBQWMsQ0FDaEIscUJBQXFCLE9BT3RCOzs7OztBQU9DLENBQUMsS0FBZ0MsRUFBRSxFQUFFLENBQUMsbUJBQW1CLENBQUMsS0FBSyxDQUFDLENBQUMsT0FBTzs7QUFMMUUsTUFBTSxPQUFPLGlCQUFpQixHQUcxQixjQUFjLENBQ2hCLHFCQUFxQixPQUV0Qjs7Ozs7QUFPQyxDQUFDLEtBQWdDLEVBQUUsRUFBRSxDQUFDLHFCQUFxQixDQUFDLEtBQUssQ0FBQzs7QUFMcEUsTUFBTSxPQUFPLGlCQUFpQixHQUcxQixjQUFjLENBQ2hCLHFCQUFxQixPQUV0Qjs7Ozs7QUFPQyxDQUFDLEtBQWdDLEVBQUUsRUFBRSxDQUFDLHFCQUFxQixDQUFDLEtBQUssQ0FBQzs7QUFMcEUsTUFBTSxPQUFPLGdCQUFnQixHQUd6QixjQUFjLENBQ2hCLHFCQUFxQixPQUV0QiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE1lbW9pemVkU2VsZWN0b3IsIGNyZWF0ZVNlbGVjdG9yIH0gZnJvbSAnQG5ncngvc3RvcmUnO1xuXG5pbXBvcnQgeyBVc2VyU3RhdGUsIFJlZ2lvbnNTdGF0ZSwgU3RhdGVXaXRoVXNlciB9IGZyb20gJy4uL3VzZXItc3RhdGUnO1xuaW1wb3J0IHsgZ2V0VXNlclN0YXRlIH0gZnJvbSAnLi9mZWF0dXJlLnNlbGVjdG9yJztcbmltcG9ydCB7IFJlZ2lvbiB9IGZyb20gJy4uLy4uLy4uL21vZGVsL2FkZHJlc3MubW9kZWwnO1xuaW1wb3J0IHsgTG9hZGVyU3RhdGUgfSBmcm9tICcuLi8uLi8uLi9zdGF0ZS91dGlscy9sb2FkZXIvbG9hZGVyLXN0YXRlJztcbmltcG9ydCB7XG4gIGxvYWRlclZhbHVlU2VsZWN0b3IsXG4gIGxvYWRlckxvYWRpbmdTZWxlY3RvcixcbiAgbG9hZGVyU3VjY2Vzc1NlbGVjdG9yLFxufSBmcm9tICcuLi8uLi8uLi9zdGF0ZS91dGlscy9sb2FkZXIvbG9hZGVyLnNlbGVjdG9ycyc7XG5cbmV4cG9ydCBjb25zdCBnZXRSZWdpb25zTG9hZGVyU3RhdGU6IE1lbW9pemVkU2VsZWN0b3I8XG4gIFN0YXRlV2l0aFVzZXIsXG4gIExvYWRlclN0YXRlPFJlZ2lvbnNTdGF0ZT5cbj4gPSBjcmVhdGVTZWxlY3RvcihcbiAgZ2V0VXNlclN0YXRlLFxuICAoc3RhdGU6IFVzZXJTdGF0ZSkgPT4gc3RhdGUucmVnaW9uc1xuKTtcblxuZXhwb3J0IGNvbnN0IGdldEFsbFJlZ2lvbnM6IE1lbW9pemVkU2VsZWN0b3I8XG4gIFN0YXRlV2l0aFVzZXIsXG4gIFJlZ2lvbltdXG4+ID0gY3JlYXRlU2VsZWN0b3IoXG4gIGdldFJlZ2lvbnNMb2FkZXJTdGF0ZSxcbiAgKHN0YXRlOiBMb2FkZXJTdGF0ZTxSZWdpb25zU3RhdGU+KSA9PiB7XG4gICAgcmV0dXJuIGxvYWRlclZhbHVlU2VsZWN0b3Ioc3RhdGUpLmVudGl0aWVzO1xuICB9XG4pO1xuXG5leHBvcnQgY29uc3QgZ2V0UmVnaW9uc0RhdGFBbmRMb2FkaW5nOiBNZW1vaXplZFNlbGVjdG9yPFxuICBTdGF0ZVdpdGhVc2VyLFxuICB7XG4gICAgbG9hZGVkOiBib29sZWFuO1xuICAgIGxvYWRpbmc6IGJvb2xlYW47XG4gICAgcmVnaW9uczogUmVnaW9uW107XG4gICAgY291bnRyeTogc3RyaW5nO1xuICB9XG4+ID0gY3JlYXRlU2VsZWN0b3IoXG4gIGdldFJlZ2lvbnNMb2FkZXJTdGF0ZSxcbiAgKHN0YXRlOiBMb2FkZXJTdGF0ZTxSZWdpb25zU3RhdGU+KSA9PiAoe1xuICAgIGxvYWRlZDogbG9hZGVyU3VjY2Vzc1NlbGVjdG9yKHN0YXRlKSxcbiAgICBsb2FkaW5nOiBsb2FkZXJMb2FkaW5nU2VsZWN0b3Ioc3RhdGUpLFxuICAgIHJlZ2lvbnM6IGxvYWRlclZhbHVlU2VsZWN0b3Ioc3RhdGUpLmVudGl0aWVzLFxuICAgIGNvdW50cnk6IGxvYWRlclZhbHVlU2VsZWN0b3Ioc3RhdGUpLmNvdW50cnksXG4gIH0pXG4pO1xuXG5leHBvcnQgY29uc3QgZ2V0UmVnaW9uc0NvdW50cnk6IE1lbW9pemVkU2VsZWN0b3I8XG4gIFN0YXRlV2l0aFVzZXIsXG4gIHN0cmluZ1xuPiA9IGNyZWF0ZVNlbGVjdG9yKFxuICBnZXRSZWdpb25zTG9hZGVyU3RhdGUsXG4gIChzdGF0ZTogTG9hZGVyU3RhdGU8UmVnaW9uc1N0YXRlPikgPT4gbG9hZGVyVmFsdWVTZWxlY3RvcihzdGF0ZSkuY291bnRyeVxuKTtcblxuZXhwb3J0IGNvbnN0IGdldFJlZ2lvbnNMb2FkaW5nOiBNZW1vaXplZFNlbGVjdG9yPFxuICBTdGF0ZVdpdGhVc2VyLFxuICBib29sZWFuXG4+ID0gY3JlYXRlU2VsZWN0b3IoXG4gIGdldFJlZ2lvbnNMb2FkZXJTdGF0ZSxcbiAgKHN0YXRlOiBMb2FkZXJTdGF0ZTxSZWdpb25zU3RhdGU+KSA9PiBsb2FkZXJMb2FkaW5nU2VsZWN0b3Ioc3RhdGUpXG4pO1xuXG5leHBvcnQgY29uc3QgZ2V0UmVnaW9uc0xvYWRlZDogTWVtb2l6ZWRTZWxlY3RvcjxcbiAgU3RhdGVXaXRoVXNlcixcbiAgYm9vbGVhblxuPiA9IGNyZWF0ZVNlbGVjdG9yKFxuICBnZXRSZWdpb25zTG9hZGVyU3RhdGUsXG4gIChzdGF0ZTogTG9hZGVyU3RhdGU8UmVnaW9uc1N0YXRlPikgPT4gbG9hZGVyU3VjY2Vzc1NlbGVjdG9yKHN0YXRlKVxuKTtcbiJdfQ==

@@ -1,0 +1,30 @@
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AuthService, UserToken } from '../../auth/index';
+import { Cart } from '../../model/cart.model';
+import { OrderEntry } from '../../model/order.model';
+import { BaseSiteService } from '../../site-context/index';
+import { StateWithCart } from '../store/cart-state';
+import { CartDataService } from './cart-data.service';
+export declare class CartService {
+    protected store: Store<StateWithCart>;
+    protected cartData: CartDataService;
+    protected authService: AuthService;
+    protected baseSiteService: BaseSiteService;
+    constructor(store: Store<StateWithCart>, cartData: CartDataService, authService: AuthService, baseSiteService: BaseSiteService);
+    getActive(): Observable<Cart>;
+    getEntries(): Observable<OrderEntry[]>;
+    getCartMergeComplete(): Observable<boolean>;
+    getLoaded(): Observable<boolean>;
+    protected init(): void;
+    protected setUserId(userToken: UserToken): void;
+    protected loadOrMerge(): void;
+    protected refresh(): void;
+    loadDetails(): void;
+    addEntry(productCode: string, quantity: number): void;
+    removeEntry(entry: OrderEntry): void;
+    updateEntry(entryNumber: string, quantity: number): void;
+    getEntry(productCode: string): Observable<OrderEntry>;
+    isCreated(cart: Cart): boolean;
+    isEmpty(cart: Cart): boolean;
+}
