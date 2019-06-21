@@ -10448,7 +10448,7 @@ class PageEffects {
          * @param {?} _
          * @return {?}
          */
-        _ => this.routingService.getRouterState().pipe(filter((/**
+        _ => this.routingService.getRouterState().pipe(take(1), filter((/**
          * @param {?} routerState
          * @return {?}
          */
@@ -10459,7 +10459,7 @@ class PageEffects {
          * @param {?} routerState
          * @return {?}
          */
-        routerState => routerState.state.context)), take(1), mergeMap((/**
+        routerState => routerState.state.context)), mergeMap((/**
          * @param {?} context
          * @return {?}
          */
@@ -10882,8 +10882,6 @@ class CmsService {
      * @return {?}
      */
     hasPage(pageContext, forceReload = false) {
-        /** @type {?} */
-        let loaded = false;
         return this.store.pipe(select(getIndexEntity(pageContext)), tap((/**
          * @param {?} entity
          * @return {?}
@@ -10892,10 +10890,10 @@ class CmsService {
             /** @type {?} */
             const attemptedLoad = entity.loading || entity.success || entity.error;
             /** @type {?} */
-            const shouldReload = forceReload && !entity.loading && !loaded;
+            const shouldReload = forceReload && !entity.loading;
             if (!attemptedLoad || shouldReload) {
                 this.store.dispatch(new LoadPageData(pageContext));
-                loaded = true;
+                forceReload = false;
             }
         })), filter((/**
          * @param {?} entity

@@ -11826,7 +11826,7 @@ var PageEffects = /** @class */ (function () {
          * @return {?}
          */
         function (_) {
-            return _this.routingService.getRouterState().pipe(filter((/**
+            return _this.routingService.getRouterState().pipe(take(1), filter((/**
              * @param {?} routerState
              * @return {?}
              */
@@ -11839,7 +11839,7 @@ var PageEffects = /** @class */ (function () {
              * @param {?} routerState
              * @return {?}
              */
-            function (routerState) { return routerState.state.context; })), take(1), mergeMap((/**
+            function (routerState) { return routerState.state.context; })), mergeMap((/**
              * @param {?} context
              * @return {?}
              */
@@ -12399,8 +12399,6 @@ var CmsService = /** @class */ (function () {
     function (pageContext, forceReload) {
         var _this = this;
         if (forceReload === void 0) { forceReload = false; }
-        /** @type {?} */
-        var loaded = false;
         return this.store.pipe(select(getIndexEntity(pageContext)), tap((/**
          * @param {?} entity
          * @return {?}
@@ -12409,10 +12407,10 @@ var CmsService = /** @class */ (function () {
             /** @type {?} */
             var attemptedLoad = entity.loading || entity.success || entity.error;
             /** @type {?} */
-            var shouldReload = forceReload && !entity.loading && !loaded;
+            var shouldReload = forceReload && !entity.loading;
             if (!attemptedLoad || shouldReload) {
                 _this.store.dispatch(new LoadPageData(pageContext));
-                loaded = true;
+                forceReload = false;
             }
         })), filter((/**
          * @param {?} entity
