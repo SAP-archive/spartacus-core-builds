@@ -2742,6 +2742,27 @@ StateModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeHttpErrorSerializable(error) {
+    if (!(error instanceof HttpErrorResponse) || !error) {
+        return error;
+    }
+    return {
+        message: error.message,
+        error: error.error,
+        status: error.status,
+        statusText: error.statusText,
+        url: error.url,
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -2771,7 +2792,7 @@ class ClientTokenEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadClientTokenFail(error)))));
+            error => of(new LoadClientTokenFail(makeHttpErrorSerializable(error))))));
         })));
     }
 }
@@ -2830,7 +2851,7 @@ class UserTokenEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new LoadUserTokenFail(error))))))));
+        error => of(new LoadUserTokenFail(makeHttpErrorSerializable(error)))))))));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map((/**
          * @return {?}
          */
@@ -2859,7 +2880,7 @@ class UserTokenEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new RefreshUserTokenFail(error))))));
+            error => of(new RefreshUserTokenFail(makeHttpErrorSerializable(error)))))));
         })));
     }
 }
@@ -14871,27 +14892,6 @@ const CountryType = {
     BILLING: 'BILLING',
     SHIPPING: 'SHIPPING',
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} error
- * @return {?}
- */
-function makeHttpErrorSerializable(error) {
-    if (!(error instanceof HttpErrorResponse) || !error) {
-        return error;
-    }
-    return {
-        message: error.message,
-        error: error.error,
-        status: error.status,
-        statusText: error.statusText,
-        url: error.url,
-    };
-}
 
 /**
  * @fileoverview added by tsickle

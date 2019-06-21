@@ -3317,6 +3317,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    function makeHttpErrorSerializable(error) {
+        if (!(error instanceof http.HttpErrorResponse) || !error) {
+            return error;
+        }
+        return {
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -3343,7 +3364,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadClientTokenFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadClientTokenFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         ClientTokenEffect.decorators = [
@@ -3402,7 +3425,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadUserTokenFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadUserTokenFail(makeHttpErrorSerializable(error)));
+                })));
             })));
             this.login$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
              * @return {?}
@@ -3433,7 +3458,7 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new RefreshUserTokenFail(error)); }))));
+                function (error) { return rxjs.of(new RefreshUserTokenFail(makeHttpErrorSerializable(error))); }))));
             })));
         }
         UserTokenEffects.decorators = [
@@ -17408,27 +17433,6 @@
         BILLING: 'BILLING',
         SHIPPING: 'SHIPPING',
     };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    function makeHttpErrorSerializable(error) {
-        if (!(error instanceof http.HttpErrorResponse) || !error) {
-            return error;
-        }
-        return {
-            message: error.message,
-            error: error.error,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
-    }
 
     /**
      * @fileoverview added by tsickle

@@ -3238,6 +3238,27 @@ var StateModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeHttpErrorSerializable(error) {
+    if (!(error instanceof HttpErrorResponse) || !error) {
+        return error;
+    }
+    return {
+        message: error.message,
+        error: error.error,
+        status: error.status,
+        statusText: error.statusText,
+        url: error.url,
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -3264,7 +3285,9 @@ var ClientTokenEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadClientTokenFail(error)); })));
+            function (error) {
+                return of(new LoadClientTokenFail(makeHttpErrorSerializable(error)));
+            })));
         })));
     }
     ClientTokenEffect.decorators = [
@@ -3323,7 +3346,9 @@ var UserTokenEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadUserTokenFail(error)); })));
+            function (error) {
+                return of(new LoadUserTokenFail(makeHttpErrorSerializable(error)));
+            })));
         })));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map((/**
          * @return {?}
@@ -3354,7 +3379,7 @@ var UserTokenEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RefreshUserTokenFail(error)); }))));
+            function (error) { return of(new RefreshUserTokenFail(makeHttpErrorSerializable(error))); }))));
         })));
     }
     UserTokenEffects.decorators = [
@@ -17329,27 +17354,6 @@ var CountryType = {
     BILLING: 'BILLING',
     SHIPPING: 'SHIPPING',
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} error
- * @return {?}
- */
-function makeHttpErrorSerializable(error) {
-    if (!(error instanceof HttpErrorResponse) || !error) {
-        return error;
-    }
-    return {
-        message: error.message,
-        error: error.error,
-        status: error.status,
-        statusText: error.statusText,
-        url: error.url,
-    };
-}
 
 /**
  * @fileoverview added by tsickle
