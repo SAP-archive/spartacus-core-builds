@@ -14459,9 +14459,8 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var ProductSearchService = /** @class */ (function () {
-        function ProductSearchService(store, router) {
+        function ProductSearchService(store) {
             this.store = store;
-            this.router = router;
         }
         /**
          * @param {?} query
@@ -14474,12 +14473,6 @@
          * @return {?}
          */
         function (query, searchConfig) {
-            /** @type {?} */
-            var urlTree = this.router.createUrlTree([], {
-                queryParams: __assign({}, searchConfig, { query: query }),
-                preserveFragment: false,
-            });
-            this.router.navigateByUrl(urlTree);
             this.store.dispatch(new SearchProducts({
                 queryText: query,
                 searchConfig: searchConfig,
@@ -14510,8 +14503,7 @@
         ];
         /** @nocollapse */
         ProductSearchService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: router.Router }
+            { type: store.Store }
         ]; };
         return ProductSearchService;
     }());
@@ -14736,7 +14728,7 @@
                         providedIn: 'root',
                     },] }
         ];
-        /** @nocollapse */ SearchboxService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(core.ɵɵinject(store.Store), core.ɵɵinject(router.Router)); }, token: SearchboxService, providedIn: "root" });
+        /** @nocollapse */ SearchboxService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(core.ɵɵinject(store.Store)); }, token: SearchboxService, providedIn: "root" });
         return SearchboxService;
     }(ProductSearchService));
 

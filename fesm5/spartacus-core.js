@@ -14380,9 +14380,8 @@ var ProductReviewService = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductSearchService = /** @class */ (function () {
-    function ProductSearchService(store, router) {
+    function ProductSearchService(store) {
         this.store = store;
-        this.router = router;
     }
     /**
      * @param {?} query
@@ -14395,12 +14394,6 @@ var ProductSearchService = /** @class */ (function () {
      * @return {?}
      */
     function (query, searchConfig) {
-        /** @type {?} */
-        var urlTree = this.router.createUrlTree([], {
-            queryParams: __assign({}, searchConfig, { query: query }),
-            preserveFragment: false,
-        });
-        this.router.navigateByUrl(urlTree);
         this.store.dispatch(new SearchProducts({
             queryText: query,
             searchConfig: searchConfig,
@@ -14431,8 +14424,7 @@ var ProductSearchService = /** @class */ (function () {
     ];
     /** @nocollapse */
     ProductSearchService.ctorParameters = function () { return [
-        { type: Store },
-        { type: Router }
+        { type: Store }
     ]; };
     return ProductSearchService;
 }());
@@ -14657,7 +14649,7 @@ var SearchboxService = /** @class */ (function (_super) {
                     providedIn: 'root',
                 },] }
     ];
-    /** @nocollapse */ SearchboxService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store), ɵɵinject(Router)); }, token: SearchboxService, providedIn: "root" });
+    /** @nocollapse */ SearchboxService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store)); }, token: SearchboxService, providedIn: "root" });
     return SearchboxService;
 }(ProductSearchService));
 

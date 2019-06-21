@@ -12698,11 +12698,9 @@ ProductReviewService.ctorParameters = () => [
 class ProductSearchService {
     /**
      * @param {?} store
-     * @param {?} router
      */
-    constructor(store, router) {
+    constructor(store) {
         this.store = store;
-        this.router = router;
     }
     /**
      * @param {?} query
@@ -12710,12 +12708,6 @@ class ProductSearchService {
      * @return {?}
      */
     search(query, searchConfig) {
-        /** @type {?} */
-        const urlTree = this.router.createUrlTree([], {
-            queryParams: Object.assign({}, searchConfig, { query }),
-            preserveFragment: false,
-        });
-        this.router.navigateByUrl(urlTree);
         this.store.dispatch(new SearchProducts({
             queryText: query,
             searchConfig: searchConfig,
@@ -12741,8 +12733,7 @@ ProductSearchService.decorators = [
 ];
 /** @nocollapse */
 ProductSearchService.ctorParameters = () => [
-    { type: Store },
-    { type: Router }
+    { type: Store }
 ];
 
 /**
@@ -12884,7 +12875,7 @@ SearchboxService.decorators = [
                 providedIn: 'root',
             },] }
 ];
-/** @nocollapse */ SearchboxService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store), ɵɵinject(Router)); }, token: SearchboxService, providedIn: "root" });
+/** @nocollapse */ SearchboxService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchboxService_Factory() { return new SearchboxService(ɵɵinject(Store)); }, token: SearchboxService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
