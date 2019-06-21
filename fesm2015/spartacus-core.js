@@ -2,7 +2,7 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { __decorate, __metadata } from 'tslib';
@@ -8069,14 +8069,12 @@ class CheckoutEffects {
      * @param {?} checkoutDeliveryConnector
      * @param {?} checkoutPaymentConnector
      * @param {?} checkoutConnector
-     * @param {?} cartData
      */
-    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector, cartData) {
+    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
         this.actions$ = actions$;
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
-        this.cartData = cartData;
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -8155,13 +8153,6 @@ class CheckoutEffects {
              */
             error => of(new LoadSupportedDeliveryModesFail(error)))));
         })));
-        this.reloadSupportedDeliveryModesOnSiteContextChange$ = this.actions$.pipe(ofType(CHECKOUT_CLEAR_MISCS_DATA, CLEAR_SUPPORTED_DELIVERY_MODES), map((/**
-         * @return {?}
-         */
-        () => new LoadSupportedDeliveryModes({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }))));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
          */
@@ -8314,8 +8305,7 @@ CheckoutEffects.ctorParameters = () => [
     { type: Actions },
     { type: CheckoutDeliveryConnector },
     { type: CheckoutPaymentConnector },
-    { type: CheckoutConnector },
-    { type: CartDataService }
+    { type: CheckoutConnector }
 ];
 __decorate([
     Effect(),
@@ -8329,10 +8319,6 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CheckoutEffects.prototype, "reloadSupportedDeliveryModesOnSiteContextChange$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
@@ -8762,7 +8748,15 @@ class CheckoutDeliveryService {
      * @return {?}
      */
     getSupportedDeliveryModes() {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes));
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), tap((/**
+         * @param {?} deliveryModes
+         * @return {?}
+         */
+        deliveryModes => {
+            if (Object.keys(deliveryModes).length === 0) {
+                this.loadSupportedDeliveryModes();
+            }
+        })), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * Get selected delivery mode

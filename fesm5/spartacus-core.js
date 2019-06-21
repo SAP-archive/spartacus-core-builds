@@ -3,7 +3,7 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
@@ -8933,13 +8933,12 @@ var ClearMiscsData = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutEffects = /** @class */ (function () {
-    function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector, cartData) {
+    function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
         var _this = this;
         this.actions$ = actions$;
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
-        this.cartData = cartData;
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -9021,15 +9020,6 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new LoadSupportedDeliveryModesFail(error));
             })));
-        })));
-        this.reloadSupportedDeliveryModesOnSiteContextChange$ = this.actions$.pipe(ofType(CHECKOUT_CLEAR_MISCS_DATA, CLEAR_SUPPORTED_DELIVERY_MODES), map((/**
-         * @return {?}
-         */
-        function () {
-            return new LoadSupportedDeliveryModes({
-                userId: _this.cartData.userId,
-                cartId: _this.cartData.cartId,
-            });
         })));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
@@ -9190,8 +9180,7 @@ var CheckoutEffects = /** @class */ (function () {
         { type: Actions },
         { type: CheckoutDeliveryConnector },
         { type: CheckoutPaymentConnector },
-        { type: CheckoutConnector },
-        { type: CartDataService }
+        { type: CheckoutConnector }
     ]; };
     __decorate([
         Effect(),
@@ -9205,10 +9194,6 @@ var CheckoutEffects = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], CheckoutEffects.prototype, "reloadSupportedDeliveryModesOnSiteContextChange$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
@@ -9710,7 +9695,16 @@ var CheckoutDeliveryService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes));
+        var _this = this;
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), tap((/**
+         * @param {?} deliveryModes
+         * @return {?}
+         */
+        function (deliveryModes) {
+            if (Object.keys(deliveryModes).length === 0) {
+                _this.loadSupportedDeliveryModes();
+            }
+        })), shareReplay({ bufferSize: 1, refCount: true }));
     };
     /**
      * Get selected delivery mode

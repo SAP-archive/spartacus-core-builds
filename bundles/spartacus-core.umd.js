@@ -9012,13 +9012,12 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var CheckoutEffects = /** @class */ (function () {
-        function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector, cartData) {
+        function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.checkoutDeliveryConnector = checkoutDeliveryConnector;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.checkoutConnector = checkoutConnector;
-            this.cartData = cartData;
             this.addDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(ADD_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
@@ -9100,15 +9099,6 @@
                 function (error) {
                     return rxjs.of(new LoadSupportedDeliveryModesFail(error));
                 })));
-            })));
-            this.reloadSupportedDeliveryModesOnSiteContextChange$ = this.actions$.pipe(effects$a.ofType(CHECKOUT_CLEAR_MISCS_DATA, CLEAR_SUPPORTED_DELIVERY_MODES), operators.map((/**
-             * @return {?}
-             */
-            function () {
-                return new LoadSupportedDeliveryModes({
-                    userId: _this.cartData.userId,
-                    cartId: _this.cartData.cartId,
-                });
             })));
             this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
@@ -9269,8 +9259,7 @@
             { type: effects$a.Actions },
             { type: CheckoutDeliveryConnector },
             { type: CheckoutPaymentConnector },
-            { type: CheckoutConnector },
-            { type: CartDataService }
+            { type: CheckoutConnector }
         ]; };
         __decorate([
             effects$a.Effect(),
@@ -9284,10 +9273,6 @@
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CheckoutEffects.prototype, "reloadSupportedDeliveryModesOnSiteContextChange$", void 0);
         __decorate([
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
@@ -9789,7 +9774,16 @@
          * @return {?}
          */
         function () {
-            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes));
+            var _this = this;
+            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes), operators.tap((/**
+             * @param {?} deliveryModes
+             * @return {?}
+             */
+            function (deliveryModes) {
+                if (Object.keys(deliveryModes).length === 0) {
+                    _this.loadSupportedDeliveryModes();
+                }
+            })), operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
          * Get selected delivery mode
