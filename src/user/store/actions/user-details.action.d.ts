@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state';
 import { User } from '../../../model/misc.model';
+import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state';
 export declare const LOAD_USER_DETAILS = "[User] Load User Details";
 export declare const LOAD_USER_DETAILS_FAIL = "[User] Load User Details Fail";
 export declare const LOAD_USER_DETAILS_SUCCESS = "[User] Load User Details Success";

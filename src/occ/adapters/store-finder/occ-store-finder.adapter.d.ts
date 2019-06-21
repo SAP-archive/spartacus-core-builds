@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StoreFinderSearchConfig } from '../../../store-finder/model';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import { PointOfService } from '../../../model/point-of-service.model';
-import { StoreFinderAdapter } from '../../../store-finder/connectors/store-finder.adapter';
 import { GeoPoint } from '../../../model/misc.model';
+import { PointOfService } from '../../../model/point-of-service.model';
+import { StoreCount, StoreFinderSearchPage } from '../../../model/store-finder.model';
+import { StoreFinderAdapter } from '../../../store-finder/connectors/store-finder.adapter';
+import { StoreFinderSearchConfig } from '../../../store-finder/model';
 import { ConverterService } from '../../../util/converter.service';
 import { Occ } from '../../occ-models/occ.models';
-import { StoreFinderSearchPage, StoreCount } from '../../../model/store-finder.model';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

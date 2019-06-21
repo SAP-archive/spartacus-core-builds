@@ -1,9 +1,9 @@
-import { UserOrderAdapter } from '../../../user/connectors/order/user-order.adapter';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import { Observable } from 'rxjs';
 import { Order, OrderHistoryList } from '../../../model/order.model';
+import { UserOrderAdapter } from '../../../user/connectors/order/user-order.adapter';
 import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccUserOrderAdapter implements UserOrderAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

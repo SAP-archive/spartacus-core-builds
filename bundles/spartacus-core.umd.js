@@ -2796,13 +2796,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http
-                .post(url, params, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            return this.http.post(url, params, { headers: headers });
         };
         /**
          * @protected
@@ -11779,6 +11773,7 @@
                             store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                             effects$a.EffectsModule.forFeature(effects),
                             routerStore.StoreRouterConnectingModule.forRoot({
+                                routerState: 1 /* Minimal */,
                                 stateKey: ROUTING_FEATURE,
                             }),
                         ],
@@ -17418,6 +17413,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    function makeHttpErrorSerializable(error) {
+        if (!(error instanceof http.HttpErrorResponse) || !error) {
+            return error;
+        }
+        return {
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var BillingCountriesEffect = /** @class */ (function () {
         function BillingCountriesEffect(actions$, siteConnector) {
             var _this = this;
@@ -17435,7 +17451,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadBillingCountriesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadBillingCountriesFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         BillingCountriesEffect.decorators = [
@@ -17502,7 +17520,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadDeliveryCountriesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadDeliveryCountriesFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         DeliveryCountriesEffects.decorators = [
@@ -18679,7 +18699,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new ForgotPasswordEmailRequestFail(error));
+                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeHttpErrorSerializable(error)));
                 })));
             })));
         }
@@ -18794,7 +18814,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadOrderDetailsFail(error));
+                    return rxjs.of(new LoadOrderDetailsFail(makeHttpErrorSerializable(error)));
                 })));
             })));
         }
@@ -18918,7 +18938,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserPaymentMethodsFail(error));
+                    return rxjs.of(new LoadUserPaymentMethodsFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
@@ -18938,17 +18958,15 @@
                  * @param {?} data
                  * @return {?}
                  */
-                function (data) {
-                    return [
-                        new SetDefaultUserPaymentMethodSuccess(data),
-                        new LoadUserPaymentMethods(payload.userId),
-                    ];
-                })), operators.catchError((/**
+                function (data) { return [
+                    new SetDefaultUserPaymentMethodSuccess(data),
+                    new LoadUserPaymentMethods(payload.userId),
+                ]; })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new SetDefaultUserPaymentMethodFail(error));
+                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
@@ -18968,17 +18986,15 @@
                  * @param {?} data
                  * @return {?}
                  */
-                function (data) {
-                    return [
-                        new DeleteUserPaymentMethodSuccess(data),
-                        new LoadUserPaymentMethods(payload.userId),
-                    ];
-                })), operators.catchError((/**
+                function (data) { return [
+                    new DeleteUserPaymentMethodSuccess(data),
+                    new LoadUserPaymentMethods(payload.userId),
+                ]; })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new DeleteUserPaymentMethodFail(error));
+                    return rxjs.of(new DeleteUserPaymentMethodFail(makeHttpErrorSerializable(error)));
                 })));
             })));
         }
@@ -19038,7 +19054,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadRegionsFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadRegionsFail(makeHttpErrorSerializable(error)));
+                })));
             })));
             this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
              * @return {?}
@@ -19079,9 +19097,7 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) {
-                return action.payload;
-            })), operators.switchMap((/**
+            function (action) { return action.payload; })), operators.switchMap((/**
              * @param {?} __0
              * @return {?}
              */
@@ -19100,7 +19116,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new ResetPasswordFail(error)); })));
+                function (error) {
+                    return rxjs.of(new ResetPasswordFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         ResetPasswordEffects.decorators = [
@@ -19143,7 +19161,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadTitlesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadTitlesFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         /**
@@ -19216,7 +19236,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateEmailErrorAction(error));
+                    return rxjs.of(new UpdateEmailErrorAction(makeHttpErrorSerializable(error)));
                 })));
             })));
         }
@@ -19263,7 +19283,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new UpdatePasswordFail(error)); })));
+                function (error) {
+                    return rxjs.of(new UpdatePasswordFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         UpdatePasswordEffects.decorators = [
@@ -19312,7 +19334,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserAddressesFail(error));
+                    return rxjs.of(new LoadUserAddressesFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.addUserAddress$ = this.actions$.pipe(effects$a.ofType(ADD_USER_ADDRESS), operators.map((/**
@@ -19337,7 +19359,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new AddUserAddressFail(error));
+                    return rxjs.of(new AddUserAddressFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.updateUserAddress$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_ADDRESS), operators.map((/**
@@ -19370,7 +19392,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateUserAddressFail(error));
+                    return rxjs.of(new UpdateUserAddressFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.deleteUserAddress$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_ADDRESS), operators.map((/**
@@ -19395,7 +19417,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new DeleteUserAddressFail(error));
+                    return rxjs.of(new DeleteUserAddressFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             /**
@@ -19601,7 +19623,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadUserConsentsFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadUserConsentsFail(makeHttpErrorSerializable(error)));
+                })));
             })));
             this.giveConsent$ = this.actions$.pipe(effects$a.ofType(GIVE_USER_CONSENT), operators.map((/**
              * @param {?} action
@@ -19623,7 +19647,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new GiveUserConsentFail(error)); })));
+                function (error) {
+                    return rxjs.of(new GiveUserConsentFail(makeHttpErrorSerializable(error)));
+                })));
             })));
             this.withdrawConsent$ = this.actions$.pipe(effects$a.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
              * @param {?} action
@@ -19643,7 +19669,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new WithdrawUserConsentFail(error)); })));
+                function (error) {
+                    return rxjs.of(new WithdrawUserConsentFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         UserConsentsEffect.decorators = [
@@ -19698,7 +19726,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserDetailsFail(error));
+                    return rxjs.of(new LoadUserDetailsFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.updateUserDetails$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_DETAILS), operators.map((/**
@@ -19721,7 +19749,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateUserDetailsFail(error));
+                    return rxjs.of(new UpdateUserDetailsFail(makeHttpErrorSerializable(error)));
                 })));
             })));
         }
@@ -19775,7 +19803,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserOrdersFail(error));
+                    return rxjs.of(new LoadUserOrdersFail(makeHttpErrorSerializable(error)));
                 })));
             })));
             this.resetUserOrders$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
@@ -19836,7 +19864,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new RegisterUserFail(error)); })));
+                function (error) {
+                    return rxjs.of(new RegisterUserFail(makeHttpErrorSerializable(error)));
+                })));
             })));
             this.removeUser$ = this.actions$.pipe(effects$a.ofType(REMOVE_USER), operators.map((/**
              * @param {?} action
@@ -19858,7 +19888,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new RemoveUserFail(error)); })));
+                function (error) {
+                    return rxjs.of(new RemoveUserFail(makeHttpErrorSerializable(error)));
+                })));
             })));
         }
         UserRegisterEffects.decorators = [
@@ -24099,11 +24131,7 @@
                 : new http.HttpParams({
                     fromString: "fields=carts(" + BASIC_PARAMS + ",saveTime)",
                 });
-            return this.http.get(url, { params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })), operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
+            return this.http.get(url, { params: params }).pipe(operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -24151,11 +24179,9 @@
                 })));
             }
             else {
-                return this.http.get(url, { params: params }).pipe(operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) { return rxjs.throwError(error); })), this.converter.pipeable(CART_NORMALIZER));
+                return this.http
+                    .get(url, { params: params })
+                    .pipe(this.converter.pipeable(CART_NORMALIZER));
             }
         };
         /**
@@ -24187,11 +24213,9 @@
             var params = new http.HttpParams({
                 fromString: queryString,
             });
-            return this.http.post(url, toAdd, { params: params }).pipe(this.converter.pipeable(CART_NORMALIZER), operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            return this.http
+                .post(url, toAdd, { params: params })
+                .pipe(this.converter.pipeable(CART_NORMALIZER));
         };
         OccCartAdapter.decorators = [
             { type: core.Injectable }
@@ -24260,11 +24284,7 @@
             });
             return this.http
                 .post(url, toAdd, { headers: headers, params: params })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+                .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -24298,11 +24318,9 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http.patch(url, {}, { headers: headers, params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+            return this.http
+                .patch(url, {}, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -24323,13 +24341,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http
-                .delete(url, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            return this.http.delete(url, { headers: headers });
         };
         OccCartEntryAdapter.decorators = [
             { type: core.Injectable }
@@ -25052,11 +25064,7 @@
         function () {
             return this.http
                 .get(this.occEndpoints.getEndpoint('languages'))
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} languageList
              * @return {?}
              */
@@ -25071,11 +25079,7 @@
         function () {
             return this.http
                 .get(this.occEndpoints.getEndpoint('currencies'))
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} currencyList
              * @return {?}
              */
@@ -25099,11 +25103,7 @@
                 .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
                 params: params,
             })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} countryList
              * @return {?}
              */
@@ -25122,11 +25122,7 @@
             var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT + "?fields=regions(name,isocode,isocodeShort)";
             return this.http
                 .get(this.occEndpoints.getEndpoint(regionsEndpoint))
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} regionList
              * @return {?}
              */
@@ -25153,11 +25149,7 @@
             });
             return this.http
                 .get(url, { params: params })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} siteList
              * @return {?}
              */
@@ -25380,11 +25372,7 @@
          * @return {?}
          */
         function (query, searchConfig, longitudeLatitude) {
-            return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+            return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
         };
         /**
          * @return {?}
@@ -25402,11 +25390,7 @@
             function (_a) {
                 var countriesAndRegionsStoreCount = _a.countriesAndRegionsStoreCount;
                 return countriesAndRegionsStoreCount;
-            })), operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
+            })), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
         };
         /**
          * @param {?} storeId
@@ -25421,11 +25405,9 @@
             var storeDetailsUrl = this.getStoresEndpoint(storeId);
             /** @type {?} */
             var params = { fields: 'FULL' };
-            return this.http.get(storeDetailsUrl, { params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
+            return this.http
+                .get(storeDetailsUrl, { params: params })
+                .pipe(this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
         };
         /**
          * @protected
@@ -25467,16 +25449,7 @@
             if (searchConfig.sort) {
                 params = params.set('sort', searchConfig.sort);
             }
-            return this.http.get(url, { params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                if (error.json) {
-                    return rxjs.throwError(error.json());
-                }
-                return rxjs.throwError(error);
-            })));
+            return this.http.get(url, { params: params });
         };
         /**
          * @protected
@@ -25571,11 +25544,7 @@
                 .get(orderUrl, {
                 params: params,
             })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(ORDER_NORMALIZER));
+                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -25605,11 +25574,9 @@
             if (sort) {
                 params = params.set('sort', sort);
             }
-            return this.http.get(url, { params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+            return this.http
+                .get(url, { params: params })
+                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
         };
         OccUserOrderAdapter.decorators = [
             { type: core.Injectable }
@@ -25842,11 +25809,9 @@
         function (userId) {
             /** @type {?} */
             var url = this.getUserEndpoint(userId);
-            return this.http.get(url).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })), this.converter.pipeable(USER_NORMALIZER));
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(USER_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -25862,13 +25827,7 @@
             /** @type {?} */
             var url = this.getUserEndpoint(userId);
             user = this.converter.convert(user, USER_SERIALIZER);
-            return this.http
-                .patch(url, user)
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.patch(url, user);
         };
         /**
          * @param {?} user
@@ -25887,11 +25846,9 @@
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
             user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
-            return this.http.post(url, user, { headers: headers }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })), this.converter.pipeable(USER_NORMALIZER));
+            return this.http
+                .post(url, user, { headers: headers })
+                .pipe(this.converter.pipeable(USER_NORMALIZER));
         };
         /**
          * @param {?} userEmailAddress
@@ -25911,13 +25868,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            return this.http
-                .post(url, httpParams, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.post(url, httpParams, { headers: headers });
         };
         /**
          * @param {?} token
@@ -25937,13 +25888,7 @@
                 'Content-Type': 'application/json',
             });
             headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            return this.http
-                .post(url, { token: token, newPassword: newPassword }, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.post(url, { token: token, newPassword: newPassword }, { headers: headers });
         };
         /**
          * @param {?} userId
@@ -25968,13 +25913,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http
-                .put(url, httpParams, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.put(url, httpParams, { headers: headers });
         };
         /**
          * @param {?} userId
@@ -25999,13 +25938,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http
-                .put(url, httpParams, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.put(url, httpParams, { headers: headers });
         };
         /**
          * @param {?} userId
@@ -26018,13 +25951,7 @@
         function (userId) {
             /** @type {?} */
             var url = this.getUserEndpoint(userId);
-            return this.http
-                .delete(url)
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.delete(url);
         };
         /**
          * @return {?}
@@ -26035,11 +25962,7 @@
         function () {
             return this.http
                 .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} titleList
              * @return {?}
              */
@@ -26374,11 +26297,9 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http.post(url, {}, { headers: headers, params: params }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(ORDER_NORMALIZER));
+            return this.http
+                .post(url, {}, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -26397,13 +26318,7 @@
             var params = new http.HttpParams({
                 fromString: "fields=" + CHECKOUT_PARAMS,
             });
-            return this.http
-                .get(url, { params: params })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.get(url, { params: params });
         };
         OccCheckoutAdapter.decorators = [
             { type: core.Injectable }
@@ -26537,11 +26452,7 @@
                 .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
                 headers: new http.HttpHeaders().set('Content-Type', 'application/json'),
             })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(ADDRESS_NORMALIZER));
+                .pipe(this.converter.pipeable(ADDRESS_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -26556,15 +26467,9 @@
          * @return {?}
          */
         function (userId, cartId, addressId) {
-            return this.http
-                .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
+            return this.http.put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
                 params: { addressId: addressId },
-            })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            });
         };
         /**
          * @param {?} userId
@@ -26579,15 +26484,9 @@
          * @return {?}
          */
         function (userId, cartId, deliveryModeId) {
-            return this.http
-                .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
+            return this.http.put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
                 params: { deliveryModeId: deliveryModeId },
-            })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            });
         };
         /**
          * @param {?} userId
@@ -26602,11 +26501,7 @@
         function (userId, cartId) {
             return this.http
                 .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
+                .pipe(this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
         };
         /**
          * @param {?} userId
@@ -26621,11 +26516,7 @@
         function (userId, cartId) {
             return this.http
                 .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
+                .pipe(operators.pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
         };
         OccCheckoutDeliveryAdapter.decorators = [
             { type: core.Injectable }
@@ -26785,15 +26676,9 @@
          * @return {?}
          */
         function (userId, cartId, paymentDetailsId) {
-            return this.http
-                .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
+            return this.http.put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
                 params: { paymentDetailsId: paymentDetailsId },
-            })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+            });
         };
         /**
          * @return {?}
@@ -26804,11 +26689,7 @@
         function () {
             return this.http
                 .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })), operators.map((/**
+                .pipe(operators.map((/**
              * @param {?} cardTypeList
              * @return {?}
              */
@@ -26827,15 +26708,9 @@
          * @return {?}
          */
         function (userId, cartId) {
-            return this.http
-                .get(this.getCartEndpoint(userId) +
+            return this.http.get(this.getCartEndpoint(userId) +
                 cartId +
-                '/payment/sop/request?responseUrl=sampleUrl')
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error.json()); })));
+                '/payment/sop/request?responseUrl=sampleUrl');
         };
         /**
          * @protected
@@ -26897,13 +26772,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            return this.http
-                .post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
+            return this.http.post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers });
         };
         /**
          * @private
