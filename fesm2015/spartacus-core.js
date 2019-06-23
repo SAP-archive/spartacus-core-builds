@@ -6307,7 +6307,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCartFail(error)))));
+            error => of(new LoadCartFail(makeHttpErrorSerializable(error))))));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -6339,7 +6339,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new CreateCartFail(error)))));
+            error => of(new CreateCartFail(makeHttpErrorSerializable(error))))));
         })));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -6420,11 +6420,11 @@ class CartEntryEffects {
          * @param {?} entry
          * @return {?}
          */
-        (entry) => new AddEntrySuccess(entry))), catchError((/**
+        entry => new AddEntrySuccess(entry))), catchError((/**
          * @param {?} error
          * @return {?}
          */
-        error => of(new AddEntryFail(error))))))));
+        error => of(new AddEntryFail(makeHttpErrorSerializable(error)))))))));
         this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6444,7 +6444,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new RemoveEntryFail(error))))))));
+        error => of(new RemoveEntryFail(makeHttpErrorSerializable(error)))))))));
         this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6464,7 +6464,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateEntryFail(error))))))));
+        error => of(new UpdateEntryFail(makeHttpErrorSerializable(error)))))))));
     }
 }
 CartEntryEffects.decorators = [

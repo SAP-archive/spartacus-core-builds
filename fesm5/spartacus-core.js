@@ -7085,7 +7085,9 @@ var CartEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadCartFail(error)); })));
+            function (error) {
+                return of(new LoadCartFail(makeHttpErrorSerializable(error)));
+            })));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -7117,7 +7119,9 @@ var CartEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new CreateCartFail(error)); })));
+            function (error) {
+                return of(new CreateCartFail(makeHttpErrorSerializable(error)));
+            })));
         })));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -7206,7 +7210,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new AddEntryFail(error)); })));
+            function (error) {
+                return of(new AddEntryFail(makeHttpErrorSerializable(error)));
+            })));
         })));
         this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
          * @param {?} action
@@ -7228,7 +7234,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RemoveEntryFail(error)); })));
+            function (error) {
+                return of(new RemoveEntryFail(makeHttpErrorSerializable(error)));
+            })));
         })));
         this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
          * @param {?} action
@@ -7250,7 +7258,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new UpdateEntryFail(error)); })));
+            function (error) {
+                return of(new UpdateEntryFail(makeHttpErrorSerializable(error)));
+            })));
         })));
     }
     CartEntryEffects.decorators = [
