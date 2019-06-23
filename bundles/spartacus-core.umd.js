@@ -13914,7 +13914,7 @@
                      * @return {?}
                      */
                     function (error) {
-                        return rxjs.of(new SearchProductsFail(error, action.auxiliary));
+                        return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
                     })));
                 })));
             })));
@@ -13943,7 +13943,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new GetProductSuggestionsFail(error));
+                    return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -14004,7 +14004,7 @@
                      * @return {?}
                      */
                     function (error) {
-                        return rxjs.of(new LoadProductFail(productCode, error));
+                        return rxjs.of(new LoadProductFail(productCode, makeErrorSerializable(error)));
                     })));
                 })));
             })));
@@ -21218,7 +21218,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadOpenIdTokenFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadOpenIdTokenFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         OpenIdTokenEffect.decorators = [

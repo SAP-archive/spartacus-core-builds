@@ -13835,7 +13835,7 @@ var ProductsSearchEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new SearchProductsFail(error, action.auxiliary));
+                    return of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
                 })));
             })));
         })));
@@ -13864,7 +13864,7 @@ var ProductsSearchEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new GetProductSuggestionsFail(error));
+                return of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -13925,7 +13925,7 @@ var ProductEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new LoadProductFail(productCode, error));
+                    return of(new LoadProductFail(productCode, makeErrorSerializable(error)));
                 })));
             })));
         })));
@@ -21139,7 +21139,9 @@ var OpenIdTokenEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadOpenIdTokenFail(error)); })));
+            function (error) {
+                return of(new LoadOpenIdTokenFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     OpenIdTokenEffect.decorators = [

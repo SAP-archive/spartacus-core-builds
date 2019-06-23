@@ -1,7 +1,7 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import * as productsSearchActions from '../actions/product-search.action';
 import { ProductSearchConnector } from '../../connectors/search/product-search.connector';
+import * as productsSearchActions from '../actions/product-search.action';
 export declare class ProductsSearchEffects {
     private actions$;
     private productSearchConnector;

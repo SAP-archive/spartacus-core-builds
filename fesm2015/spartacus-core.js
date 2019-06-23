@@ -12141,7 +12141,7 @@ class ProductsSearchEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SearchProductsFail(error, action.auxiliary)))));
+            error => of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)))));
         }))))));
         this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((/**
          * @param {?} action
@@ -12167,7 +12167,7 @@ class ProductsSearchEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new GetProductSuggestionsFail(error)))));
+            error => of(new GetProductSuggestionsFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -12227,7 +12227,7 @@ class ProductEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadProductFail(productCode, error)))));
+            error => of(new LoadProductFail(productCode, makeErrorSerializable(error))))));
         }))))));
     }
 }
@@ -18214,19 +18214,17 @@ class OpenIdTokenEffect {
          * @param {?} payload
          * @return {?}
          */
-        payload => {
-            return this.openIdTokenService
-                .loadOpenIdAuthenticationToken(payload.username, payload.password)
-                .pipe(map((/**
-             * @param {?} token
-             * @return {?}
-             */
-            token => new LoadOpenIdTokenSuccess(token))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadOpenIdTokenFail(error)))));
-        })));
+        payload => this.openIdTokenService
+            .loadOpenIdAuthenticationToken(payload.username, payload.password)
+            .pipe(map((/**
+         * @param {?} token
+         * @return {?}
+         */
+        token => new LoadOpenIdTokenSuccess(token))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))))));
     }
 }
 OpenIdTokenEffect.decorators = [
