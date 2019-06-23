@@ -24538,7 +24538,7 @@ class FindStoresEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new FindStoresFail(error))))))));
+        error => of(new FindStoresFail(makeErrorSerializable(error)))))))));
         this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((/**
          * @param {?} action
          * @return {?}
@@ -24555,7 +24555,7 @@ class FindStoresEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new FindStoreByIdFail(error))))))));
+        error => of(new FindStoreByIdFail(makeErrorSerializable(error)))))))));
     }
 }
 FindStoresEffect.decorators = [
@@ -24599,7 +24599,7 @@ class ViewAllStoresEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ViewAllStoresFail(error)))));
+            error => of(new ViewAllStoresFail(makeErrorSerializable(error))))));
         })));
     }
 }

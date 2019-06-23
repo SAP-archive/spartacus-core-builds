@@ -28489,7 +28489,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new FindStoresFail(error)); })));
+                function (error) {
+                    return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
+                })));
             })));
             this.findStoreById$ = this.actions$.pipe(effects$a.ofType(FIND_STORE_BY_ID), operators.map((/**
              * @param {?} action
@@ -28508,7 +28510,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new FindStoreByIdFail(error)); })));
+                function (error) {
+                    return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         FindStoresEffect.decorators = [
@@ -28551,7 +28555,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new ViewAllStoresFail(error)); })));
+                function (error) {
+                    return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         ViewAllStoresEffect.decorators = [

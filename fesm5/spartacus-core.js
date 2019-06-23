@@ -28410,7 +28410,9 @@ var FindStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new FindStoresFail(error)); })));
+            function (error) {
+                return of(new FindStoresFail(makeErrorSerializable(error)));
+            })));
         })));
         this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((/**
          * @param {?} action
@@ -28429,7 +28431,9 @@ var FindStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new FindStoreByIdFail(error)); })));
+            function (error) {
+                return of(new FindStoreByIdFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     FindStoresEffect.decorators = [
@@ -28472,7 +28476,9 @@ var ViewAllStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new ViewAllStoresFail(error)); })));
+            function (error) {
+                return of(new ViewAllStoresFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     ViewAllStoresEffect.decorators = [
