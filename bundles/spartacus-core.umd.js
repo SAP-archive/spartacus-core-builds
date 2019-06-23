@@ -3321,17 +3321,24 @@
      * @param {?} error
      * @return {?}
      */
-    function makeHttpErrorSerializable(error) {
-        if (!(error instanceof http.HttpErrorResponse) || !error) {
-            return error;
+    function makeErrorSerializable(error) {
+        if (error instanceof Error) {
+            return (/** @type {?} */ ({
+                message: error.message,
+                type: error.name,
+                reason: error.stack,
+            }));
         }
-        return {
-            message: error.message,
-            error: error.error,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        };
+        if (error instanceof http.HttpErrorResponse) {
+            return (/** @type {?} */ ({
+                message: error.message,
+                error: error.error,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            }));
+        }
+        return error;
     }
 
     /**
@@ -3365,7 +3372,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadClientTokenFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadClientTokenFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -3426,7 +3433,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserTokenFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error)));
                 })));
             })));
             this.login$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
@@ -3458,7 +3465,7 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new RefreshUserTokenFail(makeHttpErrorSerializable(error))); }))));
+                function (error) { return rxjs.of(new RefreshUserTokenFail(makeErrorSerializable(error))); }))));
             })));
         }
         UserTokenEffects.decorators = [
@@ -7165,7 +7172,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadCartFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadCartFail(makeErrorSerializable(error)));
                 })));
             })));
             this.createCart$ = this.actions$.pipe(effects$a.ofType(CREATE_CART), operators.map((/**
@@ -7199,7 +7206,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new CreateCartFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new CreateCartFail(makeErrorSerializable(error)));
                 })));
             })));
             this.mergeCart$ = this.actions$.pipe(effects$a.ofType(MERGE_CART), operators.map((/**
@@ -7290,7 +7297,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new AddEntryFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new AddEntryFail(makeErrorSerializable(error)));
                 })));
             })));
             this.removeEntry$ = this.actions$.pipe(effects$a.ofType(REMOVE_ENTRY), operators.map((/**
@@ -7314,7 +7321,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new RemoveEntryFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new RemoveEntryFail(makeErrorSerializable(error)));
                 })));
             })));
             this.updateEntry$ = this.actions$.pipe(effects$a.ofType(UPDATE_ENTRY), operators.map((/**
@@ -7338,7 +7345,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateEntryFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new UpdateEntryFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -9076,7 +9083,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new AddDeliveryAddressFail(error)); })));
+                function (error) {
+                    return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
+                })));
             })));
             this.setDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(SET_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
@@ -9102,7 +9111,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new SetDeliveryAddressFail(error)); })));
+                function (error) {
+                    return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
+                })));
             })));
             this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$a.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map((/**
              * @param {?} action
@@ -9126,7 +9137,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadSupportedDeliveryModesFail(error));
+                    return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
                 })));
             })));
             this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE), operators.map((/**
@@ -9168,7 +9179,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new SetDeliveryModeFail(error)); })));
+                function (error) {
+                    return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error)));
+                })));
             })));
             this.createPaymentDetails$ = this.actions$.pipe(effects$a.ofType(CREATE_PAYMENT_DETAILS), operators.map((/**
              * @param {?} action
@@ -9194,7 +9207,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new CreatePaymentDetailsFail(error));
+                    return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.setPaymentDetails$ = this.actions$.pipe(effects$a.ofType(SET_PAYMENT_DETAILS), operators.map((/**
@@ -9217,7 +9230,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new SetPaymentDetailsFail(error)); })));
+                function (error) {
+                    return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
+                })));
             })));
             this.placeOrder$ = this.actions$.pipe(effects$a.ofType(PLACE_ORDER), operators.map((/**
              * @param {?} action
@@ -9238,7 +9253,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new PlaceOrderFail(error)); })));
+                function (error) {
+                    return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error)));
+                })));
             })));
             this.loadCheckoutDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_CHECKOUT_DETAILS), operators.map((/**
              * @param {?} action
@@ -9262,7 +9279,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadCheckoutDetailsFail(error));
+                    return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS), operators.map((/**
@@ -9362,7 +9379,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadCardTypesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         CardTypesEffects.decorators = [
@@ -9504,13 +9523,13 @@
                  * @param {?} data
                  * @return {?}
                  */
-                function (data) {
-                    return new VerifyAddressSuccess(data);
-                })), operators.catchError((/**
+                function (data) { return new VerifyAddressSuccess(data); })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new VerifyAddressFail(error)); })));
+                function (error) {
+                    return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         AddressVerificationEffect.decorators = [
@@ -17466,7 +17485,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadBillingCountriesFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadBillingCountriesFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -17535,7 +17554,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadDeliveryCountriesFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -18713,7 +18732,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -18828,7 +18847,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadOrderDetailsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -18952,7 +18971,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserPaymentMethodsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
@@ -18980,7 +18999,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
                 })));
             })));
             this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
@@ -19008,7 +19027,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new DeleteUserPaymentMethodFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19069,7 +19088,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadRegionsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
@@ -19131,7 +19150,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new ResetPasswordFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new ResetPasswordFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19176,7 +19195,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadTitlesFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadTitlesFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19250,7 +19269,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateEmailErrorAction(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new UpdateEmailErrorAction(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19298,7 +19317,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdatePasswordFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new UpdatePasswordFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19348,7 +19367,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserAddressesFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error)));
                 })));
             })));
             this.addUserAddress$ = this.actions$.pipe(effects$a.ofType(ADD_USER_ADDRESS), operators.map((/**
@@ -19373,7 +19392,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new AddUserAddressFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
             this.updateUserAddress$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_ADDRESS), operators.map((/**
@@ -19406,7 +19425,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateUserAddressFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
             this.deleteUserAddress$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_ADDRESS), operators.map((/**
@@ -19431,7 +19450,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new DeleteUserAddressFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new DeleteUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
             /**
@@ -19638,7 +19657,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserConsentsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.giveConsent$ = this.actions$.pipe(effects$a.ofType(GIVE_USER_CONSENT), operators.map((/**
@@ -19662,7 +19681,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new GiveUserConsentFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new GiveUserConsentFail(makeErrorSerializable(error)));
                 })));
             })));
             this.withdrawConsent$ = this.actions$.pipe(effects$a.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
@@ -19684,7 +19703,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new WithdrawUserConsentFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new WithdrawUserConsentFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19740,7 +19759,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserDetailsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
             this.updateUserDetails$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_DETAILS), operators.map((/**
@@ -19763,7 +19782,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateUserDetailsFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new UpdateUserDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -19817,7 +19836,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new LoadUserOrdersFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
             this.resetUserOrders$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
@@ -19879,7 +19898,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new RegisterUserFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new RegisterUserFail(makeErrorSerializable(error)));
                 })));
             })));
             this.removeUser$ = this.actions$.pipe(effects$a.ofType(REMOVE_USER), operators.map((/**
@@ -19903,7 +19922,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new RemoveUserFail(makeHttpErrorSerializable(error)));
+                    return rxjs.of(new RemoveUserFail(makeErrorSerializable(error)));
                 })));
             })));
         }

@@ -2746,17 +2746,24 @@ StateModule.decorators = [
  * @param {?} error
  * @return {?}
  */
-function makeHttpErrorSerializable(error) {
-    if (!(error instanceof HttpErrorResponse) || !error) {
-        return error;
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        }));
     }
-    return {
-        message: error.message,
-        error: error.error,
-        status: error.status,
-        statusText: error.statusText,
-        url: error.url,
-    };
+    if (error instanceof HttpErrorResponse) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        }));
+    }
+    return error;
 }
 
 /**
@@ -2792,7 +2799,7 @@ class ClientTokenEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadClientTokenFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadClientTokenFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -2851,7 +2858,7 @@ class UserTokenEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new LoadUserTokenFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new LoadUserTokenFail(makeErrorSerializable(error)))))))));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map((/**
          * @return {?}
          */
@@ -2880,7 +2887,7 @@ class UserTokenEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new RefreshUserTokenFail(makeHttpErrorSerializable(error)))))));
+            error => of(new RefreshUserTokenFail(makeErrorSerializable(error)))))));
         })));
     }
 }
@@ -6307,7 +6314,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCartFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadCartFail(makeErrorSerializable(error))))));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -6339,7 +6346,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new CreateCartFail(makeHttpErrorSerializable(error))))));
+            error => of(new CreateCartFail(makeErrorSerializable(error))))));
         })));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -6424,7 +6431,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new AddEntryFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new AddEntryFail(makeErrorSerializable(error)))))))));
         this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6444,7 +6451,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new RemoveEntryFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new RemoveEntryFail(makeErrorSerializable(error)))))))));
         this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6464,7 +6471,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateEntryFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new UpdateEntryFail(makeErrorSerializable(error)))))))));
     }
 }
 CartEntryEffects.decorators = [
@@ -8118,7 +8125,7 @@ class CheckoutEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new AddDeliveryAddressFail(error))))))));
+        error => of(new AddDeliveryAddressFail(makeErrorSerializable(error)))))))));
         this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -8143,7 +8150,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDeliveryAddressFail(error)))));
+            error => of(new SetDeliveryAddressFail(makeErrorSerializable(error))))));
         })));
         this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((/**
          * @param {?} action
@@ -8166,7 +8173,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadSupportedDeliveryModesFail(error)))));
+            error => of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error))))));
         })));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
@@ -8207,7 +8214,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDeliveryModeFail(error)))));
+            error => of(new SetDeliveryModeFail(makeErrorSerializable(error))))));
         })));
         this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((/**
          * @param {?} action
@@ -8232,7 +8239,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new CreatePaymentDetailsFail(error)))));
+            error => of(new CreatePaymentDetailsFail(makeErrorSerializable(error))))));
         })));
         this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((/**
          * @param {?} action
@@ -8252,7 +8259,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetPaymentDetailsFail(error)))));
+            error => of(new SetPaymentDetailsFail(makeErrorSerializable(error))))));
         })));
         this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((/**
          * @param {?} action
@@ -8273,7 +8280,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new PlaceOrderFail(error)))));
+            error => of(new PlaceOrderFail(makeErrorSerializable(error))))));
         })));
         this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((/**
          * @param {?} action
@@ -8294,7 +8301,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCheckoutDetailsFail(error)))));
+            error => of(new LoadCheckoutDetailsFail(makeErrorSerializable(error))))));
         })));
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((/**
          * @param {?} action
@@ -8395,7 +8402,7 @@ class CardTypesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCardTypesFail(error)))));
+            error => of(new LoadCardTypesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -8501,7 +8508,7 @@ class AddressVerificationEffect {
          * @param {?} action
          * @return {?}
          */
-        (action) => action.payload)), mergeMap((/**
+        action => action.payload)), mergeMap((/**
          * @param {?} payload
          * @return {?}
          */
@@ -8509,13 +8516,11 @@ class AddressVerificationEffect {
          * @param {?} data
          * @return {?}
          */
-        data => {
-            return new VerifyAddressSuccess(data);
-        })), catchError((/**
+        data => new VerifyAddressSuccess(data))), catchError((/**
          * @param {?} error
          * @return {?}
          */
-        error => of(new VerifyAddressFail(error))))))));
+        error => of(new VerifyAddressFail(makeErrorSerializable(error)))))))));
     }
 }
 AddressVerificationEffect.decorators = [
@@ -14917,7 +14922,7 @@ class BillingCountriesEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadBillingCountriesFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadBillingCountriesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -14988,7 +14993,7 @@ class DeliveryCountriesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadDeliveryCountriesFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16015,7 +16020,7 @@ class ForgotPasswordEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ForgotPasswordEmailRequestFail(makeHttpErrorSerializable(error))))));
+            error => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16114,7 +16119,7 @@ class OrderDetailsEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadOrderDetailsFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadOrderDetailsFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16218,7 +16223,7 @@ class UserPaymentMethodsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserPaymentMethodsFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error))))));
         })));
         this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((/**
          * @param {?} action
@@ -16242,7 +16247,7 @@ class UserPaymentMethodsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDefaultUserPaymentMethodFail(makeHttpErrorSerializable(error))))));
+            error => of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error))))));
         })));
         this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((/**
          * @param {?} action
@@ -16266,7 +16271,7 @@ class UserPaymentMethodsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new DeleteUserPaymentMethodFail(makeHttpErrorSerializable(error))))));
+            error => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16325,7 +16330,7 @@ class RegionsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadRegionsFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadRegionsFail(makeErrorSerializable(error))))));
         })));
         this.resetRegions$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), map((/**
          * @return {?}
@@ -16386,7 +16391,7 @@ class ResetPasswordEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ResetPasswordFail(makeHttpErrorSerializable(error))))));
+            error => of(new ResetPasswordFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16431,7 +16436,7 @@ class TitlesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadTitlesFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadTitlesFail(makeErrorSerializable(error))))));
         })));
     }
     /**
@@ -16497,7 +16502,7 @@ class UpdateEmailEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateEmailErrorAction(makeHttpErrorSerializable(error)))))))));
+        error => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))))));
     }
 }
 UpdateEmailEffects.decorators = [
@@ -16543,7 +16548,7 @@ class UpdatePasswordEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdatePasswordFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new UpdatePasswordFail(makeErrorSerializable(error)))))))));
     }
 }
 UpdatePasswordEffects.decorators = [
@@ -16594,7 +16599,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserAddressesFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadUserAddressesFail(makeErrorSerializable(error))))));
         })));
         this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16617,7 +16622,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new AddUserAddressFail(makeHttpErrorSerializable(error))))));
+            error => of(new AddUserAddressFail(makeErrorSerializable(error))))));
         })));
         this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16648,7 +16653,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new UpdateUserAddressFail(makeHttpErrorSerializable(error))))));
+            error => of(new UpdateUserAddressFail(makeErrorSerializable(error))))));
         })));
         this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16671,7 +16676,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new DeleteUserAddressFail(makeHttpErrorSerializable(error))))));
+            error => of(new DeleteUserAddressFail(makeErrorSerializable(error))))));
         })));
         /**
          *  Reload addresses and notify about add success
@@ -16845,7 +16850,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new LoadUserConsentsFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new LoadUserConsentsFail(makeErrorSerializable(error)))))))));
         this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT), map((/**
          * @param {?} action
          * @return {?}
@@ -16864,7 +16869,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new GiveUserConsentFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new GiveUserConsentFail(makeErrorSerializable(error)))))))));
         this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((/**
          * @param {?} action
          * @return {?}
@@ -16881,7 +16886,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new WithdrawUserConsentFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))))));
     }
 }
 UserConsentsEffect.decorators = [
@@ -16936,7 +16941,7 @@ class UserDetailsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserDetailsFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadUserDetailsFail(makeErrorSerializable(error))))));
         })));
         this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((/**
          * @param {?} action
@@ -16954,7 +16959,7 @@ class UserDetailsEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateUserDetailsFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))))));
     }
 }
 UserDetailsEffects.decorators = [
@@ -17007,7 +17012,7 @@ class UserOrdersEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserOrdersFail(makeHttpErrorSerializable(error))))));
+            error => of(new LoadUserOrdersFail(makeErrorSerializable(error))))));
         })));
         this.resetUserOrders$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), map((/**
          * @return {?}
@@ -17068,7 +17073,7 @@ class UserRegisterEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new RegisterUserFail(makeHttpErrorSerializable(error)))))))));
+        error => of(new RegisterUserFail(makeErrorSerializable(error)))))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((/**
          * @param {?} action
          * @return {?}
@@ -17089,7 +17094,7 @@ class UserRegisterEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new RemoveUserFail(makeHttpErrorSerializable(error))))));
+            error => of(new RemoveUserFail(makeErrorSerializable(error))))));
         })));
     }
 }
