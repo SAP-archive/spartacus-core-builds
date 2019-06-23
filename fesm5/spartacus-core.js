@@ -11920,7 +11920,7 @@ var PageEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new LoadPageDataFail(pageContext, error));
+                    return of(new LoadPageDataFail(pageContext, makeErrorSerializable(error)));
                 })));
             })));
         })));
@@ -11995,7 +11995,7 @@ var ComponentEffects = /** @class */ (function () {
                      * @return {?}
                      */
                     function (error) {
-                        return of(new LoadComponentFail(uid, error));
+                        return of(new LoadComponentFail(uid, makeErrorSerializable(error)));
                     })));
                 })));
             })));
@@ -12076,7 +12076,7 @@ var NavigationEntryItemEffects = /** @class */ (function () {
                      * @return {?}
                      */
                     function (error) {
-                        return of(new LoadNavigationItemsFail(data.nodeId, error));
+                        return of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
                     })));
                 })));
             }

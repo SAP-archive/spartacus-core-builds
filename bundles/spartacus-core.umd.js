@@ -11999,7 +11999,7 @@
                      * @return {?}
                      */
                     function (error) {
-                        return rxjs.of(new LoadPageDataFail(pageContext, error));
+                        return rxjs.of(new LoadPageDataFail(pageContext, makeErrorSerializable(error)));
                     })));
                 })));
             })));
@@ -12074,7 +12074,7 @@
                          * @return {?}
                          */
                         function (error) {
-                            return rxjs.of(new LoadComponentFail(uid, error));
+                            return rxjs.of(new LoadComponentFail(uid, makeErrorSerializable(error)));
                         })));
                     })));
                 })));
@@ -12155,7 +12155,7 @@
                          * @return {?}
                          */
                         function (error) {
-                            return rxjs.of(new LoadNavigationItemsFail(data.nodeId, error));
+                            return rxjs.of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
                         })));
                     })));
                 }

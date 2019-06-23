@@ -10495,24 +10495,20 @@ class PageEffects {
          * @param {?} pageContext
          * @return {?}
          */
-        pageContext => {
-            return this.cmsPageConnector.get(pageContext).pipe(mergeMap((/**
-             * @param {?} cmsStructure
-             * @return {?}
-             */
-            (cmsStructure) => {
-                return [
-                    new GetComponentFromPage(cmsStructure.components),
-                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
-                ];
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                return of(new LoadPageDataFail(pageContext, error));
-            })));
-        }))))));
+        pageContext => this.cmsPageConnector.get(pageContext).pipe(mergeMap((/**
+         * @param {?} cmsStructure
+         * @return {?}
+         */
+        (cmsStructure) => {
+            return [
+                new GetComponentFromPage(cmsStructure.components),
+                new LoadPageDataSuccess(pageContext, cmsStructure.page),
+            ];
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadPageDataFail(pageContext, makeErrorSerializable(error))))))))))));
     }
 }
 PageEffects.decorators = [
@@ -10563,29 +10559,27 @@ class ComponentEffects {
          * @param {?} uid
          * @return {?}
          */
-        uid => {
-            return this.routingService.getRouterState().pipe(filter((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            routerState => routerState !== undefined)), map((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            routerState => routerState.state.context)), take(1), mergeMap((/**
-             * @param {?} pageContext
-             * @return {?}
-             */
-            pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
-             * @param {?} data
-             * @return {?}
-             */
-            data => new LoadComponentSuccess(data, uid))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadComponentFail(uid, error))))))));
-        }))))));
+        uid => this.routingService.getRouterState().pipe(filter((/**
+         * @param {?} routerState
+         * @return {?}
+         */
+        routerState => routerState !== undefined)), map((/**
+         * @param {?} routerState
+         * @return {?}
+         */
+        routerState => routerState.state.context)), take(1), mergeMap((/**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => new LoadComponentSuccess(data, uid))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadComponentFail(uid, makeErrorSerializable(error)))))))))))))));
     }
 }
 ComponentEffects.decorators = [
@@ -10647,23 +10641,22 @@ class NavigationEntryItemEffects {
                  * @param {?} pageContext
                  * @return {?}
                  */
-                pageContext => {
-                    // download all items in one request
-                    return this.cmsComponentConnector
-                        .getList(data.ids.componentIds, pageContext)
-                        .pipe(map((/**
-                     * @param {?} components
-                     * @return {?}
-                     */
-                    components => new LoadNavigationItemsSuccess({
-                        nodeId: data.nodeId,
-                        components: components,
-                    }))), catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    error => of(new LoadNavigationItemsFail(data.nodeId, error)))));
-                })));
+                pageContext => 
+                // download all items in one request
+                this.cmsComponentConnector
+                    .getList(data.ids.componentIds, pageContext)
+                    .pipe(map((/**
+                 * @param {?} components
+                 * @return {?}
+                 */
+                components => new LoadNavigationItemsSuccess({
+                    nodeId: data.nodeId,
+                    components: components,
+                }))), catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))))));
             }
             else if (data.ids.pageIds.length > 0) ;
             else if (data.ids.mediaIds.length > 0) ;
