@@ -4494,7 +4494,9 @@ var LanguagesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadLanguagesFail(error)); })));
+            function (error) {
+                return of(new LoadLanguagesFail(makeErrorSerializable(error)));
+            })));
         })));
         this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
          * @param {?} action
@@ -4551,7 +4553,9 @@ var CurrenciesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadCurrenciesFail(error)); })));
+            function (error) {
+                return of(new LoadCurrenciesFail(makeErrorSerializable(error)));
+            })));
         })));
         this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
          * @param {?} action
@@ -4607,7 +4611,9 @@ var BaseSiteEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadBaseSiteFail(error)); })));
+            function (error) {
+                return of(new LoadBaseSiteFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     BaseSiteEffects.decorators = [

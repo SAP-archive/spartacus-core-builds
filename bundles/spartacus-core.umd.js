@@ -4573,7 +4573,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadLanguagesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
+                })));
             })));
             this.activateLanguage$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
              * @param {?} action
@@ -4630,7 +4632,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadCurrenciesFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
+                })));
             })));
             this.activateCurrency$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
              * @param {?} action
@@ -4686,7 +4690,9 @@
                  * @param {?} error
                  * @return {?}
                  */
-                function (error) { return rxjs.of(new LoadBaseSiteFail(error)); })));
+                function (error) {
+                    return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error)));
+                })));
             })));
         }
         BaseSiteEffects.decorators = [

@@ -3948,7 +3948,7 @@ class LanguagesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadLanguagesFail(error)))));
+            error => of(new LoadLanguagesFail(makeErrorSerializable(error))))));
         })));
         this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
          * @param {?} action
@@ -4008,7 +4008,7 @@ class CurrenciesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCurrenciesFail(error)))));
+            error => of(new LoadCurrenciesFail(makeErrorSerializable(error))))));
         })));
         this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
          * @param {?} action
@@ -4066,7 +4066,7 @@ class BaseSiteEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadBaseSiteFail(error)))));
+            error => of(new LoadBaseSiteFail(makeErrorSerializable(error))))));
         })));
     }
 }
