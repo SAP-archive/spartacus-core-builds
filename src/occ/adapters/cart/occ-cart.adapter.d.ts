@@ -10,7 +10,7 @@ export declare class OccCartAdapter implements CartAdapter {
     protected converter: ConverterService;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
     protected getCartEndpoint(userId: string): string;
-    loadAll(userId: string, details?: boolean): Observable<Cart[]>;
-    load(userId: string, cartId: string, details?: boolean): Observable<Cart>;
+    loadAll(userId: string): Observable<Cart[]>;
+    load(userId: string, cartId: string): Observable<Cart>;
     create(userId: string, oldCartId?: string, toMergeCartGuid?: string): Observable<Cart>;
 }

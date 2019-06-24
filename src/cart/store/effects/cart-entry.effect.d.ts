@@ -1,7 +1,7 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { CartEntryConnector } from '../../connectors/entry/cart-entry.connector';
-import * as fromActions from './../actions/index';
+import * as fromActions from './../actions';
 export declare class CartEntryEffects {
     private actions$;
     private cartEntryConnector;

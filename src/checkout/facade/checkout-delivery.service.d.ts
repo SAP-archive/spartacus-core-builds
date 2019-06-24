@@ -1,6 +1,6 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { CartDataService } from '../../cart/index';
+import { CartDataService } from '../../cart/facade/cart-data.service';
 import { Address, AddressValidation } from '../../model/address.model';
 import { DeliveryMode } from '../../model/order.model';
 import * as fromCheckoutStore from '../store/index';

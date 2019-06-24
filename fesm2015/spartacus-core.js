@@ -1,8 +1,8 @@
 import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, DatePipe, getLocaleId } from '@angular/common';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
-import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, Injector, INJECTOR, APP_INITIALIZER, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Observable, of, throwError, combineLatest, asyncScheduler, Subscription, iif } from 'rxjs';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, debounceTime, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { __decorate, __metadata } from 'tslib';
@@ -3347,6 +3347,8 @@ const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
 const MERGE_CART = '[Cart] Merge Cart';
 /** @type {?} */
 const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+/** @type {?} */
+const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
 class CreateCart extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -3425,6 +3427,11 @@ class MergeCartSuccess {
         this.type = MERGE_CART_SUCCESS;
     }
 }
+class ResetCartDetails {
+    constructor() {
+        this.type = RESET_CART_DETAILS;
+    }
+}
 
 /**
  * @fileoverview added by tsickle
@@ -3489,8 +3496,12 @@ class RemoveEntry extends LoaderLoadAction {
     }
 }
 class RemoveEntrySuccess extends LoaderSuccessAction {
-    constructor() {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
         super(CART_DATA);
+        this.payload = payload;
         this.type = REMOVE_ENTRY_SUCCESS;
     }
 }
@@ -3515,8 +3526,12 @@ class UpdateEntry extends LoaderLoadAction {
     }
 }
 class UpdateEntrySuccess extends LoaderSuccessAction {
-    constructor() {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
         super(CART_DATA);
+        this.payload = payload;
         this.type = UPDATE_ENTRY_SUCCESS;
     }
 }
@@ -3620,7 +3635,7 @@ const getCartState = createSelector(getActiveCartState, (ɵ1$3));
 /** @type {?} */
 const getCartContent = createSelector(getCartState, getCartContentSelector);
 /** @type {?} */
-const getRefresh = createSelector(getCartState, getRefreshSelector);
+const getCartRefresh = createSelector(getCartState, getRefreshSelector);
 const ɵ2$1 = /**
  * @param {?} state
  * @return {?}
@@ -3629,18 +3644,25 @@ state => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state) &&
     !loaderValueSelector(state).refresh;
 /** @type {?} */
-const getLoaded = createSelector(getActiveCartState, (ɵ2$1));
+const getCartLoaded = createSelector(getActiveCartState, (ɵ2$1));
+const ɵ3$1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderLoadingSelector(state);
+/** @type {?} */
+const getCartLoading = createSelector(getActiveCartState, (ɵ3$1));
 /** @type {?} */
 const getCartMergeComplete = createSelector(getCartState, getCartMergeCompleteSelector);
 /** @type {?} */
-const getEntriesMap = createSelector(getCartState, getEntriesSelector);
+const getCartEntriesMap = createSelector(getCartState, getEntriesSelector);
 /** @type {?} */
-const getEntrySelectorFactory = (/**
+const getCartEntrySelectorFactory = (/**
  * @param {?} productCode
  * @return {?}
  */
 (productCode) => {
-    return createSelector(getEntriesMap, (/**
+    return createSelector(getCartEntriesMap, (/**
      * @param {?} entries
      * @return {?}
      */
@@ -3650,7 +3672,7 @@ const getEntrySelectorFactory = (/**
         }
     }));
 });
-const ɵ3$1 = /**
+const ɵ4 = /**
  * @param {?} entities
  * @return {?}
  */
@@ -3662,1731 +3684,7 @@ entities => {
     code => entities[code]));
 };
 /** @type {?} */
-const getEntries = createSelector(getEntriesMap, (ɵ3$1));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$2 = {
-    entities: null,
-    activeLanguage: null,
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$2(state = initialState$2, action) {
-    switch (action.type) {
-        case LOAD_LANGUAGES_SUCCESS: {
-            /** @type {?} */
-            const languages = action.payload;
-            /** @type {?} */
-            const entities = languages.reduce((/**
-             * @param {?} langEntities
-             * @param {?} language
-             * @return {?}
-             */
-            (langEntities, language) => {
-                return Object.assign({}, langEntities, { [language.isocode]: language });
-            }), Object.assign({}, state.entities));
-            return Object.assign({}, state, { entities });
-        }
-        case SET_ACTIVE_LANGUAGE: {
-            /** @type {?} */
-            const isocode = action.payload;
-            return Object.assign({}, state, { activeLanguage: isocode });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_CURRENCIES = '[Site-context] Load Currencies';
-/** @type {?} */
-const LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
-/** @type {?} */
-const LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
-/** @type {?} */
-const SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
-/** @type {?} */
-const CURRENCY_CHANGE = '[Site-context] Currency Change';
-class LoadCurrencies {
-    constructor() {
-        this.type = LOAD_CURRENCIES;
-    }
-}
-class LoadCurrenciesFail {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_FAIL;
-    }
-}
-class LoadCurrenciesSuccess {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_SUCCESS;
-    }
-}
-class SetActiveCurrency {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_CURRENCY;
-    }
-}
-class CurrencyChange {
-    constructor() {
-        this.type = CURRENCY_CHANGE;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$3 = {
-    entities: null,
-    activeCurrency: null,
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$3(state = initialState$3, action) {
-    switch (action.type) {
-        case LOAD_CURRENCIES_SUCCESS: {
-            /** @type {?} */
-            const currencies = action.payload;
-            /** @type {?} */
-            const entities = currencies.reduce((/**
-             * @param {?} currEntities
-             * @param {?} currency
-             * @return {?}
-             */
-            (currEntities, currency) => {
-                return Object.assign({}, currEntities, { [currency.isocode]: currency });
-            }), Object.assign({}, state.entities));
-            return Object.assign({}, state, { entities });
-        }
-        case SET_ACTIVE_CURRENCY: {
-            /** @type {?} */
-            const isocode = action.payload;
-            return Object.assign({}, state, { activeCurrency: isocode });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$4 = {
-    details: {},
-    activeSite: '',
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$4(state = initialState$4, action) {
-    switch (action.type) {
-        case LOAD_BASE_SITE_SUCCESS: {
-            return Object.assign({}, state, { details: action.payload });
-        }
-        case SET_ACTIVE_BASE_SITE: {
-            return Object.assign({}, state, { activeSite: action.payload });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$2() {
-    return {
-        languages: reducer$2,
-        currencies: reducer$3,
-        baseSite: reducer$4,
-    };
-}
-/** @type {?} */
-const reducerToken$2 = new InjectionToken('SiteContextReducers');
-/** @type {?} */
-const reducerProvider$2 = {
-    provide: reducerToken$2,
-    useFactory: getReducers$2,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class SiteAdapter {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SiteConnector {
-    /**
-     * @param {?} adapter
-     */
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @return {?}
-     */
-    getLanguages() {
-        return this.adapter.loadLanguages();
-    }
-    /**
-     * @return {?}
-     */
-    getCurrencies() {
-        return this.adapter.loadCurrencies();
-    }
-    /**
-     * @param {?=} type
-     * @return {?}
-     */
-    getCountries(type) {
-        return this.adapter.loadCountries(type);
-    }
-    /**
-     * @param {?} countryIsoCode
-     * @return {?}
-     */
-    getRegions(countryIsoCode) {
-        return this.adapter.loadRegions(countryIsoCode);
-    }
-    /**
-     * @return {?}
-     */
-    getBaseSite() {
-        return this.adapter.loadBaseSite();
-    }
-}
-SiteConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-SiteConnector.ctorParameters = () => [
-    { type: SiteAdapter }
-];
-/** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class LanguagesEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} siteConnector
-     * @param {?} winRef
-     */
-    constructor(actions$, siteConnector, winRef) {
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.winRef = winRef;
-        this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap((/**
-         * @return {?}
-         */
-        () => {
-            return this.siteConnector.getLanguages().pipe(map((/**
-             * @param {?} languages
-             * @return {?}
-             */
-            languages => new LoadLanguagesSuccess(languages))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadLanguagesFail(makeErrorSerializable(error))))));
-        })));
-        this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => {
-            if (this.winRef.sessionStorage) {
-                this.winRef.sessionStorage.setItem('language', action.payload);
-            }
-        })), map((/**
-         * @return {?}
-         */
-        () => new LanguageChange())));
-    }
-}
-LanguagesEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-LanguagesEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: SiteConnector },
-    { type: WindowRef }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], LanguagesEffects.prototype, "loadLanguages$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], LanguagesEffects.prototype, "activateLanguage$", void 0);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CurrenciesEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} siteConnector
-     * @param {?} winRef
-     */
-    constructor(actions$, siteConnector, winRef) {
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.winRef = winRef;
-        this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap((/**
-         * @return {?}
-         */
-        () => {
-            return this.siteConnector.getCurrencies().pipe(map((/**
-             * @param {?} currencies
-             * @return {?}
-             */
-            currencies => new LoadCurrenciesSuccess(currencies))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadCurrenciesFail(makeErrorSerializable(error))))));
-        })));
-        this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => {
-            if (this.winRef.sessionStorage) {
-                this.winRef.sessionStorage.setItem('currency', action.payload);
-            }
-        })), map((/**
-         * @return {?}
-         */
-        () => new CurrencyChange())));
-    }
-}
-CurrenciesEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CurrenciesEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: SiteConnector },
-    { type: WindowRef }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CurrenciesEffects.prototype, "activateCurrency$", void 0);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class BaseSiteEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} siteConnector
-     */
-    constructor(actions$, siteConnector) {
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap((/**
-         * @return {?}
-         */
-        () => {
-            return this.siteConnector.getBaseSite().pipe(map((/**
-             * @param {?} baseSite
-             * @return {?}
-             */
-            baseSite => new LoadBaseSiteSuccess(baseSite))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadBaseSiteFail(makeErrorSerializable(error))))));
-        })));
-    }
-}
-BaseSiteEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-BaseSiteEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: SiteConnector }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const effects$2 = [
-    LanguagesEffects,
-    CurrenciesEffects,
-    BaseSiteEffects,
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const activeLanguageSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.activeLanguage);
-/** @type {?} */
-const languagesEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.entities);
-const ɵ2$2 = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.languages;
-/** @type {?} */
-const getLanguagesState = createSelector(getSiteContextState, (ɵ2$2));
-/** @type {?} */
-const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
-/** @type {?} */
-const getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
-const ɵ3$2 = /**
- * @param {?} entities
- * @return {?}
- */
-entities => {
-    return entities
-        ? Object.keys(entities).map((/**
-         * @param {?} isocode
-         * @return {?}
-         */
-        isocode => entities[isocode]))
-        : null;
-};
-/** @type {?} */
-const getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$2));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const currenciesEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.entities);
-/** @type {?} */
-const activeCurrencySelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.activeCurrency);
-const ɵ2$3 = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.currencies;
-/** @type {?} */
-const getCurrenciesState = createSelector(getSiteContextState, (ɵ2$3));
-/** @type {?} */
-const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
-/** @type {?} */
-const getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
-const ɵ3$3 = /**
- * @param {?} entities
- * @return {?}
- */
-entities => {
-    return entities
-        ? Object.keys(entities).map((/**
-         * @param {?} isocode
-         * @return {?}
-         */
-        isocode => entities[isocode]))
-        : null;
-};
-/** @type {?} */
-const getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$3));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to language state, actions and selectors.
- */
-class LanguageService {
-    /**
-     * @param {?} store
-     * @param {?} winRef
-     */
-    constructor(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the languages supported by the current store.
-     * @return {?}
-     */
-    getAll() {
-        return this.store.pipe(select(getAllLanguages), tap((/**
-         * @param {?} languages
-         * @return {?}
-         */
-        languages => {
-            if (!languages) {
-                this.store.dispatch(new LoadLanguages());
-            }
-        })), filter(Boolean));
-    }
-    /**
-     * Represents the isocode of the active language.
-     * @return {?}
-     */
-    getActive() {
-        return this.store.pipe(select(getActiveLanguage), filter(Boolean));
-    }
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    setActive(isocode) {
-        return this.store
-            .pipe(select(getActiveLanguage), take(1))
-            .subscribe((/**
-         * @param {?} activeLanguage
-         * @return {?}
-         */
-        activeLanguage => {
-            if (activeLanguage !== isocode) {
-                this.store.dispatch(new SetActiveLanguage(isocode));
-            }
-        }));
-    }
-    /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     * @param {?} defaultLanguage
-     * @return {?}
-     */
-    initialize(defaultLanguage) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
-            this.setActive(this.sessionStorage.getItem('language'));
-        }
-        else {
-            this.setActive(defaultLanguage);
-        }
-    }
-}
-LanguageService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-LanguageService.ctorParameters = () => [
-    { type: Store },
-    { type: WindowRef }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to curreny state, actions and selectors.
- */
-class CurrencyService {
-    /**
-     * @param {?} store
-     * @param {?} winRef
-     */
-    constructor(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the currencies supported by the current store.
-     * @return {?}
-     */
-    getAll() {
-        return this.store.pipe(select(getAllCurrencies), tap((/**
-         * @param {?} currencies
-         * @return {?}
-         */
-        currencies => {
-            if (!currencies) {
-                this.store.dispatch(new LoadCurrencies());
-            }
-        })), filter(Boolean));
-    }
-    /**
-     * Represents the isocode of the active currency.
-     * @return {?}
-     */
-    getActive() {
-        return this.store.pipe(select(getActiveCurrency), filter(Boolean));
-    }
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    setActive(isocode) {
-        return this.store
-            .pipe(select(getActiveCurrency), take(1))
-            .subscribe((/**
-         * @param {?} activeCurrency
-         * @return {?}
-         */
-        activeCurrency => {
-            if (activeCurrency !== isocode) {
-                this.store.dispatch(new SetActiveCurrency(isocode));
-            }
-        }));
-    }
-    /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     * @param {?} defaultCurrency
-     * @return {?}
-     */
-    initialize(defaultCurrency) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
-            this.setActive(this.sessionStorage.getItem('currency'));
-        }
-        else {
-            this.setActive(defaultCurrency);
-        }
-    }
-}
-CurrencyService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CurrencyService.ctorParameters = () => [
-    { type: Store },
-    { type: WindowRef }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
-/** @type {?} */
-const ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
-/**
- * @param {?} type
- * @param {?} id
- * @return {?}
- */
-function entityMeta(type, id) {
-    return {
-        entityType: type,
-        entityId: id,
-    };
-}
-/**
- * @param {?} type
- * @param {?} id
- * @return {?}
- */
-function entityRemoveMeta(type, id) {
-    return {
-        entityId: id,
-        entityType: type,
-        entityRemove: true,
-    };
-}
-/**
- * @param {?} type
- * @return {?}
- */
-function entityRemoveAllMeta(type) {
-    return {
-        entityId: null,
-        entityType: type,
-        entityRemove: true,
-    };
-}
-class EntityRemoveAction {
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     */
-    constructor(entityType, id) {
-        this.type = ENTITY_REMOVE_ACTION;
-        this.meta = entityRemoveMeta(entityType, id);
-    }
-}
-class EntityRemoveAllAction {
-    /**
-     * @param {?} entityType
-     */
-    constructor(entityType) {
-        this.type = ENTITY_REMOVE_ALL_ACTION;
-        this.meta = entityRemoveAllMeta(entityType);
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
-/** @type {?} */
-const ENTITY_FAIL_ACTION = '[ENTITY] LOAD FAIL';
-/** @type {?} */
-const ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
-/** @type {?} */
-const ENTITY_RESET_ACTION = '[ENTITY] RESET';
-/**
- * @param {?} entityType
- * @param {?} id
- * @return {?}
- */
-function entityLoadMeta(entityType, id) {
-    return Object.assign({}, loadMeta(entityType), entityMeta(entityType, id));
-}
-/**
- * @param {?} entityType
- * @param {?} id
- * @param {?=} error
- * @return {?}
- */
-function entityFailMeta(entityType, id, error) {
-    return Object.assign({}, failMeta(entityType, error), entityMeta(entityType, id));
-}
-/**
- * @param {?} entityType
- * @param {?} id
- * @return {?}
- */
-function entitySuccessMeta(entityType, id) {
-    return Object.assign({}, successMeta(entityType), entityMeta(entityType, id));
-}
-/**
- * @param {?} entityType
- * @param {?} id
- * @return {?}
- */
-function entityResetMeta(entityType, id) {
-    return Object.assign({}, resetMeta(entityType), entityMeta(entityType, id));
-}
-class EntityLoadAction {
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     */
-    constructor(entityType, id) {
-        this.type = ENTITY_LOAD_ACTION;
-        this.meta = entityLoadMeta(entityType, id);
-    }
-}
-class EntityFailAction {
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @param {?=} error
-     */
-    constructor(entityType, id, error) {
-        this.type = ENTITY_FAIL_ACTION;
-        this.meta = entityFailMeta(entityType, id, error);
-    }
-}
-class EntitySuccessAction {
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     * @param {?=} payload
-     */
-    constructor(entityType, id, payload) {
-        this.payload = payload;
-        this.type = ENTITY_SUCCESS_ACTION;
-        this.meta = entitySuccessMeta(entityType, id);
-    }
-}
-class EntityResetAction {
-    /**
-     * @param {?} entityType
-     * @param {?} id
-     */
-    constructor(entityType, id) {
-        this.type = ENTITY_RESET_ACTION;
-        this.meta = entityResetMeta(entityType, id);
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialEntityState = { entities: {} };
-/**
- * Higher order reducer for reusing reducer logic for multiple entities
- *
- * Utilizes entityId meta field to target entity by id in actions
- * @template T
- * @param {?} entityType
- * @param {?} reducer
- * @return {?}
- */
-function entityReducer(entityType, reducer) {
-    return (/**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    (state = initialEntityState, action) => {
-        /** @type {?} */
-        let ids;
-        /** @type {?} */
-        let partitionPayload = false;
-        if (action.meta &&
-            action.meta.entityType === entityType &&
-            action.meta.entityId !== undefined) {
-            ids = [].concat(action.meta.entityId);
-            // remove selected entities
-            if (action.meta.entityRemove) {
-                if (action.meta.entityId === null) {
-                    return initialEntityState;
-                }
-                else {
-                    /** @type {?} */
-                    let removed = false;
-                    /** @type {?} */
-                    const newEntities = Object.keys(state.entities).reduce((/**
-                     * @param {?} acc
-                     * @param {?} cur
-                     * @return {?}
-                     */
-                    (acc, cur) => {
-                        if (ids.includes(cur)) {
-                            removed = true;
-                        }
-                        else {
-                            acc[cur] = state.entities[cur];
-                        }
-                        return acc;
-                    }), {});
-                    return removed ? { entities: newEntities } : state;
-                }
-            }
-            partitionPayload =
-                Array.isArray(action.meta.entityId) && Array.isArray(action.payload);
-        }
-        else {
-            ids = Object.keys(state.entities);
-        }
-        /** @type {?} */
-        const entityUpdates = {};
-        for (let i = 0; i < ids.length; i++) {
-            /** @type {?} */
-            const id = ids[i];
-            /** @type {?} */
-            const subAction = partitionPayload
-                ? Object.assign({}, action, { payload: action.payload[i] }) : action;
-            /** @type {?} */
-            const newState = reducer(state.entities[id], subAction);
-            if (newState) {
-                entityUpdates[id] = newState;
-            }
-        }
-        if (Object.keys(entityUpdates).length > 0) {
-            return Object.assign({}, state, { entities: Object.assign({}, state.entities, entityUpdates) });
-        }
-        return state;
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
- * single state reducer to support multiple entities with generic loading flags
- * @template T
- * @param {?} entityType
- * @param {?=} reducer
- * @return {?}
- */
-function entityLoaderReducer(entityType, reducer) {
-    return entityReducer(entityType, loaderReducer(entityType, reducer));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityStateSelector(state, id) {
-    return state.entities[id] || initialLoaderState;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityValueSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.value;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityLoadingSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.loading;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityErrorSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.error;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entitySuccessSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.success;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entitySelector(state, id) {
-    return state.entities[id] || undefined;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} entityType
- * @return {?}
- */
-function ofLoaderLoad(entityType) {
-    return filter((/**
-     * @param {?} action
-     * @return {?}
-     */
-    (action) => action.meta &&
-        action.meta.loader &&
-        action.meta.entityType === entityType &&
-        action.meta.loader.load));
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function ofLoaderFail(entityType) {
-    return filter((/**
-     * @param {?} action
-     * @return {?}
-     */
-    (action) => action.meta &&
-        action.meta.loader &&
-        action.meta.entityType === entityType &&
-        action.meta.loader.error));
-}
-/**
- * @param {?} entityType
- * @return {?}
- */
-function ofLoaderSuccess(entityType) {
-    return filter((/**
-     * @param {?} action
-     * @return {?}
-     */
-    (action) => action.meta &&
-        action.meta.loader &&
-        action.meta.entityType === entityType &&
-        !action.meta.loader.load &&
-        !action.meta.loader.error));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class ContextServiceMap {
-}
-/** @type {?} */
-const LANGUAGE_CONTEXT_ID = 'LANGUAGE';
-/** @type {?} */
-const CURRENCY_CONTEXT_ID = 'CURRENCY';
-/** @type {?} */
-const BASE_SITE_CONTEXT_ID = 'BASE_SITE';
-/**
- * @return {?}
- */
-function serviceMapFactory() {
-    return {
-        [LANGUAGE_CONTEXT_ID]: LanguageService,
-        [CURRENCY_CONTEXT_ID]: CurrencyService,
-        [BASE_SITE_CONTEXT_ID]: BaseSiteService,
-    };
-}
-/** @type {?} */
-const contextServiceMapProvider = {
-    provide: ContextServiceMap,
-    useFactory: serviceMapFactory,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function defaultSiteContextConfigFactory() {
-    return {
-        siteContext: {
-            parameters: {
-                [LANGUAGE_CONTEXT_ID]: {
-                    persistence: 'route',
-                    defaultValue: 'en',
-                    values: [
-                        'en',
-                        'de',
-                        'ja',
-                        'zh',
-                        'ru',
-                        'fr',
-                        'tr',
-                        'it',
-                        'es',
-                        'uk',
-                        'pl',
-                        'nl',
-                        'hi',
-                        'ar',
-                        'pt',
-                        'bn',
-                        'pa',
-                    ],
-                },
-                [CURRENCY_CONTEXT_ID]: {
-                    persistence: 'route',
-                    defaultValue: 'USD',
-                    values: [
-                        'USD',
-                        'EUR',
-                        'JPY',
-                        'GBP',
-                        'AUD',
-                        'CAD',
-                        'CHF',
-                        'CNY',
-                        'SEK',
-                        'NZD',
-                        'MXN',
-                        'SGD',
-                        'HKD',
-                        'NOK',
-                        'KRW',
-                        'TRY',
-                        'RUB',
-                        'INR',
-                        'BRL',
-                        'ZAR',
-                    ],
-                },
-            },
-        },
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class SiteContextConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} config
- * @param {?} baseSiteService
- * @param {?} langService
- * @param {?} currService
- * @return {?}
- */
-function inititializeContext(config, baseSiteService, langService, currService) {
-    return (/**
-     * @return {?}
-     */
-    () => {
-        baseSiteService.initialize(config.site.baseSite);
-        langService.initialize(config.site.language);
-        currService.initialize(config.site.currency);
-    });
-}
-/** @type {?} */
-const contextServiceProviders = [
-    BaseSiteService,
-    LanguageService,
-    CurrencyService,
-    {
-        provide: APP_INITIALIZER,
-        useFactory: inititializeContext,
-        deps: [OccConfig, BaseSiteService, LanguageService, CurrencyService],
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SiteContextParamsService {
-    /**
-     * @param {?} config
-     * @param {?} injector
-     * @param {?} serviceMap
-     */
-    constructor(config, injector, serviceMap) {
-        this.config = config;
-        this.injector = injector;
-        this.serviceMap = serviceMap;
-    }
-    /**
-     * @param {?=} persistence
-     * @return {?}
-     */
-    getContextParameters(persistence) {
-        /** @type {?} */
-        const contextConfig = this.config.siteContext.parameters;
-        if (contextConfig) {
-            /** @type {?} */
-            const params = Object.keys(contextConfig);
-            if (persistence) {
-                return params.filter((/**
-                 * @param {?} key
-                 * @return {?}
-                 */
-                key => contextConfig[key].persistence === persistence));
-            }
-            else {
-                return params;
-            }
-        }
-        return [];
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    getParamValues(param) {
-        return this.config.siteContext.parameters &&
-            this.config.siteContext.parameters[param]
-            ? this.config.siteContext.parameters[param].values
-            : undefined;
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    getParamDefaultValue(param) {
-        return this.config.siteContext.parameters &&
-            this.config.siteContext.parameters[param]
-            ? this.config.siteContext.parameters[param].defaultValue
-            : undefined;
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    getSiteContextService(param) {
-        if (this.serviceMap[param]) {
-            return this.injector.get(this.serviceMap[param], null);
-        }
-    }
-    /**
-     * @param {?} param
-     * @return {?}
-     */
-    getValue(param) {
-        /** @type {?} */
-        let value;
-        /** @type {?} */
-        const service = this.getSiteContextService(param);
-        if (service) {
-            service
-                .getActive()
-                .subscribe((/**
-             * @param {?} val
-             * @return {?}
-             */
-            val => (value = val)))
-                .unsubscribe();
-        }
-        return value !== undefined ? value : this.getParamDefaultValue(param);
-    }
-    /**
-     * @param {?} param
-     * @param {?} value
-     * @return {?}
-     */
-    setValue(param, value) {
-        /** @type {?} */
-        const service = this.getSiteContextService(param);
-        if (service) {
-            service.setActive(value);
-        }
-    }
-}
-SiteContextParamsService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-SiteContextParamsService.ctorParameters = () => [
-    { type: SiteContextConfig },
-    { type: Injector },
-    { type: ContextServiceMap }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SiteContextUrlSerializer extends DefaultUrlSerializer {
-    /**
-     * @param {?} siteContextParams
-     * @param {?} config
-     */
-    constructor(siteContextParams, config) {
-        super();
-        this.siteContextParams = siteContextParams;
-        this.config = config;
-        this.urlEncodingParameters =
-            this.config.siteContext.urlEncodingParameters || [];
-    }
-    /**
-     * @return {?}
-     */
-    get hasContextInRoutes() {
-        return this.urlEncodingParameters.length > 0;
-    }
-    /**
-     * @param {?} url
-     * @return {?}
-     */
-    parse(url) {
-        if (this.hasContextInRoutes) {
-            /** @type {?} */
-            const urlWithParams = this.urlExtractContextParameters(url);
-            /** @type {?} */
-            const parsed = (/** @type {?} */ (super.parse(urlWithParams.url)));
-            this.urlTreeIncludeContextParameters(parsed, urlWithParams.params);
-            return parsed;
-        }
-        else {
-            return super.parse(url);
-        }
-    }
-    /**
-     * @param {?} url
-     * @return {?}
-     */
-    urlExtractContextParameters(url) {
-        /** @type {?} */
-        const segments = url.split('/');
-        if (segments[0] === '') {
-            segments.shift();
-        }
-        /** @type {?} */
-        const params = {};
-        /** @type {?} */
-        let paramId = 0;
-        /** @type {?} */
-        let segmentId = 0;
-        while (paramId < this.urlEncodingParameters.length &&
-            segmentId < segments.length) {
-            /** @type {?} */
-            const paramName = this.urlEncodingParameters[paramId];
-            /** @type {?} */
-            const paramValues = this.siteContextParams.getParamValues(paramName);
-            if (paramValues.includes(segments[segmentId])) {
-                params[paramName] = segments[segmentId];
-                segmentId++;
-            }
-            paramId++;
-        }
-        url = segments.slice(Object.keys(params).length).join('/');
-        return { url, params };
-    }
-    /**
-     * @private
-     * @param {?} urlTree
-     * @param {?} params
-     * @return {?}
-     */
-    urlTreeIncludeContextParameters(urlTree, params) {
-        urlTree.siteContext = params;
-    }
-    /**
-     * @param {?} tree
-     * @return {?}
-     */
-    serialize(tree) {
-        /** @type {?} */
-        const params = this.urlTreeExtractContextParameters(tree);
-        /** @type {?} */
-        const url = super.serialize(tree);
-        /** @type {?} */
-        const serialized = this.urlIncludeContextParameters(url, params);
-        return serialized;
-    }
-    /**
-     * @param {?} urlTree
-     * @return {?}
-     */
-    urlTreeExtractContextParameters(urlTree) {
-        return urlTree.siteContext ? urlTree.siteContext : {};
-    }
-    /**
-     * @private
-     * @param {?} url
-     * @param {?} params
-     * @return {?}
-     */
-    urlIncludeContextParameters(url, params) {
-        /** @type {?} */
-        const contextRoutePart = this.urlEncodingParameters
-            .map((/**
-         * @param {?} param
-         * @return {?}
-         */
-        param => {
-            return params[param]
-                ? params[param]
-                : this.siteContextParams.getValue(param);
-        }))
-            .join('/');
-        return contextRoutePart + url;
-    }
-}
-SiteContextUrlSerializer.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-SiteContextUrlSerializer.ctorParameters = () => [
-    { type: SiteContextParamsService },
-    { type: SiteContextConfig }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class SiteContextRoutesHandler {
-    /**
-     * @param {?} siteContextParams
-     * @param {?} serializer
-     * @param {?} injector
-     */
-    constructor(siteContextParams, serializer, injector) {
-        this.siteContextParams = siteContextParams;
-        this.serializer = serializer;
-        this.injector = injector;
-        this.subscription = new Subscription();
-        this.contextValues = {};
-        this.isNavigating = false;
-    }
-    /**
-     * @return {?}
-     */
-    init() {
-        this.router = this.injector.get(Router);
-        this.location = this.injector.get(Location);
-        /** @type {?} */
-        const routingParams = this.siteContextParams.getContextParameters('route');
-        if (routingParams.length) {
-            this.setContextParamsFromRoute(this.router.url);
-            this.subscribeChanges(routingParams);
-            this.subscribeRouting();
-        }
-    }
-    /**
-     * @private
-     * @param {?} params
-     * @return {?}
-     */
-    subscribeChanges(params) {
-        params.forEach((/**
-         * @param {?} param
-         * @return {?}
-         */
-        param => {
-            /** @type {?} */
-            const service = this.siteContextParams.getSiteContextService(param);
-            if (service) {
-                this.subscription.add(service.getActive().subscribe((/**
-                 * @param {?} value
-                 * @return {?}
-                 */
-                value => {
-                    if (!this.isNavigating &&
-                        this.contextValues[param] &&
-                        this.contextValues[param] !== value) {
-                        /** @type {?} */
-                        const parsed = this.router.parseUrl(this.router.url);
-                        /** @type {?} */
-                        const serialized = this.router.serializeUrl(parsed);
-                        this.location.replaceState(serialized);
-                    }
-                    this.contextValues[param] = value;
-                })));
-            }
-        }));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    subscribeRouting() {
-        this.subscription.add(this.router.events
-            .pipe(filter((/**
-         * @param {?} event
-         * @return {?}
-         */
-        event => event instanceof NavigationStart ||
-            event instanceof NavigationEnd ||
-            event instanceof NavigationError ||
-            event instanceof NavigationCancel)))
-            .subscribe((/**
-         * @param {?} event
-         * @return {?}
-         */
-        (event) => {
-            this.isNavigating = event instanceof NavigationStart;
-            if (this.isNavigating) {
-                this.setContextParamsFromRoute(event.url);
-            }
-        })));
-    }
-    /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    setContextParamsFromRoute(url) {
-        const { params } = this.serializer.urlExtractContextParameters(url);
-        Object.keys(params).forEach((/**
-         * @param {?} param
-         * @return {?}
-         */
-        param => this.siteContextParams.setValue(param, params[param])));
-    }
-    /**
-     * @return {?}
-     */
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-    }
-}
-SiteContextRoutesHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-SiteContextRoutesHandler.ctorParameters = () => [
-    { type: SiteContextParamsService },
-    { type: SiteContextUrlSerializer },
-    { type: Injector }
-];
-/** @nocollapse */ SiteContextRoutesHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} siteContextRoutesHandler
- * @return {?}
- */
-function initSiteContextRoutesHandler(siteContextRoutesHandler) {
-    return (/**
-     * @return {?}
-     */
-    () => {
-        siteContextRoutesHandler.init();
-    });
-}
-/** @type {?} */
-const siteContextParamsProviders = [
-    SiteContextParamsService,
-    SiteContextUrlSerializer,
-    { provide: UrlSerializer, useExisting: SiteContextUrlSerializer },
-    {
-        provide: APP_INITIALIZER,
-        useFactory: initSiteContextRoutesHandler,
-        deps: [SiteContextRoutesHandler],
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function siteContextStoreConfigFactory() {
-    // if we want to reuse SITE_CONTEXT_FEATURE const in config, we have to use factory instead of plain object
-    /** @type {?} */
-    const config = {
-        state: {
-            ssrTransfer: {
-                keys: { [SITE_CONTEXT_FEATURE]: StateTransferType.TRANSFER_STATE },
-            },
-        },
-    };
-    return config;
-}
-class SiteContextStoreModule {
-}
-SiteContextStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    CommonModule,
-                    HttpClientModule,
-                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$2),
-                    EffectsModule.forFeature(effects$2),
-                    ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
-                ],
-                providers: [reducerProvider$2],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-// @dynamic
-class SiteContextModule {
-    /**
-     * @return {?}
-     */
-    static forRoot() {
-        return {
-            ngModule: SiteContextModule,
-            providers: [
-                contextServiceMapProvider,
-                ...contextServiceProviders,
-                ...siteContextParamsProviders,
-                { provide: SiteContextConfig, useExisting: Config },
-            ],
-        };
-    }
-}
-SiteContextModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
-                    StateModule,
-                    SiteContextStoreModule,
-                ],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
-/** @type {?} */
-const CURRENCY_NORMALIZER = new InjectionToken('CurrencyNormalizer');
-/** @type {?} */
-const COUNTRY_NORMALIZER = new InjectionToken('CountryNormalizer');
-/** @type {?} */
-const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+const getCartEntries = createSelector(getCartEntriesMap, (ɵ4));
 
 /**
  * @fileoverview added by tsickle
@@ -5400,36 +3698,46 @@ const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
 /** @type {?} */
 const ANONYMOUS_USERID = 'anonymous';
 class CartDataService {
-    constructor() {
+    /**
+     * @param {?} store
+     * @param {?} authService
+     */
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
         this._userId = ANONYMOUS_USERID;
-        this._getDetails = false;
+        this.authService
+            .getUserToken()
+            .pipe(filter((/**
+         * @param {?} userToken
+         * @return {?}
+         */
+        userToken => this.userId !== userToken.userId)))
+            .subscribe((/**
+         * @param {?} userToken
+         * @return {?}
+         */
+        userToken => {
+            if (Object.keys(userToken).length !== 0) {
+                this._userId = userToken.userId;
+            }
+            else {
+                this._userId = ANONYMOUS_USERID;
+            }
+        }));
+        this.store.pipe(select(getCartContent)).subscribe((/**
+         * @param {?} cart
+         * @return {?}
+         */
+        cart => {
+            this._cart = cart;
+        }));
     }
     /**
      * @return {?}
      */
     get hasCart() {
         return !!this._cart;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set userId(val) {
-        this._userId = val;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set cart(val) {
-        this._cart = val;
-    }
-    /**
-     * @param {?} val
-     * @return {?}
-     */
-    set getDetails(val) {
-        this._getDetails = val;
     }
     /**
      * @return {?}
@@ -5446,12 +3754,6 @@ class CartDataService {
     /**
      * @return {?}
      */
-    get getDetails() {
-        return this._getDetails;
-    }
-    /**
-     * @return {?}
-     */
     get cartId() {
         if (this.hasCart) {
             return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
@@ -5462,7 +3764,10 @@ CartDataService.decorators = [
     { type: Injectable }
 ];
 /** @nocollapse */
-CartDataService.ctorParameters = () => [];
+CartDataService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -5473,26 +3778,59 @@ class CartService {
      * @param {?} store
      * @param {?} cartData
      * @param {?} authService
-     * @param {?} baseSiteService
      */
-    constructor(store, cartData, authService, baseSiteService) {
+    constructor(store, cartData, authService) {
         this.store = store;
         this.cartData = cartData;
         this.authService = authService;
-        this.baseSiteService = baseSiteService;
-        this.init();
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this._activeCart$ = combineLatest([
+            this.store.select(getCartContent),
+            this.store.select(getCartLoading),
+            this.authService.getUserToken(),
+        ]).pipe(
+        // combineLatest emits multiple times on each property update instead of one emit
+        // additionally dispatching actions that changes selectors used here needs to happen in order
+        // for this asyncScheduler is used here
+        debounceTime(1, asyncScheduler), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([, loading]) => !loading)), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart, , userToken]) => {
+            if (this.isJustLoggedIn(userToken.userId)) {
+                this.loadOrMerge();
+            }
+            else if (this.isCreated(cart) && this.isIncomplete(cart)) {
+                this.load();
+            }
+            this.previousUserId = userToken.userId;
+        })), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart]) => !this.isCreated(cart) ||
+            (this.isCreated(cart) && !this.isIncomplete(cart)))), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart]) => cart)), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * @return {?}
      */
     getActive() {
-        return this.store.pipe(select(getCartContent));
+        return this._activeCart$;
     }
     /**
      * @return {?}
      */
     getEntries() {
-        return this.store.pipe(select(getEntries));
+        return this.store.pipe(select(getCartEntries));
     }
     /**
      * @return {?}
@@ -5504,111 +3842,43 @@ class CartService {
      * @return {?}
      */
     getLoaded() {
-        return this.store.pipe(select(getLoaded));
+        return this.store.pipe(select(getCartLoaded));
     }
     /**
-     * @protected
-     * @return {?}
-     */
-    init() {
-        this.store.pipe(select(getCartContent)).subscribe((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        cart => {
-            this.cartData.cart = cart;
-        }));
-        combineLatest([
-            this.baseSiteService.getActive(),
-            this.authService.getUserToken(),
-        ])
-            .pipe(filter((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([, userToken]) => this.cartData.userId !== userToken.userId)))
-            .subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([, userToken]) => {
-            this.setUserId(userToken);
-            this.loadOrMerge();
-        }));
-        this.refresh();
-    }
-    /**
-     * @protected
-     * @param {?} userToken
-     * @return {?}
-     */
-    setUserId(userToken) {
-        if (Object.keys(userToken).length !== 0) {
-            this.cartData.userId = userToken.userId;
-        }
-        else {
-            this.cartData.userId = ANONYMOUS_USERID;
-        }
-    }
-    /**
-     * @protected
+     * @private
      * @return {?}
      */
     loadOrMerge() {
-        this.cartData.getDetails = true;
         // for login user, whenever there's an existing cart, we will load the user
         // current cart and merge it into the existing cart
-        if (this.cartData.userId !== ANONYMOUS_USERID) {
-            if (!this.isCreated(this.cartData.cart)) {
-                this.store.dispatch(new LoadCart({
-                    userId: this.cartData.userId,
-                    cartId: 'current',
-                }));
-            }
-            else {
-                this.store.dispatch(new MergeCart({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cart.guid,
-                }));
-            }
+        if (!this.isCreated(this.cartData.cart)) {
+            this.store.dispatch(new LoadCart({
+                userId: this.cartData.userId,
+                cartId: 'current',
+            }));
+        }
+        else {
+            this.store.dispatch(new MergeCart({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cart.guid,
+            }));
         }
     }
     /**
-     * @protected
+     * @private
      * @return {?}
      */
-    refresh() {
-        this.store.pipe(select(getRefresh)).subscribe((/**
-         * @param {?} refresh
-         * @return {?}
-         */
-        refresh => {
-            if (refresh) {
-                this.store.dispatch(new LoadCart({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    details: true,
-                }));
-            }
-        }));
-    }
-    /**
-     * @return {?}
-     */
-    loadDetails() {
-        this.cartData.getDetails = true;
+    load() {
         if (this.cartData.userId !== ANONYMOUS_USERID) {
             this.store.dispatch(new LoadCart({
                 userId: this.cartData.userId,
                 cartId: this.cartData.cartId ? this.cartData.cartId : 'current',
-                details: true,
             }));
         }
-        else if (this.cartData.cartId) {
+        else {
             this.store.dispatch(new LoadCart({
                 userId: this.cartData.userId,
                 cartId: this.cartData.cartId,
-                details: true,
             }));
         }
     }
@@ -5662,7 +3932,7 @@ class CartService {
      * @return {?}
      */
     updateEntry(entryNumber, quantity) {
-        if (+quantity > 0) {
+        if (quantity > 0) {
             this.store.dispatch(new UpdateEntry({
                 userId: this.cartData.userId,
                 cartId: this.cartData.cartId,
@@ -5683,21 +3953,36 @@ class CartService {
      * @return {?}
      */
     getEntry(productCode) {
-        return this.store.pipe(select(getEntrySelectorFactory(productCode)));
+        return this.store.pipe(select(getCartEntrySelectorFactory(productCode)));
     }
     /**
+     * @private
      * @param {?} cart
      * @return {?}
      */
     isCreated(cart) {
-        return cart && !!Object.keys(cart).length;
+        return cart && typeof cart.guid !== 'undefined';
     }
     /**
+     * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+     * To get cart content, we need to load cart from backend.
+     * @private
      * @param {?} cart
      * @return {?}
      */
-    isEmpty(cart) {
-        return cart && !cart.totalItems;
+    isIncomplete(cart) {
+        return cart && Object.keys(cart).length <= 2;
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    isJustLoggedIn(userId) {
+        return (typeof userId !== 'undefined' && // logged in user
+            this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
     }
 }
 CartService.decorators = [
@@ -5707,16 +3992,13 @@ CartService.decorators = [
 CartService.ctorParameters = () => [
     { type: Store },
     { type: CartDataService },
-    { type: AuthService },
-    { type: BaseSiteService }
+    { type: AuthService }
 ];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const services = [CartService, CartDataService];
 
 /**
  * @fileoverview added by tsickle
@@ -5741,20 +4023,18 @@ class CartConnector {
     }
     /**
      * @param {?} userId
-     * @param {?=} details
      * @return {?}
      */
-    loadAll(userId, details) {
-        return this.adapter.loadAll(userId, details);
+    loadAll(userId) {
+        return this.adapter.loadAll(userId);
     }
     /**
      * @param {?} userId
      * @param {?} cartId
-     * @param {?=} details
      * @return {?}
      */
-    load(userId, cartId, details) {
-        return this.adapter.load(userId, cartId, details);
+    load(userId, cartId) {
+        return this.adapter.load(userId, cartId);
     }
     /**
      * @param {?} userId
@@ -5868,6 +4148,329 @@ const CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormali
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CURRENCIES = '[Site-context] Load Currencies';
+/** @type {?} */
+const LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
+/** @type {?} */
+const LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
+/** @type {?} */
+const SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
+/** @type {?} */
+const CURRENCY_CHANGE = '[Site-context] Currency Change';
+class LoadCurrencies {
+    constructor() {
+        this.type = LOAD_CURRENCIES;
+    }
+}
+class LoadCurrenciesFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_FAIL;
+    }
+}
+class LoadCurrenciesSuccess {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_SUCCESS;
+    }
+}
+class SetActiveCurrency {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_CURRENCY;
+    }
+}
+class CurrencyChange {
+    constructor() {
+        this.type = CURRENCY_CHANGE;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartConnector
+     * @param {?} cartData
+     */
+    constructor(actions$, cartConnector, cartData) {
+        this.actions$ = actions$;
+        this.cartConnector = cartConnector;
+        this.cartData = cartData;
+        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            /** @type {?} */
+            const loadCartParams = {
+                userId: (payload && payload.userId) || this.cartData.userId,
+                cartId: (payload && payload.cartId) || this.cartData.cartId,
+            };
+            if (this.isMissingData(loadCartParams)) {
+                return of(new LoadCartFail({}));
+            }
+            return this.cartConnector
+                .load(loadCartParams.userId, loadCartParams.cartId)
+                .pipe(map((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            (cart) => {
+                return new LoadCartSuccess(cart);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadCartFail(makeErrorSerializable(error))))));
+        })));
+        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartConnector
+                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
+                .pipe(switchMap((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            (cart) => {
+                if (payload.oldCartId) {
+                    return [
+                        new CreateCartSuccess(cart),
+                        new MergeCartSuccess({
+                            userId: payload.userId,
+                            cartId: cart.code,
+                        }),
+                    ];
+                }
+                return [new CreateCartSuccess(cart)];
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new CreateCartFail(makeErrorSerializable(error))))));
+        })));
+        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartConnector.load(payload.userId, 'current').pipe(map((/**
+             * @param {?} currentCart
+             * @return {?}
+             */
+            currentCart => {
+                return new CreateCart({
+                    userId: payload.userId,
+                    oldCartId: payload.cartId,
+                    toMergeCartGuid: currentCart ? currentCart.guid : undefined,
+                });
+            })));
+        })));
+        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, ADD_ENTRY_SUCCESS, UPDATE_ENTRY_SUCCESS, REMOVE_ENTRY_SUCCESS), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), map((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => new LoadCart({
+            userId: payload.userId,
+            cartId: payload.cartId,
+        }))));
+        this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), map((/**
+         * @return {?}
+         */
+        () => new ResetCartDetails())));
+    }
+    /**
+     * @private
+     * @param {?} payload
+     * @return {?}
+     */
+    isMissingData(payload) {
+        return payload.userId === undefined || payload.cartId === undefined;
+    }
+}
+CartEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartConnector },
+    { type: CartDataService }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "loadCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "createCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "mergeCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "refresh$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEntryEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartEntryConnector
+     */
+    constructor(actions$, cartEntryConnector) {
+        this.actions$ = actions$;
+        this.cartEntryConnector = cartEntryConnector;
+        this.addEntry$ = this.actions$.pipe(ofType(ADD_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+            .pipe(map((/**
+         * @param {?} entry
+         * @return {?}
+         */
+        (entry) => new AddEntrySuccess(Object.assign({}, entry, { userId: payload.userId, cartId: payload.cartId })))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new AddEntryFail(makeErrorSerializable(error)))))))));
+        this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .remove(payload.userId, payload.cartId, payload.entry)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new RemoveEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new RemoveEntryFail(makeErrorSerializable(error)))))))));
+        this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new UpdateEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new UpdateEntryFail(makeErrorSerializable(error)))))))));
+    }
+}
+CartEntryEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartEntryEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartEntryConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "addEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "removeEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "updateEntry$", void 0);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const effects$2 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
@@ -6180,7 +4783,7 @@ class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$5 = {
+const initialState$2 = {
     content: {},
     entries: {},
     refresh: false,
@@ -6191,7 +4794,7 @@ const initialState$5 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$5(state = initialState$5, action) {
+function reducer$2(state = initialState$2, action) {
     switch (action.type) {
         case MERGE_CART: {
             return Object.assign({}, state, { cartMergeComplete: false });
@@ -6212,7 +4815,7 @@ function reducer$5(state = initialState$5, action) {
                  * @return {?}
                  */
                 (entryMap, entry) => {
-                    return Object.assign({}, entryMap, { [entry.product.code]: state.entries[entry.product.code]
+                    return Object.assign({}, entryMap, { [entry.product.code]: state.entries && state.entries[entry.product.code]
                             ? Object.assign({}, state.entries[entry.product.code], entry) : entry });
                 }), Object.assign({}, entries));
                 delete content['entries'];
@@ -6225,6 +4828,17 @@ function reducer$5(state = initialState$5, action) {
         case ADD_ENTRY_SUCCESS: {
             return Object.assign({}, state, { refresh: true });
         }
+        case RESET_CART_DETAILS: {
+            return {
+                content: {
+                    guid: state.content.guid,
+                    code: state.content.code,
+                },
+                entries: {},
+                refresh: false,
+                cartMergeComplete: false,
+            };
+        }
     }
     return state;
 }
@@ -6236,17 +4850,17 @@ function reducer$5(state = initialState$5, action) {
 /**
  * @return {?}
  */
-function getReducers$3() {
+function getReducers$2() {
     return {
-        active: loaderReducer(CART_DATA, reducer$5),
+        active: loaderReducer(CART_DATA, reducer$2),
     };
 }
 /** @type {?} */
-const reducerToken$3 = new InjectionToken('CartReducers');
+const reducerToken$2 = new InjectionToken('CartReducers');
 /** @type {?} */
-const reducerProvider$3 = {
-    provide: reducerToken$3,
-    useFactory: getReducers$3,
+const reducerProvider$2 = {
+    provide: reducerToken$2,
+    useFactory: getReducers$2,
 };
 /**
  * @param {?} reducer
@@ -6272,240 +4886,23 @@ const metaReducers$1 = [clearCartState];
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class CartEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} cartConnector
-     * @param {?} cartData
-     */
-    constructor(actions$, cartConnector, cartData) {
-        this.actions$ = actions$;
-        this.cartConnector = cartConnector;
-        this.cartData = cartData;
-        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART, LANGUAGE_CHANGE, CURRENCY_CHANGE), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            /** @type {?} */
-            const loadCartParams = {
-                userId: (payload && payload.userId) || this.cartData.userId,
-                cartId: (payload && payload.cartId) || this.cartData.cartId,
-                details: payload && payload.details !== undefined
-                    ? payload.details
-                    : this.cartData.getDetails,
-            };
-            if (this.isMissingData(loadCartParams)) {
-                return of(new LoadCartFail({}));
-            }
-            return this.cartConnector
-                .load(loadCartParams.userId, loadCartParams.cartId, loadCartParams.details)
-                .pipe(map((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            (cart) => {
-                return new LoadCartSuccess(cart);
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadCartFail(makeErrorSerializable(error))))));
-        })));
-        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            return this.cartConnector
-                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
-                .pipe(switchMap((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            (cart) => {
-                if (payload.oldCartId) {
-                    return [
-                        new CreateCartSuccess(cart),
-                        new MergeCartSuccess({
-                            userId: payload.userId,
-                            cartId: cart.code,
-                        }),
-                    ];
-                }
-                return [new CreateCartSuccess(cart)];
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new CreateCartFail(makeErrorSerializable(error))))));
-        })));
-        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            return this.cartConnector.load(payload.userId, 'current').pipe(map((/**
-             * @param {?} currentCart
-             * @return {?}
-             */
-            currentCart => {
-                return new CreateCart({
-                    userId: payload.userId,
-                    oldCartId: payload.cartId,
-                    toMergeCartGuid: currentCart ? currentCart.guid : undefined,
-                });
-            })));
-        })));
-    }
-    /**
-     * @private
-     * @param {?} payload
-     * @return {?}
-     */
-    isMissingData(payload) {
-        return payload.userId === undefined || payload.cartId === undefined;
-    }
+/**
+ * @return {?}
+ */
+function cartStoreConfigFactory() {
+    /** @type {?} */
+    const config = {
+        state: {
+            storageSync: {
+                keys: {
+                    [`${CART_FEATURE}.active.value.content.guid`]: StorageSyncType.LOCAL_STORAGE,
+                    [`${CART_FEATURE}.active.value.content.code`]: StorageSyncType.LOCAL_STORAGE,
+                },
+            },
+        },
+    };
+    return config;
 }
-CartEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartConnector },
-    { type: CartDataService }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "loadCart$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "createCart$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "mergeCart$", void 0);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CartEntryEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} cartEntryConnector
-     */
-    constructor(actions$, cartEntryConnector) {
-        this.actions$ = actions$;
-        this.cartEntryConnector = cartEntryConnector;
-        this.addEntry$ = this.actions$.pipe(ofType(ADD_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-            .pipe(map((/**
-         * @param {?} entry
-         * @return {?}
-         */
-        entry => new AddEntrySuccess(entry))), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new AddEntryFail(makeErrorSerializable(error)))))))));
-        this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .remove(payload.userId, payload.cartId, payload.entry)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new RemoveEntrySuccess();
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new RemoveEntryFail(makeErrorSerializable(error)))))))));
-        this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new UpdateEntrySuccess();
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new UpdateEntryFail(makeErrorSerializable(error)))))))));
-    }
-}
-CartEntryEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartEntryEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartEntryConnector }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "addEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "removeEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "updateEntry$", void 0);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const effects$3 = [CartEffects, CartEntryEffects];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 class CartStoreModule {
 }
 CartStoreModule.decorators = [
@@ -6513,10 +4910,11 @@ CartStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
-                    EffectsModule.forFeature(effects$3),
+                    StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                    EffectsModule.forFeature(effects$2),
+                    ConfigModule.withConfigFactory(cartStoreConfigFactory),
                 ],
-                providers: [reducerProvider$3],
+                providers: [reducerProvider$2],
             },] }
 ];
 
@@ -6677,7 +5075,7 @@ const getCheckoutSteps = createSelector(getCheckoutStepsState, (ɵ1$4));
 const getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
 /** @type {?} */
 const getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
-const ɵ2$4 = /**
+const ɵ2$2 = /**
  * @param {?} deliveryMode
  * @return {?}
  */
@@ -6689,8 +5087,8 @@ deliveryMode => {
     code => deliveryMode.supported[code]));
 };
 /** @type {?} */
-const getSupportedDeliveryModes = createSelector(getDeliveryMode, (ɵ2$4));
-const ɵ3$4 = /**
+const getSupportedDeliveryModes = createSelector(getDeliveryMode, (ɵ2$2));
+const ɵ3$2 = /**
  * @param {?} deliveryMode
  * @return {?}
  */
@@ -6698,8 +5096,8 @@ deliveryMode => {
     return deliveryMode.selected;
 };
 /** @type {?} */
-const getSelectedCode = createSelector(getDeliveryMode, (ɵ3$4));
-const ɵ4 = /**
+const getSelectedCode = createSelector(getDeliveryMode, (ɵ3$2));
+const ɵ4$1 = /**
  * @param {?} deliveryMode
  * @return {?}
  */
@@ -6712,7 +5110,7 @@ deliveryMode => {
     }
 };
 /** @type {?} */
-const getSelectedDeliveryMode = createSelector(getDeliveryMode, (ɵ4));
+const getSelectedDeliveryMode = createSelector(getDeliveryMode, (ɵ4$1));
 /** @type {?} */
 const getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
 /** @type {?} */
@@ -6730,7 +5128,7 @@ const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ5));
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$6 = {
+const initialState$3 = {
     entities: {},
 };
 /**
@@ -6738,7 +5136,7 @@ const initialState$6 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$6(state = initialState$6, action) {
+function reducer$3(state = initialState$3, action) {
     switch (action.type) {
         case LOAD_CARD_TYPES_SUCCESS: {
             /** @type {?} */
@@ -6755,7 +5153,7 @@ function reducer$6(state = initialState$6, action) {
             return Object.assign({}, state, { entities });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$6;
+            return initialState$3;
         }
     }
     return state;
@@ -6799,7 +5197,7 @@ const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$5));
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$7 = {
+const initialState$4 = {
     results: {},
 };
 /**
@@ -6807,7 +5205,7 @@ const initialState$7 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$7(state = initialState$7, action) {
+function reducer$4(state = initialState$4, action) {
     switch (action.type) {
         case VERIFY_ADDRESS_SUCCESS: {
             /** @type {?} */
@@ -7487,6 +5885,416 @@ class LoadTitlesSuccess {
  */
 /** @type {?} */
 const PROCESS_FEATURE = 'process';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
+/** @type {?} */
+const ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
+/**
+ * @param {?} type
+ * @param {?} id
+ * @return {?}
+ */
+function entityMeta(type, id) {
+    return {
+        entityType: type,
+        entityId: id,
+    };
+}
+/**
+ * @param {?} type
+ * @param {?} id
+ * @return {?}
+ */
+function entityRemoveMeta(type, id) {
+    return {
+        entityId: id,
+        entityType: type,
+        entityRemove: true,
+    };
+}
+/**
+ * @param {?} type
+ * @return {?}
+ */
+function entityRemoveAllMeta(type) {
+    return {
+        entityId: null,
+        entityType: type,
+        entityRemove: true,
+    };
+}
+class EntityRemoveAction {
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     */
+    constructor(entityType, id) {
+        this.type = ENTITY_REMOVE_ACTION;
+        this.meta = entityRemoveMeta(entityType, id);
+    }
+}
+class EntityRemoveAllAction {
+    /**
+     * @param {?} entityType
+     */
+    constructor(entityType) {
+        this.type = ENTITY_REMOVE_ALL_ACTION;
+        this.meta = entityRemoveAllMeta(entityType);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
+/** @type {?} */
+const ENTITY_FAIL_ACTION = '[ENTITY] LOAD FAIL';
+/** @type {?} */
+const ENTITY_SUCCESS_ACTION = '[ENTITY] LOAD SUCCESS';
+/** @type {?} */
+const ENTITY_RESET_ACTION = '[ENTITY] RESET';
+/**
+ * @param {?} entityType
+ * @param {?} id
+ * @return {?}
+ */
+function entityLoadMeta(entityType, id) {
+    return Object.assign({}, loadMeta(entityType), entityMeta(entityType, id));
+}
+/**
+ * @param {?} entityType
+ * @param {?} id
+ * @param {?=} error
+ * @return {?}
+ */
+function entityFailMeta(entityType, id, error) {
+    return Object.assign({}, failMeta(entityType, error), entityMeta(entityType, id));
+}
+/**
+ * @param {?} entityType
+ * @param {?} id
+ * @return {?}
+ */
+function entitySuccessMeta(entityType, id) {
+    return Object.assign({}, successMeta(entityType), entityMeta(entityType, id));
+}
+/**
+ * @param {?} entityType
+ * @param {?} id
+ * @return {?}
+ */
+function entityResetMeta(entityType, id) {
+    return Object.assign({}, resetMeta(entityType), entityMeta(entityType, id));
+}
+class EntityLoadAction {
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     */
+    constructor(entityType, id) {
+        this.type = ENTITY_LOAD_ACTION;
+        this.meta = entityLoadMeta(entityType, id);
+    }
+}
+class EntityFailAction {
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @param {?=} error
+     */
+    constructor(entityType, id, error) {
+        this.type = ENTITY_FAIL_ACTION;
+        this.meta = entityFailMeta(entityType, id, error);
+    }
+}
+class EntitySuccessAction {
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     * @param {?=} payload
+     */
+    constructor(entityType, id, payload) {
+        this.payload = payload;
+        this.type = ENTITY_SUCCESS_ACTION;
+        this.meta = entitySuccessMeta(entityType, id);
+    }
+}
+class EntityResetAction {
+    /**
+     * @param {?} entityType
+     * @param {?} id
+     */
+    constructor(entityType, id) {
+        this.type = ENTITY_RESET_ACTION;
+        this.meta = entityResetMeta(entityType, id);
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialEntityState = { entities: {} };
+/**
+ * Higher order reducer for reusing reducer logic for multiple entities
+ *
+ * Utilizes entityId meta field to target entity by id in actions
+ * @template T
+ * @param {?} entityType
+ * @param {?} reducer
+ * @return {?}
+ */
+function entityReducer(entityType, reducer) {
+    return (/**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    (state = initialEntityState, action) => {
+        /** @type {?} */
+        let ids;
+        /** @type {?} */
+        let partitionPayload = false;
+        if (action.meta &&
+            action.meta.entityType === entityType &&
+            action.meta.entityId !== undefined) {
+            ids = [].concat(action.meta.entityId);
+            // remove selected entities
+            if (action.meta.entityRemove) {
+                if (action.meta.entityId === null) {
+                    return initialEntityState;
+                }
+                else {
+                    /** @type {?} */
+                    let removed = false;
+                    /** @type {?} */
+                    const newEntities = Object.keys(state.entities).reduce((/**
+                     * @param {?} acc
+                     * @param {?} cur
+                     * @return {?}
+                     */
+                    (acc, cur) => {
+                        if (ids.includes(cur)) {
+                            removed = true;
+                        }
+                        else {
+                            acc[cur] = state.entities[cur];
+                        }
+                        return acc;
+                    }), {});
+                    return removed ? { entities: newEntities } : state;
+                }
+            }
+            partitionPayload =
+                Array.isArray(action.meta.entityId) && Array.isArray(action.payload);
+        }
+        else {
+            ids = Object.keys(state.entities);
+        }
+        /** @type {?} */
+        const entityUpdates = {};
+        for (let i = 0; i < ids.length; i++) {
+            /** @type {?} */
+            const id = ids[i];
+            /** @type {?} */
+            const subAction = partitionPayload
+                ? Object.assign({}, action, { payload: action.payload[i] }) : action;
+            /** @type {?} */
+            const newState = reducer(state.entities[id], subAction);
+            if (newState) {
+                entityUpdates[id] = newState;
+            }
+        }
+        if (Object.keys(entityUpdates).length > 0) {
+            return Object.assign({}, state, { entities: Object.assign({}, state.entities, entityUpdates) });
+        }
+        return state;
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
+ * single state reducer to support multiple entities with generic loading flags
+ * @template T
+ * @param {?} entityType
+ * @param {?=} reducer
+ * @return {?}
+ */
+function entityLoaderReducer(entityType, reducer) {
+    return entityReducer(entityType, loaderReducer(entityType, reducer));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityStateSelector(state, id) {
+    return state.entities[id] || initialLoaderState;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityValueSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.value;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityLoadingSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.loading;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityErrorSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.error;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entitySuccessSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.success;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entitySelector(state, id) {
+    return state.entities[id] || undefined;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function ofLoaderLoad(entityType) {
+    return filter((/**
+     * @param {?} action
+     * @return {?}
+     */
+    (action) => action.meta &&
+        action.meta.loader &&
+        action.meta.entityType === entityType &&
+        action.meta.loader.load));
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function ofLoaderFail(entityType) {
+    return filter((/**
+     * @param {?} action
+     * @return {?}
+     */
+    (action) => action.meta &&
+        action.meta.loader &&
+        action.meta.entityType === entityType &&
+        action.meta.loader.error));
+}
+/**
+ * @param {?} entityType
+ * @return {?}
+ */
+function ofLoaderSuccess(entityType) {
+    return filter((/**
+     * @param {?} action
+     * @return {?}
+     */
+    (action) => action.meta &&
+        action.meta.loader &&
+        action.meta.entityType === entityType &&
+        !action.meta.loader.load &&
+        !action.meta.loader.error));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -8207,7 +7015,6 @@ class CheckoutEffects {
                     new LoadCart({
                         userId: payload.userId,
                         cartId: payload.cartId,
-                        details: true,
                     }),
                 ];
             })), catchError((/**
@@ -8541,7 +7348,7 @@ __decorate([
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$4 = [
+const effects$3 = [
     CheckoutEffects,
     AddressVerificationEffect,
     CardTypesEffects,
@@ -8552,7 +7359,7 @@ const effects$4 = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$8 = {
+const initialState$5 = {
     address: {},
     deliveryMode: {
         supported: {},
@@ -8566,7 +7373,7 @@ const initialState$8 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$8(state = initialState$8, action) {
+function reducer$5(state = initialState$5, action) {
     switch (action.type) {
         case ADD_DELIVERY_ADDRESS_SUCCESS:
         case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -8614,7 +7421,7 @@ function reducer$8(state = initialState$8, action) {
             return Object.assign({}, state, { orderDetails });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$8;
+            return initialState$5;
         }
         case CLEAR_CHECKOUT_STEP: {
             /** @type {?} */
@@ -8650,19 +7457,19 @@ function reducer$8(state = initialState$8, action) {
 /**
  * @return {?}
  */
-function getReducers$4() {
+function getReducers$3() {
     return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$8),
-        cardTypes: reducer$6,
-        addressVerification: reducer$7,
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$5),
+        cardTypes: reducer$3,
+        addressVerification: reducer$4,
     };
 }
 /** @type {?} */
-const reducerToken$4 = new InjectionToken('CheckoutReducers');
+const reducerToken$3 = new InjectionToken('CheckoutReducers');
 /** @type {?} */
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
+const reducerProvider$3 = {
+    provide: reducerToken$3,
+    useFactory: getReducers$3,
 };
 
 /**
@@ -9929,13 +8736,13 @@ const itemsSelectorFactory = (/**
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$9 = undefined;
+const initialState$6 = undefined;
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$9(state = initialState$9, action) {
+function reducer$6(state = initialState$6, action) {
     switch (action.type) {
         case LOAD_NAVIGATION_ITEMS_SUCCESS: {
             if (action.payload.components) {
@@ -9962,13 +8769,13 @@ function reducer$9(state = initialState$9, action) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$a = { entities: {} };
+const initialState$7 = { entities: {} };
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$a(state = initialState$a, action) {
+function reducer$7(state = initialState$7, action) {
     switch (action.type) {
         case LOAD_PAGE_DATA_SUCCESS: {
             /** @type {?} */
@@ -9984,25 +8791,25 @@ function reducer$a(state = initialState$a, action) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$b = undefined;
+const initialState$8 = undefined;
 /**
  * @param {?} entityType
  * @return {?}
  */
-function reducer$b(entityType) {
+function reducer$8(entityType) {
     return (/**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    (state = initialState$b, action) => {
+    (state = initialState$8, action) => {
         if (action.meta && action.meta.entityType === entityType) {
             switch (action.type) {
                 case LOAD_PAGE_DATA_SUCCESS: {
                     return action.payload.pageId;
                 }
                 case LOAD_PAGE_DATA_FAIL: {
-                    return initialState$b;
+                    return initialState$8;
                 }
                 case SET_PAGE_FAIL_INDEX: {
                     return action.payload;
@@ -10020,27 +8827,27 @@ function reducer$b(entityType) {
 /**
  * @return {?}
  */
-function getReducers$5() {
+function getReducers$4() {
     return {
         page: combineReducers({
-            pageData: reducer$a,
+            pageData: reducer$7,
             index: combineReducers({
-                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$b(PageType.CONTENT_PAGE)),
-                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$b(PageType.PRODUCT_PAGE)),
-                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$b(PageType.CATEGORY_PAGE)),
-                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$b(PageType.CATALOG_PAGE)),
+                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$8(PageType.CONTENT_PAGE)),
+                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$8(PageType.PRODUCT_PAGE)),
+                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$8(PageType.CATEGORY_PAGE)),
+                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$8(PageType.CATALOG_PAGE)),
             }),
         }),
         component: entityLoaderReducer(COMPONENT_ENTITY),
-        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$9),
+        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$6),
     };
 }
 /** @type {?} */
-const reducerToken$5 = new InjectionToken('CmsReducers');
+const reducerToken$4 = new InjectionToken('CmsReducers');
 /** @type {?} */
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 /**
  * @param {?} reducer
@@ -10714,7 +9521,7 @@ __decorate([
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$5 = [
+const effects$4 = [
     PageEffects,
     ComponentEffects,
     NavigationEntryItemEffects,
@@ -11052,11 +9859,6 @@ PageMetaService.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /**
  * @abstract
  */
@@ -11180,11 +9982,11 @@ CmsStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
-                    EffectsModule.forFeature(effects$5),
+                    StoreModule.forFeature(CMS_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
+                    EffectsModule.forFeature(effects$4),
                     ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$5],
+                providers: [reducerProvider$4],
             },] }
 ];
 
@@ -11419,10 +10221,10 @@ CheckoutStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4),
-                    EffectsModule.forFeature(effects$4),
+                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$3),
+                    EffectsModule.forFeature(effects$3),
                 ],
-                providers: [reducerProvider$4],
+                providers: [reducerProvider$3],
             },] }
 ];
 
@@ -11475,6 +10277,1263 @@ class CxApiModule {
 CxApiModule.decorators = [
     { type: NgModule, args: [{},] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$9 = {
+    entities: null,
+    activeLanguage: null,
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$9(state = initialState$9, action) {
+    switch (action.type) {
+        case LOAD_LANGUAGES_SUCCESS: {
+            /** @type {?} */
+            const languages = action.payload;
+            /** @type {?} */
+            const entities = languages.reduce((/**
+             * @param {?} langEntities
+             * @param {?} language
+             * @return {?}
+             */
+            (langEntities, language) => {
+                return Object.assign({}, langEntities, { [language.isocode]: language });
+            }), Object.assign({}, state.entities));
+            return Object.assign({}, state, { entities });
+        }
+        case SET_ACTIVE_LANGUAGE: {
+            /** @type {?} */
+            const isocode = action.payload;
+            return Object.assign({}, state, { activeLanguage: isocode });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$a = {
+    entities: null,
+    activeCurrency: null,
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$a(state = initialState$a, action) {
+    switch (action.type) {
+        case LOAD_CURRENCIES_SUCCESS: {
+            /** @type {?} */
+            const currencies = action.payload;
+            /** @type {?} */
+            const entities = currencies.reduce((/**
+             * @param {?} currEntities
+             * @param {?} currency
+             * @return {?}
+             */
+            (currEntities, currency) => {
+                return Object.assign({}, currEntities, { [currency.isocode]: currency });
+            }), Object.assign({}, state.entities));
+            return Object.assign({}, state, { entities });
+        }
+        case SET_ACTIVE_CURRENCY: {
+            /** @type {?} */
+            const isocode = action.payload;
+            return Object.assign({}, state, { activeCurrency: isocode });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$b = {
+    details: {},
+    activeSite: '',
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$b(state = initialState$b, action) {
+    switch (action.type) {
+        case LOAD_BASE_SITE_SUCCESS: {
+            return Object.assign({}, state, { details: action.payload });
+        }
+        case SET_ACTIVE_BASE_SITE: {
+            return Object.assign({}, state, { activeSite: action.payload });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$5() {
+    return {
+        languages: reducer$9,
+        currencies: reducer$a,
+        baseSite: reducer$b,
+    };
+}
+/** @type {?} */
+const reducerToken$5 = new InjectionToken('SiteContextReducers');
+/** @type {?} */
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class SiteAdapter {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SiteConnector {
+    /**
+     * @param {?} adapter
+     */
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @return {?}
+     */
+    getLanguages() {
+        return this.adapter.loadLanguages();
+    }
+    /**
+     * @return {?}
+     */
+    getCurrencies() {
+        return this.adapter.loadCurrencies();
+    }
+    /**
+     * @param {?=} type
+     * @return {?}
+     */
+    getCountries(type) {
+        return this.adapter.loadCountries(type);
+    }
+    /**
+     * @param {?} countryIsoCode
+     * @return {?}
+     */
+    getRegions(countryIsoCode) {
+        return this.adapter.loadRegions(countryIsoCode);
+    }
+    /**
+     * @return {?}
+     */
+    getBaseSite() {
+        return this.adapter.loadBaseSite();
+    }
+}
+SiteConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+SiteConnector.ctorParameters = () => [
+    { type: SiteAdapter }
+];
+/** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class LanguagesEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} siteConnector
+     * @param {?} winRef
+     */
+    constructor(actions$, siteConnector, winRef) {
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.winRef = winRef;
+        this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap((/**
+         * @return {?}
+         */
+        () => {
+            return this.siteConnector.getLanguages().pipe(map((/**
+             * @param {?} languages
+             * @return {?}
+             */
+            languages => new LoadLanguagesSuccess(languages))), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadLanguagesFail(makeErrorSerializable(error))))));
+        })));
+        this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => {
+            if (this.winRef.sessionStorage) {
+                this.winRef.sessionStorage.setItem('language', action.payload);
+            }
+        })), map((/**
+         * @return {?}
+         */
+        () => new LanguageChange())));
+    }
+}
+LanguagesEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+LanguagesEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: SiteConnector },
+    { type: WindowRef }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], LanguagesEffects.prototype, "loadLanguages$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], LanguagesEffects.prototype, "activateLanguage$", void 0);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CurrenciesEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} siteConnector
+     * @param {?} winRef
+     */
+    constructor(actions$, siteConnector, winRef) {
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.winRef = winRef;
+        this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap((/**
+         * @return {?}
+         */
+        () => {
+            return this.siteConnector.getCurrencies().pipe(map((/**
+             * @param {?} currencies
+             * @return {?}
+             */
+            currencies => new LoadCurrenciesSuccess(currencies))), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadCurrenciesFail(makeErrorSerializable(error))))));
+        })));
+        this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => {
+            if (this.winRef.sessionStorage) {
+                this.winRef.sessionStorage.setItem('currency', action.payload);
+            }
+        })), map((/**
+         * @return {?}
+         */
+        () => new CurrencyChange())));
+    }
+}
+CurrenciesEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CurrenciesEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: SiteConnector },
+    { type: WindowRef }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CurrenciesEffects.prototype, "activateCurrency$", void 0);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class BaseSiteEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} siteConnector
+     */
+    constructor(actions$, siteConnector) {
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap((/**
+         * @return {?}
+         */
+        () => {
+            return this.siteConnector.getBaseSite().pipe(map((/**
+             * @param {?} baseSite
+             * @return {?}
+             */
+            baseSite => new LoadBaseSiteSuccess(baseSite))), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadBaseSiteFail(makeErrorSerializable(error))))));
+        })));
+    }
+}
+BaseSiteEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+BaseSiteEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: SiteConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const effects$5 = [
+    LanguagesEffects,
+    CurrenciesEffects,
+    BaseSiteEffects,
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const activeLanguageSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.activeLanguage);
+/** @type {?} */
+const languagesEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.entities);
+const ɵ2$3 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.languages;
+/** @type {?} */
+const getLanguagesState = createSelector(getSiteContextState, (ɵ2$3));
+/** @type {?} */
+const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
+/** @type {?} */
+const getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
+const ɵ3$3 = /**
+ * @param {?} entities
+ * @return {?}
+ */
+entities => {
+    return entities
+        ? Object.keys(entities).map((/**
+         * @param {?} isocode
+         * @return {?}
+         */
+        isocode => entities[isocode]))
+        : null;
+};
+/** @type {?} */
+const getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$3));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const currenciesEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.entities);
+/** @type {?} */
+const activeCurrencySelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.activeCurrency);
+const ɵ2$4 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.currencies;
+/** @type {?} */
+const getCurrenciesState = createSelector(getSiteContextState, (ɵ2$4));
+/** @type {?} */
+const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
+/** @type {?} */
+const getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
+const ɵ3$4 = /**
+ * @param {?} entities
+ * @return {?}
+ */
+entities => {
+    return entities
+        ? Object.keys(entities).map((/**
+         * @param {?} isocode
+         * @return {?}
+         */
+        isocode => entities[isocode]))
+        : null;
+};
+/** @type {?} */
+const getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$4));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Facade that provides easy access to language state, actions and selectors.
+ */
+class LanguageService {
+    /**
+     * @param {?} store
+     * @param {?} winRef
+     */
+    constructor(store, winRef) {
+        this.store = store;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the languages supported by the current store.
+     * @return {?}
+     */
+    getAll() {
+        return this.store.pipe(select(getAllLanguages), tap((/**
+         * @param {?} languages
+         * @return {?}
+         */
+        languages => {
+            if (!languages) {
+                this.store.dispatch(new LoadLanguages());
+            }
+        })), filter(Boolean));
+    }
+    /**
+     * Represents the isocode of the active language.
+     * @return {?}
+     */
+    getActive() {
+        return this.store.pipe(select(getActiveLanguage), filter(Boolean));
+    }
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    setActive(isocode) {
+        return this.store
+            .pipe(select(getActiveLanguage), take(1))
+            .subscribe((/**
+         * @param {?} activeLanguage
+         * @return {?}
+         */
+        activeLanguage => {
+            if (activeLanguage !== isocode) {
+                this.store.dispatch(new SetActiveLanguage(isocode));
+            }
+        }));
+    }
+    /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     * @param {?} defaultLanguage
+     * @return {?}
+     */
+    initialize(defaultLanguage) {
+        if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
+            this.setActive(this.sessionStorage.getItem('language'));
+        }
+        else {
+            this.setActive(defaultLanguage);
+        }
+    }
+}
+LanguageService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+LanguageService.ctorParameters = () => [
+    { type: Store },
+    { type: WindowRef }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Facade that provides easy access to curreny state, actions and selectors.
+ */
+class CurrencyService {
+    /**
+     * @param {?} store
+     * @param {?} winRef
+     */
+    constructor(store, winRef) {
+        this.store = store;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the currencies supported by the current store.
+     * @return {?}
+     */
+    getAll() {
+        return this.store.pipe(select(getAllCurrencies), tap((/**
+         * @param {?} currencies
+         * @return {?}
+         */
+        currencies => {
+            if (!currencies) {
+                this.store.dispatch(new LoadCurrencies());
+            }
+        })), filter(Boolean));
+    }
+    /**
+     * Represents the isocode of the active currency.
+     * @return {?}
+     */
+    getActive() {
+        return this.store.pipe(select(getActiveCurrency), filter(Boolean));
+    }
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    setActive(isocode) {
+        return this.store
+            .pipe(select(getActiveCurrency), take(1))
+            .subscribe((/**
+         * @param {?} activeCurrency
+         * @return {?}
+         */
+        activeCurrency => {
+            if (activeCurrency !== isocode) {
+                this.store.dispatch(new SetActiveCurrency(isocode));
+            }
+        }));
+    }
+    /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     * @param {?} defaultCurrency
+     * @return {?}
+     */
+    initialize(defaultCurrency) {
+        if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
+            this.setActive(this.sessionStorage.getItem('currency'));
+        }
+        else {
+            this.setActive(defaultCurrency);
+        }
+    }
+}
+CurrencyService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CurrencyService.ctorParameters = () => [
+    { type: Store },
+    { type: WindowRef }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class ContextServiceMap {
+}
+/** @type {?} */
+const LANGUAGE_CONTEXT_ID = 'LANGUAGE';
+/** @type {?} */
+const CURRENCY_CONTEXT_ID = 'CURRENCY';
+/** @type {?} */
+const BASE_SITE_CONTEXT_ID = 'BASE_SITE';
+/**
+ * @return {?}
+ */
+function serviceMapFactory() {
+    return {
+        [LANGUAGE_CONTEXT_ID]: LanguageService,
+        [CURRENCY_CONTEXT_ID]: CurrencyService,
+        [BASE_SITE_CONTEXT_ID]: BaseSiteService,
+    };
+}
+/** @type {?} */
+const contextServiceMapProvider = {
+    provide: ContextServiceMap,
+    useFactory: serviceMapFactory,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function defaultSiteContextConfigFactory() {
+    return {
+        siteContext: {
+            parameters: {
+                [LANGUAGE_CONTEXT_ID]: {
+                    persistence: 'route',
+                    defaultValue: 'en',
+                    values: [
+                        'en',
+                        'de',
+                        'ja',
+                        'zh',
+                        'ru',
+                        'fr',
+                        'tr',
+                        'it',
+                        'es',
+                        'uk',
+                        'pl',
+                        'nl',
+                        'hi',
+                        'ar',
+                        'pt',
+                        'bn',
+                        'pa',
+                    ],
+                },
+                [CURRENCY_CONTEXT_ID]: {
+                    persistence: 'route',
+                    defaultValue: 'USD',
+                    values: [
+                        'USD',
+                        'EUR',
+                        'JPY',
+                        'GBP',
+                        'AUD',
+                        'CAD',
+                        'CHF',
+                        'CNY',
+                        'SEK',
+                        'NZD',
+                        'MXN',
+                        'SGD',
+                        'HKD',
+                        'NOK',
+                        'KRW',
+                        'TRY',
+                        'RUB',
+                        'INR',
+                        'BRL',
+                        'ZAR',
+                    ],
+                },
+            },
+        },
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class SiteContextConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} config
+ * @param {?} baseSiteService
+ * @param {?} langService
+ * @param {?} currService
+ * @return {?}
+ */
+function inititializeContext(config, baseSiteService, langService, currService) {
+    return (/**
+     * @return {?}
+     */
+    () => {
+        baseSiteService.initialize(config.site.baseSite);
+        langService.initialize(config.site.language);
+        currService.initialize(config.site.currency);
+    });
+}
+/** @type {?} */
+const contextServiceProviders = [
+    BaseSiteService,
+    LanguageService,
+    CurrencyService,
+    {
+        provide: APP_INITIALIZER,
+        useFactory: inititializeContext,
+        deps: [OccConfig, BaseSiteService, LanguageService, CurrencyService],
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SiteContextParamsService {
+    /**
+     * @param {?} config
+     * @param {?} injector
+     * @param {?} serviceMap
+     */
+    constructor(config, injector, serviceMap) {
+        this.config = config;
+        this.injector = injector;
+        this.serviceMap = serviceMap;
+    }
+    /**
+     * @param {?=} persistence
+     * @return {?}
+     */
+    getContextParameters(persistence) {
+        /** @type {?} */
+        const contextConfig = this.config.siteContext.parameters;
+        if (contextConfig) {
+            /** @type {?} */
+            const params = Object.keys(contextConfig);
+            if (persistence) {
+                return params.filter((/**
+                 * @param {?} key
+                 * @return {?}
+                 */
+                key => contextConfig[key].persistence === persistence));
+            }
+            else {
+                return params;
+            }
+        }
+        return [];
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    getParamValues(param) {
+        return this.config.siteContext.parameters &&
+            this.config.siteContext.parameters[param]
+            ? this.config.siteContext.parameters[param].values
+            : undefined;
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    getParamDefaultValue(param) {
+        return this.config.siteContext.parameters &&
+            this.config.siteContext.parameters[param]
+            ? this.config.siteContext.parameters[param].defaultValue
+            : undefined;
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    getSiteContextService(param) {
+        if (this.serviceMap[param]) {
+            return this.injector.get(this.serviceMap[param], null);
+        }
+    }
+    /**
+     * @param {?} param
+     * @return {?}
+     */
+    getValue(param) {
+        /** @type {?} */
+        let value;
+        /** @type {?} */
+        const service = this.getSiteContextService(param);
+        if (service) {
+            service
+                .getActive()
+                .subscribe((/**
+             * @param {?} val
+             * @return {?}
+             */
+            val => (value = val)))
+                .unsubscribe();
+        }
+        return value !== undefined ? value : this.getParamDefaultValue(param);
+    }
+    /**
+     * @param {?} param
+     * @param {?} value
+     * @return {?}
+     */
+    setValue(param, value) {
+        /** @type {?} */
+        const service = this.getSiteContextService(param);
+        if (service) {
+            service.setActive(value);
+        }
+    }
+}
+SiteContextParamsService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SiteContextParamsService.ctorParameters = () => [
+    { type: SiteContextConfig },
+    { type: Injector },
+    { type: ContextServiceMap }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SiteContextUrlSerializer extends DefaultUrlSerializer {
+    /**
+     * @param {?} siteContextParams
+     * @param {?} config
+     */
+    constructor(siteContextParams, config) {
+        super();
+        this.siteContextParams = siteContextParams;
+        this.config = config;
+        this.urlEncodingParameters =
+            this.config.siteContext.urlEncodingParameters || [];
+    }
+    /**
+     * @return {?}
+     */
+    get hasContextInRoutes() {
+        return this.urlEncodingParameters.length > 0;
+    }
+    /**
+     * @param {?} url
+     * @return {?}
+     */
+    parse(url) {
+        if (this.hasContextInRoutes) {
+            /** @type {?} */
+            const urlWithParams = this.urlExtractContextParameters(url);
+            /** @type {?} */
+            const parsed = (/** @type {?} */ (super.parse(urlWithParams.url)));
+            this.urlTreeIncludeContextParameters(parsed, urlWithParams.params);
+            return parsed;
+        }
+        else {
+            return super.parse(url);
+        }
+    }
+    /**
+     * @param {?} url
+     * @return {?}
+     */
+    urlExtractContextParameters(url) {
+        /** @type {?} */
+        const segments = url.split('/');
+        if (segments[0] === '') {
+            segments.shift();
+        }
+        /** @type {?} */
+        const params = {};
+        /** @type {?} */
+        let paramId = 0;
+        /** @type {?} */
+        let segmentId = 0;
+        while (paramId < this.urlEncodingParameters.length &&
+            segmentId < segments.length) {
+            /** @type {?} */
+            const paramName = this.urlEncodingParameters[paramId];
+            /** @type {?} */
+            const paramValues = this.siteContextParams.getParamValues(paramName);
+            if (paramValues.includes(segments[segmentId])) {
+                params[paramName] = segments[segmentId];
+                segmentId++;
+            }
+            paramId++;
+        }
+        url = segments.slice(Object.keys(params).length).join('/');
+        return { url, params };
+    }
+    /**
+     * @private
+     * @param {?} urlTree
+     * @param {?} params
+     * @return {?}
+     */
+    urlTreeIncludeContextParameters(urlTree, params) {
+        urlTree.siteContext = params;
+    }
+    /**
+     * @param {?} tree
+     * @return {?}
+     */
+    serialize(tree) {
+        /** @type {?} */
+        const params = this.urlTreeExtractContextParameters(tree);
+        /** @type {?} */
+        const url = super.serialize(tree);
+        /** @type {?} */
+        const serialized = this.urlIncludeContextParameters(url, params);
+        return serialized;
+    }
+    /**
+     * @param {?} urlTree
+     * @return {?}
+     */
+    urlTreeExtractContextParameters(urlTree) {
+        return urlTree.siteContext ? urlTree.siteContext : {};
+    }
+    /**
+     * @private
+     * @param {?} url
+     * @param {?} params
+     * @return {?}
+     */
+    urlIncludeContextParameters(url, params) {
+        /** @type {?} */
+        const contextRoutePart = this.urlEncodingParameters
+            .map((/**
+         * @param {?} param
+         * @return {?}
+         */
+        param => {
+            return params[param]
+                ? params[param]
+                : this.siteContextParams.getValue(param);
+        }))
+            .join('/');
+        return contextRoutePart + url;
+    }
+}
+SiteContextUrlSerializer.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+SiteContextUrlSerializer.ctorParameters = () => [
+    { type: SiteContextParamsService },
+    { type: SiteContextConfig }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class SiteContextRoutesHandler {
+    /**
+     * @param {?} siteContextParams
+     * @param {?} serializer
+     * @param {?} injector
+     */
+    constructor(siteContextParams, serializer, injector) {
+        this.siteContextParams = siteContextParams;
+        this.serializer = serializer;
+        this.injector = injector;
+        this.subscription = new Subscription();
+        this.contextValues = {};
+        this.isNavigating = false;
+    }
+    /**
+     * @return {?}
+     */
+    init() {
+        this.router = this.injector.get(Router);
+        this.location = this.injector.get(Location);
+        /** @type {?} */
+        const routingParams = this.siteContextParams.getContextParameters('route');
+        if (routingParams.length) {
+            this.setContextParamsFromRoute(this.router.url);
+            this.subscribeChanges(routingParams);
+            this.subscribeRouting();
+        }
+    }
+    /**
+     * @private
+     * @param {?} params
+     * @return {?}
+     */
+    subscribeChanges(params) {
+        params.forEach((/**
+         * @param {?} param
+         * @return {?}
+         */
+        param => {
+            /** @type {?} */
+            const service = this.siteContextParams.getSiteContextService(param);
+            if (service) {
+                this.subscription.add(service.getActive().subscribe((/**
+                 * @param {?} value
+                 * @return {?}
+                 */
+                value => {
+                    if (!this.isNavigating &&
+                        this.contextValues[param] &&
+                        this.contextValues[param] !== value) {
+                        /** @type {?} */
+                        const parsed = this.router.parseUrl(this.router.url);
+                        /** @type {?} */
+                        const serialized = this.router.serializeUrl(parsed);
+                        this.location.replaceState(serialized);
+                    }
+                    this.contextValues[param] = value;
+                })));
+            }
+        }));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    subscribeRouting() {
+        this.subscription.add(this.router.events
+            .pipe(filter((/**
+         * @param {?} event
+         * @return {?}
+         */
+        event => event instanceof NavigationStart ||
+            event instanceof NavigationEnd ||
+            event instanceof NavigationError ||
+            event instanceof NavigationCancel)))
+            .subscribe((/**
+         * @param {?} event
+         * @return {?}
+         */
+        (event) => {
+            this.isNavigating = event instanceof NavigationStart;
+            if (this.isNavigating) {
+                this.setContextParamsFromRoute(event.url);
+            }
+        })));
+    }
+    /**
+     * @private
+     * @param {?} url
+     * @return {?}
+     */
+    setContextParamsFromRoute(url) {
+        const { params } = this.serializer.urlExtractContextParameters(url);
+        Object.keys(params).forEach((/**
+         * @param {?} param
+         * @return {?}
+         */
+        param => this.siteContextParams.setValue(param, params[param])));
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
+    }
+}
+SiteContextRoutesHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+SiteContextRoutesHandler.ctorParameters = () => [
+    { type: SiteContextParamsService },
+    { type: SiteContextUrlSerializer },
+    { type: Injector }
+];
+/** @nocollapse */ SiteContextRoutesHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} siteContextRoutesHandler
+ * @return {?}
+ */
+function initSiteContextRoutesHandler(siteContextRoutesHandler) {
+    return (/**
+     * @return {?}
+     */
+    () => {
+        siteContextRoutesHandler.init();
+    });
+}
+/** @type {?} */
+const siteContextParamsProviders = [
+    SiteContextParamsService,
+    SiteContextUrlSerializer,
+    { provide: UrlSerializer, useExisting: SiteContextUrlSerializer },
+    {
+        provide: APP_INITIALIZER,
+        useFactory: initSiteContextRoutesHandler,
+        deps: [SiteContextRoutesHandler],
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function siteContextStoreConfigFactory() {
+    // if we want to reuse SITE_CONTEXT_FEATURE const in config, we have to use factory instead of plain object
+    /** @type {?} */
+    const config = {
+        state: {
+            ssrTransfer: {
+                keys: { [SITE_CONTEXT_FEATURE]: StateTransferType.TRANSFER_STATE },
+            },
+        },
+    };
+    return config;
+}
+class SiteContextStoreModule {
+}
+SiteContextStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$5),
+                    EffectsModule.forFeature(effects$5),
+                    ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
+                ],
+                providers: [reducerProvider$5],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// @dynamic
+class SiteContextModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: SiteContextModule,
+            providers: [
+                contextServiceMapProvider,
+                ...contextServiceProviders,
+                ...siteContextParamsProviders,
+                { provide: SiteContextConfig, useExisting: Config },
+            ],
+        };
+    }
+}
+SiteContextModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    ConfigModule.withConfigFactory(defaultSiteContextConfigFactory),
+                    StateModule,
+                    SiteContextStoreModule,
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
+/** @type {?} */
+const CURRENCY_NORMALIZER = new InjectionToken('CurrencyNormalizer');
+/** @type {?} */
+const COUNTRY_NORMALIZER = new InjectionToken('CountryNormalizer');
+/** @type {?} */
+const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -13506,13 +13565,13 @@ const ɵ3$5 = /**
 (state) => loaderValueSelector(state).country;
 /** @type {?} */
 const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$5));
-const ɵ4$1 = /**
+const ɵ4$2 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getRegionsLoading = createSelector(getRegionsLoaderState, (ɵ4$1));
+const getRegionsLoading = createSelector(getRegionsLoaderState, (ɵ4$2));
 const ɵ5$1 = /**
  * @param {?} state
  * @return {?}
@@ -20897,11 +20956,6 @@ CmsOccModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-// for mini cart
-/** @type {?} */
-const BASIC_PARAMS = 'DEFAULT,deliveryItemsQuantity,totalPrice(formattedValue),' +
-    'entries(totalPrice(formattedValue),product(images(FULL)))';
-// for cart details page
 /** @type {?} */
 const DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
     'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue)),' +
@@ -20931,41 +20985,31 @@ class OccCartAdapter {
     }
     /**
      * @param {?} userId
-     * @param {?=} details
      * @return {?}
      */
-    loadAll(userId, details) {
+    loadAll(userId) {
         /** @type {?} */
         const url = this.getCartEndpoint(userId);
         /** @type {?} */
-        const params = details
-            ? new HttpParams({
-                fromString: `fields=carts(${DETAILS_PARAMS},saveTime)`,
-            })
-            : new HttpParams({
-                fromString: `fields=carts(${BASIC_PARAMS},saveTime)`,
-            });
+        const params = new HttpParams({
+            fromString: `fields=carts(${DETAILS_PARAMS},saveTime)`,
+        });
         return this.http.get(url, { params: params }).pipe(pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
     }
     /**
      * @param {?} userId
      * @param {?} cartId
-     * @param {?=} details
      * @return {?}
      */
-    load(userId, cartId, details) {
+    load(userId, cartId) {
         /** @type {?} */
         const url = this.getCartEndpoint(userId) + cartId;
         /** @type {?} */
-        const params = details
-            ? new HttpParams({
-                fromString: `fields=${DETAILS_PARAMS}`,
-            })
-            : new HttpParams({
-                fromString: `fields=${BASIC_PARAMS}`,
-            });
+        const params = new HttpParams({
+            fromString: `fields=${DETAILS_PARAMS}`,
+        });
         if (cartId === 'current') {
-            return this.loadAll(userId, details).pipe(map((/**
+            return this.loadAll(userId).pipe(map((/**
              * @param {?} carts
              * @return {?}
              */
@@ -21004,7 +21048,7 @@ class OccCartAdapter {
         /** @type {?} */
         const toAdd = JSON.stringify({});
         /** @type {?} */
-        let queryString = `fields=${BASIC_PARAMS}`;
+        let queryString = `fields=${DETAILS_PARAMS}`;
         if (oldCartId) {
             queryString = `${queryString}&oldCartId=${oldCartId}`;
         }
@@ -24854,5 +24898,5 @@ StoreFinderCoreModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartMergeComplete, getCartMergeCompleteSelector, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntries, getEntriesMap, getEntriesSelector, getEntrySelectorFactory, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getLoaded, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefresh, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, services, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, getReducers$3 as ɵbb, reducerToken$3 as ɵbc, reducerProvider$3 as ɵbd, clearCartState as ɵbe, metaReducers$1 as ɵbf, effects$3 as ɵbg, CartEffects as ɵbh, CartEntryEffects as ɵbi, reducer$5 as ɵbj, reducer$6 as ɵbk, getCardTypesEntites as ɵbl, reducer$7 as ɵbm, getAddressVerificationResults as ɵbn, effects$4 as ɵbo, CheckoutEffects as ɵbp, CardTypesEffects as ɵbq, AddressVerificationEffect as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, CheckoutStoreModule as ɵbv, reducer$8 as ɵbw, EntityLoadAction as ɵbx, EntityFailAction as ɵby, EntitySuccessAction as ɵbz, stateMetaReducers as ɵc, cmsStoreConfigFactory as ɵca, CmsStoreModule as ɵcb, getReducers$5 as ɵcc, reducerToken$5 as ɵcd, reducerProvider$5 as ɵce, clearCmsState as ɵcf, metaReducers$2 as ɵcg, effects$5 as ɵch, PageEffects as ɵci, ComponentEffects as ɵcj, NavigationEntryItemEffects as ɵck, reducer$a as ɵcl, reducer$b as ɵcm, reducer$9 as ɵcn, getReducers$2 as ɵco, reducerToken$2 as ɵcp, reducerProvider$2 as ɵcq, effects$2 as ɵcr, LanguagesEffects as ɵcs, CurrenciesEffects as ɵct, BaseSiteEffects as ɵcu, effects$6 as ɵcv, ProductReferencesEffects as ɵcw, ProductReviewsEffects as ɵcx, ProductsSearchEffects as ɵcy, ProductEffects as ɵcz, getStorageSyncReducer as ɵd, getReducers$6 as ɵda, reducerToken$6 as ɵdb, reducerProvider$6 as ɵdc, clearProductsState as ɵdd, metaReducers$3 as ɵde, getReducers$7 as ɵdf, reducerToken$7 as ɵdg, reducerProvider$7 as ɵdh, clearUserState as ɵdi, metaReducers$4 as ɵdj, GlobalMessageStoreModule as ɵdk, getReducers$9 as ɵdl, reducerToken$9 as ɵdm, reducerProvider$9 as ɵdn, reducer$q as ɵdo, GlobalMessageEffect as ɵdp, defaultGlobalMessageConfigFactory as ɵdq, HttpErrorInterceptor as ɵdr, ServerConfig as ɵds, defaultI18nConfig as ɵdt, i18nextProviders as ɵdu, i18nextInit as ɵdv, MockTranslationService as ɵdw, kymaStoreConfigFactory as ɵdx, KymaStoreModule as ɵdy, getReducers$a as ɵdz, getTransferStateReducer as ɵe, reducerToken$a as ɵea, reducerProvider$a as ɵeb, clearKymaState as ɵec, metaReducers$5 as ɵed, effects$8 as ɵee, OpenIdTokenEffect as ɵef, OpenIdAuthenticationTokenService as ɵeg, defaultKymaConfig as ɵeh, provideConfigFactory as ɵei, defaultOccProductConfig as ɵej, provideConfigValidator as ɵek, defaultPersonalizationConfig as ɵel, interceptors$1 as ɵem, OccPersonalizationIdInterceptor as ɵen, OccPersonalizationTimeInterceptor as ɵeo, productStoreConfigFactory as ɵep, ProductStoreModule as ɵeq, reducer$e as ɵer, getSearchResults as ɵes, getAuxSearchResults as ɵet, getProductSuggestions as ɵeu, reducer$d as ɵev, reducer$c as ɵew, PageMetaResolver as ɵex, UrlMatcherFactoryService as ɵey, ROUTING_FEATURE as ɵez, getReducers$1 as ɵf, getReducers as ɵfa, reducer as ɵfb, reducerToken as ɵfc, reducerProvider as ɵfd, CustomSerializer as ɵfe, effects as ɵff, RouterEffects as ɵfg, defaultSiteContextConfigFactory as ɵfh, siteContextStoreConfigFactory as ɵfi, SiteContextStoreModule as ɵfj, reducer$2 as ɵfk, reducer$3 as ɵfl, reducer$4 as ɵfm, SiteContextParamsService as ɵfn, SiteContextUrlSerializer as ɵfo, SiteContextRoutesHandler as ɵfp, interceptors$2 as ɵfq, CmsTicketInterceptor as ɵfr, getStoreFinderState as ɵfs, defaultStoreFinderConfig as ɵft, StoreFinderStoreModule as ɵfu, getReducers$b as ɵfv, reducerToken$b as ɵfw, reducerProvider$b as ɵfx, effects$9 as ɵfy, FindStoresEffect as ɵfz, reducerToken$1 as ɵg, ViewAllStoresEffect as ɵga, EntityResetAction as ɵgb, UserStoreModule as ɵgc, effects$7 as ɵgd, BillingCountriesEffect as ɵge, DeliveryCountriesEffects as ɵgf, OrderDetailsEffect as ɵgg, UserPaymentMethodsEffects as ɵgh, RegionsEffects as ɵgi, ResetPasswordEffects as ɵgj, TitlesEffects as ɵgk, UserAddressesEffects as ɵgl, UserConsentsEffect as ɵgm, UserDetailsEffects as ɵgn, UserOrdersEffect as ɵgo, UserRegisterEffects as ɵgp, ClearMiscsDataEffect as ɵgq, ForgotPasswordEffects as ɵgr, UpdateEmailEffects as ɵgs, UpdatePasswordEffects as ɵgt, reducer$o as ɵgu, reducer$m as ɵgv, reducer$f as ɵgw, reducer$n as ɵgx, reducer$i as ɵgy, reducer$p as ɵgz, reducerProvider$1 as ɵh, reducer$h as ɵha, reducer$g as ɵhb, reducer$l as ɵhc, reducer$j as ɵhd, reducer$k as ɵhe, ProcessModule as ɵhf, ProcessStoreModule as ɵhg, PROCESS_FEATURE as ɵhh, getReducers$8 as ɵhi, reducerToken$8 as ɵhj, reducerProvider$8 as ɵhk, clearAuthState as ɵi, metaReducers as ɵj, effects$1 as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer$1 as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵv, interceptors as ɵw, ClientTokenInterceptor as ɵx, UserTokenInterceptor as ɵy, AuthErrorInterceptor as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_CART_DETAILS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetCartDetails, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartEntries, getCartEntriesMap, getCartEntrySelectorFactory, getCartLoaded, getCartLoading, getCartMergeComplete, getCartMergeCompleteSelector, getCartRefresh, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntriesSelector, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, cartStoreConfigFactory as ɵba, CartStoreModule as ɵbb, getReducers$2 as ɵbc, reducerToken$2 as ɵbd, reducerProvider$2 as ɵbe, clearCartState as ɵbf, metaReducers$1 as ɵbg, effects$2 as ɵbh, CartEffects as ɵbi, CartEntryEffects as ɵbj, ConfigModule as ɵbk, reducer$2 as ɵbl, reducer$3 as ɵbm, getCardTypesEntites as ɵbn, reducer$4 as ɵbo, getAddressVerificationResults as ɵbp, effects$3 as ɵbq, CheckoutEffects as ɵbr, CardTypesEffects as ɵbs, AddressVerificationEffect as ɵbt, getReducers$3 as ɵbu, reducerToken$3 as ɵbv, reducerProvider$3 as ɵbw, CheckoutStoreModule as ɵbx, reducer$5 as ɵby, EntityLoadAction as ɵbz, stateMetaReducers as ɵc, EntityFailAction as ɵca, EntitySuccessAction as ɵcb, cmsStoreConfigFactory as ɵcc, CmsStoreModule as ɵcd, getReducers$4 as ɵce, reducerToken$4 as ɵcf, reducerProvider$4 as ɵcg, clearCmsState as ɵch, metaReducers$2 as ɵci, effects$4 as ɵcj, PageEffects as ɵck, ComponentEffects as ɵcl, NavigationEntryItemEffects as ɵcm, reducer$7 as ɵcn, reducer$8 as ɵco, reducer$6 as ɵcp, getReducers$5 as ɵcq, reducerToken$5 as ɵcr, reducerProvider$5 as ɵcs, effects$5 as ɵct, LanguagesEffects as ɵcu, CurrenciesEffects as ɵcv, BaseSiteEffects as ɵcw, effects$6 as ɵcx, ProductReferencesEffects as ɵcy, ProductReviewsEffects as ɵcz, getStorageSyncReducer as ɵd, ProductsSearchEffects as ɵda, ProductEffects as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, clearProductsState as ɵdf, metaReducers$3 as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearUserState as ɵdk, metaReducers$4 as ɵdl, GlobalMessageStoreModule as ɵdm, getReducers$9 as ɵdn, reducerToken$9 as ɵdo, reducerProvider$9 as ɵdp, reducer$q as ɵdq, GlobalMessageEffect as ɵdr, defaultGlobalMessageConfigFactory as ɵds, HttpErrorInterceptor as ɵdt, ServerConfig as ɵdu, defaultI18nConfig as ɵdv, i18nextProviders as ɵdw, i18nextInit as ɵdx, MockTranslationService as ɵdy, kymaStoreConfigFactory as ɵdz, getTransferStateReducer as ɵe, KymaStoreModule as ɵea, getReducers$a as ɵeb, reducerToken$a as ɵec, reducerProvider$a as ɵed, clearKymaState as ɵee, metaReducers$5 as ɵef, effects$8 as ɵeg, OpenIdTokenEffect as ɵeh, OpenIdAuthenticationTokenService as ɵei, defaultKymaConfig as ɵej, provideConfigFactory as ɵek, defaultOccProductConfig as ɵel, provideConfigValidator as ɵem, defaultPersonalizationConfig as ɵen, interceptors$1 as ɵeo, OccPersonalizationIdInterceptor as ɵep, OccPersonalizationTimeInterceptor as ɵeq, productStoreConfigFactory as ɵer, ProductStoreModule as ɵes, reducer$e as ɵet, getSearchResults as ɵeu, getAuxSearchResults as ɵev, getProductSuggestions as ɵew, reducer$d as ɵex, reducer$c as ɵey, PageMetaResolver as ɵez, getReducers$1 as ɵf, UrlMatcherFactoryService as ɵfa, ROUTING_FEATURE as ɵfb, getReducers as ɵfc, reducer as ɵfd, reducerToken as ɵfe, reducerProvider as ɵff, CustomSerializer as ɵfg, effects as ɵfh, RouterEffects as ɵfi, defaultSiteContextConfigFactory as ɵfj, siteContextStoreConfigFactory as ɵfk, SiteContextStoreModule as ɵfl, reducer$9 as ɵfm, reducer$a as ɵfn, reducer$b as ɵfo, SiteContextParamsService as ɵfp, SiteContextUrlSerializer as ɵfq, SiteContextRoutesHandler as ɵfr, interceptors$2 as ɵfs, CmsTicketInterceptor as ɵft, getStoreFinderState as ɵfu, defaultStoreFinderConfig as ɵfv, StoreFinderStoreModule as ɵfw, getReducers$b as ɵfx, reducerToken$b as ɵfy, reducerProvider$b as ɵfz, reducerToken$1 as ɵg, effects$9 as ɵga, FindStoresEffect as ɵgb, ViewAllStoresEffect as ɵgc, EntityResetAction as ɵgd, UserStoreModule as ɵge, effects$7 as ɵgf, BillingCountriesEffect as ɵgg, DeliveryCountriesEffects as ɵgh, OrderDetailsEffect as ɵgi, UserPaymentMethodsEffects as ɵgj, RegionsEffects as ɵgk, ResetPasswordEffects as ɵgl, TitlesEffects as ɵgm, UserAddressesEffects as ɵgn, UserConsentsEffect as ɵgo, UserDetailsEffects as ɵgp, UserOrdersEffect as ɵgq, UserRegisterEffects as ɵgr, ClearMiscsDataEffect as ɵgs, ForgotPasswordEffects as ɵgt, UpdateEmailEffects as ɵgu, UpdatePasswordEffects as ɵgv, reducer$o as ɵgw, reducer$m as ɵgx, reducer$f as ɵgy, reducer$n as ɵgz, reducerProvider$1 as ɵh, reducer$i as ɵha, reducer$p as ɵhb, reducer$h as ɵhc, reducer$g as ɵhd, reducer$l as ɵhe, reducer$j as ɵhf, reducer$k as ɵhg, ProcessModule as ɵhh, ProcessStoreModule as ɵhi, PROCESS_FEATURE as ɵhj, getReducers$8 as ɵhk, reducerToken$8 as ɵhl, reducerProvider$8 as ɵhm, clearAuthState as ɵi, metaReducers as ɵj, effects$1 as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer$1 as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵv, interceptors as ɵw, ClientTokenInterceptor as ɵx, UserTokenInterceptor as ɵy, AuthErrorInterceptor as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -8,6 +8,7 @@ export declare const LOAD_CART_FAIL = "[Cart] Load Cart Fail";
 export declare const LOAD_CART_SUCCESS = "[Cart] Load Cart Success";
 export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
+export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
 export declare class CreateCart extends LoaderLoadAction {
     payload: any;
     readonly type = "[Cart] Create Cart";
@@ -27,13 +28,11 @@ export declare class LoadCart extends LoaderLoadAction {
     payload: {
         userId: string;
         cartId: string;
-        details?: boolean;
     };
     readonly type = "[Cart] Load Cart";
     constructor(payload: {
         userId: string;
         cartId: string;
-        details?: boolean;
     });
 }
 export declare class LoadCartFail extends LoaderFailAction {
@@ -56,4 +55,8 @@ export declare class MergeCartSuccess implements Action {
     readonly type = "[Cart] Merge Cart Success";
     constructor(payload: any);
 }
-export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess;
+export declare class ResetCartDetails implements Action {
+    readonly type = "[Cart] Reset Cart Details";
+    constructor();
+}
+export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails;

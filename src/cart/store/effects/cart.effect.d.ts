@@ -10,6 +10,8 @@ export declare class CartEffects {
     loadCart$: Observable<fromActions.LoadCartFail | fromActions.LoadCartSuccess>;
     createCart$: Observable<fromActions.MergeCartSuccess | fromActions.CreateCartSuccess | fromActions.CreateCartFail>;
     mergeCart$: Observable<fromActions.CreateCart>;
+    refresh$: Observable<fromActions.LoadCart>;
+    resetCartDetailsOnSiteContextChange$: Observable<fromActions.ResetCartDetails>;
     constructor(actions$: Actions, cartConnector: CartConnector, cartData: CartDataService);
     private isMissingData;
 }

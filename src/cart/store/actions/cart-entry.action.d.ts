@@ -1,4 +1,4 @@
-import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
 export declare const ADD_ENTRY = "[Cart-entry] Add Entry";
 export declare const ADD_ENTRY_SUCCESS = "[Cart-entry] Add Entry Success";
 export declare const ADD_ENTRY_FAIL = "[Cart-entry] Add Entry Fail";
@@ -29,8 +29,9 @@ export declare class RemoveEntry extends LoaderLoadAction {
     constructor(payload: any);
 }
 export declare class RemoveEntrySuccess extends LoaderSuccessAction {
+    payload: any;
     readonly type = "[Cart-entry] Remove Entry Success";
-    constructor();
+    constructor(payload: any);
 }
 export declare class RemoveEntryFail extends LoaderFailAction {
     payload: any;
@@ -43,8 +44,9 @@ export declare class UpdateEntry extends LoaderLoadAction {
     constructor(payload: any);
 }
 export declare class UpdateEntrySuccess extends LoaderSuccessAction {
+    payload: any;
     readonly type = "[Cart-entry] Update Entry Success";
-    constructor();
+    constructor(payload: any);
 }
 export declare class UpdateEntryFail extends LoaderFailAction {
     payload: any;
