@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Title, User, UserSignUp } from '../../../model/misc.model';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import { ConverterService } from '../../../util/converter.service';
 import { UserAdapter } from '../../../user/connectors/user/user.adapter';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccUserAdapter implements UserAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import { Observable } from 'rxjs';
 import { CheckoutDeliveryAdapter } from '../../../checkout/connectors/delivery/checkout-delivery.adapter';
-import { ConverterService } from '../../../util/converter.service';
 import { Address } from '../../../model/address.model';
 import { DeliveryMode } from '../../../model/order.model';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCheckoutDeliveryAdapter implements CheckoutDeliveryAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;

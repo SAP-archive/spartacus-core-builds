@@ -1,8 +1,8 @@
 import { Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromActions from '../actions/index';
 import { SiteConnector } from '../../../site-context/connectors/site.connector';
+import * as fromActions from '../actions/index';
 export declare class RegionsEffects {
     private actions$;
     private siteConnector;

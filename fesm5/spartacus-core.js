@@ -3,7 +3,7 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { Router, PRIMARY_OUTLET, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
@@ -2717,13 +2717,7 @@ var ClientAuthenticationTokenService = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .post(url, params, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        return this.http.post(url, params, { headers: headers });
     };
     /**
      * @protected
@@ -3244,6 +3238,34 @@ var StateModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        }));
+    }
+    if (error instanceof HttpErrorResponse) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        }));
+    }
+    return error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -3270,7 +3292,9 @@ var ClientTokenEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadClientTokenFail(error)); })));
+            function (error) {
+                return of(new LoadClientTokenFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     ClientTokenEffect.decorators = [
@@ -3329,7 +3353,9 @@ var UserTokenEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadUserTokenFail(error)); })));
+            function (error) {
+                return of(new LoadUserTokenFail(makeErrorSerializable(error)));
+            })));
         })));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map((/**
          * @return {?}
@@ -3360,7 +3386,7 @@ var UserTokenEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RefreshUserTokenFail(error)); }))));
+            function (error) { return of(new RefreshUserTokenFail(makeErrorSerializable(error))); }))));
         })));
     }
     UserTokenEffects.decorators = [
@@ -4468,7 +4494,9 @@ var LanguagesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadLanguagesFail(error)); })));
+            function (error) {
+                return of(new LoadLanguagesFail(makeErrorSerializable(error)));
+            })));
         })));
         this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
          * @param {?} action
@@ -4525,7 +4553,9 @@ var CurrenciesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadCurrenciesFail(error)); })));
+            function (error) {
+                return of(new LoadCurrenciesFail(makeErrorSerializable(error)));
+            })));
         })));
         this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
          * @param {?} action
@@ -4581,7 +4611,9 @@ var BaseSiteEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadBaseSiteFail(error)); })));
+            function (error) {
+                return of(new LoadBaseSiteFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     BaseSiteEffects.decorators = [
@@ -7066,7 +7098,9 @@ var CartEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadCartFail(error)); })));
+            function (error) {
+                return of(new LoadCartFail(makeErrorSerializable(error)));
+            })));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -7098,7 +7132,9 @@ var CartEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new CreateCartFail(error)); })));
+            function (error) {
+                return of(new CreateCartFail(makeErrorSerializable(error)));
+            })));
         })));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -7187,7 +7223,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new AddEntryFail(error)); })));
+            function (error) {
+                return of(new AddEntryFail(makeErrorSerializable(error)));
+            })));
         })));
         this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
          * @param {?} action
@@ -7209,7 +7247,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RemoveEntryFail(error)); })));
+            function (error) {
+                return of(new RemoveEntryFail(makeErrorSerializable(error)));
+            })));
         })));
         this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
          * @param {?} action
@@ -7231,7 +7271,9 @@ var CartEntryEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new UpdateEntryFail(error)); })));
+            function (error) {
+                return of(new UpdateEntryFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     CartEntryEffects.decorators = [
@@ -8933,13 +8975,12 @@ var ClearMiscsData = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutEffects = /** @class */ (function () {
-    function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector, cartData) {
+    function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
         var _this = this;
         this.actions$ = actions$;
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
-        this.cartData = cartData;
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -8969,7 +9010,9 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new AddDeliveryAddressFail(error)); })));
+            function (error) {
+                return of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
+            })));
         })));
         this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((/**
          * @param {?} action
@@ -8995,7 +9038,9 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new SetDeliveryAddressFail(error)); })));
+            function (error) {
+                return of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
+            })));
         })));
         this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((/**
          * @param {?} action
@@ -9019,17 +9064,8 @@ var CheckoutEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadSupportedDeliveryModesFail(error));
+                return of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
             })));
-        })));
-        this.reloadSupportedDeliveryModesOnSiteContextChange$ = this.actions$.pipe(ofType(CHECKOUT_CLEAR_MISCS_DATA, CLEAR_SUPPORTED_DELIVERY_MODES), map((/**
-         * @return {?}
-         */
-        function () {
-            return new LoadSupportedDeliveryModes({
-                userId: _this.cartData.userId,
-                cartId: _this.cartData.cartId,
-            });
         })));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
@@ -9070,7 +9106,9 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new SetDeliveryModeFail(error)); })));
+            function (error) {
+                return of(new SetDeliveryModeFail(makeErrorSerializable(error)));
+            })));
         })));
         this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((/**
          * @param {?} action
@@ -9096,7 +9134,7 @@ var CheckoutEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new CreatePaymentDetailsFail(error));
+                return of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
             })));
         })));
         this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((/**
@@ -9119,7 +9157,9 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new SetPaymentDetailsFail(error)); })));
+            function (error) {
+                return of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
+            })));
         })));
         this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((/**
          * @param {?} action
@@ -9140,7 +9180,9 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new PlaceOrderFail(error)); })));
+            function (error) {
+                return of(new PlaceOrderFail(makeErrorSerializable(error)));
+            })));
         })));
         this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((/**
          * @param {?} action
@@ -9164,7 +9206,7 @@ var CheckoutEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadCheckoutDetailsFail(error));
+                return of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
             })));
         })));
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((/**
@@ -9190,8 +9232,7 @@ var CheckoutEffects = /** @class */ (function () {
         { type: Actions },
         { type: CheckoutDeliveryConnector },
         { type: CheckoutPaymentConnector },
-        { type: CheckoutConnector },
-        { type: CartDataService }
+        { type: CheckoutConnector }
     ]; };
     __decorate([
         Effect(),
@@ -9205,10 +9246,6 @@ var CheckoutEffects = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], CheckoutEffects.prototype, "reloadSupportedDeliveryModesOnSiteContextChange$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
@@ -9269,7 +9306,9 @@ var CardTypesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadCardTypesFail(error)); })));
+            function (error) {
+                return of(new LoadCardTypesFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     CardTypesEffects.decorators = [
@@ -9411,13 +9450,13 @@ var AddressVerificationEffect = /** @class */ (function () {
              * @param {?} data
              * @return {?}
              */
-            function (data) {
-                return new VerifyAddressSuccess(data);
-            })), catchError((/**
+            function (data) { return new VerifyAddressSuccess(data); })), catchError((/**
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new VerifyAddressFail(error)); })));
+            function (error) {
+                return of(new VerifyAddressFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     AddressVerificationEffect.decorators = [
@@ -9710,7 +9749,16 @@ var CheckoutDeliveryService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes));
+        var _this = this;
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), tap((/**
+         * @param {?} deliveryModes
+         * @return {?}
+         */
+        function (deliveryModes) {
+            if (Object.keys(deliveryModes).length === 0) {
+                _this.loadSupportedDeliveryModes();
+            }
+        })), shareReplay({ bufferSize: 1, refCount: true }));
     };
     /**
      * Get selected delivery mode
@@ -11706,6 +11754,7 @@ var RoutingModule = /** @class */ (function () {
                         StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                         EffectsModule.forFeature(effects),
                         StoreRouterConnectingModule.forRoot({
+                            routerState: 1 /* Minimal */,
                             stateKey: ROUTING_FEATURE,
                         }),
                     ],
@@ -11877,7 +11926,7 @@ var PageEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new LoadPageDataFail(pageContext, error));
+                    return of(new LoadPageDataFail(pageContext, makeErrorSerializable(error)));
                 })));
             })));
         })));
@@ -11952,7 +12001,7 @@ var ComponentEffects = /** @class */ (function () {
                      * @return {?}
                      */
                     function (error) {
-                        return of(new LoadComponentFail(uid, error));
+                        return of(new LoadComponentFail(uid, makeErrorSerializable(error)));
                     })));
                 })));
             })));
@@ -12033,7 +12082,7 @@ var NavigationEntryItemEffects = /** @class */ (function () {
                      * @return {?}
                      */
                     function (error) {
-                        return of(new LoadNavigationItemsFail(data.nodeId, error));
+                        return of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
                     })));
                 })));
             }
@@ -13792,7 +13841,7 @@ var ProductsSearchEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new SearchProductsFail(error, action.auxiliary));
+                    return of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
                 })));
             })));
         })));
@@ -13821,7 +13870,7 @@ var ProductsSearchEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new GetProductSuggestionsFail(error));
+                return of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -13882,7 +13931,7 @@ var ProductEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (error) {
-                    return of(new LoadProductFail(productCode, error));
+                    return of(new LoadProductFail(productCode, makeErrorSerializable(error)));
                 })));
             })));
         })));
@@ -17362,7 +17411,9 @@ var BillingCountriesEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadBillingCountriesFail(error)); })));
+            function (error) {
+                return of(new LoadBillingCountriesFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     BillingCountriesEffect.decorators = [
@@ -17429,7 +17480,9 @@ var DeliveryCountriesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadDeliveryCountriesFail(error)); })));
+            function (error) {
+                return of(new LoadDeliveryCountriesFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     DeliveryCountriesEffects.decorators = [
@@ -18606,7 +18659,7 @@ var ForgotPasswordEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new ForgotPasswordEmailRequestFail(error));
+                return of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -18721,7 +18774,7 @@ var OrderDetailsEffect = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadOrderDetailsFail(error));
+                return of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -18845,7 +18898,7 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadUserPaymentMethodsFail(error));
+                return of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
             })));
         })));
         this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((/**
@@ -18865,17 +18918,15 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
              * @param {?} data
              * @return {?}
              */
-            function (data) {
-                return [
-                    new SetDefaultUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ];
-            })), catchError((/**
+            function (data) { return [
+                new SetDefaultUserPaymentMethodSuccess(data),
+                new LoadUserPaymentMethods(payload.userId),
+            ]; })), catchError((/**
              * @param {?} error
              * @return {?}
              */
             function (error) {
-                return of(new SetDefaultUserPaymentMethodFail(error));
+                return of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
             })));
         })));
         this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((/**
@@ -18895,17 +18946,15 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
              * @param {?} data
              * @return {?}
              */
-            function (data) {
-                return [
-                    new DeleteUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ];
-            })), catchError((/**
+            function (data) { return [
+                new DeleteUserPaymentMethodSuccess(data),
+                new LoadUserPaymentMethods(payload.userId),
+            ]; })), catchError((/**
              * @param {?} error
              * @return {?}
              */
             function (error) {
-                return of(new DeleteUserPaymentMethodFail(error));
+                return of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -18965,7 +19014,9 @@ var RegionsEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadRegionsFail(error)); })));
+            function (error) {
+                return of(new LoadRegionsFail(makeErrorSerializable(error)));
+            })));
         })));
         this.resetRegions$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), map((/**
          * @return {?}
@@ -19006,9 +19057,7 @@ var ResetPasswordEffects = /** @class */ (function () {
          * @param {?} action
          * @return {?}
          */
-        function (action) {
-            return action.payload;
-        })), switchMap((/**
+        function (action) { return action.payload; })), switchMap((/**
          * @param {?} __0
          * @return {?}
          */
@@ -19027,7 +19076,9 @@ var ResetPasswordEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new ResetPasswordFail(error)); })));
+            function (error) {
+                return of(new ResetPasswordFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     ResetPasswordEffects.decorators = [
@@ -19070,7 +19121,9 @@ var TitlesEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadTitlesFail(error)); })));
+            function (error) {
+                return of(new LoadTitlesFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     /**
@@ -19143,7 +19196,7 @@ var UpdateEmailEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new UpdateEmailErrorAction(error));
+                return of(new UpdateEmailErrorAction(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -19190,7 +19243,9 @@ var UpdatePasswordEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new UpdatePasswordFail(error)); })));
+            function (error) {
+                return of(new UpdatePasswordFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     UpdatePasswordEffects.decorators = [
@@ -19239,7 +19294,7 @@ var UserAddressesEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadUserAddressesFail(error));
+                return of(new LoadUserAddressesFail(makeErrorSerializable(error)));
             })));
         })));
         this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((/**
@@ -19264,7 +19319,7 @@ var UserAddressesEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new AddUserAddressFail(error));
+                return of(new AddUserAddressFail(makeErrorSerializable(error)));
             })));
         })));
         this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((/**
@@ -19297,7 +19352,7 @@ var UserAddressesEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new UpdateUserAddressFail(error));
+                return of(new UpdateUserAddressFail(makeErrorSerializable(error)));
             })));
         })));
         this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((/**
@@ -19322,7 +19377,7 @@ var UserAddressesEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new DeleteUserAddressFail(error));
+                return of(new DeleteUserAddressFail(makeErrorSerializable(error)));
             })));
         })));
         /**
@@ -19528,7 +19583,9 @@ var UserConsentsEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadUserConsentsFail(error)); })));
+            function (error) {
+                return of(new LoadUserConsentsFail(makeErrorSerializable(error)));
+            })));
         })));
         this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT), map((/**
          * @param {?} action
@@ -19550,7 +19607,9 @@ var UserConsentsEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new GiveUserConsentFail(error)); })));
+            function (error) {
+                return of(new GiveUserConsentFail(makeErrorSerializable(error)));
+            })));
         })));
         this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((/**
          * @param {?} action
@@ -19570,7 +19629,9 @@ var UserConsentsEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new WithdrawUserConsentFail(error)); })));
+            function (error) {
+                return of(new WithdrawUserConsentFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     UserConsentsEffect.decorators = [
@@ -19625,7 +19686,7 @@ var UserDetailsEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadUserDetailsFail(error));
+                return of(new LoadUserDetailsFail(makeErrorSerializable(error)));
             })));
         })));
         this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((/**
@@ -19648,7 +19709,7 @@ var UserDetailsEffects = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new UpdateUserDetailsFail(error));
+                return of(new UpdateUserDetailsFail(makeErrorSerializable(error)));
             })));
         })));
     }
@@ -19702,7 +19763,7 @@ var UserOrdersEffect = /** @class */ (function () {
              * @return {?}
              */
             function (error) {
-                return of(new LoadUserOrdersFail(error));
+                return of(new LoadUserOrdersFail(makeErrorSerializable(error)));
             })));
         })));
         this.resetUserOrders$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), map((/**
@@ -19763,7 +19824,9 @@ var UserRegisterEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RegisterUserFail(error)); })));
+            function (error) {
+                return of(new RegisterUserFail(makeErrorSerializable(error)));
+            })));
         })));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((/**
          * @param {?} action
@@ -19785,7 +19848,9 @@ var UserRegisterEffects = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new RemoveUserFail(error)); })));
+            function (error) {
+                return of(new RemoveUserFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     UserRegisterEffects.decorators = [
@@ -21080,7 +21145,9 @@ var OpenIdTokenEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new LoadOpenIdTokenFail(error)); })));
+            function (error) {
+                return of(new LoadOpenIdTokenFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     OpenIdTokenEffect.decorators = [
@@ -24026,11 +24093,7 @@ var OccCartAdapter = /** @class */ (function () {
             : new HttpParams({
                 fromString: "fields=carts(" + BASIC_PARAMS + ",saveTime)",
             });
-        return this.http.get(url, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })), pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
+        return this.http.get(url, { params: params }).pipe(pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -24078,11 +24141,9 @@ var OccCartAdapter = /** @class */ (function () {
             })));
         }
         else {
-            return this.http.get(url, { params: params }).pipe(catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return throwError(error); })), this.converter.pipeable(CART_NORMALIZER));
+            return this.http
+                .get(url, { params: params })
+                .pipe(this.converter.pipeable(CART_NORMALIZER));
         }
     };
     /**
@@ -24114,11 +24175,9 @@ var OccCartAdapter = /** @class */ (function () {
         var params = new HttpParams({
             fromString: queryString,
         });
-        return this.http.post(url, toAdd, { params: params }).pipe(this.converter.pipeable(CART_NORMALIZER), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        return this.http
+            .post(url, toAdd, { params: params })
+            .pipe(this.converter.pipeable(CART_NORMALIZER));
     };
     OccCartAdapter.decorators = [
         { type: Injectable }
@@ -24187,11 +24246,7 @@ var OccCartEntryAdapter = /** @class */ (function () {
         });
         return this.http
             .post(url, toAdd, { headers: headers, params: params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+            .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -24225,11 +24280,9 @@ var OccCartEntryAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http.patch(url, {}, { headers: headers, params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+        return this.http
+            .patch(url, {}, { headers: headers, params: params })
+            .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -24250,13 +24303,7 @@ var OccCartEntryAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .delete(url, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        return this.http.delete(url, { headers: headers });
     };
     OccCartEntryAdapter.decorators = [
         { type: Injectable }
@@ -24979,11 +25026,7 @@ var OccSiteAdapter = /** @class */ (function () {
     function () {
         return this.http
             .get(this.occEndpoints.getEndpoint('languages'))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} languageList
          * @return {?}
          */
@@ -24998,11 +25041,7 @@ var OccSiteAdapter = /** @class */ (function () {
     function () {
         return this.http
             .get(this.occEndpoints.getEndpoint('currencies'))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} currencyList
          * @return {?}
          */
@@ -25026,11 +25065,7 @@ var OccSiteAdapter = /** @class */ (function () {
             .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
             params: params,
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} countryList
          * @return {?}
          */
@@ -25049,11 +25084,7 @@ var OccSiteAdapter = /** @class */ (function () {
         var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT + "?fields=regions(name,isocode,isocodeShort)";
         return this.http
             .get(this.occEndpoints.getEndpoint(regionsEndpoint))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} regionList
          * @return {?}
          */
@@ -25080,11 +25111,7 @@ var OccSiteAdapter = /** @class */ (function () {
         });
         return this.http
             .get(url, { params: params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })), map((/**
+            .pipe(map((/**
          * @param {?} siteList
          * @return {?}
          */
@@ -25307,11 +25334,7 @@ var OccStoreFinderAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (query, searchConfig, longitudeLatitude) {
-        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
     };
     /**
      * @return {?}
@@ -25329,11 +25352,7 @@ var OccStoreFinderAdapter = /** @class */ (function () {
         function (_a) {
             var countriesAndRegionsStoreCount = _a.countriesAndRegionsStoreCount;
             return countriesAndRegionsStoreCount;
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
+        })), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
     };
     /**
      * @param {?} storeId
@@ -25348,11 +25367,9 @@ var OccStoreFinderAdapter = /** @class */ (function () {
         var storeDetailsUrl = this.getStoresEndpoint(storeId);
         /** @type {?} */
         var params = { fields: 'FULL' };
-        return this.http.get(storeDetailsUrl, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
+        return this.http
+            .get(storeDetailsUrl, { params: params })
+            .pipe(this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
     };
     /**
      * @protected
@@ -25394,16 +25411,7 @@ var OccStoreFinderAdapter = /** @class */ (function () {
         if (searchConfig.sort) {
             params = params.set('sort', searchConfig.sort);
         }
-        return this.http.get(url, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) {
-            if (error.json) {
-                return throwError(error.json());
-            }
-            return throwError(error);
-        })));
+        return this.http.get(url, { params: params });
     };
     /**
      * @protected
@@ -25498,11 +25506,7 @@ var OccUserOrderAdapter = /** @class */ (function () {
             .get(orderUrl, {
             params: params,
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(ORDER_NORMALIZER));
+            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -25532,11 +25536,9 @@ var OccUserOrderAdapter = /** @class */ (function () {
         if (sort) {
             params = params.set('sort', sort);
         }
-        return this.http.get(url, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        return this.http
+            .get(url, { params: params })
+            .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     };
     OccUserOrderAdapter.decorators = [
         { type: Injectable }
@@ -25769,11 +25771,9 @@ var OccUserAdapter = /** @class */ (function () {
     function (userId) {
         /** @type {?} */
         var url = this.getUserEndpoint(userId);
-        return this.http.get(url).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })), this.converter.pipeable(USER_NORMALIZER));
+        return this.http
+            .get(url)
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -25789,13 +25789,7 @@ var OccUserAdapter = /** @class */ (function () {
         /** @type {?} */
         var url = this.getUserEndpoint(userId);
         user = this.converter.convert(user, USER_SERIALIZER);
-        return this.http
-            .patch(url, user)
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.patch(url, user);
     };
     /**
      * @param {?} user
@@ -25814,11 +25808,9 @@ var OccUserAdapter = /** @class */ (function () {
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
         user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
-        return this.http.post(url, user, { headers: headers }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })), this.converter.pipeable(USER_NORMALIZER));
+        return this.http
+            .post(url, user, { headers: headers })
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
     };
     /**
      * @param {?} userEmailAddress
@@ -25838,13 +25830,7 @@ var OccUserAdapter = /** @class */ (function () {
             'Content-Type': 'application/x-www-form-urlencoded',
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, httpParams, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.post(url, httpParams, { headers: headers });
     };
     /**
      * @param {?} token
@@ -25864,13 +25850,7 @@ var OccUserAdapter = /** @class */ (function () {
             'Content-Type': 'application/json',
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, { token: token, newPassword: newPassword }, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.post(url, { token: token, newPassword: newPassword }, { headers: headers });
     };
     /**
      * @param {?} userId
@@ -25895,13 +25875,7 @@ var OccUserAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .put(url, httpParams, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.put(url, httpParams, { headers: headers });
     };
     /**
      * @param {?} userId
@@ -25926,13 +25900,7 @@ var OccUserAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .put(url, httpParams, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.put(url, httpParams, { headers: headers });
     };
     /**
      * @param {?} userId
@@ -25945,13 +25913,7 @@ var OccUserAdapter = /** @class */ (function () {
     function (userId) {
         /** @type {?} */
         var url = this.getUserEndpoint(userId);
-        return this.http
-            .delete(url)
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.delete(url);
     };
     /**
      * @return {?}
@@ -25962,11 +25924,7 @@ var OccUserAdapter = /** @class */ (function () {
     function () {
         return this.http
             .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} titleList
          * @return {?}
          */
@@ -26301,11 +26259,9 @@ var OccCheckoutAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http.post(url, {}, { headers: headers, params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(ORDER_NORMALIZER));
+        return this.http
+            .post(url, {}, { headers: headers, params: params })
+            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -26324,13 +26280,7 @@ var OccCheckoutAdapter = /** @class */ (function () {
         var params = new HttpParams({
             fromString: "fields=" + CHECKOUT_PARAMS,
         });
-        return this.http
-            .get(url, { params: params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.get(url, { params: params });
     };
     OccCheckoutAdapter.decorators = [
         { type: Injectable }
@@ -26464,11 +26414,7 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
             .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
             headers: new HttpHeaders().set('Content-Type', 'application/json'),
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(ADDRESS_NORMALIZER));
+            .pipe(this.converter.pipeable(ADDRESS_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -26483,15 +26429,9 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (userId, cartId, addressId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
             params: { addressId: addressId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        });
     };
     /**
      * @param {?} userId
@@ -26506,15 +26446,9 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (userId, cartId, deliveryModeId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
             params: { deliveryModeId: deliveryModeId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        });
     };
     /**
      * @param {?} userId
@@ -26529,11 +26463,7 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
     function (userId, cartId) {
         return this.http
             .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
+            .pipe(this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
     };
     /**
      * @param {?} userId
@@ -26548,11 +26478,7 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
     function (userId, cartId) {
         return this.http
             .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
+            .pipe(pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
     };
     OccCheckoutDeliveryAdapter.decorators = [
         { type: Injectable }
@@ -26712,15 +26638,9 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (userId, cartId, paymentDetailsId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
             params: { paymentDetailsId: paymentDetailsId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+        });
     };
     /**
      * @return {?}
@@ -26731,11 +26651,7 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
     function () {
         return this.http
             .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })), map((/**
+            .pipe(map((/**
          * @param {?} cardTypeList
          * @return {?}
          */
@@ -26754,15 +26670,9 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (userId, cartId) {
-        return this.http
-            .get(this.getCartEndpoint(userId) +
+        return this.http.get(this.getCartEndpoint(userId) +
             cartId +
-            '/payment/sop/request?responseUrl=sampleUrl')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error.json()); })));
+            '/payment/sop/request?responseUrl=sampleUrl');
     };
     /**
      * @protected
@@ -26824,13 +26734,7 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        function (error) { return throwError(error); })));
+        return this.http.post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers: headers });
     };
     /**
      * @private
@@ -28506,7 +28410,9 @@ var FindStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new FindStoresFail(error)); })));
+            function (error) {
+                return of(new FindStoresFail(makeErrorSerializable(error)));
+            })));
         })));
         this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((/**
          * @param {?} action
@@ -28525,7 +28431,9 @@ var FindStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new FindStoreByIdFail(error)); })));
+            function (error) {
+                return of(new FindStoreByIdFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     FindStoresEffect.decorators = [
@@ -28568,7 +28476,9 @@ var ViewAllStoresEffect = /** @class */ (function () {
              * @param {?} error
              * @return {?}
              */
-            function (error) { return of(new ViewAllStoresFail(error)); })));
+            function (error) {
+                return of(new ViewAllStoresFail(makeErrorSerializable(error)));
+            })));
         })));
     }
     ViewAllStoresEffect.decorators = [

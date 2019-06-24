@@ -2,7 +2,7 @@ import { CommonModule, Location, DOCUMENT, isPlatformBrowser, isPlatformServer, 
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, APP_INITIALIZER, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Observable, of, throwError, Subscription, combineLatest, iif } from 'rxjs';
-import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, groupBy, pluck, shareReplay, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, shareReplay, groupBy, pluck, delay, concatMap, withLatestFrom, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import { __decorate, __metadata } from 'tslib';
@@ -2256,13 +2256,7 @@ class ClientAuthenticationTokenService {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .post(url, params, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        return this.http.post(url, params, { headers });
     }
     /**
      * @protected
@@ -2748,6 +2742,34 @@ StateModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        }));
+    }
+    if (error instanceof HttpErrorResponse) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        }));
+    }
+    return error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -2777,7 +2799,7 @@ class ClientTokenEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadClientTokenFail(error)))));
+            error => of(new LoadClientTokenFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -2836,7 +2858,7 @@ class UserTokenEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new LoadUserTokenFail(error))))))));
+        error => of(new LoadUserTokenFail(makeErrorSerializable(error)))))))));
         this.login$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), map((/**
          * @return {?}
          */
@@ -2865,7 +2887,7 @@ class UserTokenEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new RefreshUserTokenFail(error))))));
+            error => of(new RefreshUserTokenFail(makeErrorSerializable(error)))))));
         })));
     }
 }
@@ -3926,7 +3948,7 @@ class LanguagesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadLanguagesFail(error)))));
+            error => of(new LoadLanguagesFail(makeErrorSerializable(error))))));
         })));
         this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
          * @param {?} action
@@ -3986,7 +4008,7 @@ class CurrenciesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCurrenciesFail(error)))));
+            error => of(new LoadCurrenciesFail(makeErrorSerializable(error))))));
         })));
         this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
          * @param {?} action
@@ -4044,7 +4066,7 @@ class BaseSiteEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadBaseSiteFail(error)))));
+            error => of(new LoadBaseSiteFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -6292,7 +6314,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCartFail(error)))));
+            error => of(new LoadCartFail(makeErrorSerializable(error))))));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -6324,7 +6346,7 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new CreateCartFail(error)))));
+            error => of(new CreateCartFail(makeErrorSerializable(error))))));
         })));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -6405,11 +6427,11 @@ class CartEntryEffects {
          * @param {?} entry
          * @return {?}
          */
-        (entry) => new AddEntrySuccess(entry))), catchError((/**
+        entry => new AddEntrySuccess(entry))), catchError((/**
          * @param {?} error
          * @return {?}
          */
-        error => of(new AddEntryFail(error))))))));
+        error => of(new AddEntryFail(makeErrorSerializable(error)))))))));
         this.removeEntry$ = this.actions$.pipe(ofType(REMOVE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6429,7 +6451,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new RemoveEntryFail(error))))))));
+        error => of(new RemoveEntryFail(makeErrorSerializable(error)))))))));
         this.updateEntry$ = this.actions$.pipe(ofType(UPDATE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -6449,7 +6471,7 @@ class CartEntryEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateEntryFail(error))))))));
+        error => of(new UpdateEntryFail(makeErrorSerializable(error)))))))));
     }
 }
 CartEntryEffects.decorators = [
@@ -8069,14 +8091,12 @@ class CheckoutEffects {
      * @param {?} checkoutDeliveryConnector
      * @param {?} checkoutPaymentConnector
      * @param {?} checkoutConnector
-     * @param {?} cartData
      */
-    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector, cartData) {
+    constructor(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
         this.actions$ = actions$;
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
-        this.cartData = cartData;
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -8105,7 +8125,7 @@ class CheckoutEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new AddDeliveryAddressFail(error))))))));
+        error => of(new AddDeliveryAddressFail(makeErrorSerializable(error)))))))));
         this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -8130,7 +8150,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDeliveryAddressFail(error)))));
+            error => of(new SetDeliveryAddressFail(makeErrorSerializable(error))))));
         })));
         this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((/**
          * @param {?} action
@@ -8153,15 +8173,8 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadSupportedDeliveryModesFail(error)))));
+            error => of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error))))));
         })));
-        this.reloadSupportedDeliveryModesOnSiteContextChange$ = this.actions$.pipe(ofType(CHECKOUT_CLEAR_MISCS_DATA, CLEAR_SUPPORTED_DELIVERY_MODES), map((/**
-         * @return {?}
-         */
-        () => new LoadSupportedDeliveryModes({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-        }))));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
          */
@@ -8201,7 +8214,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDeliveryModeFail(error)))));
+            error => of(new SetDeliveryModeFail(makeErrorSerializable(error))))));
         })));
         this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((/**
          * @param {?} action
@@ -8226,7 +8239,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new CreatePaymentDetailsFail(error)))));
+            error => of(new CreatePaymentDetailsFail(makeErrorSerializable(error))))));
         })));
         this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((/**
          * @param {?} action
@@ -8246,7 +8259,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetPaymentDetailsFail(error)))));
+            error => of(new SetPaymentDetailsFail(makeErrorSerializable(error))))));
         })));
         this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((/**
          * @param {?} action
@@ -8267,7 +8280,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new PlaceOrderFail(error)))));
+            error => of(new PlaceOrderFail(makeErrorSerializable(error))))));
         })));
         this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((/**
          * @param {?} action
@@ -8288,7 +8301,7 @@ class CheckoutEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCheckoutDetailsFail(error)))));
+            error => of(new LoadCheckoutDetailsFail(makeErrorSerializable(error))))));
         })));
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((/**
          * @param {?} action
@@ -8314,8 +8327,7 @@ CheckoutEffects.ctorParameters = () => [
     { type: Actions },
     { type: CheckoutDeliveryConnector },
     { type: CheckoutPaymentConnector },
-    { type: CheckoutConnector },
-    { type: CartDataService }
+    { type: CheckoutConnector }
 ];
 __decorate([
     Effect(),
@@ -8329,10 +8341,6 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CheckoutEffects.prototype, "reloadSupportedDeliveryModesOnSiteContextChange$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
@@ -8394,7 +8402,7 @@ class CardTypesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCardTypesFail(error)))));
+            error => of(new LoadCardTypesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -8500,7 +8508,7 @@ class AddressVerificationEffect {
          * @param {?} action
          * @return {?}
          */
-        (action) => action.payload)), mergeMap((/**
+        action => action.payload)), mergeMap((/**
          * @param {?} payload
          * @return {?}
          */
@@ -8508,13 +8516,11 @@ class AddressVerificationEffect {
          * @param {?} data
          * @return {?}
          */
-        data => {
-            return new VerifyAddressSuccess(data);
-        })), catchError((/**
+        data => new VerifyAddressSuccess(data))), catchError((/**
          * @param {?} error
          * @return {?}
          */
-        error => of(new VerifyAddressFail(error))))))));
+        error => of(new VerifyAddressFail(makeErrorSerializable(error)))))))));
     }
 }
 AddressVerificationEffect.decorators = [
@@ -8762,7 +8768,15 @@ class CheckoutDeliveryService {
      * @return {?}
      */
     getSupportedDeliveryModes() {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes));
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), tap((/**
+         * @param {?} deliveryModes
+         * @return {?}
+         */
+        deliveryModes => {
+            if (Object.keys(deliveryModes).length === 0) {
+                this.loadSupportedDeliveryModes();
+            }
+        })), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * Get selected delivery mode
@@ -10329,6 +10343,7 @@ RoutingModule.decorators = [
                     StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
                     EffectsModule.forFeature(effects),
                     StoreRouterConnectingModule.forRoot({
+                        routerState: 1 /* Minimal */,
                         stateKey: ROUTING_FEATURE,
                     }),
                 ],
@@ -10480,24 +10495,20 @@ class PageEffects {
          * @param {?} pageContext
          * @return {?}
          */
-        pageContext => {
-            return this.cmsPageConnector.get(pageContext).pipe(mergeMap((/**
-             * @param {?} cmsStructure
-             * @return {?}
-             */
-            (cmsStructure) => {
-                return [
-                    new GetComponentFromPage(cmsStructure.components),
-                    new LoadPageDataSuccess(pageContext, cmsStructure.page),
-                ];
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                return of(new LoadPageDataFail(pageContext, error));
-            })));
-        }))))));
+        pageContext => this.cmsPageConnector.get(pageContext).pipe(mergeMap((/**
+         * @param {?} cmsStructure
+         * @return {?}
+         */
+        (cmsStructure) => {
+            return [
+                new GetComponentFromPage(cmsStructure.components),
+                new LoadPageDataSuccess(pageContext, cmsStructure.page),
+            ];
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadPageDataFail(pageContext, makeErrorSerializable(error))))))))))));
     }
 }
 PageEffects.decorators = [
@@ -10548,29 +10559,27 @@ class ComponentEffects {
          * @param {?} uid
          * @return {?}
          */
-        uid => {
-            return this.routingService.getRouterState().pipe(filter((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            routerState => routerState !== undefined)), map((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            routerState => routerState.state.context)), take(1), mergeMap((/**
-             * @param {?} pageContext
-             * @return {?}
-             */
-            pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
-             * @param {?} data
-             * @return {?}
-             */
-            data => new LoadComponentSuccess(data, uid))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadComponentFail(uid, error))))))));
-        }))))));
+        uid => this.routingService.getRouterState().pipe(filter((/**
+         * @param {?} routerState
+         * @return {?}
+         */
+        routerState => routerState !== undefined)), map((/**
+         * @param {?} routerState
+         * @return {?}
+         */
+        routerState => routerState.state.context)), take(1), mergeMap((/**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        pageContext => this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => new LoadComponentSuccess(data, uid))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadComponentFail(uid, makeErrorSerializable(error)))))))))))))));
     }
 }
 ComponentEffects.decorators = [
@@ -10632,23 +10641,22 @@ class NavigationEntryItemEffects {
                  * @param {?} pageContext
                  * @return {?}
                  */
-                pageContext => {
-                    // download all items in one request
-                    return this.cmsComponentConnector
-                        .getList(data.ids.componentIds, pageContext)
-                        .pipe(map((/**
-                     * @param {?} components
-                     * @return {?}
-                     */
-                    components => new LoadNavigationItemsSuccess({
-                        nodeId: data.nodeId,
-                        components: components,
-                    }))), catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    error => of(new LoadNavigationItemsFail(data.nodeId, error)))));
-                })));
+                pageContext => 
+                // download all items in one request
+                this.cmsComponentConnector
+                    .getList(data.ids.componentIds, pageContext)
+                    .pipe(map((/**
+                 * @param {?} components
+                 * @return {?}
+                 */
+                components => new LoadNavigationItemsSuccess({
+                    nodeId: data.nodeId,
+                    components: components,
+                }))), catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                error => of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))))));
             }
             else if (data.ids.pageIds.length > 0) ;
             else if (data.ids.mediaIds.length > 0) ;
@@ -12133,7 +12141,7 @@ class ProductsSearchEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new SearchProductsFail(error, action.auxiliary)))));
+            error => of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary)))));
         }))))));
         this.getProductSuggestions$ = this.actions$.pipe(ofType(GET_PRODUCT_SUGGESTIONS), map((/**
          * @param {?} action
@@ -12159,7 +12167,7 @@ class ProductsSearchEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new GetProductSuggestionsFail(error)))));
+            error => of(new GetProductSuggestionsFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -12219,7 +12227,7 @@ class ProductEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadProductFail(productCode, error)))));
+            error => of(new LoadProductFail(productCode, makeErrorSerializable(error))))));
         }))))));
     }
 }
@@ -14907,7 +14915,7 @@ class BillingCountriesEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadBillingCountriesFail(error)))));
+            error => of(new LoadBillingCountriesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -14978,7 +14986,7 @@ class DeliveryCountriesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadDeliveryCountriesFail(error)))));
+            error => of(new LoadDeliveryCountriesFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16005,7 +16013,7 @@ class ForgotPasswordEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ForgotPasswordEmailRequestFail(error)))));
+            error => of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16104,7 +16112,7 @@ class OrderDetailsEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadOrderDetailsFail(error)))));
+            error => of(new LoadOrderDetailsFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16208,7 +16216,7 @@ class UserPaymentMethodsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserPaymentMethodsFail(error)))));
+            error => of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error))))));
         })));
         this.setDefaultUserPaymentMethod$ = this.actions$.pipe(ofType(SET_DEFAULT_USER_PAYMENT_METHOD), map((/**
          * @param {?} action
@@ -16225,16 +16233,14 @@ class UserPaymentMethodsEffects {
              * @param {?} data
              * @return {?}
              */
-            (data) => {
-                return [
-                    new SetDefaultUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ];
-            })), catchError((/**
+            data => [
+                new SetDefaultUserPaymentMethodSuccess(data),
+                new LoadUserPaymentMethods(payload.userId),
+            ])), catchError((/**
              * @param {?} error
              * @return {?}
              */
-            error => of(new SetDefaultUserPaymentMethodFail(error)))));
+            error => of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error))))));
         })));
         this.deleteUserPaymentMethod$ = this.actions$.pipe(ofType(DELETE_USER_PAYMENT_METHOD), map((/**
          * @param {?} action
@@ -16251,16 +16257,14 @@ class UserPaymentMethodsEffects {
              * @param {?} data
              * @return {?}
              */
-            (data) => {
-                return [
-                    new DeleteUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ];
-            })), catchError((/**
+            data => [
+                new DeleteUserPaymentMethodSuccess(data),
+                new LoadUserPaymentMethods(payload.userId),
+            ])), catchError((/**
              * @param {?} error
              * @return {?}
              */
-            error => of(new DeleteUserPaymentMethodFail(error)))));
+            error => of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16319,7 +16323,7 @@ class RegionsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadRegionsFail(error)))));
+            error => of(new LoadRegionsFail(makeErrorSerializable(error))))));
         })));
         this.resetRegions$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), map((/**
          * @return {?}
@@ -16362,9 +16366,7 @@ class ResetPasswordEffects {
          * @param {?} action
          * @return {?}
          */
-        (action) => {
-            return action.payload;
-        })), switchMap((/**
+        (action) => action.payload)), switchMap((/**
          * @param {?} __0
          * @return {?}
          */
@@ -16382,7 +16384,7 @@ class ResetPasswordEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ResetPasswordFail(error)))));
+            error => of(new ResetPasswordFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -16427,7 +16429,7 @@ class TitlesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadTitlesFail(error)))));
+            error => of(new LoadTitlesFail(makeErrorSerializable(error))))));
         })));
     }
     /**
@@ -16493,7 +16495,7 @@ class UpdateEmailEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateEmailErrorAction(error))))))));
+        error => of(new UpdateEmailErrorAction(makeErrorSerializable(error)))))))));
     }
 }
 UpdateEmailEffects.decorators = [
@@ -16539,7 +16541,7 @@ class UpdatePasswordEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdatePasswordFail(error))))))));
+        error => of(new UpdatePasswordFail(makeErrorSerializable(error)))))))));
     }
 }
 UpdatePasswordEffects.decorators = [
@@ -16590,7 +16592,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserAddressesFail(error)))));
+            error => of(new LoadUserAddressesFail(makeErrorSerializable(error))))));
         })));
         this.addUserAddress$ = this.actions$.pipe(ofType(ADD_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16613,7 +16615,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new AddUserAddressFail(error)))));
+            error => of(new AddUserAddressFail(makeErrorSerializable(error))))));
         })));
         this.updateUserAddress$ = this.actions$.pipe(ofType(UPDATE_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16630,7 +16632,7 @@ class UserAddressesEffects {
              * @param {?} data
              * @return {?}
              */
-            (data) => {
+            data => {
                 // don't show the message if just setting address as default
                 if (payload.address &&
                     Object.keys(payload.address).length === 1 &&
@@ -16644,7 +16646,7 @@ class UserAddressesEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new UpdateUserAddressFail(error)))));
+            error => of(new UpdateUserAddressFail(makeErrorSerializable(error))))));
         })));
         this.deleteUserAddress$ = this.actions$.pipe(ofType(DELETE_USER_ADDRESS), map((/**
          * @param {?} action
@@ -16661,13 +16663,13 @@ class UserAddressesEffects {
              * @param {?} data
              * @return {?}
              */
-            (data) => {
+            data => {
                 return new DeleteUserAddressSuccess(data);
             })), catchError((/**
              * @param {?} error
              * @return {?}
              */
-            error => of(new DeleteUserAddressFail(error)))));
+            error => of(new DeleteUserAddressFail(makeErrorSerializable(error))))));
         })));
         /**
          *  Reload addresses and notify about add success
@@ -16841,7 +16843,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new LoadUserConsentsFail(error))))))));
+        error => of(new LoadUserConsentsFail(makeErrorSerializable(error)))))))));
         this.giveConsent$ = this.actions$.pipe(ofType(GIVE_USER_CONSENT), map((/**
          * @param {?} action
          * @return {?}
@@ -16860,7 +16862,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new GiveUserConsentFail(error))))))));
+        error => of(new GiveUserConsentFail(makeErrorSerializable(error)))))))));
         this.withdrawConsent$ = this.actions$.pipe(ofType(WITHDRAW_USER_CONSENT), map((/**
          * @param {?} action
          * @return {?}
@@ -16877,7 +16879,7 @@ class UserConsentsEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new WithdrawUserConsentFail(error))))))));
+        error => of(new WithdrawUserConsentFail(makeErrorSerializable(error)))))))));
     }
 }
 UserConsentsEffect.decorators = [
@@ -16932,7 +16934,7 @@ class UserDetailsEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserDetailsFail(error)))));
+            error => of(new LoadUserDetailsFail(makeErrorSerializable(error))))));
         })));
         this.updateUserDetails$ = this.actions$.pipe(ofType(UPDATE_USER_DETAILS), map((/**
          * @param {?} action
@@ -16950,7 +16952,7 @@ class UserDetailsEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new UpdateUserDetailsFail(error))))))));
+        error => of(new UpdateUserDetailsFail(makeErrorSerializable(error)))))))));
     }
 }
 UserDetailsEffects.decorators = [
@@ -17003,7 +17005,7 @@ class UserOrdersEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadUserOrdersFail(error)))));
+            error => of(new LoadUserOrdersFail(makeErrorSerializable(error))))));
         })));
         this.resetUserOrders$ = this.actions$.pipe(ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), map((/**
          * @return {?}
@@ -17064,7 +17066,7 @@ class UserRegisterEffects {
          * @param {?} error
          * @return {?}
          */
-        error => of(new RegisterUserFail(error))))))));
+        error => of(new RegisterUserFail(makeErrorSerializable(error)))))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((/**
          * @param {?} action
          * @return {?}
@@ -17085,7 +17087,7 @@ class UserRegisterEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new RemoveUserFail(error)))));
+            error => of(new RemoveUserFail(makeErrorSerializable(error))))));
         })));
     }
 }
@@ -18212,19 +18214,17 @@ class OpenIdTokenEffect {
          * @param {?} payload
          * @return {?}
          */
-        payload => {
-            return this.openIdTokenService
-                .loadOpenIdAuthenticationToken(payload.username, payload.password)
-                .pipe(map((/**
-             * @param {?} token
-             * @return {?}
-             */
-            token => new LoadOpenIdTokenSuccess(token))), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new LoadOpenIdTokenFail(error)))));
-        })));
+        payload => this.openIdTokenService
+            .loadOpenIdAuthenticationToken(payload.username, payload.password)
+            .pipe(map((/**
+         * @param {?} token
+         * @return {?}
+         */
+        token => new LoadOpenIdTokenSuccess(token))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadOpenIdTokenFail(makeErrorSerializable(error)))))))));
     }
 }
 OpenIdTokenEffect.decorators = [
@@ -20945,11 +20945,7 @@ class OccCartAdapter {
             : new HttpParams({
                 fromString: `fields=carts(${BASIC_PARAMS},saveTime)`,
             });
-        return this.http.get(url, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))), pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
+        return this.http.get(url, { params: params }).pipe(pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -20991,11 +20987,9 @@ class OccCartAdapter {
             })));
         }
         else {
-            return this.http.get(url, { params: params }).pipe(catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            (error) => throwError(error))), this.converter.pipeable(CART_NORMALIZER));
+            return this.http
+                .get(url, { params: params })
+                .pipe(this.converter.pipeable(CART_NORMALIZER));
         }
     }
     /**
@@ -21021,11 +21015,9 @@ class OccCartAdapter {
         const params = new HttpParams({
             fromString: queryString,
         });
-        return this.http.post(url, toAdd, { params: params }).pipe(this.converter.pipeable(CART_NORMALIZER), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        return this.http
+            .post(url, toAdd, { params: params })
+            .pipe(this.converter.pipeable(CART_NORMALIZER));
     }
 }
 OccCartAdapter.decorators = [
@@ -21085,11 +21077,7 @@ class OccCartEntryAdapter {
         });
         return this.http
             .post(url, toAdd, { headers, params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+            .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -21115,11 +21103,9 @@ class OccCartEntryAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http.patch(url, {}, { headers, params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
+        return this.http
+            .patch(url, {}, { headers, params })
+            .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -21134,13 +21120,7 @@ class OccCartEntryAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .delete(url, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        return this.http.delete(url, { headers });
     }
 }
 OccCartEntryAdapter.decorators = [
@@ -21756,11 +21736,7 @@ class OccSiteAdapter {
     loadLanguages() {
         return this.http
             .get(this.occEndpoints.getEndpoint('languages'))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} languageList
          * @return {?}
          */
@@ -21772,11 +21748,7 @@ class OccSiteAdapter {
     loadCurrencies() {
         return this.http
             .get(this.occEndpoints.getEndpoint('currencies'))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} currencyList
          * @return {?}
          */
@@ -21796,11 +21768,7 @@ class OccSiteAdapter {
             .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
             params,
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} countryList
          * @return {?}
          */
@@ -21815,11 +21783,7 @@ class OccSiteAdapter {
         const regionsEndpoint = `${COUNTRIES_ENDPOINT}/${countryIsoCode}/${REGIONS_ENDPOINT}?fields=regions(name,isocode,isocodeShort)`;
         return this.http
             .get(this.occEndpoints.getEndpoint(regionsEndpoint))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} regionList
          * @return {?}
          */
@@ -21843,11 +21807,7 @@ class OccSiteAdapter {
         });
         return this.http
             .get(url, { params: params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))), map((/**
+            .pipe(map((/**
          * @param {?} siteList
          * @return {?}
          */
@@ -22047,11 +22007,7 @@ class OccStoreFinderAdapter {
      * @return {?}
      */
     search(query, searchConfig, longitudeLatitude) {
-        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+        return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
     }
     /**
      * @return {?}
@@ -22063,11 +22019,7 @@ class OccStoreFinderAdapter {
          * @param {?} __0
          * @return {?}
          */
-        ({ countriesAndRegionsStoreCount }) => countriesAndRegionsStoreCount)), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
+        ({ countriesAndRegionsStoreCount }) => countriesAndRegionsStoreCount)), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
     }
     /**
      * @param {?} storeId
@@ -22078,11 +22030,9 @@ class OccStoreFinderAdapter {
         const storeDetailsUrl = this.getStoresEndpoint(storeId);
         /** @type {?} */
         const params = { fields: 'FULL' };
-        return this.http.get(storeDetailsUrl, { params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
+        return this.http
+            .get(storeDetailsUrl, { params })
+            .pipe(this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
     }
     /**
      * @protected
@@ -22117,16 +22067,7 @@ class OccStoreFinderAdapter {
         if (searchConfig.sort) {
             params = params.set('sort', searchConfig.sort);
         }
-        return this.http.get(url, { params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => {
-            if (error.json) {
-                return throwError(error.json());
-            }
-            return throwError(error);
-        })));
+        return this.http.get(url, { params });
     }
     /**
      * @protected
@@ -22207,11 +22148,7 @@ class OccUserOrderAdapter {
             .get(orderUrl, {
             params: params,
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(ORDER_NORMALIZER));
+            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -22234,11 +22171,9 @@ class OccUserOrderAdapter {
         if (sort) {
             params = params.set('sort', sort);
         }
-        return this.http.get(url, { params: params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        return this.http
+            .get(url, { params: params })
+            .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     }
 }
 OccUserOrderAdapter.decorators = [
@@ -22440,11 +22375,9 @@ class OccUserAdapter {
     load(userId) {
         /** @type {?} */
         const url = this.getUserEndpoint(userId);
-        return this.http.get(url).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))), this.converter.pipeable(USER_NORMALIZER));
+        return this.http
+            .get(url)
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -22455,13 +22388,7 @@ class OccUserAdapter {
         /** @type {?} */
         const url = this.getUserEndpoint(userId);
         user = this.converter.convert(user, USER_SERIALIZER);
-        return this.http
-            .patch(url, user)
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => throwError(error))));
+        return this.http.patch(url, user);
     }
     /**
      * @param {?} user
@@ -22476,11 +22403,9 @@ class OccUserAdapter {
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
         user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
-        return this.http.post(url, user, { headers }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))), this.converter.pipeable(USER_NORMALIZER));
+        return this.http
+            .post(url, user, { headers })
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
     }
     /**
      * @param {?} userEmailAddress
@@ -22496,13 +22421,7 @@ class OccUserAdapter {
             'Content-Type': 'application/x-www-form-urlencoded',
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, httpParams, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.post(url, httpParams, { headers });
     }
     /**
      * @param {?} token
@@ -22517,13 +22436,7 @@ class OccUserAdapter {
             'Content-Type': 'application/json',
         });
         headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-        return this.http
-            .post(url, { token, newPassword }, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.post(url, { token, newPassword }, { headers });
     }
     /**
      * @param {?} userId
@@ -22542,13 +22455,7 @@ class OccUserAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .put(url, httpParams, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.put(url, httpParams, { headers });
     }
     /**
      * @param {?} userId
@@ -22567,13 +22474,7 @@ class OccUserAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .put(url, httpParams, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.put(url, httpParams, { headers });
     }
     /**
      * @param {?} userId
@@ -22582,13 +22483,7 @@ class OccUserAdapter {
     remove(userId) {
         /** @type {?} */
         const url = this.getUserEndpoint(userId);
-        return this.http
-            .delete(url)
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.delete(url);
     }
     /**
      * @return {?}
@@ -22596,11 +22491,7 @@ class OccUserAdapter {
     loadTitles() {
         return this.http
             .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} titleList
          * @return {?}
          */
@@ -22894,11 +22785,9 @@ class OccCheckoutAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http.post(url, {}, { headers, params }).pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(ORDER_NORMALIZER));
+        return this.http
+            .post(url, {}, { headers, params })
+            .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -22912,13 +22801,7 @@ class OccCheckoutAdapter {
         const params = new HttpParams({
             fromString: `fields=${CHECKOUT_PARAMS}`,
         });
-        return this.http
-            .get(url, { params })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.get(url, { params });
     }
 }
 OccCheckoutAdapter.decorators = [
@@ -23032,11 +22915,7 @@ class OccCheckoutDeliveryAdapter {
             .post(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', address, {
             headers: new HttpHeaders().set('Content-Type', 'application/json'),
         })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(ADDRESS_NORMALIZER));
+            .pipe(this.converter.pipeable(ADDRESS_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -23045,15 +22924,9 @@ class OccCheckoutDeliveryAdapter {
      * @return {?}
      */
     setAddress(userId, cartId, addressId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/addresses/delivery', {}, {
             params: { addressId: addressId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        });
     }
     /**
      * @param {?} userId
@@ -23062,15 +22935,9 @@ class OccCheckoutDeliveryAdapter {
      * @return {?}
      */
     setMode(userId, cartId, deliveryModeId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/deliverymode', {}, {
             params: { deliveryModeId: deliveryModeId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        });
     }
     /**
      * @param {?} userId
@@ -23080,11 +22947,7 @@ class OccCheckoutDeliveryAdapter {
     getMode(userId, cartId) {
         return this.http
             .get(this.getCartEndpoint(userId) + cartId + '/deliverymode')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
+            .pipe(this.converter.pipeable(DELIVERY_MODE_NORMALIZER));
     }
     /**
      * @param {?} userId
@@ -23094,11 +22957,7 @@ class OccCheckoutDeliveryAdapter {
     getSupportedModes(userId, cartId) {
         return this.http
             .get(this.getCartEndpoint(userId) + cartId + '/deliverymodes')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
+            .pipe(pluck('deliveryModes'), this.converter.pipeableMany(DELIVERY_MODE_NORMALIZER));
     }
 }
 OccCheckoutDeliveryAdapter.decorators = [
@@ -23225,15 +23084,9 @@ class OccCheckoutPaymentAdapter {
      * @return {?}
      */
     set(userId, cartId, paymentDetailsId) {
-        return this.http
-            .put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
+        return this.http.put(this.getCartEndpoint(userId) + cartId + '/paymentdetails', {}, {
             params: { paymentDetailsId: paymentDetailsId },
-        })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+        });
     }
     /**
      * @return {?}
@@ -23241,11 +23094,7 @@ class OccCheckoutPaymentAdapter {
     loadCardTypes() {
         return this.http
             .get(this.occEndpoints.getEndpoint(ENDPOINT_CARD_TYPES))
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))), map((/**
+            .pipe(map((/**
          * @param {?} cardTypeList
          * @return {?}
          */
@@ -23258,15 +23107,9 @@ class OccCheckoutPaymentAdapter {
      * @return {?}
      */
     getProviderSubInfo(userId, cartId) {
-        return this.http
-            .get(this.getCartEndpoint(userId) +
+        return this.http.get(this.getCartEndpoint(userId) +
             cartId +
-            '/payment/sop/request?responseUrl=sampleUrl')
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error.json()))));
+            '/payment/sop/request?responseUrl=sampleUrl');
     }
     /**
      * @protected
@@ -23315,13 +23158,7 @@ class OccCheckoutPaymentAdapter {
         const headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
-        return this.http
-            .post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers })
-            .pipe(catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        (error) => throwError(error))));
+        return this.http.post(this.getCartEndpoint(userId) + cartId + '/payment/sop/response', httpParams, { headers });
     }
     /**
      * @private
@@ -24701,7 +24538,7 @@ class FindStoresEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new FindStoresFail(error))))))));
+        error => of(new FindStoresFail(makeErrorSerializable(error)))))))));
         this.findStoreById$ = this.actions$.pipe(ofType(FIND_STORE_BY_ID), map((/**
          * @param {?} action
          * @return {?}
@@ -24718,7 +24555,7 @@ class FindStoresEffect {
          * @param {?} error
          * @return {?}
          */
-        error => of(new FindStoreByIdFail(error))))))));
+        error => of(new FindStoreByIdFail(makeErrorSerializable(error)))))))));
     }
 }
 FindStoresEffect.decorators = [
@@ -24762,7 +24599,7 @@ class ViewAllStoresEffect {
              * @param {?} error
              * @return {?}
              */
-            error => of(new ViewAllStoresFail(error)))));
+            error => of(new ViewAllStoresFail(makeErrorSerializable(error))))));
         })));
     }
 }

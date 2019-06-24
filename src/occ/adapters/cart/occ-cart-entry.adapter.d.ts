@@ -1,9 +1,9 @@
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
+import { Observable } from 'rxjs';
 import { CartEntryAdapter } from '../../../cart/connectors/entry/cart-entry.adapter';
-import { ConverterService } from '../../../util/converter.service';
 import { CartModification } from '../../../model/cart.model';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCartEntryAdapter implements CartEntryAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
