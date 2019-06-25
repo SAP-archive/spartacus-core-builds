@@ -1,6 +1,6 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
-import * as fromCartActions from '../../../cart/store/actions/index';
+import { CartActions } from '../../../cart/store/actions/index';
 import { AddMessage } from '../../../global-message/index';
 import * as fromUserActions from '../../../user/store/actions/index';
 import { CheckoutConnector } from '../../connectors/checkout/checkout.connector';
@@ -18,7 +18,7 @@ export declare class CheckoutEffects {
     clearCheckoutMiscsDataOnLanguageChange$: Observable<fromActions.CheckoutClearMiscsData>;
     clearDeliveryModesOnCurrencyChange$: Observable<fromActions.ClearSupportedDeliveryModes>;
     clearCheckoutDataOnLogout$: Observable<fromActions.ClearCheckoutData>;
-    setDeliveryMode$: Observable<fromActions.SetDeliveryModeSuccess | fromActions.SetDeliveryModeFail | fromCartActions.LoadCart>;
+    setDeliveryMode$: Observable<fromActions.SetDeliveryModeSuccess | fromActions.SetDeliveryModeFail | CartActions.LoadCart>;
     createPaymentDetails$: Observable<fromUserActions.LoadUserPaymentMethods | fromActions.CreatePaymentDetailsSuccess | fromActions.CreatePaymentDetailsFail>;
     setPaymentDetails$: Observable<fromActions.SetPaymentDetailsSuccess | fromActions.SetPaymentDetailsFail>;
     placeOrder$: Observable<fromActions.PlaceOrderSuccess | AddMessage | fromActions.PlaceOrderFail>;

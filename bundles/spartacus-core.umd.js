@@ -5147,6 +5147,119 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
+    /** @type {?} */
+    var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+    /** @type {?} */
+    var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+    var CartAddEntry = /** @class */ (function (_super) {
+        __extends(CartAddEntry, _super);
+        function CartAddEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY;
+            return _this;
+        }
+        return CartAddEntry;
+    }(LoaderLoadAction));
+    var CartAddEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartAddEntrySuccess, _super);
+        function CartAddEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartAddEntrySuccess;
+    }(LoaderSuccessAction));
+    var CartAddEntryFail = /** @class */ (function (_super) {
+        __extends(CartAddEntryFail, _super);
+        function CartAddEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_FAIL;
+            return _this;
+        }
+        return CartAddEntryFail;
+    }(LoaderFailAction));
+    var CartRemoveEntry = /** @class */ (function (_super) {
+        __extends(CartRemoveEntry, _super);
+        function CartRemoveEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY;
+            return _this;
+        }
+        return CartRemoveEntry;
+    }(LoaderLoadAction));
+    var CartRemoveEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveEntrySuccess, _super);
+        function CartRemoveEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartRemoveEntrySuccess;
+    }(LoaderSuccessAction));
+    var CartRemoveEntryFail = /** @class */ (function (_super) {
+        __extends(CartRemoveEntryFail, _super);
+        function CartRemoveEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartRemoveEntryFail;
+    }(LoaderFailAction));
+    var CartUpdateEntry = /** @class */ (function (_super) {
+        __extends(CartUpdateEntry, _super);
+        function CartUpdateEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY;
+            return _this;
+        }
+        return CartUpdateEntry;
+    }(LoaderLoadAction));
+    var CartUpdateEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartUpdateEntrySuccess, _super);
+        function CartUpdateEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartUpdateEntrySuccess;
+    }(LoaderSuccessAction));
+    var CartUpdateEntryFail = /** @class */ (function (_super) {
+        __extends(CartUpdateEntryFail, _super);
+        function CartUpdateEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartUpdateEntryFail;
+    }(LoaderFailAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var CREATE_CART = '[Cart] Create Cart';
     /** @type {?} */
     var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
@@ -5249,114 +5362,45 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ADD_ENTRY = '[Cart-entry] Add Entry';
-    /** @type {?} */
-    var ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-    /** @type {?} */
-    var ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-    /** @type {?} */
-    var REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-    /** @type {?} */
-    var REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-    /** @type {?} */
-    var REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-    /** @type {?} */
-    var UPDATE_ENTRY = '[Cart-entry] Update Entry';
-    /** @type {?} */
-    var UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-    /** @type {?} */
-    var UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-    var AddEntry = /** @class */ (function (_super) {
-        __extends(AddEntry, _super);
-        function AddEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY;
-            return _this;
-        }
-        return AddEntry;
-    }(LoaderLoadAction));
-    var AddEntrySuccess = /** @class */ (function (_super) {
-        __extends(AddEntrySuccess, _super);
-        function AddEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY_SUCCESS;
-            return _this;
-        }
-        return AddEntrySuccess;
-    }(LoaderSuccessAction));
-    var AddEntryFail = /** @class */ (function (_super) {
-        __extends(AddEntryFail, _super);
-        function AddEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_ENTRY_FAIL;
-            return _this;
-        }
-        return AddEntryFail;
-    }(LoaderFailAction));
-    var RemoveEntry = /** @class */ (function (_super) {
-        __extends(RemoveEntry, _super);
-        function RemoveEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_ENTRY;
-            return _this;
-        }
-        return RemoveEntry;
-    }(LoaderLoadAction));
-    var RemoveEntrySuccess = /** @class */ (function (_super) {
-        __extends(RemoveEntrySuccess, _super);
-        function RemoveEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return RemoveEntrySuccess;
-    }(LoaderSuccessAction));
-    var RemoveEntryFail = /** @class */ (function (_super) {
-        __extends(RemoveEntryFail, _super);
-        function RemoveEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = REMOVE_ENTRY_FAIL;
-            return _this;
-        }
-        return RemoveEntryFail;
-    }(LoaderFailAction));
-    var UpdateEntry = /** @class */ (function (_super) {
-        __extends(UpdateEntry, _super);
-        function UpdateEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_ENTRY;
-            return _this;
-        }
-        return UpdateEntry;
-    }(LoaderLoadAction));
-    var UpdateEntrySuccess = /** @class */ (function (_super) {
-        __extends(UpdateEntrySuccess, _super);
-        function UpdateEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return UpdateEntrySuccess;
-    }(LoaderSuccessAction));
-    var UpdateEntryFail = /** @class */ (function (_super) {
-        __extends(UpdateEntryFail, _super);
-        function UpdateEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = UPDATE_ENTRY_FAIL;
-            return _this;
-        }
-        return UpdateEntryFail;
-    }(LoaderFailAction));
+
+    var cartGroup_actions = /*#__PURE__*/Object.freeze({
+        CART_ADD_ENTRY: CART_ADD_ENTRY,
+        CART_ADD_ENTRY_SUCCESS: CART_ADD_ENTRY_SUCCESS,
+        CART_ADD_ENTRY_FAIL: CART_ADD_ENTRY_FAIL,
+        CART_REMOVE_ENTRY: CART_REMOVE_ENTRY,
+        CART_REMOVE_ENTRY_SUCCESS: CART_REMOVE_ENTRY_SUCCESS,
+        CART_REMOVE_ENTRY_FAIL: CART_REMOVE_ENTRY_FAIL,
+        CART_UPDATE_ENTRY: CART_UPDATE_ENTRY,
+        CART_UPDATE_ENTRY_SUCCESS: CART_UPDATE_ENTRY_SUCCESS,
+        CART_UPDATE_ENTRY_FAIL: CART_UPDATE_ENTRY_FAIL,
+        CartAddEntry: CartAddEntry,
+        CartAddEntrySuccess: CartAddEntrySuccess,
+        CartAddEntryFail: CartAddEntryFail,
+        CartRemoveEntry: CartRemoveEntry,
+        CartRemoveEntrySuccess: CartRemoveEntrySuccess,
+        CartRemoveEntryFail: CartRemoveEntryFail,
+        CartUpdateEntry: CartUpdateEntry,
+        CartUpdateEntrySuccess: CartUpdateEntrySuccess,
+        CartUpdateEntryFail: CartUpdateEntryFail,
+        CREATE_CART: CREATE_CART,
+        CREATE_CART_FAIL: CREATE_CART_FAIL,
+        CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
+        LOAD_CART: LOAD_CART,
+        LOAD_CART_FAIL: LOAD_CART_FAIL,
+        LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+        MERGE_CART: MERGE_CART,
+        MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
+        RESET_CART_DETAILS: RESET_CART_DETAILS,
+        CreateCart: CreateCart,
+        CreateCartFail: CreateCartFail,
+        CreateCartSuccess: CreateCartSuccess,
+        LoadCart: LoadCart,
+        LoadCartFail: LoadCartFail,
+        LoadCartSuccess: LoadCartSuccess,
+        MergeCart: MergeCart,
+        MergeCartSuccess: MergeCartSuccess,
+        ResetCartDetails: ResetCartDetails
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -5533,7 +5577,7 @@
              * @return {?}
              */
             function (_) {
-                _this.store.dispatch(new AddEntry({
+                _this.store.dispatch(new CartAddEntry({
                     userId: _this.cartData.userId,
                     cartId: _this.cartData.cartId,
                     productCode: productCode,
@@ -5550,7 +5594,7 @@
          * @return {?}
          */
         function (entry) {
-            this.store.dispatch(new RemoveEntry({
+            this.store.dispatch(new CartRemoveEntry({
                 userId: this.cartData.userId,
                 cartId: this.cartData.cartId,
                 entry: entry.entryNumber,
@@ -5568,7 +5612,7 @@
          */
         function (entryNumber, quantity) {
             if (quantity > 0) {
-                this.store.dispatch(new UpdateEntry({
+                this.store.dispatch(new CartUpdateEntry({
                     userId: this.cartData.userId,
                     cartId: this.cartData.cartId,
                     entry: entryNumber,
@@ -5576,7 +5620,7 @@
                 }));
             }
             else {
-                this.store.dispatch(new RemoveEntry({
+                this.store.dispatch(new CartRemoveEntry({
                     userId: this.cartData.userId,
                     cartId: this.cartData.cartId,
                     entry: entryNumber,
@@ -5840,7 +5884,7 @@
                     });
                 })));
             })));
-            this.refresh$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS, ADD_ENTRY_SUCCESS, UPDATE_ENTRY_SUCCESS, REMOVE_ENTRY_SUCCESS), operators.map((/**
+            this.refresh$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6001,7 +6045,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.cartEntryConnector = cartEntryConnector;
-            this.addEntry$ = this.actions$.pipe(effects$a.ofType(ADD_ENTRY), operators.map((/**
+            this.addEntry$ = this.actions$.pipe(effects$a.ofType(CART_ADD_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6017,16 +6061,16 @@
                  * @return {?}
                  */
                 function (entry) {
-                    return new AddEntrySuccess(__assign({}, entry, { userId: payload.userId, cartId: payload.cartId }));
+                    return new CartAddEntrySuccess(__assign({}, entry, { userId: payload.userId, cartId: payload.cartId }));
                 })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new AddEntryFail(makeErrorSerializable(error)));
+                    return rxjs.of(new CartAddEntryFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.removeEntry$ = this.actions$.pipe(effects$a.ofType(REMOVE_ENTRY), operators.map((/**
+            this.removeEntry$ = this.actions$.pipe(effects$a.ofType(CART_REMOVE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6041,7 +6085,7 @@
                  * @return {?}
                  */
                 function () {
-                    return new RemoveEntrySuccess({
+                    return new CartRemoveEntrySuccess({
                         userId: payload.userId,
                         cartId: payload.cartId,
                     });
@@ -6050,10 +6094,10 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new RemoveEntryFail(makeErrorSerializable(error)));
+                    return rxjs.of(new CartRemoveEntryFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateEntry$ = this.actions$.pipe(effects$a.ofType(UPDATE_ENTRY), operators.map((/**
+            this.updateEntry$ = this.actions$.pipe(effects$a.ofType(CART_UPDATE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6068,7 +6112,7 @@
                  * @return {?}
                  */
                 function () {
-                    return new UpdateEntrySuccess({
+                    return new CartUpdateEntrySuccess({
                         userId: payload.userId,
                         cartId: payload.cartId,
                     });
@@ -6077,7 +6121,7 @@
                  * @return {?}
                  */
                 function (error) {
-                    return rxjs.of(new UpdateEntryFail(makeErrorSerializable(error)));
+                    return rxjs.of(new CartUpdateEntryFail(makeErrorSerializable(error)));
                 })));
             })));
         }
@@ -6422,9 +6466,9 @@
                 return __assign({}, state, { content: content,
                     entries: entries, refresh: false });
             }
-            case REMOVE_ENTRY_SUCCESS:
-            case UPDATE_ENTRY_SUCCESS:
-            case ADD_ENTRY_SUCCESS: {
+            case CART_REMOVE_ENTRY_SUCCESS:
+            case CART_UPDATE_ENTRY_SUCCESS:
+            case CART_ADD_ENTRY_SUCCESS: {
                 return __assign({}, state, { refresh: true });
             }
             case RESET_CART_DETAILS: {
@@ -29195,9 +29239,6 @@
     exports.ADD_DELIVERY_ADDRESS = ADD_DELIVERY_ADDRESS;
     exports.ADD_DELIVERY_ADDRESS_FAIL = ADD_DELIVERY_ADDRESS_FAIL;
     exports.ADD_DELIVERY_ADDRESS_SUCCESS = ADD_DELIVERY_ADDRESS_SUCCESS;
-    exports.ADD_ENTRY = ADD_ENTRY;
-    exports.ADD_ENTRY_FAIL = ADD_ENTRY_FAIL;
-    exports.ADD_ENTRY_SUCCESS = ADD_ENTRY_SUCCESS;
     exports.ADD_MESSAGE = ADD_MESSAGE;
     exports.ADD_USER_ADDRESS = ADD_USER_ADDRESS;
     exports.ADD_USER_ADDRESS_FAIL = ADD_USER_ADDRESS_FAIL;
@@ -29207,9 +29248,6 @@
     exports.AddDeliveryAddress = AddDeliveryAddress;
     exports.AddDeliveryAddressFail = AddDeliveryAddressFail;
     exports.AddDeliveryAddressSuccess = AddDeliveryAddressSuccess;
-    exports.AddEntry = AddEntry;
-    exports.AddEntryFail = AddEntryFail;
-    exports.AddEntrySuccess = AddEntrySuccess;
     exports.AddMessage = AddMessage;
     exports.AddUserAddress = AddUserAddress;
     exports.AddUserAddressFail = AddUserAddressFail;
@@ -29254,15 +29292,13 @@
     exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
-    exports.CREATE_CART = CREATE_CART;
-    exports.CREATE_CART_FAIL = CREATE_CART_FAIL;
-    exports.CREATE_CART_SUCCESS = CREATE_CART_SUCCESS;
     exports.CREATE_PAYMENT_DETAILS = CREATE_PAYMENT_DETAILS;
     exports.CREATE_PAYMENT_DETAILS_FAIL = CREATE_PAYMENT_DETAILS_FAIL;
     exports.CREATE_PAYMENT_DETAILS_SUCCESS = CREATE_PAYMENT_DETAILS_SUCCESS;
     exports.CURRENCY_CHANGE = CURRENCY_CHANGE;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
+    exports.CartActions = cartGroup_actions;
     exports.CartAdapter = CartAdapter;
     exports.CartConnector = CartConnector;
     exports.CartDataService = CartDataService;
@@ -29323,9 +29359,6 @@
     exports.ContextServiceMap = ContextServiceMap;
     exports.ConverterService = ConverterService;
     exports.CountryType = CountryType;
-    exports.CreateCart = CreateCart;
-    exports.CreateCartFail = CreateCartFail;
-    exports.CreateCartSuccess = CreateCartSuccess;
     exports.CreatePaymentDetails = CreatePaymentDetails;
     exports.CreatePaymentDetailsFail = CreatePaymentDetailsFail;
     exports.CreatePaymentDetailsSuccess = CreatePaymentDetailsSuccess;
@@ -29441,9 +29474,6 @@
     exports.LOAD_CARD_TYPES = LOAD_CARD_TYPES;
     exports.LOAD_CARD_TYPES_FAIL = LOAD_CARD_TYPES_FAIL;
     exports.LOAD_CARD_TYPES_SUCCESS = LOAD_CARD_TYPES_SUCCESS;
-    exports.LOAD_CART = LOAD_CART;
-    exports.LOAD_CART_FAIL = LOAD_CART_FAIL;
-    exports.LOAD_CART_SUCCESS = LOAD_CART_SUCCESS;
     exports.LOAD_CHECKOUT_DETAILS = LOAD_CHECKOUT_DETAILS;
     exports.LOAD_CHECKOUT_DETAILS_FAIL = LOAD_CHECKOUT_DETAILS_FAIL;
     exports.LOAD_CHECKOUT_DETAILS_SUCCESS = LOAD_CHECKOUT_DETAILS_SUCCESS;
@@ -29515,9 +29545,6 @@
     exports.LoadCardTypes = LoadCardTypes;
     exports.LoadCardTypesFail = LoadCardTypesFail;
     exports.LoadCardTypesSuccess = LoadCardTypesSuccess;
-    exports.LoadCart = LoadCart;
-    exports.LoadCartFail = LoadCartFail;
-    exports.LoadCartSuccess = LoadCartSuccess;
     exports.LoadCheckoutDetails = LoadCheckoutDetails;
     exports.LoadCheckoutDetailsFail = LoadCheckoutDetailsFail;
     exports.LoadCheckoutDetailsSuccess = LoadCheckoutDetailsSuccess;
@@ -29584,10 +29611,6 @@
     exports.LoaderSuccessAction = LoaderSuccessAction;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
-    exports.MERGE_CART = MERGE_CART;
-    exports.MERGE_CART_SUCCESS = MERGE_CART_SUCCESS;
-    exports.MergeCart = MergeCart;
-    exports.MergeCartSuccess = MergeCartSuccess;
     exports.MockDatePipe = MockDatePipe;
     exports.MockTranslatePipe = MockTranslatePipe;
     exports.NAVIGATION_DETAIL_ENTITY = NAVIGATION_DETAIL_ENTITY;
@@ -29681,9 +29704,6 @@
     exports.REGISTER_USER = REGISTER_USER;
     exports.REGISTER_USER_FAIL = REGISTER_USER_FAIL;
     exports.REGISTER_USER_SUCCESS = REGISTER_USER_SUCCESS;
-    exports.REMOVE_ENTRY = REMOVE_ENTRY;
-    exports.REMOVE_ENTRY_FAIL = REMOVE_ENTRY_FAIL;
-    exports.REMOVE_ENTRY_SUCCESS = REMOVE_ENTRY_SUCCESS;
     exports.REMOVE_MESSAGE = REMOVE_MESSAGE;
     exports.REMOVE_MESSAGES_BY_TYPE = REMOVE_MESSAGES_BY_TYPE;
     exports.REMOVE_USER = REMOVE_USER;
@@ -29691,7 +29711,6 @@
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
     exports.REMOVE_USER_RESET = REMOVE_USER_RESET;
     exports.REMOVE_USER_SUCCESS = REMOVE_USER_SUCCESS;
-    exports.RESET_CART_DETAILS = RESET_CART_DETAILS;
     exports.RESET_EMAIL = RESET_EMAIL;
     exports.RESET_GIVE_USER_CONSENT_PROCESS = RESET_GIVE_USER_CONSENT_PROCESS;
     exports.RESET_LOAD_USER_CONSENTS = RESET_LOAD_USER_CONSENTS;
@@ -29703,16 +29722,12 @@
     exports.RegisterUser = RegisterUser;
     exports.RegisterUserFail = RegisterUserFail;
     exports.RegisterUserSuccess = RegisterUserSuccess;
-    exports.RemoveEntry = RemoveEntry;
-    exports.RemoveEntryFail = RemoveEntryFail;
-    exports.RemoveEntrySuccess = RemoveEntrySuccess;
     exports.RemoveMessage = RemoveMessage;
     exports.RemoveMessagesByType = RemoveMessagesByType;
     exports.RemoveUser = RemoveUser;
     exports.RemoveUserFail = RemoveUserFail;
     exports.RemoveUserReset = RemoveUserReset;
     exports.RemoveUserSuccess = RemoveUserSuccess;
-    exports.ResetCartDetails = ResetCartDetails;
     exports.ResetGiveUserConsentProcess = ResetGiveUserConsentProcess;
     exports.ResetLoadUserConsents = ResetLoadUserConsents;
     exports.ResetPassword = ResetPassword;
@@ -29802,9 +29817,6 @@
     exports.UPDATE_EMAIL_ERROR = UPDATE_EMAIL_ERROR;
     exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
     exports.UPDATE_EMAIL_SUCCESS = UPDATE_EMAIL_SUCCESS;
-    exports.UPDATE_ENTRY = UPDATE_ENTRY;
-    exports.UPDATE_ENTRY_FAIL = UPDATE_ENTRY_FAIL;
-    exports.UPDATE_ENTRY_SUCCESS = UPDATE_ENTRY_SUCCESS;
     exports.UPDATE_PASSWORD = UPDATE_PASSWORD;
     exports.UPDATE_PASSWORD_FAIL = UPDATE_PASSWORD_FAIL;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
@@ -29830,9 +29842,6 @@
     exports.UpdateEmailAction = UpdateEmailAction;
     exports.UpdateEmailErrorAction = UpdateEmailErrorAction;
     exports.UpdateEmailSuccessAction = UpdateEmailSuccessAction;
-    exports.UpdateEntry = UpdateEntry;
-    exports.UpdateEntryFail = UpdateEntryFail;
-    exports.UpdateEntrySuccess = UpdateEntrySuccess;
     exports.UpdatePassword = UpdatePassword;
     exports.UpdatePasswordFail = UpdatePasswordFail;
     exports.UpdatePasswordReset = UpdatePasswordReset;
