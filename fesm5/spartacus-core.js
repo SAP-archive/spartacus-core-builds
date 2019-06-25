@@ -20484,7 +20484,15 @@ var defaultI18nConfig = {
             cart: ['cartDetails', 'cartItems', 'orderCost'],
             address: ['addressForm', 'addressBook', 'addressCard'],
             payment: ['paymentForm', 'paymentMethods', 'paymentCard'],
-            myAccount: ['orderDetails', 'orderHistory', 'closeAccount'],
+            myAccount: [
+                'orderDetails',
+                'orderHistory',
+                'closeAccount',
+                'updateEmailForm',
+                'updatePasswordForm',
+                'updateProfileForm',
+                'consentManagementForm',
+            ],
             storeFinder: ['storeFinder'],
             pwa: ['pwa'],
             checkout: [
@@ -20504,15 +20512,7 @@ var defaultI18nConfig = {
                 'addToCart',
                 'CMSTabParagraphContainer',
             ],
-            user: [
-                'forgottenPassword',
-                'loginForm',
-                'register',
-                'updateEmailForm',
-                'updatePasswordForm',
-                'updateProfileForm',
-                'consentManagementForm',
-            ],
+            user: ['forgottenPassword', 'loginForm', 'register'],
         },
     },
 };
