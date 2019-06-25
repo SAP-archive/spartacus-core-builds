@@ -1,13 +1,16 @@
-export declare type ContextParamPersistence = 'session' | 'cookie' | 'route' | 'domain';
-export interface ContextParams {
-    persistence?: ContextParamPersistence;
-    defaultValue?: string;
+export declare enum ContextPersistence {
+    NONE = "none",
+    ROUTE = "route"
+}
+export interface ContextParameter {
+    persistence?: ContextPersistence | string;
+    default?: string;
     values?: string[];
 }
 export declare abstract class SiteContextConfig {
-    siteContext?: {
+    context?: {
         parameters?: {
-            [contextName: string]: ContextParams;
+            [contextName: string]: ContextParameter;
         };
         urlEncodingParameters?: string[];
     };

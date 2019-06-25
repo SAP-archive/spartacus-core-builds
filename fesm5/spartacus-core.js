@@ -276,6 +276,27 @@ var ConfigModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @enum {string} */
+var ContextPersistence = {
+    NONE: 'none',
+    ROUTE: 'route',
+};
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+SiteContextConfig = /** @class */ (function () {
+    function SiteContextConfig() {
+    }
+    return SiteContextConfig;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @abstract
  */
@@ -288,7 +309,7 @@ OccConfig = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     return OccConfig;
-}(ServerConfig));
+}(SiteContextConfig));
 
 /**
  * @fileoverview added by tsickle
@@ -2424,12 +2445,876 @@ var DynamicTemplate = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Helper function for safely getting context parameter config
+ *
+ * @param {?} config
+ * @param {?} parameter
+ * @return {?}
+ */
+function getContextParameter(config, parameter) {
+    return ((config.context &&
+        config.context.parameters &&
+        config.context.parameters[parameter]) ||
+        {});
+}
+/**
+ * Helper function for calculating default value for context parameter from config
+ *
+ * @param {?} config
+ * @param {?} parameter
+ * @return {?}
+ */
+function getContextParameterDefault(config, parameter) {
+    /** @type {?} */
+    var param = getContextParameter(config, parameter);
+    if (param.default !== undefined) {
+        return param.default;
+    }
+    return param.values && param.values.length ? param.values[0] : undefined;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$1 = {
+    entities: null,
+    activeLanguage: null,
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$1(state, action) {
+    if (state === void 0) { state = initialState$1; }
+    switch (action.type) {
+        case LOAD_LANGUAGES_SUCCESS: {
+            /** @type {?} */
+            var languages = action.payload;
+            /** @type {?} */
+            var entities = languages.reduce((/**
+             * @param {?} langEntities
+             * @param {?} language
+             * @return {?}
+             */
+            function (langEntities, language) {
+                var _a;
+                return __assign({}, langEntities, (_a = {}, _a[language.isocode] = language, _a));
+            }), __assign({}, state.entities));
+            return __assign({}, state, { entities: entities });
+        }
+        case SET_ACTIVE_LANGUAGE: {
+            /** @type {?} */
+            var isocode = action.payload;
+            return __assign({}, state, { activeLanguage: isocode });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var LOAD_CURRENCIES = '[Site-context] Load Currencies';
+/** @type {?} */
+var LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
+/** @type {?} */
+var LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
+/** @type {?} */
+var SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
+/** @type {?} */
+var CURRENCY_CHANGE = '[Site-context] Currency Change';
+var LoadCurrencies = /** @class */ (function () {
+    function LoadCurrencies() {
+        this.type = LOAD_CURRENCIES;
+    }
+    return LoadCurrencies;
+}());
+var LoadCurrenciesFail = /** @class */ (function () {
+    function LoadCurrenciesFail(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_FAIL;
+    }
+    return LoadCurrenciesFail;
+}());
+var LoadCurrenciesSuccess = /** @class */ (function () {
+    function LoadCurrenciesSuccess(payload) {
+        this.payload = payload;
+        this.type = LOAD_CURRENCIES_SUCCESS;
+    }
+    return LoadCurrenciesSuccess;
+}());
+var SetActiveCurrency = /** @class */ (function () {
+    function SetActiveCurrency(payload) {
+        this.payload = payload;
+        this.type = SET_ACTIVE_CURRENCY;
+    }
+    return SetActiveCurrency;
+}());
+var CurrencyChange = /** @class */ (function () {
+    function CurrencyChange() {
+        this.type = CURRENCY_CHANGE;
+    }
+    return CurrencyChange;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$2 = {
+    entities: null,
+    activeCurrency: null,
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$2(state, action) {
+    if (state === void 0) { state = initialState$2; }
+    switch (action.type) {
+        case LOAD_CURRENCIES_SUCCESS: {
+            /** @type {?} */
+            var currencies = action.payload;
+            /** @type {?} */
+            var entities = currencies.reduce((/**
+             * @param {?} currEntities
+             * @param {?} currency
+             * @return {?}
+             */
+            function (currEntities, currency) {
+                var _a;
+                return __assign({}, currEntities, (_a = {}, _a[currency.isocode] = currency, _a));
+            }), __assign({}, state.entities));
+            return __assign({}, state, { entities: entities });
+        }
+        case SET_ACTIVE_CURRENCY: {
+            /** @type {?} */
+            var isocode = action.payload;
+            return __assign({}, state, { activeCurrency: isocode });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var initialState$3 = {
+    details: {},
+    activeSite: '',
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$3(state, action) {
+    if (state === void 0) { state = initialState$3; }
+    switch (action.type) {
+        case LOAD_BASE_SITE_SUCCESS: {
+            return __assign({}, state, { details: action.payload });
+        }
+        case SET_ACTIVE_BASE_SITE: {
+            return __assign({}, state, { activeSite: action.payload });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$1() {
+    return {
+        languages: reducer$1,
+        currencies: reducer$2,
+        baseSite: reducer$3,
+    };
+}
+/** @type {?} */
+var reducerToken$1 = new InjectionToken('SiteContextReducers');
+/** @type {?} */
+var reducerProvider$1 = {
+    provide: reducerToken$1,
+    useFactory: getReducers$1,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        }));
+    }
+    if (error instanceof HttpErrorResponse) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            error: error.error,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        }));
+    }
+    return error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+SiteAdapter = /** @class */ (function () {
+    function SiteAdapter() {
+    }
+    return SiteAdapter;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SiteConnector = /** @class */ (function () {
+    function SiteConnector(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @return {?}
+     */
+    SiteConnector.prototype.getLanguages = /**
+     * @return {?}
+     */
+    function () {
+        return this.adapter.loadLanguages();
+    };
+    /**
+     * @return {?}
+     */
+    SiteConnector.prototype.getCurrencies = /**
+     * @return {?}
+     */
+    function () {
+        return this.adapter.loadCurrencies();
+    };
+    /**
+     * @param {?=} type
+     * @return {?}
+     */
+    SiteConnector.prototype.getCountries = /**
+     * @param {?=} type
+     * @return {?}
+     */
+    function (type) {
+        return this.adapter.loadCountries(type);
+    };
+    /**
+     * @param {?} countryIsoCode
+     * @return {?}
+     */
+    SiteConnector.prototype.getRegions = /**
+     * @param {?} countryIsoCode
+     * @return {?}
+     */
+    function (countryIsoCode) {
+        return this.adapter.loadRegions(countryIsoCode);
+    };
+    /**
+     * @return {?}
+     */
+    SiteConnector.prototype.getBaseSite = /**
+     * @return {?}
+     */
+    function () {
+        return this.adapter.loadBaseSite();
+    };
+    SiteConnector.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    SiteConnector.ctorParameters = function () { return [
+        { type: SiteAdapter }
+    ]; };
+    /** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+    return SiteConnector;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var LanguagesEffects = /** @class */ (function () {
+    function LanguagesEffects(actions$, siteConnector, winRef) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.winRef = winRef;
+        this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap((/**
+         * @return {?}
+         */
+        function () {
+            return _this.siteConnector.getLanguages().pipe(map((/**
+             * @param {?} languages
+             * @return {?}
+             */
+            function (languages) { return new LoadLanguagesSuccess(languages); })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new LoadLanguagesFail(makeErrorSerializable(error)));
+            })));
+        })));
+        this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) {
+            if (_this.winRef.sessionStorage) {
+                _this.winRef.sessionStorage.setItem('language', action.payload);
+            }
+        })), map((/**
+         * @return {?}
+         */
+        function () { return new LanguageChange(); })));
+    }
+    LanguagesEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    LanguagesEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: SiteConnector },
+        { type: WindowRef }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], LanguagesEffects.prototype, "activateLanguage$", void 0);
+    return LanguagesEffects;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var CurrenciesEffects = /** @class */ (function () {
+    function CurrenciesEffects(actions$, siteConnector, winRef) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.winRef = winRef;
+        this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap((/**
+         * @return {?}
+         */
+        function () {
+            return _this.siteConnector.getCurrencies().pipe(map((/**
+             * @param {?} currencies
+             * @return {?}
+             */
+            function (currencies) { return new LoadCurrenciesSuccess(currencies); })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new LoadCurrenciesFail(makeErrorSerializable(error)));
+            })));
+        })));
+        this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) {
+            if (_this.winRef.sessionStorage) {
+                _this.winRef.sessionStorage.setItem('currency', action.payload);
+            }
+        })), map((/**
+         * @return {?}
+         */
+        function () { return new CurrencyChange(); })));
+    }
+    CurrenciesEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CurrenciesEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: SiteConnector },
+        { type: WindowRef }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
+    return CurrenciesEffects;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var BaseSiteEffects = /** @class */ (function () {
+    function BaseSiteEffects(actions$, siteConnector) {
+        var _this = this;
+        this.actions$ = actions$;
+        this.siteConnector = siteConnector;
+        this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap((/**
+         * @return {?}
+         */
+        function () {
+            return _this.siteConnector.getBaseSite().pipe(map((/**
+             * @param {?} baseSite
+             * @return {?}
+             */
+            function (baseSite) { return new LoadBaseSiteSuccess(baseSite); })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new LoadBaseSiteFail(makeErrorSerializable(error)));
+            })));
+        })));
+    }
+    BaseSiteEffects.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    BaseSiteEffects.ctorParameters = function () { return [
+        { type: Actions },
+        { type: SiteConnector }
+    ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+    return BaseSiteEffects;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var effects$1 = [
+    LanguagesEffects,
+    CurrenciesEffects,
+    BaseSiteEffects,
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var activeLanguageSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.activeLanguage; });
+/** @type {?} */
+var languagesEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.entities; });
+var ɵ2$1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.languages; };
+/** @type {?} */
+var getLanguagesState = createSelector(getSiteContextState, (ɵ2$1));
+/** @type {?} */
+var getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
+/** @type {?} */
+var getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
+var ɵ3$1 = /**
+ * @param {?} entities
+ * @return {?}
+ */
+function (entities) {
+    return entities
+        ? Object.keys(entities).map((/**
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) { return entities[isocode]; }))
+        : null;
+};
+/** @type {?} */
+var getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$1));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var currenciesEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.entities; });
+/** @type {?} */
+var activeCurrencySelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.activeCurrency; });
+var ɵ2$2 = /**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.currencies; };
+/** @type {?} */
+var getCurrenciesState = createSelector(getSiteContextState, (ɵ2$2));
+/** @type {?} */
+var getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
+/** @type {?} */
+var getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
+var ɵ3$2 = /**
+ * @param {?} entities
+ * @return {?}
+ */
+function (entities) {
+    return entities
+        ? Object.keys(entities).map((/**
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) { return entities[isocode]; }))
+        : null;
+};
+/** @type {?} */
+var getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$2));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Facade that provides easy access to language state, actions and selectors.
+ */
+var LanguageService = /** @class */ (function () {
+    function LanguageService(store, winRef) {
+        this.store = store;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the languages supported by the current store.
+     */
+    /**
+     * Represents all the languages supported by the current store.
+     * @return {?}
+     */
+    LanguageService.prototype.getAll = /**
+     * Represents all the languages supported by the current store.
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.store.pipe(select(getAllLanguages), tap((/**
+         * @param {?} languages
+         * @return {?}
+         */
+        function (languages) {
+            if (!languages) {
+                _this.store.dispatch(new LoadLanguages());
+            }
+        })), filter(Boolean));
+    };
+    /**
+     * Represents the isocode of the active language.
+     */
+    /**
+     * Represents the isocode of the active language.
+     * @return {?}
+     */
+    LanguageService.prototype.getActive = /**
+     * Represents the isocode of the active language.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getActiveLanguage), filter(Boolean));
+    };
+    /**
+     * Sets the active language.
+     */
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    LanguageService.prototype.setActive = /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    function (isocode) {
+        var _this = this;
+        return this.store
+            .pipe(select(getActiveLanguage), take(1))
+            .subscribe((/**
+         * @param {?} activeLanguage
+         * @return {?}
+         */
+        function (activeLanguage) {
+            if (activeLanguage !== isocode) {
+                _this.store.dispatch(new SetActiveLanguage(isocode));
+            }
+        }));
+    };
+    /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     */
+    /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     * @param {?} defaultLanguage
+     * @return {?}
+     */
+    LanguageService.prototype.initialize = /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     * @param {?} defaultLanguage
+     * @return {?}
+     */
+    function (defaultLanguage) {
+        if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
+            this.setActive(this.sessionStorage.getItem('language'));
+        }
+        else {
+            this.setActive(defaultLanguage);
+        }
+    };
+    LanguageService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    LanguageService.ctorParameters = function () { return [
+        { type: Store },
+        { type: WindowRef }
+    ]; };
+    return LanguageService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Facade that provides easy access to curreny state, actions and selectors.
+ */
+var CurrencyService = /** @class */ (function () {
+    function CurrencyService(store, winRef) {
+        this.store = store;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the currencies supported by the current store.
+     */
+    /**
+     * Represents all the currencies supported by the current store.
+     * @return {?}
+     */
+    CurrencyService.prototype.getAll = /**
+     * Represents all the currencies supported by the current store.
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.store.pipe(select(getAllCurrencies), tap((/**
+         * @param {?} currencies
+         * @return {?}
+         */
+        function (currencies) {
+            if (!currencies) {
+                _this.store.dispatch(new LoadCurrencies());
+            }
+        })), filter(Boolean));
+    };
+    /**
+     * Represents the isocode of the active currency.
+     */
+    /**
+     * Represents the isocode of the active currency.
+     * @return {?}
+     */
+    CurrencyService.prototype.getActive = /**
+     * Represents the isocode of the active currency.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getActiveCurrency), filter(Boolean));
+    };
+    /**
+     * Sets the active language.
+     */
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    CurrencyService.prototype.setActive = /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    function (isocode) {
+        var _this = this;
+        return this.store
+            .pipe(select(getActiveCurrency), take(1))
+            .subscribe((/**
+         * @param {?} activeCurrency
+         * @return {?}
+         */
+        function (activeCurrency) {
+            if (activeCurrency !== isocode) {
+                _this.store.dispatch(new SetActiveCurrency(isocode));
+            }
+        }));
+    };
+    /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     */
+    /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     * @param {?} defaultCurrency
+     * @return {?}
+     */
+    CurrencyService.prototype.initialize = /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     * @param {?} defaultCurrency
+     * @return {?}
+     */
+    function (defaultCurrency) {
+        if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
+            this.setActive(this.sessionStorage.getItem('currency'));
+        }
+        else {
+            this.setActive(defaultCurrency);
+        }
+    };
+    CurrencyService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CurrencyService.ctorParameters = function () { return [
+        { type: Store },
+        { type: WindowRef }
+    ]; };
+    return CurrencyService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ContextServiceMap = /** @class */ (function () {
+    function ContextServiceMap() {
+    }
+    return ContextServiceMap;
+}());
+/** @type {?} */
+var LANGUAGE_CONTEXT_ID = 'language';
+/** @type {?} */
+var CURRENCY_CONTEXT_ID = 'currency';
+/** @type {?} */
+var BASE_SITE_CONTEXT_ID = 'baseSite';
+/**
+ * @return {?}
+ */
+function serviceMapFactory() {
+    var _a;
+    return _a = {},
+        _a[LANGUAGE_CONTEXT_ID] = LanguageService,
+        _a[CURRENCY_CONTEXT_ID] = CurrencyService,
+        _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
+        _a;
+}
+/** @type {?} */
+var contextServiceMapProvider = {
+    provide: ContextServiceMap,
+    useFactory: serviceMapFactory,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var OccEndpointsService = /** @class */ (function () {
     function OccEndpointsService(config, baseSiteService) {
         var _this = this;
         this.config = config;
         this.baseSiteService = baseSiteService;
-        this.activeBaseSite = (this.config.site && this.config.site.baseSite) || '';
+        this.activeBaseSite =
+            getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID) || '';
         if (this.baseSiteService) {
             this.baseSiteService
                 .getActive()
@@ -3238,34 +4123,6 @@ var StateModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @param {?} error
- * @return {?}
- */
-function makeErrorSerializable(error) {
-    if (error instanceof Error) {
-        return (/** @type {?} */ ({
-            message: error.message,
-            type: error.name,
-            reason: error.stack,
-        }));
-    }
-    if (error instanceof HttpErrorResponse) {
-        return (/** @type {?} */ ({
-            message: error.message,
-            error: error.error,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        }));
-    }
-    return error;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -3417,7 +4274,7 @@ var UserTokenEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var effects$1 = [UserTokenEffects, ClientTokenEffect];
+var effects$2 = [UserTokenEffects, ClientTokenEffect];
 
 /**
  * @fileoverview added by tsickle
@@ -3485,14 +4342,14 @@ function loaderReducer(loadActionType, reducer) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$1 = (/** @type {?} */ ({}));
+var initialState$4 = (/** @type {?} */ ({}));
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$1(state, action) {
-    if (state === void 0) { state = initialState$1; }
+function reducer$4(state, action) {
+    if (state === void 0) { state = initialState$4; }
     switch (action.type) {
         case LOAD_USER_TOKEN:
         case REFRESH_USER_TOKEN: {
@@ -3517,18 +4374,18 @@ function reducer$1(state, action) {
 /**
  * @return {?}
  */
-function getReducers$1() {
+function getReducers$2() {
     return {
-        userToken: combineReducers({ token: reducer$1 }),
+        userToken: combineReducers({ token: reducer$4 }),
         clientToken: loaderReducer(CLIENT_TOKEN_DATA),
     };
 }
 /** @type {?} */
-var reducerToken$1 = new InjectionToken('AuthReducers');
+var reducerToken$2 = new InjectionToken('AuthReducers');
 /** @type {?} */
-var reducerProvider$1 = {
-    provide: reducerToken$1,
-    useFactory: getReducers$1,
+var reducerProvider$2 = {
+    provide: reducerToken$2,
+    useFactory: getReducers$2,
 };
 /**
  * @param {?} reducer
@@ -3580,11 +4437,11 @@ var AuthStoreModule = /** @class */ (function () {
                         CommonModule,
                         HttpClientModule,
                         StateModule,
-                        StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
-                        EffectsModule.forFeature(effects$1),
+                        StoreModule.forFeature(AUTH_FEATURE, reducerToken$2, { metaReducers: metaReducers }),
+                        EffectsModule.forFeature(effects$2),
                         ConfigModule.withConfigFactory(authStoreConfigFactory),
                     ],
-                    providers: [reducerProvider$1],
+                    providers: [reducerProvider$2],
                 },] }
     ];
     return AuthStoreModule;
@@ -4157,7 +5014,7 @@ var getCartState = createSelector(getActiveCartState, (ɵ1$3));
 var getCartContent = createSelector(getCartState, getCartContentSelector);
 /** @type {?} */
 var getCartRefresh = createSelector(getCartState, getRefreshSelector);
-var ɵ2$1 = /**
+var ɵ2$3 = /**
  * @param {?} state
  * @return {?}
  */
@@ -4167,14 +5024,14 @@ function (state) {
         !loaderValueSelector(state).refresh;
 };
 /** @type {?} */
-var getCartLoaded = createSelector(getActiveCartState, (ɵ2$1));
-var ɵ3$1 = /**
+var getCartLoaded = createSelector(getActiveCartState, (ɵ2$3));
+var ɵ3$3 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderLoadingSelector(state); };
 /** @type {?} */
-var getCartLoading = createSelector(getActiveCartState, (ɵ3$1));
+var getCartLoading = createSelector(getActiveCartState, (ɵ3$3));
 /** @type {?} */
 var getCartMergeComplete = createSelector(getCartState, getCartMergeCompleteSelector);
 /** @type {?} */
@@ -4806,59 +5663,6 @@ var CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormalize
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-var LOAD_CURRENCIES = '[Site-context] Load Currencies';
-/** @type {?} */
-var LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
-/** @type {?} */
-var LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
-/** @type {?} */
-var SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
-/** @type {?} */
-var CURRENCY_CHANGE = '[Site-context] Currency Change';
-var LoadCurrencies = /** @class */ (function () {
-    function LoadCurrencies() {
-        this.type = LOAD_CURRENCIES;
-    }
-    return LoadCurrencies;
-}());
-var LoadCurrenciesFail = /** @class */ (function () {
-    function LoadCurrenciesFail(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_FAIL;
-    }
-    return LoadCurrenciesFail;
-}());
-var LoadCurrenciesSuccess = /** @class */ (function () {
-    function LoadCurrenciesSuccess(payload) {
-        this.payload = payload;
-        this.type = LOAD_CURRENCIES_SUCCESS;
-    }
-    return LoadCurrenciesSuccess;
-}());
-var SetActiveCurrency = /** @class */ (function () {
-    function SetActiveCurrency(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_CURRENCY;
-    }
-    return SetActiveCurrency;
-}());
-var CurrencyChange = /** @class */ (function () {
-    function CurrencyChange() {
-        this.type = CURRENCY_CHANGE;
-    }
-    return CurrencyChange;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var CartEffects = /** @class */ (function () {
     function CartEffects(actions$, cartConnector, cartData) {
         var _this = this;
@@ -5134,7 +5938,7 @@ var CartEntryEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var effects$2 = [CartEffects, CartEntryEffects];
+var effects$3 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
@@ -5405,7 +6209,7 @@ var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$2 = {
+var initialState$5 = {
     content: {},
     entries: {},
     refresh: false,
@@ -5416,8 +6220,8 @@ var initialState$2 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$2(state, action) {
-    if (state === void 0) { state = initialState$2; }
+function reducer$5(state, action) {
+    if (state === void 0) { state = initialState$5; }
     switch (action.type) {
         case MERGE_CART: {
             return __assign({}, state, { cartMergeComplete: false });
@@ -5474,17 +6278,17 @@ function reducer$2(state, action) {
 /**
  * @return {?}
  */
-function getReducers$2() {
+function getReducers$3() {
     return {
-        active: loaderReducer(CART_DATA, reducer$2),
+        active: loaderReducer(CART_DATA, reducer$5),
     };
 }
 /** @type {?} */
-var reducerToken$2 = new InjectionToken('CartReducers');
+var reducerToken$3 = new InjectionToken('CartReducers');
 /** @type {?} */
-var reducerProvider$2 = {
-    provide: reducerToken$2,
-    useFactory: getReducers$2,
+var reducerProvider$3 = {
+    provide: reducerToken$3,
+    useFactory: getReducers$3,
 };
 /**
  * @param {?} reducer
@@ -5536,11 +6340,11 @@ var CartStoreModule = /** @class */ (function () {
                     imports: [
                         CommonModule,
                         HttpClientModule,
-                        StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
-                        EffectsModule.forFeature(effects$2),
+                        StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
+                        EffectsModule.forFeature(effects$3),
                         ConfigModule.withConfigFactory(cartStoreConfigFactory),
                     ],
-                    providers: [reducerProvider$2],
+                    providers: [reducerProvider$3],
                 },] }
     ];
     return CartStoreModule;
@@ -5707,7 +6511,7 @@ var getCheckoutSteps = createSelector(getCheckoutStepsState, (ɵ1$4));
 var getDeliveryAddress = createSelector(getCheckoutSteps, getDeliveryAddressSelector);
 /** @type {?} */
 var getDeliveryMode = createSelector(getCheckoutSteps, getDeliveryModeSelector);
-var ɵ2$2 = /**
+var ɵ2$4 = /**
  * @param {?} deliveryMode
  * @return {?}
  */
@@ -5719,8 +6523,8 @@ function (deliveryMode) {
     function (code) { return deliveryMode.supported[code]; }));
 };
 /** @type {?} */
-var getSupportedDeliveryModes = createSelector(getDeliveryMode, (ɵ2$2));
-var ɵ3$2 = /**
+var getSupportedDeliveryModes = createSelector(getDeliveryMode, (ɵ2$4));
+var ɵ3$4 = /**
  * @param {?} deliveryMode
  * @return {?}
  */
@@ -5728,7 +6532,7 @@ function (deliveryMode) {
     return deliveryMode.selected;
 };
 /** @type {?} */
-var getSelectedCode = createSelector(getDeliveryMode, (ɵ3$2));
+var getSelectedCode = createSelector(getDeliveryMode, (ɵ3$4));
 var ɵ4$1 = /**
  * @param {?} deliveryMode
  * @return {?}
@@ -5760,7 +6564,7 @@ var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ5));
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$3 = {
+var initialState$6 = {
     entities: {},
 };
 /**
@@ -5768,8 +6572,8 @@ var initialState$3 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$3(state, action) {
-    if (state === void 0) { state = initialState$3; }
+function reducer$6(state, action) {
+    if (state === void 0) { state = initialState$6; }
     switch (action.type) {
         case LOAD_CARD_TYPES_SUCCESS: {
             /** @type {?} */
@@ -5787,7 +6591,7 @@ function reducer$3(state, action) {
             return __assign({}, state, { entities: entities });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$3;
+            return initialState$6;
         }
     }
     return state;
@@ -5831,7 +6635,7 @@ var getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$5));
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$4 = {
+var initialState$7 = {
     results: {},
 };
 /**
@@ -5839,8 +6643,8 @@ var initialState$4 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$4(state, action) {
-    if (state === void 0) { state = initialState$4; }
+function reducer$7(state, action) {
+    if (state === void 0) { state = initialState$7; }
     switch (action.type) {
         case VERIFY_ADDRESS_SUCCESS: {
             /** @type {?} */
@@ -8095,7 +8899,7 @@ var AddressVerificationEffect = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var effects$3 = [
+var effects$4 = [
     CheckoutEffects,
     AddressVerificationEffect,
     CardTypesEffects,
@@ -8106,7 +8910,7 @@ var effects$3 = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$5 = {
+var initialState$8 = {
     address: {},
     deliveryMode: {
         supported: {},
@@ -8120,8 +8924,8 @@ var initialState$5 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$5(state, action) {
-    if (state === void 0) { state = initialState$5; }
+function reducer$8(state, action) {
+    if (state === void 0) { state = initialState$8; }
     switch (action.type) {
         case ADD_DELIVERY_ADDRESS_SUCCESS:
         case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -8170,7 +8974,7 @@ function reducer$5(state, action) {
             return __assign({}, state, { orderDetails: orderDetails });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$5;
+            return initialState$8;
         }
         case CLEAR_CHECKOUT_STEP: {
             /** @type {?} */
@@ -8206,19 +9010,19 @@ function reducer$5(state, action) {
 /**
  * @return {?}
  */
-function getReducers$3() {
+function getReducers$4() {
     return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$5),
-        cardTypes: reducer$3,
-        addressVerification: reducer$4,
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$8),
+        cardTypes: reducer$6,
+        addressVerification: reducer$7,
     };
 }
 /** @type {?} */
-var reducerToken$3 = new InjectionToken('CheckoutReducers');
+var reducerToken$4 = new InjectionToken('CheckoutReducers');
 /** @type {?} */
-var reducerProvider$3 = {
-    provide: reducerToken$3,
-    useFactory: getReducers$3,
+var reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 
 /**
@@ -9890,14 +10694,14 @@ function (nodeId) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$6 = undefined;
+var initialState$9 = undefined;
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$6(state, action) {
-    if (state === void 0) { state = initialState$6; }
+function reducer$9(state, action) {
+    if (state === void 0) { state = initialState$9; }
     switch (action.type) {
         case LOAD_NAVIGATION_ITEMS_SUCCESS: {
             if (action.payload.components) {
@@ -9925,15 +10729,15 @@ function reducer$6(state, action) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$7 = { entities: {} };
+var initialState$a = { entities: {} };
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$7(state, action) {
+function reducer$a(state, action) {
     var _a;
-    if (state === void 0) { state = initialState$7; }
+    if (state === void 0) { state = initialState$a; }
     switch (action.type) {
         case LOAD_PAGE_DATA_SUCCESS: {
             /** @type {?} */
@@ -9949,26 +10753,26 @@ function reducer$7(state, action) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$8 = undefined;
+var initialState$b = undefined;
 /**
  * @param {?} entityType
  * @return {?}
  */
-function reducer$8(entityType) {
+function reducer$b(entityType) {
     return (/**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
     function (state, action) {
-        if (state === void 0) { state = initialState$8; }
+        if (state === void 0) { state = initialState$b; }
         if (action.meta && action.meta.entityType === entityType) {
             switch (action.type) {
                 case LOAD_PAGE_DATA_SUCCESS: {
                     return action.payload.pageId;
                 }
                 case LOAD_PAGE_DATA_FAIL: {
-                    return initialState$8;
+                    return initialState$b;
                 }
                 case SET_PAGE_FAIL_INDEX: {
                     return action.payload;
@@ -9986,27 +10790,27 @@ function reducer$8(entityType) {
 /**
  * @return {?}
  */
-function getReducers$4() {
+function getReducers$5() {
     return {
         page: combineReducers({
-            pageData: reducer$7,
+            pageData: reducer$a,
             index: combineReducers({
-                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$8(PageType.CONTENT_PAGE)),
-                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$8(PageType.PRODUCT_PAGE)),
-                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$8(PageType.CATEGORY_PAGE)),
-                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$8(PageType.CATALOG_PAGE)),
+                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$b(PageType.CONTENT_PAGE)),
+                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$b(PageType.PRODUCT_PAGE)),
+                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$b(PageType.CATEGORY_PAGE)),
+                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$b(PageType.CATALOG_PAGE)),
             }),
         }),
         component: entityLoaderReducer(COMPONENT_ENTITY),
-        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$6),
+        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$9),
     };
 }
 /** @type {?} */
-var reducerToken$4 = new InjectionToken('CmsReducers');
+var reducerToken$5 = new InjectionToken('CmsReducers');
 /** @type {?} */
-var reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
+var reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
 };
 /**
  * @param {?} reducer
@@ -10766,7 +11570,7 @@ var NavigationEntryItemEffects = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var effects$4 = [
+var effects$5 = [
     PageEffects,
     ComponentEffects,
     NavigationEntryItemEffects,
@@ -11414,11 +12218,11 @@ var CmsStoreModule = /** @class */ (function () {
                         CommonModule,
                         HttpClientModule,
                         StateModule,
-                        StoreModule.forFeature(CMS_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                        EffectsModule.forFeature(effects$4),
+                        StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
+                        EffectsModule.forFeature(effects$5),
                         ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                     ],
-                    providers: [reducerProvider$4],
+                    providers: [reducerProvider$5],
                 },] }
     ];
     return CmsStoreModule;
@@ -11710,10 +12514,10 @@ var CheckoutStoreModule = /** @class */ (function () {
                     imports: [
                         CommonModule,
                         HttpClientModule,
-                        StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$3),
-                        EffectsModule.forFeature(effects$3),
+                        StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4),
+                        EffectsModule.forFeature(effects$4),
                     ],
-                    providers: [reducerProvider$3],
+                    providers: [reducerProvider$4],
                 },] }
     ];
     return CheckoutStoreModule;
@@ -11784,755 +12588,6 @@ var CxApiModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-var initialState$9 = {
-    entities: null,
-    activeLanguage: null,
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$9(state, action) {
-    if (state === void 0) { state = initialState$9; }
-    switch (action.type) {
-        case LOAD_LANGUAGES_SUCCESS: {
-            /** @type {?} */
-            var languages = action.payload;
-            /** @type {?} */
-            var entities = languages.reduce((/**
-             * @param {?} langEntities
-             * @param {?} language
-             * @return {?}
-             */
-            function (langEntities, language) {
-                var _a;
-                return __assign({}, langEntities, (_a = {}, _a[language.isocode] = language, _a));
-            }), __assign({}, state.entities));
-            return __assign({}, state, { entities: entities });
-        }
-        case SET_ACTIVE_LANGUAGE: {
-            /** @type {?} */
-            var isocode = action.payload;
-            return __assign({}, state, { activeLanguage: isocode });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var initialState$a = {
-    entities: null,
-    activeCurrency: null,
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$a(state, action) {
-    if (state === void 0) { state = initialState$a; }
-    switch (action.type) {
-        case LOAD_CURRENCIES_SUCCESS: {
-            /** @type {?} */
-            var currencies = action.payload;
-            /** @type {?} */
-            var entities = currencies.reduce((/**
-             * @param {?} currEntities
-             * @param {?} currency
-             * @return {?}
-             */
-            function (currEntities, currency) {
-                var _a;
-                return __assign({}, currEntities, (_a = {}, _a[currency.isocode] = currency, _a));
-            }), __assign({}, state.entities));
-            return __assign({}, state, { entities: entities });
-        }
-        case SET_ACTIVE_CURRENCY: {
-            /** @type {?} */
-            var isocode = action.payload;
-            return __assign({}, state, { activeCurrency: isocode });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var initialState$b = {
-    details: {},
-    activeSite: '',
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$b(state, action) {
-    if (state === void 0) { state = initialState$b; }
-    switch (action.type) {
-        case LOAD_BASE_SITE_SUCCESS: {
-            return __assign({}, state, { details: action.payload });
-        }
-        case SET_ACTIVE_BASE_SITE: {
-            return __assign({}, state, { activeSite: action.payload });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$5() {
-    return {
-        languages: reducer$9,
-        currencies: reducer$a,
-        baseSite: reducer$b,
-    };
-}
-/** @type {?} */
-var reducerToken$5 = new InjectionToken('SiteContextReducers');
-/** @type {?} */
-var reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-SiteAdapter = /** @class */ (function () {
-    function SiteAdapter() {
-    }
-    return SiteAdapter;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var SiteConnector = /** @class */ (function () {
-    function SiteConnector(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @return {?}
-     */
-    SiteConnector.prototype.getLanguages = /**
-     * @return {?}
-     */
-    function () {
-        return this.adapter.loadLanguages();
-    };
-    /**
-     * @return {?}
-     */
-    SiteConnector.prototype.getCurrencies = /**
-     * @return {?}
-     */
-    function () {
-        return this.adapter.loadCurrencies();
-    };
-    /**
-     * @param {?=} type
-     * @return {?}
-     */
-    SiteConnector.prototype.getCountries = /**
-     * @param {?=} type
-     * @return {?}
-     */
-    function (type) {
-        return this.adapter.loadCountries(type);
-    };
-    /**
-     * @param {?} countryIsoCode
-     * @return {?}
-     */
-    SiteConnector.prototype.getRegions = /**
-     * @param {?} countryIsoCode
-     * @return {?}
-     */
-    function (countryIsoCode) {
-        return this.adapter.loadRegions(countryIsoCode);
-    };
-    /**
-     * @return {?}
-     */
-    SiteConnector.prototype.getBaseSite = /**
-     * @return {?}
-     */
-    function () {
-        return this.adapter.loadBaseSite();
-    };
-    SiteConnector.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    SiteConnector.ctorParameters = function () { return [
-        { type: SiteAdapter }
-    ]; };
-    /** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
-    return SiteConnector;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var LanguagesEffects = /** @class */ (function () {
-    function LanguagesEffects(actions$, siteConnector, winRef) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.winRef = winRef;
-        this.loadLanguages$ = this.actions$.pipe(ofType(LOAD_LANGUAGES), exhaustMap((/**
-         * @return {?}
-         */
-        function () {
-            return _this.siteConnector.getLanguages().pipe(map((/**
-             * @param {?} languages
-             * @return {?}
-             */
-            function (languages) { return new LoadLanguagesSuccess(languages); })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                return of(new LoadLanguagesFail(makeErrorSerializable(error)));
-            })));
-        })));
-        this.activateLanguage$ = this.actions$.pipe(ofType(SET_ACTIVE_LANGUAGE), tap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) {
-            if (_this.winRef.sessionStorage) {
-                _this.winRef.sessionStorage.setItem('language', action.payload);
-            }
-        })), map((/**
-         * @return {?}
-         */
-        function () { return new LanguageChange(); })));
-    }
-    LanguagesEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    LanguagesEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: SiteConnector },
-        { type: WindowRef }
-    ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], LanguagesEffects.prototype, "loadLanguages$", void 0);
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], LanguagesEffects.prototype, "activateLanguage$", void 0);
-    return LanguagesEffects;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var CurrenciesEffects = /** @class */ (function () {
-    function CurrenciesEffects(actions$, siteConnector, winRef) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.winRef = winRef;
-        this.loadCurrencies$ = this.actions$.pipe(ofType(LOAD_CURRENCIES), exhaustMap((/**
-         * @return {?}
-         */
-        function () {
-            return _this.siteConnector.getCurrencies().pipe(map((/**
-             * @param {?} currencies
-             * @return {?}
-             */
-            function (currencies) { return new LoadCurrenciesSuccess(currencies); })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                return of(new LoadCurrenciesFail(makeErrorSerializable(error)));
-            })));
-        })));
-        this.activateCurrency$ = this.actions$.pipe(ofType(SET_ACTIVE_CURRENCY), tap((/**
-         * @param {?} action
-         * @return {?}
-         */
-        function (action) {
-            if (_this.winRef.sessionStorage) {
-                _this.winRef.sessionStorage.setItem('currency', action.payload);
-            }
-        })), map((/**
-         * @return {?}
-         */
-        function () { return new CurrencyChange(); })));
-    }
-    CurrenciesEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    CurrenciesEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: SiteConnector },
-        { type: WindowRef }
-    ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
-    return CurrenciesEffects;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var BaseSiteEffects = /** @class */ (function () {
-    function BaseSiteEffects(actions$, siteConnector) {
-        var _this = this;
-        this.actions$ = actions$;
-        this.siteConnector = siteConnector;
-        this.loadBaseSite$ = this.actions$.pipe(ofType(LOAD_BASE_SITE), exhaustMap((/**
-         * @return {?}
-         */
-        function () {
-            return _this.siteConnector.getBaseSite().pipe(map((/**
-             * @param {?} baseSite
-             * @return {?}
-             */
-            function (baseSite) { return new LoadBaseSiteSuccess(baseSite); })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) {
-                return of(new LoadBaseSiteFail(makeErrorSerializable(error)));
-            })));
-        })));
-    }
-    BaseSiteEffects.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    BaseSiteEffects.ctorParameters = function () { return [
-        { type: Actions },
-        { type: SiteConnector }
-    ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
-    return BaseSiteEffects;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var effects$5 = [
-    LanguagesEffects,
-    CurrenciesEffects,
-    BaseSiteEffects,
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var activeLanguageSelector = (/**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.activeLanguage; });
-/** @type {?} */
-var languagesEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.entities; });
-var ɵ2$3 = /**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.languages; };
-/** @type {?} */
-var getLanguagesState = createSelector(getSiteContextState, (ɵ2$3));
-/** @type {?} */
-var getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
-/** @type {?} */
-var getActiveLanguage = createSelector(getLanguagesState, activeLanguageSelector);
-var ɵ3$3 = /**
- * @param {?} entities
- * @return {?}
- */
-function (entities) {
-    return entities
-        ? Object.keys(entities).map((/**
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) { return entities[isocode]; }))
-        : null;
-};
-/** @type {?} */
-var getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$3));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var currenciesEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.entities; });
-/** @type {?} */
-var activeCurrencySelector = (/**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.activeCurrency; });
-var ɵ2$4 = /**
- * @param {?} state
- * @return {?}
- */
-function (state) { return state.currencies; };
-/** @type {?} */
-var getCurrenciesState = createSelector(getSiteContextState, (ɵ2$4));
-/** @type {?} */
-var getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
-/** @type {?} */
-var getActiveCurrency = createSelector(getCurrenciesState, activeCurrencySelector);
-var ɵ3$4 = /**
- * @param {?} entities
- * @return {?}
- */
-function (entities) {
-    return entities
-        ? Object.keys(entities).map((/**
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) { return entities[isocode]; }))
-        : null;
-};
-/** @type {?} */
-var getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$4));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to language state, actions and selectors.
- */
-var LanguageService = /** @class */ (function () {
-    function LanguageService(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the languages supported by the current store.
-     */
-    /**
-     * Represents all the languages supported by the current store.
-     * @return {?}
-     */
-    LanguageService.prototype.getAll = /**
-     * Represents all the languages supported by the current store.
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.store.pipe(select(getAllLanguages), tap((/**
-         * @param {?} languages
-         * @return {?}
-         */
-        function (languages) {
-            if (!languages) {
-                _this.store.dispatch(new LoadLanguages());
-            }
-        })), filter(Boolean));
-    };
-    /**
-     * Represents the isocode of the active language.
-     */
-    /**
-     * Represents the isocode of the active language.
-     * @return {?}
-     */
-    LanguageService.prototype.getActive = /**
-     * Represents the isocode of the active language.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getActiveLanguage), filter(Boolean));
-    };
-    /**
-     * Sets the active language.
-     */
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    LanguageService.prototype.setActive = /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    function (isocode) {
-        var _this = this;
-        return this.store
-            .pipe(select(getActiveLanguage), take(1))
-            .subscribe((/**
-         * @param {?} activeLanguage
-         * @return {?}
-         */
-        function (activeLanguage) {
-            if (activeLanguage !== isocode) {
-                _this.store.dispatch(new SetActiveLanguage(isocode));
-            }
-        }));
-    };
-    /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     */
-    /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     * @param {?} defaultLanguage
-     * @return {?}
-     */
-    LanguageService.prototype.initialize = /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     * @param {?} defaultLanguage
-     * @return {?}
-     */
-    function (defaultLanguage) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
-            this.setActive(this.sessionStorage.getItem('language'));
-        }
-        else {
-            this.setActive(defaultLanguage);
-        }
-    };
-    LanguageService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    LanguageService.ctorParameters = function () { return [
-        { type: Store },
-        { type: WindowRef }
-    ]; };
-    return LanguageService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to curreny state, actions and selectors.
- */
-var CurrencyService = /** @class */ (function () {
-    function CurrencyService(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the currencies supported by the current store.
-     */
-    /**
-     * Represents all the currencies supported by the current store.
-     * @return {?}
-     */
-    CurrencyService.prototype.getAll = /**
-     * Represents all the currencies supported by the current store.
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.store.pipe(select(getAllCurrencies), tap((/**
-         * @param {?} currencies
-         * @return {?}
-         */
-        function (currencies) {
-            if (!currencies) {
-                _this.store.dispatch(new LoadCurrencies());
-            }
-        })), filter(Boolean));
-    };
-    /**
-     * Represents the isocode of the active currency.
-     */
-    /**
-     * Represents the isocode of the active currency.
-     * @return {?}
-     */
-    CurrencyService.prototype.getActive = /**
-     * Represents the isocode of the active currency.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getActiveCurrency), filter(Boolean));
-    };
-    /**
-     * Sets the active language.
-     */
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    CurrencyService.prototype.setActive = /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    function (isocode) {
-        var _this = this;
-        return this.store
-            .pipe(select(getActiveCurrency), take(1))
-            .subscribe((/**
-         * @param {?} activeCurrency
-         * @return {?}
-         */
-        function (activeCurrency) {
-            if (activeCurrency !== isocode) {
-                _this.store.dispatch(new SetActiveCurrency(isocode));
-            }
-        }));
-    };
-    /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     */
-    /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     * @param {?} defaultCurrency
-     * @return {?}
-     */
-    CurrencyService.prototype.initialize = /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     * @param {?} defaultCurrency
-     * @return {?}
-     */
-    function (defaultCurrency) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
-            this.setActive(this.sessionStorage.getItem('currency'));
-        }
-        else {
-            this.setActive(defaultCurrency);
-        }
-    };
-    CurrencyService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    CurrencyService.ctorParameters = function () { return [
-        { type: Store },
-        { type: WindowRef }
-    ]; };
-    return CurrencyService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-ContextServiceMap = /** @class */ (function () {
-    function ContextServiceMap() {
-    }
-    return ContextServiceMap;
-}());
-/** @type {?} */
-var LANGUAGE_CONTEXT_ID = 'LANGUAGE';
-/** @type {?} */
-var CURRENCY_CONTEXT_ID = 'CURRENCY';
-/** @type {?} */
-var BASE_SITE_CONTEXT_ID = 'BASE_SITE';
-/**
- * @return {?}
- */
-function serviceMapFactory() {
-    var _a;
-    return _a = {},
-        _a[LANGUAGE_CONTEXT_ID] = LanguageService,
-        _a[CURRENCY_CONTEXT_ID] = CurrencyService,
-        _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
-        _a;
-}
-/** @type {?} */
-var contextServiceMapProvider = {
-    provide: ContextServiceMap,
-    useFactory: serviceMapFactory,
-};
 
 /**
  * @fileoverview added by tsickle
@@ -12544,11 +12599,11 @@ var contextServiceMapProvider = {
 function defaultSiteContextConfigFactory() {
     var _a;
     return {
-        siteContext: {
+        context: {
             parameters: (_a = {},
                 _a[LANGUAGE_CONTEXT_ID] = {
-                    persistence: 'route',
-                    defaultValue: 'en',
+                    persistence: ContextPersistence.ROUTE,
+                    default: 'en',
                     values: [
                         'en',
                         'de',
@@ -12570,8 +12625,8 @@ function defaultSiteContextConfigFactory() {
                     ],
                 },
                 _a[CURRENCY_CONTEXT_ID] = {
-                    persistence: 'route',
-                    defaultValue: 'USD',
+                    persistence: ContextPersistence.ROUTE,
+                    default: 'USD',
                     values: [
                         'USD',
                         'EUR',
@@ -12605,22 +12660,6 @@ function defaultSiteContextConfigFactory() {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
- * @abstract
- */
-var  /**
- * @abstract
- */
-SiteContextConfig = /** @class */ (function () {
-    function SiteContextConfig() {
-    }
-    return SiteContextConfig;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
  * @param {?} config
  * @param {?} baseSiteService
  * @param {?} langService
@@ -12632,9 +12671,9 @@ function inititializeContext(config, baseSiteService, langService, currService) 
      * @return {?}
      */
     function () {
-        baseSiteService.initialize(config.site.baseSite);
-        langService.initialize(config.site.language);
-        currService.initialize(config.site.currency);
+        baseSiteService.initialize(getContextParameterDefault(config, BASE_SITE_CONTEXT_ID));
+        langService.initialize(getContextParameterDefault(config, LANGUAGE_CONTEXT_ID));
+        currService.initialize(getContextParameterDefault(config, CURRENCY_CONTEXT_ID));
     });
 }
 /** @type {?} */
@@ -12670,7 +12709,7 @@ var SiteContextParamsService = /** @class */ (function () {
      */
     function (persistence) {
         /** @type {?} */
-        var contextConfig = this.config.siteContext.parameters;
+        var contextConfig = this.config.context && this.config.context.parameters;
         if (contextConfig) {
             /** @type {?} */
             var params = Object.keys(contextConfig);
@@ -12691,15 +12730,23 @@ var SiteContextParamsService = /** @class */ (function () {
      * @param {?} param
      * @return {?}
      */
+    SiteContextParamsService.prototype.getParameter = /**
+     * @param {?} param
+     * @return {?}
+     */
+    function (param) {
+        return getContextParameter(this.config, param);
+    };
+    /**
+     * @param {?} param
+     * @return {?}
+     */
     SiteContextParamsService.prototype.getParamValues = /**
      * @param {?} param
      * @return {?}
      */
     function (param) {
-        return this.config.siteContext.parameters &&
-            this.config.siteContext.parameters[param]
-            ? this.config.siteContext.parameters[param].values
-            : undefined;
+        return this.getParameter(param).values || [];
     };
     /**
      * @param {?} param
@@ -12710,10 +12757,7 @@ var SiteContextParamsService = /** @class */ (function () {
      * @return {?}
      */
     function (param) {
-        return this.config.siteContext.parameters &&
-            this.config.siteContext.parameters[param]
-            ? this.config.siteContext.parameters[param].defaultValue
-            : undefined;
+        return getContextParameterDefault(this.config, param);
     };
     /**
      * @param {?} param
@@ -12793,7 +12837,7 @@ var SiteContextUrlSerializer = /** @class */ (function (_super) {
         _this.siteContextParams = siteContextParams;
         _this.config = config;
         _this.urlEncodingParameters =
-            _this.config.siteContext.urlEncodingParameters || [];
+            (_this.config.context && _this.config.context.urlEncodingParameters) || [];
         return _this;
     }
     Object.defineProperty(SiteContextUrlSerializer.prototype, "hasContextInRoutes", {
@@ -12967,7 +13011,7 @@ var SiteContextRoutesHandler = /** @class */ (function () {
         this.router = this.injector.get(Router);
         this.location = this.injector.get(Location);
         /** @type {?} */
-        var routingParams = this.siteContextParams.getContextParameters('route');
+        var routingParams = this.siteContextParams.getContextParameters(ContextPersistence.ROUTE);
         if (routingParams.length) {
             this.setContextParamsFromRoute(this.router.url);
             this.subscribeChanges(routingParams);
@@ -13147,15 +13191,29 @@ var SiteContextStoreModule = /** @class */ (function () {
                     imports: [
                         CommonModule,
                         HttpClientModule,
-                        StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$5),
-                        EffectsModule.forFeature(effects$5),
+                        StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
+                        EffectsModule.forFeature(effects$1),
                         ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                     ],
-                    providers: [reducerProvider$5],
+                    providers: [reducerProvider$1],
                 },] }
     ];
     return SiteContextStoreModule;
 }());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} config
+ * @return {?}
+ */
+function baseSiteConfigValidator(config) {
+    if (getContextParameterDefault(config, BASE_SITE_CONTEXT_ID) === undefined) {
+        return 'Please configure context.parameters.baseSite before using storefront library!';
+    }
+}
 
 /**
  * @fileoverview added by tsickle
@@ -13178,6 +13236,7 @@ var SiteContextModule = /** @class */ (function () {
                 contextServiceMapProvider
             ], contextServiceProviders, siteContextParamsProviders, [
                 { provide: SiteContextConfig, useExisting: Config },
+                provideConfigValidator(baseSiteConfigValidator),
             ]),
         };
     };
@@ -21482,10 +21541,6 @@ function provideConfigFromMetaTags() {
  */
 /** @type {?} */
 var defaultOccConfig = {
-    site: {
-        language: 'en',
-        currency: 'USD',
-    },
     backend: {
         occ: {
             prefix: '/rest/v2/',
@@ -25187,8 +25242,8 @@ var SiteContextInterceptor = /** @class */ (function () {
         this.currencyService = currencyService;
         this.occEndpoints = occEndpoints;
         this.config = config;
-        this.activeLang = this.config.site.language;
-        this.activeCurr = this.config.site.currency;
+        this.activeLang = getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID);
+        this.activeCurr = getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID);
         this.languageService
             .getActive()
             .subscribe((/**
@@ -25233,7 +25288,7 @@ var SiteContextInterceptor = /** @class */ (function () {
         { type: LanguageService },
         { type: CurrencyService },
         { type: OccEndpointsService },
-        { type: OccConfig }
+        { type: SiteContextConfig }
     ]; };
     return SiteContextInterceptor;
 }());
@@ -28854,5 +28909,5 @@ var StoreFinderCoreModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_CART_DETAILS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetCartDetails, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartEntries, getCartEntriesMap, getCartEntrySelectorFactory, getCartLoaded, getCartLoading, getCartMergeComplete, getCartMergeCompleteSelector, getCartRefresh, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntriesSelector, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, cartStoreConfigFactory as ɵba, CartStoreModule as ɵbb, getReducers$2 as ɵbc, reducerToken$2 as ɵbd, reducerProvider$2 as ɵbe, clearCartState as ɵbf, metaReducers$1 as ɵbg, effects$2 as ɵbh, CartEffects as ɵbi, CartEntryEffects as ɵbj, ConfigModule as ɵbk, reducer$2 as ɵbl, reducer$3 as ɵbm, getCardTypesEntites as ɵbn, reducer$4 as ɵbo, getAddressVerificationResults as ɵbp, effects$3 as ɵbq, CheckoutEffects as ɵbr, CardTypesEffects as ɵbs, AddressVerificationEffect as ɵbt, getReducers$3 as ɵbu, reducerToken$3 as ɵbv, reducerProvider$3 as ɵbw, CheckoutStoreModule as ɵbx, reducer$5 as ɵby, EntityLoadAction as ɵbz, stateMetaReducers as ɵc, EntityFailAction as ɵca, EntitySuccessAction as ɵcb, cmsStoreConfigFactory as ɵcc, CmsStoreModule as ɵcd, getReducers$4 as ɵce, reducerToken$4 as ɵcf, reducerProvider$4 as ɵcg, clearCmsState as ɵch, metaReducers$2 as ɵci, effects$4 as ɵcj, PageEffects as ɵck, ComponentEffects as ɵcl, NavigationEntryItemEffects as ɵcm, reducer$7 as ɵcn, reducer$8 as ɵco, reducer$6 as ɵcp, getReducers$5 as ɵcq, reducerToken$5 as ɵcr, reducerProvider$5 as ɵcs, effects$5 as ɵct, LanguagesEffects as ɵcu, CurrenciesEffects as ɵcv, BaseSiteEffects as ɵcw, effects$6 as ɵcx, ProductReferencesEffects as ɵcy, ProductReviewsEffects as ɵcz, getStorageSyncReducer as ɵd, ProductsSearchEffects as ɵda, ProductEffects as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, clearProductsState as ɵdf, metaReducers$3 as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearUserState as ɵdk, metaReducers$4 as ɵdl, GlobalMessageStoreModule as ɵdm, getReducers$9 as ɵdn, reducerToken$9 as ɵdo, reducerProvider$9 as ɵdp, reducer$q as ɵdq, GlobalMessageEffect as ɵdr, defaultGlobalMessageConfigFactory as ɵds, HttpErrorInterceptor as ɵdt, ServerConfig as ɵdu, defaultI18nConfig as ɵdv, i18nextProviders as ɵdw, i18nextInit as ɵdx, MockTranslationService as ɵdy, kymaStoreConfigFactory as ɵdz, getTransferStateReducer as ɵe, KymaStoreModule as ɵea, getReducers$a as ɵeb, reducerToken$a as ɵec, reducerProvider$a as ɵed, clearKymaState as ɵee, metaReducers$5 as ɵef, effects$8 as ɵeg, OpenIdTokenEffect as ɵeh, OpenIdAuthenticationTokenService as ɵei, defaultKymaConfig as ɵej, provideConfigFactory as ɵek, defaultOccProductConfig as ɵel, provideConfigValidator as ɵem, defaultPersonalizationConfig as ɵen, interceptors$1 as ɵeo, OccPersonalizationIdInterceptor as ɵep, OccPersonalizationTimeInterceptor as ɵeq, productStoreConfigFactory as ɵer, ProductStoreModule as ɵes, reducer$e as ɵet, getSearchResults as ɵeu, getAuxSearchResults as ɵev, getProductSuggestions as ɵew, reducer$d as ɵex, reducer$c as ɵey, PageMetaResolver as ɵez, getReducers$1 as ɵf, UrlMatcherFactoryService as ɵfa, ROUTING_FEATURE as ɵfb, getReducers as ɵfc, reducer as ɵfd, reducerToken as ɵfe, reducerProvider as ɵff, CustomSerializer as ɵfg, effects as ɵfh, RouterEffects as ɵfi, defaultSiteContextConfigFactory as ɵfj, siteContextStoreConfigFactory as ɵfk, SiteContextStoreModule as ɵfl, reducer$9 as ɵfm, reducer$a as ɵfn, reducer$b as ɵfo, SiteContextParamsService as ɵfp, SiteContextUrlSerializer as ɵfq, SiteContextRoutesHandler as ɵfr, interceptors$2 as ɵfs, CmsTicketInterceptor as ɵft, getStoreFinderState as ɵfu, defaultStoreFinderConfig as ɵfv, StoreFinderStoreModule as ɵfw, getReducers$b as ɵfx, reducerToken$b as ɵfy, reducerProvider$b as ɵfz, reducerToken$1 as ɵg, effects$9 as ɵga, FindStoresEffect as ɵgb, ViewAllStoresEffect as ɵgc, EntityResetAction as ɵgd, UserStoreModule as ɵge, effects$7 as ɵgf, BillingCountriesEffect as ɵgg, DeliveryCountriesEffects as ɵgh, OrderDetailsEffect as ɵgi, UserPaymentMethodsEffects as ɵgj, RegionsEffects as ɵgk, ResetPasswordEffects as ɵgl, TitlesEffects as ɵgm, UserAddressesEffects as ɵgn, UserConsentsEffect as ɵgo, UserDetailsEffects as ɵgp, UserOrdersEffect as ɵgq, UserRegisterEffects as ɵgr, ClearMiscsDataEffect as ɵgs, ForgotPasswordEffects as ɵgt, UpdateEmailEffects as ɵgu, UpdatePasswordEffects as ɵgv, reducer$o as ɵgw, reducer$m as ɵgx, reducer$f as ɵgy, reducer$n as ɵgz, reducerProvider$1 as ɵh, reducer$i as ɵha, reducer$p as ɵhb, reducer$h as ɵhc, reducer$g as ɵhd, reducer$l as ɵhe, reducer$j as ɵhf, reducer$k as ɵhg, ProcessModule as ɵhh, ProcessStoreModule as ɵhi, PROCESS_FEATURE as ɵhj, getReducers$8 as ɵhk, reducerToken$8 as ɵhl, reducerProvider$8 as ɵhm, clearAuthState as ɵi, metaReducers as ɵj, effects$1 as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer$1 as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵv, interceptors as ɵw, ClientTokenInterceptor as ɵx, UserTokenInterceptor as ɵy, AuthErrorInterceptor as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_DELIVERY_ADDRESS, ADD_DELIVERY_ADDRESS_FAIL, ADD_DELIVERY_ADDRESS_SUCCESS, ADD_ENTRY, ADD_ENTRY_FAIL, ADD_ENTRY_SUCCESS, ADD_MESSAGE, ADD_USER_ADDRESS, ADD_USER_ADDRESS_FAIL, ADD_USER_ADDRESS_SUCCESS, ANONYMOUS_USERID, AUTH_FEATURE, AddDeliveryAddress, AddDeliveryAddressFail, AddDeliveryAddressSuccess, AddEntry, AddEntryFail, AddEntrySuccess, AddMessage, AddUserAddress, AddUserAddressFail, AddUserAddressSuccess, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, AuthService, BACK, BASE_SITE_CHANGE, BASE_SITE_CONTEXT_ID, Back, BadGatewayHandler, BadRequestHandler, BaseSiteChange, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_CLEAR_MISCS_DATA, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLEAR_ADDRESS_VERIFICATION_RESULTS, CLEAR_CHECKOUT_DATA, CLEAR_CHECKOUT_STEP, CLEAR_MISCS_DATA, CLEAR_ORDER_DETAILS, CLEAR_PRODUCT_SEARCH_RESULT, CLEAR_REGIONS, CLEAR_SUPPORTED_DELIVERY_MODES, CLEAR_USER_ORDERS, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, CREATE_PAYMENT_DETAILS, CREATE_PAYMENT_DETAILS_FAIL, CREATE_PAYMENT_DETAILS_SUCCESS, CURRENCY_CHANGE, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CartAdapter, CartConnector, CartDataService, CartEntryAdapter, CartEntryConnector, CartModule, CartOccModule, CartPageMetaResolver, CartService, CategoryPageMetaResolver, CheckoutAdapter, CheckoutClearMiscsData, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, CheckoutService, ClearAddressVerificationResults, ClearCheckoutData, ClearCheckoutStep, ClearMiscsData, ClearOrderDetails, ClearProductSearchResult, ClearRegions, ClearSupportedDeliveryModes, ClearUserOrders, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextPersistence, ContextServiceMap, ConverterService, CountryType, CreateCart, CreateCartFail, CreateCartSuccess, CreatePaymentDetails, CreatePaymentDetailsFail, CreatePaymentDetailsSuccess, CurrencyChange, CurrencyService, CxApiModule, CxApiService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELETE_USER_ADDRESS, DELETE_USER_ADDRESS_FAIL, DELETE_USER_ADDRESS_SUCCESS, DELETE_USER_PAYMENT_METHOD, DELETE_USER_PAYMENT_METHOD_FAIL, DELETE_USER_PAYMENT_METHOD_SUCCESS, DELIVERY_MODE_NORMALIZER, DeleteUserAddress, DeleteUserAddressFail, DeleteUserAddressSuccess, DeleteUserPaymentMethod, DeleteUserPaymentMethodFail, DeleteUserPaymentMethodSuccess, DynamicAttributeService, ENTITY_FAIL_ACTION, ENTITY_LOAD_ACTION, ENTITY_REMOVE_ACTION, ENTITY_REMOVE_ALL_ACTION, ENTITY_RESET_ACTION, ENTITY_SUCCESS_ACTION, EntityFailAction, EntityLoadAction, EntityRemoveAction, EntityRemoveAllAction, EntityResetAction, EntitySuccessAction, ExternalJsFileLoader, FIND_STORES, FIND_STORES_FAIL, FIND_STORES_SUCCESS, FIND_STORE_BY_ID, FIND_STORE_BY_ID_FAIL, FIND_STORE_BY_ID_SUCCESS, FORGOT_PASSWORD_EMAIL_REQUEST, FORGOT_PASSWORD_EMAIL_REQUEST_FAIL, FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS, FORWARD, FindStoreById, FindStoreByIdFail, FindStoreByIdSuccess, FindStores, FindStoresFail, FindStoresSuccess, ForbiddenHandler, ForgotPasswordEmailRequest, ForgotPasswordEmailRequestFail, ForgotPasswordEmailRequestSuccess, Forward, GET_COMPONENET_FROM_PAGE, GET_PRODUCT_SUGGESTIONS, GET_PRODUCT_SUGGESTIONS_FAIL, GET_PRODUCT_SUGGESTIONS_SUCCESS, GIVE_CONSENT_PROCESS_ID, GIVE_USER_CONSENT, GIVE_USER_CONSENT_FAIL, GIVE_USER_CONSENT_SUCCESS, GLOBAL_MESSAGE_FEATURE, GO, GO_BY_URL, GatewayTimeoutHandler, GetComponentFromPage, GetProductSuggestions, GetProductSuggestionsFail, GetProductSuggestionsSuccess, GiveUserConsent, GiveUserConsentFail, GiveUserConsentSuccess, GlobalMessageConfig, GlobalMessageModule, GlobalMessageService, GlobalMessageType, Go, GoByUrl, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, KymaConfig, KymaModule, KymaService, KymaServices, LANGUAGE_CHANGE, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LOADER_FAIL_ACTION, LOADER_LOAD_ACTION, LOADER_RESET_ACTION, LOADER_SUCCESS_ACTION, LOAD_BASE_SITE, LOAD_BASE_SITE_FAIL, LOAD_BASE_SITE_SUCCESS, LOAD_BILLING_COUNTRIES, LOAD_BILLING_COUNTRIES_FAIL, LOAD_BILLING_COUNTRIES_SUCCESS, LOAD_CARD_TYPES, LOAD_CARD_TYPES_FAIL, LOAD_CARD_TYPES_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, LOAD_CHECKOUT_DETAILS, LOAD_CHECKOUT_DETAILS_FAIL, LOAD_CHECKOUT_DETAILS_SUCCESS, LOAD_CLIENT_TOKEN, LOAD_CLIENT_TOKEN_FAIL, LOAD_CLIENT_TOKEN_SUCCESS, LOAD_COMPONENT, LOAD_COMPONENT_FAIL, LOAD_COMPONENT_SUCCESS, LOAD_CURRENCIES, LOAD_CURRENCIES_FAIL, LOAD_CURRENCIES_SUCCESS, LOAD_DELIVERY_COUNTRIES, LOAD_DELIVERY_COUNTRIES_FAIL, LOAD_DELIVERY_COUNTRIES_SUCCESS, LOAD_LANGUAGES, LOAD_LANGUAGES_FAIL, LOAD_LANGUAGES_SUCCESS, LOAD_NAVIGATION_ITEMS, LOAD_NAVIGATION_ITEMS_FAIL, LOAD_NAVIGATION_ITEMS_SUCCESS, LOAD_OPEN_ID_TOKEN, LOAD_OPEN_ID_TOKEN_FAIL, LOAD_OPEN_ID_TOKEN_SUCCESS, LOAD_ORDER_DETAILS, LOAD_ORDER_DETAILS_FAIL, LOAD_ORDER_DETAILS_SUCCESS, LOAD_PAGE_DATA, LOAD_PAGE_DATA_FAIL, LOAD_PAGE_DATA_SUCCESS, LOAD_PRODUCT, LOAD_PRODUCT_FAIL, LOAD_PRODUCT_REFERENCES, LOAD_PRODUCT_REFERENCES_FAIL, LOAD_PRODUCT_REFERENCES_SUCCESS, LOAD_PRODUCT_REVIEWS, LOAD_PRODUCT_REVIEWS_FAIL, LOAD_PRODUCT_REVIEWS_SUCCESS, LOAD_PRODUCT_SUCCESS, LOAD_REGIONS, LOAD_REGIONS_FAIL, LOAD_REGIONS_SUCCESS, LOAD_SUPPORTED_DELIVERY_MODES, LOAD_SUPPORTED_DELIVERY_MODES_FAIL, LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS, LOAD_TITLES, LOAD_TITLES_FAIL, LOAD_TITLES_SUCCESS, LOAD_USER_ADDRESSES, LOAD_USER_ADDRESSES_FAIL, LOAD_USER_ADDRESSES_SUCCESS, LOAD_USER_CONSENTS, LOAD_USER_CONSENTS_FAIL, LOAD_USER_CONSENTS_SUCCESS, LOAD_USER_DETAILS, LOAD_USER_DETAILS_FAIL, LOAD_USER_DETAILS_SUCCESS, LOAD_USER_ORDERS, LOAD_USER_ORDERS_FAIL, LOAD_USER_ORDERS_SUCCESS, LOAD_USER_PAYMENT_METHODS, LOAD_USER_PAYMENT_METHODS_FAIL, LOAD_USER_PAYMENT_METHODS_SUCCESS, LOAD_USER_TOKEN, LOAD_USER_TOKEN_FAIL, LOAD_USER_TOKEN_SUCCESS, LOGIN, LOGOUT, LanguageChange, LanguageService, LoadBaseSite, LoadBaseSiteFail, LoadBaseSiteSuccess, LoadBillingCountries, LoadBillingCountriesFail, LoadBillingCountriesSuccess, LoadCardTypes, LoadCardTypesFail, LoadCardTypesSuccess, LoadCart, LoadCartFail, LoadCartSuccess, LoadCheckoutDetails, LoadCheckoutDetailsFail, LoadCheckoutDetailsSuccess, LoadClientToken, LoadClientTokenFail, LoadClientTokenSuccess, LoadComponent, LoadComponentFail, LoadComponentSuccess, LoadCurrencies, LoadCurrenciesFail, LoadCurrenciesSuccess, LoadDeliveryCountries, LoadDeliveryCountriesFail, LoadDeliveryCountriesSuccess, LoadLanguages, LoadLanguagesFail, LoadLanguagesSuccess, LoadNavigationItems, LoadNavigationItemsFail, LoadNavigationItemsSuccess, LoadOpenIdToken, LoadOpenIdTokenFail, LoadOpenIdTokenSuccess, LoadOrderDetails, LoadOrderDetailsFail, LoadOrderDetailsSuccess, LoadPageData, LoadPageDataFail, LoadPageDataSuccess, LoadProduct, LoadProductFail, LoadProductReferences, LoadProductReferencesFail, LoadProductReferencesSuccess, LoadProductReviews, LoadProductReviewsFail, LoadProductReviewsSuccess, LoadProductSuccess, LoadRegions, LoadRegionsFail, LoadRegionsSuccess, LoadSupportedDeliveryModes, LoadSupportedDeliveryModesFail, LoadSupportedDeliveryModesSuccess, LoadTitles, LoadTitlesFail, LoadTitlesSuccess, LoadUserAddresses, LoadUserAddressesFail, LoadUserAddressesSuccess, LoadUserConsents, LoadUserConsentsFail, LoadUserConsentsSuccess, LoadUserDetails, LoadUserDetailsFail, LoadUserDetailsSuccess, LoadUserOrders, LoadUserOrdersFail, LoadUserOrdersSuccess, LoadUserPaymentMethods, LoadUserPaymentMethodsFail, LoadUserPaymentMethodsSuccess, LoadUserToken, LoadUserTokenFail, LoadUserTokenSuccess, LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction, Login, Logout, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MERGE_CART, MERGE_CART_SUCCESS, MergeCart, MergeCartSuccess, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, ON_HOLD, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OnHold, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, PLACE_ORDER, PLACE_ORDER_FAIL, PLACE_ORDER_SUCCESS, POINT_OF_SERVICE_NORMALIZER, POST_PRODUCT_REVIEW, POST_PRODUCT_REVIEW_FAIL, POST_PRODUCT_REVIEW_SUCCESS, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PlaceOrder, PlaceOrderFail, PlaceOrderSuccess, PostProductReview, PostProductReviewFail, PostProductReviewSuccess, PriceType, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, ProductService, REFRESH_USER_TOKEN, REFRESH_USER_TOKEN_FAIL, REFRESH_USER_TOKEN_SUCCESS, REGIONS, REGION_NORMALIZER, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, REMOVE_ENTRY, REMOVE_ENTRY_FAIL, REMOVE_ENTRY_SUCCESS, REMOVE_MESSAGE, REMOVE_MESSAGES_BY_TYPE, REMOVE_USER, REMOVE_USER_FAIL, REMOVE_USER_PROCESS_ID, REMOVE_USER_RESET, REMOVE_USER_SUCCESS, RESET_CART_DETAILS, RESET_EMAIL, RESET_GIVE_USER_CONSENT_PROCESS, RESET_LOAD_USER_CONSENTS, RESET_PASSWORD, RESET_PASSWORD_FAIL, RESET_PASSWORD_SUCCESS, RESET_USER_DETAILS, RESET_WITHDRAW_USER_CONSENT_PROCESS, RefreshUserToken, RefreshUserTokenFail, RefreshUserTokenSuccess, RegisterUser, RegisterUserFail, RegisterUserSuccess, RemoveEntry, RemoveEntryFail, RemoveEntrySuccess, RemoveMessage, RemoveMessagesByType, RemoveUser, RemoveUserFail, RemoveUserReset, RemoveUserSuccess, ResetCartDetails, ResetGiveUserConsentProcess, ResetLoadUserConsents, ResetPassword, ResetPasswordFail, ResetPasswordSuccess, ResetUpdateEmailAction, ResetUpdateUserDetails, ResetWithdrawUserConsentProcess, RoutingConfig, RoutingConfigService, RoutingModule, RoutingService, SEARCH_PRODUCTS, SEARCH_PRODUCTS_FAIL, SEARCH_PRODUCTS_SUCCESS, SET_ACTIVE_BASE_SITE, SET_ACTIVE_CURRENCY, SET_ACTIVE_LANGUAGE, SET_DEFAULT_USER_PAYMENT_METHOD, SET_DEFAULT_USER_PAYMENT_METHOD_FAIL, SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS, SET_DELIVERY_ADDRESS, SET_DELIVERY_ADDRESS_FAIL, SET_DELIVERY_ADDRESS_SUCCESS, SET_DELIVERY_MODE, SET_DELIVERY_MODE_FAIL, SET_DELIVERY_MODE_SUCCESS, SET_PAGE_FAIL_INDEX, SET_PAYMENT_DETAILS, SET_PAYMENT_DETAILS_FAIL, SET_PAYMENT_DETAILS_SUCCESS, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchProducts, SearchProductsFail, SearchProductsSuccess, SearchboxService, SemanticPathService, ServerConfig, SetActiveBaseSite, SetActiveCurrency, SetActiveLanguage, SetDefaultUserPaymentMethod, SetDefaultUserPaymentMethodFail, SetDefaultUserPaymentMethodSuccess, SetDeliveryAddress, SetDeliveryAddressFail, SetDeliveryAddressSuccess, SetDeliveryMode, SetDeliveryModeFail, SetDeliveryModeSuccess, SetPageFailIndex, SetPaymentDetails, SetPaymentDetailsFail, SetPaymentDetailsSuccess, SiteAdapter, SiteConnector, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, SmartEditModule, SmartEditService, StateConfig, StateModule, StateTransferType, StorageSyncType, StoreDataService, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL, UPDATE_EMAIL_ERROR, UPDATE_EMAIL_PROCESS_ID, UPDATE_EMAIL_SUCCESS, UPDATE_ENTRY, UPDATE_ENTRY_FAIL, UPDATE_ENTRY_SUCCESS, UPDATE_PASSWORD, UPDATE_PASSWORD_FAIL, UPDATE_PASSWORD_PROCESS_ID, UPDATE_PASSWORD_RESET, UPDATE_PASSWORD_SUCCESS, UPDATE_USER_ADDRESS, UPDATE_USER_ADDRESS_FAIL, UPDATE_USER_ADDRESS_SUCCESS, UPDATE_USER_DETAILS, UPDATE_USER_DETAILS_FAIL, UPDATE_USER_DETAILS_PROCESS_ID, UPDATE_USER_DETAILS_SUCCESS, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UpdateEmailAction, UpdateEmailErrorAction, UpdateEmailSuccessAction, UpdateEntry, UpdateEntryFail, UpdateEntrySuccess, UpdatePassword, UpdatePasswordFail, UpdatePasswordReset, UpdatePasswordSuccess, UpdateUserAddress, UpdateUserAddressFail, UpdateUserAddressSuccess, UpdateUserDetails, UpdateUserDetailsFail, UpdateUserDetailsSuccess, UrlModule, UrlPipe, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, VERIFY_ADDRESS, VERIFY_ADDRESS_FAIL, VERIFY_ADDRESS_SUCCESS, VIEW_ALL_STORES, VIEW_ALL_STORES_FAIL, VIEW_ALL_STORES_SUCCESS, VerifyAddress, VerifyAddressFail, VerifyAddressSuccess, ViewAllStores, ViewAllStoresFail, ViewAllStoresSuccess, WITHDRAW_CONSENT_PROCESS_ID, WITHDRAW_USER_CONSENT, WITHDRAW_USER_CONSENT_FAIL, WITHDRAW_USER_CONSENT_SUCCESS, WindowRef, WithdrawUserConsent, WithdrawUserConsentFail, WithdrawUserConsentSuccess, componentSelectorFactory, componentStateSelectorFactory, configurationFactory, contextServiceMapProvider, contextServiceProviders, countrySelectorFactory, currentSlotSelectorFactory, defaultCmsModuleConfig, defaultOccConfig, defaultServerConfig, defaultStateConfig, entityErrorSelector, entityFailMeta, entityLoadMeta, entityLoaderReducer, entityLoadingSelector, entityMeta, entityReducer, entityRemoveAllMeta, entityRemoveMeta, entityResetMeta, entitySelector, entityStateSelector, entitySuccessMeta, entitySuccessSelector, entityValueSelector, errorHandlers, failMeta, getActiveBaseSite, getActiveCartState, getActiveCurrency, getActiveLanguage, getAddressVerificationResults$1 as getAddressVerificationResults, getAddressVerificationResultsState, getAddresses, getAddressesLoaderState, getAddressesLoading, getAllBillingCountries, getAllCardTypes, getAllCurrencies, getAllDeliveryCountries, getAllLanguages, getAllProductCodes, getAllRegions, getAllTitles, getAuthState, getAuxSearchResults$1 as getAuxSearchResults, getBaseSiteData, getBillingCountriesEntites, getBillingCountriesState, getCardTypesEntites$1 as getCardTypesEntites, getCardTypesState, getCartContent, getCartContentSelector, getCartEntries, getCartEntriesMap, getCartEntrySelectorFactory, getCartLoaded, getCartLoading, getCartMergeComplete, getCartMergeCompleteSelector, getCartRefresh, getCartState, getCartsState, getCheckoutDetailsLoaded, getCheckoutOrderDetails, getCheckoutState, getCheckoutSteps, getCheckoutStepsState, getClientTokenState, getCmsState, getComponentEntities, getComponentEntitiesSelector, getComponentState, getConsentsError, getConsentsLoading, getConsentsState, getConsentsSuccess, getConsentsValue, getCurrenciesEntities, getCurrenciesState, getDeliveryAddress, getDeliveryAddressSelector, getDeliveryCountriesEntites, getDeliveryCountriesState, getDeliveryMode, getDeliveryModeSelector, getDetails, getDetailsState, getEntriesSelector, getFindStoresEntities, getFindStoresState, getGlobalMessageCountByType, getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageState, getIndex, getIndexByType, getIndexEntity, getIndexValue, getKymaState, getLanguagesEntities, getLanguagesState, getNavigationEntryItemState, getOpenIdTokenError, getOpenIdTokenLoading, getOpenIdTokenState, getOpenIdTokenSuccess, getOpenIdTokenValue, getOrderDetails, getOrderDetailsSelector, getOrderState, getOrders, getOrdersLoaded, getOrdersState, getPageComponentTypes, getPageComponentTypesSelector, getPageData, getPageEntities, getPageEntitiesSelector, getPageState, getPageStateIndex, getPaymentDetails, getPaymentDetailsSelector, getPaymentMethods, getPaymentMethodsLoading, getPaymentMethodsState, getProductReferencesState, getProductReviewsState, getProductState, getProductSuggestions$1 as getProductSuggestions, getProductsSearchState, getProductsState, getRefreshSelector, getRegionsCountry, getRegionsDataAndLoading, getRegionsLoaded, getRegionsLoaderState, getRegionsLoading, getResetPassword, getSearchResults$1 as getSearchResults, getSelectedCode, getSelectedDeliveryMode, getSelectedNavigationEntryItemState, getSelectedProductErrorFactory, getSelectedProductFactory, getSelectedProductLoadingFactory, getSelectedProductReferencesFactory, getSelectedProductReviewsFactory, getSelectedProductStateFactory, getSelectedProductSuccessFactory, getSelectedProductsFactory, getSiteContextState, getStateSlice, getStoresLoading, getSupportedDeliveryModes, getTitlesEntites, getTitlesState, getUserState, getUserToken, getUserTokenSelector, getUserTokenState, getViewAllStoresEntities, getViewAllStoresLoading, getViewAllStoresState, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, itemsSelectorFactory, loadMeta, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, resetMeta, serviceMapFactory, siteContextParamsProviders, successMeta, testestsd, titleSelectorFactory, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, cartStoreConfigFactory as ɵba, CartStoreModule as ɵbb, getReducers$3 as ɵbc, reducerToken$3 as ɵbd, reducerProvider$3 as ɵbe, clearCartState as ɵbf, metaReducers$1 as ɵbg, effects$3 as ɵbh, CartEffects as ɵbi, CartEntryEffects as ɵbj, ConfigModule as ɵbk, reducer$5 as ɵbl, reducer$6 as ɵbm, getCardTypesEntites as ɵbn, reducer$7 as ɵbo, getAddressVerificationResults as ɵbp, effects$4 as ɵbq, CheckoutEffects as ɵbr, CardTypesEffects as ɵbs, AddressVerificationEffect as ɵbt, getReducers$4 as ɵbu, reducerToken$4 as ɵbv, reducerProvider$4 as ɵbw, CheckoutStoreModule as ɵbx, reducer$8 as ɵby, EntityLoadAction as ɵbz, stateMetaReducers as ɵc, EntityFailAction as ɵca, EntitySuccessAction as ɵcb, cmsStoreConfigFactory as ɵcc, CmsStoreModule as ɵcd, getReducers$5 as ɵce, reducerToken$5 as ɵcf, reducerProvider$5 as ɵcg, clearCmsState as ɵch, metaReducers$2 as ɵci, effects$5 as ɵcj, PageEffects as ɵck, ComponentEffects as ɵcl, NavigationEntryItemEffects as ɵcm, reducer$a as ɵcn, reducer$b as ɵco, reducer$9 as ɵcp, getReducers$1 as ɵcq, reducerToken$1 as ɵcr, reducerProvider$1 as ɵcs, effects$1 as ɵct, LanguagesEffects as ɵcu, CurrenciesEffects as ɵcv, BaseSiteEffects as ɵcw, effects$6 as ɵcx, ProductReferencesEffects as ɵcy, ProductReviewsEffects as ɵcz, getStorageSyncReducer as ɵd, ProductsSearchEffects as ɵda, ProductEffects as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, clearProductsState as ɵdf, metaReducers$3 as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearUserState as ɵdk, metaReducers$4 as ɵdl, GlobalMessageStoreModule as ɵdm, getReducers$9 as ɵdn, reducerToken$9 as ɵdo, reducerProvider$9 as ɵdp, reducer$q as ɵdq, GlobalMessageEffect as ɵdr, defaultGlobalMessageConfigFactory as ɵds, HttpErrorInterceptor as ɵdt, ServerConfig as ɵdu, defaultI18nConfig as ɵdv, i18nextProviders as ɵdw, i18nextInit as ɵdx, MockTranslationService as ɵdy, kymaStoreConfigFactory as ɵdz, getTransferStateReducer as ɵe, KymaStoreModule as ɵea, getReducers$a as ɵeb, reducerToken$a as ɵec, reducerProvider$a as ɵed, clearKymaState as ɵee, metaReducers$5 as ɵef, effects$8 as ɵeg, OpenIdTokenEffect as ɵeh, OpenIdAuthenticationTokenService as ɵei, defaultKymaConfig as ɵej, provideConfigFactory as ɵek, defaultOccProductConfig as ɵel, provideConfigValidator as ɵem, defaultPersonalizationConfig as ɵen, interceptors$1 as ɵeo, OccPersonalizationIdInterceptor as ɵep, OccPersonalizationTimeInterceptor as ɵeq, productStoreConfigFactory as ɵer, ProductStoreModule as ɵes, reducer$e as ɵet, getSearchResults as ɵeu, getAuxSearchResults as ɵev, getProductSuggestions as ɵew, reducer$d as ɵex, reducer$c as ɵey, PageMetaResolver as ɵez, getReducers$2 as ɵf, UrlMatcherFactoryService as ɵfa, ROUTING_FEATURE as ɵfb, getReducers as ɵfc, reducer as ɵfd, reducerToken as ɵfe, reducerProvider as ɵff, CustomSerializer as ɵfg, effects as ɵfh, RouterEffects as ɵfi, defaultSiteContextConfigFactory as ɵfj, siteContextStoreConfigFactory as ɵfk, SiteContextStoreModule as ɵfl, reducer$1 as ɵfm, reducer$2 as ɵfn, reducer$3 as ɵfo, SiteContextParamsService as ɵfp, SiteContextUrlSerializer as ɵfq, SiteContextRoutesHandler as ɵfr, baseSiteConfigValidator as ɵfs, interceptors$2 as ɵft, CmsTicketInterceptor as ɵfu, getStoreFinderState as ɵfv, defaultStoreFinderConfig as ɵfw, StoreFinderStoreModule as ɵfx, getReducers$b as ɵfy, reducerToken$b as ɵfz, reducerToken$2 as ɵg, reducerProvider$b as ɵga, effects$9 as ɵgb, FindStoresEffect as ɵgc, ViewAllStoresEffect as ɵgd, EntityResetAction as ɵge, UserStoreModule as ɵgf, effects$7 as ɵgg, BillingCountriesEffect as ɵgh, DeliveryCountriesEffects as ɵgi, OrderDetailsEffect as ɵgj, UserPaymentMethodsEffects as ɵgk, RegionsEffects as ɵgl, ResetPasswordEffects as ɵgm, TitlesEffects as ɵgn, UserAddressesEffects as ɵgo, UserConsentsEffect as ɵgp, UserDetailsEffects as ɵgq, UserOrdersEffect as ɵgr, UserRegisterEffects as ɵgs, ClearMiscsDataEffect as ɵgt, ForgotPasswordEffects as ɵgu, UpdateEmailEffects as ɵgv, UpdatePasswordEffects as ɵgw, reducer$o as ɵgx, reducer$m as ɵgy, reducer$f as ɵgz, reducerProvider$2 as ɵh, reducer$n as ɵha, reducer$i as ɵhb, reducer$p as ɵhc, reducer$h as ɵhd, reducer$g as ɵhe, reducer$l as ɵhf, reducer$j as ɵhg, reducer$k as ɵhh, ProcessModule as ɵhi, ProcessStoreModule as ɵhj, PROCESS_FEATURE as ɵhk, getReducers$8 as ɵhl, reducerToken$8 as ɵhm, reducerProvider$8 as ɵhn, clearAuthState as ɵi, metaReducers as ɵj, effects$2 as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer$4 as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵv, interceptors as ɵw, ClientTokenInterceptor as ɵx, UserTokenInterceptor as ɵy, AuthErrorInterceptor as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

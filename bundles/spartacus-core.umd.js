@@ -355,6 +355,27 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @enum {string} */
+    var ContextPersistence = {
+        NONE: 'none',
+        ROUTE: 'route',
+    };
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    SiteContextConfig = /** @class */ (function () {
+        function SiteContextConfig() {
+        }
+        return SiteContextConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @abstract
      */
@@ -367,7 +388,7 @@
             return _super !== null && _super.apply(this, arguments) || this;
         }
         return OccConfig;
-    }(ServerConfig));
+    }(SiteContextConfig));
 
     /**
      * @fileoverview added by tsickle
@@ -2503,12 +2524,876 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Helper function for safely getting context parameter config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameter(config, parameter) {
+        return ((config.context &&
+            config.context.parameters &&
+            config.context.parameters[parameter]) ||
+            {});
+    }
+    /**
+     * Helper function for calculating default value for context parameter from config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameterDefault(config, parameter) {
+        /** @type {?} */
+        var param = getContextParameter(config, parameter);
+        if (param.default !== undefined) {
+            return param.default;
+        }
+        return param.values && param.values.length ? param.values[0] : undefined;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$1 = {
+        entities: null,
+        activeLanguage: null,
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$1(state, action) {
+        if (state === void 0) { state = initialState$1; }
+        switch (action.type) {
+            case LOAD_LANGUAGES_SUCCESS: {
+                /** @type {?} */
+                var languages = action.payload;
+                /** @type {?} */
+                var entities = languages.reduce((/**
+                 * @param {?} langEntities
+                 * @param {?} language
+                 * @return {?}
+                 */
+                function (langEntities, language) {
+                    var _a;
+                    return __assign({}, langEntities, (_a = {}, _a[language.isocode] = language, _a));
+                }), __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case SET_ACTIVE_LANGUAGE: {
+                /** @type {?} */
+                var isocode = action.payload;
+                return __assign({}, state, { activeLanguage: isocode });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CURRENCIES = '[Site-context] Load Currencies';
+    /** @type {?} */
+    var LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
+    /** @type {?} */
+    var LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
+    /** @type {?} */
+    var SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
+    /** @type {?} */
+    var CURRENCY_CHANGE = '[Site-context] Currency Change';
+    var LoadCurrencies = /** @class */ (function () {
+        function LoadCurrencies() {
+            this.type = LOAD_CURRENCIES;
+        }
+        return LoadCurrencies;
+    }());
+    var LoadCurrenciesFail = /** @class */ (function () {
+        function LoadCurrenciesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CURRENCIES_FAIL;
+        }
+        return LoadCurrenciesFail;
+    }());
+    var LoadCurrenciesSuccess = /** @class */ (function () {
+        function LoadCurrenciesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CURRENCIES_SUCCESS;
+        }
+        return LoadCurrenciesSuccess;
+    }());
+    var SetActiveCurrency = /** @class */ (function () {
+        function SetActiveCurrency(payload) {
+            this.payload = payload;
+            this.type = SET_ACTIVE_CURRENCY;
+        }
+        return SetActiveCurrency;
+    }());
+    var CurrencyChange = /** @class */ (function () {
+        function CurrencyChange() {
+            this.type = CURRENCY_CHANGE;
+        }
+        return CurrencyChange;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$2 = {
+        entities: null,
+        activeCurrency: null,
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
+        switch (action.type) {
+            case LOAD_CURRENCIES_SUCCESS: {
+                /** @type {?} */
+                var currencies = action.payload;
+                /** @type {?} */
+                var entities = currencies.reduce((/**
+                 * @param {?} currEntities
+                 * @param {?} currency
+                 * @return {?}
+                 */
+                function (currEntities, currency) {
+                    var _a;
+                    return __assign({}, currEntities, (_a = {}, _a[currency.isocode] = currency, _a));
+                }), __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case SET_ACTIVE_CURRENCY: {
+                /** @type {?} */
+                var isocode = action.payload;
+                return __assign({}, state, { activeCurrency: isocode });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$3 = {
+        details: {},
+        activeSite: '',
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
+        switch (action.type) {
+            case LOAD_BASE_SITE_SUCCESS: {
+                return __assign({}, state, { details: action.payload });
+            }
+            case SET_ACTIVE_BASE_SITE: {
+                return __assign({}, state, { activeSite: action.payload });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$1() {
+        return {
+            languages: reducer$1,
+            currencies: reducer$2,
+            baseSite: reducer$3,
+        };
+    }
+    /** @type {?} */
+    var reducerToken$1 = new core.InjectionToken('SiteContextReducers');
+    /** @type {?} */
+    var reducerProvider$1 = {
+        provide: reducerToken$1,
+        useFactory: getReducers$1,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    function makeErrorSerializable(error) {
+        if (error instanceof Error) {
+            return (/** @type {?} */ ({
+                message: error.message,
+                type: error.name,
+                reason: error.stack,
+            }));
+        }
+        if (error instanceof http.HttpErrorResponse) {
+            return (/** @type {?} */ ({
+                message: error.message,
+                error: error.error,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            }));
+        }
+        return error;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    SiteAdapter = /** @class */ (function () {
+        function SiteAdapter() {
+        }
+        return SiteAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SiteConnector = /** @class */ (function () {
+        function SiteConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @return {?}
+         */
+        SiteConnector.prototype.getLanguages = /**
+         * @return {?}
+         */
+        function () {
+            return this.adapter.loadLanguages();
+        };
+        /**
+         * @return {?}
+         */
+        SiteConnector.prototype.getCurrencies = /**
+         * @return {?}
+         */
+        function () {
+            return this.adapter.loadCurrencies();
+        };
+        /**
+         * @param {?=} type
+         * @return {?}
+         */
+        SiteConnector.prototype.getCountries = /**
+         * @param {?=} type
+         * @return {?}
+         */
+        function (type) {
+            return this.adapter.loadCountries(type);
+        };
+        /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        SiteConnector.prototype.getRegions = /**
+         * @param {?} countryIsoCode
+         * @return {?}
+         */
+        function (countryIsoCode) {
+            return this.adapter.loadRegions(countryIsoCode);
+        };
+        /**
+         * @return {?}
+         */
+        SiteConnector.prototype.getBaseSite = /**
+         * @return {?}
+         */
+        function () {
+            return this.adapter.loadBaseSite();
+        };
+        SiteConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        SiteConnector.ctorParameters = function () { return [
+            { type: SiteAdapter }
+        ]; };
+        /** @nocollapse */ SiteConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(core.ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+        return SiteConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var LanguagesEffects = /** @class */ (function () {
+        function LanguagesEffects(actions$, siteConnector, winRef) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.siteConnector = siteConnector;
+            this.winRef = winRef;
+            this.loadLanguages$ = this.actions$.pipe(effects$a.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
+             * @return {?}
+             */
+            function () {
+                return _this.siteConnector.getLanguages().pipe(operators.map((/**
+                 * @param {?} languages
+                 * @return {?}
+                 */
+                function (languages) { return new LoadLanguagesSuccess(languages); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.activateLanguage$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                if (_this.winRef.sessionStorage) {
+                    _this.winRef.sessionStorage.setItem('language', action.payload);
+                }
+            })), operators.map((/**
+             * @return {?}
+             */
+            function () { return new LanguageChange(); })));
+        }
+        LanguagesEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        LanguagesEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: SiteConnector },
+            { type: WindowRef }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], LanguagesEffects.prototype, "loadLanguages$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], LanguagesEffects.prototype, "activateLanguage$", void 0);
+        return LanguagesEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CurrenciesEffects = /** @class */ (function () {
+        function CurrenciesEffects(actions$, siteConnector, winRef) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.siteConnector = siteConnector;
+            this.winRef = winRef;
+            this.loadCurrencies$ = this.actions$.pipe(effects$a.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
+             * @return {?}
+             */
+            function () {
+                return _this.siteConnector.getCurrencies().pipe(operators.map((/**
+                 * @param {?} currencies
+                 * @return {?}
+                 */
+                function (currencies) { return new LoadCurrenciesSuccess(currencies); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.activateCurrency$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                if (_this.winRef.sessionStorage) {
+                    _this.winRef.sessionStorage.setItem('currency', action.payload);
+                }
+            })), operators.map((/**
+             * @return {?}
+             */
+            function () { return new CurrencyChange(); })));
+        }
+        CurrenciesEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CurrenciesEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: SiteConnector },
+            { type: WindowRef }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
+        return CurrenciesEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var BaseSiteEffects = /** @class */ (function () {
+        function BaseSiteEffects(actions$, siteConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.siteConnector = siteConnector;
+            this.loadBaseSite$ = this.actions$.pipe(effects$a.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
+             * @return {?}
+             */
+            function () {
+                return _this.siteConnector.getBaseSite().pipe(operators.map((/**
+                 * @param {?} baseSite
+                 * @return {?}
+                 */
+                function (baseSite) { return new LoadBaseSiteSuccess(baseSite); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        BaseSiteEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        BaseSiteEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: SiteConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+        return BaseSiteEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$1 = [
+        LanguagesEffects,
+        CurrenciesEffects,
+        BaseSiteEffects,
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var activeLanguageSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.activeLanguage; });
+    /** @type {?} */
+    var languagesEntitiesSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.entities; });
+    var ɵ2$1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.languages; };
+    /** @type {?} */
+    var getLanguagesState = store.createSelector(getSiteContextState, (ɵ2$1));
+    /** @type {?} */
+    var getLanguagesEntities = store.createSelector(getLanguagesState, languagesEntitiesSelector);
+    /** @type {?} */
+    var getActiveLanguage = store.createSelector(getLanguagesState, activeLanguageSelector);
+    var ɵ3$1 = /**
+     * @param {?} entities
+     * @return {?}
+     */
+    function (entities) {
+        return entities
+            ? Object.keys(entities).map((/**
+             * @param {?} isocode
+             * @return {?}
+             */
+            function (isocode) { return entities[isocode]; }))
+            : null;
+    };
+    /** @type {?} */
+    var getAllLanguages = store.createSelector(getLanguagesEntities, (ɵ3$1));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var currenciesEntitiesSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.entities; });
+    /** @type {?} */
+    var activeCurrencySelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.activeCurrency; });
+    var ɵ2$2 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.currencies; };
+    /** @type {?} */
+    var getCurrenciesState = store.createSelector(getSiteContextState, (ɵ2$2));
+    /** @type {?} */
+    var getCurrenciesEntities = store.createSelector(getCurrenciesState, currenciesEntitiesSelector);
+    /** @type {?} */
+    var getActiveCurrency = store.createSelector(getCurrenciesState, activeCurrencySelector);
+    var ɵ3$2 = /**
+     * @param {?} entities
+     * @return {?}
+     */
+    function (entities) {
+        return entities
+            ? Object.keys(entities).map((/**
+             * @param {?} isocode
+             * @return {?}
+             */
+            function (isocode) { return entities[isocode]; }))
+            : null;
+    };
+    /** @type {?} */
+    var getAllCurrencies = store.createSelector(getCurrenciesEntities, (ɵ3$2));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Facade that provides easy access to language state, actions and selectors.
+     */
+    var LanguageService = /** @class */ (function () {
+        function LanguageService(store, winRef) {
+            this.store = store;
+            this.sessionStorage = winRef.sessionStorage;
+        }
+        /**
+         * Represents all the languages supported by the current store.
+         */
+        /**
+         * Represents all the languages supported by the current store.
+         * @return {?}
+         */
+        LanguageService.prototype.getAll = /**
+         * Represents all the languages supported by the current store.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getAllLanguages), operators.tap((/**
+             * @param {?} languages
+             * @return {?}
+             */
+            function (languages) {
+                if (!languages) {
+                    _this.store.dispatch(new LoadLanguages());
+                }
+            })), operators.filter(Boolean));
+        };
+        /**
+         * Represents the isocode of the active language.
+         */
+        /**
+         * Represents the isocode of the active language.
+         * @return {?}
+         */
+        LanguageService.prototype.getActive = /**
+         * Represents the isocode of the active language.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getActiveLanguage), operators.filter(Boolean));
+        };
+        /**
+         * Sets the active language.
+         */
+        /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        LanguageService.prototype.setActive = /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) {
+            var _this = this;
+            return this.store
+                .pipe(store.select(getActiveLanguage), operators.take(1))
+                .subscribe((/**
+             * @param {?} activeLanguage
+             * @return {?}
+             */
+            function (activeLanguage) {
+                if (activeLanguage !== isocode) {
+                    _this.store.dispatch(new SetActiveLanguage(isocode));
+                }
+            }));
+        };
+        /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         */
+        /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         * @param {?} defaultLanguage
+         * @return {?}
+         */
+        LanguageService.prototype.initialize = /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         * @param {?} defaultLanguage
+         * @return {?}
+         */
+        function (defaultLanguage) {
+            if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
+                this.setActive(this.sessionStorage.getItem('language'));
+            }
+            else {
+                this.setActive(defaultLanguage);
+            }
+        };
+        LanguageService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        LanguageService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: WindowRef }
+        ]; };
+        return LanguageService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Facade that provides easy access to curreny state, actions and selectors.
+     */
+    var CurrencyService = /** @class */ (function () {
+        function CurrencyService(store, winRef) {
+            this.store = store;
+            this.sessionStorage = winRef.sessionStorage;
+        }
+        /**
+         * Represents all the currencies supported by the current store.
+         */
+        /**
+         * Represents all the currencies supported by the current store.
+         * @return {?}
+         */
+        CurrencyService.prototype.getAll = /**
+         * Represents all the currencies supported by the current store.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getAllCurrencies), operators.tap((/**
+             * @param {?} currencies
+             * @return {?}
+             */
+            function (currencies) {
+                if (!currencies) {
+                    _this.store.dispatch(new LoadCurrencies());
+                }
+            })), operators.filter(Boolean));
+        };
+        /**
+         * Represents the isocode of the active currency.
+         */
+        /**
+         * Represents the isocode of the active currency.
+         * @return {?}
+         */
+        CurrencyService.prototype.getActive = /**
+         * Represents the isocode of the active currency.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getActiveCurrency), operators.filter(Boolean));
+        };
+        /**
+         * Sets the active language.
+         */
+        /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        CurrencyService.prototype.setActive = /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) {
+            var _this = this;
+            return this.store
+                .pipe(store.select(getActiveCurrency), operators.take(1))
+                .subscribe((/**
+             * @param {?} activeCurrency
+             * @return {?}
+             */
+            function (activeCurrency) {
+                if (activeCurrency !== isocode) {
+                    _this.store.dispatch(new SetActiveCurrency(isocode));
+                }
+            }));
+        };
+        /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         */
+        /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         * @param {?} defaultCurrency
+         * @return {?}
+         */
+        CurrencyService.prototype.initialize = /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         * @param {?} defaultCurrency
+         * @return {?}
+         */
+        function (defaultCurrency) {
+            if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
+                this.setActive(this.sessionStorage.getItem('currency'));
+            }
+            else {
+                this.setActive(defaultCurrency);
+            }
+        };
+        CurrencyService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CurrencyService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: WindowRef }
+        ]; };
+        return CurrencyService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    ContextServiceMap = /** @class */ (function () {
+        function ContextServiceMap() {
+        }
+        return ContextServiceMap;
+    }());
+    /** @type {?} */
+    var LANGUAGE_CONTEXT_ID = 'language';
+    /** @type {?} */
+    var CURRENCY_CONTEXT_ID = 'currency';
+    /** @type {?} */
+    var BASE_SITE_CONTEXT_ID = 'baseSite';
+    /**
+     * @return {?}
+     */
+    function serviceMapFactory() {
+        var _a;
+        return _a = {},
+            _a[LANGUAGE_CONTEXT_ID] = LanguageService,
+            _a[CURRENCY_CONTEXT_ID] = CurrencyService,
+            _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
+            _a;
+    }
+    /** @type {?} */
+    var contextServiceMapProvider = {
+        provide: ContextServiceMap,
+        useFactory: serviceMapFactory,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var OccEndpointsService = /** @class */ (function () {
         function OccEndpointsService(config, baseSiteService) {
             var _this = this;
             this.config = config;
             this.baseSiteService = baseSiteService;
-            this.activeBaseSite = (this.config.site && this.config.site.baseSite) || '';
+            this.activeBaseSite =
+                getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID) || '';
             if (this.baseSiteService) {
                 this.baseSiteService
                     .getActive()
@@ -3317,34 +4202,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    function makeErrorSerializable(error) {
-        if (error instanceof Error) {
-            return (/** @type {?} */ ({
-                message: error.message,
-                type: error.name,
-                reason: error.stack,
-            }));
-        }
-        if (error instanceof http.HttpErrorResponse) {
-            return (/** @type {?} */ ({
-                message: error.message,
-                error: error.error,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            }));
-        }
-        return error;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -3496,7 +4353,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$1 = [UserTokenEffects, ClientTokenEffect];
+    var effects$2 = [UserTokenEffects, ClientTokenEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -3564,14 +4421,14 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$1 = (/** @type {?} */ ({}));
+    var initialState$4 = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case LOAD_USER_TOKEN:
             case REFRESH_USER_TOKEN: {
@@ -3596,18 +4453,18 @@
     /**
      * @return {?}
      */
-    function getReducers$1() {
+    function getReducers$2() {
         return {
-            userToken: store.combineReducers({ token: reducer$1 }),
+            userToken: store.combineReducers({ token: reducer$4 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken$1 = new core.InjectionToken('AuthReducers');
+    var reducerToken$2 = new core.InjectionToken('AuthReducers');
     /** @type {?} */
-    var reducerProvider$1 = {
-        provide: reducerToken$1,
-        useFactory: getReducers$1,
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
     /**
      * @param {?} reducer
@@ -3659,11 +4516,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
-                            effects$a.EffectsModule.forFeature(effects$1),
+                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken$2, { metaReducers: metaReducers }),
+                            effects$a.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$1],
+                        providers: [reducerProvider$2],
                     },] }
         ];
         return AuthStoreModule;
@@ -4236,7 +5093,7 @@
     var getCartContent = store.createSelector(getCartState, getCartContentSelector);
     /** @type {?} */
     var getCartRefresh = store.createSelector(getCartState, getRefreshSelector);
-    var ɵ2$1 = /**
+    var ɵ2$3 = /**
      * @param {?} state
      * @return {?}
      */
@@ -4246,14 +5103,14 @@
             !loaderValueSelector(state).refresh;
     };
     /** @type {?} */
-    var getCartLoaded = store.createSelector(getActiveCartState, (ɵ2$1));
-    var ɵ3$1 = /**
+    var getCartLoaded = store.createSelector(getActiveCartState, (ɵ2$3));
+    var ɵ3$3 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getCartLoading = store.createSelector(getActiveCartState, (ɵ3$1));
+    var getCartLoading = store.createSelector(getActiveCartState, (ɵ3$3));
     /** @type {?} */
     var getCartMergeComplete = store.createSelector(getCartState, getCartMergeCompleteSelector);
     /** @type {?} */
@@ -4885,59 +5742,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var LOAD_CURRENCIES = '[Site-context] Load Currencies';
-    /** @type {?} */
-    var LOAD_CURRENCIES_FAIL = '[Site-context] Load Currencies Fail';
-    /** @type {?} */
-    var LOAD_CURRENCIES_SUCCESS = '[Site-context] Load Currencies Success';
-    /** @type {?} */
-    var SET_ACTIVE_CURRENCY = '[Site-context] Set Active Currency';
-    /** @type {?} */
-    var CURRENCY_CHANGE = '[Site-context] Currency Change';
-    var LoadCurrencies = /** @class */ (function () {
-        function LoadCurrencies() {
-            this.type = LOAD_CURRENCIES;
-        }
-        return LoadCurrencies;
-    }());
-    var LoadCurrenciesFail = /** @class */ (function () {
-        function LoadCurrenciesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CURRENCIES_FAIL;
-        }
-        return LoadCurrenciesFail;
-    }());
-    var LoadCurrenciesSuccess = /** @class */ (function () {
-        function LoadCurrenciesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CURRENCIES_SUCCESS;
-        }
-        return LoadCurrenciesSuccess;
-    }());
-    var SetActiveCurrency = /** @class */ (function () {
-        function SetActiveCurrency(payload) {
-            this.payload = payload;
-            this.type = SET_ACTIVE_CURRENCY;
-        }
-        return SetActiveCurrency;
-    }());
-    var CurrencyChange = /** @class */ (function () {
-        function CurrencyChange() {
-            this.type = CURRENCY_CHANGE;
-        }
-        return CurrencyChange;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CartEffects = /** @class */ (function () {
         function CartEffects(actions$, cartConnector, cartData) {
             var _this = this;
@@ -5213,7 +6017,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$2 = [CartEffects, CartEntryEffects];
+    var effects$3 = [CartEffects, CartEntryEffects];
 
     /**
      * @fileoverview added by tsickle
@@ -5484,7 +6288,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$2 = {
+    var initialState$5 = {
         content: {},
         entries: {},
         refresh: false,
@@ -5495,8 +6299,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
         switch (action.type) {
             case MERGE_CART: {
                 return __assign({}, state, { cartMergeComplete: false });
@@ -5553,17 +6357,17 @@
     /**
      * @return {?}
      */
-    function getReducers$2() {
+    function getReducers$3() {
         return {
-            active: loaderReducer(CART_DATA, reducer$2),
+            active: loaderReducer(CART_DATA, reducer$5),
         };
     }
     /** @type {?} */
-    var reducerToken$2 = new core.InjectionToken('CartReducers');
+    var reducerToken$3 = new core.InjectionToken('CartReducers');
     /** @type {?} */
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
     };
     /**
      * @param {?} reducer
@@ -5615,11 +6419,11 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
-                            effects$a.EffectsModule.forFeature(effects$2),
+                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
+                            effects$a.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(cartStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$2],
+                        providers: [reducerProvider$3],
                     },] }
         ];
         return CartStoreModule;
@@ -5786,7 +6590,7 @@
     var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     /** @type {?} */
     var getDeliveryMode = store.createSelector(getCheckoutSteps, getDeliveryModeSelector);
-    var ɵ2$2 = /**
+    var ɵ2$4 = /**
      * @param {?} deliveryMode
      * @return {?}
      */
@@ -5798,8 +6602,8 @@
         function (code) { return deliveryMode.supported[code]; }));
     };
     /** @type {?} */
-    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, (ɵ2$2));
-    var ɵ3$2 = /**
+    var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, (ɵ2$4));
+    var ɵ3$4 = /**
      * @param {?} deliveryMode
      * @return {?}
      */
@@ -5807,7 +6611,7 @@
         return deliveryMode.selected;
     };
     /** @type {?} */
-    var getSelectedCode = store.createSelector(getDeliveryMode, (ɵ3$2));
+    var getSelectedCode = store.createSelector(getDeliveryMode, (ɵ3$4));
     var ɵ4$1 = /**
      * @param {?} deliveryMode
      * @return {?}
@@ -5839,7 +6643,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$3 = {
+    var initialState$6 = {
         entities: {},
     };
     /**
@@ -5847,8 +6651,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$6(state, action) {
+        if (state === void 0) { state = initialState$6; }
         switch (action.type) {
             case LOAD_CARD_TYPES_SUCCESS: {
                 /** @type {?} */
@@ -5866,7 +6670,7 @@
                 return __assign({}, state, { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$3;
+                return initialState$6;
             }
         }
         return state;
@@ -5910,7 +6714,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$4 = {
+    var initialState$7 = {
         results: {},
     };
     /**
@@ -5918,8 +6722,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$7(state, action) {
+        if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 /** @type {?} */
@@ -8174,7 +8978,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$3 = [
+    var effects$4 = [
         CheckoutEffects,
         AddressVerificationEffect,
         CardTypesEffects,
@@ -8185,7 +8989,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = {
+    var initialState$8 = {
         address: {},
         deliveryMode: {
             supported: {},
@@ -8199,8 +9003,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$8(state, action) {
+        if (state === void 0) { state = initialState$8; }
         switch (action.type) {
             case ADD_DELIVERY_ADDRESS_SUCCESS:
             case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -8249,7 +9053,7 @@
                 return __assign({}, state, { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$5;
+                return initialState$8;
             }
             case CLEAR_CHECKOUT_STEP: {
                 /** @type {?} */
@@ -8285,19 +9089,19 @@
     /**
      * @return {?}
      */
-    function getReducers$3() {
+    function getReducers$4() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$5),
-            cardTypes: reducer$3,
-            addressVerification: reducer$4,
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$8),
+            cardTypes: reducer$6,
+            addressVerification: reducer$7,
         };
     }
     /** @type {?} */
-    var reducerToken$3 = new core.InjectionToken('CheckoutReducers');
+    var reducerToken$4 = new core.InjectionToken('CheckoutReducers');
     /** @type {?} */
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
 
     /**
@@ -9969,14 +10773,14 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$6 = undefined;
+    var initialState$9 = undefined;
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$6(state, action) {
-        if (state === void 0) { state = initialState$6; }
+    function reducer$9(state, action) {
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case LOAD_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -10004,15 +10808,15 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$7 = { entities: {} };
+    var initialState$a = { entities: {} };
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$7(state, action) {
+    function reducer$a(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$7; }
+        if (state === void 0) { state = initialState$a; }
         switch (action.type) {
             case LOAD_PAGE_DATA_SUCCESS: {
                 /** @type {?} */
@@ -10028,26 +10832,26 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$8 = undefined;
+    var initialState$b = undefined;
     /**
      * @param {?} entityType
      * @return {?}
      */
-    function reducer$8(entityType) {
+    function reducer$b(entityType) {
         return (/**
          * @param {?=} state
          * @param {?=} action
          * @return {?}
          */
         function (state, action) {
-            if (state === void 0) { state = initialState$8; }
+            if (state === void 0) { state = initialState$b; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_PAGE_DATA_FAIL: {
-                        return initialState$8;
+                        return initialState$b;
                     }
                     case SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -10065,27 +10869,27 @@
     /**
      * @return {?}
      */
-    function getReducers$4() {
+    function getReducers$5() {
         return {
             page: store.combineReducers({
-                pageData: reducer$7,
+                pageData: reducer$a,
                 index: store.combineReducers({
-                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$8(PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$8(PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$8(PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$8(PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$b(PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$b(PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$b(PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$b(PageType.CATALOG_PAGE)),
                 }),
             }),
             component: entityLoaderReducer(COMPONENT_ENTITY),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$6),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$9),
         };
     }
     /** @type {?} */
-    var reducerToken$4 = new core.InjectionToken('CmsReducers');
+    var reducerToken$5 = new core.InjectionToken('CmsReducers');
     /** @type {?} */
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
     /**
      * @param {?} reducer
@@ -10845,7 +11649,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$4 = [
+    var effects$5 = [
         PageEffects,
         ComponentEffects,
         NavigationEntryItemEffects,
@@ -11493,11 +12297,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                            effects$a.EffectsModule.forFeature(effects$4),
+                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$5, { metaReducers: metaReducers$2 }),
+                            effects$a.EffectsModule.forFeature(effects$5),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$4],
+                        providers: [reducerProvider$5],
                     },] }
         ];
         return CmsStoreModule;
@@ -11789,10 +12593,10 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$3),
-                            effects$a.EffectsModule.forFeature(effects$3),
+                            store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4),
+                            effects$a.EffectsModule.forFeature(effects$4),
                         ],
-                        providers: [reducerProvider$3],
+                        providers: [reducerProvider$4],
                     },] }
         ];
         return CheckoutStoreModule;
@@ -11863,755 +12667,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var initialState$9 = {
-        entities: null,
-        activeLanguage: null,
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$9(state, action) {
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case LOAD_LANGUAGES_SUCCESS: {
-                /** @type {?} */
-                var languages = action.payload;
-                /** @type {?} */
-                var entities = languages.reduce((/**
-                 * @param {?} langEntities
-                 * @param {?} language
-                 * @return {?}
-                 */
-                function (langEntities, language) {
-                    var _a;
-                    return __assign({}, langEntities, (_a = {}, _a[language.isocode] = language, _a));
-                }), __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case SET_ACTIVE_LANGUAGE: {
-                /** @type {?} */
-                var isocode = action.payload;
-                return __assign({}, state, { activeLanguage: isocode });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$a = {
-        entities: null,
-        activeCurrency: null,
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
-        switch (action.type) {
-            case LOAD_CURRENCIES_SUCCESS: {
-                /** @type {?} */
-                var currencies = action.payload;
-                /** @type {?} */
-                var entities = currencies.reduce((/**
-                 * @param {?} currEntities
-                 * @param {?} currency
-                 * @return {?}
-                 */
-                function (currEntities, currency) {
-                    var _a;
-                    return __assign({}, currEntities, (_a = {}, _a[currency.isocode] = currency, _a));
-                }), __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case SET_ACTIVE_CURRENCY: {
-                /** @type {?} */
-                var isocode = action.payload;
-                return __assign({}, state, { activeCurrency: isocode });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$b = {
-        details: {},
-        activeSite: '',
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$b(state, action) {
-        if (state === void 0) { state = initialState$b; }
-        switch (action.type) {
-            case LOAD_BASE_SITE_SUCCESS: {
-                return __assign({}, state, { details: action.payload });
-            }
-            case SET_ACTIVE_BASE_SITE: {
-                return __assign({}, state, { activeSite: action.payload });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$5() {
-        return {
-            languages: reducer$9,
-            currencies: reducer$a,
-            baseSite: reducer$b,
-        };
-    }
-    /** @type {?} */
-    var reducerToken$5 = new core.InjectionToken('SiteContextReducers');
-    /** @type {?} */
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    SiteAdapter = /** @class */ (function () {
-        function SiteAdapter() {
-        }
-        return SiteAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var SiteConnector = /** @class */ (function () {
-        function SiteConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @return {?}
-         */
-        SiteConnector.prototype.getLanguages = /**
-         * @return {?}
-         */
-        function () {
-            return this.adapter.loadLanguages();
-        };
-        /**
-         * @return {?}
-         */
-        SiteConnector.prototype.getCurrencies = /**
-         * @return {?}
-         */
-        function () {
-            return this.adapter.loadCurrencies();
-        };
-        /**
-         * @param {?=} type
-         * @return {?}
-         */
-        SiteConnector.prototype.getCountries = /**
-         * @param {?=} type
-         * @return {?}
-         */
-        function (type) {
-            return this.adapter.loadCountries(type);
-        };
-        /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        SiteConnector.prototype.getRegions = /**
-         * @param {?} countryIsoCode
-         * @return {?}
-         */
-        function (countryIsoCode) {
-            return this.adapter.loadRegions(countryIsoCode);
-        };
-        /**
-         * @return {?}
-         */
-        SiteConnector.prototype.getBaseSite = /**
-         * @return {?}
-         */
-        function () {
-            return this.adapter.loadBaseSite();
-        };
-        SiteConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        SiteConnector.ctorParameters = function () { return [
-            { type: SiteAdapter }
-        ]; };
-        /** @nocollapse */ SiteConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(core.ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
-        return SiteConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var LanguagesEffects = /** @class */ (function () {
-        function LanguagesEffects(actions$, siteConnector, winRef) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.siteConnector = siteConnector;
-            this.winRef = winRef;
-            this.loadLanguages$ = this.actions$.pipe(effects$a.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
-             * @return {?}
-             */
-            function () {
-                return _this.siteConnector.getLanguages().pipe(operators.map((/**
-                 * @param {?} languages
-                 * @return {?}
-                 */
-                function (languages) { return new LoadLanguagesSuccess(languages); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.activateLanguage$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                if (_this.winRef.sessionStorage) {
-                    _this.winRef.sessionStorage.setItem('language', action.payload);
-                }
-            })), operators.map((/**
-             * @return {?}
-             */
-            function () { return new LanguageChange(); })));
-        }
-        LanguagesEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        LanguagesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: SiteConnector },
-            { type: WindowRef }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], LanguagesEffects.prototype, "loadLanguages$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], LanguagesEffects.prototype, "activateLanguage$", void 0);
-        return LanguagesEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CurrenciesEffects = /** @class */ (function () {
-        function CurrenciesEffects(actions$, siteConnector, winRef) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.siteConnector = siteConnector;
-            this.winRef = winRef;
-            this.loadCurrencies$ = this.actions$.pipe(effects$a.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
-             * @return {?}
-             */
-            function () {
-                return _this.siteConnector.getCurrencies().pipe(operators.map((/**
-                 * @param {?} currencies
-                 * @return {?}
-                 */
-                function (currencies) { return new LoadCurrenciesSuccess(currencies); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.activateCurrency$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                if (_this.winRef.sessionStorage) {
-                    _this.winRef.sessionStorage.setItem('currency', action.payload);
-                }
-            })), operators.map((/**
-             * @return {?}
-             */
-            function () { return new CurrencyChange(); })));
-        }
-        CurrenciesEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CurrenciesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: SiteConnector },
-            { type: WindowRef }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
-        return CurrenciesEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var BaseSiteEffects = /** @class */ (function () {
-        function BaseSiteEffects(actions$, siteConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.siteConnector = siteConnector;
-            this.loadBaseSite$ = this.actions$.pipe(effects$a.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
-             * @return {?}
-             */
-            function () {
-                return _this.siteConnector.getBaseSite().pipe(operators.map((/**
-                 * @param {?} baseSite
-                 * @return {?}
-                 */
-                function (baseSite) { return new LoadBaseSiteSuccess(baseSite); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadBaseSiteFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        BaseSiteEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        BaseSiteEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
-        return BaseSiteEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$5 = [
-        LanguagesEffects,
-        CurrenciesEffects,
-        BaseSiteEffects,
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var activeLanguageSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.activeLanguage; });
-    /** @type {?} */
-    var languagesEntitiesSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.entities; });
-    var ɵ2$3 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.languages; };
-    /** @type {?} */
-    var getLanguagesState = store.createSelector(getSiteContextState, (ɵ2$3));
-    /** @type {?} */
-    var getLanguagesEntities = store.createSelector(getLanguagesState, languagesEntitiesSelector);
-    /** @type {?} */
-    var getActiveLanguage = store.createSelector(getLanguagesState, activeLanguageSelector);
-    var ɵ3$3 = /**
-     * @param {?} entities
-     * @return {?}
-     */
-    function (entities) {
-        return entities
-            ? Object.keys(entities).map((/**
-             * @param {?} isocode
-             * @return {?}
-             */
-            function (isocode) { return entities[isocode]; }))
-            : null;
-    };
-    /** @type {?} */
-    var getAllLanguages = store.createSelector(getLanguagesEntities, (ɵ3$3));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var currenciesEntitiesSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.entities; });
-    /** @type {?} */
-    var activeCurrencySelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.activeCurrency; });
-    var ɵ2$4 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.currencies; };
-    /** @type {?} */
-    var getCurrenciesState = store.createSelector(getSiteContextState, (ɵ2$4));
-    /** @type {?} */
-    var getCurrenciesEntities = store.createSelector(getCurrenciesState, currenciesEntitiesSelector);
-    /** @type {?} */
-    var getActiveCurrency = store.createSelector(getCurrenciesState, activeCurrencySelector);
-    var ɵ3$4 = /**
-     * @param {?} entities
-     * @return {?}
-     */
-    function (entities) {
-        return entities
-            ? Object.keys(entities).map((/**
-             * @param {?} isocode
-             * @return {?}
-             */
-            function (isocode) { return entities[isocode]; }))
-            : null;
-    };
-    /** @type {?} */
-    var getAllCurrencies = store.createSelector(getCurrenciesEntities, (ɵ3$4));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Facade that provides easy access to language state, actions and selectors.
-     */
-    var LanguageService = /** @class */ (function () {
-        function LanguageService(store, winRef) {
-            this.store = store;
-            this.sessionStorage = winRef.sessionStorage;
-        }
-        /**
-         * Represents all the languages supported by the current store.
-         */
-        /**
-         * Represents all the languages supported by the current store.
-         * @return {?}
-         */
-        LanguageService.prototype.getAll = /**
-         * Represents all the languages supported by the current store.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getAllLanguages), operators.tap((/**
-             * @param {?} languages
-             * @return {?}
-             */
-            function (languages) {
-                if (!languages) {
-                    _this.store.dispatch(new LoadLanguages());
-                }
-            })), operators.filter(Boolean));
-        };
-        /**
-         * Represents the isocode of the active language.
-         */
-        /**
-         * Represents the isocode of the active language.
-         * @return {?}
-         */
-        LanguageService.prototype.getActive = /**
-         * Represents the isocode of the active language.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getActiveLanguage), operators.filter(Boolean));
-        };
-        /**
-         * Sets the active language.
-         */
-        /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        LanguageService.prototype.setActive = /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) {
-            var _this = this;
-            return this.store
-                .pipe(store.select(getActiveLanguage), operators.take(1))
-                .subscribe((/**
-             * @param {?} activeLanguage
-             * @return {?}
-             */
-            function (activeLanguage) {
-                if (activeLanguage !== isocode) {
-                    _this.store.dispatch(new SetActiveLanguage(isocode));
-                }
-            }));
-        };
-        /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         */
-        /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         * @param {?} defaultLanguage
-         * @return {?}
-         */
-        LanguageService.prototype.initialize = /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         * @param {?} defaultLanguage
-         * @return {?}
-         */
-        function (defaultLanguage) {
-            if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
-                this.setActive(this.sessionStorage.getItem('language'));
-            }
-            else {
-                this.setActive(defaultLanguage);
-            }
-        };
-        LanguageService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        LanguageService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef }
-        ]; };
-        return LanguageService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Facade that provides easy access to curreny state, actions and selectors.
-     */
-    var CurrencyService = /** @class */ (function () {
-        function CurrencyService(store, winRef) {
-            this.store = store;
-            this.sessionStorage = winRef.sessionStorage;
-        }
-        /**
-         * Represents all the currencies supported by the current store.
-         */
-        /**
-         * Represents all the currencies supported by the current store.
-         * @return {?}
-         */
-        CurrencyService.prototype.getAll = /**
-         * Represents all the currencies supported by the current store.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getAllCurrencies), operators.tap((/**
-             * @param {?} currencies
-             * @return {?}
-             */
-            function (currencies) {
-                if (!currencies) {
-                    _this.store.dispatch(new LoadCurrencies());
-                }
-            })), operators.filter(Boolean));
-        };
-        /**
-         * Represents the isocode of the active currency.
-         */
-        /**
-         * Represents the isocode of the active currency.
-         * @return {?}
-         */
-        CurrencyService.prototype.getActive = /**
-         * Represents the isocode of the active currency.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getActiveCurrency), operators.filter(Boolean));
-        };
-        /**
-         * Sets the active language.
-         */
-        /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        CurrencyService.prototype.setActive = /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) {
-            var _this = this;
-            return this.store
-                .pipe(store.select(getActiveCurrency), operators.take(1))
-                .subscribe((/**
-             * @param {?} activeCurrency
-             * @return {?}
-             */
-            function (activeCurrency) {
-                if (activeCurrency !== isocode) {
-                    _this.store.dispatch(new SetActiveCurrency(isocode));
-                }
-            }));
-        };
-        /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         */
-        /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         * @param {?} defaultCurrency
-         * @return {?}
-         */
-        CurrencyService.prototype.initialize = /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         * @param {?} defaultCurrency
-         * @return {?}
-         */
-        function (defaultCurrency) {
-            if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
-                this.setActive(this.sessionStorage.getItem('currency'));
-            }
-            else {
-                this.setActive(defaultCurrency);
-            }
-        };
-        CurrencyService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CurrencyService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef }
-        ]; };
-        return CurrencyService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    ContextServiceMap = /** @class */ (function () {
-        function ContextServiceMap() {
-        }
-        return ContextServiceMap;
-    }());
-    /** @type {?} */
-    var LANGUAGE_CONTEXT_ID = 'LANGUAGE';
-    /** @type {?} */
-    var CURRENCY_CONTEXT_ID = 'CURRENCY';
-    /** @type {?} */
-    var BASE_SITE_CONTEXT_ID = 'BASE_SITE';
-    /**
-     * @return {?}
-     */
-    function serviceMapFactory() {
-        var _a;
-        return _a = {},
-            _a[LANGUAGE_CONTEXT_ID] = LanguageService,
-            _a[CURRENCY_CONTEXT_ID] = CurrencyService,
-            _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
-            _a;
-    }
-    /** @type {?} */
-    var contextServiceMapProvider = {
-        provide: ContextServiceMap,
-        useFactory: serviceMapFactory,
-    };
 
     /**
      * @fileoverview added by tsickle
@@ -12623,11 +12678,11 @@
     function defaultSiteContextConfigFactory() {
         var _a;
         return {
-            siteContext: {
+            context: {
                 parameters: (_a = {},
                     _a[LANGUAGE_CONTEXT_ID] = {
-                        persistence: 'route',
-                        defaultValue: 'en',
+                        persistence: ContextPersistence.ROUTE,
+                        default: 'en',
                         values: [
                             'en',
                             'de',
@@ -12649,8 +12704,8 @@
                         ],
                     },
                     _a[CURRENCY_CONTEXT_ID] = {
-                        persistence: 'route',
-                        defaultValue: 'USD',
+                        persistence: ContextPersistence.ROUTE,
+                        default: 'USD',
                         values: [
                             'USD',
                             'EUR',
@@ -12684,22 +12739,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    SiteContextConfig = /** @class */ (function () {
-        function SiteContextConfig() {
-        }
-        return SiteContextConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
      * @param {?} config
      * @param {?} baseSiteService
      * @param {?} langService
@@ -12711,9 +12750,9 @@
          * @return {?}
          */
         function () {
-            baseSiteService.initialize(config.site.baseSite);
-            langService.initialize(config.site.language);
-            currService.initialize(config.site.currency);
+            baseSiteService.initialize(getContextParameterDefault(config, BASE_SITE_CONTEXT_ID));
+            langService.initialize(getContextParameterDefault(config, LANGUAGE_CONTEXT_ID));
+            currService.initialize(getContextParameterDefault(config, CURRENCY_CONTEXT_ID));
         });
     }
     /** @type {?} */
@@ -12749,7 +12788,7 @@
          */
         function (persistence) {
             /** @type {?} */
-            var contextConfig = this.config.siteContext.parameters;
+            var contextConfig = this.config.context && this.config.context.parameters;
             if (contextConfig) {
                 /** @type {?} */
                 var params = Object.keys(contextConfig);
@@ -12770,15 +12809,23 @@
          * @param {?} param
          * @return {?}
          */
+        SiteContextParamsService.prototype.getParameter = /**
+         * @param {?} param
+         * @return {?}
+         */
+        function (param) {
+            return getContextParameter(this.config, param);
+        };
+        /**
+         * @param {?} param
+         * @return {?}
+         */
         SiteContextParamsService.prototype.getParamValues = /**
          * @param {?} param
          * @return {?}
          */
         function (param) {
-            return this.config.siteContext.parameters &&
-                this.config.siteContext.parameters[param]
-                ? this.config.siteContext.parameters[param].values
-                : undefined;
+            return this.getParameter(param).values || [];
         };
         /**
          * @param {?} param
@@ -12789,10 +12836,7 @@
          * @return {?}
          */
         function (param) {
-            return this.config.siteContext.parameters &&
-                this.config.siteContext.parameters[param]
-                ? this.config.siteContext.parameters[param].defaultValue
-                : undefined;
+            return getContextParameterDefault(this.config, param);
         };
         /**
          * @param {?} param
@@ -12872,7 +12916,7 @@
             _this.siteContextParams = siteContextParams;
             _this.config = config;
             _this.urlEncodingParameters =
-                _this.config.siteContext.urlEncodingParameters || [];
+                (_this.config.context && _this.config.context.urlEncodingParameters) || [];
             return _this;
         }
         Object.defineProperty(SiteContextUrlSerializer.prototype, "hasContextInRoutes", {
@@ -13046,7 +13090,7 @@
             this.router = this.injector.get(router.Router);
             this.location = this.injector.get(common.Location);
             /** @type {?} */
-            var routingParams = this.siteContextParams.getContextParameters('route');
+            var routingParams = this.siteContextParams.getContextParameters(ContextPersistence.ROUTE);
             if (routingParams.length) {
                 this.setContextParamsFromRoute(this.router.url);
                 this.subscribeChanges(routingParams);
@@ -13226,15 +13270,29 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$5),
-                            effects$a.EffectsModule.forFeature(effects$5),
+                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
+                            effects$a.EffectsModule.forFeature(effects$1),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$5],
+                        providers: [reducerProvider$1],
                     },] }
         ];
         return SiteContextStoreModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} config
+     * @return {?}
+     */
+    function baseSiteConfigValidator(config) {
+        if (getContextParameterDefault(config, BASE_SITE_CONTEXT_ID) === undefined) {
+            return 'Please configure context.parameters.baseSite before using storefront library!';
+        }
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -13257,6 +13315,7 @@
                     contextServiceMapProvider
                 ], contextServiceProviders, siteContextParamsProviders, [
                     { provide: SiteContextConfig, useExisting: Config },
+                    provideConfigValidator(baseSiteConfigValidator),
                 ]),
             };
         };
@@ -21561,10 +21620,6 @@
      */
     /** @type {?} */
     var defaultOccConfig = {
-        site: {
-            language: 'en',
-            currency: 'USD',
-        },
         backend: {
             occ: {
                 prefix: '/rest/v2/',
@@ -25266,8 +25321,8 @@
             this.currencyService = currencyService;
             this.occEndpoints = occEndpoints;
             this.config = config;
-            this.activeLang = this.config.site.language;
-            this.activeCurr = this.config.site.currency;
+            this.activeLang = getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID);
+            this.activeCurr = getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID);
             this.languageService
                 .getActive()
                 .subscribe((/**
@@ -25312,7 +25367,7 @@
             { type: LanguageService },
             { type: CurrencyService },
             { type: OccEndpointsService },
-            { type: OccConfig }
+            { type: SiteContextConfig }
         ]; };
         return SiteContextInterceptor;
     }());
@@ -29031,6 +29086,7 @@
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
     exports.ConflictHandler = ConflictHandler;
     exports.ContentPageMetaResolver = ContentPageMetaResolver;
+    exports.ContextPersistence = ContextPersistence;
     exports.ContextServiceMap = ContextServiceMap;
     exports.ConverterService = ConverterService;
     exports.CountryType = CountryType;
@@ -29808,51 +29864,51 @@
     exports.ɵb = AuthStoreModule;
     exports.ɵba = cartStoreConfigFactory;
     exports.ɵbb = CartStoreModule;
-    exports.ɵbc = getReducers$2;
-    exports.ɵbd = reducerToken$2;
-    exports.ɵbe = reducerProvider$2;
+    exports.ɵbc = getReducers$3;
+    exports.ɵbd = reducerToken$3;
+    exports.ɵbe = reducerProvider$3;
     exports.ɵbf = clearCartState;
     exports.ɵbg = metaReducers$1;
-    exports.ɵbh = effects$2;
+    exports.ɵbh = effects$3;
     exports.ɵbi = CartEffects;
     exports.ɵbj = CartEntryEffects;
     exports.ɵbk = ConfigModule;
-    exports.ɵbl = reducer$2;
-    exports.ɵbm = reducer$3;
+    exports.ɵbl = reducer$5;
+    exports.ɵbm = reducer$6;
     exports.ɵbn = getCardTypesEntites;
-    exports.ɵbo = reducer$4;
+    exports.ɵbo = reducer$7;
     exports.ɵbp = getAddressVerificationResults;
-    exports.ɵbq = effects$3;
+    exports.ɵbq = effects$4;
     exports.ɵbr = CheckoutEffects;
     exports.ɵbs = CardTypesEffects;
     exports.ɵbt = AddressVerificationEffect;
-    exports.ɵbu = getReducers$3;
-    exports.ɵbv = reducerToken$3;
-    exports.ɵbw = reducerProvider$3;
+    exports.ɵbu = getReducers$4;
+    exports.ɵbv = reducerToken$4;
+    exports.ɵbw = reducerProvider$4;
     exports.ɵbx = CheckoutStoreModule;
-    exports.ɵby = reducer$5;
+    exports.ɵby = reducer$8;
     exports.ɵbz = EntityLoadAction;
     exports.ɵc = stateMetaReducers;
     exports.ɵca = EntityFailAction;
     exports.ɵcb = EntitySuccessAction;
     exports.ɵcc = cmsStoreConfigFactory;
     exports.ɵcd = CmsStoreModule;
-    exports.ɵce = getReducers$4;
-    exports.ɵcf = reducerToken$4;
-    exports.ɵcg = reducerProvider$4;
+    exports.ɵce = getReducers$5;
+    exports.ɵcf = reducerToken$5;
+    exports.ɵcg = reducerProvider$5;
     exports.ɵch = clearCmsState;
     exports.ɵci = metaReducers$2;
-    exports.ɵcj = effects$4;
+    exports.ɵcj = effects$5;
     exports.ɵck = PageEffects;
     exports.ɵcl = ComponentEffects;
     exports.ɵcm = NavigationEntryItemEffects;
-    exports.ɵcn = reducer$7;
-    exports.ɵco = reducer$8;
-    exports.ɵcp = reducer$6;
-    exports.ɵcq = getReducers$5;
-    exports.ɵcr = reducerToken$5;
-    exports.ɵcs = reducerProvider$5;
-    exports.ɵct = effects$5;
+    exports.ɵcn = reducer$a;
+    exports.ɵco = reducer$b;
+    exports.ɵcp = reducer$9;
+    exports.ɵcq = getReducers$1;
+    exports.ɵcr = reducerToken$1;
+    exports.ɵcs = reducerProvider$1;
+    exports.ɵct = effects$1;
     exports.ɵcu = LanguagesEffects;
     exports.ɵcv = CurrenciesEffects;
     exports.ɵcw = BaseSiteEffects;
@@ -29913,7 +29969,7 @@
     exports.ɵex = reducer$d;
     exports.ɵey = reducer$c;
     exports.ɵez = PageMetaResolver;
-    exports.ɵf = getReducers$1;
+    exports.ɵf = getReducers$2;
     exports.ɵfa = UrlMatcherFactoryService;
     exports.ɵfb = ROUTING_FEATURE;
     exports.ɵfc = getReducers;
@@ -29926,69 +29982,70 @@
     exports.ɵfj = defaultSiteContextConfigFactory;
     exports.ɵfk = siteContextStoreConfigFactory;
     exports.ɵfl = SiteContextStoreModule;
-    exports.ɵfm = reducer$9;
-    exports.ɵfn = reducer$a;
-    exports.ɵfo = reducer$b;
+    exports.ɵfm = reducer$1;
+    exports.ɵfn = reducer$2;
+    exports.ɵfo = reducer$3;
     exports.ɵfp = SiteContextParamsService;
     exports.ɵfq = SiteContextUrlSerializer;
     exports.ɵfr = SiteContextRoutesHandler;
-    exports.ɵfs = interceptors$2;
-    exports.ɵft = CmsTicketInterceptor;
-    exports.ɵfu = getStoreFinderState;
-    exports.ɵfv = defaultStoreFinderConfig;
-    exports.ɵfw = StoreFinderStoreModule;
-    exports.ɵfx = getReducers$b;
-    exports.ɵfy = reducerToken$b;
-    exports.ɵfz = reducerProvider$b;
-    exports.ɵg = reducerToken$1;
-    exports.ɵga = effects$9;
-    exports.ɵgb = FindStoresEffect;
-    exports.ɵgc = ViewAllStoresEffect;
-    exports.ɵgd = EntityResetAction;
-    exports.ɵge = UserStoreModule;
-    exports.ɵgf = effects$7;
-    exports.ɵgg = BillingCountriesEffect;
-    exports.ɵgh = DeliveryCountriesEffects;
-    exports.ɵgi = OrderDetailsEffect;
-    exports.ɵgj = UserPaymentMethodsEffects;
-    exports.ɵgk = RegionsEffects;
-    exports.ɵgl = ResetPasswordEffects;
-    exports.ɵgm = TitlesEffects;
-    exports.ɵgn = UserAddressesEffects;
-    exports.ɵgo = UserConsentsEffect;
-    exports.ɵgp = UserDetailsEffects;
-    exports.ɵgq = UserOrdersEffect;
-    exports.ɵgr = UserRegisterEffects;
-    exports.ɵgs = ClearMiscsDataEffect;
-    exports.ɵgt = ForgotPasswordEffects;
-    exports.ɵgu = UpdateEmailEffects;
-    exports.ɵgv = UpdatePasswordEffects;
-    exports.ɵgw = reducer$o;
-    exports.ɵgx = reducer$m;
-    exports.ɵgy = reducer$f;
-    exports.ɵgz = reducer$n;
-    exports.ɵh = reducerProvider$1;
-    exports.ɵha = reducer$i;
-    exports.ɵhb = reducer$p;
-    exports.ɵhc = reducer$h;
-    exports.ɵhd = reducer$g;
-    exports.ɵhe = reducer$l;
-    exports.ɵhf = reducer$j;
-    exports.ɵhg = reducer$k;
-    exports.ɵhh = ProcessModule;
-    exports.ɵhi = ProcessStoreModule;
-    exports.ɵhj = PROCESS_FEATURE;
-    exports.ɵhk = getReducers$8;
-    exports.ɵhl = reducerToken$8;
-    exports.ɵhm = reducerProvider$8;
+    exports.ɵfs = baseSiteConfigValidator;
+    exports.ɵft = interceptors$2;
+    exports.ɵfu = CmsTicketInterceptor;
+    exports.ɵfv = getStoreFinderState;
+    exports.ɵfw = defaultStoreFinderConfig;
+    exports.ɵfx = StoreFinderStoreModule;
+    exports.ɵfy = getReducers$b;
+    exports.ɵfz = reducerToken$b;
+    exports.ɵg = reducerToken$2;
+    exports.ɵga = reducerProvider$b;
+    exports.ɵgb = effects$9;
+    exports.ɵgc = FindStoresEffect;
+    exports.ɵgd = ViewAllStoresEffect;
+    exports.ɵge = EntityResetAction;
+    exports.ɵgf = UserStoreModule;
+    exports.ɵgg = effects$7;
+    exports.ɵgh = BillingCountriesEffect;
+    exports.ɵgi = DeliveryCountriesEffects;
+    exports.ɵgj = OrderDetailsEffect;
+    exports.ɵgk = UserPaymentMethodsEffects;
+    exports.ɵgl = RegionsEffects;
+    exports.ɵgm = ResetPasswordEffects;
+    exports.ɵgn = TitlesEffects;
+    exports.ɵgo = UserAddressesEffects;
+    exports.ɵgp = UserConsentsEffect;
+    exports.ɵgq = UserDetailsEffects;
+    exports.ɵgr = UserOrdersEffect;
+    exports.ɵgs = UserRegisterEffects;
+    exports.ɵgt = ClearMiscsDataEffect;
+    exports.ɵgu = ForgotPasswordEffects;
+    exports.ɵgv = UpdateEmailEffects;
+    exports.ɵgw = UpdatePasswordEffects;
+    exports.ɵgx = reducer$o;
+    exports.ɵgy = reducer$m;
+    exports.ɵgz = reducer$f;
+    exports.ɵh = reducerProvider$2;
+    exports.ɵha = reducer$n;
+    exports.ɵhb = reducer$i;
+    exports.ɵhc = reducer$p;
+    exports.ɵhd = reducer$h;
+    exports.ɵhe = reducer$g;
+    exports.ɵhf = reducer$l;
+    exports.ɵhg = reducer$j;
+    exports.ɵhh = reducer$k;
+    exports.ɵhi = ProcessModule;
+    exports.ɵhj = ProcessStoreModule;
+    exports.ɵhk = PROCESS_FEATURE;
+    exports.ɵhl = getReducers$8;
+    exports.ɵhm = reducerToken$8;
+    exports.ɵhn = reducerProvider$8;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;
-    exports.ɵk = effects$1;
+    exports.ɵk = effects$2;
     exports.ɵl = ClientTokenEffect;
     exports.ɵm = UserTokenEffects;
     exports.ɵn = UserAuthenticationTokenService;
     exports.ɵo = ClientAuthenticationTokenService;
-    exports.ɵp = reducer$1;
+    exports.ɵp = reducer$4;
     exports.ɵq = defaultAuthConfig;
     exports.ɵr = AuthServices;
     exports.ɵs = ClientErrorHandlingService;

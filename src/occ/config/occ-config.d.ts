@@ -1,10 +1,5 @@
-import { ServerConfig } from '../../config/server-config/server-config';
-export declare abstract class OccConfig extends ServerConfig {
-    site?: {
-        baseSite?: string;
-        language?: string;
-        currency?: string;
-    };
+import { SiteContextConfig } from '../../site-context/config/site-context-config';
+export declare abstract class OccConfig extends SiteContextConfig {
     backend?: {
         occ?: {
             baseUrl?: string;

@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { ContextParamPersistence, SiteContextConfig } from '../config/site-context-config';
+import { ContextParameter, ContextPersistence, SiteContextConfig } from '../config/site-context-config';
 import { SiteContext } from '../facade/site-context.interface';
 import { ContextServiceMap } from '../providers/context-service-map';
 export declare class SiteContextParamsService {
@@ -7,7 +7,8 @@ export declare class SiteContextParamsService {
     private injector;
     private serviceMap;
     constructor(config: SiteContextConfig, injector: Injector, serviceMap: ContextServiceMap);
-    getContextParameters(persistence?: ContextParamPersistence): string[];
+    getContextParameters(persistence?: ContextPersistence | string): string[];
+    getParameter(param: string): ContextParameter;
     getParamValues(param: string): string[];
     getParamDefaultValue(param: string): string;
     getSiteContextService(param: string): SiteContext<any>;
