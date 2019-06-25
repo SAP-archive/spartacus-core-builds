@@ -19763,6 +19763,10 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConsentConnector = userConsentConnector;
+            this.resetConsents$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE), operators.map((/**
+             * @return {?}
+             */
+            function () { return new ResetLoadUserConsents(); })));
             this.getConsents$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_CONSENTS), operators.map((/**
              * @param {?} action
              * @return {?}
@@ -19819,10 +19823,9 @@
             function (_a) {
                 var userId = _a.userId, consentCode = _a.consentCode;
                 return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(operators.map((/**
-                 * @param {?} _
                  * @return {?}
                  */
-                function (_) { return new WithdrawUserConsentSuccess(); })), operators.catchError((/**
+                function () { return new WithdrawUserConsentSuccess(); })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -19839,6 +19842,10 @@
             { type: effects$a.Actions },
             { type: UserConsentConnector }
         ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserConsentsEffect.prototype, "resetConsents$", void 0);
         __decorate([
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)

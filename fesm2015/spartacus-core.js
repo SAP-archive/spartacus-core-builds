@@ -16941,6 +16941,10 @@ class UserConsentsEffect {
     constructor(actions$, userConsentConnector) {
         this.actions$ = actions$;
         this.userConsentConnector = userConsentConnector;
+        this.resetConsents$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
+         * @return {?}
+         */
+        () => new ResetLoadUserConsents())));
         this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((/**
          * @param {?} action
          * @return {?}
@@ -16986,10 +16990,9 @@ class UserConsentsEffect {
          * @return {?}
          */
         ({ userId, consentCode }) => this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map((/**
-         * @param {?} _
          * @return {?}
          */
-        _ => new WithdrawUserConsentSuccess())), catchError((/**
+        () => new WithdrawUserConsentSuccess())), catchError((/**
          * @param {?} error
          * @return {?}
          */
@@ -17004,6 +17007,10 @@ UserConsentsEffect.ctorParameters = () => [
     { type: Actions },
     { type: UserConsentConnector }
 ];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], UserConsentsEffect.prototype, "resetConsents$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)

@@ -19684,6 +19684,10 @@ var UserConsentsEffect = /** @class */ (function () {
         var _this = this;
         this.actions$ = actions$;
         this.userConsentConnector = userConsentConnector;
+        this.resetConsents$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
+         * @return {?}
+         */
+        function () { return new ResetLoadUserConsents(); })));
         this.getConsents$ = this.actions$.pipe(ofType(LOAD_USER_CONSENTS), map((/**
          * @param {?} action
          * @return {?}
@@ -19740,10 +19744,9 @@ var UserConsentsEffect = /** @class */ (function () {
         function (_a) {
             var userId = _a.userId, consentCode = _a.consentCode;
             return _this.userConsentConnector.withdrawConsent(userId, consentCode).pipe(map((/**
-             * @param {?} _
              * @return {?}
              */
-            function (_) { return new WithdrawUserConsentSuccess(); })), catchError((/**
+            function () { return new WithdrawUserConsentSuccess(); })), catchError((/**
              * @param {?} error
              * @return {?}
              */
@@ -19760,6 +19763,10 @@ var UserConsentsEffect = /** @class */ (function () {
         { type: Actions },
         { type: UserConsentConnector }
     ]; };
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserConsentsEffect.prototype, "resetConsents$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
