@@ -1834,14 +1834,14 @@ const ɵ0$3 = /**
  * @param {?} state
  * @return {?}
  */
-(state) => state.baseSite.activeSite;
+(state) => state && state.baseSite && state.baseSite.activeSite;
 /** @type {?} */
 const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
 const ɵ1$1 = /**
  * @param {?} state
  * @return {?}
  */
-(state) => state.baseSite.details;
+(state) => state && state.baseSite && state.baseSite.details;
 /** @type {?} */
 const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$1));
 

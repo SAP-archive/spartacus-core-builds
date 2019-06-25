@@ -2237,14 +2237,16 @@ var ɵ0$3 = /**
  * @param {?} state
  * @return {?}
  */
-function (state) { return state.baseSite.activeSite; };
+function (state) {
+    return state && state.baseSite && state.baseSite.activeSite;
+};
 /** @type {?} */
 var getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
 var ɵ1$1 = /**
  * @param {?} state
  * @return {?}
  */
-function (state) { return state.baseSite.details; };
+function (state) { return state && state.baseSite && state.baseSite.details; };
 /** @type {?} */
 var getBaseSiteData = createSelector(getSiteContextState, (ɵ1$1));
 
