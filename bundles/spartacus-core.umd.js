@@ -6222,6 +6222,8 @@
     var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
     /** @type {?} */
     var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
+    /** @type {?} */
+    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
     var AddDeliveryAddress = /** @class */ (function () {
         function AddDeliveryAddress(payload) {
             this.payload = payload;
@@ -6418,6 +6420,12 @@
         }
         return LoadCheckoutDetailsSuccess;
     }(LoaderSuccessAction));
+    var CheckoutClearMiscsData = /** @class */ (function () {
+        function CheckoutClearMiscsData() {
+            this.type = CHECKOUT_CLEAR_MISCS_DATA;
+        }
+        return CheckoutClearMiscsData;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -9881,37 +9889,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-    /** @type {?} */
-    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-    /** @type {?} */
-    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-    var LoadCardTypes = /** @class */ (function () {
-        function LoadCardTypes() {
-            this.type = LOAD_CARD_TYPES;
-        }
-        return LoadCardTypes;
-    }());
-    var LoadCardTypesFail = /** @class */ (function () {
-        function LoadCardTypesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_FAIL;
-        }
-        return LoadCardTypesFail;
-    }());
-    var LoadCardTypesSuccess = /** @class */ (function () {
-        function LoadCardTypesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_SUCCESS;
-        }
-        return LoadCardTypesSuccess;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var VERIFY_ADDRESS = '[Checkout] Verify Address';
     /** @type {?} */
     var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
@@ -9952,13 +9929,114 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
-    var CheckoutClearMiscsData = /** @class */ (function () {
-        function CheckoutClearMiscsData() {
-            this.type = CHECKOUT_CLEAR_MISCS_DATA;
+    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+    /** @type {?} */
+    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+    /** @type {?} */
+    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+    var LoadCardTypes = /** @class */ (function () {
+        function LoadCardTypes() {
+            this.type = LOAD_CARD_TYPES;
         }
-        return CheckoutClearMiscsData;
+        return LoadCardTypes;
     }());
+    var LoadCardTypesFail = /** @class */ (function () {
+        function LoadCardTypesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_FAIL;
+        }
+        return LoadCardTypesFail;
+    }());
+    var LoadCardTypesSuccess = /** @class */ (function () {
+        function LoadCardTypesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_SUCCESS;
+        }
+        return LoadCardTypesSuccess;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+        VERIFY_ADDRESS: VERIFY_ADDRESS,
+        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+        VerifyAddress: VerifyAddress,
+        VerifyAddressFail: VerifyAddressFail,
+        VerifyAddressSuccess: VerifyAddressSuccess,
+        ClearAddressVerificationResults: ClearAddressVerificationResults,
+        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+        LoadCardTypes: LoadCardTypes,
+        LoadCardTypesFail: LoadCardTypesFail,
+        LoadCardTypesSuccess: LoadCardTypesSuccess,
+        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+        PLACE_ORDER: PLACE_ORDER,
+        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+        AddDeliveryAddress: AddDeliveryAddress,
+        AddDeliveryAddressFail: AddDeliveryAddressFail,
+        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+        SetDeliveryAddress: SetDeliveryAddress,
+        SetDeliveryAddressFail: SetDeliveryAddressFail,
+        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+        SetDeliveryMode: SetDeliveryMode,
+        SetDeliveryModeFail: SetDeliveryModeFail,
+        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+        CreatePaymentDetails: CreatePaymentDetails,
+        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+        SetPaymentDetails: SetPaymentDetails,
+        SetPaymentDetailsFail: SetPaymentDetailsFail,
+        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+        PlaceOrder: PlaceOrder,
+        PlaceOrderFail: PlaceOrderFail,
+        PlaceOrderSuccess: PlaceOrderSuccess,
+        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+        ClearCheckoutStep: ClearCheckoutStep,
+        ClearCheckoutData: ClearCheckoutData,
+        LoadCheckoutDetails: LoadCheckoutDetails,
+        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+        CheckoutClearMiscsData: CheckoutClearMiscsData
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -10964,6 +11042,271 @@
         provide: reducerToken$5,
         useFactory: getReducers$5,
     };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    UserAddressAdapter = /** @class */ (function () {
+        function UserAddressAdapter() {
+        }
+        return UserAddressAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserAddressConnector = /** @class */ (function () {
+        function UserAddressConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        UserAddressConnector.prototype.getAll = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return this.adapter.loadAll(userId);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} address
+         * @return {?}
+         */
+        UserAddressConnector.prototype.add = /**
+         * @param {?} userId
+         * @param {?} address
+         * @return {?}
+         */
+        function (userId, address) {
+            return this.adapter.add(userId, address);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} addressId
+         * @param {?} address
+         * @return {?}
+         */
+        UserAddressConnector.prototype.update = /**
+         * @param {?} userId
+         * @param {?} addressId
+         * @param {?} address
+         * @return {?}
+         */
+        function (userId, addressId, address) {
+            return this.adapter.update(userId, addressId, address);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} address
+         * @return {?}
+         */
+        UserAddressConnector.prototype.verify = /**
+         * @param {?} userId
+         * @param {?} address
+         * @return {?}
+         */
+        function (userId, address) {
+            return this.adapter.verify(userId, address);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} addressId
+         * @return {?}
+         */
+        UserAddressConnector.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} addressId
+         * @return {?}
+         */
+        function (userId, addressId) {
+            return this.adapter.delete(userId, addressId);
+        };
+        UserAddressConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UserAddressConnector.ctorParameters = function () { return [
+            { type: UserAddressAdapter }
+        ]; };
+        /** @nocollapse */ UserAddressConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(core.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+        return UserAddressConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AddressVerificationEffect = /** @class */ (function () {
+        function AddressVerificationEffect(actions$, userAddressConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userAddressConnector = userAddressConnector;
+            this.verifyAddress$ = this.actions$.pipe(effects$a.ofType(VERIFY_ADDRESS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return new VerifyAddressSuccess(data); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        AddressVerificationEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        AddressVerificationEffect.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: UserAddressConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
+        return AddressVerificationEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    CheckoutPaymentAdapter = /** @class */ (function () {
+        function CheckoutPaymentAdapter() {
+        }
+        return CheckoutPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CheckoutPaymentConnector = /** @class */ (function () {
+        function CheckoutPaymentConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.create = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetails
+         * @return {?}
+         */
+        function (userId, cartId, paymentDetails) {
+            return this.adapter.create(userId, cartId, paymentDetails);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.set = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} paymentDetailsId
+         * @return {?}
+         */
+        function (userId, cartId, paymentDetailsId) {
+            return this.adapter.set(userId, cartId, paymentDetailsId);
+        };
+        /**
+         * @return {?}
+         */
+        CheckoutPaymentConnector.prototype.getCardTypes = /**
+         * @return {?}
+         */
+        function () {
+            return this.adapter.loadCardTypes();
+        };
+        CheckoutPaymentConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CheckoutPaymentConnector.ctorParameters = function () { return [
+            { type: CheckoutPaymentAdapter }
+        ]; };
+        /** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(core.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+        return CheckoutPaymentConnector;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CardTypesEffects = /** @class */ (function () {
+        function CardTypesEffects(actions$, checkoutPaymentConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.checkoutPaymentConnector = checkoutPaymentConnector;
+            this.loadCardTypes$ = this.actions$.pipe(effects$a.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
+             * @return {?}
+             */
+            function () {
+                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map((/**
+                 * @param {?} cardTypes
+                 * @return {?}
+                 */
+                function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        CardTypesEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CardTypesEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: CheckoutPaymentConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
+        return CardTypesEffects;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -12155,82 +12498,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    CheckoutPaymentAdapter = /** @class */ (function () {
-        function CheckoutPaymentAdapter() {
-        }
-        return CheckoutPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CheckoutPaymentConnector = /** @class */ (function () {
-        function CheckoutPaymentConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        CheckoutPaymentConnector.prototype.create = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetails
-         * @return {?}
-         */
-        function (userId, cartId, paymentDetails) {
-            return this.adapter.create(userId, cartId, paymentDetails);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-        CheckoutPaymentConnector.prototype.set = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} paymentDetailsId
-         * @return {?}
-         */
-        function (userId, cartId, paymentDetailsId) {
-            return this.adapter.set(userId, cartId, paymentDetailsId);
-        };
-        /**
-         * @return {?}
-         */
-        CheckoutPaymentConnector.prototype.getCardTypes = /**
-         * @return {?}
-         */
-        function () {
-            return this.adapter.loadCardTypes();
-        };
-        CheckoutPaymentConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CheckoutPaymentConnector.ctorParameters = function () { return [
-            { type: CheckoutPaymentAdapter }
-        ]; };
-        /** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(core.ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
-        return CheckoutPaymentConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var CheckoutEffects = /** @class */ (function () {
         function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
             var _this = this;
@@ -12539,195 +12806,6 @@
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
         return CheckoutEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CardTypesEffects = /** @class */ (function () {
-        function CardTypesEffects(actions$, checkoutPaymentConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.loadCardTypes$ = this.actions$.pipe(effects$a.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return _this.checkoutPaymentConnector.getCardTypes().pipe(operators.map((/**
-                 * @param {?} cardTypes
-                 * @return {?}
-                 */
-                function (cardTypes) { return new LoadCardTypesSuccess(cardTypes); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadCardTypesFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        CardTypesEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CardTypesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: CheckoutPaymentConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
-        return CardTypesEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    UserAddressAdapter = /** @class */ (function () {
-        function UserAddressAdapter() {
-        }
-        return UserAddressAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UserAddressConnector = /** @class */ (function () {
-        function UserAddressConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        UserAddressConnector.prototype.getAll = /**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return this.adapter.loadAll(userId);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} address
-         * @return {?}
-         */
-        UserAddressConnector.prototype.add = /**
-         * @param {?} userId
-         * @param {?} address
-         * @return {?}
-         */
-        function (userId, address) {
-            return this.adapter.add(userId, address);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} addressId
-         * @param {?} address
-         * @return {?}
-         */
-        UserAddressConnector.prototype.update = /**
-         * @param {?} userId
-         * @param {?} addressId
-         * @param {?} address
-         * @return {?}
-         */
-        function (userId, addressId, address) {
-            return this.adapter.update(userId, addressId, address);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} address
-         * @return {?}
-         */
-        UserAddressConnector.prototype.verify = /**
-         * @param {?} userId
-         * @param {?} address
-         * @return {?}
-         */
-        function (userId, address) {
-            return this.adapter.verify(userId, address);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} addressId
-         * @return {?}
-         */
-        UserAddressConnector.prototype.delete = /**
-         * @param {?} userId
-         * @param {?} addressId
-         * @return {?}
-         */
-        function (userId, addressId) {
-            return this.adapter.delete(userId, addressId);
-        };
-        UserAddressConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UserAddressConnector.ctorParameters = function () { return [
-            { type: UserAddressAdapter }
-        ]; };
-        /** @nocollapse */ UserAddressConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(core.ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
-        return UserAddressConnector;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var AddressVerificationEffect = /** @class */ (function () {
-        function AddressVerificationEffect(actions$, userAddressConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(effects$a.ofType(VERIFY_ADDRESS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.userAddressConnector.verify(payload.userId, payload.address).pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) { return new VerifyAddressSuccess(data); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new VerifyAddressFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        AddressVerificationEffect.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        AddressVerificationEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: UserAddressConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
-        return AddressVerificationEffect;
     }());
 
     /**
@@ -29236,18 +29314,12 @@
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
-    exports.ADD_DELIVERY_ADDRESS = ADD_DELIVERY_ADDRESS;
-    exports.ADD_DELIVERY_ADDRESS_FAIL = ADD_DELIVERY_ADDRESS_FAIL;
-    exports.ADD_DELIVERY_ADDRESS_SUCCESS = ADD_DELIVERY_ADDRESS_SUCCESS;
     exports.ADD_MESSAGE = ADD_MESSAGE;
     exports.ADD_USER_ADDRESS = ADD_USER_ADDRESS;
     exports.ADD_USER_ADDRESS_FAIL = ADD_USER_ADDRESS_FAIL;
     exports.ADD_USER_ADDRESS_SUCCESS = ADD_USER_ADDRESS_SUCCESS;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.AUTH_FEATURE = AUTH_FEATURE;
-    exports.AddDeliveryAddress = AddDeliveryAddress;
-    exports.AddDeliveryAddressFail = AddDeliveryAddressFail;
-    exports.AddDeliveryAddressSuccess = AddDeliveryAddressSuccess;
     exports.AddMessage = AddMessage;
     exports.AddUserAddress = AddUserAddress;
     exports.AddUserAddressFail = AddUserAddressFail;
@@ -29272,17 +29344,12 @@
     exports.CART_FEATURE = CART_FEATURE;
     exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
     exports.CART_NORMALIZER = CART_NORMALIZER;
-    exports.CHECKOUT_CLEAR_MISCS_DATA = CHECKOUT_CLEAR_MISCS_DATA;
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
-    exports.CLEAR_ADDRESS_VERIFICATION_RESULTS = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-    exports.CLEAR_CHECKOUT_DATA = CLEAR_CHECKOUT_DATA;
-    exports.CLEAR_CHECKOUT_STEP = CLEAR_CHECKOUT_STEP;
     exports.CLEAR_MISCS_DATA = CLEAR_MISCS_DATA;
     exports.CLEAR_ORDER_DETAILS = CLEAR_ORDER_DETAILS;
     exports.CLEAR_PRODUCT_SEARCH_RESULT = CLEAR_PRODUCT_SEARCH_RESULT;
     exports.CLEAR_REGIONS = CLEAR_REGIONS;
-    exports.CLEAR_SUPPORTED_DELIVERY_MODES = CLEAR_SUPPORTED_DELIVERY_MODES;
     exports.CLEAR_USER_ORDERS = CLEAR_USER_ORDERS;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
     exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
@@ -29292,9 +29359,6 @@
     exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
-    exports.CREATE_PAYMENT_DETAILS = CREATE_PAYMENT_DETAILS;
-    exports.CREATE_PAYMENT_DETAILS_FAIL = CREATE_PAYMENT_DETAILS_FAIL;
-    exports.CREATE_PAYMENT_DETAILS_SUCCESS = CREATE_PAYMENT_DETAILS_SUCCESS;
     exports.CURRENCY_CHANGE = CURRENCY_CHANGE;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
@@ -29312,8 +29376,8 @@
     exports.CartSelectors = cartGroup_selectors;
     exports.CartService = CartService;
     exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
+    exports.CheckoutActions = checkoutGroup_actions;
     exports.CheckoutAdapter = CheckoutAdapter;
-    exports.CheckoutClearMiscsData = CheckoutClearMiscsData;
     exports.CheckoutConnector = CheckoutConnector;
     exports.CheckoutDeliveryAdapter = CheckoutDeliveryAdapter;
     exports.CheckoutDeliveryConnector = CheckoutDeliveryConnector;
@@ -29326,14 +29390,10 @@
     exports.CheckoutPaymentService = CheckoutPaymentService;
     exports.CheckoutSelectors = checkoutGroup_selectors;
     exports.CheckoutService = CheckoutService;
-    exports.ClearAddressVerificationResults = ClearAddressVerificationResults;
-    exports.ClearCheckoutData = ClearCheckoutData;
-    exports.ClearCheckoutStep = ClearCheckoutStep;
     exports.ClearMiscsData = ClearMiscsData;
     exports.ClearOrderDetails = ClearOrderDetails;
     exports.ClearProductSearchResult = ClearProductSearchResult;
     exports.ClearRegions = ClearRegions;
-    exports.ClearSupportedDeliveryModes = ClearSupportedDeliveryModes;
     exports.ClearUserOrders = ClearUserOrders;
     exports.CmsComponentAdapter = CmsComponentAdapter;
     exports.CmsComponentConnector = CmsComponentConnector;
@@ -29359,9 +29419,6 @@
     exports.ContextServiceMap = ContextServiceMap;
     exports.ConverterService = ConverterService;
     exports.CountryType = CountryType;
-    exports.CreatePaymentDetails = CreatePaymentDetails;
-    exports.CreatePaymentDetailsFail = CreatePaymentDetailsFail;
-    exports.CreatePaymentDetailsSuccess = CreatePaymentDetailsSuccess;
     exports.CurrencyChange = CurrencyChange;
     exports.CurrencyService = CurrencyService;
     exports.CxApiModule = CxApiModule;
@@ -29471,12 +29528,6 @@
     exports.LOAD_BILLING_COUNTRIES = LOAD_BILLING_COUNTRIES;
     exports.LOAD_BILLING_COUNTRIES_FAIL = LOAD_BILLING_COUNTRIES_FAIL;
     exports.LOAD_BILLING_COUNTRIES_SUCCESS = LOAD_BILLING_COUNTRIES_SUCCESS;
-    exports.LOAD_CARD_TYPES = LOAD_CARD_TYPES;
-    exports.LOAD_CARD_TYPES_FAIL = LOAD_CARD_TYPES_FAIL;
-    exports.LOAD_CARD_TYPES_SUCCESS = LOAD_CARD_TYPES_SUCCESS;
-    exports.LOAD_CHECKOUT_DETAILS = LOAD_CHECKOUT_DETAILS;
-    exports.LOAD_CHECKOUT_DETAILS_FAIL = LOAD_CHECKOUT_DETAILS_FAIL;
-    exports.LOAD_CHECKOUT_DETAILS_SUCCESS = LOAD_CHECKOUT_DETAILS_SUCCESS;
     exports.LOAD_COMPONENT = LOAD_COMPONENT;
     exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
     exports.LOAD_COMPONENT_SUCCESS = LOAD_COMPONENT_SUCCESS;
@@ -29513,9 +29564,6 @@
     exports.LOAD_REGIONS = LOAD_REGIONS;
     exports.LOAD_REGIONS_FAIL = LOAD_REGIONS_FAIL;
     exports.LOAD_REGIONS_SUCCESS = LOAD_REGIONS_SUCCESS;
-    exports.LOAD_SUPPORTED_DELIVERY_MODES = LOAD_SUPPORTED_DELIVERY_MODES;
-    exports.LOAD_SUPPORTED_DELIVERY_MODES_FAIL = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
-    exports.LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
     exports.LOAD_TITLES = LOAD_TITLES;
     exports.LOAD_TITLES_FAIL = LOAD_TITLES_FAIL;
     exports.LOAD_TITLES_SUCCESS = LOAD_TITLES_SUCCESS;
@@ -29542,12 +29590,6 @@
     exports.LoadBillingCountries = LoadBillingCountries;
     exports.LoadBillingCountriesFail = LoadBillingCountriesFail;
     exports.LoadBillingCountriesSuccess = LoadBillingCountriesSuccess;
-    exports.LoadCardTypes = LoadCardTypes;
-    exports.LoadCardTypesFail = LoadCardTypesFail;
-    exports.LoadCardTypesSuccess = LoadCardTypesSuccess;
-    exports.LoadCheckoutDetails = LoadCheckoutDetails;
-    exports.LoadCheckoutDetailsFail = LoadCheckoutDetailsFail;
-    exports.LoadCheckoutDetailsSuccess = LoadCheckoutDetailsSuccess;
     exports.LoadComponent = LoadComponent;
     exports.LoadComponentFail = LoadComponentFail;
     exports.LoadComponentSuccess = LoadComponentSuccess;
@@ -29584,9 +29626,6 @@
     exports.LoadRegions = LoadRegions;
     exports.LoadRegionsFail = LoadRegionsFail;
     exports.LoadRegionsSuccess = LoadRegionsSuccess;
-    exports.LoadSupportedDeliveryModes = LoadSupportedDeliveryModes;
-    exports.LoadSupportedDeliveryModesFail = LoadSupportedDeliveryModesFail;
-    exports.LoadSupportedDeliveryModesSuccess = LoadSupportedDeliveryModesSuccess;
     exports.LoadTitles = LoadTitles;
     exports.LoadTitlesFail = LoadTitlesFail;
     exports.LoadTitlesSuccess = LoadTitlesSuccess;
@@ -29651,9 +29690,6 @@
     exports.OnHold = OnHold;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
-    exports.PLACE_ORDER = PLACE_ORDER;
-    exports.PLACE_ORDER_FAIL = PLACE_ORDER_FAIL;
-    exports.PLACE_ORDER_SUCCESS = PLACE_ORDER_SUCCESS;
     exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;
     exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
     exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
@@ -29673,9 +29709,6 @@
     exports.PageType = PageType;
     exports.PersonalizationConfig = PersonalizationConfig;
     exports.PersonalizationModule = PersonalizationModule;
-    exports.PlaceOrder = PlaceOrder;
-    exports.PlaceOrderFail = PlaceOrderFail;
-    exports.PlaceOrderSuccess = PlaceOrderSuccess;
     exports.PostProductReview = PostProductReview;
     exports.PostProductReviewFail = PostProductReviewFail;
     exports.PostProductReviewSuccess = PostProductReviewSuccess;
@@ -29750,16 +29783,7 @@
     exports.SET_DEFAULT_USER_PAYMENT_METHOD = SET_DEFAULT_USER_PAYMENT_METHOD;
     exports.SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
     exports.SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
-    exports.SET_DELIVERY_ADDRESS = SET_DELIVERY_ADDRESS;
-    exports.SET_DELIVERY_ADDRESS_FAIL = SET_DELIVERY_ADDRESS_FAIL;
-    exports.SET_DELIVERY_ADDRESS_SUCCESS = SET_DELIVERY_ADDRESS_SUCCESS;
-    exports.SET_DELIVERY_MODE = SET_DELIVERY_MODE;
-    exports.SET_DELIVERY_MODE_FAIL = SET_DELIVERY_MODE_FAIL;
-    exports.SET_DELIVERY_MODE_SUCCESS = SET_DELIVERY_MODE_SUCCESS;
     exports.SET_PAGE_FAIL_INDEX = SET_PAGE_FAIL_INDEX;
-    exports.SET_PAYMENT_DETAILS = SET_PAYMENT_DETAILS;
-    exports.SET_PAYMENT_DETAILS_FAIL = SET_PAYMENT_DETAILS_FAIL;
-    exports.SET_PAYMENT_DETAILS_SUCCESS = SET_PAYMENT_DETAILS_SUCCESS;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
     exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
@@ -29778,16 +29802,7 @@
     exports.SetDefaultUserPaymentMethod = SetDefaultUserPaymentMethod;
     exports.SetDefaultUserPaymentMethodFail = SetDefaultUserPaymentMethodFail;
     exports.SetDefaultUserPaymentMethodSuccess = SetDefaultUserPaymentMethodSuccess;
-    exports.SetDeliveryAddress = SetDeliveryAddress;
-    exports.SetDeliveryAddressFail = SetDeliveryAddressFail;
-    exports.SetDeliveryAddressSuccess = SetDeliveryAddressSuccess;
-    exports.SetDeliveryMode = SetDeliveryMode;
-    exports.SetDeliveryModeFail = SetDeliveryModeFail;
-    exports.SetDeliveryModeSuccess = SetDeliveryModeSuccess;
     exports.SetPageFailIndex = SetPageFailIndex;
-    exports.SetPaymentDetails = SetPaymentDetails;
-    exports.SetPaymentDetailsFail = SetPaymentDetailsFail;
-    exports.SetPaymentDetailsSuccess = SetPaymentDetailsSuccess;
     exports.SiteAdapter = SiteAdapter;
     exports.SiteConnector = SiteConnector;
     exports.SiteContextConfig = SiteContextConfig;
@@ -29872,15 +29887,9 @@
     exports.UserPaymentService = UserPaymentService;
     exports.UserService = UserService;
     exports.UsersSelectors = usersGroup_selectors;
-    exports.VERIFY_ADDRESS = VERIFY_ADDRESS;
-    exports.VERIFY_ADDRESS_FAIL = VERIFY_ADDRESS_FAIL;
-    exports.VERIFY_ADDRESS_SUCCESS = VERIFY_ADDRESS_SUCCESS;
     exports.VIEW_ALL_STORES = VIEW_ALL_STORES;
     exports.VIEW_ALL_STORES_FAIL = VIEW_ALL_STORES_FAIL;
     exports.VIEW_ALL_STORES_SUCCESS = VIEW_ALL_STORES_SUCCESS;
-    exports.VerifyAddress = VerifyAddress;
-    exports.VerifyAddressFail = VerifyAddressFail;
-    exports.VerifyAddressSuccess = VerifyAddressSuccess;
     exports.ViewAllStores = ViewAllStores;
     exports.ViewAllStoresFail = ViewAllStoresFail;
     exports.ViewAllStoresSuccess = ViewAllStoresSuccess;
@@ -29962,9 +29971,9 @@
     exports.ɵbg = reducerToken$5;
     exports.ɵbh = reducerProvider$5;
     exports.ɵbi = effects$5;
-    exports.ɵbj = CheckoutEffects;
+    exports.ɵbj = AddressVerificationEffect;
     exports.ɵbk = CardTypesEffects;
-    exports.ɵbl = AddressVerificationEffect;
+    exports.ɵbl = CheckoutEffects;
     exports.ɵbm = reducer$b;
     exports.ɵbn = reducer$a;
     exports.ɵbo = reducer$9;

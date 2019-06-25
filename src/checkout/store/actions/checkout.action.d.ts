@@ -1,9 +1,9 @@
 import { Action } from '@ngrx/store';
-import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
-import { CheckoutDetails } from '../../models/checkout.model';
 import { Address } from '../../../model/address.model';
-import { DeliveryMode, Order } from '../../../model/order.model';
 import { PaymentDetails } from '../../../model/cart.model';
+import { DeliveryMode, Order } from '../../../model/order.model';
+import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { CheckoutDetails } from '../../models/checkout.model';
 export declare const ADD_DELIVERY_ADDRESS = "[Checkout] Add Delivery Address";
 export declare const ADD_DELIVERY_ADDRESS_FAIL = "[Checkout] Add Delivery Address Fail";
 export declare const ADD_DELIVERY_ADDRESS_SUCCESS = "[Checkout] Add Delivery Address Success";
@@ -31,6 +31,7 @@ export declare const CLEAR_CHECKOUT_DATA = "[Checkout] Clear Checkout Data";
 export declare const LOAD_CHECKOUT_DETAILS = "[Checkout] Load Checkout Details";
 export declare const LOAD_CHECKOUT_DETAILS_FAIL = "[Checkout] Load Checkout Details Fail";
 export declare const LOAD_CHECKOUT_DETAILS_SUCCESS = "[Checkout] Load Checkout Details Success";
+export declare const CHECKOUT_CLEAR_MISCS_DATA = "[Checkout] Clear Miscs Data";
 export declare class AddDeliveryAddress implements Action {
     payload: {
         userId: string;
@@ -220,4 +221,7 @@ export declare class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
     readonly type = "[Checkout] Load Checkout Details Success";
     constructor(payload: CheckoutDetails);
 }
-export declare type CheckoutAction = AddDeliveryAddress | AddDeliveryAddressFail | AddDeliveryAddressSuccess | SetDeliveryAddress | SetDeliveryAddressFail | SetDeliveryAddressSuccess | LoadSupportedDeliveryModes | LoadSupportedDeliveryModesFail | LoadSupportedDeliveryModesSuccess | SetDeliveryMode | SetDeliveryModeFail | SetDeliveryModeSuccess | ClearSupportedDeliveryModes | CreatePaymentDetails | CreatePaymentDetailsFail | CreatePaymentDetailsSuccess | SetPaymentDetails | SetPaymentDetailsFail | SetPaymentDetailsSuccess | PlaceOrder | PlaceOrderFail | PlaceOrderSuccess | ClearCheckoutStep | ClearCheckoutData | LoadCheckoutDetails | LoadCheckoutDetailsFail | LoadCheckoutDetailsSuccess;
+export declare class CheckoutClearMiscsData implements Action {
+    readonly type = "[Checkout] Clear Miscs Data";
+}
+export declare type CheckoutAction = AddDeliveryAddress | AddDeliveryAddressFail | AddDeliveryAddressSuccess | SetDeliveryAddress | SetDeliveryAddressFail | SetDeliveryAddressSuccess | LoadSupportedDeliveryModes | LoadSupportedDeliveryModesFail | LoadSupportedDeliveryModesSuccess | SetDeliveryMode | SetDeliveryModeFail | SetDeliveryModeSuccess | ClearSupportedDeliveryModes | CreatePaymentDetails | CreatePaymentDetailsFail | CreatePaymentDetailsSuccess | SetPaymentDetails | SetPaymentDetailsFail | SetPaymentDetailsSuccess | PlaceOrder | PlaceOrderFail | PlaceOrderSuccess | ClearCheckoutStep | ClearCheckoutData | LoadCheckoutDetails | LoadCheckoutDetailsFail | LoadCheckoutDetailsSuccess | CheckoutClearMiscsData;

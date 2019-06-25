@@ -1,10 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserAddressConnector } from '../../../user/connectors/address/user-address.connector';
-import * as fromAction from '../actions/address-verification.action';
+import { CheckoutActions } from '../actions/index';
 export declare class AddressVerificationEffect {
     private actions$;
     private userAddressConnector;
-    verifyAddress$: Observable<fromAction.VerifyAddressSuccess | fromAction.VerifyAddressFail>;
+    verifyAddress$: Observable<CheckoutActions.VerifyAddressSuccess | CheckoutActions.VerifyAddressFail>;
     constructor(actions$: Actions, userAddressConnector: UserAddressConnector);
 }
