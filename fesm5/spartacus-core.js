@@ -2067,6 +2067,10 @@ var UserErrorHandlingService = /** @class */ (function () {
             else if (!token.access_token && !token.refresh_token) {
                 _this.routingService.go({ cxRoute: 'login' });
             }
+            else if (!token.refresh_token) {
+                _this.authService.logout();
+                _this.routingService.go({ cxRoute: 'login' });
+            }
             oldToken = oldToken || token;
         })), filter((/**
          * @param {?} token
@@ -4528,7 +4532,12 @@ function authStoreConfigFactory() {
         state: {
             storageSync: {
                 keys: {
-                    'auth.userToken.token': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.access_token': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.token_type': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.expires_in': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.expiration_time': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.scope': StorageSyncType.LOCAL_STORAGE,
+                    'auth.userToken.token.userId': StorageSyncType.LOCAL_STORAGE,
                 },
             },
         },
