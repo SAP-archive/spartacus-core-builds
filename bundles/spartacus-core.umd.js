@@ -425,15 +425,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var AUTH_FEATURE = 'auth';
-    /** @type {?} */
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var LOADER_LOAD_ACTION = '[LOADER] LOAD';
     /** @type {?} */
     var LOADER_FAIL_ACTION = '[LOADER] FAIL';
@@ -522,11 +513,20 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var LOAD_CLIENT_TOKEN = '[Token] Create Client Token';
+    var AUTH_FEATURE = 'auth';
     /** @type {?} */
-    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Create Client Token Fail';
+    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
-    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Create Client Token Success';
+    var LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_FAIL = '[Token] Load Client Token Fail';
+    /** @type {?} */
+    var LOAD_CLIENT_TOKEN_SUCCESS = '[Token] Load Client Token Success';
     var LoadClientToken = /** @class */ (function (_super) {
         __extends(LoadClientToken, _super);
         function LoadClientToken() {
@@ -636,6 +636,36 @@
         }
         return RefreshUserTokenFail;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var authGroup_actions = /*#__PURE__*/Object.freeze({
+        LOAD_CLIENT_TOKEN: LOAD_CLIENT_TOKEN,
+        LOAD_CLIENT_TOKEN_FAIL: LOAD_CLIENT_TOKEN_FAIL,
+        LOAD_CLIENT_TOKEN_SUCCESS: LOAD_CLIENT_TOKEN_SUCCESS,
+        LoadClientToken: LoadClientToken,
+        LoadClientTokenFail: LoadClientTokenFail,
+        LoadClientTokenSuccess: LoadClientTokenSuccess,
+        LOGIN: LOGIN,
+        LOGOUT: LOGOUT,
+        Login: Login,
+        Logout: Logout,
+        LOAD_USER_TOKEN: LOAD_USER_TOKEN,
+        LOAD_USER_TOKEN_FAIL: LOAD_USER_TOKEN_FAIL,
+        LOAD_USER_TOKEN_SUCCESS: LOAD_USER_TOKEN_SUCCESS,
+        REFRESH_USER_TOKEN: REFRESH_USER_TOKEN,
+        REFRESH_USER_TOKEN_FAIL: REFRESH_USER_TOKEN_FAIL,
+        REFRESH_USER_TOKEN_SUCCESS: REFRESH_USER_TOKEN_SUCCESS,
+        LoadUserToken: LoadUserToken,
+        LoadUserTokenFail: LoadUserTokenFail,
+        LoadUserTokenSuccess: LoadUserTokenSuccess,
+        RefreshUserToken: RefreshUserToken,
+        RefreshUserTokenSuccess: RefreshUserTokenSuccess,
+        RefreshUserTokenFail: RefreshUserTokenFail
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -29184,6 +29214,7 @@
     exports.AddUserAddress = AddUserAddress;
     exports.AddUserAddressFail = AddUserAddressFail;
     exports.AddUserAddressSuccess = AddUserAddressSuccess;
+    exports.AuthActions = authGroup_actions;
     exports.AuthConfig = AuthConfig;
     exports.AuthGuard = AuthGuard;
     exports.AuthModule = AuthModule;
@@ -29416,9 +29447,6 @@
     exports.LOAD_CHECKOUT_DETAILS = LOAD_CHECKOUT_DETAILS;
     exports.LOAD_CHECKOUT_DETAILS_FAIL = LOAD_CHECKOUT_DETAILS_FAIL;
     exports.LOAD_CHECKOUT_DETAILS_SUCCESS = LOAD_CHECKOUT_DETAILS_SUCCESS;
-    exports.LOAD_CLIENT_TOKEN = LOAD_CLIENT_TOKEN;
-    exports.LOAD_CLIENT_TOKEN_FAIL = LOAD_CLIENT_TOKEN_FAIL;
-    exports.LOAD_CLIENT_TOKEN_SUCCESS = LOAD_CLIENT_TOKEN_SUCCESS;
     exports.LOAD_COMPONENT = LOAD_COMPONENT;
     exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
     exports.LOAD_COMPONENT_SUCCESS = LOAD_COMPONENT_SUCCESS;
@@ -29476,11 +29504,6 @@
     exports.LOAD_USER_PAYMENT_METHODS = LOAD_USER_PAYMENT_METHODS;
     exports.LOAD_USER_PAYMENT_METHODS_FAIL = LOAD_USER_PAYMENT_METHODS_FAIL;
     exports.LOAD_USER_PAYMENT_METHODS_SUCCESS = LOAD_USER_PAYMENT_METHODS_SUCCESS;
-    exports.LOAD_USER_TOKEN = LOAD_USER_TOKEN;
-    exports.LOAD_USER_TOKEN_FAIL = LOAD_USER_TOKEN_FAIL;
-    exports.LOAD_USER_TOKEN_SUCCESS = LOAD_USER_TOKEN_SUCCESS;
-    exports.LOGIN = LOGIN;
-    exports.LOGOUT = LOGOUT;
     exports.LanguageChange = LanguageChange;
     exports.LanguageService = LanguageService;
     exports.LoadBaseSite = LoadBaseSite;
@@ -29498,9 +29521,6 @@
     exports.LoadCheckoutDetails = LoadCheckoutDetails;
     exports.LoadCheckoutDetailsFail = LoadCheckoutDetailsFail;
     exports.LoadCheckoutDetailsSuccess = LoadCheckoutDetailsSuccess;
-    exports.LoadClientToken = LoadClientToken;
-    exports.LoadClientTokenFail = LoadClientTokenFail;
-    exports.LoadClientTokenSuccess = LoadClientTokenSuccess;
     exports.LoadComponent = LoadComponent;
     exports.LoadComponentFail = LoadComponentFail;
     exports.LoadComponentSuccess = LoadComponentSuccess;
@@ -29558,15 +29578,10 @@
     exports.LoadUserPaymentMethods = LoadUserPaymentMethods;
     exports.LoadUserPaymentMethodsFail = LoadUserPaymentMethodsFail;
     exports.LoadUserPaymentMethodsSuccess = LoadUserPaymentMethodsSuccess;
-    exports.LoadUserToken = LoadUserToken;
-    exports.LoadUserTokenFail = LoadUserTokenFail;
-    exports.LoadUserTokenSuccess = LoadUserTokenSuccess;
     exports.LoaderFailAction = LoaderFailAction;
     exports.LoaderLoadAction = LoaderLoadAction;
     exports.LoaderResetAction = LoaderResetAction;
     exports.LoaderSuccessAction = LoaderSuccessAction;
-    exports.Login = Login;
-    exports.Logout = Logout;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.MERGE_CART = MERGE_CART;
@@ -29661,9 +29676,6 @@
     exports.ProductSearchService = ProductSearchService;
     exports.ProductSelectors = productGroup_selectors;
     exports.ProductService = ProductService;
-    exports.REFRESH_USER_TOKEN = REFRESH_USER_TOKEN;
-    exports.REFRESH_USER_TOKEN_FAIL = REFRESH_USER_TOKEN_FAIL;
-    exports.REFRESH_USER_TOKEN_SUCCESS = REFRESH_USER_TOKEN_SUCCESS;
     exports.REGIONS = REGIONS;
     exports.REGION_NORMALIZER = REGION_NORMALIZER;
     exports.REGISTER_USER = REGISTER_USER;
@@ -29688,9 +29700,6 @@
     exports.RESET_PASSWORD_SUCCESS = RESET_PASSWORD_SUCCESS;
     exports.RESET_USER_DETAILS = RESET_USER_DETAILS;
     exports.RESET_WITHDRAW_USER_CONSENT_PROCESS = RESET_WITHDRAW_USER_CONSENT_PROCESS;
-    exports.RefreshUserToken = RefreshUserToken;
-    exports.RefreshUserTokenFail = RefreshUserTokenFail;
-    exports.RefreshUserTokenSuccess = RefreshUserTokenSuccess;
     exports.RegisterUser = RegisterUser;
     exports.RegisterUserFail = RegisterUserFail;
     exports.RegisterUserSuccess = RegisterUserSuccess;
