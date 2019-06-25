@@ -1,8 +1,8 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { GlobalMessageType } from '../models/global-message.model';
-import { GlobalMessageEntities, StateWithGlobalMessage } from '../store/index';
 import { Translatable } from '../../i18n/translatable';
+import { GlobalMessageType } from '../models/global-message.model';
+import { GlobalMessageEntities, StateWithGlobalMessage } from '../store/global-message-state';
 export declare class GlobalMessageService {
     protected store: Store<StateWithGlobalMessage>;
     constructor(store: Store<StateWithGlobalMessage>);

@@ -1,3 +1,4 @@
+import { Cart } from '../../model/cart.model';
 import { OrderEntry } from '../../model/order.model';
 import { LoaderState } from '../../state/utils/loader/loader-state';
 export declare const CART_FEATURE = "cart";
@@ -9,7 +10,7 @@ export interface CartsState {
     active: LoaderState<CartState>;
 }
 export interface CartState {
-    content: any;
+    content: Cart;
     entries: {
         [code: string]: OrderEntry;
     };

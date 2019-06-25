@@ -1,9 +1,9 @@
 import { Store } from '@ngrx/store';
-import { StateWithStoreFinder, FindStoresState, ViewAllStoresState } from '../store/store-finder-state';
-import { StoreFinderSearchConfig } from './../model/search-config';
 import { Observable } from 'rxjs';
-import { WindowRef } from '../../window/window-ref';
 import { GeoPoint } from '../../model/misc.model';
+import { WindowRef } from '../../window/window-ref';
+import { FindStoresState, StateWithStoreFinder, ViewAllStoresState } from '../store/store-finder-state';
+import { StoreFinderSearchConfig } from './../model/search-config';
 export declare class StoreFinderService {
     protected store: Store<StateWithStoreFinder>;
     protected winRef: WindowRef;

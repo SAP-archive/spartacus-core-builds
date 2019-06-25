@@ -1,12 +1,12 @@
 import { NavigationExtras } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromStore from '../store';
-import { PageContext } from '../models/page-context.model';
 import { WindowRef } from '../../window/window-ref';
-import { UrlCommands } from '../configurable-routes/url-translation/url-command';
 import { SemanticPathService } from '../configurable-routes/url-translation/semantic-path.service';
-import { RouterState } from '../store/reducers/router.reducer';
+import { UrlCommands } from '../configurable-routes/url-translation/url-command';
+import { PageContext } from '../models/page-context.model';
+import * as fromStore from '../store';
+import { RouterState } from '../store/routing-state';
 export declare class RoutingService {
     protected store: Store<fromStore.RouterState>;
     protected winRef: WindowRef;

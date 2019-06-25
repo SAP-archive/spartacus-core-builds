@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { getGlobalMessageState } from './feature.selector';
+export { getGlobalMessageEntities, getGlobalMessageEntitiesByType, getGlobalMessageCountByType } from './global-message.selectors';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZ2xvYmFsLW1lc3NhZ2UtZ3JvdXAuc2VsZWN0b3JzLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL2dsb2JhbC1tZXNzYWdlL3N0b3JlL3NlbGVjdG9ycy9nbG9iYWwtbWVzc2FnZS1ncm91cC5zZWxlY3RvcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHNDQUFjLG9CQUFvQixDQUFDO0FBQ25DLHNHQUFjLDRCQUE0QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9mZWF0dXJlLnNlbGVjdG9yJztcbmV4cG9ydCAqIGZyb20gJy4vZ2xvYmFsLW1lc3NhZ2Uuc2VsZWN0b3JzJztcbiJdfQ==

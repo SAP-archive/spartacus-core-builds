@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromStore from '../store/index';
 import { Product } from '../../model/product.model';
+import * as fromStore from '../store/index';
 export declare class ProductService {
     protected store: Store<fromStore.StateWithProduct>;
     constructor(store: Store<fromStore.StateWithProduct>);

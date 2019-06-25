@@ -1,7 +1,7 @@
 import { MemoizedSelector } from '@ngrx/store';
+import { ConsentTemplate } from '../../../model/consent.model';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { StateWithUser } from '../user-state';
-import { ConsentTemplate } from '../../../model/consent.model';
 export declare const getConsentsState: MemoizedSelector<StateWithUser, LoaderState<ConsentTemplate[]>>;
 export declare const getConsentsValue: MemoizedSelector<StateWithUser, ConsentTemplate[]>;
 export declare const getConsentsLoading: MemoizedSelector<StateWithUser, boolean>;

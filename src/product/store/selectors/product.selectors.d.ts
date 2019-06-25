@@ -1,8 +1,8 @@
 import { MemoizedSelector } from '@ngrx/store';
-import { StateWithProduct } from '../product-state';
+import { Product } from '../../../model/product.model';
 import { EntityLoaderState } from '../../../state/utils/entity-loader/entity-loader-state';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
-import { Product } from '../../../model/product.model';
+import { StateWithProduct } from '../product-state';
 export declare const getProductState: MemoizedSelector<StateWithProduct, EntityLoaderState<Product>>;
 export declare const getSelectedProductsFactory: (codes: string[]) => MemoizedSelector<StateWithProduct, Product[], import("@ngrx/store/src/selector").DefaultProjectorFn<Product[]>>;
 export declare const getSelectedProductStateFactory: (code: string) => MemoizedSelector<StateWithProduct, LoaderState<Product>, import("@ngrx/store/src/selector").DefaultProjectorFn<LoaderState<Product>>>;

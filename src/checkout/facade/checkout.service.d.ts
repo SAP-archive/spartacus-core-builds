@@ -2,11 +2,11 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { CartDataService } from '../../cart/facade/cart-data.service';
 import { Order } from '../../model/order.model';
-import * as fromCheckoutStore from '../store/index';
+import { StateWithCheckout } from '../store/checkout-state';
 export declare class CheckoutService {
-    protected checkoutStore: Store<fromCheckoutStore.StateWithCheckout>;
+    protected checkoutStore: Store<StateWithCheckout>;
     protected cartData: CartDataService;
-    constructor(checkoutStore: Store<fromCheckoutStore.StateWithCheckout>, cartData: CartDataService);
+    constructor(checkoutStore: Store<StateWithCheckout>, cartData: CartDataService);
     /**
      * Places an order
      */

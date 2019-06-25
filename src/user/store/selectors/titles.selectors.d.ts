@@ -1,6 +1,6 @@
 import { MemoizedSelector } from '@ngrx/store';
-import { TitlesState, StateWithUser, TitleEntities } from '../user-state';
 import { Title } from '../../../model/misc.model';
+import { StateWithUser, TitleEntities, TitlesState } from '../user-state';
 export declare const getTitlesState: MemoizedSelector<StateWithUser, TitlesState>;
 export declare const getTitlesEntites: MemoizedSelector<StateWithUser, TitleEntities>;
 export declare const getAllTitles: MemoizedSelector<StateWithUser, Title[]>;

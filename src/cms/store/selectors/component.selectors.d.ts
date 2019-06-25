@@ -1,7 +1,6 @@
 import { MemoizedSelector } from '@ngrx/store';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { ComponentState, StateWithCms } from '../cms-state';
-export declare const getComponentEntitiesSelector: (state: import("../../../state").EntityState<LoaderState<any>>) => {};
 export declare const getComponentState: MemoizedSelector<StateWithCms, ComponentState>;
 export declare const getComponentEntities: MemoizedSelector<StateWithCms, {
     [id: string]: any;

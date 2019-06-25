@@ -1,6 +1,6 @@
 import { MemoizedSelector } from '@ngrx/store';
-import { StateWithSiteContext, LanguagesState, LanguagesEntities } from '../state';
 import { Language } from '../../../model/misc.model';
+import { LanguagesEntities, LanguagesState, StateWithSiteContext } from '../state';
 export declare const getLanguagesState: MemoizedSelector<StateWithSiteContext, LanguagesState>;
 export declare const getLanguagesEntities: MemoizedSelector<StateWithSiteContext, LanguagesEntities>;
 export declare const getActiveLanguage: MemoizedSelector<StateWithSiteContext, string>;
