@@ -1,8 +1,8 @@
 import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
-export declare const LOAD_NAVIGATION_ITEMS = "[Cms] Load NavigationEntry items";
-export declare const LOAD_NAVIGATION_ITEMS_FAIL = "[Cms] Load NavigationEntry items Fail";
-export declare const LOAD_NAVIGATION_ITEMS_SUCCESS = "[Cms] Load NavigationEntry items Success";
-export declare class LoadNavigationItems extends EntityLoadAction {
+export declare const LOAD_CMS_NAVIGATION_ITEMS = "[Cms] Load NavigationEntry items";
+export declare const LOAD_CMS_NAVIGATION_ITEMS_FAIL = "[Cms] Load NavigationEntry items Fail";
+export declare const LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = "[Cms] Load NavigationEntry items Success";
+export declare class LoadCmsNavigationItems extends EntityLoadAction {
     payload: {
         nodeId: string;
         items: any[];
@@ -13,12 +13,12 @@ export declare class LoadNavigationItems extends EntityLoadAction {
         items: any[];
     });
 }
-export declare class LoadNavigationItemsFail extends EntityFailAction {
+export declare class LoadCmsNavigationItemsFail extends EntityFailAction {
     payload: any;
     readonly type = "[Cms] Load NavigationEntry items Fail";
     constructor(nodeId: string, payload: any);
 }
-export declare class LoadNavigationItemsSuccess extends EntitySuccessAction {
+export declare class LoadCmsNavigationItemsSuccess extends EntitySuccessAction {
     payload: {
         nodeId: string;
         components: any[];
@@ -29,4 +29,4 @@ export declare class LoadNavigationItemsSuccess extends EntitySuccessAction {
         components: any[];
     });
 }
-export declare type NavigationEntryItemAction = LoadNavigationItems | LoadNavigationItemsFail | LoadNavigationItemsSuccess;
+export declare type CmsNavigationEntryItemAction = LoadCmsNavigationItems | LoadCmsNavigationItemsFail | LoadCmsNavigationItemsSuccess;

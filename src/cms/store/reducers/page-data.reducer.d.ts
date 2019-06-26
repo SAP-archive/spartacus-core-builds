@@ -1,5 +1,5 @@
-import * as fromAction from '../actions';
-import { Page } from '../../model/page.model';
 import { EntityState } from '../../../state/utils/entity/entity-state';
+import { Page } from '../../model/page.model';
+import { CmsActions } from '../actions/index';
 export declare const initialState: EntityState<Page>;
-export declare function reducer(state: EntityState<Page>, action: fromAction.LoadPageDataSuccess): EntityState<Page>;
+export declare function reducer(state: EntityState<Page>, action: CmsActions.LoadCmsPageDataSuccess): EntityState<Page>;

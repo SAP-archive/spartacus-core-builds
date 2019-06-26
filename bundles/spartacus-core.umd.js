@@ -6715,11 +6715,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
     /** @type {?} */
@@ -6847,6 +6842,132 @@
         }
         return EntityResetAction;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CMS_FEATURE = 'cms';
+    /** @type {?} */
+    var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
+    /** @type {?} */
+    var COMPONENT_ENTITY = '[Cms[ Component Entity';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CMS_COMPONENT = '[Cms] Load Component';
+    /** @type {?} */
+    var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
+    /** @type {?} */
+    var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
+    /** @type {?} */
+    var CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
+    var LoadCmsComponent = /** @class */ (function (_super) {
+        __extends(LoadCmsComponent, _super);
+        function LoadCmsComponent(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT;
+            return _this;
+        }
+        return LoadCmsComponent;
+    }(EntityLoadAction));
+    var LoadCmsComponentFail = /** @class */ (function (_super) {
+        __extends(LoadCmsComponentFail, _super);
+        function LoadCmsComponentFail(uid, payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, uid, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT_FAIL;
+            return _this;
+        }
+        return LoadCmsComponentFail;
+    }(EntityFailAction));
+    /**
+     * @template T
+     */
+    var /**
+     * @template T
+     */
+    LoadCmsComponentSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsComponentSuccess, _super);
+        function LoadCmsComponentSuccess(payload, uid) {
+            var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_COMPONENT_SUCCESS;
+            return _this;
+        }
+        return LoadCmsComponentSuccess;
+    }(EntitySuccessAction));
+    /**
+     * @template T
+     */
+    var /**
+     * @template T
+     */
+    CmsGetComponentFromPage = /** @class */ (function (_super) {
+        __extends(CmsGetComponentFromPage, _super);
+        function CmsGetComponentFromPage(payload) {
+            var _this = _super.call(this, COMPONENT_ENTITY, payload.map((/**
+             * @param {?} cmp
+             * @return {?}
+             */
+            function (cmp) { return cmp.uid; }))) || this;
+            _this.payload = payload;
+            _this.type = CMS_GET_COMPONENET_FROM_PAGE;
+            return _this;
+        }
+        return CmsGetComponentFromPage;
+    }(EntitySuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
+    /** @type {?} */
+    var LOAD_CMS_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
+    /** @type {?} */
+    var LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
+    var LoadCmsNavigationItems = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItems, _super);
+        function LoadCmsNavigationItems(payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS;
+            return _this;
+        }
+        return LoadCmsNavigationItems;
+    }(EntityLoadAction));
+    var LoadCmsNavigationItemsFail = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItemsFail, _super);
+        function LoadCmsNavigationItemsFail(nodeId, payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, nodeId, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
+            return _this;
+        }
+        return LoadCmsNavigationItemsFail;
+    }(EntityFailAction));
+    var LoadCmsNavigationItemsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsNavigationItemsSuccess, _super);
+        function LoadCmsNavigationItemsSuccess(payload) {
+            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
+            return _this;
+        }
+        return LoadCmsNavigationItemsSuccess;
+    }(EntitySuccessAction));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -7114,172 +7235,81 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var LOAD_PAGE_DATA = '[Cms] Load Page Data';
+    var LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
     /** @type {?} */
-    var LOAD_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
+    var LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
     /** @type {?} */
-    var LOAD_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
+    var LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
     /** @type {?} */
-    var SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
-    var LoadPageData = /** @class */ (function (_super) {
-        __extends(LoadPageData, _super);
-        function LoadPageData(payload) {
+    var CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
+    var LoadCmsPageData = /** @class */ (function (_super) {
+        __extends(LoadCmsPageData, _super);
+        function LoadCmsPageData(payload) {
             var _this = _super.call(this, payload.type, payload.id) || this;
             _this.payload = payload;
-            _this.type = LOAD_PAGE_DATA;
+            _this.type = LOAD_CMS_PAGE_DATA;
             return _this;
         }
-        return LoadPageData;
+        return LoadCmsPageData;
     }(EntityLoadAction));
-    var LoadPageDataFail = /** @class */ (function (_super) {
-        __extends(LoadPageDataFail, _super);
-        function LoadPageDataFail(pageContext, error) {
+    var LoadCmsPageDataFail = /** @class */ (function (_super) {
+        __extends(LoadCmsPageDataFail, _super);
+        function LoadCmsPageDataFail(pageContext, error) {
             var _this = _super.call(this, pageContext.type, pageContext.id, error) || this;
-            _this.type = LOAD_PAGE_DATA_FAIL;
+            _this.type = LOAD_CMS_PAGE_DATA_FAIL;
             return _this;
         }
-        return LoadPageDataFail;
+        return LoadCmsPageDataFail;
     }(EntityFailAction));
-    var SetPageFailIndex = /** @class */ (function (_super) {
-        __extends(SetPageFailIndex, _super);
-        function SetPageFailIndex(pageContext, payload) {
+    var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
+        __extends(LoadCmsPageDataSuccess, _super);
+        function LoadCmsPageDataSuccess(pageContext, payload) {
+            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
+            _this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
+            return _this;
+        }
+        return LoadCmsPageDataSuccess;
+    }(EntitySuccessAction));
+    var CmsSetPageFailIndex = /** @class */ (function (_super) {
+        __extends(CmsSetPageFailIndex, _super);
+        function CmsSetPageFailIndex(pageContext, payload) {
             var _this = _super.call(this, pageContext.type, pageContext.id) || this;
             _this.payload = payload;
-            _this.type = SET_PAGE_FAIL_INDEX;
+            _this.type = CMS_SET_PAGE_FAIL_INDEX;
             return _this;
         }
-        return SetPageFailIndex;
+        return CmsSetPageFailIndex;
     }(EntityFailAction));
-    var LoadPageDataSuccess = /** @class */ (function (_super) {
-        __extends(LoadPageDataSuccess, _super);
-        function LoadPageDataSuccess(pageContext, payload) {
-            var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
-            _this.type = LOAD_PAGE_DATA_SUCCESS;
-            return _this;
-        }
-        return LoadPageDataSuccess;
-    }(EntitySuccessAction));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var CMS_FEATURE = 'cms';
-    /** @type {?} */
-    var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
-    /** @type {?} */
-    var COMPONENT_ENTITY = '[Cms[ Component Entity';
 
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_COMPONENT = '[Cms] Load Component';
-    /** @type {?} */
-    var LOAD_COMPONENT_FAIL = '[Cms] Load Component Fail';
-    /** @type {?} */
-    var LOAD_COMPONENT_SUCCESS = '[Cms] Load Component Success';
-    /** @type {?} */
-    var GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
-    var LoadComponent = /** @class */ (function (_super) {
-        __extends(LoadComponent, _super);
-        function LoadComponent(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_COMPONENT;
-            return _this;
-        }
-        return LoadComponent;
-    }(EntityLoadAction));
-    var LoadComponentFail = /** @class */ (function (_super) {
-        __extends(LoadComponentFail, _super);
-        function LoadComponentFail(uid, payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, uid, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_COMPONENT_FAIL;
-            return _this;
-        }
-        return LoadComponentFail;
-    }(EntityFailAction));
-    /**
-     * @template T
-     */
-    var   /**
-     * @template T
-     */
-    LoadComponentSuccess = /** @class */ (function (_super) {
-        __extends(LoadComponentSuccess, _super);
-        function LoadComponentSuccess(payload, uid) {
-            var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
-            _this.payload = payload;
-            _this.type = LOAD_COMPONENT_SUCCESS;
-            return _this;
-        }
-        return LoadComponentSuccess;
-    }(EntitySuccessAction));
-    /**
-     * @template T
-     */
-    var   /**
-     * @template T
-     */
-    GetComponentFromPage = /** @class */ (function (_super) {
-        __extends(GetComponentFromPage, _super);
-        function GetComponentFromPage(payload) {
-            var _this = _super.call(this, COMPONENT_ENTITY, payload.map((/**
-             * @param {?} cmp
-             * @return {?}
-             */
-            function (cmp) { return cmp.uid; }))) || this;
-            _this.payload = payload;
-            _this.type = GET_COMPONENET_FROM_PAGE;
-            return _this;
-        }
-        return GetComponentFromPage;
-    }(EntitySuccessAction));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
-    /** @type {?} */
-    var LOAD_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
-    /** @type {?} */
-    var LOAD_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
-    var LoadNavigationItems = /** @class */ (function (_super) {
-        __extends(LoadNavigationItems, _super);
-        function LoadNavigationItems(payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NAVIGATION_ITEMS;
-            return _this;
-        }
-        return LoadNavigationItems;
-    }(EntityLoadAction));
-    var LoadNavigationItemsFail = /** @class */ (function (_super) {
-        __extends(LoadNavigationItemsFail, _super);
-        function LoadNavigationItemsFail(nodeId, payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, nodeId, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NAVIGATION_ITEMS_FAIL;
-            return _this;
-        }
-        return LoadNavigationItemsFail;
-    }(EntityFailAction));
-    var LoadNavigationItemsSuccess = /** @class */ (function (_super) {
-        __extends(LoadNavigationItemsSuccess, _super);
-        function LoadNavigationItemsSuccess(payload) {
-            var _this = _super.call(this, NAVIGATION_DETAIL_ENTITY, payload.nodeId) || this;
-            _this.payload = payload;
-            _this.type = LOAD_NAVIGATION_ITEMS_SUCCESS;
-            return _this;
-        }
-        return LoadNavigationItemsSuccess;
-    }(EntitySuccessAction));
+    var cmsGroup_actions = /*#__PURE__*/Object.freeze({
+        LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
+        LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
+        LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
+        CMS_GET_COMPONENET_FROM_PAGE: CMS_GET_COMPONENET_FROM_PAGE,
+        LoadCmsComponent: LoadCmsComponent,
+        LoadCmsComponentFail: LoadCmsComponentFail,
+        LoadCmsComponentSuccess: LoadCmsComponentSuccess,
+        CmsGetComponentFromPage: CmsGetComponentFromPage,
+        LOAD_CMS_NAVIGATION_ITEMS: LOAD_CMS_NAVIGATION_ITEMS,
+        LOAD_CMS_NAVIGATION_ITEMS_FAIL: LOAD_CMS_NAVIGATION_ITEMS_FAIL,
+        LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: LOAD_CMS_NAVIGATION_ITEMS_SUCCESS,
+        LoadCmsNavigationItems: LoadCmsNavigationItems,
+        LoadCmsNavigationItemsFail: LoadCmsNavigationItemsFail,
+        LoadCmsNavigationItemsSuccess: LoadCmsNavigationItemsSuccess,
+        LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
+        LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
+        LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
+        CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
+        LoadCmsPageData: LoadCmsPageData,
+        LoadCmsPageDataFail: LoadCmsPageDataFail,
+        LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
+        CmsSetPageFailIndex: CmsSetPageFailIndex
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -7695,7 +7725,7 @@
                             componentState.success ||
                             componentState.error;
                         if (!attemptedLoad && !isNavigating) {
-                            _this.store.dispatch(new LoadComponent(uid));
+                            _this.store.dispatch(new LoadCmsComponent(uid));
                         }
                     }
                 })), operators.pluck(1), operators.filter((/**
@@ -7765,7 +7795,7 @@
          * @return {?}
          */
         function (rootUid, itemList) {
-            this.store.dispatch(new LoadNavigationItems({
+            this.store.dispatch(new LoadCmsNavigationItems({
                 nodeId: rootUid,
                 items: itemList,
             }));
@@ -7791,7 +7821,7 @@
              * @return {?}
              */
             function (pageContext) {
-                return _this.store.dispatch(new LoadPageData(pageContext));
+                return _this.store.dispatch(new LoadCmsPageData(pageContext));
             }));
         };
         /**
@@ -7811,7 +7841,7 @@
         function (pageId) {
             /** @type {?} */
             var pageContext = { id: pageId };
-            this.store.dispatch(new LoadPageData(pageContext));
+            this.store.dispatch(new LoadCmsPageData(pageContext));
         };
         /**
          * Refresh cms component's content
@@ -7828,7 +7858,7 @@
          * @return {?}
          */
         function (uid) {
-            this.store.dispatch(new LoadComponent(uid));
+            this.store.dispatch(new LoadCmsComponent(uid));
         };
         /**
          * Given pageContext, return the CMS page data
@@ -7893,7 +7923,7 @@
                 /** @type {?} */
                 var shouldReload = forceReload && !entity.loading;
                 if (!attemptedLoad || shouldReload) {
-                    _this.store.dispatch(new LoadPageData(pageContext));
+                    _this.store.dispatch(new LoadCmsPageData(pageContext));
                     forceReload = false;
                 }
             })), operators.filter((/**
@@ -7934,7 +7964,7 @@
          * @return {?}
          */
         function (pageContext, value) {
-            this.store.dispatch(new SetPageFailIndex(pageContext, value));
+            this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
         };
         CmsService.decorators = [
             { type: core.Injectable, args: [{
@@ -9149,9 +9179,9 @@
                  * @param {?} context
                  * @return {?}
                  */
-                function (context) { return rxjs.of(new LoadPageData(context)); })));
+                function (context) { return rxjs.of(new LoadCmsPageData(context)); })));
             })));
-            this.loadPageData$ = this.actions$.pipe(effects$a.ofType(LOAD_PAGE_DATA), operators.map((/**
+            this.loadPageData$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_PAGE_DATA), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -9175,15 +9205,15 @@
                      */
                     function (cmsStructure) {
                         return [
-                            new GetComponentFromPage(cmsStructure.components),
-                            new LoadPageDataSuccess(pageContext, cmsStructure.page),
+                            new CmsGetComponentFromPage(cmsStructure.components),
+                            new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
                         ];
                     })), operators.catchError((/**
                      * @param {?} error
                      * @return {?}
                      */
                     function (error) {
-                        return rxjs.of(new LoadPageDataFail(pageContext, makeErrorSerializable(error)));
+                        return rxjs.of(new LoadCmsPageDataFail(pageContext, makeErrorSerializable(error)));
                     })));
                 })));
             })));
@@ -9330,7 +9360,7 @@
             this.actions$ = actions$;
             this.cmsComponentLoader = cmsComponentLoader;
             this.routingService = routingService;
-            this.loadComponent$ = this.actions$.pipe(effects$a.ofType(LOAD_COMPONENT), operators.map((/**
+            this.loadComponent$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_COMPONENT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -9365,12 +9395,12 @@
                          * @param {?} data
                          * @return {?}
                          */
-                        function (data) { return new LoadComponentSuccess(data, uid); })), operators.catchError((/**
+                        function (data) { return new LoadCmsComponentSuccess(data, uid); })), operators.catchError((/**
                          * @param {?} error
                          * @return {?}
                          */
                         function (error) {
-                            return rxjs.of(new LoadComponentFail(uid, makeErrorSerializable(error)));
+                            return rxjs.of(new LoadCmsComponentFail(uid, makeErrorSerializable(error)));
                         })));
                     })));
                 })));
@@ -9402,7 +9432,7 @@
             this.actions$ = actions$;
             this.cmsComponentConnector = cmsComponentConnector;
             this.routingService = routingService;
-            this.loadNavigationItems$ = this.actions$.pipe(effects$a.ofType(LOAD_NAVIGATION_ITEMS), operators.map((/**
+            this.loadNavigationItems$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -9442,7 +9472,7 @@
                          * @return {?}
                          */
                         function (components) {
-                            return new LoadNavigationItemsSuccess({
+                            return new LoadCmsNavigationItemsSuccess({
                                 nodeId: data.nodeId,
                                 components: components,
                             });
@@ -9451,14 +9481,14 @@
                          * @return {?}
                          */
                         function (error) {
-                            return rxjs.of(new LoadNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
+                            return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)));
                         })));
                     })));
                 }
                 else if (data.ids.pageIds.length > 0) ;
                 else if (data.ids.mediaIds.length > 0) ;
                 else {
-                    return rxjs.of(new LoadNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
+                    return rxjs.of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
                 }
             })));
         }
@@ -9539,7 +9569,7 @@
     function reducer$6(state, action) {
         if (state === void 0) { state = initialState$6; }
         switch (action.type) {
-            case LOAD_NAVIGATION_ITEMS_SUCCESS: {
+            case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
                     /** @type {?} */
                     var components = action.payload.components;
@@ -9575,7 +9605,7 @@
         var _a;
         if (state === void 0) { state = initialState$7; }
         switch (action.type) {
-            case LOAD_PAGE_DATA_SUCCESS: {
+            case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 /** @type {?} */
                 var page = action.payload;
                 return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[page.pageId] = page, _a)) });
@@ -9604,13 +9634,13 @@
             if (state === void 0) { state = initialState$8; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
-                    case LOAD_PAGE_DATA_SUCCESS: {
+                    case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
-                    case LOAD_PAGE_DATA_FAIL: {
+                    case LOAD_CMS_PAGE_DATA_FAIL: {
                         return initialState$8;
                     }
-                    case SET_PAGE_FAIL_INDEX: {
+                    case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
                     }
                 }
@@ -29404,6 +29434,7 @@
     exports.ClearProductSearchResult = ClearProductSearchResult;
     exports.ClearRegions = ClearRegions;
     exports.ClearUserOrders = ClearUserOrders;
+    exports.CmsActions = cmsGroup_actions;
     exports.CmsComponentAdapter = CmsComponentAdapter;
     exports.CmsComponentConnector = CmsComponentConnector;
     exports.CmsConfig = CmsConfig;
@@ -29483,7 +29514,6 @@
     exports.ForgotPasswordEmailRequestFail = ForgotPasswordEmailRequestFail;
     exports.ForgotPasswordEmailRequestSuccess = ForgotPasswordEmailRequestSuccess;
     exports.Forward = Forward;
-    exports.GET_COMPONENET_FROM_PAGE = GET_COMPONENET_FROM_PAGE;
     exports.GET_PRODUCT_SUGGESTIONS = GET_PRODUCT_SUGGESTIONS;
     exports.GET_PRODUCT_SUGGESTIONS_FAIL = GET_PRODUCT_SUGGESTIONS_FAIL;
     exports.GET_PRODUCT_SUGGESTIONS_SUCCESS = GET_PRODUCT_SUGGESTIONS_SUCCESS;
@@ -29495,7 +29525,6 @@
     exports.GO = GO;
     exports.GO_BY_URL = GO_BY_URL;
     exports.GatewayTimeoutHandler = GatewayTimeoutHandler;
-    exports.GetComponentFromPage = GetComponentFromPage;
     exports.GetProductSuggestions = GetProductSuggestions;
     exports.GetProductSuggestionsFail = GetProductSuggestionsFail;
     exports.GetProductSuggestionsSuccess = GetProductSuggestionsSuccess;
@@ -29537,9 +29566,6 @@
     exports.LOAD_BILLING_COUNTRIES = LOAD_BILLING_COUNTRIES;
     exports.LOAD_BILLING_COUNTRIES_FAIL = LOAD_BILLING_COUNTRIES_FAIL;
     exports.LOAD_BILLING_COUNTRIES_SUCCESS = LOAD_BILLING_COUNTRIES_SUCCESS;
-    exports.LOAD_COMPONENT = LOAD_COMPONENT;
-    exports.LOAD_COMPONENT_FAIL = LOAD_COMPONENT_FAIL;
-    exports.LOAD_COMPONENT_SUCCESS = LOAD_COMPONENT_SUCCESS;
     exports.LOAD_CURRENCIES = LOAD_CURRENCIES;
     exports.LOAD_CURRENCIES_FAIL = LOAD_CURRENCIES_FAIL;
     exports.LOAD_CURRENCIES_SUCCESS = LOAD_CURRENCIES_SUCCESS;
@@ -29549,18 +29575,12 @@
     exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
     exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;
     exports.LOAD_LANGUAGES_SUCCESS = LOAD_LANGUAGES_SUCCESS;
-    exports.LOAD_NAVIGATION_ITEMS = LOAD_NAVIGATION_ITEMS;
-    exports.LOAD_NAVIGATION_ITEMS_FAIL = LOAD_NAVIGATION_ITEMS_FAIL;
-    exports.LOAD_NAVIGATION_ITEMS_SUCCESS = LOAD_NAVIGATION_ITEMS_SUCCESS;
     exports.LOAD_OPEN_ID_TOKEN = LOAD_OPEN_ID_TOKEN;
     exports.LOAD_OPEN_ID_TOKEN_FAIL = LOAD_OPEN_ID_TOKEN_FAIL;
     exports.LOAD_OPEN_ID_TOKEN_SUCCESS = LOAD_OPEN_ID_TOKEN_SUCCESS;
     exports.LOAD_ORDER_DETAILS = LOAD_ORDER_DETAILS;
     exports.LOAD_ORDER_DETAILS_FAIL = LOAD_ORDER_DETAILS_FAIL;
     exports.LOAD_ORDER_DETAILS_SUCCESS = LOAD_ORDER_DETAILS_SUCCESS;
-    exports.LOAD_PAGE_DATA = LOAD_PAGE_DATA;
-    exports.LOAD_PAGE_DATA_FAIL = LOAD_PAGE_DATA_FAIL;
-    exports.LOAD_PAGE_DATA_SUCCESS = LOAD_PAGE_DATA_SUCCESS;
     exports.LOAD_PRODUCT = LOAD_PRODUCT;
     exports.LOAD_PRODUCT_FAIL = LOAD_PRODUCT_FAIL;
     exports.LOAD_PRODUCT_REFERENCES = LOAD_PRODUCT_REFERENCES;
@@ -29599,9 +29619,6 @@
     exports.LoadBillingCountries = LoadBillingCountries;
     exports.LoadBillingCountriesFail = LoadBillingCountriesFail;
     exports.LoadBillingCountriesSuccess = LoadBillingCountriesSuccess;
-    exports.LoadComponent = LoadComponent;
-    exports.LoadComponentFail = LoadComponentFail;
-    exports.LoadComponentSuccess = LoadComponentSuccess;
     exports.LoadCurrencies = LoadCurrencies;
     exports.LoadCurrenciesFail = LoadCurrenciesFail;
     exports.LoadCurrenciesSuccess = LoadCurrenciesSuccess;
@@ -29611,18 +29628,12 @@
     exports.LoadLanguages = LoadLanguages;
     exports.LoadLanguagesFail = LoadLanguagesFail;
     exports.LoadLanguagesSuccess = LoadLanguagesSuccess;
-    exports.LoadNavigationItems = LoadNavigationItems;
-    exports.LoadNavigationItemsFail = LoadNavigationItemsFail;
-    exports.LoadNavigationItemsSuccess = LoadNavigationItemsSuccess;
     exports.LoadOpenIdToken = LoadOpenIdToken;
     exports.LoadOpenIdTokenFail = LoadOpenIdTokenFail;
     exports.LoadOpenIdTokenSuccess = LoadOpenIdTokenSuccess;
     exports.LoadOrderDetails = LoadOrderDetails;
     exports.LoadOrderDetailsFail = LoadOrderDetailsFail;
     exports.LoadOrderDetailsSuccess = LoadOrderDetailsSuccess;
-    exports.LoadPageData = LoadPageData;
-    exports.LoadPageDataFail = LoadPageDataFail;
-    exports.LoadPageDataSuccess = LoadPageDataSuccess;
     exports.LoadProduct = LoadProduct;
     exports.LoadProductFail = LoadProductFail;
     exports.LoadProductReferences = LoadProductReferences;
@@ -29792,7 +29803,6 @@
     exports.SET_DEFAULT_USER_PAYMENT_METHOD = SET_DEFAULT_USER_PAYMENT_METHOD;
     exports.SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
     exports.SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
-    exports.SET_PAGE_FAIL_INDEX = SET_PAGE_FAIL_INDEX;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
     exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
@@ -29811,7 +29821,6 @@
     exports.SetDefaultUserPaymentMethod = SetDefaultUserPaymentMethod;
     exports.SetDefaultUserPaymentMethodFail = SetDefaultUserPaymentMethodFail;
     exports.SetDefaultUserPaymentMethodSuccess = SetDefaultUserPaymentMethodSuccess;
-    exports.SetPageFailIndex = SetPageFailIndex;
     exports.SiteAdapter = SiteAdapter;
     exports.SiteConnector = SiteConnector;
     exports.SiteContextConfig = SiteContextConfig;
@@ -30001,100 +30010,100 @@
     exports.ɵca = reducer$7;
     exports.ɵcb = reducer$8;
     exports.ɵcc = reducer$6;
-    exports.ɵcd = EntityLoadAction;
-    exports.ɵce = EntityFailAction;
-    exports.ɵcf = EntitySuccessAction;
-    exports.ɵcg = getReducers$1;
-    exports.ɵch = reducerToken$1;
-    exports.ɵci = reducerProvider$1;
-    exports.ɵcj = effects$1;
-    exports.ɵck = LanguagesEffects;
-    exports.ɵcl = CurrenciesEffects;
-    exports.ɵcm = BaseSiteEffects;
-    exports.ɵcn = effects$6;
-    exports.ɵco = ProductReferencesEffects;
-    exports.ɵcp = ProductReviewsEffects;
-    exports.ɵcq = ProductsSearchEffects;
-    exports.ɵcr = ProductEffects;
-    exports.ɵcs = getReducers$6;
-    exports.ɵct = reducerToken$6;
-    exports.ɵcu = reducerProvider$6;
-    exports.ɵcv = clearProductsState;
-    exports.ɵcw = metaReducers$3;
-    exports.ɵcx = getReducers$7;
-    exports.ɵcy = reducerToken$7;
-    exports.ɵcz = reducerProvider$7;
+    exports.ɵcd = getReducers$1;
+    exports.ɵce = reducerToken$1;
+    exports.ɵcf = reducerProvider$1;
+    exports.ɵcg = effects$1;
+    exports.ɵch = LanguagesEffects;
+    exports.ɵci = CurrenciesEffects;
+    exports.ɵcj = BaseSiteEffects;
+    exports.ɵck = effects$6;
+    exports.ɵcl = ProductReferencesEffects;
+    exports.ɵcm = ProductReviewsEffects;
+    exports.ɵcn = ProductsSearchEffects;
+    exports.ɵco = ProductEffects;
+    exports.ɵcp = getReducers$6;
+    exports.ɵcq = reducerToken$6;
+    exports.ɵcr = reducerProvider$6;
+    exports.ɵcs = clearProductsState;
+    exports.ɵct = metaReducers$3;
+    exports.ɵcu = getReducers$7;
+    exports.ɵcv = reducerToken$7;
+    exports.ɵcw = reducerProvider$7;
+    exports.ɵcx = clearUserState;
+    exports.ɵcy = metaReducers$4;
+    exports.ɵcz = GlobalMessageStoreModule;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = clearUserState;
-    exports.ɵdb = metaReducers$4;
-    exports.ɵdc = GlobalMessageStoreModule;
-    exports.ɵdd = getReducers$9;
-    exports.ɵde = reducerToken$9;
-    exports.ɵdf = reducerProvider$9;
-    exports.ɵdg = reducer$q;
-    exports.ɵdh = GlobalMessageEffect;
-    exports.ɵdi = defaultGlobalMessageConfigFactory;
-    exports.ɵdj = HttpErrorInterceptor;
-    exports.ɵdk = ServerConfig;
-    exports.ɵdl = defaultI18nConfig;
-    exports.ɵdm = i18nextProviders;
-    exports.ɵdn = i18nextInit;
-    exports.ɵdo = MockTranslationService;
-    exports.ɵdp = kymaStoreConfigFactory;
-    exports.ɵdq = KymaStoreModule;
-    exports.ɵdr = getReducers$a;
-    exports.ɵds = reducerToken$a;
-    exports.ɵdt = reducerProvider$a;
-    exports.ɵdu = clearKymaState;
-    exports.ɵdv = metaReducers$5;
-    exports.ɵdw = effects$8;
-    exports.ɵdx = OpenIdTokenEffect;
-    exports.ɵdy = OpenIdAuthenticationTokenService;
-    exports.ɵdz = defaultKymaConfig;
+    exports.ɵda = getReducers$9;
+    exports.ɵdb = reducerToken$9;
+    exports.ɵdc = reducerProvider$9;
+    exports.ɵdd = reducer$q;
+    exports.ɵde = GlobalMessageEffect;
+    exports.ɵdf = defaultGlobalMessageConfigFactory;
+    exports.ɵdg = HttpErrorInterceptor;
+    exports.ɵdh = ServerConfig;
+    exports.ɵdi = defaultI18nConfig;
+    exports.ɵdj = i18nextProviders;
+    exports.ɵdk = i18nextInit;
+    exports.ɵdl = MockTranslationService;
+    exports.ɵdm = kymaStoreConfigFactory;
+    exports.ɵdn = KymaStoreModule;
+    exports.ɵdo = getReducers$a;
+    exports.ɵdp = reducerToken$a;
+    exports.ɵdq = reducerProvider$a;
+    exports.ɵdr = clearKymaState;
+    exports.ɵds = metaReducers$5;
+    exports.ɵdt = effects$8;
+    exports.ɵdu = OpenIdTokenEffect;
+    exports.ɵdv = OpenIdAuthenticationTokenService;
+    exports.ɵdw = defaultKymaConfig;
+    exports.ɵdx = provideConfigFactory;
+    exports.ɵdy = defaultOccProductConfig;
+    exports.ɵdz = provideConfigValidator;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = provideConfigFactory;
-    exports.ɵeb = defaultOccProductConfig;
-    exports.ɵec = provideConfigValidator;
-    exports.ɵed = defaultPersonalizationConfig;
-    exports.ɵee = interceptors$1;
-    exports.ɵef = OccPersonalizationIdInterceptor;
-    exports.ɵeg = OccPersonalizationTimeInterceptor;
-    exports.ɵeh = productStoreConfigFactory;
-    exports.ɵei = ProductStoreModule;
-    exports.ɵej = reducer$c;
-    exports.ɵek = reducer$e;
-    exports.ɵel = reducer$d;
-    exports.ɵem = PageMetaResolver;
-    exports.ɵen = UrlMatcherFactoryService;
-    exports.ɵeo = ROUTING_FEATURE;
-    exports.ɵep = getReducers;
-    exports.ɵeq = reducer;
-    exports.ɵer = reducerToken;
-    exports.ɵes = reducerProvider;
-    exports.ɵet = CustomSerializer;
-    exports.ɵeu = effects;
-    exports.ɵev = RouterEffects;
-    exports.ɵew = SiteContextParamsService;
-    exports.ɵex = SiteContextUrlSerializer;
-    exports.ɵey = SiteContextRoutesHandler;
-    exports.ɵez = defaultSiteContextConfigFactory;
+    exports.ɵea = defaultPersonalizationConfig;
+    exports.ɵeb = interceptors$1;
+    exports.ɵec = OccPersonalizationIdInterceptor;
+    exports.ɵed = OccPersonalizationTimeInterceptor;
+    exports.ɵee = productStoreConfigFactory;
+    exports.ɵef = ProductStoreModule;
+    exports.ɵeg = reducer$c;
+    exports.ɵeh = reducer$e;
+    exports.ɵei = reducer$d;
+    exports.ɵej = PageMetaResolver;
+    exports.ɵek = UrlMatcherFactoryService;
+    exports.ɵel = ROUTING_FEATURE;
+    exports.ɵem = getReducers;
+    exports.ɵen = reducer;
+    exports.ɵeo = reducerToken;
+    exports.ɵep = reducerProvider;
+    exports.ɵeq = CustomSerializer;
+    exports.ɵer = effects;
+    exports.ɵes = RouterEffects;
+    exports.ɵet = SiteContextParamsService;
+    exports.ɵeu = SiteContextUrlSerializer;
+    exports.ɵev = SiteContextRoutesHandler;
+    exports.ɵew = defaultSiteContextConfigFactory;
+    exports.ɵex = siteContextStoreConfigFactory;
+    exports.ɵey = SiteContextStoreModule;
+    exports.ɵez = reducer$1;
     exports.ɵf = getReducers$2;
-    exports.ɵfa = siteContextStoreConfigFactory;
-    exports.ɵfb = SiteContextStoreModule;
-    exports.ɵfc = reducer$1;
-    exports.ɵfd = reducer$2;
-    exports.ɵfe = reducer$3;
-    exports.ɵff = baseSiteConfigValidator;
-    exports.ɵfg = interceptors$2;
-    exports.ɵfh = CmsTicketInterceptor;
-    exports.ɵfi = defaultStoreFinderConfig;
-    exports.ɵfj = StoreFinderStoreModule;
-    exports.ɵfk = getReducers$b;
-    exports.ɵfl = reducerToken$b;
-    exports.ɵfm = reducerProvider$b;
-    exports.ɵfn = effects$9;
-    exports.ɵfo = FindStoresEffect;
-    exports.ɵfp = ViewAllStoresEffect;
+    exports.ɵfa = reducer$2;
+    exports.ɵfb = reducer$3;
+    exports.ɵfc = baseSiteConfigValidator;
+    exports.ɵfd = interceptors$2;
+    exports.ɵfe = CmsTicketInterceptor;
+    exports.ɵff = defaultStoreFinderConfig;
+    exports.ɵfg = StoreFinderStoreModule;
+    exports.ɵfh = getReducers$b;
+    exports.ɵfi = reducerToken$b;
+    exports.ɵfj = reducerProvider$b;
+    exports.ɵfk = effects$9;
+    exports.ɵfl = FindStoresEffect;
+    exports.ɵfm = ViewAllStoresEffect;
+    exports.ɵfn = EntityLoadAction;
+    exports.ɵfo = EntitySuccessAction;
+    exports.ɵfp = EntityFailAction;
     exports.ɵfq = EntityResetAction;
     exports.ɵfr = UserStoreModule;
     exports.ɵfs = effects$7;

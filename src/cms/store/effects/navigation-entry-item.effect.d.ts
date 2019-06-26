@@ -2,12 +2,12 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { RoutingService } from '../../../routing/index';
 import { CmsComponentConnector } from '../../connectors/component/cms-component.connector';
-import * as navigationItemActions from '../actions/navigation-entry-item.action';
+import { CmsActions } from '../actions/index';
 export declare class NavigationEntryItemEffects {
     private actions$;
     private cmsComponentConnector;
     private routingService;
-    loadNavigationItems$: Observable<navigationItemActions.LoadNavigationItemsSuccess | navigationItemActions.LoadNavigationItemsFail>;
+    loadNavigationItems$: Observable<CmsActions.LoadCmsNavigationItemsSuccess | CmsActions.LoadCmsNavigationItemsFail>;
     getIdListByItemType(itemList: any[]): {
         pageIds: string[];
         componentIds: string[];

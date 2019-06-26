@@ -1,3 +1,3 @@
-import * as fromAction from '../actions/page.action';
+import { CmsActions } from '../actions/index';
 export declare const initialState: any;
-export declare function reducer(entityType: string): (state: string, action: fromAction.LoadPageDataSuccess | fromAction.LoadPageDataFail | fromAction.SetPageFailIndex) => string;
+export declare function reducer(entityType: string): (state: string, action: CmsActions.LoadCmsPageDataSuccess | CmsActions.LoadCmsPageDataFail | CmsActions.CmsSetPageFailIndex) => string;
