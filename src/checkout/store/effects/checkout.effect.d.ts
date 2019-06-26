@@ -1,7 +1,7 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { CartActions } from '../../../cart/store/actions/index';
-import { AddMessage } from '../../../global-message/index';
+import { GlobalMessageActions } from '../../../global-message/store/actions/index';
 import * as fromUserActions from '../../../user/store/actions/index';
 import { CheckoutConnector } from '../../connectors/checkout/checkout.connector';
 import { CheckoutDeliveryConnector } from '../../connectors/delivery/checkout-delivery.connector';
@@ -21,7 +21,7 @@ export declare class CheckoutEffects {
     setDeliveryMode$: Observable<CheckoutActions.SetDeliveryModeSuccess | CheckoutActions.SetDeliveryModeFail | CartActions.LoadCart>;
     createPaymentDetails$: Observable<fromUserActions.LoadUserPaymentMethods | CheckoutActions.CreatePaymentDetailsSuccess | CheckoutActions.CreatePaymentDetailsFail>;
     setPaymentDetails$: Observable<CheckoutActions.SetPaymentDetailsSuccess | CheckoutActions.SetPaymentDetailsFail>;
-    placeOrder$: Observable<CheckoutActions.PlaceOrderSuccess | AddMessage | CheckoutActions.PlaceOrderFail>;
+    placeOrder$: Observable<CheckoutActions.PlaceOrderSuccess | GlobalMessageActions.AddMessage | CheckoutActions.PlaceOrderFail>;
     loadCheckoutDetails$: Observable<CheckoutActions.LoadCheckoutDetailsSuccess | CheckoutActions.LoadCheckoutDetailsFail>;
     reloadDetailsOnMergeCart$: Observable<CheckoutActions.LoadCheckoutDetails>;
     constructor(actions$: Actions, checkoutDeliveryConnector: CheckoutDeliveryConnector, checkoutPaymentConnector: CheckoutPaymentConnector, checkoutConnector: CheckoutConnector);

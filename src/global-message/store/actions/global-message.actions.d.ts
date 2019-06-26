@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { GlobalMessageType, GlobalMessage } from '../../models/global-message.model';
+import { GlobalMessage, GlobalMessageType } from '../../models/global-message.model';
 export declare const ADD_MESSAGE = "[Global-message] Add a Message";
 export declare const REMOVE_MESSAGE = "[Global-message] Remove a Message";
 export declare const REMOVE_MESSAGES_BY_TYPE = "[Global-message] Remove messages by type";

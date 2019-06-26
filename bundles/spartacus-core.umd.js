@@ -18531,24 +18531,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    GlobalMessageConfig = /** @class */ (function (_super) {
-        __extends(GlobalMessageConfig, _super);
-        function GlobalMessageConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return GlobalMessageConfig;
-    }(ServerConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var ADD_MESSAGE = '[Global-message] Add a Message';
     /** @type {?} */
@@ -18581,6 +18563,318 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
+        ADD_MESSAGE: ADD_MESSAGE,
+        REMOVE_MESSAGE: REMOVE_MESSAGE,
+        REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
+        AddMessage: AddMessage,
+        RemoveMessage: RemoveMessage,
+        RemoveMessagesByType: RemoveMessagesByType
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ForgotPasswordEffects = /** @class */ (function () {
+        function ForgotPasswordEffects(actions$, userAccountConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userAccountConnector = userAccountConnector;
+            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$a.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.concatMap((/**
+             * @param {?} userEmailAddress
+             * @return {?}
+             */
+            function (userEmailAddress) {
+                return _this.userAccountConnector
+                    .requestForgotPasswordEmail(userEmailAddress)
+                    .pipe(operators.switchMap((/**
+                 * @return {?}
+                 */
+                function () { return [
+                    new ForgotPasswordEmailRequestSuccess(),
+                    new AddMessage({
+                        text: { key: 'forgottenPassword.passwordResetEmailSent' },
+                        type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
+                    }),
+                ]; })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        ForgotPasswordEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ForgotPasswordEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: UserConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
+        return ForgotPasswordEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OrderDetailsEffect = /** @class */ (function () {
+        function OrderDetailsEffect(actions$, orderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.orderConnector = orderConnector;
+            this.loadOrderDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_ORDER_DETAILS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(operators.map((/**
+                 * @param {?} order
+                 * @return {?}
+                 */
+                function (order) {
+                    return new LoadOrderDetailsSuccess(order);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        OrderDetailsEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OrderDetailsEffect.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: UserOrderConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
+        return OrderDetailsEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UserPaymentMethodsEffects = /** @class */ (function () {
+        function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userPaymentMethodConnector = userPaymentMethodConnector;
+            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.userPaymentMethodConnector.getAll(payload).pipe(operators.map((/**
+                 * @param {?} payments
+                 * @return {?}
+                 */
+                function (payments) {
+                    return new LoadUserPaymentMethodsSuccess(payments);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.userPaymentMethodConnector
+                    .setDefault(payload.userId, payload.paymentMethodId)
+                    .pipe(operators.switchMap((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return [
+                    new SetDefaultUserPaymentMethodSuccess(data),
+                    new LoadUserPaymentMethods(payload.userId),
+                ]; })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.userPaymentMethodConnector
+                    .delete(payload.userId, payload.paymentMethodId)
+                    .pipe(operators.switchMap((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return [
+                    new DeleteUserPaymentMethodSuccess(data),
+                    new LoadUserPaymentMethods(payload.userId),
+                ]; })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        UserPaymentMethodsEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        UserPaymentMethodsEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: UserPaymentConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
+        return UserPaymentMethodsEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var RegionsEffects = /** @class */ (function () {
+        function RegionsEffects(actions$, siteConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.siteConnector = siteConnector;
+            this.loadRegions$ = this.actions$.pipe(effects$a.ofType(LOAD_REGIONS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.switchMap((/**
+             * @param {?} countryCode
+             * @return {?}
+             */
+            function (countryCode) {
+                return _this.siteConnector.getRegions(countryCode).pipe(operators.map((/**
+                 * @param {?} regions
+                 * @return {?}
+                 */
+                function (regions) {
+                    return new LoadRegionsSuccess({
+                        entities: regions,
+                        country: countryCode,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
+             * @return {?}
+             */
+            function () {
+                return new LoaderResetAction(REGIONS);
+            })));
+        }
+        RegionsEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        RegionsEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: SiteConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], RegionsEffects.prototype, "loadRegions$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], RegionsEffects.prototype, "resetRegions$", void 0);
+        return RegionsEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    GlobalMessageConfig = /** @class */ (function (_super) {
+        __extends(GlobalMessageConfig, _super);
+        function GlobalMessageConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return GlobalMessageConfig;
+    }(ServerConfig));
 
     /**
      * @fileoverview added by tsickle
@@ -19499,286 +19793,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ForgotPasswordEffects = /** @class */ (function () {
-        function ForgotPasswordEffects(actions$, userAccountConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userAccountConnector = userAccountConnector;
-            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$a.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                return action.payload;
-            })), operators.concatMap((/**
-             * @param {?} userEmailAddress
-             * @return {?}
-             */
-            function (userEmailAddress) {
-                return _this.userAccountConnector
-                    .requestForgotPasswordEmail(userEmailAddress)
-                    .pipe(operators.switchMap((/**
-                 * @return {?}
-                 */
-                function () { return [
-                    new ForgotPasswordEmailRequestSuccess(),
-                    new AddMessage({
-                        text: { key: 'forgottenPassword.passwordResetEmailSent' },
-                        type: GlobalMessageType.MSG_TYPE_CONFIRMATION,
-                    }),
-                ]; })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new ForgotPasswordEmailRequestFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        ForgotPasswordEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ForgotPasswordEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: UserConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
-        return ForgotPasswordEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OrderDetailsEffect = /** @class */ (function () {
-        function OrderDetailsEffect(actions$, orderConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.orderConnector = orderConnector;
-            this.loadOrderDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_ORDER_DETAILS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.switchMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.orderConnector.get(payload.userId, payload.orderCode).pipe(operators.map((/**
-                 * @param {?} order
-                 * @return {?}
-                 */
-                function (order) {
-                    return new LoadOrderDetailsSuccess(order);
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        OrderDetailsEffect.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OrderDetailsEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: UserOrderConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
-        return OrderDetailsEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UserPaymentMethodsEffects = /** @class */ (function () {
-        function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.userPaymentMethodConnector = userPaymentMethodConnector;
-            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.userPaymentMethodConnector.getAll(payload).pipe(operators.map((/**
-                 * @param {?} payments
-                 * @return {?}
-                 */
-                function (payments) {
-                    return new LoadUserPaymentMethodsSuccess(payments);
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.userPaymentMethodConnector
-                    .setDefault(payload.userId, payload.paymentMethodId)
-                    .pipe(operators.switchMap((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) { return [
-                    new SetDefaultUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ]; })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.userPaymentMethodConnector
-                    .delete(payload.userId, payload.paymentMethodId)
-                    .pipe(operators.switchMap((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) { return [
-                    new DeleteUserPaymentMethodSuccess(data),
-                    new LoadUserPaymentMethods(payload.userId),
-                ]; })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new DeleteUserPaymentMethodFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        UserPaymentMethodsEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        UserPaymentMethodsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: UserPaymentConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
-        return UserPaymentMethodsEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var RegionsEffects = /** @class */ (function () {
-        function RegionsEffects(actions$, siteConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.siteConnector = siteConnector;
-            this.loadRegions$ = this.actions$.pipe(effects$a.ofType(LOAD_REGIONS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) {
-                return action.payload;
-            })), operators.switchMap((/**
-             * @param {?} countryCode
-             * @return {?}
-             */
-            function (countryCode) {
-                return _this.siteConnector.getRegions(countryCode).pipe(operators.map((/**
-                 * @param {?} regions
-                 * @return {?}
-                 */
-                function (regions) {
-                    return new LoadRegionsSuccess({
-                        entities: regions,
-                        country: countryCode,
-                    });
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
-             * @return {?}
-             */
-            function () {
-                return new LoaderResetAction(REGIONS);
-            })));
-        }
-        RegionsEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        RegionsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: SiteConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], RegionsEffects.prototype, "loadRegions$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], RegionsEffects.prototype, "resetRegions$", void 0);
-        return RegionsEffects;
-    }());
 
     /**
      * @fileoverview added by tsickle
@@ -29353,13 +29367,11 @@
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
-    exports.ADD_MESSAGE = ADD_MESSAGE;
     exports.ADD_USER_ADDRESS = ADD_USER_ADDRESS;
     exports.ADD_USER_ADDRESS_FAIL = ADD_USER_ADDRESS_FAIL;
     exports.ADD_USER_ADDRESS_SUCCESS = ADD_USER_ADDRESS_SUCCESS;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.AUTH_FEATURE = AUTH_FEATURE;
-    exports.AddMessage = AddMessage;
     exports.AddUserAddress = AddUserAddress;
     exports.AddUserAddressFail = AddUserAddressFail;
     exports.AddUserAddressSuccess = AddUserAddressSuccess;
@@ -29531,6 +29543,7 @@
     exports.GiveUserConsent = GiveUserConsent;
     exports.GiveUserConsentFail = GiveUserConsentFail;
     exports.GiveUserConsentSuccess = GiveUserConsentSuccess;
+    exports.GlobalMessageActions = globalMessageGroup_actions;
     exports.GlobalMessageConfig = GlobalMessageConfig;
     exports.GlobalMessageModule = GlobalMessageModule;
     exports.GlobalMessageSelectors = globalMessageGroup_selectors;
@@ -29757,8 +29770,6 @@
     exports.REGISTER_USER = REGISTER_USER;
     exports.REGISTER_USER_FAIL = REGISTER_USER_FAIL;
     exports.REGISTER_USER_SUCCESS = REGISTER_USER_SUCCESS;
-    exports.REMOVE_MESSAGE = REMOVE_MESSAGE;
-    exports.REMOVE_MESSAGES_BY_TYPE = REMOVE_MESSAGES_BY_TYPE;
     exports.REMOVE_USER = REMOVE_USER;
     exports.REMOVE_USER_FAIL = REMOVE_USER_FAIL;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
@@ -29775,8 +29786,6 @@
     exports.RegisterUser = RegisterUser;
     exports.RegisterUserFail = RegisterUserFail;
     exports.RegisterUserSuccess = RegisterUserSuccess;
-    exports.RemoveMessage = RemoveMessage;
-    exports.RemoveMessagesByType = RemoveMessagesByType;
     exports.RemoveUser = RemoveUser;
     exports.RemoveUserFail = RemoveUserFail;
     exports.RemoveUserReset = RemoveUserReset;

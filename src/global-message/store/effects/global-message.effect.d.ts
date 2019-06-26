@@ -2,7 +2,7 @@ import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { GlobalMessageConfig } from '../../config/global-message-config';
-import * as GlobalMessageActions from '../actions/global-message.actions';
+import { GlobalMessageActions } from '../actions/index';
 import { StateWithGlobalMessage } from '../global-message-state';
 export declare class GlobalMessageEffect {
     private actions$;
