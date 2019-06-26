@@ -2,15 +2,15 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Language } from '../../model/misc.model';
 import { WindowRef } from '../../window/window-ref';
-import * as fromStore from '../store/index';
+import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
 /**
  * Facade that provides easy access to language state, actions and selectors.
  */
 export declare class LanguageService implements SiteContext<Language> {
-    protected store: Store<fromStore.StateWithSiteContext>;
+    protected store: Store<StateWithSiteContext>;
     private sessionStorage;
-    constructor(store: Store<fromStore.StateWithSiteContext>, winRef: WindowRef);
+    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef);
     /**
      * Represents all the languages supported by the current store.
      */

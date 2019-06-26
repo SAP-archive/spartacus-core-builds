@@ -2,12 +2,12 @@ import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { WindowRef } from '../../../window/window-ref';
 import { SiteConnector } from '../../connectors/site.connector';
-import * as actions from '../actions/currencies.action';
+import { SiteContextActions } from '../actions/index';
 export declare class CurrenciesEffects {
     private actions$;
     private siteConnector;
     private winRef;
-    loadCurrencies$: Observable<actions.LoadCurrenciesSuccess | actions.LoadCurrenciesFail>;
-    activateCurrency$: Observable<actions.CurrencyChange>;
+    loadCurrencies$: Observable<SiteContextActions.LoadCurrenciesSuccess | SiteContextActions.LoadCurrenciesFail>;
+    activateCurrency$: Observable<SiteContextActions.CurrencyChange>;
     constructor(actions$: Actions, siteConnector: SiteConnector, winRef: WindowRef);
 }

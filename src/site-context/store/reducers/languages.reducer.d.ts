@@ -1,4 +1,4 @@
-import * as fromLanguages from '../actions/languages.action';
+import { SiteContextActions } from '../actions/index';
 import { LanguagesState } from '../state';
 export declare const initialState: LanguagesState;
-export declare function reducer(state: LanguagesState, action: fromLanguages.LanguagesAction): LanguagesState;
+export declare function reducer(state: LanguagesState, action: SiteContextActions.LanguagesAction): LanguagesState;

@@ -2,15 +2,15 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Currency } from '../../model/misc.model';
 import { WindowRef } from '../../window/window-ref';
-import * as fromStore from '../store/index';
+import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
  */
 export declare class CurrencyService implements SiteContext<Currency> {
-    protected store: Store<fromStore.StateWithSiteContext>;
+    protected store: Store<StateWithSiteContext>;
     private sessionStorage;
-    constructor(store: Store<fromStore.StateWithSiteContext>, winRef: WindowRef);
+    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef);
     /**
      * Represents all the currencies supported by the current store.
      */

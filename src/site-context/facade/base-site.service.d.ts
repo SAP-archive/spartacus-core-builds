@@ -1,8 +1,8 @@
-import { Observable } from 'rxjs';
-import { SiteContext } from './site-context.interface';
 import { Store } from '@ngrx/store';
-import { StateWithSiteContext } from '../store/state';
+import { Observable, Subscription } from 'rxjs';
 import { BaseSite } from '../../model/misc.model';
+import { StateWithSiteContext } from '../store/state';
+import { SiteContext } from './site-context.interface';
 export declare class BaseSiteService implements SiteContext<string> {
     protected store: Store<StateWithSiteContext>;
     constructor(store: Store<StateWithSiteContext>);
@@ -14,7 +14,7 @@ export declare class BaseSiteService implements SiteContext<string> {
      * We currently don't support switching baseSite at run time
      */
     getAll(): Observable<string[]>;
-    setActive(baseSite: string): import("rxjs").Subscription;
+    setActive(baseSite: string): Subscription;
     /**
      * Initializes the active baseSite.
      */
