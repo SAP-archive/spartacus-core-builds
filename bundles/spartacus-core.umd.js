@@ -21500,6 +21500,20 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    var kymaGroup_actions = /*#__PURE__*/Object.freeze({
+        LOAD_OPEN_ID_TOKEN: LOAD_OPEN_ID_TOKEN,
+        LOAD_OPEN_ID_TOKEN_FAIL: LOAD_OPEN_ID_TOKEN_FAIL,
+        LOAD_OPEN_ID_TOKEN_SUCCESS: LOAD_OPEN_ID_TOKEN_SUCCESS,
+        LoadOpenIdToken: LoadOpenIdToken,
+        LoadOpenIdTokenFail: LoadOpenIdTokenFail,
+        LoadOpenIdTokenSuccess: LoadOpenIdTokenSuccess
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
@@ -29561,6 +29575,7 @@
     exports.InterceptorUtil = InterceptorUtil;
     exports.JSP_INCLUDE_CMS_COMPONENT_TYPE = JSP_INCLUDE_CMS_COMPONENT_TYPE;
     exports.KYMA_FEATURE = KYMA_FEATURE;
+    exports.KymaActions = kymaGroup_actions;
     exports.KymaConfig = KymaConfig;
     exports.KymaModule = KymaModule;
     exports.KymaSelectors = kymaGroup_selectors;
@@ -29588,9 +29603,6 @@
     exports.LOAD_LANGUAGES = LOAD_LANGUAGES;
     exports.LOAD_LANGUAGES_FAIL = LOAD_LANGUAGES_FAIL;
     exports.LOAD_LANGUAGES_SUCCESS = LOAD_LANGUAGES_SUCCESS;
-    exports.LOAD_OPEN_ID_TOKEN = LOAD_OPEN_ID_TOKEN;
-    exports.LOAD_OPEN_ID_TOKEN_FAIL = LOAD_OPEN_ID_TOKEN_FAIL;
-    exports.LOAD_OPEN_ID_TOKEN_SUCCESS = LOAD_OPEN_ID_TOKEN_SUCCESS;
     exports.LOAD_ORDER_DETAILS = LOAD_ORDER_DETAILS;
     exports.LOAD_ORDER_DETAILS_FAIL = LOAD_ORDER_DETAILS_FAIL;
     exports.LOAD_ORDER_DETAILS_SUCCESS = LOAD_ORDER_DETAILS_SUCCESS;
@@ -29641,9 +29653,6 @@
     exports.LoadLanguages = LoadLanguages;
     exports.LoadLanguagesFail = LoadLanguagesFail;
     exports.LoadLanguagesSuccess = LoadLanguagesSuccess;
-    exports.LoadOpenIdToken = LoadOpenIdToken;
-    exports.LoadOpenIdTokenFail = LoadOpenIdTokenFail;
-    exports.LoadOpenIdTokenSuccess = LoadOpenIdTokenSuccess;
     exports.LoadOrderDetails = LoadOrderDetails;
     exports.LoadOrderDetailsFail = LoadOrderDetailsFail;
     exports.LoadOrderDetailsSuccess = LoadOrderDetailsSuccess;
