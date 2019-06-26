@@ -1,10 +1,10 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Product } from '../../model/product.model';
-import * as fromStore from '../store/index';
+import { StateWithProduct } from '../store/product-state';
 export declare class ProductService {
-    protected store: Store<fromStore.StateWithProduct>;
-    constructor(store: Store<fromStore.StateWithProduct>);
+    protected store: Store<StateWithProduct>;
+    constructor(store: Store<StateWithProduct>);
     private products;
     /**
      * Returns the product observable. The product will be loaded

@@ -14160,6 +14160,52 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    var productGroup_actions = /*#__PURE__*/Object.freeze({
+        LOAD_PRODUCT_REFERENCES: LOAD_PRODUCT_REFERENCES,
+        LOAD_PRODUCT_REFERENCES_FAIL: LOAD_PRODUCT_REFERENCES_FAIL,
+        LOAD_PRODUCT_REFERENCES_SUCCESS: LOAD_PRODUCT_REFERENCES_SUCCESS,
+        LoadProductReferences: LoadProductReferences,
+        LoadProductReferencesFail: LoadProductReferencesFail,
+        LoadProductReferencesSuccess: LoadProductReferencesSuccess,
+        LOAD_PRODUCT_REVIEWS: LOAD_PRODUCT_REVIEWS,
+        LOAD_PRODUCT_REVIEWS_FAIL: LOAD_PRODUCT_REVIEWS_FAIL,
+        LOAD_PRODUCT_REVIEWS_SUCCESS: LOAD_PRODUCT_REVIEWS_SUCCESS,
+        POST_PRODUCT_REVIEW: POST_PRODUCT_REVIEW,
+        POST_PRODUCT_REVIEW_FAIL: POST_PRODUCT_REVIEW_FAIL,
+        POST_PRODUCT_REVIEW_SUCCESS: POST_PRODUCT_REVIEW_SUCCESS,
+        LoadProductReviews: LoadProductReviews,
+        LoadProductReviewsFail: LoadProductReviewsFail,
+        LoadProductReviewsSuccess: LoadProductReviewsSuccess,
+        PostProductReview: PostProductReview,
+        PostProductReviewFail: PostProductReviewFail,
+        PostProductReviewSuccess: PostProductReviewSuccess,
+        SEARCH_PRODUCTS: SEARCH_PRODUCTS,
+        SEARCH_PRODUCTS_FAIL: SEARCH_PRODUCTS_FAIL,
+        SEARCH_PRODUCTS_SUCCESS: SEARCH_PRODUCTS_SUCCESS,
+        GET_PRODUCT_SUGGESTIONS: GET_PRODUCT_SUGGESTIONS,
+        GET_PRODUCT_SUGGESTIONS_SUCCESS: GET_PRODUCT_SUGGESTIONS_SUCCESS,
+        GET_PRODUCT_SUGGESTIONS_FAIL: GET_PRODUCT_SUGGESTIONS_FAIL,
+        CLEAR_PRODUCT_SEARCH_RESULT: CLEAR_PRODUCT_SEARCH_RESULT,
+        SearchProducts: SearchProducts,
+        SearchProductsFail: SearchProductsFail,
+        SearchProductsSuccess: SearchProductsSuccess,
+        GetProductSuggestions: GetProductSuggestions,
+        GetProductSuggestionsSuccess: GetProductSuggestionsSuccess,
+        GetProductSuggestionsFail: GetProductSuggestionsFail,
+        ClearProductSearchResult: ClearProductSearchResult,
+        LOAD_PRODUCT: LOAD_PRODUCT,
+        LOAD_PRODUCT_FAIL: LOAD_PRODUCT_FAIL,
+        LOAD_PRODUCT_SUCCESS: LOAD_PRODUCT_SUCCESS,
+        LoadProduct: LoadProduct,
+        LoadProductFail: LoadProductFail,
+        LoadProductSuccess: LoadProductSuccess
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
@@ -14482,406 +14528,6 @@
         ]; };
         return ProductReferenceService;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductReferencesEffects = /** @class */ (function () {
-        function ProductReferencesEffects(actions$, productReferencesConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productReferencesConnector = productReferencesConnector;
-            this.loadProductReferences$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.productReferencesConnector
-                    .get(payload.productCode, payload.referenceType, payload.pageSize)
-                    .pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    return new LoadProductReferencesSuccess({
-                        productCode: payload.productCode,
-                        list: data,
-                    });
-                })), operators.catchError((/**
-                 * @param {?} _error
-                 * @return {?}
-                 */
-                function (_error) {
-                    return rxjs.of(new LoadProductReferencesFail((/** @type {?} */ ({
-                        message: payload.productCode,
-                    }))));
-                })));
-            })));
-        }
-        ProductReferencesEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ProductReferencesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: ProductReferencesConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
-        return ProductReferencesEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductReviewsEffects = /** @class */ (function () {
-        function ProductReviewsEffects(actions$, productReviewsConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productReviewsConnector = productReviewsConnector;
-            this.loadProductReviews$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} productCode
-             * @return {?}
-             */
-            function (productCode) {
-                return _this.productReviewsConnector.get(productCode).pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    return new LoadProductReviewsSuccess({
-                        productCode: productCode,
-                        list: data,
-                    });
-                })), operators.catchError((/**
-                 * @param {?} _error
-                 * @return {?}
-                 */
-                function (_error) {
-                    return rxjs.of(new LoadProductReviewsFail((/** @type {?} */ ({
-                        message: productCode,
-                    }))));
-                })));
-            })));
-            this.postProductReview = this.actions$.pipe(effects$a.ofType(POST_PRODUCT_REVIEW), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.productReviewsConnector
-                    .add(payload.productCode, payload.review)
-                    .pipe(operators.map((/**
-                 * @param {?} reviewResponse
-                 * @return {?}
-                 */
-                function (reviewResponse) {
-                    return new PostProductReviewSuccess(reviewResponse);
-                })), operators.catchError((/**
-                 * @param {?} _error
-                 * @return {?}
-                 */
-                function (_error) {
-                    return rxjs.of(new PostProductReviewFail(payload.productCode));
-                })));
-            })));
-        }
-        ProductReviewsEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ProductReviewsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: ProductReviewsConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductReviewsEffects.prototype, "postProductReview", void 0);
-        return ProductReviewsEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductsSearchEffects = /** @class */ (function () {
-        function ProductsSearchEffects(actions$, productSearchConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(effects$a.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.auxiliary; })), operators.mergeMap((/**
-             * @param {?} group
-             * @return {?}
-             */
-            function (group) {
-                return group.pipe(operators.switchMap((/**
-                 * @param {?} action
-                 * @return {?}
-                 */
-                function (action) {
-                    return _this.productSearchConnector
-                        .search(action.payload.queryText, action.payload.searchConfig)
-                        .pipe(operators.map((/**
-                     * @param {?} data
-                     * @return {?}
-                     */
-                    function (data) {
-                        return new SearchProductsSuccess(data, action.auxiliary);
-                    })), operators.catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
-                    })));
-                })));
-            })));
-            this.getProductSuggestions$ = this.actions$.pipe(effects$a.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.switchMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.productSearchConnector
-                    .getSuggestions(payload.term, payload.searchConfig.pageSize)
-                    .pipe(operators.map((/**
-                 * @param {?} suggestions
-                 * @return {?}
-                 */
-                function (suggestions) {
-                    if (suggestions === undefined) {
-                        return new GetProductSuggestionsSuccess([]);
-                    }
-                    return new GetProductSuggestionsSuccess(suggestions);
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        ProductsSearchEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ProductsSearchEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: ProductSearchConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
-        return ProductsSearchEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ProductEffects = /** @class */ (function () {
-        function ProductEffects(actions$, productConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.productConnector = productConnector;
-            this.loadProduct$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.groupBy((/**
-             * @param {?} productCode
-             * @return {?}
-             */
-            function (productCode) { return productCode; })), operators.mergeMap((/**
-             * @param {?} group
-             * @return {?}
-             */
-            function (group) {
-                return group.pipe(operators.switchMap((/**
-                 * @param {?} productCode
-                 * @return {?}
-                 */
-                function (productCode) {
-                    return _this.productConnector.get(productCode).pipe(operators.map((/**
-                     * @param {?} product
-                     * @return {?}
-                     */
-                    function (product) {
-                        return new LoadProductSuccess(product);
-                    })), operators.catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        return rxjs.of(new LoadProductFail(productCode, makeErrorSerializable(error)));
-                    })));
-                })));
-            })));
-        }
-        ProductEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ProductEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: ProductConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ProductEffects.prototype, "loadProduct$", void 0);
-        return ProductEffects;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$6 = [
-        ProductsSearchEffects,
-        ProductEffects,
-        ProductReviewsEffects,
-        ProductReferencesEffects,
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$d = {
-        productCode: '',
-        list: [],
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$d(state, action) {
-        if (state === void 0) { state = initialState$d; }
-        switch (action.type) {
-            case LOAD_PRODUCT_REFERENCES_SUCCESS: {
-                /** @type {?} */
-                var productCode = action.payload.productCode;
-                /** @type {?} */
-                var list = action.payload.list;
-                return __assign({}, state, { list: list,
-                    productCode: productCode });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$e = {
-        productCode: '',
-        list: [],
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$e(state, action) {
-        if (state === void 0) { state = initialState$e; }
-        switch (action.type) {
-            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
-                /** @type {?} */
-                var productCode = action.payload.productCode;
-                /** @type {?} */
-                var list = action.payload.list;
-                return __assign({}, state, { productCode: productCode,
-                    list: list });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$6() {
-        return {
-            search: reducer$c,
-            details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$e,
-            references: reducer$d,
-        };
-    }
-    /** @type {?} */
-    var reducerToken$6 = new core.InjectionToken('ProductReducers');
-    /** @type {?} */
-    var reducerProvider$6 = {
-        provide: reducerToken$6,
-        useFactory: getReducers$6,
-    };
-    /**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function clearProductsState(reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        });
-    }
-    /** @type {?} */
-    var metaReducers$3 = [clearProductsState];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -15693,6 +15339,401 @@
         /** @nocollapse */ SearchPageMetaResolver.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
         return SearchPageMetaResolver;
     }(PageMetaResolver));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReferencesEffects = /** @class */ (function () {
+        function ProductReferencesEffects(actions$, productReferencesConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReferencesConnector = productReferencesConnector;
+            this.loadProductReferences$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.productReferencesConnector
+                    .get(payload.productCode, payload.referenceType, payload.pageSize)
+                    .pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    return new LoadProductReferencesSuccess({
+                        productCode: payload.productCode,
+                        list: data,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} _error
+                 * @return {?}
+                 */
+                function (_error) {
+                    return rxjs.of(new LoadProductReferencesFail((/** @type {?} */ ({
+                        message: payload.productCode,
+                    }))));
+                })));
+            })));
+        }
+        ProductReferencesEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ProductReferencesEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: ProductReferencesConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
+        return ProductReferencesEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductReviewsEffects = /** @class */ (function () {
+        function ProductReviewsEffects(actions$, productReviewsConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productReviewsConnector = productReviewsConnector;
+            this.loadProductReviews$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} productCode
+             * @return {?}
+             */
+            function (productCode) {
+                return _this.productReviewsConnector.get(productCode).pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    return new LoadProductReviewsSuccess({
+                        productCode: productCode,
+                        list: data,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} _error
+                 * @return {?}
+                 */
+                function (_error) {
+                    return rxjs.of(new LoadProductReviewsFail((/** @type {?} */ ({
+                        message: productCode,
+                    }))));
+                })));
+            })));
+            this.postProductReview = this.actions$.pipe(effects$a.ofType(POST_PRODUCT_REVIEW), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.productReviewsConnector
+                    .add(payload.productCode, payload.review)
+                    .pipe(operators.map((/**
+                 * @param {?} reviewResponse
+                 * @return {?}
+                 */
+                function (reviewResponse) {
+                    return new PostProductReviewSuccess(reviewResponse);
+                })), operators.catchError((/**
+                 * @param {?} _error
+                 * @return {?}
+                 */
+                function (_error) {
+                    return rxjs.of(new PostProductReviewFail(payload.productCode));
+                })));
+            })));
+        }
+        ProductReviewsEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ProductReviewsEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: ProductReviewsConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+        return ProductReviewsEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductsSearchEffects = /** @class */ (function () {
+        function ProductsSearchEffects(actions$, productSearchConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productSearchConnector = productSearchConnector;
+            this.searchProducts$ = this.actions$.pipe(effects$a.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.auxiliary; })), operators.mergeMap((/**
+             * @param {?} group
+             * @return {?}
+             */
+            function (group) {
+                return group.pipe(operators.switchMap((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) {
+                    return _this.productSearchConnector
+                        .search(action.payload.queryText, action.payload.searchConfig)
+                        .pipe(operators.map((/**
+                     * @param {?} data
+                     * @return {?}
+                     */
+                    function (data) {
+                        return new SearchProductsSuccess(data, action.auxiliary);
+                    })), operators.catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return rxjs.of(new SearchProductsFail(makeErrorSerializable(error), action.auxiliary));
+                    })));
+                })));
+            })));
+            this.getProductSuggestions$ = this.actions$.pipe(effects$a.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.productSearchConnector
+                    .getSuggestions(payload.term, payload.searchConfig.pageSize)
+                    .pipe(operators.map((/**
+                 * @param {?} suggestions
+                 * @return {?}
+                 */
+                function (suggestions) {
+                    if (suggestions === undefined) {
+                        return new GetProductSuggestionsSuccess([]);
+                    }
+                    return new GetProductSuggestionsSuccess(suggestions);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new GetProductSuggestionsFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        ProductsSearchEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ProductsSearchEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: ProductSearchConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
+        return ProductsSearchEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductEffects = /** @class */ (function () {
+        function ProductEffects(actions$, productConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.productConnector = productConnector;
+            this.loadProduct$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.groupBy((/**
+             * @param {?} productCode
+             * @return {?}
+             */
+            function (productCode) { return productCode; })), operators.mergeMap((/**
+             * @param {?} group
+             * @return {?}
+             */
+            function (group) {
+                return group.pipe(operators.switchMap((/**
+                 * @param {?} productCode
+                 * @return {?}
+                 */
+                function (productCode) {
+                    return _this.productConnector.get(productCode).pipe(operators.map((/**
+                     * @param {?} product
+                     * @return {?}
+                     */
+                    function (product) {
+                        return new LoadProductSuccess(product);
+                    })), operators.catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return rxjs.of(new LoadProductFail(productCode, makeErrorSerializable(error)));
+                    })));
+                })));
+            })));
+        }
+        ProductEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ProductEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: ProductConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ProductEffects.prototype, "loadProduct$", void 0);
+        return ProductEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$6 = [
+        ProductsSearchEffects,
+        ProductEffects,
+        ProductReviewsEffects,
+        ProductReferencesEffects,
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$d = {
+        productCode: '',
+        list: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$d(state, action) {
+        if (state === void 0) { state = initialState$d; }
+        switch (action.type) {
+            case LOAD_PRODUCT_REFERENCES_SUCCESS: {
+                /** @type {?} */
+                var productCode = action.payload.productCode;
+                /** @type {?} */
+                var list = action.payload.list;
+                return __assign({}, state, { list: list,
+                    productCode: productCode });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$e = {
+        productCode: '',
+        list: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$e(state, action) {
+        if (state === void 0) { state = initialState$e; }
+        switch (action.type) {
+            case LOAD_PRODUCT_REVIEWS_SUCCESS: {
+                /** @type {?} */
+                var productCode = action.payload.productCode;
+                /** @type {?} */
+                var list = action.payload.list;
+                return __assign({}, state, { productCode: productCode,
+                    list: list });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$6() {
+        return {
+            search: reducer$c,
+            details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
+            reviews: reducer$e,
+            references: reducer$d,
+        };
+    }
+    /** @type {?} */
+    var reducerToken$6 = new core.InjectionToken('ProductReducers');
+    /** @type {?} */
+    var reducerProvider$6 = {
+        provide: reducerToken$6,
+        useFactory: getReducers$6,
+    };
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearProductsState(reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === CURRENCY_CHANGE || action.type === LANGUAGE_CHANGE) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        });
+    }
+    /** @type {?} */
+    var metaReducers$3 = [clearProductsState];
 
     /**
      * @fileoverview added by tsickle
@@ -29380,7 +29421,6 @@
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
     exports.CLEAR_MISCS_DATA = CLEAR_MISCS_DATA;
     exports.CLEAR_ORDER_DETAILS = CLEAR_ORDER_DETAILS;
-    exports.CLEAR_PRODUCT_SEARCH_RESULT = CLEAR_PRODUCT_SEARCH_RESULT;
     exports.CLEAR_REGIONS = CLEAR_REGIONS;
     exports.CLEAR_USER_ORDERS = CLEAR_USER_ORDERS;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
@@ -29424,7 +29464,6 @@
     exports.CheckoutService = CheckoutService;
     exports.ClearMiscsData = ClearMiscsData;
     exports.ClearOrderDetails = ClearOrderDetails;
-    exports.ClearProductSearchResult = ClearProductSearchResult;
     exports.ClearRegions = ClearRegions;
     exports.ClearUserOrders = ClearUserOrders;
     exports.CmsActions = cmsGroup_actions;
@@ -29507,9 +29546,6 @@
     exports.ForgotPasswordEmailRequestFail = ForgotPasswordEmailRequestFail;
     exports.ForgotPasswordEmailRequestSuccess = ForgotPasswordEmailRequestSuccess;
     exports.Forward = Forward;
-    exports.GET_PRODUCT_SUGGESTIONS = GET_PRODUCT_SUGGESTIONS;
-    exports.GET_PRODUCT_SUGGESTIONS_FAIL = GET_PRODUCT_SUGGESTIONS_FAIL;
-    exports.GET_PRODUCT_SUGGESTIONS_SUCCESS = GET_PRODUCT_SUGGESTIONS_SUCCESS;
     exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
     exports.GIVE_USER_CONSENT = GIVE_USER_CONSENT;
     exports.GIVE_USER_CONSENT_FAIL = GIVE_USER_CONSENT_FAIL;
@@ -29518,9 +29554,6 @@
     exports.GO = GO;
     exports.GO_BY_URL = GO_BY_URL;
     exports.GatewayTimeoutHandler = GatewayTimeoutHandler;
-    exports.GetProductSuggestions = GetProductSuggestions;
-    exports.GetProductSuggestionsFail = GetProductSuggestionsFail;
-    exports.GetProductSuggestionsSuccess = GetProductSuggestionsSuccess;
     exports.GiveUserConsent = GiveUserConsent;
     exports.GiveUserConsentFail = GiveUserConsentFail;
     exports.GiveUserConsentSuccess = GiveUserConsentSuccess;
@@ -29573,15 +29606,6 @@
     exports.LOAD_ORDER_DETAILS = LOAD_ORDER_DETAILS;
     exports.LOAD_ORDER_DETAILS_FAIL = LOAD_ORDER_DETAILS_FAIL;
     exports.LOAD_ORDER_DETAILS_SUCCESS = LOAD_ORDER_DETAILS_SUCCESS;
-    exports.LOAD_PRODUCT = LOAD_PRODUCT;
-    exports.LOAD_PRODUCT_FAIL = LOAD_PRODUCT_FAIL;
-    exports.LOAD_PRODUCT_REFERENCES = LOAD_PRODUCT_REFERENCES;
-    exports.LOAD_PRODUCT_REFERENCES_FAIL = LOAD_PRODUCT_REFERENCES_FAIL;
-    exports.LOAD_PRODUCT_REFERENCES_SUCCESS = LOAD_PRODUCT_REFERENCES_SUCCESS;
-    exports.LOAD_PRODUCT_REVIEWS = LOAD_PRODUCT_REVIEWS;
-    exports.LOAD_PRODUCT_REVIEWS_FAIL = LOAD_PRODUCT_REVIEWS_FAIL;
-    exports.LOAD_PRODUCT_REVIEWS_SUCCESS = LOAD_PRODUCT_REVIEWS_SUCCESS;
-    exports.LOAD_PRODUCT_SUCCESS = LOAD_PRODUCT_SUCCESS;
     exports.LOAD_REGIONS = LOAD_REGIONS;
     exports.LOAD_REGIONS_FAIL = LOAD_REGIONS_FAIL;
     exports.LOAD_REGIONS_SUCCESS = LOAD_REGIONS_SUCCESS;
@@ -29623,15 +29647,6 @@
     exports.LoadOrderDetails = LoadOrderDetails;
     exports.LoadOrderDetailsFail = LoadOrderDetailsFail;
     exports.LoadOrderDetailsSuccess = LoadOrderDetailsSuccess;
-    exports.LoadProduct = LoadProduct;
-    exports.LoadProductFail = LoadProductFail;
-    exports.LoadProductReferences = LoadProductReferences;
-    exports.LoadProductReferencesFail = LoadProductReferencesFail;
-    exports.LoadProductReferencesSuccess = LoadProductReferencesSuccess;
-    exports.LoadProductReviews = LoadProductReviews;
-    exports.LoadProductReviewsFail = LoadProductReviewsFail;
-    exports.LoadProductReviewsSuccess = LoadProductReviewsSuccess;
-    exports.LoadProductSuccess = LoadProductSuccess;
     exports.LoadRegions = LoadRegions;
     exports.LoadRegionsFail = LoadRegionsFail;
     exports.LoadRegionsSuccess = LoadRegionsSuccess;
@@ -29700,9 +29715,6 @@
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
     exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;
-    exports.POST_PRODUCT_REVIEW = POST_PRODUCT_REVIEW;
-    exports.POST_PRODUCT_REVIEW_FAIL = POST_PRODUCT_REVIEW_FAIL;
-    exports.POST_PRODUCT_REVIEW_SUCCESS = POST_PRODUCT_REVIEW_SUCCESS;
     exports.PRODUCT_DETAIL_ENTITY = PRODUCT_DETAIL_ENTITY;
     exports.PRODUCT_FEATURE = PRODUCT_FEATURE;
     exports.PRODUCT_NORMALIZER = PRODUCT_NORMALIZER;
@@ -29718,10 +29730,8 @@
     exports.PageType = PageType;
     exports.PersonalizationConfig = PersonalizationConfig;
     exports.PersonalizationModule = PersonalizationModule;
-    exports.PostProductReview = PostProductReview;
-    exports.PostProductReviewFail = PostProductReviewFail;
-    exports.PostProductReviewSuccess = PostProductReviewSuccess;
     exports.PriceType = PriceType;
+    exports.ProductActions = productGroup_actions;
     exports.ProductAdapter = ProductAdapter;
     exports.ProductConnector = ProductConnector;
     exports.ProductImageNormalizer = ProductImageNormalizer;
@@ -29779,9 +29789,6 @@
     exports.RoutingModule = RoutingModule;
     exports.RoutingSelector = routingGroup_selectors;
     exports.RoutingService = RoutingService;
-    exports.SEARCH_PRODUCTS = SEARCH_PRODUCTS;
-    exports.SEARCH_PRODUCTS_FAIL = SEARCH_PRODUCTS_FAIL;
-    exports.SEARCH_PRODUCTS_SUCCESS = SEARCH_PRODUCTS_SUCCESS;
     exports.SET_ACTIVE_BASE_SITE = SET_ACTIVE_BASE_SITE;
     exports.SET_ACTIVE_CURRENCY = SET_ACTIVE_CURRENCY;
     exports.SET_ACTIVE_LANGUAGE = SET_ACTIVE_LANGUAGE;
@@ -29794,9 +29801,6 @@
     exports.STORE_FINDER_FEATURE = STORE_FINDER_FEATURE;
     exports.STORE_FINDER_SEARCH_PAGE_NORMALIZER = STORE_FINDER_SEARCH_PAGE_NORMALIZER;
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
-    exports.SearchProducts = SearchProducts;
-    exports.SearchProductsFail = SearchProductsFail;
-    exports.SearchProductsSuccess = SearchProductsSuccess;
     exports.SearchboxService = SearchboxService;
     exports.SemanticPathService = SemanticPathService;
     exports.SetActiveBaseSite = SetActiveBaseSite;
@@ -29999,55 +30003,55 @@
     exports.ɵcg = LanguagesEffects;
     exports.ɵch = CurrenciesEffects;
     exports.ɵci = BaseSiteEffects;
-    exports.ɵcj = effects$6;
-    exports.ɵck = ProductReferencesEffects;
-    exports.ɵcl = ProductReviewsEffects;
-    exports.ɵcm = ProductsSearchEffects;
-    exports.ɵcn = ProductEffects;
-    exports.ɵco = getReducers$6;
-    exports.ɵcp = reducerToken$6;
-    exports.ɵcq = reducerProvider$6;
-    exports.ɵcr = clearProductsState;
-    exports.ɵcs = metaReducers$3;
-    exports.ɵct = getReducers$7;
-    exports.ɵcu = reducerToken$7;
-    exports.ɵcv = reducerProvider$7;
-    exports.ɵcw = clearUserState;
-    exports.ɵcx = metaReducers$4;
-    exports.ɵcy = GlobalMessageStoreModule;
-    exports.ɵcz = getReducers$9;
+    exports.ɵcj = getReducers$7;
+    exports.ɵck = reducerToken$7;
+    exports.ɵcl = reducerProvider$7;
+    exports.ɵcm = clearUserState;
+    exports.ɵcn = metaReducers$4;
+    exports.ɵco = GlobalMessageStoreModule;
+    exports.ɵcp = getReducers$9;
+    exports.ɵcq = reducerToken$9;
+    exports.ɵcr = reducerProvider$9;
+    exports.ɵcs = reducer$q;
+    exports.ɵct = GlobalMessageEffect;
+    exports.ɵcu = defaultGlobalMessageConfigFactory;
+    exports.ɵcv = HttpErrorInterceptor;
+    exports.ɵcw = defaultI18nConfig;
+    exports.ɵcx = i18nextProviders;
+    exports.ɵcy = i18nextInit;
+    exports.ɵcz = MockTranslationService;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = reducerToken$9;
-    exports.ɵdb = reducerProvider$9;
-    exports.ɵdc = reducer$q;
-    exports.ɵdd = GlobalMessageEffect;
-    exports.ɵde = defaultGlobalMessageConfigFactory;
-    exports.ɵdf = HttpErrorInterceptor;
-    exports.ɵdg = defaultI18nConfig;
-    exports.ɵdh = i18nextProviders;
-    exports.ɵdi = i18nextInit;
-    exports.ɵdj = MockTranslationService;
-    exports.ɵdk = kymaStoreConfigFactory;
-    exports.ɵdl = KymaStoreModule;
-    exports.ɵdm = getReducers$a;
-    exports.ɵdn = reducerToken$a;
-    exports.ɵdo = reducerProvider$a;
-    exports.ɵdp = clearKymaState;
-    exports.ɵdq = metaReducers$5;
-    exports.ɵdr = effects$8;
-    exports.ɵds = OpenIdTokenEffect;
-    exports.ɵdt = OpenIdAuthenticationTokenService;
-    exports.ɵdu = defaultKymaConfig;
-    exports.ɵdv = provideConfigFactory;
-    exports.ɵdw = defaultOccProductConfig;
-    exports.ɵdx = provideConfigValidator;
-    exports.ɵdy = defaultPersonalizationConfig;
-    exports.ɵdz = interceptors$1;
+    exports.ɵda = kymaStoreConfigFactory;
+    exports.ɵdb = KymaStoreModule;
+    exports.ɵdc = getReducers$a;
+    exports.ɵdd = reducerToken$a;
+    exports.ɵde = reducerProvider$a;
+    exports.ɵdf = clearKymaState;
+    exports.ɵdg = metaReducers$5;
+    exports.ɵdh = effects$8;
+    exports.ɵdi = OpenIdTokenEffect;
+    exports.ɵdj = OpenIdAuthenticationTokenService;
+    exports.ɵdk = defaultKymaConfig;
+    exports.ɵdl = provideConfigFactory;
+    exports.ɵdm = defaultOccProductConfig;
+    exports.ɵdn = provideConfigValidator;
+    exports.ɵdo = defaultPersonalizationConfig;
+    exports.ɵdp = interceptors$1;
+    exports.ɵdq = OccPersonalizationIdInterceptor;
+    exports.ɵdr = OccPersonalizationTimeInterceptor;
+    exports.ɵds = productStoreConfigFactory;
+    exports.ɵdt = ProductStoreModule;
+    exports.ɵdu = getReducers$6;
+    exports.ɵdv = reducerToken$6;
+    exports.ɵdw = reducerProvider$6;
+    exports.ɵdx = clearProductsState;
+    exports.ɵdy = metaReducers$3;
+    exports.ɵdz = effects$6;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = OccPersonalizationIdInterceptor;
-    exports.ɵeb = OccPersonalizationTimeInterceptor;
-    exports.ɵec = productStoreConfigFactory;
-    exports.ɵed = ProductStoreModule;
+    exports.ɵea = ProductReferencesEffects;
+    exports.ɵeb = ProductReviewsEffects;
+    exports.ɵec = ProductsSearchEffects;
+    exports.ɵed = ProductEffects;
     exports.ɵee = reducer$c;
     exports.ɵef = reducer$e;
     exports.ɵeg = reducer$d;

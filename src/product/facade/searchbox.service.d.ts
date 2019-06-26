@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { ProductSearchPage, Suggestion } from '../../model/index';
-import { SearchConfig } from '../model';
+import { SearchConfig } from '../model/index';
 import { ProductSearchService } from './product-search.service';
 export declare class SearchboxService extends ProductSearchService {
     /**

@@ -1,5 +1,5 @@
-import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 import { Product } from '../../../model/product.model';
+import { EntityFailAction, EntityLoadAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const LOAD_PRODUCT = "[Product] Load Product Data";
 export declare const LOAD_PRODUCT_FAIL = "[Product] Load Product Data Fail";
 export declare const LOAD_PRODUCT_SUCCESS = "[Product] Load Product Data Success";
