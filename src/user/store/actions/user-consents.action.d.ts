@@ -1,6 +1,5 @@
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
-import { LoaderFailAction, LoaderLoadAction, LoaderResetAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
 import { ConsentTemplate } from '../../../model/consent.model';
+import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/index';
 export declare const LOAD_USER_CONSENTS = "[User] Load User Consents";
 export declare const LOAD_USER_CONSENTS_SUCCESS = "[User] Load User Consents Success";
 export declare const LOAD_USER_CONSENTS_FAIL = "[User] Load User Consents Fail";
@@ -13,26 +12,26 @@ export declare const WITHDRAW_USER_CONSENT = "[User] Withdraw User Consent";
 export declare const WITHDRAW_USER_CONSENT_FAIL = "[User] Withdraw User Consent Fail";
 export declare const WITHDRAW_USER_CONSENT_SUCCESS = "[User] Withdraw User Consent Success";
 export declare const RESET_WITHDRAW_USER_CONSENT_PROCESS = "[User] Reset Withdraw User Consent Process";
-export declare class LoadUserConsents extends LoaderLoadAction {
+export declare class LoadUserConsents extends StateLoaderActions.LoaderLoadAction {
     payload: string;
     readonly type = "[User] Load User Consents";
     constructor(payload: string);
 }
-export declare class LoadUserConsentsFail extends LoaderFailAction {
+export declare class LoadUserConsentsFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[User] Load User Consents Fail";
     constructor(payload: any);
 }
-export declare class LoadUserConsentsSuccess extends LoaderSuccessAction {
+export declare class LoadUserConsentsSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: ConsentTemplate[];
     readonly type = "[User] Load User Consents Success";
     constructor(payload: ConsentTemplate[]);
 }
-export declare class ResetLoadUserConsents extends LoaderResetAction {
+export declare class ResetLoadUserConsents extends StateLoaderActions.LoaderResetAction {
     readonly type = "[User] Reset Load User Consents";
     constructor();
 }
-export declare class GiveUserConsent extends EntityLoadAction {
+export declare class GiveUserConsent extends StateEntityLoaderActions.EntityLoadAction {
     payload: {
         userId: string;
         consentTemplateId: string;
@@ -45,20 +44,20 @@ export declare class GiveUserConsent extends EntityLoadAction {
         consentTemplateVersion: number;
     });
 }
-export declare class GiveUserConsentFail extends EntityFailAction {
+export declare class GiveUserConsentFail extends StateEntityLoaderActions.EntityFailAction {
     readonly type = "[User] Give User Consent Fail";
     constructor(payload: any);
 }
-export declare class GiveUserConsentSuccess extends EntitySuccessAction {
+export declare class GiveUserConsentSuccess extends StateEntityLoaderActions.EntitySuccessAction {
     consentTemplate: ConsentTemplate;
     readonly type = "[User] Give User Consent Success";
     constructor(consentTemplate: ConsentTemplate);
 }
-export declare class ResetGiveUserConsentProcess extends EntityResetAction {
+export declare class ResetGiveUserConsentProcess extends StateEntityLoaderActions.EntityResetAction {
     readonly type = "[User] Reset Give User Consent Process";
     constructor();
 }
-export declare class WithdrawUserConsent extends EntityLoadAction {
+export declare class WithdrawUserConsent extends StateEntityLoaderActions.EntityLoadAction {
     payload: {
         userId: string;
         consentCode: string;
@@ -69,15 +68,15 @@ export declare class WithdrawUserConsent extends EntityLoadAction {
         consentCode: string;
     });
 }
-export declare class WithdrawUserConsentFail extends EntityFailAction {
+export declare class WithdrawUserConsentFail extends StateEntityLoaderActions.EntityFailAction {
     readonly type = "[User] Withdraw User Consent Fail";
     constructor(payload: any);
 }
-export declare class WithdrawUserConsentSuccess extends EntitySuccessAction {
+export declare class WithdrawUserConsentSuccess extends StateEntityLoaderActions.EntitySuccessAction {
     readonly type = "[User] Withdraw User Consent Success";
     constructor();
 }
-export declare class ResetWithdrawUserConsentProcess extends EntityResetAction {
+export declare class ResetWithdrawUserConsentProcess extends StateEntityLoaderActions.EntityResetAction {
     readonly type = "[User] Reset Withdraw User Consent Process";
     constructor();
 }

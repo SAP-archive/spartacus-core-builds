@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { StateLoaderActions } from '../../../state/index';
 export declare const CREATE_CART = "[Cart] Create Cart";
 export declare const CREATE_CART_FAIL = "[Cart] Create Cart Fail";
 export declare const CREATE_CART_SUCCESS = "[Cart] Create Cart Success";
@@ -9,22 +9,22 @@ export declare const LOAD_CART_SUCCESS = "[Cart] Load Cart Success";
 export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
 export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
-export declare class CreateCart extends LoaderLoadAction {
+export declare class CreateCart extends StateLoaderActions.LoaderLoadAction {
     payload: any;
     readonly type = "[Cart] Create Cart";
     constructor(payload: any);
 }
-export declare class CreateCartFail extends LoaderFailAction {
+export declare class CreateCartFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[Cart] Create Cart Fail";
     constructor(payload: any);
 }
-export declare class CreateCartSuccess extends LoaderSuccessAction {
+export declare class CreateCartSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: any;
     readonly type = "[Cart] Create Cart Success";
     constructor(payload: any);
 }
-export declare class LoadCart extends LoaderLoadAction {
+export declare class LoadCart extends StateLoaderActions.LoaderLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -35,12 +35,12 @@ export declare class LoadCart extends LoaderLoadAction {
         cartId: string;
     });
 }
-export declare class LoadCartFail extends LoaderFailAction {
+export declare class LoadCartFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[Cart] Load Cart Fail";
     constructor(payload: any);
 }
-export declare class LoadCartSuccess extends LoaderSuccessAction {
+export declare class LoadCartSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: any;
     readonly type = "[Cart] Load Cart Success";
     constructor(payload: any);

@@ -1,18 +1,18 @@
-import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { StateLoaderActions } from '../../../state/index';
 import { ClientToken } from '../../models/token-types.model';
 export declare const LOAD_CLIENT_TOKEN = "[Token] Load Client Token";
 export declare const LOAD_CLIENT_TOKEN_FAIL = "[Token] Load Client Token Fail";
 export declare const LOAD_CLIENT_TOKEN_SUCCESS = "[Token] Load Client Token Success";
-export declare class LoadClientToken extends LoaderLoadAction {
+export declare class LoadClientToken extends StateLoaderActions.LoaderLoadAction {
     readonly type = "[Token] Load Client Token";
     constructor();
 }
-export declare class LoadClientTokenFail extends LoaderFailAction {
+export declare class LoadClientTokenFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[Token] Load Client Token Fail";
     constructor(payload: any);
 }
-export declare class LoadClientTokenSuccess extends LoaderSuccessAction {
+export declare class LoadClientTokenSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: ClientToken;
     readonly type = "[Token] Load Client Token Success";
     constructor(payload: ClientToken);

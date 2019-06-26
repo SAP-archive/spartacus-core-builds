@@ -1,9 +1,9 @@
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state';
+import { StateEntityLoaderActions } from '../../../state/index';
 export declare const UPDATE_PASSWORD = "[User] Update Password";
 export declare const UPDATE_PASSWORD_FAIL = "[User] Update Password Fail";
 export declare const UPDATE_PASSWORD_SUCCESS = "[User] Update Password Success";
 export declare const UPDATE_PASSWORD_RESET = "[User] Reset Update Password Process State";
-export declare class UpdatePassword extends EntityLoadAction {
+export declare class UpdatePassword extends StateEntityLoaderActions.EntityLoadAction {
     payload: {
         userId: string;
         oldPassword: string;
@@ -16,16 +16,16 @@ export declare class UpdatePassword extends EntityLoadAction {
         newPassword: string;
     });
 }
-export declare class UpdatePasswordFail extends EntityFailAction {
+export declare class UpdatePasswordFail extends StateEntityLoaderActions.EntityFailAction {
     payload: any;
     readonly type = "[User] Update Password Fail";
     constructor(payload: any);
 }
-export declare class UpdatePasswordSuccess extends EntitySuccessAction {
+export declare class UpdatePasswordSuccess extends StateEntityLoaderActions.EntitySuccessAction {
     readonly type = "[User] Update Password Success";
     constructor();
 }
-export declare class UpdatePasswordReset extends EntityResetAction {
+export declare class UpdatePasswordReset extends StateEntityLoaderActions.EntityResetAction {
     readonly type = "[User] Reset Update Password Process State";
     constructor();
 }

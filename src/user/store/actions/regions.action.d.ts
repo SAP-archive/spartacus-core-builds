@@ -1,21 +1,21 @@
-import { Region } from '../../../model/address.model';
-import { LoaderLoadAction, LoaderFailAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
 import { Action } from '@ngrx/store';
+import { Region } from '../../../model/address.model';
+import { StateLoaderActions } from '../../../state/index';
 export declare const LOAD_REGIONS = "[User] Load Regions";
 export declare const LOAD_REGIONS_SUCCESS = "[User] Load Regions Success";
 export declare const LOAD_REGIONS_FAIL = "[User] Load Regions Fail";
 export declare const CLEAR_REGIONS = "[User] Clear Regions";
-export declare class LoadRegions extends LoaderLoadAction {
+export declare class LoadRegions extends StateLoaderActions.LoaderLoadAction {
     payload: string;
     readonly type = "[User] Load Regions";
     constructor(payload: string);
 }
-export declare class LoadRegionsFail extends LoaderFailAction {
+export declare class LoadRegionsFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[User] Load Regions Fail";
     constructor(payload: any);
 }
-export declare class LoadRegionsSuccess extends LoaderSuccessAction {
+export declare class LoadRegionsSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: {
         entities: Region[];
         country: string;

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state';
 import { UserSignUp } from '../../../model/misc.model';
+import { StateEntityLoaderActions } from '../../../state/index';
 export declare const REGISTER_USER = "[User] Register User";
 export declare const REGISTER_USER_FAIL = "[User] Register User Fail";
 export declare const REGISTER_USER_SUCCESS = "[User] Register User Success";
@@ -22,21 +22,21 @@ export declare class RegisterUserSuccess implements Action {
     readonly type = "[User] Register User Success";
     constructor();
 }
-export declare class RemoveUser extends EntityLoadAction {
+export declare class RemoveUser extends StateEntityLoaderActions.EntityLoadAction {
     payload: string;
     readonly type = "[User] Remove User";
     constructor(payload: string);
 }
-export declare class RemoveUserFail extends EntityFailAction {
+export declare class RemoveUserFail extends StateEntityLoaderActions.EntityFailAction {
     payload: any;
     readonly type = "[User] Remove User Fail";
     constructor(payload: any);
 }
-export declare class RemoveUserSuccess extends EntitySuccessAction {
+export declare class RemoveUserSuccess extends StateEntityLoaderActions.EntitySuccessAction {
     readonly type = "[User] Remove User Success";
     constructor();
 }
-export declare class RemoveUserReset extends EntityResetAction {
+export declare class RemoveUserReset extends StateEntityLoaderActions.EntityResetAction {
     readonly type = "[User] Reset Remove User Process State";
     constructor();
 }

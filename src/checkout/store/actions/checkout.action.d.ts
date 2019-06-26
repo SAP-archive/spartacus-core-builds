@@ -2,7 +2,7 @@ import { Action } from '@ngrx/store';
 import { Address } from '../../../model/address.model';
 import { PaymentDetails } from '../../../model/cart.model';
 import { DeliveryMode, Order } from '../../../model/order.model';
-import { LoaderFailAction, LoaderLoadAction, LoaderSuccessAction } from '../../../state/utils/loader/loader.action';
+import { StateLoaderActions } from '../../../state/index';
 import { CheckoutDetails } from '../../models/checkout.model';
 export declare const ADD_DELIVERY_ADDRESS = "[Checkout] Add Delivery Address";
 export declare const ADD_DELIVERY_ADDRESS_FAIL = "[Checkout] Add Delivery Address Fail";
@@ -200,7 +200,7 @@ export declare class ClearCheckoutStep implements Action {
 export declare class ClearCheckoutData implements Action {
     readonly type = "[Checkout] Clear Checkout Data";
 }
-export declare class LoadCheckoutDetails extends LoaderLoadAction {
+export declare class LoadCheckoutDetails extends StateLoaderActions.LoaderLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -211,12 +211,12 @@ export declare class LoadCheckoutDetails extends LoaderLoadAction {
         cartId: string;
     });
 }
-export declare class LoadCheckoutDetailsFail extends LoaderFailAction {
+export declare class LoadCheckoutDetailsFail extends StateLoaderActions.LoaderFailAction {
     payload: any;
     readonly type = "[Checkout] Load Checkout Details Fail";
     constructor(payload: any);
 }
-export declare class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
+export declare class LoadCheckoutDetailsSuccess extends StateLoaderActions.LoaderSuccessAction {
     payload: CheckoutDetails;
     readonly type = "[Checkout] Load Checkout Details Success";
     constructor(payload: CheckoutDetails);
