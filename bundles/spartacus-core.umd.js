@@ -97,24 +97,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    ServerConfig = /** @class */ (function () {
-        function ServerConfig() {
-        }
-        return ServerConfig;
-    }());
-    /** @type {?} */
-    var defaultServerConfig = {};
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
      * @param {?} item
      * @return {?}
      */
@@ -252,7 +234,7 @@
     function configurationFactory(configChunks, configValidators) {
         /** @type {?} */
         var config = deepMerge.apply(void 0, __spread([{}], configChunks));
-        if (!config.production) {
+        if (core.isDevMode()) {
             validateConfig(config, configValidators || []);
         }
         return config;
@@ -331,8 +313,6 @@
             return {
                 ngModule: ConfigModule,
                 providers: [
-                    { provide: ServerConfig, useExisting: Config },
-                    provideConfig(defaultServerConfig),
                     provideConfig(config),
                     {
                         provide: Config,
@@ -1106,13 +1086,11 @@
     var   /**
      * @abstract
      */
-    RoutingConfig = /** @class */ (function (_super) {
-        __extends(RoutingConfig, _super);
+    RoutingConfig = /** @class */ (function () {
         function RoutingConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
         }
         return RoutingConfig;
-    }(ServerConfig));
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -1155,7 +1133,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
@@ -1175,10 +1153,9 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var SemanticPathService = /** @class */ (function () {
-        function SemanticPathService(routingConfigService, urlParser, config) {
+        function SemanticPathService(routingConfigService, urlParser) {
             this.routingConfigService = routingConfigService;
             this.urlParser = urlParser;
-            this.config = config;
             this.ROOT_URL = ['/'];
         }
         /**
@@ -1453,7 +1430,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
@@ -1463,10 +1440,9 @@
         /** @nocollapse */
         SemanticPathService.ctorParameters = function () { return [
             { type: RoutingConfigService },
-            { type: UrlParsingService },
-            { type: ServerConfig }
+            { type: UrlParsingService }
         ]; };
-        /** @nocollapse */ SemanticPathService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlParsingService), core.ɵɵinject(ServerConfig)); }, token: SemanticPathService, providedIn: "root" });
+        /** @nocollapse */ SemanticPathService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
         return SemanticPathService;
     }());
 
@@ -8411,8 +8387,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var ConfigurableRoutesService = /** @class */ (function () {
-        function ConfigurableRoutesService(config, injector, routingConfigService, urlMatcherFactory) {
-            this.config = config;
+        function ConfigurableRoutesService(injector, routingConfigService, urlMatcherFactory) {
             this.injector = injector;
             this.routingConfigService = routingConfigService;
             this.urlMatcherFactory = urlMatcherFactory;
@@ -8564,7 +8539,7 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn.apply(console, __spread(args));
             }
         };
@@ -8573,12 +8548,11 @@
         ];
         /** @nocollapse */
         ConfigurableRoutesService.ctorParameters = function () { return [
-            { type: ServerConfig },
             { type: core.Injector },
             { type: RoutingConfigService },
             { type: UrlMatcherFactoryService }
         ]; };
-        /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(ServerConfig), core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+        /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(core.ɵɵinject(core.INJECTOR), core.ɵɵinject(RoutingConfigService), core.ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
         return ConfigurableRoutesService;
     }());
 
@@ -18868,13 +18842,11 @@
     var   /**
      * @abstract
      */
-    GlobalMessageConfig = /** @class */ (function (_super) {
-        __extends(GlobalMessageConfig, _super);
+    GlobalMessageConfig = /** @class */ (function () {
         function GlobalMessageConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
         }
         return GlobalMessageConfig;
-    }(ServerConfig));
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -19184,9 +19156,8 @@
      */
     var UnknownErrorHandler = /** @class */ (function (_super) {
         __extends(UnknownErrorHandler, _super);
-        function UnknownErrorHandler(config, globalMessageService) {
+        function UnknownErrorHandler(globalMessageService) {
             var _this = _super.call(this, globalMessageService) || this;
-            _this.config = config;
             _this.globalMessageService = globalMessageService;
             _this.responseStatus = HttpResponseStatus.UNKNOWN;
             return _this;
@@ -19198,7 +19169,7 @@
          * @return {?}
          */
         function () {
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn("Unknown http response error: " + this.responseStatus);
             }
         };
@@ -19209,10 +19180,9 @@
         ];
         /** @nocollapse */
         UnknownErrorHandler.ctorParameters = function () { return [
-            { type: ServerConfig },
             { type: GlobalMessageService }
         ]; };
-        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(ServerConfig), core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
         return UnknownErrorHandler;
     }(HttpErrorHandler));
 
@@ -20635,31 +20605,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    I18nConfig = /** @class */ (function (_super) {
-        __extends(I18nConfig, _super);
-        function I18nConfig() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        return I18nConfig;
-    }(ServerConfig));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
     var CxDatePipe = /** @class */ (function (_super) {
         __extends(CxDatePipe, _super);
-        function CxDatePipe(language, config) {
+        function CxDatePipe(language) {
             var _this = _super.call(this, null) || this;
             _this.language = language;
-            _this.config = config;
             return _this;
         }
         /**
@@ -20729,7 +20680,7 @@
          * @return {?}
          */
         function (lang) {
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn("cxDate pipe: No locale data registered for '" + lang + "' (see https://angular.io/api/common/registerLocaleData).");
             }
         };
@@ -20738,8 +20689,7 @@
         ];
         /** @nocollapse */
         CxDatePipe.ctorParameters = function () { return [
-            { type: LanguageService },
-            { type: I18nConfig }
+            { type: LanguageService }
         ]; };
         return CxDatePipe;
     }(common.DatePipe));
@@ -20846,6 +20796,22 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    I18nConfig = /** @class */ (function () {
+        function I18nConfig() {
+        }
+        return I18nConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var TranslationChunkService = /** @class */ (function () {
         function TranslationChunkService(config) {
             var _this = this;
@@ -20874,7 +20840,7 @@
                     }
                 }));
             }));
-            if (Object.keys(this.duplicates).length > 0 && !this.config.production) {
+            if (Object.keys(this.duplicates).length > 0 && core.isDevMode()) {
                 this.warnDuplicates(this.duplicates);
             }
         }
@@ -21133,7 +21099,7 @@
          * @return {?}
          */
         function (key) {
-            return this.config.production ? this.NON_BREAKING_SPACE : "[" + key + "]";
+            return core.isDevMode() ? "[" + key + "]" : this.NON_BREAKING_SPACE;
         };
         /**
          * @private
@@ -21148,7 +21114,7 @@
          * @return {?}
          */
         function (key, chunkName) {
-            if (!this.config.production) {
+            if (core.isDevMode()) {
                 console.warn("Translation key missing '" + key + "' in the chunk '" + chunkName + "'");
             }
         };
@@ -29832,7 +29798,6 @@
     exports.SearchProductsSuccess = SearchProductsSuccess;
     exports.SearchboxService = SearchboxService;
     exports.SemanticPathService = SemanticPathService;
-    exports.ServerConfig = ServerConfig;
     exports.SetActiveBaseSite = SetActiveBaseSite;
     exports.SetActiveCurrency = SetActiveCurrency;
     exports.SetActiveLanguage = SetActiveLanguage;
@@ -29943,7 +29908,6 @@
     exports.contextServiceProviders = contextServiceProviders;
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
-    exports.defaultServerConfig = defaultServerConfig;
     exports.defaultStateConfig = defaultStateConfig;
     exports.effects = effects$3;
     exports.entityErrorSelector = entityErrorSelector;
@@ -30059,106 +30023,105 @@
     exports.ɵde = GlobalMessageEffect;
     exports.ɵdf = defaultGlobalMessageConfigFactory;
     exports.ɵdg = HttpErrorInterceptor;
-    exports.ɵdh = ServerConfig;
-    exports.ɵdi = defaultI18nConfig;
-    exports.ɵdj = i18nextProviders;
-    exports.ɵdk = i18nextInit;
-    exports.ɵdl = MockTranslationService;
-    exports.ɵdm = kymaStoreConfigFactory;
-    exports.ɵdn = KymaStoreModule;
-    exports.ɵdo = getReducers$a;
-    exports.ɵdp = reducerToken$a;
-    exports.ɵdq = reducerProvider$a;
-    exports.ɵdr = clearKymaState;
-    exports.ɵds = metaReducers$5;
-    exports.ɵdt = effects$8;
-    exports.ɵdu = OpenIdTokenEffect;
-    exports.ɵdv = OpenIdAuthenticationTokenService;
-    exports.ɵdw = defaultKymaConfig;
-    exports.ɵdx = provideConfigFactory;
-    exports.ɵdy = defaultOccProductConfig;
-    exports.ɵdz = provideConfigValidator;
+    exports.ɵdh = defaultI18nConfig;
+    exports.ɵdi = i18nextProviders;
+    exports.ɵdj = i18nextInit;
+    exports.ɵdk = MockTranslationService;
+    exports.ɵdl = kymaStoreConfigFactory;
+    exports.ɵdm = KymaStoreModule;
+    exports.ɵdn = getReducers$a;
+    exports.ɵdo = reducerToken$a;
+    exports.ɵdp = reducerProvider$a;
+    exports.ɵdq = clearKymaState;
+    exports.ɵdr = metaReducers$5;
+    exports.ɵds = effects$8;
+    exports.ɵdt = OpenIdTokenEffect;
+    exports.ɵdu = OpenIdAuthenticationTokenService;
+    exports.ɵdv = defaultKymaConfig;
+    exports.ɵdw = provideConfigFactory;
+    exports.ɵdx = defaultOccProductConfig;
+    exports.ɵdy = provideConfigValidator;
+    exports.ɵdz = defaultPersonalizationConfig;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = defaultPersonalizationConfig;
-    exports.ɵeb = interceptors$1;
-    exports.ɵec = OccPersonalizationIdInterceptor;
-    exports.ɵed = OccPersonalizationTimeInterceptor;
-    exports.ɵee = productStoreConfigFactory;
-    exports.ɵef = ProductStoreModule;
-    exports.ɵeg = reducer$c;
-    exports.ɵeh = reducer$e;
-    exports.ɵei = reducer$d;
-    exports.ɵej = PageMetaResolver;
-    exports.ɵek = UrlMatcherFactoryService;
-    exports.ɵel = ROUTING_FEATURE;
-    exports.ɵem = getReducers;
-    exports.ɵen = reducer;
-    exports.ɵeo = reducerToken;
-    exports.ɵep = reducerProvider;
-    exports.ɵeq = CustomSerializer;
-    exports.ɵer = effects;
-    exports.ɵes = RouterEffects;
-    exports.ɵet = SiteContextParamsService;
-    exports.ɵeu = SiteContextUrlSerializer;
-    exports.ɵev = SiteContextRoutesHandler;
-    exports.ɵew = defaultSiteContextConfigFactory;
-    exports.ɵex = siteContextStoreConfigFactory;
-    exports.ɵey = SiteContextStoreModule;
-    exports.ɵez = reducer$1;
+    exports.ɵea = interceptors$1;
+    exports.ɵeb = OccPersonalizationIdInterceptor;
+    exports.ɵec = OccPersonalizationTimeInterceptor;
+    exports.ɵed = productStoreConfigFactory;
+    exports.ɵee = ProductStoreModule;
+    exports.ɵef = reducer$c;
+    exports.ɵeg = reducer$e;
+    exports.ɵeh = reducer$d;
+    exports.ɵei = PageMetaResolver;
+    exports.ɵej = UrlMatcherFactoryService;
+    exports.ɵek = ROUTING_FEATURE;
+    exports.ɵel = getReducers;
+    exports.ɵem = reducer;
+    exports.ɵen = reducerToken;
+    exports.ɵeo = reducerProvider;
+    exports.ɵep = CustomSerializer;
+    exports.ɵeq = effects;
+    exports.ɵer = RouterEffects;
+    exports.ɵes = SiteContextParamsService;
+    exports.ɵet = SiteContextUrlSerializer;
+    exports.ɵeu = SiteContextRoutesHandler;
+    exports.ɵev = defaultSiteContextConfigFactory;
+    exports.ɵew = siteContextStoreConfigFactory;
+    exports.ɵex = SiteContextStoreModule;
+    exports.ɵey = reducer$1;
+    exports.ɵez = reducer$2;
     exports.ɵf = getReducers$2;
-    exports.ɵfa = reducer$2;
-    exports.ɵfb = reducer$3;
-    exports.ɵfc = baseSiteConfigValidator;
-    exports.ɵfd = interceptors$2;
-    exports.ɵfe = CmsTicketInterceptor;
-    exports.ɵff = defaultStoreFinderConfig;
-    exports.ɵfg = StoreFinderStoreModule;
-    exports.ɵfh = getReducers$b;
-    exports.ɵfi = reducerToken$b;
-    exports.ɵfj = reducerProvider$b;
-    exports.ɵfk = effects$9;
-    exports.ɵfl = FindStoresEffect;
-    exports.ɵfm = ViewAllStoresEffect;
-    exports.ɵfn = EntityLoadAction;
-    exports.ɵfo = EntitySuccessAction;
-    exports.ɵfp = EntityFailAction;
-    exports.ɵfq = EntityResetAction;
-    exports.ɵfr = UserStoreModule;
-    exports.ɵfs = effects$7;
-    exports.ɵft = BillingCountriesEffect;
-    exports.ɵfu = DeliveryCountriesEffects;
-    exports.ɵfv = OrderDetailsEffect;
-    exports.ɵfw = UserPaymentMethodsEffects;
-    exports.ɵfx = RegionsEffects;
-    exports.ɵfy = ResetPasswordEffects;
-    exports.ɵfz = TitlesEffects;
+    exports.ɵfa = reducer$3;
+    exports.ɵfb = baseSiteConfigValidator;
+    exports.ɵfc = interceptors$2;
+    exports.ɵfd = CmsTicketInterceptor;
+    exports.ɵfe = defaultStoreFinderConfig;
+    exports.ɵff = StoreFinderStoreModule;
+    exports.ɵfg = getReducers$b;
+    exports.ɵfh = reducerToken$b;
+    exports.ɵfi = reducerProvider$b;
+    exports.ɵfj = effects$9;
+    exports.ɵfk = FindStoresEffect;
+    exports.ɵfl = ViewAllStoresEffect;
+    exports.ɵfm = EntityLoadAction;
+    exports.ɵfn = EntitySuccessAction;
+    exports.ɵfo = EntityFailAction;
+    exports.ɵfp = EntityResetAction;
+    exports.ɵfq = UserStoreModule;
+    exports.ɵfr = effects$7;
+    exports.ɵfs = BillingCountriesEffect;
+    exports.ɵft = DeliveryCountriesEffects;
+    exports.ɵfu = OrderDetailsEffect;
+    exports.ɵfv = UserPaymentMethodsEffects;
+    exports.ɵfw = RegionsEffects;
+    exports.ɵfx = ResetPasswordEffects;
+    exports.ɵfy = TitlesEffects;
+    exports.ɵfz = UserAddressesEffects;
     exports.ɵg = reducerToken$2;
-    exports.ɵga = UserAddressesEffects;
-    exports.ɵgb = UserConsentsEffect;
-    exports.ɵgc = UserDetailsEffects;
-    exports.ɵgd = UserOrdersEffect;
-    exports.ɵge = UserRegisterEffects;
-    exports.ɵgf = ClearMiscsDataEffect;
-    exports.ɵgg = ForgotPasswordEffects;
-    exports.ɵgh = UpdateEmailEffects;
-    exports.ɵgi = UpdatePasswordEffects;
-    exports.ɵgj = reducer$o;
-    exports.ɵgk = reducer$m;
-    exports.ɵgl = reducer$f;
-    exports.ɵgm = reducer$n;
-    exports.ɵgn = reducer$i;
-    exports.ɵgo = reducer$p;
-    exports.ɵgp = reducer$h;
-    exports.ɵgq = reducer$g;
-    exports.ɵgr = reducer$l;
-    exports.ɵgs = reducer$j;
-    exports.ɵgt = reducer$k;
-    exports.ɵgu = ProcessModule;
-    exports.ɵgv = ProcessStoreModule;
-    exports.ɵgw = PROCESS_FEATURE;
-    exports.ɵgx = getReducers$8;
-    exports.ɵgy = reducerToken$8;
-    exports.ɵgz = reducerProvider$8;
+    exports.ɵga = UserConsentsEffect;
+    exports.ɵgb = UserDetailsEffects;
+    exports.ɵgc = UserOrdersEffect;
+    exports.ɵgd = UserRegisterEffects;
+    exports.ɵge = ClearMiscsDataEffect;
+    exports.ɵgf = ForgotPasswordEffects;
+    exports.ɵgg = UpdateEmailEffects;
+    exports.ɵgh = UpdatePasswordEffects;
+    exports.ɵgi = reducer$o;
+    exports.ɵgj = reducer$m;
+    exports.ɵgk = reducer$f;
+    exports.ɵgl = reducer$n;
+    exports.ɵgm = reducer$i;
+    exports.ɵgn = reducer$p;
+    exports.ɵgo = reducer$h;
+    exports.ɵgp = reducer$g;
+    exports.ɵgq = reducer$l;
+    exports.ɵgr = reducer$j;
+    exports.ɵgs = reducer$k;
+    exports.ɵgt = ProcessModule;
+    exports.ɵgu = ProcessStoreModule;
+    exports.ɵgv = PROCESS_FEATURE;
+    exports.ɵgw = getReducers$8;
+    exports.ɵgx = reducerToken$8;
+    exports.ɵgy = reducerProvider$8;
     exports.ɵh = reducerProvider$2;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;

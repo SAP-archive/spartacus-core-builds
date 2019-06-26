@@ -1,13 +1,11 @@
 import { UrlParsingService } from './url-parsing.service';
-import { ServerConfig } from '../../../config/server-config/server-config';
 import { UrlCommands } from './url-command';
 import { RoutingConfigService } from '../routing-config.service';
 export declare class SemanticPathService {
     protected routingConfigService: RoutingConfigService;
     protected urlParser: UrlParsingService;
-    protected config: ServerConfig;
     readonly ROOT_URL: string[];
-    constructor(routingConfigService: RoutingConfigService, urlParser: UrlParsingService, config: ServerConfig);
+    constructor(routingConfigService: RoutingConfigService, urlParser: UrlParsingService);
     /**
      * Returns the first path alias configured for a given route name. It adds `/` at the beginning.
      */

@@ -1,6 +1,5 @@
 import { RoutesConfig } from '../routes-config';
-import { ServerConfig } from '../../../config/server-config/server-config';
-export declare abstract class RoutingConfig extends ServerConfig {
+export declare abstract class RoutingConfig {
     routing?: {
         routes: RoutesConfig;
     };
