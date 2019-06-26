@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/router'), require('@ngrx/effects'), require('@ngrx/router-store'), require('@angular/platform-browser'), require('@angular/forms'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/router', '@ngrx/effects', '@ngrx/router-store', '@angular/platform-browser', '@angular/forms', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.ng.router, global.effects, global.fromNgrxRouter, global.ng.platformBrowser, global.ng.forms, global.i18next, global.i18nextXhrBackend));
-}(this, function (exports, common, http, core, rxjs, operators, store, router, effects$a, routerStore, platformBrowser, forms, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('@angular/forms'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', '@angular/forms', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.ng.forms, global.i18next, global.i18nextXhrBackend));
+}(this, function (exports, common, http, core, rxjs, operators, store, router, effects$a, platformBrowser, routerStore, forms, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -1451,353 +1451,55 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var GO = '[Router] Go';
+    var ROUTER_GO = '[Router] Go';
     /** @type {?} */
-    var GO_BY_URL = '[Router] Go By Url';
+    var ROUTER_GO_BY_URL = '[Router] Go By Url';
     /** @type {?} */
-    var BACK = '[Router] Back';
+    var ROUTER_BACK = '[Router] Back';
     /** @type {?} */
-    var FORWARD = '[Router] Forward';
-    var Go = /** @class */ (function () {
-        function Go(payload) {
+    var ROUTER_FORWARD = '[Router] Forward';
+    var RouteGoAction = /** @class */ (function () {
+        function RouteGoAction(payload) {
             this.payload = payload;
-            this.type = GO;
+            this.type = ROUTER_GO;
         }
-        return Go;
+        return RouteGoAction;
     }());
-    var GoByUrl = /** @class */ (function () {
-        function GoByUrl(payload) {
+    var RouteGoByUrlAction = /** @class */ (function () {
+        function RouteGoByUrlAction(payload) {
             this.payload = payload;
-            this.type = GO_BY_URL;
+            this.type = ROUTER_GO_BY_URL;
         }
-        return GoByUrl;
+        return RouteGoByUrlAction;
     }());
-    var Back = /** @class */ (function () {
-        function Back() {
-            this.type = BACK;
+    var RouteBackAction = /** @class */ (function () {
+        function RouteBackAction() {
+            this.type = ROUTER_BACK;
         }
-        return Back;
+        return RouteBackAction;
     }());
-    var Forward = /** @class */ (function () {
-        function Forward() {
-            this.type = FORWARD;
+    var RouteForwardAction = /** @class */ (function () {
+        function RouteForwardAction() {
+            this.type = ROUTER_FORWARD;
         }
-        return Forward;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_LANGUAGES = '[Site-context] Load Languages';
-    /** @type {?} */
-    var LOAD_LANGUAGES_FAIL = '[Site-context] Load Languages Fail';
-    /** @type {?} */
-    var LOAD_LANGUAGES_SUCCESS = '[Site-context] Load Languages Success';
-    /** @type {?} */
-    var SET_ACTIVE_LANGUAGE = '[Site-context] Set Active Language';
-    /** @type {?} */
-    var LANGUAGE_CHANGE = '[Site-context] Language Change';
-    var LoadLanguages = /** @class */ (function () {
-        function LoadLanguages() {
-            this.type = LOAD_LANGUAGES;
-        }
-        return LoadLanguages;
-    }());
-    var LoadLanguagesFail = /** @class */ (function () {
-        function LoadLanguagesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_LANGUAGES_FAIL;
-        }
-        return LoadLanguagesFail;
-    }());
-    var LoadLanguagesSuccess = /** @class */ (function () {
-        function LoadLanguagesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_LANGUAGES_SUCCESS;
-        }
-        return LoadLanguagesSuccess;
-    }());
-    var SetActiveLanguage = /** @class */ (function () {
-        function SetActiveLanguage(payload) {
-            this.payload = payload;
-            this.type = SET_ACTIVE_LANGUAGE;
-        }
-        return SetActiveLanguage;
-    }());
-    var LanguageChange = /** @class */ (function () {
-        function LanguageChange() {
-            this.type = LANGUAGE_CHANGE;
-        }
-        return LanguageChange;
+        return RouteForwardAction;
     }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var RouterEffects = /** @class */ (function () {
-        function RouterEffects(actions$, router, location) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.router = router;
-            this.location = location;
-            this.navigate$ = this.actions$.pipe(effects$a.ofType(GO), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.tap((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            function (_a) {
-                var path = _a.path, queryParams = _a.query, extras = _a.extras;
-                _this.router.navigate(path, __assign({ queryParams: queryParams }, extras));
-            })));
-            this.navigateBuUrl$ = this.actions$.pipe(effects$a.ofType(GO_BY_URL), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.tap((/**
-             * @param {?} url
-             * @return {?}
-             */
-            function (url) {
-                _this.router.navigateByUrl(url);
-            })));
-            this.clearCmsRoutes$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
-             * @param {?} _
-             * @return {?}
-             */
-            function (_) {
-                /** @type {?} */
-                var filteredConfig = _this.router.config.filter((/**
-                 * @param {?} route
-                 * @return {?}
-                 */
-                function (route) { return !(route.data && route.data.cxCmsRouteContext); }));
-                if (filteredConfig.length !== _this.router.config.length) {
-                    _this.router.resetConfig(filteredConfig);
-                }
-            })));
-            this.navigateBack$ = this.actions$.pipe(effects$a.ofType(BACK), operators.tap((/**
-             * @return {?}
-             */
-            function () { return _this.location.back(); })));
-            this.navigateForward$ = this.actions$.pipe(effects$a.ofType(FORWARD), operators.tap((/**
-             * @return {?}
-             */
-            function () { return _this.location.forward(); })));
-        }
-        RouterEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        RouterEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: router.Router },
-            { type: common.Location }
-        ]; };
-        __decorate([
-            effects$a.Effect({ dispatch: false }),
-            __metadata("design:type", rxjs.Observable)
-        ], RouterEffects.prototype, "navigate$", void 0);
-        __decorate([
-            effects$a.Effect({ dispatch: false }),
-            __metadata("design:type", rxjs.Observable)
-        ], RouterEffects.prototype, "navigateBuUrl$", void 0);
-        __decorate([
-            effects$a.Effect({ dispatch: false }),
-            __metadata("design:type", rxjs.Observable)
-        ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
-        __decorate([
-            effects$a.Effect({ dispatch: false }),
-            __metadata("design:type", rxjs.Observable)
-        ], RouterEffects.prototype, "navigateBack$", void 0);
-        __decorate([
-            effects$a.Effect({ dispatch: false }),
-            __metadata("design:type", rxjs.Observable)
-        ], RouterEffects.prototype, "navigateForward$", void 0);
-        return RouterEffects;
-    }());
 
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects = [RouterEffects];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var PageType = {
-        CONTENT_PAGE: 'ContentPage',
-        PRODUCT_PAGE: 'ProductPage',
-        CATEGORY_PAGE: 'CategoryPage',
-        CATALOG_PAGE: 'CatalogPage',
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState = {
-        navigationId: 0,
-        state: {
-            url: '',
-            queryParams: {},
-            params: {},
-            context: {
-                id: '',
-            },
-            cmsRequired: false,
-        },
-        nextState: undefined,
-    };
-    /**
-     * @return {?}
-     */
-    function getReducers() {
-        return {
-            router: reducer,
-        };
-    }
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer(state, action) {
-        if (state === void 0) { state = initialState; }
-        switch (action.type) {
-            case routerStore.ROUTER_NAVIGATION: {
-                return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
-            }
-            case routerStore.ROUTER_ERROR:
-            case routerStore.ROUTER_CANCEL: {
-                return __assign({}, state, { nextState: undefined });
-            }
-            case routerStore.ROUTER_NAVIGATED: {
-                return {
-                    state: action.payload.routerState,
-                    navigationId: action.payload.event.id,
-                    nextState: undefined,
-                };
-            }
-            default: {
-                return state;
-            }
-        }
-    }
-    /** @type {?} */
-    var reducerToken = new core.InjectionToken('RouterReducers');
-    /** @type {?} */
-    var reducerProvider = {
-        provide: reducerToken,
-        useFactory: getReducers,
-    };
-    /* The serializer is there to parse the RouterStateSnapshot,
-    and to reduce the amount of properties to be passed to the reducer.
-     */
-    var   /* The serializer is there to parse the RouterStateSnapshot,
-    and to reduce the amount of properties to be passed to the reducer.
-     */
-    CustomSerializer = /** @class */ (function () {
-        function CustomSerializer() {
-        }
-        /**
-         * @param {?} routerState
-         * @return {?}
-         */
-        CustomSerializer.prototype.serialize = /**
-         * @param {?} routerState
-         * @return {?}
-         */
-        function (routerState) {
-            var url = routerState.url;
-            var queryParams = routerState.root.queryParams;
-            /** @type {?} */
-            var state = (/** @type {?} */ (routerState.root));
-            /** @type {?} */
-            var cmsRequired = false;
-            /** @type {?} */
-            var context;
-            while (state.firstChild) {
-                state = (/** @type {?} */ (state.firstChild));
-                // we use context information embedded in Cms driven routes from any parent route
-                if (state.data && state.data.cxCmsRouteContext) {
-                    context = state.data.cxCmsRouteContext;
-                }
-                // we assume, that any route that has CmsPageGuard or it's child
-                // is cmsRequired
-                if (!cmsRequired &&
-                    (context ||
-                        (state.routeConfig &&
-                            state.routeConfig.canActivate &&
-                            state.routeConfig.canActivate.find((/**
-                             * @param {?} x
-                             * @return {?}
-                             */
-                            function (x) { return x && x.guardName === 'CmsPageGuard'; }))))) {
-                    cmsRequired = true;
-                }
-            }
-            var params = state.params;
-            // we give smartedit preview page a PageContext
-            if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
-                context = {
-                    id: 'smartedit-preview',
-                    type: PageType.CONTENT_PAGE,
-                };
-            }
-            else {
-                if (params['productCode']) {
-                    context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
-                }
-                else if (params['categoryCode']) {
-                    context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
-                }
-                else if (params['brandCode']) {
-                    context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
-                }
-                else if (state.data.pageLabel !== undefined) {
-                    context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
-                }
-                else if (!context) {
-                    if (state.url.length > 0) {
-                        /** @type {?} */
-                        var pageLabel = '/' + state.url.map((/**
-                         * @param {?} urlSegment
-                         * @return {?}
-                         */
-                        function (urlSegment) { return urlSegment.path; })).join('/');
-                        context = {
-                            id: pageLabel,
-                            type: PageType.CONTENT_PAGE,
-                        };
-                    }
-                    else {
-                        context = {
-                            id: 'homepage',
-                            type: PageType.CONTENT_PAGE,
-                        };
-                    }
-                }
-            }
-            return { url: url, queryParams: queryParams, params: params, context: context, cmsRequired: cmsRequired };
-        };
-        return CustomSerializer;
-    }());
+    var routingGroup_actions = /*#__PURE__*/Object.freeze({
+        ROUTER_GO: ROUTER_GO,
+        ROUTER_GO_BY_URL: ROUTER_GO_BY_URL,
+        ROUTER_BACK: ROUTER_BACK,
+        ROUTER_FORWARD: ROUTER_FORWARD,
+        RouteGoAction: RouteGoAction,
+        RouteGoByUrlAction: RouteGoByUrlAction,
+        RouteBackAction: RouteBackAction,
+        RouteForwardAction: RouteForwardAction
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -1862,11 +1564,6 @@
         getNextPageContext: getNextPageContext,
         isNavigating: isNavigating
     });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -1979,7 +1676,7 @@
          * @return {?}
          */
         function (url) {
-            this.store.dispatch(new GoByUrl(url));
+            this.store.dispatch(new RouteGoByUrlAction(url));
         };
         /**
          * Navigating back
@@ -1996,7 +1693,7 @@
             /** @type {?} */
             var isLastPageInApp = this.winRef.document.referrer.includes(this.winRef.nativeWindow.location.origin);
             if (isLastPageInApp) {
-                this.store.dispatch(new Back());
+                this.store.dispatch(new RouteBackAction());
                 return;
             }
             this.go(['/']);
@@ -2014,7 +1711,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new Forward());
+            this.store.dispatch(new RouteForwardAction());
         };
         /**
          * Navigation with a new state into history
@@ -2039,7 +1736,7 @@
          * @return {?}
          */
         function (path, query, extras) {
-            this.store.dispatch(new Go({
+            this.store.dispatch(new RouteGoAction({
                 path: path,
                 query: query,
                 extras: extras,
@@ -2615,7 +2312,55 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$1 = {
+    var LOAD_LANGUAGES = '[Site-context] Load Languages';
+    /** @type {?} */
+    var LOAD_LANGUAGES_FAIL = '[Site-context] Load Languages Fail';
+    /** @type {?} */
+    var LOAD_LANGUAGES_SUCCESS = '[Site-context] Load Languages Success';
+    /** @type {?} */
+    var SET_ACTIVE_LANGUAGE = '[Site-context] Set Active Language';
+    /** @type {?} */
+    var LANGUAGE_CHANGE = '[Site-context] Language Change';
+    var LoadLanguages = /** @class */ (function () {
+        function LoadLanguages() {
+            this.type = LOAD_LANGUAGES;
+        }
+        return LoadLanguages;
+    }());
+    var LoadLanguagesFail = /** @class */ (function () {
+        function LoadLanguagesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_LANGUAGES_FAIL;
+        }
+        return LoadLanguagesFail;
+    }());
+    var LoadLanguagesSuccess = /** @class */ (function () {
+        function LoadLanguagesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_LANGUAGES_SUCCESS;
+        }
+        return LoadLanguagesSuccess;
+    }());
+    var SetActiveLanguage = /** @class */ (function () {
+        function SetActiveLanguage(payload) {
+            this.payload = payload;
+            this.type = SET_ACTIVE_LANGUAGE;
+        }
+        return SetActiveLanguage;
+    }());
+    var LanguageChange = /** @class */ (function () {
+        function LanguageChange() {
+            this.type = LANGUAGE_CHANGE;
+        }
+        return LanguageChange;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState = {
         entities: null,
         activeLanguage: null,
     };
@@ -2624,8 +2369,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer(state, action) {
+        if (state === void 0) { state = initialState; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 /** @type {?} */
@@ -2704,7 +2449,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$2 = {
+    var initialState$1 = {
         entities: null,
         activeCurrency: null,
     };
@@ -2713,8 +2458,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$1(state, action) {
+        if (state === void 0) { state = initialState$1; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 /** @type {?} */
@@ -2745,7 +2490,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$3 = {
+    var initialState$2 = {
         details: {},
         activeSite: '',
     };
@@ -2754,8 +2499,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return __assign({}, state, { details: action.payload });
@@ -2774,19 +2519,19 @@
     /**
      * @return {?}
      */
-    function getReducers$1() {
+    function getReducers() {
         return {
-            languages: reducer$1,
-            currencies: reducer$2,
-            baseSite: reducer$3,
+            languages: reducer,
+            currencies: reducer$1,
+            baseSite: reducer$2,
         };
     }
     /** @type {?} */
-    var reducerToken$1 = new core.InjectionToken('SiteContextReducers');
+    var reducerToken = new core.InjectionToken('SiteContextReducers');
     /** @type {?} */
-    var reducerProvider$1 = {
-        provide: reducerToken$1,
-        useFactory: getReducers$1,
+    var reducerProvider = {
+        provide: reducerToken,
+        useFactory: getReducers,
     };
 
     /**
@@ -3072,7 +2817,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$1 = [
+    var effects = [
         LanguagesEffects,
         CurrenciesEffects,
         BaseSiteEffects,
@@ -4440,7 +4185,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$2 = [UserTokenEffects, ClientTokenEffect];
+    var effects$1 = [UserTokenEffects, ClientTokenEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -4508,14 +4253,14 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$4 = (/** @type {?} */ ({}));
+    var initialState$3 = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
         switch (action.type) {
             case LOAD_USER_TOKEN:
             case REFRESH_USER_TOKEN: {
@@ -4540,18 +4285,18 @@
     /**
      * @return {?}
      */
-    function getReducers$2() {
+    function getReducers$1() {
         return {
-            userToken: store.combineReducers({ token: reducer$4 }),
+            userToken: store.combineReducers({ token: reducer$3 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken$2 = new core.InjectionToken('AuthReducers');
+    var reducerToken$1 = new core.InjectionToken('AuthReducers');
     /** @type {?} */
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
+    var reducerProvider$1 = {
+        provide: reducerToken$1,
+        useFactory: getReducers$1,
     };
     /**
      * @param {?} reducer
@@ -4608,11 +4353,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken$2, { metaReducers: metaReducers }),
-                            effects$a.EffectsModule.forFeature(effects$2),
+                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken$1, { metaReducers: metaReducers }),
+                            effects$a.EffectsModule.forFeature(effects$1),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$2],
+                        providers: [reducerProvider$1],
                     },] }
         ];
         return AuthStoreModule;
@@ -6133,7 +5878,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$3 = [CartEffects, CartEntryEffects];
+    var effects$2 = [CartEffects, CartEntryEffects];
 
     /**
      * @fileoverview added by tsickle
@@ -6412,7 +6157,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = {
+    var initialState$4 = {
         content: {},
         entries: {},
         refresh: false,
@@ -6423,8 +6168,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case MERGE_CART: {
                 return __assign({}, state, { cartMergeComplete: false });
@@ -6481,17 +6226,17 @@
     /**
      * @return {?}
      */
-    function getReducers$3() {
+    function getReducers$2() {
         return {
-            active: loaderReducer(CART_DATA, reducer$5),
+            active: loaderReducer(CART_DATA, reducer$4),
         };
     }
     /** @type {?} */
-    var reducerToken$3 = new core.InjectionToken('CartReducers');
+    var reducerToken$2 = new core.InjectionToken('CartReducers');
     /** @type {?} */
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
     /**
      * @param {?} reducer
@@ -6544,11 +6289,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
-                            effects$a.EffectsModule.forFeature(effects$3),
+                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$2, { metaReducers: metaReducers$1 }),
+                            effects$a.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(cartStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$3],
+                        providers: [reducerProvider$2],
                     },] }
         ];
         return CartStoreModule;
@@ -7404,6 +7149,18 @@
          */
         function (itemState) { return loaderValueSelector(itemState); }));
     });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var PageType = {
+        CONTENT_PAGE: 'ContentPage',
+        PRODUCT_PAGE: 'ProductPage',
+        CATEGORY_PAGE: 'CategoryPage',
+        CATALOG_PAGE: 'CatalogPage',
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -8624,6 +8381,255 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var RouterEffects = /** @class */ (function () {
+        function RouterEffects(actions$, router, location) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.router = router;
+            this.location = location;
+            this.navigate$ = this.actions$.pipe(effects$a.ofType(ROUTER_GO), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var path = _a.path, queryParams = _a.query, extras = _a.extras;
+                _this.router.navigate(path, __assign({ queryParams: queryParams }, extras));
+            })));
+            this.navigateBuUrl$ = this.actions$.pipe(effects$a.ofType(ROUTER_GO_BY_URL), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.tap((/**
+             * @param {?} url
+             * @return {?}
+             */
+            function (url) {
+                _this.router.navigateByUrl(url);
+            })));
+            this.clearCmsRoutes$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
+             * @param {?} _
+             * @return {?}
+             */
+            function (_) {
+                /** @type {?} */
+                var filteredConfig = _this.router.config.filter((/**
+                 * @param {?} route
+                 * @return {?}
+                 */
+                function (route) { return !(route.data && route.data.cxCmsRouteContext); }));
+                if (filteredConfig.length !== _this.router.config.length) {
+                    _this.router.resetConfig(filteredConfig);
+                }
+            })));
+            this.navigateBack$ = this.actions$.pipe(effects$a.ofType(ROUTER_BACK), operators.tap((/**
+             * @return {?}
+             */
+            function () { return _this.location.back(); })));
+            this.navigateForward$ = this.actions$.pipe(effects$a.ofType(ROUTER_FORWARD), operators.tap((/**
+             * @return {?}
+             */
+            function () { return _this.location.forward(); })));
+        }
+        RouterEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        RouterEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: router.Router },
+            { type: common.Location }
+        ]; };
+        __decorate([
+            effects$a.Effect({ dispatch: false }),
+            __metadata("design:type", rxjs.Observable)
+        ], RouterEffects.prototype, "navigate$", void 0);
+        __decorate([
+            effects$a.Effect({ dispatch: false }),
+            __metadata("design:type", rxjs.Observable)
+        ], RouterEffects.prototype, "navigateBuUrl$", void 0);
+        __decorate([
+            effects$a.Effect({ dispatch: false }),
+            __metadata("design:type", rxjs.Observable)
+        ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
+        __decorate([
+            effects$a.Effect({ dispatch: false }),
+            __metadata("design:type", rxjs.Observable)
+        ], RouterEffects.prototype, "navigateBack$", void 0);
+        __decorate([
+            effects$a.Effect({ dispatch: false }),
+            __metadata("design:type", rxjs.Observable)
+        ], RouterEffects.prototype, "navigateForward$", void 0);
+        return RouterEffects;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$3 = [RouterEffects];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$5 = {
+        navigationId: 0,
+        state: {
+            url: '',
+            queryParams: {},
+            params: {},
+            context: {
+                id: '',
+            },
+            cmsRequired: false,
+        },
+        nextState: undefined,
+    };
+    /**
+     * @return {?}
+     */
+    function getReducers$3() {
+        return {
+            router: reducer$5,
+        };
+    }
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
+        switch (action.type) {
+            case routerStore.ROUTER_NAVIGATION: {
+                return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
+            }
+            case routerStore.ROUTER_ERROR:
+            case routerStore.ROUTER_CANCEL: {
+                return __assign({}, state, { nextState: undefined });
+            }
+            case routerStore.ROUTER_NAVIGATED: {
+                return {
+                    state: action.payload.routerState,
+                    navigationId: action.payload.event.id,
+                    nextState: undefined,
+                };
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+    /** @type {?} */
+    var reducerToken$3 = new core.InjectionToken('RouterReducers');
+    /** @type {?} */
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
+    };
+    /* The serializer is there to parse the RouterStateSnapshot,
+    and to reduce the amount of properties to be passed to the reducer.
+     */
+    var   /* The serializer is there to parse the RouterStateSnapshot,
+    and to reduce the amount of properties to be passed to the reducer.
+     */
+    CustomSerializer = /** @class */ (function () {
+        function CustomSerializer() {
+        }
+        /**
+         * @param {?} routerState
+         * @return {?}
+         */
+        CustomSerializer.prototype.serialize = /**
+         * @param {?} routerState
+         * @return {?}
+         */
+        function (routerState) {
+            var url = routerState.url;
+            var queryParams = routerState.root.queryParams;
+            /** @type {?} */
+            var state = (/** @type {?} */ (routerState.root));
+            /** @type {?} */
+            var cmsRequired = false;
+            /** @type {?} */
+            var context;
+            while (state.firstChild) {
+                state = (/** @type {?} */ (state.firstChild));
+                // we use context information embedded in Cms driven routes from any parent route
+                if (state.data && state.data.cxCmsRouteContext) {
+                    context = state.data.cxCmsRouteContext;
+                }
+                // we assume, that any route that has CmsPageGuard or it's child
+                // is cmsRequired
+                if (!cmsRequired &&
+                    (context ||
+                        (state.routeConfig &&
+                            state.routeConfig.canActivate &&
+                            state.routeConfig.canActivate.find((/**
+                             * @param {?} x
+                             * @return {?}
+                             */
+                            function (x) { return x && x.guardName === 'CmsPageGuard'; }))))) {
+                    cmsRequired = true;
+                }
+            }
+            var params = state.params;
+            // we give smartedit preview page a PageContext
+            if (state.url.length > 0 && state.url[0].path === 'cx-preview') {
+                context = {
+                    id: 'smartedit-preview',
+                    type: PageType.CONTENT_PAGE,
+                };
+            }
+            else {
+                if (params['productCode']) {
+                    context = { id: params['productCode'], type: PageType.PRODUCT_PAGE };
+                }
+                else if (params['categoryCode']) {
+                    context = { id: params['categoryCode'], type: PageType.CATEGORY_PAGE };
+                }
+                else if (params['brandCode']) {
+                    context = { id: params['brandCode'], type: PageType.CATEGORY_PAGE };
+                }
+                else if (state.data.pageLabel !== undefined) {
+                    context = { id: state.data.pageLabel, type: PageType.CONTENT_PAGE };
+                }
+                else if (!context) {
+                    if (state.url.length > 0) {
+                        /** @type {?} */
+                        var pageLabel = '/' + state.url.map((/**
+                         * @param {?} urlSegment
+                         * @return {?}
+                         */
+                        function (urlSegment) { return urlSegment.path; })).join('/');
+                        context = {
+                            id: pageLabel,
+                            type: PageType.CONTENT_PAGE,
+                        };
+                    }
+                    else {
+                        context = {
+                            id: 'homepage',
+                            type: PageType.CONTENT_PAGE,
+                        };
+                    }
+                }
+            }
+            return { url: url, queryParams: queryParams, params: params, context: context, cmsRequired: cmsRequired };
+        };
+        return CustomSerializer;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var RoutingModule = /** @class */ (function () {
         function RoutingModule() {
         }
@@ -8631,15 +8637,15 @@
             { type: core.NgModule, args: [{
                         imports: [
                             ConfigurableRoutesModule,
-                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken),
-                            effects$a.EffectsModule.forFeature(effects),
+                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$3),
+                            effects$a.EffectsModule.forFeature(effects$3),
                             routerStore.StoreRouterConnectingModule.forRoot({
                                 routerState: 1 /* Minimal */,
                                 stateKey: ROUTING_FEATURE,
                             }),
                         ],
                         providers: [
-                            reducerProvider,
+                            reducerProvider$3,
                             {
                                 provide: routerStore.RouterStateSerializer,
                                 useClass: CustomSerializer,
@@ -13590,11 +13596,11 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-                            effects$a.EffectsModule.forFeature(effects$1),
+                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken),
+                            effects$a.EffectsModule.forFeature(effects),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$1],
+                        providers: [reducerProvider],
                     },] }
         ];
         return SiteContextStoreModule;
@@ -29404,10 +29410,8 @@
     exports.AuthRedirectService = AuthRedirectService;
     exports.AuthSelectors = authGroup_selectors;
     exports.AuthService = AuthService;
-    exports.BACK = BACK;
     exports.BASE_SITE_CHANGE = BASE_SITE_CHANGE;
     exports.BASE_SITE_CONTEXT_ID = BASE_SITE_CONTEXT_ID;
-    exports.Back = Back;
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteChange = BaseSiteChange;
@@ -29534,7 +29538,6 @@
     exports.FORGOT_PASSWORD_EMAIL_REQUEST = FORGOT_PASSWORD_EMAIL_REQUEST;
     exports.FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
     exports.FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
-    exports.FORWARD = FORWARD;
     exports.FindStoreById = FindStoreById;
     exports.FindStoreByIdFail = FindStoreByIdFail;
     exports.FindStoreByIdSuccess = FindStoreByIdSuccess;
@@ -29545,14 +29548,11 @@
     exports.ForgotPasswordEmailRequest = ForgotPasswordEmailRequest;
     exports.ForgotPasswordEmailRequestFail = ForgotPasswordEmailRequestFail;
     exports.ForgotPasswordEmailRequestSuccess = ForgotPasswordEmailRequestSuccess;
-    exports.Forward = Forward;
     exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
     exports.GIVE_USER_CONSENT = GIVE_USER_CONSENT;
     exports.GIVE_USER_CONSENT_FAIL = GIVE_USER_CONSENT_FAIL;
     exports.GIVE_USER_CONSENT_SUCCESS = GIVE_USER_CONSENT_SUCCESS;
     exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
-    exports.GO = GO;
-    exports.GO_BY_URL = GO_BY_URL;
     exports.GatewayTimeoutHandler = GatewayTimeoutHandler;
     exports.GiveUserConsent = GiveUserConsent;
     exports.GiveUserConsentFail = GiveUserConsentFail;
@@ -29563,8 +29563,6 @@
     exports.GlobalMessageSelectors = globalMessageGroup_selectors;
     exports.GlobalMessageService = GlobalMessageService;
     exports.GlobalMessageType = GlobalMessageType;
-    exports.Go = Go;
-    exports.GoByUrl = GoByUrl;
     exports.GoogleMapRendererService = GoogleMapRendererService;
     exports.HttpErrorHandler = HttpErrorHandler;
     exports.I18nConfig = I18nConfig;
@@ -29784,6 +29782,7 @@
     exports.ResetUpdateEmailAction = ResetUpdateEmailAction;
     exports.ResetUpdateUserDetails = ResetUpdateUserDetails;
     exports.ResetWithdrawUserConsentProcess = ResetWithdrawUserConsentProcess;
+    exports.RoutingActions = routingGroup_actions;
     exports.RoutingConfig = RoutingConfig;
     exports.RoutingConfigService = RoutingConfigService;
     exports.RoutingModule = RoutingModule;
@@ -29914,7 +29913,7 @@
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
-    exports.effects = effects$3;
+    exports.effects = effects$2;
     exports.entityErrorSelector = entityErrorSelector;
     exports.entityFailMeta = entityFailMeta;
     exports.entityLoadMeta = entityLoadMeta;
@@ -29932,7 +29931,7 @@
     exports.entityValueSelector = entityValueSelector;
     exports.errorHandlers = errorHandlers;
     exports.failMeta = failMeta;
-    exports.getReducers = getReducers$3;
+    exports.getReducers = getReducers$2;
     exports.getStateSlice = getStateSlice;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;
@@ -29957,8 +29956,8 @@
     exports.provideConfigFactory = provideConfigFactory;
     exports.provideConfigFromMetaTags = provideConfigFromMetaTags;
     exports.provideConfigValidator = provideConfigValidator;
-    exports.reducerProvider = reducerProvider$3;
-    exports.reducerToken = reducerToken$3;
+    exports.reducerProvider = reducerProvider$2;
+    exports.reducerToken = reducerToken$2;
     exports.resetMeta = resetMeta;
     exports.serviceMapFactory = serviceMapFactory;
     exports.siteContextParamsProviders = siteContextParamsProviders;
@@ -29967,103 +29966,103 @@
     exports.validateConfig = validateConfig;
     exports.ɵa = authStoreConfigFactory;
     exports.ɵb = AuthStoreModule;
-    exports.ɵba = cartStoreConfigFactory;
-    exports.ɵbb = CartStoreModule;
-    exports.ɵbc = reducer$5;
-    exports.ɵbd = CheckoutStoreModule;
-    exports.ɵbe = getReducers$5;
-    exports.ɵbf = reducerToken$5;
-    exports.ɵbg = reducerProvider$5;
-    exports.ɵbh = effects$5;
-    exports.ɵbi = AddressVerificationEffect;
-    exports.ɵbj = CardTypesEffects;
-    exports.ɵbk = CheckoutEffects;
-    exports.ɵbl = reducer$b;
-    exports.ɵbm = reducer$a;
-    exports.ɵbn = reducer$9;
-    exports.ɵbo = cmsStoreConfigFactory;
-    exports.ɵbp = CmsStoreModule;
-    exports.ɵbq = getReducers$4;
-    exports.ɵbr = reducerToken$4;
-    exports.ɵbs = reducerProvider$4;
-    exports.ɵbt = clearCmsState;
-    exports.ɵbu = metaReducers$2;
-    exports.ɵbv = effects$4;
-    exports.ɵbw = PageEffects;
-    exports.ɵbx = ComponentEffects;
-    exports.ɵby = NavigationEntryItemEffects;
-    exports.ɵbz = reducer$7;
+    exports.ɵba = AuthErrorInterceptor;
+    exports.ɵbb = cartStoreConfigFactory;
+    exports.ɵbc = CartStoreModule;
+    exports.ɵbd = reducer$4;
+    exports.ɵbe = CheckoutStoreModule;
+    exports.ɵbf = getReducers$5;
+    exports.ɵbg = reducerToken$5;
+    exports.ɵbh = reducerProvider$5;
+    exports.ɵbi = effects$5;
+    exports.ɵbj = AddressVerificationEffect;
+    exports.ɵbk = CardTypesEffects;
+    exports.ɵbl = CheckoutEffects;
+    exports.ɵbm = reducer$b;
+    exports.ɵbn = reducer$a;
+    exports.ɵbo = reducer$9;
+    exports.ɵbp = cmsStoreConfigFactory;
+    exports.ɵbq = CmsStoreModule;
+    exports.ɵbr = getReducers$4;
+    exports.ɵbs = reducerToken$4;
+    exports.ɵbt = reducerProvider$4;
+    exports.ɵbu = clearCmsState;
+    exports.ɵbv = metaReducers$2;
+    exports.ɵbw = effects$4;
+    exports.ɵbx = PageEffects;
+    exports.ɵby = ComponentEffects;
+    exports.ɵbz = NavigationEntryItemEffects;
     exports.ɵc = stateMetaReducers;
-    exports.ɵca = reducer$8;
-    exports.ɵcb = reducer$6;
-    exports.ɵcc = getReducers$1;
-    exports.ɵcd = reducerToken$1;
-    exports.ɵce = reducerProvider$1;
-    exports.ɵcf = effects$1;
-    exports.ɵcg = LanguagesEffects;
-    exports.ɵch = CurrenciesEffects;
-    exports.ɵci = BaseSiteEffects;
-    exports.ɵcj = getReducers$7;
-    exports.ɵck = reducerToken$7;
-    exports.ɵcl = reducerProvider$7;
-    exports.ɵcm = clearUserState;
-    exports.ɵcn = metaReducers$4;
-    exports.ɵco = GlobalMessageStoreModule;
-    exports.ɵcp = getReducers$9;
-    exports.ɵcq = reducerToken$9;
-    exports.ɵcr = reducerProvider$9;
-    exports.ɵcs = reducer$q;
-    exports.ɵct = GlobalMessageEffect;
-    exports.ɵcu = defaultGlobalMessageConfigFactory;
-    exports.ɵcv = HttpErrorInterceptor;
-    exports.ɵcw = defaultI18nConfig;
-    exports.ɵcx = i18nextProviders;
-    exports.ɵcy = i18nextInit;
-    exports.ɵcz = MockTranslationService;
+    exports.ɵca = reducer$7;
+    exports.ɵcb = reducer$8;
+    exports.ɵcc = reducer$6;
+    exports.ɵcd = getReducers;
+    exports.ɵce = reducerToken;
+    exports.ɵcf = reducerProvider;
+    exports.ɵcg = effects;
+    exports.ɵch = LanguagesEffects;
+    exports.ɵci = CurrenciesEffects;
+    exports.ɵcj = BaseSiteEffects;
+    exports.ɵck = getReducers$7;
+    exports.ɵcl = reducerToken$7;
+    exports.ɵcm = reducerProvider$7;
+    exports.ɵcn = clearUserState;
+    exports.ɵco = metaReducers$4;
+    exports.ɵcp = GlobalMessageStoreModule;
+    exports.ɵcq = getReducers$9;
+    exports.ɵcr = reducerToken$9;
+    exports.ɵcs = reducerProvider$9;
+    exports.ɵct = reducer$q;
+    exports.ɵcu = GlobalMessageEffect;
+    exports.ɵcv = defaultGlobalMessageConfigFactory;
+    exports.ɵcw = HttpErrorInterceptor;
+    exports.ɵcx = defaultI18nConfig;
+    exports.ɵcy = i18nextProviders;
+    exports.ɵcz = i18nextInit;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = kymaStoreConfigFactory;
-    exports.ɵdb = KymaStoreModule;
-    exports.ɵdc = getReducers$a;
-    exports.ɵdd = reducerToken$a;
-    exports.ɵde = reducerProvider$a;
-    exports.ɵdf = clearKymaState;
-    exports.ɵdg = metaReducers$5;
-    exports.ɵdh = effects$8;
-    exports.ɵdi = OpenIdTokenEffect;
-    exports.ɵdj = OpenIdAuthenticationTokenService;
-    exports.ɵdk = defaultKymaConfig;
-    exports.ɵdl = provideConfigFactory;
-    exports.ɵdm = defaultOccProductConfig;
-    exports.ɵdn = provideConfigValidator;
-    exports.ɵdo = defaultPersonalizationConfig;
-    exports.ɵdp = interceptors$1;
-    exports.ɵdq = OccPersonalizationIdInterceptor;
-    exports.ɵdr = OccPersonalizationTimeInterceptor;
-    exports.ɵds = productStoreConfigFactory;
-    exports.ɵdt = ProductStoreModule;
-    exports.ɵdu = getReducers$6;
-    exports.ɵdv = reducerToken$6;
-    exports.ɵdw = reducerProvider$6;
-    exports.ɵdx = clearProductsState;
-    exports.ɵdy = metaReducers$3;
-    exports.ɵdz = effects$6;
+    exports.ɵda = MockTranslationService;
+    exports.ɵdb = kymaStoreConfigFactory;
+    exports.ɵdc = KymaStoreModule;
+    exports.ɵdd = getReducers$a;
+    exports.ɵde = reducerToken$a;
+    exports.ɵdf = reducerProvider$a;
+    exports.ɵdg = clearKymaState;
+    exports.ɵdh = metaReducers$5;
+    exports.ɵdi = effects$8;
+    exports.ɵdj = OpenIdTokenEffect;
+    exports.ɵdk = OpenIdAuthenticationTokenService;
+    exports.ɵdl = defaultKymaConfig;
+    exports.ɵdm = provideConfigFactory;
+    exports.ɵdn = defaultOccProductConfig;
+    exports.ɵdo = provideConfigValidator;
+    exports.ɵdp = defaultPersonalizationConfig;
+    exports.ɵdq = interceptors$1;
+    exports.ɵdr = OccPersonalizationIdInterceptor;
+    exports.ɵds = OccPersonalizationTimeInterceptor;
+    exports.ɵdt = productStoreConfigFactory;
+    exports.ɵdu = ProductStoreModule;
+    exports.ɵdv = getReducers$6;
+    exports.ɵdw = reducerToken$6;
+    exports.ɵdx = reducerProvider$6;
+    exports.ɵdy = clearProductsState;
+    exports.ɵdz = metaReducers$3;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = ProductReferencesEffects;
-    exports.ɵeb = ProductReviewsEffects;
-    exports.ɵec = ProductsSearchEffects;
-    exports.ɵed = ProductEffects;
-    exports.ɵee = reducer$c;
-    exports.ɵef = reducer$e;
-    exports.ɵeg = reducer$d;
-    exports.ɵeh = PageMetaResolver;
-    exports.ɵei = UrlMatcherFactoryService;
-    exports.ɵej = ROUTING_FEATURE;
-    exports.ɵek = getReducers;
-    exports.ɵel = reducer;
-    exports.ɵem = reducerToken;
-    exports.ɵen = reducerProvider;
+    exports.ɵea = effects$6;
+    exports.ɵeb = ProductReferencesEffects;
+    exports.ɵec = ProductReviewsEffects;
+    exports.ɵed = ProductsSearchEffects;
+    exports.ɵee = ProductEffects;
+    exports.ɵef = reducer$c;
+    exports.ɵeg = reducer$e;
+    exports.ɵeh = reducer$d;
+    exports.ɵei = PageMetaResolver;
+    exports.ɵej = UrlMatcherFactoryService;
+    exports.ɵek = getReducers$3;
+    exports.ɵel = reducer$5;
+    exports.ɵem = reducerToken$3;
+    exports.ɵen = reducerProvider$3;
     exports.ɵeo = CustomSerializer;
-    exports.ɵep = effects;
+    exports.ɵep = effects$3;
     exports.ɵeq = RouterEffects;
     exports.ɵer = SiteContextParamsService;
     exports.ɵes = SiteContextUrlSerializer;
@@ -30071,10 +30070,10 @@
     exports.ɵeu = defaultSiteContextConfigFactory;
     exports.ɵev = siteContextStoreConfigFactory;
     exports.ɵew = SiteContextStoreModule;
-    exports.ɵex = reducer$1;
-    exports.ɵey = reducer$2;
-    exports.ɵez = reducer$3;
-    exports.ɵf = getReducers$2;
+    exports.ɵex = reducer;
+    exports.ɵey = reducer$1;
+    exports.ɵez = reducer$2;
+    exports.ɵf = getReducers$1;
     exports.ɵfa = baseSiteConfigValidator;
     exports.ɵfb = interceptors$2;
     exports.ɵfc = CmsTicketInterceptor;
@@ -30101,7 +30100,7 @@
     exports.ɵfx = TitlesEffects;
     exports.ɵfy = UserAddressesEffects;
     exports.ɵfz = UserConsentsEffect;
-    exports.ɵg = reducerToken$2;
+    exports.ɵg = reducerToken$1;
     exports.ɵga = UserDetailsEffects;
     exports.ɵgb = UserOrdersEffect;
     exports.ɵgc = UserRegisterEffects;
@@ -30126,24 +30125,24 @@
     exports.ɵgv = getReducers$8;
     exports.ɵgw = reducerToken$8;
     exports.ɵgx = reducerProvider$8;
-    exports.ɵh = reducerProvider$2;
+    exports.ɵh = reducerProvider$1;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;
-    exports.ɵk = effects$2;
+    exports.ɵk = effects$1;
     exports.ɵl = ClientTokenEffect;
     exports.ɵm = UserTokenEffects;
     exports.ɵn = UserAuthenticationTokenService;
     exports.ɵo = ClientAuthenticationTokenService;
-    exports.ɵp = reducer$4;
+    exports.ɵp = reducer$3;
     exports.ɵq = defaultAuthConfig;
     exports.ɵr = AuthServices;
     exports.ɵs = ClientErrorHandlingService;
     exports.ɵt = UserErrorHandlingService;
-    exports.ɵv = UrlParsingService;
-    exports.ɵw = interceptors;
-    exports.ɵx = ClientTokenInterceptor;
-    exports.ɵy = UserTokenInterceptor;
-    exports.ɵz = AuthErrorInterceptor;
+    exports.ɵu = ROUTING_FEATURE;
+    exports.ɵw = UrlParsingService;
+    exports.ɵx = interceptors;
+    exports.ɵy = ClientTokenInterceptor;
+    exports.ɵz = UserTokenInterceptor;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

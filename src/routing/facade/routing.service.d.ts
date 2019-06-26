@@ -5,13 +5,12 @@ import { WindowRef } from '../../window/window-ref';
 import { SemanticPathService } from '../configurable-routes/url-translation/semantic-path.service';
 import { UrlCommands } from '../configurable-routes/url-translation/url-command';
 import { PageContext } from '../models/page-context.model';
-import * as fromStore from '../store';
 import { RouterState } from '../store/routing-state';
 export declare class RoutingService {
-    protected store: Store<fromStore.RouterState>;
+    protected store: Store<RouterState>;
     protected winRef: WindowRef;
     protected semanticPathService: SemanticPathService;
-    constructor(store: Store<fromStore.RouterState>, winRef: WindowRef, semanticPathService: SemanticPathService);
+    constructor(store: Store<RouterState>, winRef: WindowRef, semanticPathService: SemanticPathService);
     /**
      * Get the current router state
      */
