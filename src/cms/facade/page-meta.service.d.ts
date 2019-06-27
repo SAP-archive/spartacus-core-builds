@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Page, PageMeta } from '../model/page.model';
-import { CmsService } from './cms.service';
 import { PageMetaResolver } from '../page/page-meta.resolver';
+import { CmsService } from './cms.service';
 export declare class PageMetaService {
     protected resolvers: PageMetaResolver[];
     protected cms: CmsService;
