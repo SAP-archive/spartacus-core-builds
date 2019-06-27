@@ -28384,7 +28384,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var ON_HOLD = '[StoreFinder] On Hold';
+    var FIND_STORES_ON_HOLD = '[StoreFinder] On Hold';
     /** @type {?} */
     var FIND_STORES = '[StoreFinder] Find Stores';
     /** @type {?} */
@@ -28397,14 +28397,14 @@
     var FIND_STORE_BY_ID_FAIL = '[StoreFinder] Find a Store by Id Fail';
     /** @type {?} */
     var FIND_STORE_BY_ID_SUCCESS = '[StoreFinder] Find a Store by Id Success';
-    var OnHold = /** @class */ (function (_super) {
-        __extends(OnHold, _super);
-        function OnHold() {
+    var FindStoresOnHold = /** @class */ (function (_super) {
+        __extends(FindStoresOnHold, _super);
+        function FindStoresOnHold() {
             var _this = _super.call(this, STORE_FINDER_DATA) || this;
-            _this.type = ON_HOLD;
+            _this.type = FIND_STORES_ON_HOLD;
             return _this;
         }
-        return OnHold;
+        return FindStoresOnHold;
     }(LoaderLoadAction));
     var FindStores = /** @class */ (function (_super) {
         __extends(FindStores, _super);
@@ -28512,158 +28512,33 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FindStoresEffect = /** @class */ (function () {
-        function FindStoresEffect(actions$, storeFinderConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.storeFinderConnector = storeFinderConnector;
-            this.findStores$ = this.actions$.pipe(effects$a.ofType(FIND_STORES), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.storeFinderConnector
-                    .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
-                    .pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) {
-                    if (payload.countryIsoCode) {
-                        data.stores = data.stores.filter((/**
-                         * @param {?} store
-                         * @return {?}
-                         */
-                        function (store) {
-                            return store.address.country.isocode === payload.countryIsoCode;
-                        }));
-                    }
-                    return new FindStoresSuccess(data);
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.findStoreById$ = this.actions$.pipe(effects$a.ofType(FIND_STORE_BY_ID), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.switchMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) { return new FindStoreByIdSuccess(data); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        FindStoresEffect.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        FindStoresEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: StoreFinderConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], FindStoresEffect.prototype, "findStores$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], FindStoresEffect.prototype, "findStoreById$", void 0);
-        return FindStoresEffect;
-    }());
+    var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
+        FIND_STORES_ON_HOLD: FIND_STORES_ON_HOLD,
+        FIND_STORES: FIND_STORES,
+        FIND_STORES_FAIL: FIND_STORES_FAIL,
+        FIND_STORES_SUCCESS: FIND_STORES_SUCCESS,
+        FIND_STORE_BY_ID: FIND_STORE_BY_ID,
+        FIND_STORE_BY_ID_FAIL: FIND_STORE_BY_ID_FAIL,
+        FIND_STORE_BY_ID_SUCCESS: FIND_STORE_BY_ID_SUCCESS,
+        FindStoresOnHold: FindStoresOnHold,
+        FindStores: FindStores,
+        FindStoresFail: FindStoresFail,
+        FindStoresSuccess: FindStoresSuccess,
+        FindStoreById: FindStoreById,
+        FindStoreByIdFail: FindStoreByIdFail,
+        FindStoreByIdSuccess: FindStoreByIdSuccess,
+        VIEW_ALL_STORES: VIEW_ALL_STORES,
+        VIEW_ALL_STORES_FAIL: VIEW_ALL_STORES_FAIL,
+        VIEW_ALL_STORES_SUCCESS: VIEW_ALL_STORES_SUCCESS,
+        ViewAllStores: ViewAllStores,
+        ViewAllStoresFail: ViewAllStoresFail,
+        ViewAllStoresSuccess: ViewAllStoresSuccess
+    });
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ViewAllStoresEffect = /** @class */ (function () {
-        function ViewAllStoresEffect(actions$, storeFinderConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.storeFinderConnector = storeFinderConnector;
-            this.viewAllStores$ = this.actions$.pipe(effects$a.ofType(VIEW_ALL_STORES), operators.switchMap((/**
-             * @return {?}
-             */
-            function () {
-                return _this.storeFinderConnector.getCounts().pipe(operators.map((/**
-                 * @param {?} data
-                 * @return {?}
-                 */
-                function (data) { return new ViewAllStoresSuccess(data); })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        ViewAllStoresEffect.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        ViewAllStoresEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: StoreFinderConnector }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
-        return ViewAllStoresEffect;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$b() {
-        return {
-            findStores: loaderReducer(STORE_FINDER_DATA),
-            viewAllStores: loaderReducer(STORE_FINDER_DATA),
-        };
-    }
-    /** @type {?} */
-    var reducerToken$b = new core.InjectionToken('StoreFinderReducers');
-    /** @type {?} */
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
-    };
 
     /**
      * @fileoverview added by tsickle
@@ -28737,11 +28612,6 @@
         getViewAllStoresEntities: getViewAllStoresEntities,
         getViewAllStoresLoading: getViewAllStoresLoading
     });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -28896,7 +28766,7 @@
         function (queryText, useMyLocation) {
             var _this = this;
             if (useMyLocation && this.winRef.nativeWindow) {
-                this.clearWatchGeolocation(new OnHold());
+                this.clearWatchGeolocation(new FindStoresOnHold());
                 this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition((/**
                  * @param {?} pos
                  * @return {?}
@@ -29475,6 +29345,159 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @return {?}
+     */
+    function getReducers$b() {
+        return {
+            findStores: loaderReducer(STORE_FINDER_DATA),
+            viewAllStores: loaderReducer(STORE_FINDER_DATA),
+        };
+    }
+    /** @type {?} */
+    var reducerToken$b = new core.InjectionToken('StoreFinderReducers');
+    /** @type {?} */
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FindStoresEffect = /** @class */ (function () {
+        function FindStoresEffect(actions$, storeFinderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.storeFinderConnector = storeFinderConnector;
+            this.findStores$ = this.actions$.pipe(effects$a.ofType(FIND_STORES), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.storeFinderConnector
+                    .search(payload.queryText, payload.searchConfig, payload.longitudeLatitude)
+                    .pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    if (payload.countryIsoCode) {
+                        data.stores = data.stores.filter((/**
+                         * @param {?} store
+                         * @return {?}
+                         */
+                        function (store) {
+                            return store.address.country.isocode === payload.countryIsoCode;
+                        }));
+                    }
+                    return new FindStoresSuccess(data);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.findStoreById$ = this.actions$.pipe(effects$a.ofType(FIND_STORE_BY_ID), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.storeFinderConnector.get(payload.storeId).pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return new FindStoreByIdSuccess(data); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new FindStoreByIdFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        FindStoresEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        FindStoresEffect.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: StoreFinderConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], FindStoresEffect.prototype, "findStores$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], FindStoresEffect.prototype, "findStoreById$", void 0);
+        return FindStoresEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ViewAllStoresEffect = /** @class */ (function () {
+        function ViewAllStoresEffect(actions$, storeFinderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.storeFinderConnector = storeFinderConnector;
+            this.viewAllStores$ = this.actions$.pipe(effects$a.ofType(VIEW_ALL_STORES), operators.switchMap((/**
+             * @return {?}
+             */
+            function () {
+                return _this.storeFinderConnector.getCounts().pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return new ViewAllStoresSuccess(data); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new ViewAllStoresFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        ViewAllStoresEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ViewAllStoresEffect.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: StoreFinderConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
+        return ViewAllStoresEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var StoreFinderStoreModule = /** @class */ (function () {
         function StoreFinderStoreModule() {
         }
@@ -29638,21 +29661,9 @@
     exports.DeleteUserPaymentMethodSuccess = DeleteUserPaymentMethodSuccess;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
-    exports.FIND_STORES = FIND_STORES;
-    exports.FIND_STORES_FAIL = FIND_STORES_FAIL;
-    exports.FIND_STORES_SUCCESS = FIND_STORES_SUCCESS;
-    exports.FIND_STORE_BY_ID = FIND_STORE_BY_ID;
-    exports.FIND_STORE_BY_ID_FAIL = FIND_STORE_BY_ID_FAIL;
-    exports.FIND_STORE_BY_ID_SUCCESS = FIND_STORE_BY_ID_SUCCESS;
     exports.FORGOT_PASSWORD_EMAIL_REQUEST = FORGOT_PASSWORD_EMAIL_REQUEST;
     exports.FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
     exports.FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
-    exports.FindStoreById = FindStoreById;
-    exports.FindStoreByIdFail = FindStoreByIdFail;
-    exports.FindStoreByIdSuccess = FindStoreByIdSuccess;
-    exports.FindStores = FindStores;
-    exports.FindStoresFail = FindStoresFail;
-    exports.FindStoresSuccess = FindStoresSuccess;
     exports.ForbiddenHandler = ForbiddenHandler;
     exports.ForgotPasswordEmailRequest = ForgotPasswordEmailRequest;
     exports.ForgotPasswordEmailRequestFail = ForgotPasswordEmailRequestFail;
@@ -29760,7 +29771,6 @@
     exports.NotFoundHandler = NotFoundHandler;
     exports.OCC_BASE_URL_META_TAG_NAME = OCC_BASE_URL_META_TAG_NAME;
     exports.OCC_BASE_URL_META_TAG_PLACEHOLDER = OCC_BASE_URL_META_TAG_PLACEHOLDER;
-    exports.ON_HOLD = ON_HOLD;
     exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
@@ -29790,7 +29800,6 @@
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
-    exports.OnHold = OnHold;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
     exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;
@@ -29901,6 +29910,7 @@
     exports.StateTransferType = StateTransferType;
     exports.StorageSyncType = StorageSyncType;
     exports.StoreDataService = StoreDataService;
+    exports.StoreFinderActions = storeFinderGroup_actions;
     exports.StoreFinderAdapter = StoreFinderAdapter;
     exports.StoreFinderConfig = StoreFinderConfig;
     exports.StoreFinderConnector = StoreFinderConnector;
@@ -29971,12 +29981,6 @@
     exports.UserPaymentService = UserPaymentService;
     exports.UserService = UserService;
     exports.UsersSelectors = usersGroup_selectors;
-    exports.VIEW_ALL_STORES = VIEW_ALL_STORES;
-    exports.VIEW_ALL_STORES_FAIL = VIEW_ALL_STORES_FAIL;
-    exports.VIEW_ALL_STORES_SUCCESS = VIEW_ALL_STORES_SUCCESS;
-    exports.ViewAllStores = ViewAllStores;
-    exports.ViewAllStoresFail = ViewAllStoresFail;
-    exports.ViewAllStoresSuccess = ViewAllStoresSuccess;
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
     exports.WITHDRAW_USER_CONSENT = WITHDRAW_USER_CONSENT;
     exports.WITHDRAW_USER_CONSENT_FAIL = WITHDRAW_USER_CONSENT_FAIL;

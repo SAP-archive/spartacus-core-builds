@@ -1,14 +1,14 @@
 import { GeoPoint } from '../../../model/misc.model';
 import { StateLoaderActions } from '../../../state/index';
 import { StoreFinderSearchConfig } from '../../model/search-config';
-export declare const ON_HOLD = "[StoreFinder] On Hold";
+export declare const FIND_STORES_ON_HOLD = "[StoreFinder] On Hold";
 export declare const FIND_STORES = "[StoreFinder] Find Stores";
 export declare const FIND_STORES_FAIL = "[StoreFinder] Find Stores Fail";
 export declare const FIND_STORES_SUCCESS = "[StoreFinder] Find Stores Success";
 export declare const FIND_STORE_BY_ID = "[StoreFinder] Find a Store by Id";
 export declare const FIND_STORE_BY_ID_FAIL = "[StoreFinder] Find a Store by Id Fail";
 export declare const FIND_STORE_BY_ID_SUCCESS = "[StoreFinder] Find a Store by Id Success";
-export declare class OnHold extends StateLoaderActions.LoaderLoadAction {
+export declare class FindStoresOnHold extends StateLoaderActions.LoaderLoadAction {
     readonly type = "[StoreFinder] On Hold";
     constructor();
 }
@@ -58,4 +58,4 @@ export declare class FindStoreByIdSuccess extends StateLoaderActions.LoaderSucce
     readonly type = "[StoreFinder] Find a Store by Id Success";
     constructor(payload: any);
 }
-export declare type FindStoresAction = OnHold | FindStores | FindStoresFail | FindStoresSuccess | FindStoreById | FindStoreByIdFail | FindStoreByIdSuccess;
+export declare type FindStoresAction = FindStoresOnHold | FindStores | FindStoresFail | FindStoresSuccess | FindStoreById | FindStoreByIdFail | FindStoreByIdSuccess;
