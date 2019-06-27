@@ -1,9 +1,0 @@
-import { MemoizedSelector } from '@ngrx/store';
-import { LoaderState } from '../../../state/utils/loader/loader-state';
-import { OpenIdToken } from '../../models/token-types.model';
-import { StateWithAuth } from '../auth-state';
-export declare const getOpenIdTokenState: MemoizedSelector<StateWithAuth, LoaderState<OpenIdToken>>;
-export declare const getOpenIdTokenValue: MemoizedSelector<StateWithAuth, OpenIdToken>;
-export declare const getOpenIdTokenLoading: MemoizedSelector<StateWithAuth, boolean>;
-export declare const getOpenIdTokenSuccess: MemoizedSelector<StateWithAuth, boolean>;
-export declare const getOpenIdTokenError: MemoizedSelector<StateWithAuth, boolean>;
