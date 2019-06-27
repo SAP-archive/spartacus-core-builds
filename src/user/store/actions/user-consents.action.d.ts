@@ -80,4 +80,4 @@ export declare class ResetWithdrawUserConsentProcess extends StateEntityLoaderAc
     readonly type = "[User] Reset Withdraw User Consent Process";
     constructor();
 }
-export declare type UserConsentsAction = LoadUserConsents | LoadUserConsentsFail | LoadUserConsentsSuccess | ResetLoadUserConsents | GiveUserConsent | GiveUserConsentFail | GiveUserConsentSuccess | WithdrawUserConsent | WithdrawUserConsentFail | WithdrawUserConsentSuccess | ResetWithdrawUserConsentProcess;
+export declare type UserConsentsAction = LoadUserConsents | LoadUserConsentsFail | LoadUserConsentsSuccess | ResetLoadUserConsents | GiveUserConsent | GiveUserConsentFail | GiveUserConsentSuccess | ResetGiveUserConsentProcess | WithdrawUserConsent | WithdrawUserConsentFail | WithdrawUserConsentSuccess | ResetWithdrawUserConsentProcess;

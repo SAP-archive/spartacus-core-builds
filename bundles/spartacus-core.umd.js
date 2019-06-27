@@ -6018,6 +6018,77 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var VERIFY_ADDRESS = '[Checkout] Verify Address';
+    /** @type {?} */
+    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
+    /** @type {?} */
+    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
+    /** @type {?} */
+    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
+    var VerifyAddress = /** @class */ (function () {
+        function VerifyAddress(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS;
+        }
+        return VerifyAddress;
+    }());
+    var VerifyAddressFail = /** @class */ (function () {
+        function VerifyAddressFail(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_FAIL;
+        }
+        return VerifyAddressFail;
+    }());
+    var VerifyAddressSuccess = /** @class */ (function () {
+        function VerifyAddressSuccess(payload) {
+            this.payload = payload;
+            this.type = VERIFY_ADDRESS_SUCCESS;
+        }
+        return VerifyAddressSuccess;
+    }());
+    var ClearAddressVerificationResults = /** @class */ (function () {
+        function ClearAddressVerificationResults() {
+            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
+        }
+        return ClearAddressVerificationResults;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
+    /** @type {?} */
+    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
+    /** @type {?} */
+    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
+    var LoadCardTypes = /** @class */ (function () {
+        function LoadCardTypes() {
+            this.type = LOAD_CARD_TYPES;
+        }
+        return LoadCardTypes;
+    }());
+    var LoadCardTypesFail = /** @class */ (function () {
+        function LoadCardTypesFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_FAIL;
+        }
+        return LoadCardTypesFail;
+    }());
+    var LoadCardTypesSuccess = /** @class */ (function () {
+        function LoadCardTypesSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CARD_TYPES_SUCCESS;
+        }
+        return LoadCardTypesSuccess;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var CHECKOUT_FEATURE = 'checkout';
     /** @type {?} */
     var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
@@ -6289,6 +6360,89 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
+        VERIFY_ADDRESS: VERIFY_ADDRESS,
+        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
+        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
+        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
+        VerifyAddress: VerifyAddress,
+        VerifyAddressFail: VerifyAddressFail,
+        VerifyAddressSuccess: VerifyAddressSuccess,
+        ClearAddressVerificationResults: ClearAddressVerificationResults,
+        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
+        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
+        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
+        LoadCardTypes: LoadCardTypes,
+        LoadCardTypesFail: LoadCardTypesFail,
+        LoadCardTypesSuccess: LoadCardTypesSuccess,
+        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
+        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
+        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
+        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
+        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
+        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
+        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
+        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
+        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
+        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
+        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
+        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
+        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
+        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
+        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
+        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+        PLACE_ORDER: PLACE_ORDER,
+        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
+        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
+        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
+        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
+        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
+        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
+        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
+        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+        AddDeliveryAddress: AddDeliveryAddress,
+        AddDeliveryAddressFail: AddDeliveryAddressFail,
+        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
+        SetDeliveryAddress: SetDeliveryAddress,
+        SetDeliveryAddressFail: SetDeliveryAddressFail,
+        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
+        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
+        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+        SetDeliveryMode: SetDeliveryMode,
+        SetDeliveryModeFail: SetDeliveryModeFail,
+        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+        CreatePaymentDetails: CreatePaymentDetails,
+        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
+        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+        SetPaymentDetails: SetPaymentDetails,
+        SetPaymentDetailsFail: SetPaymentDetailsFail,
+        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+        PlaceOrder: PlaceOrder,
+        PlaceOrderFail: PlaceOrderFail,
+        PlaceOrderSuccess: PlaceOrderSuccess,
+        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
+        ClearCheckoutStep: ClearCheckoutStep,
+        ClearCheckoutData: ClearCheckoutData,
+        LoadCheckoutDetails: LoadCheckoutDetails,
+        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
+        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
+        CheckoutClearMiscsData: CheckoutClearMiscsData
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var initialState$1 = {
         content: {},
@@ -6382,7 +6536,8 @@
          * @return {?}
          */
         function (state, action) {
-            if (action.type === LOGOUT || action.type === PLACE_ORDER_SUCCESS) {
+            if (action.type === LOGOUT ||
+                action.type === PLACE_ORDER_SUCCESS) {
                 state = undefined;
             }
             return reducer(state, action);
@@ -9644,160 +9799,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var VERIFY_ADDRESS = '[Checkout] Verify Address';
-    /** @type {?} */
-    var VERIFY_ADDRESS_FAIL = '[Checkout] Verify Address Fail';
-    /** @type {?} */
-    var VERIFY_ADDRESS_SUCCESS = '[Checkout] Verify Address Success';
-    /** @type {?} */
-    var CLEAR_ADDRESS_VERIFICATION_RESULTS = '[Checkout] Clear Address Verification Results';
-    var VerifyAddress = /** @class */ (function () {
-        function VerifyAddress(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS;
-        }
-        return VerifyAddress;
-    }());
-    var VerifyAddressFail = /** @class */ (function () {
-        function VerifyAddressFail(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_FAIL;
-        }
-        return VerifyAddressFail;
-    }());
-    var VerifyAddressSuccess = /** @class */ (function () {
-        function VerifyAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = VERIFY_ADDRESS_SUCCESS;
-        }
-        return VerifyAddressSuccess;
-    }());
-    var ClearAddressVerificationResults = /** @class */ (function () {
-        function ClearAddressVerificationResults() {
-            this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
-        }
-        return ClearAddressVerificationResults;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
-    /** @type {?} */
-    var LOAD_CARD_TYPES_FAIL = '[Checkout] Load Card Fail';
-    /** @type {?} */
-    var LOAD_CARD_TYPES_SUCCESS = '[Checkout] Load Card Success';
-    var LoadCardTypes = /** @class */ (function () {
-        function LoadCardTypes() {
-            this.type = LOAD_CARD_TYPES;
-        }
-        return LoadCardTypes;
-    }());
-    var LoadCardTypesFail = /** @class */ (function () {
-        function LoadCardTypesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_FAIL;
-        }
-        return LoadCardTypesFail;
-    }());
-    var LoadCardTypesSuccess = /** @class */ (function () {
-        function LoadCardTypesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_CARD_TYPES_SUCCESS;
-        }
-        return LoadCardTypesSuccess;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
-        VERIFY_ADDRESS: VERIFY_ADDRESS,
-        VERIFY_ADDRESS_FAIL: VERIFY_ADDRESS_FAIL,
-        VERIFY_ADDRESS_SUCCESS: VERIFY_ADDRESS_SUCCESS,
-        CLEAR_ADDRESS_VERIFICATION_RESULTS: CLEAR_ADDRESS_VERIFICATION_RESULTS,
-        VerifyAddress: VerifyAddress,
-        VerifyAddressFail: VerifyAddressFail,
-        VerifyAddressSuccess: VerifyAddressSuccess,
-        ClearAddressVerificationResults: ClearAddressVerificationResults,
-        LOAD_CARD_TYPES: LOAD_CARD_TYPES,
-        LOAD_CARD_TYPES_FAIL: LOAD_CARD_TYPES_FAIL,
-        LOAD_CARD_TYPES_SUCCESS: LOAD_CARD_TYPES_SUCCESS,
-        LoadCardTypes: LoadCardTypes,
-        LoadCardTypesFail: LoadCardTypesFail,
-        LoadCardTypesSuccess: LoadCardTypesSuccess,
-        ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
-        ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
-        ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
-        SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
-        SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
-        SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
-        LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
-        LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
-        LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
-        CLEAR_SUPPORTED_DELIVERY_MODES: CLEAR_SUPPORTED_DELIVERY_MODES,
-        SET_DELIVERY_MODE: SET_DELIVERY_MODE,
-        SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
-        SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
-        CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
-        CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
-        CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
-        SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
-        SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
-        SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
-        PLACE_ORDER: PLACE_ORDER,
-        PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
-        PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
-        CLEAR_CHECKOUT_STEP: CLEAR_CHECKOUT_STEP,
-        CLEAR_CHECKOUT_DATA: CLEAR_CHECKOUT_DATA,
-        LOAD_CHECKOUT_DETAILS: LOAD_CHECKOUT_DETAILS,
-        LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
-        LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
-        CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
-        AddDeliveryAddress: AddDeliveryAddress,
-        AddDeliveryAddressFail: AddDeliveryAddressFail,
-        AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
-        SetDeliveryAddress: SetDeliveryAddress,
-        SetDeliveryAddressFail: SetDeliveryAddressFail,
-        SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
-        LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
-        LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
-        LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
-        SetDeliveryMode: SetDeliveryMode,
-        SetDeliveryModeFail: SetDeliveryModeFail,
-        SetDeliveryModeSuccess: SetDeliveryModeSuccess,
-        CreatePaymentDetails: CreatePaymentDetails,
-        CreatePaymentDetailsFail: CreatePaymentDetailsFail,
-        CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
-        SetPaymentDetails: SetPaymentDetails,
-        SetPaymentDetailsFail: SetPaymentDetailsFail,
-        SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
-        PlaceOrder: PlaceOrder,
-        PlaceOrderFail: PlaceOrderFail,
-        PlaceOrderSuccess: PlaceOrderSuccess,
-        ClearSupportedDeliveryModes: ClearSupportedDeliveryModes,
-        ClearCheckoutStep: ClearCheckoutStep,
-        ClearCheckoutData: ClearCheckoutData,
-        LoadCheckoutDetails: LoadCheckoutDetails,
-        LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
-        LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-        CheckoutClearMiscsData: CheckoutClearMiscsData
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var initialState$6 = {
         results: {},
     };
@@ -11618,7 +11619,7 @@
         return LoadUserAddressesSuccess;
     }(LoaderSuccessAction));
     // Adding address actions
-    var   
+    var 
     // Adding address actions
     AddUserAddress = /** @class */ (function (_super) {
         __extends(AddUserAddress, _super);
@@ -11651,7 +11652,7 @@
         return AddUserAddressSuccess;
     }(LoaderSuccessAction));
     // Updating address actions
-    var   
+    var 
     // Updating address actions
     UpdateUserAddress = /** @class */ (function (_super) {
         __extends(UpdateUserAddress, _super);
@@ -11684,7 +11685,7 @@
         return UpdateUserAddressSuccess;
     }(LoaderSuccessAction));
     // Deleting address actions
-    var   
+    var 
     // Deleting address actions
     DeleteUserAddress = /** @class */ (function (_super) {
         __extends(DeleteUserAddress, _super);
@@ -11944,6 +11945,19 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
+    var ClearUserMiscsData = /** @class */ (function () {
+        function ClearUserMiscsData() {
+            this.type = CLEAR_USER_MISCS_DATA;
+        }
+        return ClearUserMiscsData;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var LOAD_USER_ORDERS = '[User] Load User Orders';
     /** @type {?} */
     var LOAD_USER_ORDERS_FAIL = '[User] Load User Orders Fail';
@@ -12069,14 +12083,180 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var CLEAR_MISCS_DATA = '[User] Clear User Misc Data';
-    var ClearMiscsData = /** @class */ (function () {
-        function ClearMiscsData() {
-            this.type = CLEAR_MISCS_DATA;
-        }
-        return ClearMiscsData;
-    }());
+
+    var userGroup_actions = /*#__PURE__*/Object.freeze({
+        LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
+        LOAD_BILLING_COUNTRIES_FAIL: LOAD_BILLING_COUNTRIES_FAIL,
+        LOAD_BILLING_COUNTRIES_SUCCESS: LOAD_BILLING_COUNTRIES_SUCCESS,
+        LoadBillingCountries: LoadBillingCountries,
+        LoadBillingCountriesFail: LoadBillingCountriesFail,
+        LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
+        LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
+        LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
+        LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
+        LoadDeliveryCountries: LoadDeliveryCountries,
+        LoadDeliveryCountriesFail: LoadDeliveryCountriesFail,
+        LoadDeliveryCountriesSuccess: LoadDeliveryCountriesSuccess,
+        FORGOT_PASSWORD_EMAIL_REQUEST: FORGOT_PASSWORD_EMAIL_REQUEST,
+        FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS: FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS,
+        FORGOT_PASSWORD_EMAIL_REQUEST_FAIL: FORGOT_PASSWORD_EMAIL_REQUEST_FAIL,
+        ForgotPasswordEmailRequest: ForgotPasswordEmailRequest,
+        ForgotPasswordEmailRequestFail: ForgotPasswordEmailRequestFail,
+        ForgotPasswordEmailRequestSuccess: ForgotPasswordEmailRequestSuccess,
+        LOAD_ORDER_DETAILS: LOAD_ORDER_DETAILS,
+        LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
+        LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
+        CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
+        LoadOrderDetails: LoadOrderDetails,
+        LoadOrderDetailsFail: LoadOrderDetailsFail,
+        LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
+        ClearOrderDetails: ClearOrderDetails,
+        LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
+        LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
+        LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
+        SET_DEFAULT_USER_PAYMENT_METHOD: SET_DEFAULT_USER_PAYMENT_METHOD,
+        SET_DEFAULT_USER_PAYMENT_METHOD_FAIL: SET_DEFAULT_USER_PAYMENT_METHOD_FAIL,
+        SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS: SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS,
+        DELETE_USER_PAYMENT_METHOD: DELETE_USER_PAYMENT_METHOD,
+        DELETE_USER_PAYMENT_METHOD_FAIL: DELETE_USER_PAYMENT_METHOD_FAIL,
+        DELETE_USER_PAYMENT_METHOD_SUCCESS: DELETE_USER_PAYMENT_METHOD_SUCCESS,
+        LoadUserPaymentMethods: LoadUserPaymentMethods,
+        LoadUserPaymentMethodsFail: LoadUserPaymentMethodsFail,
+        LoadUserPaymentMethodsSuccess: LoadUserPaymentMethodsSuccess,
+        SetDefaultUserPaymentMethod: SetDefaultUserPaymentMethod,
+        SetDefaultUserPaymentMethodFail: SetDefaultUserPaymentMethodFail,
+        SetDefaultUserPaymentMethodSuccess: SetDefaultUserPaymentMethodSuccess,
+        DeleteUserPaymentMethod: DeleteUserPaymentMethod,
+        DeleteUserPaymentMethodFail: DeleteUserPaymentMethodFail,
+        DeleteUserPaymentMethodSuccess: DeleteUserPaymentMethodSuccess,
+        LOAD_REGIONS: LOAD_REGIONS,
+        LOAD_REGIONS_SUCCESS: LOAD_REGIONS_SUCCESS,
+        LOAD_REGIONS_FAIL: LOAD_REGIONS_FAIL,
+        CLEAR_REGIONS: CLEAR_REGIONS,
+        LoadRegions: LoadRegions,
+        LoadRegionsFail: LoadRegionsFail,
+        LoadRegionsSuccess: LoadRegionsSuccess,
+        ClearRegions: ClearRegions,
+        RESET_PASSWORD: RESET_PASSWORD,
+        RESET_PASSWORD_SUCCESS: RESET_PASSWORD_SUCCESS,
+        RESET_PASSWORD_FAIL: RESET_PASSWORD_FAIL,
+        ResetPassword: ResetPassword,
+        ResetPasswordFail: ResetPasswordFail,
+        ResetPasswordSuccess: ResetPasswordSuccess,
+        LOAD_TITLES: LOAD_TITLES,
+        LOAD_TITLES_FAIL: LOAD_TITLES_FAIL,
+        LOAD_TITLES_SUCCESS: LOAD_TITLES_SUCCESS,
+        LoadTitles: LoadTitles,
+        LoadTitlesFail: LoadTitlesFail,
+        LoadTitlesSuccess: LoadTitlesSuccess,
+        UPDATE_EMAIL: UPDATE_EMAIL,
+        UPDATE_EMAIL_ERROR: UPDATE_EMAIL_ERROR,
+        UPDATE_EMAIL_SUCCESS: UPDATE_EMAIL_SUCCESS,
+        RESET_EMAIL: RESET_EMAIL,
+        UpdateEmailAction: UpdateEmailAction,
+        UpdateEmailSuccessAction: UpdateEmailSuccessAction,
+        UpdateEmailErrorAction: UpdateEmailErrorAction,
+        ResetUpdateEmailAction: ResetUpdateEmailAction,
+        UPDATE_PASSWORD: UPDATE_PASSWORD,
+        UPDATE_PASSWORD_FAIL: UPDATE_PASSWORD_FAIL,
+        UPDATE_PASSWORD_SUCCESS: UPDATE_PASSWORD_SUCCESS,
+        UPDATE_PASSWORD_RESET: UPDATE_PASSWORD_RESET,
+        UpdatePassword: UpdatePassword,
+        UpdatePasswordFail: UpdatePasswordFail,
+        UpdatePasswordSuccess: UpdatePasswordSuccess,
+        UpdatePasswordReset: UpdatePasswordReset,
+        LOAD_USER_ADDRESSES: LOAD_USER_ADDRESSES,
+        LOAD_USER_ADDRESSES_FAIL: LOAD_USER_ADDRESSES_FAIL,
+        LOAD_USER_ADDRESSES_SUCCESS: LOAD_USER_ADDRESSES_SUCCESS,
+        ADD_USER_ADDRESS: ADD_USER_ADDRESS,
+        ADD_USER_ADDRESS_FAIL: ADD_USER_ADDRESS_FAIL,
+        ADD_USER_ADDRESS_SUCCESS: ADD_USER_ADDRESS_SUCCESS,
+        UPDATE_USER_ADDRESS: UPDATE_USER_ADDRESS,
+        UPDATE_USER_ADDRESS_FAIL: UPDATE_USER_ADDRESS_FAIL,
+        UPDATE_USER_ADDRESS_SUCCESS: UPDATE_USER_ADDRESS_SUCCESS,
+        DELETE_USER_ADDRESS: DELETE_USER_ADDRESS,
+        DELETE_USER_ADDRESS_FAIL: DELETE_USER_ADDRESS_FAIL,
+        DELETE_USER_ADDRESS_SUCCESS: DELETE_USER_ADDRESS_SUCCESS,
+        LoadUserAddresses: LoadUserAddresses,
+        LoadUserAddressesFail: LoadUserAddressesFail,
+        LoadUserAddressesSuccess: LoadUserAddressesSuccess,
+        AddUserAddress: AddUserAddress,
+        AddUserAddressFail: AddUserAddressFail,
+        AddUserAddressSuccess: AddUserAddressSuccess,
+        UpdateUserAddress: UpdateUserAddress,
+        UpdateUserAddressFail: UpdateUserAddressFail,
+        UpdateUserAddressSuccess: UpdateUserAddressSuccess,
+        DeleteUserAddress: DeleteUserAddress,
+        DeleteUserAddressFail: DeleteUserAddressFail,
+        DeleteUserAddressSuccess: DeleteUserAddressSuccess,
+        LOAD_USER_CONSENTS: LOAD_USER_CONSENTS,
+        LOAD_USER_CONSENTS_SUCCESS: LOAD_USER_CONSENTS_SUCCESS,
+        LOAD_USER_CONSENTS_FAIL: LOAD_USER_CONSENTS_FAIL,
+        RESET_LOAD_USER_CONSENTS: RESET_LOAD_USER_CONSENTS,
+        GIVE_USER_CONSENT: GIVE_USER_CONSENT,
+        GIVE_USER_CONSENT_FAIL: GIVE_USER_CONSENT_FAIL,
+        GIVE_USER_CONSENT_SUCCESS: GIVE_USER_CONSENT_SUCCESS,
+        RESET_GIVE_USER_CONSENT_PROCESS: RESET_GIVE_USER_CONSENT_PROCESS,
+        WITHDRAW_USER_CONSENT: WITHDRAW_USER_CONSENT,
+        WITHDRAW_USER_CONSENT_FAIL: WITHDRAW_USER_CONSENT_FAIL,
+        WITHDRAW_USER_CONSENT_SUCCESS: WITHDRAW_USER_CONSENT_SUCCESS,
+        RESET_WITHDRAW_USER_CONSENT_PROCESS: RESET_WITHDRAW_USER_CONSENT_PROCESS,
+        LoadUserConsents: LoadUserConsents,
+        LoadUserConsentsFail: LoadUserConsentsFail,
+        LoadUserConsentsSuccess: LoadUserConsentsSuccess,
+        ResetLoadUserConsents: ResetLoadUserConsents,
+        GiveUserConsent: GiveUserConsent,
+        GiveUserConsentFail: GiveUserConsentFail,
+        GiveUserConsentSuccess: GiveUserConsentSuccess,
+        ResetGiveUserConsentProcess: ResetGiveUserConsentProcess,
+        WithdrawUserConsent: WithdrawUserConsent,
+        WithdrawUserConsentFail: WithdrawUserConsentFail,
+        WithdrawUserConsentSuccess: WithdrawUserConsentSuccess,
+        ResetWithdrawUserConsentProcess: ResetWithdrawUserConsentProcess,
+        LOAD_USER_DETAILS: LOAD_USER_DETAILS,
+        LOAD_USER_DETAILS_FAIL: LOAD_USER_DETAILS_FAIL,
+        LOAD_USER_DETAILS_SUCCESS: LOAD_USER_DETAILS_SUCCESS,
+        UPDATE_USER_DETAILS: UPDATE_USER_DETAILS,
+        UPDATE_USER_DETAILS_FAIL: UPDATE_USER_DETAILS_FAIL,
+        UPDATE_USER_DETAILS_SUCCESS: UPDATE_USER_DETAILS_SUCCESS,
+        RESET_USER_DETAILS: RESET_USER_DETAILS,
+        LoadUserDetails: LoadUserDetails,
+        LoadUserDetailsFail: LoadUserDetailsFail,
+        LoadUserDetailsSuccess: LoadUserDetailsSuccess,
+        UpdateUserDetails: UpdateUserDetails,
+        UpdateUserDetailsFail: UpdateUserDetailsFail,
+        UpdateUserDetailsSuccess: UpdateUserDetailsSuccess,
+        ResetUpdateUserDetails: ResetUpdateUserDetails,
+        CLEAR_USER_MISCS_DATA: CLEAR_USER_MISCS_DATA,
+        ClearUserMiscsData: ClearUserMiscsData,
+        LOAD_USER_ORDERS: LOAD_USER_ORDERS,
+        LOAD_USER_ORDERS_FAIL: LOAD_USER_ORDERS_FAIL,
+        LOAD_USER_ORDERS_SUCCESS: LOAD_USER_ORDERS_SUCCESS,
+        CLEAR_USER_ORDERS: CLEAR_USER_ORDERS,
+        LoadUserOrders: LoadUserOrders,
+        LoadUserOrdersFail: LoadUserOrdersFail,
+        LoadUserOrdersSuccess: LoadUserOrdersSuccess,
+        ClearUserOrders: ClearUserOrders,
+        REGISTER_USER: REGISTER_USER,
+        REGISTER_USER_FAIL: REGISTER_USER_FAIL,
+        REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
+        REMOVE_USER: REMOVE_USER,
+        REMOVE_USER_FAIL: REMOVE_USER_FAIL,
+        REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
+        REMOVE_USER_RESET: REMOVE_USER_RESET,
+        RegisterUser: RegisterUser,
+        RegisterUserFail: RegisterUserFail,
+        RegisterUserSuccess: RegisterUserSuccess,
+        RemoveUser: RemoveUser,
+        RemoveUserFail: RemoveUserFail,
+        RemoveUserSuccess: RemoveUserSuccess,
+        RemoveUserReset: RemoveUserReset
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -26182,390 +26362,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$g = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$g(state, action) {
-        if (state === void 0) { state = initialState$g; }
-        switch (action.type) {
-            case LOAD_BILLING_COUNTRIES_SUCCESS: {
-                /** @type {?} */
-                var billingCountries = action.payload;
-                /** @type {?} */
-                var entities = billingCountries.reduce((/**
-                 * @param {?} countryEntities
-                 * @param {?} name
-                 * @return {?}
-                 */
-                function (countryEntities, name) {
-                    var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
-                }), __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case CLEAR_MISCS_DATA: {
-                return initialState$g;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$h = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$h(state, action) {
-        if (state === void 0) { state = initialState$h; }
-        switch (action.type) {
-            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
-                /** @type {?} */
-                var deliveryCountries = action.payload;
-                /** @type {?} */
-                var entities = deliveryCountries.reduce((/**
-                 * @param {?} countryEntities
-                 * @param {?} country
-                 * @return {?}
-                 */
-                function (countryEntities, country) {
-                    var _a;
-                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
-                }), __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case CLEAR_MISCS_DATA: {
-                return initialState$h;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$i = {
-        order: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
-        switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
-                /** @type {?} */
-                var order = action.payload;
-                return __assign({}, state, { order: order });
-            }
-            case CLEAR_ORDER_DETAILS: {
-                return initialState$i;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$j = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
-        switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$j;
-            }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
-                return initialState$j;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$k = {
-        entities: [],
-        country: null,
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
-        switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload.entities;
-                /** @type {?} */
-                var country = action.payload.country;
-                if (entities) {
-                    return __assign({}, state, { entities: entities,
-                        country: country });
-                }
-                return initialState$k;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$l = false;
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$l(state, action) {
-        if (state === void 0) { state = initialState$l; }
-        switch (action.type) {
-            case RESET_PASSWORD_SUCCESS: {
-                return true;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$m = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$m(state, action) {
-        if (state === void 0) { state = initialState$m; }
-        switch (action.type) {
-            case LOAD_TITLES_SUCCESS: {
-                /** @type {?} */
-                var titles = action.payload;
-                /** @type {?} */
-                var entities = titles.reduce((/**
-                 * @param {?} titleEntities
-                 * @param {?} name
-                 * @return {?}
-                 */
-                function (titleEntities, name) {
-                    var _a;
-                    return __assign({}, titleEntities, (_a = {}, _a[name.code] = name, _a));
-                }), __assign({}, state.entities));
-                return __assign({}, state, { entities: entities });
-            }
-            case CLEAR_MISCS_DATA: {
-                return initialState$m;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$n = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
-                return initialState$n;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$n;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$o = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$o(state, action) {
-        if (state === void 0) { state = initialState$o; }
-        switch (action.type) {
-            case LOAD_USER_CONSENTS_SUCCESS: {
-                /** @type {?} */
-                var consents = action.payload;
-                return consents ? consents : initialState$o;
-            }
-            case GIVE_USER_CONSENT_SUCCESS: {
-                /** @type {?} */
-                var updatedConsentTemplate_1 = action.consentTemplate;
-                return state.map((/**
-                 * @param {?} consentTemplate
-                 * @return {?}
-                 */
-                function (consentTemplate) {
-                    return consentTemplate.id === updatedConsentTemplate_1.id
-                        ? updatedConsentTemplate_1
-                        : consentTemplate;
-                }));
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$p = (/** @type {?} */ ({}));
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
-        switch (action.type) {
-            case LOAD_USER_DETAILS_SUCCESS: {
-                return action.payload;
-            }
-            case UPDATE_USER_DETAILS_SUCCESS: {
-                /** @type {?} */
-                var updatedDetails = __assign({}, state, action.userUpdates);
-                return __assign({}, updatedDetails, { name: updatedDetails.firstName + " " + updatedDetails.lastName });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$q = {
-        orders: [],
-        pagination: {},
-        sorts: [],
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
-        switch (action.type) {
-            case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
-            }
-            case LOAD_USER_ORDERS_FAIL: {
-                return initialState$q;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$a() {
-        return {
-            account: store.combineReducers({
-                details: reducer$p,
-            }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$n),
-            billingCountries: reducer$g,
-            consents: loaderReducer(USER_CONSENTS, reducer$o),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
-            orders: loaderReducer(USER_ORDERS, reducer$q),
-            order: reducer$i,
-            countries: reducer$h,
-            titles: reducer$m,
-            regions: loaderReducer(REGIONS, reducer$k),
-            resetPassword: reducer$l,
-        };
-    }
-    /** @type {?} */
-    var reducerToken$a = new core.InjectionToken('UserReducers');
-    /** @type {?} */
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
-    };
-    /**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function clearUserState(reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (action.type === LOGOUT) {
-                state = undefined;
-            }
-            return reducer(state, action);
-        });
-    }
-    /** @type {?} */
-    var metaReducers$5 = [clearUserState];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var getUserState = store.createFeatureSelector(USER_FEATURE);
 
     /**
@@ -26938,11 +26734,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var UserService = /** @class */ (function () {
         function UserService(store) {
             this.store = store;
@@ -27134,7 +26925,10 @@
          * @return {?}
          */
         function (userDetails) {
-            this.store.dispatch(new UpdateUserDetails({ username: USERID_CURRENT, userDetails: userDetails }));
+            this.store.dispatch(new UpdateUserDetails({
+                username: USERID_CURRENT,
+                userDetails: userDetails,
+            }));
         };
         /**
          * Returns the update user's personal details loading flag
@@ -27248,7 +27042,11 @@
          * @return {?}
          */
         function (password, newUid) {
-            this.store.dispatch(new UpdateEmailAction({ uid: USERID_CURRENT, password: password, newUid: newUid }));
+            this.store.dispatch(new UpdateEmailAction({
+                uid: USERID_CURRENT,
+                password: password,
+                newUid: newUid,
+            }));
         };
         /**
          * Returns the update user's email success flag
@@ -27850,7 +27648,10 @@
          * @return {?}
          */
         function (consentCode) {
-            this.store.dispatch(new WithdrawUserConsent({ userId: USERID_CURRENT, consentCode: consentCode }));
+            this.store.dispatch(new WithdrawUserConsent({
+                userId: USERID_CURRENT,
+                consentCode: consentCode,
+            }));
         };
         /**
          * Returns the withdraw consent process loading flag
@@ -28229,15 +28030,15 @@
      * @template T
      * @return {?}
      */
-    function getReducers$b() {
+    function getReducers$a() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
     /** @type {?} */
-    var reducerToken$b = new core.InjectionToken('ProcessReducers');
+    var reducerToken$a = new core.InjectionToken('ProcessReducers');
     /** @type {?} */
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
     };
 
     /**
@@ -28249,8 +28050,8 @@
         }
         ProcessStoreModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$b)],
-                        providers: [reducerProvider$b],
+                        imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$a)],
+                        providers: [reducerProvider$a],
                     },] }
         ];
         return ProcessStoreModule;
@@ -28270,6 +28071,390 @@
         ];
         return ProcessModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$g = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$g(state, action) {
+        if (state === void 0) { state = initialState$g; }
+        switch (action.type) {
+            case LOAD_BILLING_COUNTRIES_SUCCESS: {
+                /** @type {?} */
+                var billingCountries = action.payload;
+                /** @type {?} */
+                var entities = billingCountries.reduce((/**
+                 * @param {?} countryEntities
+                 * @param {?} name
+                 * @return {?}
+                 */
+                function (countryEntities, name) {
+                    var _a;
+                    return __assign({}, countryEntities, (_a = {}, _a[name.isocode] = name, _a));
+                }), __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case CLEAR_USER_MISCS_DATA: {
+                return initialState$g;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$h = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$h(state, action) {
+        if (state === void 0) { state = initialState$h; }
+        switch (action.type) {
+            case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
+                /** @type {?} */
+                var deliveryCountries = action.payload;
+                /** @type {?} */
+                var entities = deliveryCountries.reduce((/**
+                 * @param {?} countryEntities
+                 * @param {?} country
+                 * @return {?}
+                 */
+                function (countryEntities, country) {
+                    var _a;
+                    return __assign({}, countryEntities, (_a = {}, _a[country.isocode] = country, _a));
+                }), __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case CLEAR_USER_MISCS_DATA: {
+                return initialState$h;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$i = {
+        order: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
+        switch (action.type) {
+            case LOAD_ORDER_DETAILS_SUCCESS: {
+                /** @type {?} */
+                var order = action.payload;
+                return __assign({}, state, { order: order });
+            }
+            case CLEAR_ORDER_DETAILS: {
+                return initialState$i;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$j = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
+        switch (action.type) {
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$j;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+                return initialState$j;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$k = {
+        entities: [],
+        country: null,
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload.entities;
+                /** @type {?} */
+                var country = action.payload.country;
+                if (entities) {
+                    return __assign({}, state, { entities: entities,
+                        country: country });
+                }
+                return initialState$k;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$l = false;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$l(state, action) {
+        if (state === void 0) { state = initialState$l; }
+        switch (action.type) {
+            case RESET_PASSWORD_SUCCESS: {
+                return true;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$m = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$m(state, action) {
+        if (state === void 0) { state = initialState$m; }
+        switch (action.type) {
+            case LOAD_TITLES_SUCCESS: {
+                /** @type {?} */
+                var titles = action.payload;
+                /** @type {?} */
+                var entities = titles.reduce((/**
+                 * @param {?} titleEntities
+                 * @param {?} name
+                 * @return {?}
+                 */
+                function (titleEntities, name) {
+                    var _a;
+                    return __assign({}, titleEntities, (_a = {}, _a[name.code] = name, _a));
+                }), __assign({}, state.entities));
+                return __assign({}, state, { entities: entities });
+            }
+            case CLEAR_USER_MISCS_DATA: {
+                return initialState$m;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$n = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
+        switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$n;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$n;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$o = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$o(state, action) {
+        if (state === void 0) { state = initialState$o; }
+        switch (action.type) {
+            case LOAD_USER_CONSENTS_SUCCESS: {
+                /** @type {?} */
+                var consents = action.payload;
+                return consents ? consents : initialState$o;
+            }
+            case GIVE_USER_CONSENT_SUCCESS: {
+                /** @type {?} */
+                var updatedConsentTemplate_1 = action.consentTemplate;
+                return state.map((/**
+                 * @param {?} consentTemplate
+                 * @return {?}
+                 */
+                function (consentTemplate) {
+                    return consentTemplate.id === updatedConsentTemplate_1.id
+                        ? updatedConsentTemplate_1
+                        : consentTemplate;
+                }));
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$p = (/** @type {?} */ ({}));
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
+        switch (action.type) {
+            case LOAD_USER_DETAILS_SUCCESS: {
+                return action.payload;
+            }
+            case UPDATE_USER_DETAILS_SUCCESS: {
+                /** @type {?} */
+                var updatedDetails = __assign({}, state, action.userUpdates);
+                return __assign({}, updatedDetails, { name: updatedDetails.firstName + " " + updatedDetails.lastName });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$q = {
+        orders: [],
+        pagination: {},
+        sorts: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
+        switch (action.type) {
+            case LOAD_USER_ORDERS_SUCCESS: {
+                return action.payload ? action.payload : initialState$q;
+            }
+            case LOAD_USER_ORDERS_FAIL: {
+                return initialState$q;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$b() {
+        return {
+            account: store.combineReducers({
+                details: reducer$p,
+            }),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$n),
+            billingCountries: reducer$g,
+            consents: loaderReducer(USER_CONSENTS, reducer$o),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
+            orders: loaderReducer(USER_ORDERS, reducer$q),
+            order: reducer$i,
+            countries: reducer$h,
+            titles: reducer$m,
+            regions: loaderReducer(REGIONS, reducer$k),
+            resetPassword: reducer$l,
+        };
+    }
+    /** @type {?} */
+    var reducerToken$b = new core.InjectionToken('UserReducers');
+    /** @type {?} */
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
+    };
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearUserState(reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === LOGOUT) {
+                state = undefined;
+            }
+            return reducer(state, action);
+        });
+    }
+    /** @type {?} */
+    var metaReducers$5 = [clearUserState];
 
     /**
      * @fileoverview added by tsickle
@@ -28323,7 +28508,7 @@
              * @return {?}
              */
             function () {
-                return new ClearMiscsData();
+                return new ClearUserMiscsData();
             })));
         }
         ClearMiscsDataEffect.decorators = [
@@ -28497,9 +28682,7 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
+            function (action) { return action.payload; })), operators.mergeMap((/**
              * @param {?} payload
              * @return {?}
              */
@@ -28522,9 +28705,7 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
+            function (action) { return action.payload; })), operators.mergeMap((/**
              * @param {?} payload
              * @return {?}
              */
@@ -28550,9 +28731,7 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) {
-                return action.payload;
-            })), operators.mergeMap((/**
+            function (action) { return action.payload; })), operators.mergeMap((/**
              * @param {?} payload
              * @return {?}
              */
@@ -28635,7 +28814,7 @@
                     return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
+            this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
              * @return {?}
              */
             function () {
@@ -28806,9 +28985,7 @@
                     .pipe(operators.map((/**
                  * @return {?}
                  */
-                function () {
-                    return new UpdateEmailSuccessAction(payload.newUid);
-                })), operators.catchError((/**
+                function () { return new UpdateEmailSuccessAction(payload.newUid); })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -29250,9 +29427,7 @@
                  * @param {?} _
                  * @return {?}
                  */
-                function (_) {
-                    return new UpdateUserDetailsSuccess(payload.userDetails);
-                })), operators.catchError((/**
+                function (_) { return new UpdateUserDetailsSuccess(payload.userDetails); })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -29314,7 +29489,7 @@
                     return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetUserOrders$ = this.actions$.pipe(effects$a.ofType(CLEAR_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
+            this.resetUserOrders$ = this.actions$.pipe(effects$a.ofType(CLEAR_USER_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
              * @return {?}
              */
             function () {
@@ -29457,11 +29632,11 @@
                             common.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            store.StoreModule.forFeature(USER_FEATURE, reducerToken$a, { metaReducers: metaReducers$5 }),
+                            store.StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
                             effects$a.EffectsModule.forFeature(effects$9),
                             router.RouterModule,
                         ],
-                        providers: [reducerProvider$a],
+                        providers: [reducerProvider$b],
                     },] }
         ];
         return UserStoreModule;
@@ -29486,14 +29661,8 @@
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
-    exports.ADD_USER_ADDRESS = ADD_USER_ADDRESS;
-    exports.ADD_USER_ADDRESS_FAIL = ADD_USER_ADDRESS_FAIL;
-    exports.ADD_USER_ADDRESS_SUCCESS = ADD_USER_ADDRESS_SUCCESS;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.AUTH_FEATURE = AUTH_FEATURE;
-    exports.AddUserAddress = AddUserAddress;
-    exports.AddUserAddressFail = AddUserAddressFail;
-    exports.AddUserAddressSuccess = AddUserAddressSuccess;
     exports.AuthActions = authGroup_actions;
     exports.AuthConfig = AuthConfig;
     exports.AuthGuard = AuthGuard;
@@ -29512,10 +29681,6 @@
     exports.CART_NORMALIZER = CART_NORMALIZER;
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
-    exports.CLEAR_MISCS_DATA = CLEAR_MISCS_DATA;
-    exports.CLEAR_ORDER_DETAILS = CLEAR_ORDER_DETAILS;
-    exports.CLEAR_REGIONS = CLEAR_REGIONS;
-    exports.CLEAR_USER_ORDERS = CLEAR_USER_ORDERS;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
     exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
     exports.CMS_FEATURE = CMS_FEATURE;
@@ -29554,10 +29719,6 @@
     exports.CheckoutPaymentService = CheckoutPaymentService;
     exports.CheckoutSelectors = checkoutGroup_selectors;
     exports.CheckoutService = CheckoutService;
-    exports.ClearMiscsData = ClearMiscsData;
-    exports.ClearOrderDetails = ClearOrderDetails;
-    exports.ClearRegions = ClearRegions;
-    exports.ClearUserOrders = ClearUserOrders;
     exports.CmsActions = cmsGroup_actions;
     exports.CmsComponentAdapter = CmsComponentAdapter;
     exports.CmsComponentConnector = CmsComponentConnector;
@@ -29587,37 +29748,13 @@
     exports.CxDatePipe = CxDatePipe;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
-    exports.DELETE_USER_ADDRESS = DELETE_USER_ADDRESS;
-    exports.DELETE_USER_ADDRESS_FAIL = DELETE_USER_ADDRESS_FAIL;
-    exports.DELETE_USER_ADDRESS_SUCCESS = DELETE_USER_ADDRESS_SUCCESS;
-    exports.DELETE_USER_PAYMENT_METHOD = DELETE_USER_PAYMENT_METHOD;
-    exports.DELETE_USER_PAYMENT_METHOD_FAIL = DELETE_USER_PAYMENT_METHOD_FAIL;
-    exports.DELETE_USER_PAYMENT_METHOD_SUCCESS = DELETE_USER_PAYMENT_METHOD_SUCCESS;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
-    exports.DeleteUserAddress = DeleteUserAddress;
-    exports.DeleteUserAddressFail = DeleteUserAddressFail;
-    exports.DeleteUserAddressSuccess = DeleteUserAddressSuccess;
-    exports.DeleteUserPaymentMethod = DeleteUserPaymentMethod;
-    exports.DeleteUserPaymentMethodFail = DeleteUserPaymentMethodFail;
-    exports.DeleteUserPaymentMethodSuccess = DeleteUserPaymentMethodSuccess;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
-    exports.FORGOT_PASSWORD_EMAIL_REQUEST = FORGOT_PASSWORD_EMAIL_REQUEST;
-    exports.FORGOT_PASSWORD_EMAIL_REQUEST_FAIL = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
-    exports.FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
     exports.ForbiddenHandler = ForbiddenHandler;
-    exports.ForgotPasswordEmailRequest = ForgotPasswordEmailRequest;
-    exports.ForgotPasswordEmailRequestFail = ForgotPasswordEmailRequestFail;
-    exports.ForgotPasswordEmailRequestSuccess = ForgotPasswordEmailRequestSuccess;
     exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
-    exports.GIVE_USER_CONSENT = GIVE_USER_CONSENT;
-    exports.GIVE_USER_CONSENT_FAIL = GIVE_USER_CONSENT_FAIL;
-    exports.GIVE_USER_CONSENT_SUCCESS = GIVE_USER_CONSENT_SUCCESS;
     exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
     exports.GatewayTimeoutHandler = GatewayTimeoutHandler;
-    exports.GiveUserConsent = GiveUserConsent;
-    exports.GiveUserConsentFail = GiveUserConsentFail;
-    exports.GiveUserConsentSuccess = GiveUserConsentSuccess;
     exports.GlobalMessageActions = globalMessageGroup_actions;
     exports.GlobalMessageConfig = GlobalMessageConfig;
     exports.GlobalMessageModule = GlobalMessageModule;
@@ -29642,67 +29779,7 @@
     exports.KymaServices = KymaServices;
     exports.LANGUAGE_CONTEXT_ID = LANGUAGE_CONTEXT_ID;
     exports.LANGUAGE_NORMALIZER = LANGUAGE_NORMALIZER;
-    exports.LOAD_BILLING_COUNTRIES = LOAD_BILLING_COUNTRIES;
-    exports.LOAD_BILLING_COUNTRIES_FAIL = LOAD_BILLING_COUNTRIES_FAIL;
-    exports.LOAD_BILLING_COUNTRIES_SUCCESS = LOAD_BILLING_COUNTRIES_SUCCESS;
-    exports.LOAD_DELIVERY_COUNTRIES = LOAD_DELIVERY_COUNTRIES;
-    exports.LOAD_DELIVERY_COUNTRIES_FAIL = LOAD_DELIVERY_COUNTRIES_FAIL;
-    exports.LOAD_DELIVERY_COUNTRIES_SUCCESS = LOAD_DELIVERY_COUNTRIES_SUCCESS;
-    exports.LOAD_ORDER_DETAILS = LOAD_ORDER_DETAILS;
-    exports.LOAD_ORDER_DETAILS_FAIL = LOAD_ORDER_DETAILS_FAIL;
-    exports.LOAD_ORDER_DETAILS_SUCCESS = LOAD_ORDER_DETAILS_SUCCESS;
-    exports.LOAD_REGIONS = LOAD_REGIONS;
-    exports.LOAD_REGIONS_FAIL = LOAD_REGIONS_FAIL;
-    exports.LOAD_REGIONS_SUCCESS = LOAD_REGIONS_SUCCESS;
-    exports.LOAD_TITLES = LOAD_TITLES;
-    exports.LOAD_TITLES_FAIL = LOAD_TITLES_FAIL;
-    exports.LOAD_TITLES_SUCCESS = LOAD_TITLES_SUCCESS;
-    exports.LOAD_USER_ADDRESSES = LOAD_USER_ADDRESSES;
-    exports.LOAD_USER_ADDRESSES_FAIL = LOAD_USER_ADDRESSES_FAIL;
-    exports.LOAD_USER_ADDRESSES_SUCCESS = LOAD_USER_ADDRESSES_SUCCESS;
-    exports.LOAD_USER_CONSENTS = LOAD_USER_CONSENTS;
-    exports.LOAD_USER_CONSENTS_FAIL = LOAD_USER_CONSENTS_FAIL;
-    exports.LOAD_USER_CONSENTS_SUCCESS = LOAD_USER_CONSENTS_SUCCESS;
-    exports.LOAD_USER_DETAILS = LOAD_USER_DETAILS;
-    exports.LOAD_USER_DETAILS_FAIL = LOAD_USER_DETAILS_FAIL;
-    exports.LOAD_USER_DETAILS_SUCCESS = LOAD_USER_DETAILS_SUCCESS;
-    exports.LOAD_USER_ORDERS = LOAD_USER_ORDERS;
-    exports.LOAD_USER_ORDERS_FAIL = LOAD_USER_ORDERS_FAIL;
-    exports.LOAD_USER_ORDERS_SUCCESS = LOAD_USER_ORDERS_SUCCESS;
-    exports.LOAD_USER_PAYMENT_METHODS = LOAD_USER_PAYMENT_METHODS;
-    exports.LOAD_USER_PAYMENT_METHODS_FAIL = LOAD_USER_PAYMENT_METHODS_FAIL;
-    exports.LOAD_USER_PAYMENT_METHODS_SUCCESS = LOAD_USER_PAYMENT_METHODS_SUCCESS;
     exports.LanguageService = LanguageService;
-    exports.LoadBillingCountries = LoadBillingCountries;
-    exports.LoadBillingCountriesFail = LoadBillingCountriesFail;
-    exports.LoadBillingCountriesSuccess = LoadBillingCountriesSuccess;
-    exports.LoadDeliveryCountries = LoadDeliveryCountries;
-    exports.LoadDeliveryCountriesFail = LoadDeliveryCountriesFail;
-    exports.LoadDeliveryCountriesSuccess = LoadDeliveryCountriesSuccess;
-    exports.LoadOrderDetails = LoadOrderDetails;
-    exports.LoadOrderDetailsFail = LoadOrderDetailsFail;
-    exports.LoadOrderDetailsSuccess = LoadOrderDetailsSuccess;
-    exports.LoadRegions = LoadRegions;
-    exports.LoadRegionsFail = LoadRegionsFail;
-    exports.LoadRegionsSuccess = LoadRegionsSuccess;
-    exports.LoadTitles = LoadTitles;
-    exports.LoadTitlesFail = LoadTitlesFail;
-    exports.LoadTitlesSuccess = LoadTitlesSuccess;
-    exports.LoadUserAddresses = LoadUserAddresses;
-    exports.LoadUserAddressesFail = LoadUserAddressesFail;
-    exports.LoadUserAddressesSuccess = LoadUserAddressesSuccess;
-    exports.LoadUserConsents = LoadUserConsents;
-    exports.LoadUserConsentsFail = LoadUserConsentsFail;
-    exports.LoadUserConsentsSuccess = LoadUserConsentsSuccess;
-    exports.LoadUserDetails = LoadUserDetails;
-    exports.LoadUserDetailsFail = LoadUserDetailsFail;
-    exports.LoadUserDetailsSuccess = LoadUserDetailsSuccess;
-    exports.LoadUserOrders = LoadUserOrders;
-    exports.LoadUserOrdersFail = LoadUserOrdersFail;
-    exports.LoadUserOrdersSuccess = LoadUserOrdersSuccess;
-    exports.LoadUserPaymentMethods = LoadUserPaymentMethods;
-    exports.LoadUserPaymentMethodsFail = LoadUserPaymentMethodsFail;
-    exports.LoadUserPaymentMethodsSuccess = LoadUserPaymentMethodsSuccess;
     exports.MEDIA_BASE_URL_META_TAG_NAME = MEDIA_BASE_URL_META_TAG_NAME;
     exports.MEDIA_BASE_URL_META_TAG_PLACEHOLDER = MEDIA_BASE_URL_META_TAG_PLACEHOLDER;
     exports.MockDatePipe = MockDatePipe;
@@ -29782,46 +29859,13 @@
     exports.ProductService = ProductService;
     exports.REGIONS = REGIONS;
     exports.REGION_NORMALIZER = REGION_NORMALIZER;
-    exports.REGISTER_USER = REGISTER_USER;
-    exports.REGISTER_USER_FAIL = REGISTER_USER_FAIL;
-    exports.REGISTER_USER_SUCCESS = REGISTER_USER_SUCCESS;
-    exports.REMOVE_USER = REMOVE_USER;
-    exports.REMOVE_USER_FAIL = REMOVE_USER_FAIL;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
-    exports.REMOVE_USER_RESET = REMOVE_USER_RESET;
-    exports.REMOVE_USER_SUCCESS = REMOVE_USER_SUCCESS;
-    exports.RESET_EMAIL = RESET_EMAIL;
-    exports.RESET_GIVE_USER_CONSENT_PROCESS = RESET_GIVE_USER_CONSENT_PROCESS;
-    exports.RESET_LOAD_USER_CONSENTS = RESET_LOAD_USER_CONSENTS;
-    exports.RESET_PASSWORD = RESET_PASSWORD;
-    exports.RESET_PASSWORD_FAIL = RESET_PASSWORD_FAIL;
-    exports.RESET_PASSWORD_SUCCESS = RESET_PASSWORD_SUCCESS;
-    exports.RESET_USER_DETAILS = RESET_USER_DETAILS;
-    exports.RESET_WITHDRAW_USER_CONSENT_PROCESS = RESET_WITHDRAW_USER_CONSENT_PROCESS;
-    exports.RegisterUser = RegisterUser;
-    exports.RegisterUserFail = RegisterUserFail;
-    exports.RegisterUserSuccess = RegisterUserSuccess;
-    exports.RemoveUser = RemoveUser;
-    exports.RemoveUserFail = RemoveUserFail;
-    exports.RemoveUserReset = RemoveUserReset;
-    exports.RemoveUserSuccess = RemoveUserSuccess;
-    exports.ResetGiveUserConsentProcess = ResetGiveUserConsentProcess;
-    exports.ResetLoadUserConsents = ResetLoadUserConsents;
-    exports.ResetPassword = ResetPassword;
-    exports.ResetPasswordFail = ResetPasswordFail;
-    exports.ResetPasswordSuccess = ResetPasswordSuccess;
-    exports.ResetUpdateEmailAction = ResetUpdateEmailAction;
-    exports.ResetUpdateUserDetails = ResetUpdateUserDetails;
-    exports.ResetWithdrawUserConsentProcess = ResetWithdrawUserConsentProcess;
     exports.RoutingActions = routingGroup_actions;
     exports.RoutingConfig = RoutingConfig;
     exports.RoutingConfigService = RoutingConfigService;
     exports.RoutingModule = RoutingModule;
     exports.RoutingSelector = routingGroup_selectors;
     exports.RoutingService = RoutingService;
-    exports.SET_DEFAULT_USER_PAYMENT_METHOD = SET_DEFAULT_USER_PAYMENT_METHOD;
-    exports.SET_DEFAULT_USER_PAYMENT_METHOD_FAIL = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
-    exports.SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
     exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
@@ -29830,9 +29874,6 @@
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.SearchboxService = SearchboxService;
     exports.SemanticPathService = SemanticPathService;
-    exports.SetDefaultUserPaymentMethod = SetDefaultUserPaymentMethod;
-    exports.SetDefaultUserPaymentMethodFail = SetDefaultUserPaymentMethodFail;
-    exports.SetDefaultUserPaymentMethodSuccess = SetDefaultUserPaymentMethodSuccess;
     exports.SiteAdapter = SiteAdapter;
     exports.SiteConnector = SiteConnector;
     exports.SiteContextActions = siteContextGroup_actions;
@@ -29863,22 +29904,9 @@
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationChunkService = TranslationChunkService;
     exports.TranslationService = TranslationService;
-    exports.UPDATE_EMAIL = UPDATE_EMAIL;
-    exports.UPDATE_EMAIL_ERROR = UPDATE_EMAIL_ERROR;
     exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
-    exports.UPDATE_EMAIL_SUCCESS = UPDATE_EMAIL_SUCCESS;
-    exports.UPDATE_PASSWORD = UPDATE_PASSWORD;
-    exports.UPDATE_PASSWORD_FAIL = UPDATE_PASSWORD_FAIL;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
-    exports.UPDATE_PASSWORD_RESET = UPDATE_PASSWORD_RESET;
-    exports.UPDATE_PASSWORD_SUCCESS = UPDATE_PASSWORD_SUCCESS;
-    exports.UPDATE_USER_ADDRESS = UPDATE_USER_ADDRESS;
-    exports.UPDATE_USER_ADDRESS_FAIL = UPDATE_USER_ADDRESS_FAIL;
-    exports.UPDATE_USER_ADDRESS_SUCCESS = UPDATE_USER_ADDRESS_SUCCESS;
-    exports.UPDATE_USER_DETAILS = UPDATE_USER_DETAILS;
-    exports.UPDATE_USER_DETAILS_FAIL = UPDATE_USER_DETAILS_FAIL;
     exports.UPDATE_USER_DETAILS_PROCESS_ID = UPDATE_USER_DETAILS_PROCESS_ID;
-    exports.UPDATE_USER_DETAILS_SUCCESS = UPDATE_USER_DETAILS_SUCCESS;
     exports.USER_ADDRESSES = USER_ADDRESSES;
     exports.USER_CONSENTS = USER_CONSENTS;
     exports.USER_FEATURE = USER_FEATURE;
@@ -29889,21 +29917,9 @@
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.UnknownErrorHandler = UnknownErrorHandler;
-    exports.UpdateEmailAction = UpdateEmailAction;
-    exports.UpdateEmailErrorAction = UpdateEmailErrorAction;
-    exports.UpdateEmailSuccessAction = UpdateEmailSuccessAction;
-    exports.UpdatePassword = UpdatePassword;
-    exports.UpdatePasswordFail = UpdatePasswordFail;
-    exports.UpdatePasswordReset = UpdatePasswordReset;
-    exports.UpdatePasswordSuccess = UpdatePasswordSuccess;
-    exports.UpdateUserAddress = UpdateUserAddress;
-    exports.UpdateUserAddressFail = UpdateUserAddressFail;
-    exports.UpdateUserAddressSuccess = UpdateUserAddressSuccess;
-    exports.UpdateUserDetails = UpdateUserDetails;
-    exports.UpdateUserDetailsFail = UpdateUserDetailsFail;
-    exports.UpdateUserDetailsSuccess = UpdateUserDetailsSuccess;
     exports.UrlModule = UrlModule;
     exports.UrlPipe = UrlPipe;
+    exports.UserActions = userGroup_actions;
     exports.UserAdapter = UserAdapter;
     exports.UserAddressAdapter = UserAddressAdapter;
     exports.UserAddressConnector = UserAddressConnector;
@@ -29923,13 +29939,7 @@
     exports.UserService = UserService;
     exports.UsersSelectors = usersGroup_selectors;
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
-    exports.WITHDRAW_USER_CONSENT = WITHDRAW_USER_CONSENT;
-    exports.WITHDRAW_USER_CONSENT_FAIL = WITHDRAW_USER_CONSENT_FAIL;
-    exports.WITHDRAW_USER_CONSENT_SUCCESS = WITHDRAW_USER_CONSENT_SUCCESS;
     exports.WindowRef = WindowRef;
-    exports.WithdrawUserConsent = WithdrawUserConsent;
-    exports.WithdrawUserConsentFail = WithdrawUserConsentFail;
-    exports.WithdrawUserConsentSuccess = WithdrawUserConsentSuccess;
     exports.clearCartState = clearCartState;
     exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
@@ -30093,12 +30103,12 @@
     exports.ɵfd = effects$8;
     exports.ɵfe = FindStoresEffect;
     exports.ɵff = ViewAllStoresEffect;
-    exports.ɵfg = getReducers$a;
-    exports.ɵfh = reducerToken$a;
-    exports.ɵfi = reducerProvider$a;
-    exports.ɵfj = clearUserState;
-    exports.ɵfk = metaReducers$5;
-    exports.ɵfl = UserStoreModule;
+    exports.ɵfg = UserStoreModule;
+    exports.ɵfh = getReducers$b;
+    exports.ɵfi = reducerToken$b;
+    exports.ɵfj = reducerProvider$b;
+    exports.ɵfk = clearUserState;
+    exports.ɵfl = metaReducers$5;
     exports.ɵfm = effects$9;
     exports.ɵfn = BillingCountriesEffect;
     exports.ɵfo = DeliveryCountriesEffects;
@@ -30131,9 +30141,9 @@
     exports.ɵgo = ProcessModule;
     exports.ɵgp = ProcessStoreModule;
     exports.ɵgq = PROCESS_FEATURE;
-    exports.ɵgr = getReducers$b;
-    exports.ɵgs = reducerToken$b;
-    exports.ɵgt = reducerProvider$b;
+    exports.ɵgr = getReducers$a;
+    exports.ɵgs = reducerToken$a;
+    exports.ɵgt = reducerProvider$a;
     exports.ɵh = reducerProvider;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;

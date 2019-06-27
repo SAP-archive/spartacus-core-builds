@@ -1,11 +1,11 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserConnector } from '../../connectors/user/user.connector';
-import * as fromUserDetailsAction from '../actions/user-details.action';
+import { UserActions } from '../actions/index';
 export declare class UserDetailsEffects {
     private actions$;
     private userConnector;
-    loadUserDetails$: Observable<fromUserDetailsAction.UserDetailsAction>;
-    updateUserDetails$: Observable<fromUserDetailsAction.UpdateUserDetailsSuccess | fromUserDetailsAction.UpdateUserDetailsFail>;
+    loadUserDetails$: Observable<UserActions.UserDetailsAction>;
+    updateUserDetails$: Observable<UserActions.UpdateUserDetailsSuccess | UserActions.UpdateUserDetailsFail>;
     constructor(actions$: Actions, userConnector: UserConnector);
 }

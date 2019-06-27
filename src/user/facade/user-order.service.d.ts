@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Order, OrderHistoryList } from '../../model/order.model';
-import * as fromProcessStore from '../../process/store/process-state';
-import * as fromStore from '../store/index';
+import { StateWithProcess } from '../../process/store/process-state';
+import { StateWithUser } from '../store/user-state';
 export declare class UserOrderService {
-    protected store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>;
-    constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
+    protected store: Store<StateWithUser | StateWithProcess<void>>;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
      * Returns an order's detail
      */

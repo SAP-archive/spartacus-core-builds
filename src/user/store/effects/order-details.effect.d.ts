@@ -1,10 +1,10 @@
 import { Actions } from '@ngrx/effects';
 import { Observable } from 'rxjs';
 import { UserOrderConnector } from '../../connectors/order/user-order.connector';
-import * as fromOrderDetailsAction from '../actions/order-details.action';
+import { UserActions } from '../actions/index';
 export declare class OrderDetailsEffect {
     private actions$;
     private orderConnector;
-    loadOrderDetails$: Observable<fromOrderDetailsAction.OrderDetailsAction>;
+    loadOrderDetails$: Observable<UserActions.OrderDetailsAction>;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
 }

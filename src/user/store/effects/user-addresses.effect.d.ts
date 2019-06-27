@@ -3,16 +3,16 @@ import { Observable } from 'rxjs';
 import { GlobalMessageService } from '../../../global-message/index';
 import { UserAddressConnector } from '../../connectors/address/user-address.connector';
 import { UserAddressService } from '../../facade/user-address.service';
-import * as fromUserAddressesAction from '../actions/user-addresses.action';
+import { UserActions } from '../actions/index';
 export declare class UserAddressesEffects {
     private actions$;
     private userAddressConnector;
     private userAddressService;
     private messageService;
-    loadUserAddresses$: Observable<fromUserAddressesAction.UserAddressesAction>;
-    addUserAddress$: Observable<fromUserAddressesAction.UserAddressesAction>;
-    updateUserAddress$: Observable<fromUserAddressesAction.UserAddressesAction>;
-    deleteUserAddress$: Observable<fromUserAddressesAction.UserAddressesAction>;
+    loadUserAddresses$: Observable<UserActions.UserAddressesAction>;
+    addUserAddress$: Observable<UserActions.UserAddressesAction>;
+    updateUserAddress$: Observable<UserActions.UserAddressesAction>;
+    deleteUserAddress$: Observable<UserActions.UserAddressesAction>;
     /**
      *  Reload addresses and notify about add success
      */

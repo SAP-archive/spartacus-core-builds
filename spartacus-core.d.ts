@@ -125,7 +125,7 @@ export { UserOrdersEffect as ɵfx } from './src/user/store/effects/user-orders.e
 export { UserRegisterEffects as ɵfy } from './src/user/store/effects/user-register.effect';
 export { reducer as ɵgf } from './src/user/store/reducers/billing-countries.reducer';
 export { reducer as ɵgk } from './src/user/store/reducers/delivery-countries.reducer';
-export { clearUserState as ɵfj, getReducers as ɵfg, metaReducers as ɵfk, reducerProvider as ɵfi, reducerToken as ɵfh } from './src/user/store/reducers/index';
+export { clearUserState as ɵfk, getReducers as ɵfh, metaReducers as ɵfl, reducerProvider as ɵfj, reducerToken as ɵfi } from './src/user/store/reducers/index';
 export { reducer as ɵgj } from './src/user/store/reducers/order-details.reducer';
 export { reducer as ɵgh } from './src/user/store/reducers/payment-methods.reducer';
 export { reducer as ɵgm } from './src/user/store/reducers/regions.reducer';
@@ -135,4 +135,4 @@ export { reducer as ɵge } from './src/user/store/reducers/user-addresses.reduce
 export { reducer as ɵgg } from './src/user/store/reducers/user-consents.reducer';
 export { reducer as ɵgd } from './src/user/store/reducers/user-details.reducer';
 export { reducer as ɵgi } from './src/user/store/reducers/user-orders.reducer';
-export { UserStoreModule as ɵfl } from './src/user/store/user-store.module';
+export { UserStoreModule as ɵfg } from './src/user/store/user-store.module';

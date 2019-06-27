@@ -1,5 +1,5 @@
 import { InjectionToken, Provider } from '@angular/core';
-import { ActionReducer, ActionReducerMap, MetaReducer, Action } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { CmsState, StateWithCms } from '../cms-state';
 export declare function getReducers(): ActionReducerMap<CmsState>;
 export declare const reducerToken: InjectionToken<ActionReducerMap<CmsState>>;

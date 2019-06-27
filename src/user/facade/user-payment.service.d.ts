@@ -2,11 +2,11 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Country } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
-import * as fromProcessStore from '../../process/store/process-state';
-import * as fromStore from '../store/index';
+import { StateWithProcess } from '../../process/store/process-state';
+import { StateWithUser } from '../store/user-state';
 export declare class UserPaymentService {
-    protected store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>;
-    constructor(store: Store<fromStore.StateWithUser | fromProcessStore.StateWithProcess<void>>);
+    protected store: Store<StateWithUser | StateWithProcess<void>>;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
      * Loads all user's payment methods.
      */
