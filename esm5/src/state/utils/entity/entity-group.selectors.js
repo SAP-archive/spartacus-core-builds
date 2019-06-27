@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import * as StateEntitySelectors from './entity.selectors';
+export { StateEntitySelectors };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW50aXR5LWdyb3VwLnNlbGVjdG9ycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9zdGF0ZS91dGlscy9lbnRpdHkvZW50aXR5LWdyb3VwLnNlbGVjdG9ycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxLQUFLLG9CQUFvQixNQUFNLG9CQUFvQixDQUFDO0FBQzNELE9BQU8sRUFBRSxvQkFBb0IsRUFBRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0ICogYXMgU3RhdGVFbnRpdHlTZWxlY3RvcnMgZnJvbSAnLi9lbnRpdHkuc2VsZWN0b3JzJztcbmV4cG9ydCB7IFN0YXRlRW50aXR5U2VsZWN0b3JzIH07XG4iXX0=

@@ -1,5 +1,5 @@
 import { Address } from '../../../model/address.model';
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_USER_ADDRESSES = "[User] Load User Addresses";
 export declare const LOAD_USER_ADDRESSES_FAIL = "[User] Load User Addresses Fail";
 export declare const LOAD_USER_ADDRESSES_SUCCESS = "[User] Load User Addresses Success";

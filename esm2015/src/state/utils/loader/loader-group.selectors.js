@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import * as StateLoaderSelectors from './loader.selectors';
+export { StateLoaderSelectors };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibG9hZGVyLWdyb3VwLnNlbGVjdG9ycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9zdGF0ZS91dGlscy9sb2FkZXIvbG9hZGVyLWdyb3VwLnNlbGVjdG9ycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxLQUFLLG9CQUFvQixNQUFNLG9CQUFvQixDQUFDO0FBQzNELE9BQU8sRUFBRSxvQkFBb0IsRUFBRSxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0ICogYXMgU3RhdGVMb2FkZXJTZWxlY3RvcnMgZnJvbSAnLi9sb2FkZXIuc2VsZWN0b3JzJztcbmV4cG9ydCB7IFN0YXRlTG9hZGVyU2VsZWN0b3JzIH07XG4iXX0=

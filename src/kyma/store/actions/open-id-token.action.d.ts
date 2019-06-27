@@ -1,4 +1,4 @@
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 import { OpenIdToken } from '../../models/kyma-token-types.model';
 export declare const LOAD_OPEN_ID_TOKEN = "[Kyma] Load Open ID Token";
 export declare const LOAD_OPEN_ID_TOKEN_FAIL = "[Kyma] Load Open ID Token Fail";

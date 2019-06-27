@@ -1,4 +1,4 @@
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 import { ClientToken } from '../../models/token-types.model';
 export declare const LOAD_CLIENT_TOKEN = "[Token] Load Client Token";
 export declare const LOAD_CLIENT_TOKEN_FAIL = "[Token] Load Client Token Fail";

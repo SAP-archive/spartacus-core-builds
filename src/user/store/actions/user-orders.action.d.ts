@@ -1,5 +1,5 @@
 import { OrderHistoryList } from '../../../model/order.model';
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_USER_ORDERS = "[User] Load User Orders";
 export declare const LOAD_USER_ORDERS_FAIL = "[User] Load User Orders Fail";
 export declare const LOAD_USER_ORDERS_SUCCESS = "[User] Load User Orders Success";

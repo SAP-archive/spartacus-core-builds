@@ -1,12 +1,12 @@
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { InjectionToken, isDevMode, Optional, NgModule, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, PLATFORM_ID, Pipe, Injector, INJECTOR, APP_INITIALIZER, ChangeDetectorRef, NgZone } from '@angular/core';
+import { InjectionToken, isDevMode, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, Pipe, Injector, INJECTOR, APP_INITIALIZER, ChangeDetectorRef, NgZone } from '@angular/core';
 import { of, throwError, Observable, combineLatest, asyncScheduler, iif, Subscription } from 'rxjs';
 import { filter, map, take, switchMap, tap, catchError, exhaustMap, mergeMap, debounceTime, shareReplay, pluck, groupBy, delay, withLatestFrom, takeWhile, concatMap } from 'rxjs/operators';
-import { INIT, UPDATE, META_REDUCERS, createFeatureSelector, createSelector, select, Store, combineReducers, StoreModule } from '@ngrx/store';
-import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
+import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
+import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
 import { __decorate, __metadata } from 'tslib';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
 import i18next from 'i18next';
@@ -241,425 +241,6 @@ const defaultAuthConfig = {
         client_secret: 'secret',
     },
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-/** @type {?} */
-const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-/** @type {?} */
-const defaultStateConfig = {
-    state: {
-        storageSync: {
-            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-            keys: {},
-        },
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const StorageSyncType = {
-    NO_STORAGE: 'NO_STORAGE',
-    LOCAL_STORAGE: 'LOCAL_STORAGE',
-    SESSION_STORAGE: 'SESSION_STORAGE',
-};
-/** @enum {string} */
-const StateTransferType = {
-    TRANSFER_STATE: 'SSR',
-};
-/**
- * @abstract
- */
-class StateConfig {
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class WindowRef {
-    /**
-     * @param {?} document
-     */
-    constructor(document) {
-        // it's a workaround to have document property properly typed
-        // see: https://github.com/angular/angular/issues/15640
-        this.document = document;
-    }
-    /**
-     * @return {?}
-     */
-    get nativeWindow() {
-        return typeof window !== 'undefined' ? window : undefined;
-    }
-    /**
-     * @return {?}
-     */
-    get sessionStorage() {
-        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-    }
-    /**
-     * @return {?}
-     */
-    get localStorage() {
-        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-    }
-}
-WindowRef.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-WindowRef.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
-];
-/** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T, E
- * @param {?} keys
- * @param {?} state
- * @return {?}
- */
-function getStateSliceValue(keys, state) {
-    return keys
-        .split('.')
-        .reduce((/**
-     * @param {?} previous
-     * @param {?} current
-     * @return {?}
-     */
-    (previous, current) => (previous ? previous[current] : undefined)), state);
-}
-/**
- * @template T, E
- * @param {?} key
- * @param {?} value
- * @return {?}
- */
-function createShellObject(key, value) {
-    if (!key || !value || Object.keys(value).length === 0) {
-        return (/** @type {?} */ ({}));
-    }
-    /** @type {?} */
-    const keySplit = key.split('.');
-    /** @type {?} */
-    const newObject = {};
-    /** @type {?} */
-    let tempNewObject = newObject;
-    for (let i = 0; i < keySplit.length; i++) {
-        /** @type {?} */
-        const currentKey = keySplit[i];
-        // last iteration
-        if (i === keySplit.length - 1) {
-            tempNewObject = tempNewObject[currentKey] = value;
-        }
-        else {
-            tempNewObject = tempNewObject[currentKey] = {};
-        }
-    }
-    return (/** @type {?} */ (newObject));
-}
-/**
- * @template T, E
- * @param {?} keys
- * @param {?} state
- * @return {?}
- */
-function getStateSlice(keys, state) {
-    if (keys && keys.length === 0) {
-        return (/** @type {?} */ ({}));
-    }
-    /** @type {?} */
-    let stateSlices = {};
-    for (const currentKey of keys) {
-        /** @type {?} */
-        const stateValue = getStateSliceValue(currentKey, state);
-        /** @type {?} */
-        const shell = createShellObject(currentKey, stateValue);
-        stateSlices = deepMerge(stateSlices, shell);
-    }
-    return (/** @type {?} */ (stateSlices));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} winRef
- * @param {?=} config
- * @return {?}
- */
-function getStorageSyncReducer(winRef, config) {
-    if (!winRef.nativeWindow ||
-        !config ||
-        !config.state ||
-        !config.state.storageSync ||
-        !config.state.storageSync.keys) {
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        reducer => reducer);
-    }
-    /** @type {?} */
-    const storageSyncConfig = config.state.storageSync;
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    (reducer) => {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        (state, action) => {
-            /** @type {?} */
-            const newState = reducer(state, action);
-            if (action.type === INIT || action.type === UPDATE) {
-                /** @type {?} */
-                const rehydratedState = rehydrate(config, winRef);
-                return deepMerge({}, newState, rehydratedState);
-            }
-            if (action.type !== INIT) {
-                // handle local storage
-                /** @type {?} */
-                const localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                /** @type {?} */
-                const localStorageStateSlices = getStateSlice(localStorageKeys, state);
-                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
-                // handle session storage
-                /** @type {?} */
-                const sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
-                /** @type {?} */
-                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
-                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
-            }
-            return newState;
-        });
-    });
-}
-/**
- * @param {?} keys
- * @param {?} storageType
- * @return {?}
- */
-function getKeysForStorage(keys, storageType) {
-    return Object.keys(keys).filter((/**
-     * @param {?} key
-     * @return {?}
-     */
-    key => keys[key] === storageType));
-}
-/**
- * @template T
- * @param {?} config
- * @param {?} winRef
- * @return {?}
- */
-function rehydrate(config, winRef) {
-    /** @type {?} */
-    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
-    /** @type {?} */
-    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
-    return deepMerge(localStorageValue, sessionStorageValue);
-}
-/**
- * @param {?} configKey
- * @param {?} value
- * @param {?} storage
- * @return {?}
- */
-function persistToStorage(configKey, value, storage) {
-    if (!isSsr(storage) && value) {
-        storage.setItem(configKey, JSON.stringify(value));
-    }
-}
-/**
- * @param {?} storage
- * @param {?} key
- * @return {?}
- */
-function readFromStorage(storage, key) {
-    if (isSsr(storage)) {
-        return;
-    }
-    /** @type {?} */
-    const storageValue = storage.getItem(key);
-    if (!storageValue) {
-        return;
-    }
-    return JSON.parse(storageValue);
-}
-/**
- * @param {?} storage
- * @return {?}
- */
-function isSsr(storage) {
-    return !Boolean(storage);
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const AUTH_FEATURE = 'auth';
-/** @type {?} */
-const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const CX_KEY = makeStateKey('cx-state');
-/**
- * @param {?} platformId
- * @param {?=} transferState
- * @param {?=} config
- * @return {?}
- */
-function getTransferStateReducer(platformId, transferState, config) {
-    if (transferState &&
-        config &&
-        config.state &&
-        config.state.ssrTransfer &&
-        config.state.ssrTransfer.keys) {
-        if (isPlatformBrowser(platformId)) {
-            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-        else if (isPlatformServer(platformId)) {
-            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-    }
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    reducer => reducer);
-}
-/**
- * @param {?} transferState
- * @param {?} keys
- * @return {?}
- */
-function getServerTransferStateReducer(transferState, keys) {
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function (reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            /** @type {?} */
-            const newState = reducer(state, action);
-            if (newState) {
-                /** @type {?} */
-                const stateSlice = getStateSlice(Object.keys(keys), newState);
-                transferState.set(CX_KEY, stateSlice);
-            }
-            return newState;
-        });
-    });
-}
-/**
- * @param {?} transferState
- * @param {?} keys
- * @return {?}
- */
-function getBrowserTransferStateReducer(transferState, keys) {
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function (reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (action.type === INIT) {
-                if (!state) {
-                    state = reducer(state, action);
-                }
-                // we should not utilize transfer state if user is logged in
-                /** @type {?} */
-                const authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
-                /** @type {?} */
-                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
-                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
-                    /** @type {?} */
-                    const cxKey = transferState.get(CX_KEY, {});
-                    /** @type {?} */
-                    const transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
-                    state = deepMerge({}, state, transferredStateSlice);
-                }
-                return state;
-            }
-            return reducer(state, action);
-        });
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0 = getTransferStateReducer, ɵ1 = getStorageSyncReducer;
-/** @type {?} */
-const stateMetaReducers = [
-    {
-        provide: META_REDUCERS,
-        useFactory: ɵ0,
-        deps: [
-            PLATFORM_ID,
-            [new Optional(), TransferState],
-            [new Optional(), Config],
-        ],
-        multi: true,
-    },
-    {
-        provide: META_REDUCERS,
-        useFactory: ɵ1,
-        deps: [WindowRef, [new Optional(), Config]],
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class StateModule {
-}
-StateModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [ConfigModule.withConfig(defaultStateConfig)],
-                providers: [...stateMetaReducers],
-            },] }
-];
 
 /**
  * @fileoverview added by tsickle
@@ -988,6 +569,137 @@ var entityLoader_action = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const initialLoaderState = {
+    loading: false,
+    error: false,
+    success: false,
+    value: undefined,
+};
+/**
+ * Higher order reducer that adds generic loading flag to chunk of the state
+ *
+ * Utilizes "loader" meta field of actions to set specific flags for specific
+ * action (LOAD, SUCCESS, FAIL, RESET)
+ * @template T
+ * @param {?} loadActionType
+ * @param {?=} reducer
+ * @return {?}
+ */
+function loaderReducer(loadActionType, reducer) {
+    return (/**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    (state = initialLoaderState, action) => {
+        if (action.meta &&
+            action.meta.loader &&
+            action.meta.entityType === loadActionType) {
+            /** @type {?} */
+            const entity = action.meta.loader;
+            if (entity.load) {
+                return Object.assign({}, state, { loading: true, value: reducer ? reducer(state.value, action) : state.value });
+            }
+            else if (entity.error) {
+                return Object.assign({}, state, { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
+            }
+            else if (entity.success) {
+                return Object.assign({}, state, { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
+            }
+            else {
+                // reset state action
+                return Object.assign({}, initialLoaderState, { value: reducer
+                        ? reducer(initialLoaderState.value, action)
+                        : initialLoaderState.value });
+            }
+        }
+        if (reducer) {
+            /** @type {?} */
+            const newValue = reducer(state.value, action);
+            if (newValue !== state.value) {
+                return Object.assign({}, state, { value: newValue });
+            }
+        }
+        return state;
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityStateSelector(state, id) {
+    return state.entities[id] || initialLoaderState;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityValueSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.value;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityLoadingSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.loading;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entityErrorSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.error;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @param {?} id
+ * @return {?}
+ */
+function entitySuccessSelector(state, id) {
+    /** @type {?} */
+    const entityState = entityStateSelector(state, id);
+    return entityState.success;
+}
+
+var entityLoader_selectors = /*#__PURE__*/Object.freeze({
+    entityStateSelector: entityStateSelector,
+    entityValueSelector: entityValueSelector,
+    entityLoadingSelector: entityLoadingSelector,
+    entityErrorSelector: entityErrorSelector,
+    entitySuccessSelector: entitySuccessSelector
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -1076,66 +788,6 @@ function entityReducer(entityType, reducer) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const initialLoaderState = {
-    loading: false,
-    error: false,
-    success: false,
-    value: undefined,
-};
-/**
- * Higher order reducer that adds generic loading flag to chunk of the state
- *
- * Utilizes "loader" meta field of actions to set specific flags for specific
- * action (LOAD, SUCCESS, FAIL, RESET)
- * @template T
- * @param {?} loadActionType
- * @param {?=} reducer
- * @return {?}
- */
-function loaderReducer(loadActionType, reducer) {
-    return (/**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    (state = initialLoaderState, action) => {
-        if (action.meta &&
-            action.meta.loader &&
-            action.meta.entityType === loadActionType) {
-            /** @type {?} */
-            const entity = action.meta.loader;
-            if (entity.load) {
-                return Object.assign({}, state, { loading: true, value: reducer ? reducer(state.value, action) : state.value });
-            }
-            else if (entity.error) {
-                return Object.assign({}, state, { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
-            }
-            else if (entity.success) {
-                return Object.assign({}, state, { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
-            }
-            else {
-                // reset state action
-                return Object.assign({}, initialLoaderState, { value: reducer
-                        ? reducer(initialLoaderState.value, action)
-                        : initialLoaderState.value });
-            }
-        }
-        if (reducer) {
-            /** @type {?} */
-            const newValue = reducer(state.value, action);
-            if (newValue !== state.value) {
-                return Object.assign({}, state, { value: newValue });
-            }
-        }
-        return state;
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /**
  * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
  * single state reducer to support multiple entities with generic loading flags
@@ -1147,69 +799,6 @@ function loaderReducer(loadActionType, reducer) {
 function entityLoaderReducer(entityType, reducer) {
     return entityReducer(entityType, loaderReducer(entityType, reducer));
 }
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityStateSelector(state, id) {
-    return state.entities[id] || initialLoaderState;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityValueSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.value;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityLoadingSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.loading;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entityErrorSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.error;
-}
-/**
- * @template T
- * @param {?} state
- * @param {?} id
- * @return {?}
- */
-function entitySuccessSelector(state, id) {
-    /** @type {?} */
-    const entityState = entityStateSelector(state, id);
-    return entityState.success;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -1235,10 +824,144 @@ function entitySelector(state, id) {
     return state.entities[id] || undefined;
 }
 
+var entity_selectors = /*#__PURE__*/Object.freeze({
+    entitySelector: entitySelector
+});
+
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T, E
+ * @param {?} keys
+ * @param {?} state
+ * @return {?}
+ */
+function getStateSliceValue(keys, state) {
+    return keys
+        .split('.')
+        .reduce((/**
+     * @param {?} previous
+     * @param {?} current
+     * @return {?}
+     */
+    (previous, current) => (previous ? previous[current] : undefined)), state);
+}
+/**
+ * @template T, E
+ * @param {?} key
+ * @param {?} value
+ * @return {?}
+ */
+function createShellObject(key, value) {
+    if (!key || !value || Object.keys(value).length === 0) {
+        return (/** @type {?} */ ({}));
+    }
+    /** @type {?} */
+    const keySplit = key.split('.');
+    /** @type {?} */
+    const newObject = {};
+    /** @type {?} */
+    let tempNewObject = newObject;
+    for (let i = 0; i < keySplit.length; i++) {
+        /** @type {?} */
+        const currentKey = keySplit[i];
+        // last iteration
+        if (i === keySplit.length - 1) {
+            tempNewObject = tempNewObject[currentKey] = value;
+        }
+        else {
+            tempNewObject = tempNewObject[currentKey] = {};
+        }
+    }
+    return (/** @type {?} */ (newObject));
+}
+/**
+ * @template T, E
+ * @param {?} keys
+ * @param {?} state
+ * @return {?}
+ */
+function getStateSlice(keys, state) {
+    if (keys && keys.length === 0) {
+        return (/** @type {?} */ ({}));
+    }
+    /** @type {?} */
+    let stateSlices = {};
+    for (const currentKey of keys) {
+        /** @type {?} */
+        const stateValue = getStateSliceValue(currentKey, state);
+        /** @type {?} */
+        const shell = createShellObject(currentKey, stateValue);
+        stateSlices = deepMerge(stateSlices, shell);
+    }
+    return (/** @type {?} */ (stateSlices));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderValueSelector(state) {
+    return state.value;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderLoadingSelector(state) {
+    return state.loading;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderErrorSelector(state) {
+    return state.error;
+}
+/**
+ * @template T
+ * @param {?} state
+ * @return {?}
+ */
+function loaderSuccessSelector(state) {
+    return state.success;
+}
+
+var loader_selectors = /*#__PURE__*/Object.freeze({
+    loaderValueSelector: loaderValueSelector,
+    loaderLoadingSelector: loaderLoadingSelector,
+    loaderErrorSelector: loaderErrorSelector,
+    loaderSuccessSelector: loaderSuccessSelector
+});
 
 /**
  * @fileoverview added by tsickle
@@ -1302,38 +1025,6 @@ function ofLoaderSuccess(entityType) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderValueSelector(state) {
-    return state.value;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderLoadingSelector(state) {
-    return state.loading;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderErrorSelector(state) {
-    return state.error;
-}
-/**
- * @template T
- * @param {?} state
- * @return {?}
- */
-function loaderSuccessSelector(state) {
-    return state.success;
-}
 
 /**
  * @fileoverview added by tsickle
@@ -1344,11 +1035,10 @@ function loaderSuccessSelector(state) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
+/** @type {?} */
+const AUTH_FEATURE = 'auth';
+/** @type {?} */
+const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
 
 /**
  * @fileoverview added by tsickle
@@ -1523,13 +1213,13 @@ const getAuthState = createFeatureSelector(AUTH_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$1 = /**
+const ɵ0 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.clientToken;
 /** @type {?} */
-const getClientTokenState = createSelector(getAuthState, (ɵ0$1));
+const getClientTokenState = createSelector(getAuthState, (ɵ0));
 
 /**
  * @fileoverview added by tsickle
@@ -1541,13 +1231,13 @@ const getUserTokenSelector = (/**
  * @return {?}
  */
 (state) => state.token);
-const ɵ1$1 = /**
+const ɵ1 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.userToken;
 /** @type {?} */
-const getUserTokenState = createSelector(getAuthState, (ɵ1$1));
+const getUserTokenState = createSelector(getAuthState, (ɵ1));
 /** @type {?} */
 const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -1733,6 +1423,49 @@ ClientErrorHandlingService.decorators = [
 ClientErrorHandlingService.ctorParameters = () => [
     { type: AuthService }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class WindowRef {
+    /**
+     * @param {?} document
+     */
+    constructor(document) {
+        // it's a workaround to have document property properly typed
+        // see: https://github.com/angular/angular/issues/15640
+        this.document = document;
+    }
+    /**
+     * @return {?}
+     */
+    get nativeWindow() {
+        return typeof window !== 'undefined' ? window : undefined;
+    }
+    /**
+     * @return {?}
+     */
+    get sessionStorage() {
+        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+    }
+    /**
+     * @return {?}
+     */
+    get localStorage() {
+        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+    }
+}
+WindowRef.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+WindowRef.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+];
+/** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -2136,20 +1869,20 @@ const ROUTING_FEATURE = 'router';
  */
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$2 = /**
+const ɵ0$1 = /**
  * @param {?} state
  * @return {?}
  */
 state => state.router;
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (ɵ0$2));
-const ɵ1$2 = /**
+const getRouterState = createSelector(getRouterFeatureState, (ɵ0$1));
+const ɵ1$1 = /**
  * @param {?} routingState
  * @return {?}
  */
 (routingState) => (routingState.state && routingState.state.context) || { id: '' };
 /** @type {?} */
-const getPageContext = createSelector(getRouterState, (ɵ1$2));
+const getPageContext = createSelector(getRouterState, (ɵ1$1));
 const ɵ2 = /**
  * @param {?} routingState
  * @return {?}
@@ -2752,20 +2485,20 @@ const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$3 = /**
+const ɵ0$2 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.activeSite;
 /** @type {?} */
-const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
-const ɵ1$3 = /**
+const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$2));
+const ɵ1$2 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.details;
 /** @type {?} */
-const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$3));
+const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$2));
 
 /**
  * @fileoverview added by tsickle
@@ -3611,6 +3344,302 @@ const AuthServices = [
     ClientErrorHandlingService,
     UserAuthenticationTokenService,
     UserErrorHandlingService,
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const StorageSyncType = {
+    NO_STORAGE: 'NO_STORAGE',
+    LOCAL_STORAGE: 'LOCAL_STORAGE',
+    SESSION_STORAGE: 'SESSION_STORAGE',
+};
+/** @enum {string} */
+const StateTransferType = {
+    TRANSFER_STATE: 'SSR',
+};
+/**
+ * @abstract
+ */
+class StateConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+/** @type {?} */
+const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+/** @type {?} */
+const defaultStateConfig = {
+    state: {
+        storageSync: {
+            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+            keys: {},
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} winRef
+ * @param {?=} config
+ * @return {?}
+ */
+function getStorageSyncReducer(winRef, config) {
+    if (!winRef.nativeWindow ||
+        !config ||
+        !config.state ||
+        !config.state.storageSync ||
+        !config.state.storageSync.keys) {
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        reducer => reducer);
+    }
+    /** @type {?} */
+    const storageSyncConfig = config.state.storageSync;
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    (reducer) => {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        (state, action) => {
+            /** @type {?} */
+            const newState = reducer(state, action);
+            if (action.type === INIT || action.type === UPDATE) {
+                /** @type {?} */
+                const rehydratedState = rehydrate(config, winRef);
+                return deepMerge({}, newState, rehydratedState);
+            }
+            if (action.type !== INIT) {
+                // handle local storage
+                /** @type {?} */
+                const localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                const localStorageStateSlices = getStateSlice(localStorageKeys, state);
+                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                // handle session storage
+                /** @type {?} */
+                const sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
+                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+            }
+            return newState;
+        });
+    });
+}
+/**
+ * @param {?} keys
+ * @param {?} storageType
+ * @return {?}
+ */
+function getKeysForStorage(keys, storageType) {
+    return Object.keys(keys).filter((/**
+     * @param {?} key
+     * @return {?}
+     */
+    key => keys[key] === storageType));
+}
+/**
+ * @template T
+ * @param {?} config
+ * @param {?} winRef
+ * @return {?}
+ */
+function rehydrate(config, winRef) {
+    /** @type {?} */
+    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+    /** @type {?} */
+    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+    return deepMerge(localStorageValue, sessionStorageValue);
+}
+/**
+ * @param {?} configKey
+ * @param {?} value
+ * @param {?} storage
+ * @return {?}
+ */
+function persistToStorage(configKey, value, storage) {
+    if (!isSsr(storage) && value) {
+        storage.setItem(configKey, JSON.stringify(value));
+    }
+}
+/**
+ * @param {?} storage
+ * @param {?} key
+ * @return {?}
+ */
+function readFromStorage(storage, key) {
+    if (isSsr(storage)) {
+        return;
+    }
+    /** @type {?} */
+    const storageValue = storage.getItem(key);
+    if (!storageValue) {
+        return;
+    }
+    return JSON.parse(storageValue);
+}
+/**
+ * @param {?} storage
+ * @return {?}
+ */
+function isSsr(storage) {
+    return !Boolean(storage);
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CX_KEY = makeStateKey('cx-state');
+/**
+ * @param {?} platformId
+ * @param {?=} transferState
+ * @param {?=} config
+ * @return {?}
+ */
+function getTransferStateReducer(platformId, transferState, config) {
+    if (transferState &&
+        config &&
+        config.state &&
+        config.state.ssrTransfer &&
+        config.state.ssrTransfer.keys) {
+        if (isPlatformBrowser(platformId)) {
+            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+        }
+        else if (isPlatformServer(platformId)) {
+            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+        }
+    }
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    reducer => reducer);
+}
+/**
+ * @param {?} transferState
+ * @param {?} keys
+ * @return {?}
+ */
+function getServerTransferStateReducer(transferState, keys) {
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function (reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            /** @type {?} */
+            const newState = reducer(state, action);
+            if (newState) {
+                /** @type {?} */
+                const stateSlice = getStateSlice(Object.keys(keys), newState);
+                transferState.set(CX_KEY, stateSlice);
+            }
+            return newState;
+        });
+    });
+}
+/**
+ * @param {?} transferState
+ * @param {?} keys
+ * @return {?}
+ */
+function getBrowserTransferStateReducer(transferState, keys) {
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function (reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === INIT) {
+                if (!state) {
+                    state = reducer(state, action);
+                }
+                // we should not utilize transfer state if user is logged in
+                /** @type {?} */
+                const authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
+                /** @type {?} */
+                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                    /** @type {?} */
+                    const cxKey = transferState.get(CX_KEY, {});
+                    /** @type {?} */
+                    const transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return state;
+            }
+            return reducer(state, action);
+        });
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$3 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
+/** @type {?} */
+const stateMetaReducers = [
+    {
+        provide: META_REDUCERS,
+        useFactory: ɵ0$3,
+        deps: [
+            PLATFORM_ID,
+            [new Optional(), TransferState],
+            [new Optional(), Config],
+        ],
+        multi: true,
+    },
+    {
+        provide: META_REDUCERS,
+        useFactory: ɵ1$3,
+        deps: [WindowRef, [new Optional(), Config]],
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class StateModule {
+}
+StateModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [ConfigModule.withConfig(defaultStateConfig)],
+                providers: [...stateMetaReducers],
+            },] }
 ];
 
 /**
@@ -8615,7 +8644,8 @@ const ɵ9 = /**
  * @param {?} state
  * @return {?}
  */
-state => loaderSuccessSelector(state) && !loaderLoadingSelector(state);
+state => loaderSuccessSelector(state) &&
+    !loaderLoadingSelector(state);
 /** @type {?} */
 const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9));
 
@@ -20985,6 +21015,11 @@ const siteContextParamsProviders = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @return {?}
  */
@@ -25657,5 +25692,5 @@ UserModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, CartPageMetaResolver, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextPersistence, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, loader_action as StateLoaderActions, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityErrorSelector, entityLoaderReducer, entityLoadingSelector, entityReducer, entitySelector, entityStateSelector, entitySuccessSelector, entityValueSelector, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, loaderErrorSelector, loaderLoadingSelector, loaderReducer, loaderSuccessSelector, loaderValueSelector, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CheckoutStoreModule as ɵbc, getReducers$4 as ɵbd, reducerToken$4 as ɵbe, reducerProvider$4 as ɵbf, effects$4 as ɵbg, AddressVerificationEffect as ɵbh, CardTypesEffects as ɵbi, CheckoutEffects as ɵbj, reducer$8 as ɵbk, reducer$7 as ɵbl, reducer$6 as ɵbm, cmsStoreConfigFactory as ɵbn, CmsStoreModule as ɵbo, getReducers$3 as ɵbp, reducerToken$3 as ɵbq, reducerProvider$3 as ɵbr, clearCmsState as ɵbs, metaReducers$2 as ɵbt, effects$3 as ɵbu, PageEffects as ɵbv, ComponentEffects as ɵbw, NavigationEntryItemEffects as ɵbx, reducer$4 as ɵby, reducer$5 as ɵbz, stateMetaReducers as ɵc, reducer$3 as ɵca, GlobalMessageStoreModule as ɵcb, getReducers$5 as ɵcc, reducerToken$5 as ɵcd, reducerProvider$5 as ɵce, reducer$9 as ɵcf, GlobalMessageEffect as ɵcg, defaultGlobalMessageConfigFactory as ɵch, HttpErrorInterceptor as ɵci, defaultI18nConfig as ɵcj, i18nextProviders as ɵck, i18nextInit as ɵcl, MockTranslationService as ɵcm, kymaStoreConfigFactory as ɵcn, KymaStoreModule as ɵco, getReducers$6 as ɵcp, reducerToken$6 as ɵcq, reducerProvider$6 as ɵcr, clearKymaState as ɵcs, metaReducers$3 as ɵct, effects$5 as ɵcu, OpenIdTokenEffect as ɵcv, OpenIdAuthenticationTokenService as ɵcw, defaultKymaConfig as ɵcx, provideConfigFactory as ɵcy, defaultOccProductConfig as ɵcz, getStorageSyncReducer as ɵd, provideConfigValidator as ɵda, defaultPersonalizationConfig as ɵdb, interceptors$1 as ɵdc, OccPersonalizationIdInterceptor as ɵdd, OccPersonalizationTimeInterceptor as ɵde, productStoreConfigFactory as ɵdf, ProductStoreModule as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearProductsState as ɵdk, metaReducers$4 as ɵdl, effects$6 as ɵdm, ProductReferencesEffects as ɵdn, ProductReviewsEffects as ɵdo, ProductsSearchEffects as ɵdp, ProductEffects as ɵdq, reducer$a as ɵdr, reducer$c as ɵds, reducer$b as ɵdt, PageMetaResolver as ɵdu, UrlMatcherFactoryService as ɵdv, getReducers$2 as ɵdw, reducer$2 as ɵdx, reducerToken$2 as ɵdy, reducerProvider$2 as ɵdz, getTransferStateReducer as ɵe, CustomSerializer as ɵea, effects$2 as ɵeb, RouterEffects as ɵec, SiteContextParamsService as ɵed, SiteContextUrlSerializer as ɵee, SiteContextRoutesHandler as ɵef, defaultSiteContextConfigFactory as ɵeg, siteContextStoreConfigFactory as ɵeh, SiteContextStoreModule as ɵei, getReducers$8 as ɵej, reducerToken$8 as ɵek, reducerProvider$8 as ɵel, effects$7 as ɵem, LanguagesEffects as ɵen, CurrenciesEffects as ɵeo, BaseSiteEffects as ɵep, reducer$d as ɵeq, reducer$e as ɵer, reducer$f as ɵes, baseSiteConfigValidator as ɵet, interceptors$2 as ɵeu, CmsTicketInterceptor as ɵev, defaultStoreFinderConfig as ɵew, StoreFinderStoreModule as ɵex, getReducers$9 as ɵey, reducerToken$9 as ɵez, getReducers as ɵf, reducerProvider$9 as ɵfa, effects$8 as ɵfb, FindStoresEffect as ɵfc, ViewAllStoresEffect as ɵfd, UserStoreModule as ɵfe, getReducers$b as ɵff, reducerToken$b as ɵfg, reducerProvider$b as ɵfh, clearUserState as ɵfi, metaReducers$5 as ɵfj, effects$9 as ɵfk, BillingCountriesEffect as ɵfl, DeliveryCountriesEffects as ɵfm, OrderDetailsEffect as ɵfn, UserPaymentMethodsEffects as ɵfo, RegionsEffects as ɵfp, ResetPasswordEffects as ɵfq, TitlesEffects as ɵfr, UserAddressesEffects as ɵfs, UserConsentsEffect as ɵft, UserDetailsEffects as ɵfu, UserOrdersEffect as ɵfv, UserRegisterEffects as ɵfw, ClearMiscsDataEffect as ɵfx, ForgotPasswordEffects as ɵfy, UpdateEmailEffects as ɵfz, reducerToken as ɵg, UpdatePasswordEffects as ɵga, reducer$p as ɵgb, reducer$n as ɵgc, reducer$g as ɵgd, reducer$o as ɵge, reducer$j as ɵgf, reducer$q as ɵgg, reducer$i as ɵgh, reducer$h as ɵgi, reducer$m as ɵgj, reducer$k as ɵgk, reducer$l as ɵgl, ProcessModule as ɵgm, ProcessStoreModule as ɵgn, PROCESS_FEATURE as ɵgo, getReducers$a as ɵgp, reducerToken$a as ɵgq, reducerProvider$a as ɵgr, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵu, interceptors as ɵv, ClientTokenInterceptor as ɵw, UserTokenInterceptor as ɵx, AuthErrorInterceptor as ɵy, cartStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, CartPageMetaResolver, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesModule, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextPersistence, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CheckoutStoreModule as ɵbc, getReducers$4 as ɵbd, reducerToken$4 as ɵbe, reducerProvider$4 as ɵbf, effects$4 as ɵbg, AddressVerificationEffect as ɵbh, CardTypesEffects as ɵbi, CheckoutEffects as ɵbj, reducer$8 as ɵbk, reducer$7 as ɵbl, reducer$6 as ɵbm, cmsStoreConfigFactory as ɵbn, CmsStoreModule as ɵbo, getReducers$3 as ɵbp, reducerToken$3 as ɵbq, reducerProvider$3 as ɵbr, clearCmsState as ɵbs, metaReducers$2 as ɵbt, effects$3 as ɵbu, PageEffects as ɵbv, ComponentEffects as ɵbw, NavigationEntryItemEffects as ɵbx, reducer$4 as ɵby, reducer$5 as ɵbz, stateMetaReducers as ɵc, reducer$3 as ɵca, GlobalMessageStoreModule as ɵcb, getReducers$5 as ɵcc, reducerToken$5 as ɵcd, reducerProvider$5 as ɵce, reducer$9 as ɵcf, GlobalMessageEffect as ɵcg, defaultGlobalMessageConfigFactory as ɵch, HttpErrorInterceptor as ɵci, defaultI18nConfig as ɵcj, i18nextProviders as ɵck, i18nextInit as ɵcl, MockTranslationService as ɵcm, kymaStoreConfigFactory as ɵcn, KymaStoreModule as ɵco, getReducers$6 as ɵcp, reducerToken$6 as ɵcq, reducerProvider$6 as ɵcr, clearKymaState as ɵcs, metaReducers$3 as ɵct, effects$5 as ɵcu, OpenIdTokenEffect as ɵcv, OpenIdAuthenticationTokenService as ɵcw, defaultKymaConfig as ɵcx, provideConfigFactory as ɵcy, defaultOccProductConfig as ɵcz, getStorageSyncReducer as ɵd, provideConfigValidator as ɵda, defaultPersonalizationConfig as ɵdb, interceptors$1 as ɵdc, OccPersonalizationIdInterceptor as ɵdd, OccPersonalizationTimeInterceptor as ɵde, productStoreConfigFactory as ɵdf, ProductStoreModule as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearProductsState as ɵdk, metaReducers$4 as ɵdl, effects$6 as ɵdm, ProductReferencesEffects as ɵdn, ProductReviewsEffects as ɵdo, ProductsSearchEffects as ɵdp, ProductEffects as ɵdq, reducer$a as ɵdr, reducer$c as ɵds, reducer$b as ɵdt, PageMetaResolver as ɵdu, UrlMatcherFactoryService as ɵdv, getReducers$2 as ɵdw, reducer$2 as ɵdx, reducerToken$2 as ɵdy, reducerProvider$2 as ɵdz, getTransferStateReducer as ɵe, CustomSerializer as ɵea, effects$2 as ɵeb, RouterEffects as ɵec, SiteContextParamsService as ɵed, SiteContextUrlSerializer as ɵee, SiteContextRoutesHandler as ɵef, defaultSiteContextConfigFactory as ɵeg, siteContextStoreConfigFactory as ɵeh, SiteContextStoreModule as ɵei, getReducers$8 as ɵej, reducerToken$8 as ɵek, reducerProvider$8 as ɵel, effects$7 as ɵem, LanguagesEffects as ɵen, CurrenciesEffects as ɵeo, BaseSiteEffects as ɵep, reducer$d as ɵeq, reducer$e as ɵer, reducer$f as ɵes, baseSiteConfigValidator as ɵet, interceptors$2 as ɵeu, CmsTicketInterceptor as ɵev, defaultStoreFinderConfig as ɵew, StoreFinderStoreModule as ɵex, getReducers$9 as ɵey, reducerToken$9 as ɵez, getReducers as ɵf, reducerProvider$9 as ɵfa, effects$8 as ɵfb, FindStoresEffect as ɵfc, ViewAllStoresEffect as ɵfd, UserStoreModule as ɵfe, getReducers$b as ɵff, reducerToken$b as ɵfg, reducerProvider$b as ɵfh, clearUserState as ɵfi, metaReducers$5 as ɵfj, effects$9 as ɵfk, BillingCountriesEffect as ɵfl, DeliveryCountriesEffects as ɵfm, OrderDetailsEffect as ɵfn, UserPaymentMethodsEffects as ɵfo, RegionsEffects as ɵfp, ResetPasswordEffects as ɵfq, TitlesEffects as ɵfr, UserAddressesEffects as ɵfs, UserConsentsEffect as ɵft, UserDetailsEffects as ɵfu, UserOrdersEffect as ɵfv, UserRegisterEffects as ɵfw, ClearMiscsDataEffect as ɵfx, ForgotPasswordEffects as ɵfy, UpdateEmailEffects as ɵfz, reducerToken as ɵg, UpdatePasswordEffects as ɵga, reducer$p as ɵgb, reducer$n as ɵgc, reducer$g as ɵgd, reducer$o as ɵge, reducer$j as ɵgf, reducer$q as ɵgg, reducer$i as ɵgh, reducer$h as ɵgi, reducer$m as ɵgj, reducer$k as ɵgk, reducer$l as ɵgl, ProcessModule as ɵgm, ProcessStoreModule as ɵgn, PROCESS_FEATURE as ɵgo, getReducers$a as ɵgp, reducerToken$a as ɵgq, reducerProvider$a as ɵgr, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, defaultAuthConfig as ɵq, AuthServices as ɵr, ClientErrorHandlingService as ɵs, UserErrorHandlingService as ɵt, UrlParsingService as ɵu, interceptors as ɵv, ClientTokenInterceptor as ɵw, UserTokenInterceptor as ɵx, AuthErrorInterceptor as ɵy, cartStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

@@ -1,12 +1,12 @@
 import { MemoizedSelector } from '@ngrx/store';
 import { PageContext } from '../../../routing';
-import { LoaderState } from '../../../state';
+import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { ContentSlotData } from '../../model/content-slot-data.model';
 import { Page } from '../../model/page.model';
 import { IndexType, PageState, StateWithCms } from '../cms-state';
 export declare const getPageState: MemoizedSelector<StateWithCms, PageState>;
 export declare const getPageStateIndex: MemoizedSelector<StateWithCms, IndexType>;
-export declare const getPageStateIndexEntityLoaderState: (pageContext: PageContext) => MemoizedSelector<StateWithCms, import("../../../state").EntityState<LoaderState<string>>, import("@ngrx/store/src/selector").DefaultProjectorFn<import("../../../state").EntityState<LoaderState<string>>>>;
+export declare const getPageStateIndexEntityLoaderState: (pageContext: PageContext) => MemoizedSelector<StateWithCms, import("../../../state/utils").EntityState<LoaderState<string>>, import("@ngrx/store/src/selector").DefaultProjectorFn<import("../../../state/utils").EntityState<LoaderState<string>>>>;
 export declare const getPageStateIndexLoaderState: (pageContext: PageContext) => MemoizedSelector<StateWithCms, LoaderState<string>, import("@ngrx/store/src/selector").DefaultProjectorFn<LoaderState<string>>>;
 export declare const getPageStateIndexValue: (pageContext: PageContext) => MemoizedSelector<StateWithCms, string, import("@ngrx/store/src/selector").DefaultProjectorFn<string>>;
 export declare const getPageEntities: MemoizedSelector<StateWithCms, {

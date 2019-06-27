@@ -1,4 +1,4 @@
-import { StateEntityLoaderActions } from '../../../state/index';
+import { StateEntityLoaderActions } from '../../../state/utils/index';
 export declare const UPDATE_PASSWORD = "[User] Update Password";
 export declare const UPDATE_PASSWORD_FAIL = "[User] Update Password Fail";
 export declare const UPDATE_PASSWORD_SUCCESS = "[User] Update Password Success";

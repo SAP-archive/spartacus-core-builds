@@ -1,4 +1,4 @@
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const VIEW_ALL_STORES = "[StoreFinder] View All Stores";
 export declare const VIEW_ALL_STORES_FAIL = "[StoreFinder] View All Stores Fail";
 export declare const VIEW_ALL_STORES_SUCCESS = "[StoreFinder] View All Stores Success";

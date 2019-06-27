@@ -1,5 +1,5 @@
 import { GeoPoint } from '../../../model/misc.model';
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 import { StoreFinderSearchConfig } from '../../model/search-config';
 export declare const FIND_STORES_ON_HOLD = "[StoreFinder] On Hold";
 export declare const FIND_STORES = "[StoreFinder] Find Stores";

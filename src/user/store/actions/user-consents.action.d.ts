@@ -1,5 +1,5 @@
 import { ConsentTemplate } from '../../../model/consent.model';
-import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/index';
+import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_USER_CONSENTS = "[User] Load User Consents";
 export declare const LOAD_USER_CONSENTS_SUCCESS = "[User] Load User Consents Success";
 export declare const LOAD_USER_CONSENTS_FAIL = "[User] Load User Consents Fail";

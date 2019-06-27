@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Region } from '../../../model/address.model';
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_REGIONS = "[User] Load Regions";
 export declare const LOAD_REGIONS_SUCCESS = "[User] Load Regions Success";
 export declare const LOAD_REGIONS_FAIL = "[User] Load Regions Fail";

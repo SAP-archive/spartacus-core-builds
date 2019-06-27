@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { UserSignUp } from '../../../model/misc.model';
-import { StateEntityLoaderActions } from '../../../state/index';
+import { StateEntityLoaderActions } from '../../../state/utils/index';
 export declare const REGISTER_USER = "[User] Register User";
 export declare const REGISTER_USER_FAIL = "[User] Register User Fail";
 export declare const REGISTER_USER_SUCCESS = "[User] Register User Success";

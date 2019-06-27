@@ -1,4 +1,4 @@
-import { StateEntityLoaderActions } from '../../../state/index';
+import { StateEntityLoaderActions } from '../../../state/utils/index';
 export declare const UPDATE_EMAIL = "[User] Update Email";
 export declare const UPDATE_EMAIL_ERROR = "[User] Update Email Error";
 export declare const UPDATE_EMAIL_SUCCESS = "[User] Update Email Success";

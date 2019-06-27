@@ -1,4 +1,4 @@
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const CART_ADD_ENTRY = "[Cart-entry] Add Entry";
 export declare const CART_ADD_ENTRY_SUCCESS = "[Cart-entry] Add Entry Success";
 export declare const CART_ADD_ENTRY_FAIL = "[Cart-entry] Add Entry Fail";

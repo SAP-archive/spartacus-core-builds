@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/platform-browser'), require('@angular/router'), require('@ngrx/effects'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend'), require('@angular/forms')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/platform-browser', '@angular/router', '@ngrx/effects', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend', '@angular/forms'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.ng.platformBrowser, global.ng.router, global.effects, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend, global.ng.forms));
-}(this, function (exports, common, http, core, rxjs, operators, store, platformBrowser, router, effects$a, routerStore, i18next, i18nextXhrBackend, forms) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend'), require('@angular/forms')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend', '@angular/forms'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend, global.ng.forms));
+}(this, function (exports, common, http, core, rxjs, operators, store, router, effects$a, platformBrowser, routerStore, i18next, i18nextXhrBackend, forms) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -405,455 +405,6 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-    /** @type {?} */
-    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-    /** @type {?} */
-    var defaultStateConfig = {
-        state: {
-            storageSync: {
-                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-                keys: {},
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var StorageSyncType = {
-        NO_STORAGE: 'NO_STORAGE',
-        LOCAL_STORAGE: 'LOCAL_STORAGE',
-        SESSION_STORAGE: 'SESSION_STORAGE',
-    };
-    /** @enum {string} */
-    var StateTransferType = {
-        TRANSFER_STATE: 'SSR',
-    };
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    StateConfig = /** @class */ (function () {
-        function StateConfig() {
-        }
-        return StateConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var WindowRef = /** @class */ (function () {
-        function WindowRef(document) {
-            // it's a workaround to have document property properly typed
-            // see: https://github.com/angular/angular/issues/15640
-            this.document = document;
-        }
-        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return typeof window !== 'undefined' ? window : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "localStorage", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        WindowRef.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        WindowRef.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
-        ]; };
-        /** @nocollapse */ WindowRef.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-        return WindowRef;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T, E
-     * @param {?} keys
-     * @param {?} state
-     * @return {?}
-     */
-    function getStateSliceValue(keys, state) {
-        return keys
-            .split('.')
-            .reduce((/**
-         * @param {?} previous
-         * @param {?} current
-         * @return {?}
-         */
-        function (previous, current) { return (previous ? previous[current] : undefined); }), state);
-    }
-    /**
-     * @template T, E
-     * @param {?} key
-     * @param {?} value
-     * @return {?}
-     */
-    function createShellObject(key, value) {
-        if (!key || !value || Object.keys(value).length === 0) {
-            return (/** @type {?} */ ({}));
-        }
-        /** @type {?} */
-        var keySplit = key.split('.');
-        /** @type {?} */
-        var newObject = {};
-        /** @type {?} */
-        var tempNewObject = newObject;
-        for (var i = 0; i < keySplit.length; i++) {
-            /** @type {?} */
-            var currentKey = keySplit[i];
-            // last iteration
-            if (i === keySplit.length - 1) {
-                tempNewObject = tempNewObject[currentKey] = value;
-            }
-            else {
-                tempNewObject = tempNewObject[currentKey] = {};
-            }
-        }
-        return (/** @type {?} */ (newObject));
-    }
-    /**
-     * @template T, E
-     * @param {?} keys
-     * @param {?} state
-     * @return {?}
-     */
-    function getStateSlice(keys, state) {
-        var e_1, _a;
-        if (keys && keys.length === 0) {
-            return (/** @type {?} */ ({}));
-        }
-        /** @type {?} */
-        var stateSlices = {};
-        try {
-            for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
-                var currentKey = keys_1_1.value;
-                /** @type {?} */
-                var stateValue = getStateSliceValue(currentKey, state);
-                /** @type {?} */
-                var shell = createShellObject(currentKey, stateValue);
-                stateSlices = deepMerge(stateSlices, shell);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) _a.call(keys_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return (/** @type {?} */ (stateSlices));
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} winRef
-     * @param {?=} config
-     * @return {?}
-     */
-    function getStorageSyncReducer(winRef, config) {
-        if (!winRef.nativeWindow ||
-            !config ||
-            !config.state ||
-            !config.state.storageSync ||
-            !config.state.storageSync.keys) {
-            return (/**
-             * @param {?} reducer
-             * @return {?}
-             */
-            function (reducer) { return reducer; });
-        }
-        /** @type {?} */
-        var storageSyncConfig = config.state.storageSync;
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                /** @type {?} */
-                var newState = reducer(state, action);
-                if (action.type === store.INIT || action.type === store.UPDATE) {
-                    /** @type {?} */
-                    var rehydratedState = rehydrate(config, winRef);
-                    return deepMerge({}, newState, rehydratedState);
-                }
-                if (action.type !== store.INIT) {
-                    // handle local storage
-                    /** @type {?} */
-                    var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                    /** @type {?} */
-                    var localStorageStateSlices = getStateSlice(localStorageKeys, state);
-                    persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
-                    // handle session storage
-                    /** @type {?} */
-                    var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
-                    /** @type {?} */
-                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
-                    persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
-                }
-                return newState;
-            });
-        });
-    }
-    /**
-     * @param {?} keys
-     * @param {?} storageType
-     * @return {?}
-     */
-    function getKeysForStorage(keys, storageType) {
-        return Object.keys(keys).filter((/**
-         * @param {?} key
-         * @return {?}
-         */
-        function (key) { return keys[key] === storageType; }));
-    }
-    /**
-     * @template T
-     * @param {?} config
-     * @param {?} winRef
-     * @return {?}
-     */
-    function rehydrate(config, winRef) {
-        /** @type {?} */
-        var localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
-        /** @type {?} */
-        var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
-        return deepMerge(localStorageValue, sessionStorageValue);
-    }
-    /**
-     * @param {?} configKey
-     * @param {?} value
-     * @param {?} storage
-     * @return {?}
-     */
-    function persistToStorage(configKey, value, storage) {
-        if (!isSsr(storage) && value) {
-            storage.setItem(configKey, JSON.stringify(value));
-        }
-    }
-    /**
-     * @param {?} storage
-     * @param {?} key
-     * @return {?}
-     */
-    function readFromStorage(storage, key) {
-        if (isSsr(storage)) {
-            return;
-        }
-        /** @type {?} */
-        var storageValue = storage.getItem(key);
-        if (!storageValue) {
-            return;
-        }
-        return JSON.parse(storageValue);
-    }
-    /**
-     * @param {?} storage
-     * @return {?}
-     */
-    function isSsr(storage) {
-        return !Boolean(storage);
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var AUTH_FEATURE = 'auth';
-    /** @type {?} */
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CX_KEY = platformBrowser.makeStateKey('cx-state');
-    /**
-     * @param {?} platformId
-     * @param {?=} transferState
-     * @param {?=} config
-     * @return {?}
-     */
-    function getTransferStateReducer(platformId, transferState, config) {
-        if (transferState &&
-            config &&
-            config.state &&
-            config.state.ssrTransfer &&
-            config.state.ssrTransfer.keys) {
-            if (common.isPlatformBrowser(platformId)) {
-                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-            else if (common.isPlatformServer(platformId)) {
-                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-        }
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) { return reducer; });
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getServerTransferStateReducer(transferState, keys) {
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                /** @type {?} */
-                var newState = reducer(state, action);
-                if (newState) {
-                    /** @type {?} */
-                    var stateSlice = getStateSlice(Object.keys(keys), newState);
-                    transferState.set(CX_KEY, stateSlice);
-                }
-                return newState;
-            });
-        });
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getBrowserTransferStateReducer(transferState, keys) {
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                if (action.type === store.INIT) {
-                    if (!state) {
-                        state = reducer(state, action);
-                    }
-                    // we should not utilize transfer state if user is logged in
-                    /** @type {?} */
-                    var authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
-                    /** @type {?} */
-                    var isLoggedIn = authState && authState.userToken && authState.userToken.token;
-                    if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
-                        /** @type {?} */
-                        var cxKey = transferState.get(CX_KEY, {});
-                        /** @type {?} */
-                        var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
-                        state = deepMerge({}, state, transferredStateSlice);
-                    }
-                    return state;
-                }
-                return reducer(state, action);
-            });
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0 = getTransferStateReducer, ɵ1 = getStorageSyncReducer;
-    /** @type {?} */
-    var stateMetaReducers = [
-        {
-            provide: store.META_REDUCERS,
-            useFactory: ɵ0,
-            deps: [
-                core.PLATFORM_ID,
-                [new core.Optional(), platformBrowser.TransferState],
-                [new core.Optional(), Config],
-            ],
-            multi: true,
-        },
-        {
-            provide: store.META_REDUCERS,
-            useFactory: ɵ1,
-            deps: [WindowRef, [new core.Optional(), Config]],
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StateModule = /** @class */ (function () {
-        function StateModule() {
-        }
-        StateModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [ConfigModule.withConfig(defaultStateConfig)],
-                        providers: __spread(stateMetaReducers),
-                    },] }
-        ];
-        return StateModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
     /** @type {?} */
     var ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
@@ -1148,6 +699,138 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var initialLoaderState = {
+        loading: false,
+        error: false,
+        success: false,
+        value: undefined,
+    };
+    /**
+     * Higher order reducer that adds generic loading flag to chunk of the state
+     *
+     * Utilizes "loader" meta field of actions to set specific flags for specific
+     * action (LOAD, SUCCESS, FAIL, RESET)
+     * @template T
+     * @param {?} loadActionType
+     * @param {?=} reducer
+     * @return {?}
+     */
+    function loaderReducer(loadActionType, reducer) {
+        return (/**
+         * @param {?=} state
+         * @param {?=} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (state === void 0) { state = initialLoaderState; }
+            if (action.meta &&
+                action.meta.loader &&
+                action.meta.entityType === loadActionType) {
+                /** @type {?} */
+                var entity = action.meta.loader;
+                if (entity.load) {
+                    return __assign({}, state, { loading: true, value: reducer ? reducer(state.value, action) : state.value });
+                }
+                else if (entity.error) {
+                    return __assign({}, state, { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
+                }
+                else if (entity.success) {
+                    return __assign({}, state, { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
+                }
+                else {
+                    // reset state action
+                    return __assign({}, initialLoaderState, { value: reducer
+                            ? reducer(initialLoaderState.value, action)
+                            : initialLoaderState.value });
+                }
+            }
+            if (reducer) {
+                /** @type {?} */
+                var newValue = reducer(state.value, action);
+                if (newValue !== state.value) {
+                    return __assign({}, state, { value: newValue });
+                }
+            }
+            return state;
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entityStateSelector(state, id) {
+        return state.entities[id] || initialLoaderState;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entityValueSelector(state, id) {
+        /** @type {?} */
+        var entityState = entityStateSelector(state, id);
+        return entityState.value;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entityLoadingSelector(state, id) {
+        /** @type {?} */
+        var entityState = entityStateSelector(state, id);
+        return entityState.loading;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entityErrorSelector(state, id) {
+        /** @type {?} */
+        var entityState = entityStateSelector(state, id);
+        return entityState.error;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @param {?} id
+     * @return {?}
+     */
+    function entitySuccessSelector(state, id) {
+        /** @type {?} */
+        var entityState = entityStateSelector(state, id);
+        return entityState.success;
+    }
+
+    var entityLoader_selectors = /*#__PURE__*/Object.freeze({
+        entityStateSelector: entityStateSelector,
+        entityValueSelector: entityValueSelector,
+        entityLoadingSelector: entityLoadingSelector,
+        entityErrorSelector: entityErrorSelector,
+        entitySuccessSelector: entitySuccessSelector
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -1237,67 +920,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var initialLoaderState = {
-        loading: false,
-        error: false,
-        success: false,
-        value: undefined,
-    };
-    /**
-     * Higher order reducer that adds generic loading flag to chunk of the state
-     *
-     * Utilizes "loader" meta field of actions to set specific flags for specific
-     * action (LOAD, SUCCESS, FAIL, RESET)
-     * @template T
-     * @param {?} loadActionType
-     * @param {?=} reducer
-     * @return {?}
-     */
-    function loaderReducer(loadActionType, reducer) {
-        return (/**
-         * @param {?=} state
-         * @param {?=} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (state === void 0) { state = initialLoaderState; }
-            if (action.meta &&
-                action.meta.loader &&
-                action.meta.entityType === loadActionType) {
-                /** @type {?} */
-                var entity = action.meta.loader;
-                if (entity.load) {
-                    return __assign({}, state, { loading: true, value: reducer ? reducer(state.value, action) : state.value });
-                }
-                else if (entity.error) {
-                    return __assign({}, state, { loading: false, error: true, success: false, value: reducer ? reducer(state.value, action) : undefined });
-                }
-                else if (entity.success) {
-                    return __assign({}, state, { value: reducer ? reducer(state.value, action) : action.payload, loading: false, error: false, success: true });
-                }
-                else {
-                    // reset state action
-                    return __assign({}, initialLoaderState, { value: reducer
-                            ? reducer(initialLoaderState.value, action)
-                            : initialLoaderState.value });
-                }
-            }
-            if (reducer) {
-                /** @type {?} */
-                var newValue = reducer(state.value, action);
-                if (newValue !== state.value) {
-                    return __assign({}, state, { value: newValue });
-                }
-            }
-            return state;
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
      * single state reducer to support multiple entities with generic loading flags
@@ -1309,69 +931,6 @@
     function entityLoaderReducer(entityType, reducer) {
         return entityReducer(entityType, loaderReducer(entityType, reducer));
     }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entityStateSelector(state, id) {
-        return state.entities[id] || initialLoaderState;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entityValueSelector(state, id) {
-        /** @type {?} */
-        var entityState = entityStateSelector(state, id);
-        return entityState.value;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entityLoadingSelector(state, id) {
-        /** @type {?} */
-        var entityState = entityStateSelector(state, id);
-        return entityState.loading;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entityErrorSelector(state, id) {
-        /** @type {?} */
-        var entityState = entityStateSelector(state, id);
-        return entityState.error;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @param {?} id
-     * @return {?}
-     */
-    function entitySuccessSelector(state, id) {
-        /** @type {?} */
-        var entityState = entityStateSelector(state, id);
-        return entityState.success;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -1397,10 +956,155 @@
         return state.entities[id] || undefined;
     }
 
+    var entity_selectors = /*#__PURE__*/Object.freeze({
+        entitySelector: entitySelector
+    });
+
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSliceValue(keys, state) {
+        return keys
+            .split('.')
+            .reduce((/**
+         * @param {?} previous
+         * @param {?} current
+         * @return {?}
+         */
+        function (previous, current) { return (previous ? previous[current] : undefined); }), state);
+    }
+    /**
+     * @template T, E
+     * @param {?} key
+     * @param {?} value
+     * @return {?}
+     */
+    function createShellObject(key, value) {
+        if (!key || !value || Object.keys(value).length === 0) {
+            return (/** @type {?} */ ({}));
+        }
+        /** @type {?} */
+        var keySplit = key.split('.');
+        /** @type {?} */
+        var newObject = {};
+        /** @type {?} */
+        var tempNewObject = newObject;
+        for (var i = 0; i < keySplit.length; i++) {
+            /** @type {?} */
+            var currentKey = keySplit[i];
+            // last iteration
+            if (i === keySplit.length - 1) {
+                tempNewObject = tempNewObject[currentKey] = value;
+            }
+            else {
+                tempNewObject = tempNewObject[currentKey] = {};
+            }
+        }
+        return (/** @type {?} */ (newObject));
+    }
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSlice(keys, state) {
+        var e_1, _a;
+        if (keys && keys.length === 0) {
+            return (/** @type {?} */ ({}));
+        }
+        /** @type {?} */
+        var stateSlices = {};
+        try {
+            for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
+                var currentKey = keys_1_1.value;
+                /** @type {?} */
+                var stateValue = getStateSliceValue(currentKey, state);
+                /** @type {?} */
+                var shell = createShellObject(currentKey, stateValue);
+                stateSlices = deepMerge(stateSlices, shell);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) _a.call(keys_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return (/** @type {?} */ (stateSlices));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderValueSelector(state) {
+        return state.value;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderLoadingSelector(state) {
+        return state.loading;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderErrorSelector(state) {
+        return state.error;
+    }
+    /**
+     * @template T
+     * @param {?} state
+     * @return {?}
+     */
+    function loaderSuccessSelector(state) {
+        return state.success;
+    }
+
+    var loader_selectors = /*#__PURE__*/Object.freeze({
+        loaderValueSelector: loaderValueSelector,
+        loaderLoadingSelector: loaderLoadingSelector,
+        loaderErrorSelector: loaderErrorSelector,
+        loaderSuccessSelector: loaderSuccessSelector
+    });
 
     /**
      * @fileoverview added by tsickle
@@ -1470,38 +1174,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderValueSelector(state) {
-        return state.value;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderLoadingSelector(state) {
-        return state.loading;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderErrorSelector(state) {
-        return state.error;
-    }
-    /**
-     * @template T
-     * @param {?} state
-     * @return {?}
-     */
-    function loaderSuccessSelector(state) {
-        return state.success;
-    }
 
     /**
      * @fileoverview added by tsickle
@@ -1512,11 +1184,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
+    /** @type {?} */
+    var AUTH_FEATURE = 'auth';
+    /** @type {?} */
+    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
 
     /**
      * @fileoverview added by tsickle
@@ -1684,13 +1355,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$1 = /**
+    var ɵ0 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.clientToken; };
     /** @type {?} */
-    var getClientTokenState = store.createSelector(getAuthState, (ɵ0$1));
+    var getClientTokenState = store.createSelector(getAuthState, (ɵ0));
 
     /**
      * @fileoverview added by tsickle
@@ -1702,13 +1373,13 @@
      * @return {?}
      */
     function (state) { return state.token; });
-    var ɵ1$1 = /**
+    var ɵ1 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.userToken; };
     /** @type {?} */
-    var getUserTokenState = store.createSelector(getAuthState, (ɵ1$1));
+    var getUserTokenState = store.createSelector(getAuthState, (ɵ1));
     /** @type {?} */
     var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -1970,6 +1641,59 @@
             { type: AuthService }
         ]; };
         return ClientErrorHandlingService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var WindowRef = /** @class */ (function () {
+        function WindowRef(document) {
+            // it's a workaround to have document property properly typed
+            // see: https://github.com/angular/angular/issues/15640
+            this.document = document;
+        }
+        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return typeof window !== 'undefined' ? window : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "localStorage", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        WindowRef.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        WindowRef.ctorParameters = function () { return [
+            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
+        ]; };
+        /** @nocollapse */ WindowRef.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        return WindowRef;
     }());
 
     /**
@@ -2487,14 +2211,14 @@
      */
     /** @type {?} */
     var getRouterFeatureState = store.createFeatureSelector(ROUTING_FEATURE);
-    var ɵ0$2 = /**
+    var ɵ0$1 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.router; };
     /** @type {?} */
-    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$2));
-    var ɵ1$2 = /**
+    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$1));
+    var ɵ1$1 = /**
      * @param {?} routingState
      * @return {?}
      */
@@ -2502,7 +2226,7 @@
         return (routingState.state && routingState.state.context) || { id: '' };
     };
     /** @type {?} */
-    var getPageContext = store.createSelector(getRouterState, (ɵ1$2));
+    var getPageContext = store.createSelector(getRouterState, (ɵ1$1));
     var ɵ2 = /**
      * @param {?} routingState
      * @return {?}
@@ -3219,7 +2943,7 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$3 = /**
+    var ɵ0$2 = /**
      * @param {?} state
      * @return {?}
      */
@@ -3227,14 +2951,14 @@
         return state && state.baseSite && state.baseSite.activeSite;
     };
     /** @type {?} */
-    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$3));
-    var ɵ1$3 = /**
+    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$2));
+    var ɵ1$2 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state && state.baseSite && state.baseSite.details; };
     /** @type {?} */
-    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$3));
+    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$2));
 
     /**
      * @fileoverview added by tsickle
@@ -4237,6 +3961,311 @@
         UserAuthenticationTokenService,
         UserErrorHandlingService,
     ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var StorageSyncType = {
+        NO_STORAGE: 'NO_STORAGE',
+        LOCAL_STORAGE: 'LOCAL_STORAGE',
+        SESSION_STORAGE: 'SESSION_STORAGE',
+    };
+    /** @enum {string} */
+    var StateTransferType = {
+        TRANSFER_STATE: 'SSR',
+    };
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    StateConfig = /** @class */ (function () {
+        function StateConfig() {
+        }
+        return StateConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+    /** @type {?} */
+    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+    /** @type {?} */
+    var defaultStateConfig = {
+        state: {
+            storageSync: {
+                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+                keys: {},
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} winRef
+     * @param {?=} config
+     * @return {?}
+     */
+    function getStorageSyncReducer(winRef, config) {
+        if (!winRef.nativeWindow ||
+            !config ||
+            !config.state ||
+            !config.state.storageSync ||
+            !config.state.storageSync.keys) {
+            return (/**
+             * @param {?} reducer
+             * @return {?}
+             */
+            function (reducer) { return reducer; });
+        }
+        /** @type {?} */
+        var storageSyncConfig = config.state.storageSync;
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                /** @type {?} */
+                var newState = reducer(state, action);
+                if (action.type === store.INIT || action.type === store.UPDATE) {
+                    /** @type {?} */
+                    var rehydratedState = rehydrate(config, winRef);
+                    return deepMerge({}, newState, rehydratedState);
+                }
+                if (action.type !== store.INIT) {
+                    // handle local storage
+                    /** @type {?} */
+                    var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                    /** @type {?} */
+                    var localStorageStateSlices = getStateSlice(localStorageKeys, state);
+                    persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                    // handle session storage
+                    /** @type {?} */
+                    var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                    /** @type {?} */
+                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
+                    persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+                }
+                return newState;
+            });
+        });
+    }
+    /**
+     * @param {?} keys
+     * @param {?} storageType
+     * @return {?}
+     */
+    function getKeysForStorage(keys, storageType) {
+        return Object.keys(keys).filter((/**
+         * @param {?} key
+         * @return {?}
+         */
+        function (key) { return keys[key] === storageType; }));
+    }
+    /**
+     * @template T
+     * @param {?} config
+     * @param {?} winRef
+     * @return {?}
+     */
+    function rehydrate(config, winRef) {
+        /** @type {?} */
+        var localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+        /** @type {?} */
+        var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+        return deepMerge(localStorageValue, sessionStorageValue);
+    }
+    /**
+     * @param {?} configKey
+     * @param {?} value
+     * @param {?} storage
+     * @return {?}
+     */
+    function persistToStorage(configKey, value, storage) {
+        if (!isSsr(storage) && value) {
+            storage.setItem(configKey, JSON.stringify(value));
+        }
+    }
+    /**
+     * @param {?} storage
+     * @param {?} key
+     * @return {?}
+     */
+    function readFromStorage(storage, key) {
+        if (isSsr(storage)) {
+            return;
+        }
+        /** @type {?} */
+        var storageValue = storage.getItem(key);
+        if (!storageValue) {
+            return;
+        }
+        return JSON.parse(storageValue);
+    }
+    /**
+     * @param {?} storage
+     * @return {?}
+     */
+    function isSsr(storage) {
+        return !Boolean(storage);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CX_KEY = platformBrowser.makeStateKey('cx-state');
+    /**
+     * @param {?} platformId
+     * @param {?=} transferState
+     * @param {?=} config
+     * @return {?}
+     */
+    function getTransferStateReducer(platformId, transferState, config) {
+        if (transferState &&
+            config &&
+            config.state &&
+            config.state.ssrTransfer &&
+            config.state.ssrTransfer.keys) {
+            if (common.isPlatformBrowser(platformId)) {
+                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+            else if (common.isPlatformServer(platformId)) {
+                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+        }
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) { return reducer; });
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getServerTransferStateReducer(transferState, keys) {
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                /** @type {?} */
+                var newState = reducer(state, action);
+                if (newState) {
+                    /** @type {?} */
+                    var stateSlice = getStateSlice(Object.keys(keys), newState);
+                    transferState.set(CX_KEY, stateSlice);
+                }
+                return newState;
+            });
+        });
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getBrowserTransferStateReducer(transferState, keys) {
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                if (action.type === store.INIT) {
+                    if (!state) {
+                        state = reducer(state, action);
+                    }
+                    // we should not utilize transfer state if user is logged in
+                    /** @type {?} */
+                    var authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
+                    /** @type {?} */
+                    var isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                    if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                        /** @type {?} */
+                        var cxKey = transferState.get(CX_KEY, {});
+                        /** @type {?} */
+                        var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                        state = deepMerge({}, state, transferredStateSlice);
+                    }
+                    return state;
+                }
+                return reducer(state, action);
+            });
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$3 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
+    /** @type {?} */
+    var stateMetaReducers = [
+        {
+            provide: store.META_REDUCERS,
+            useFactory: ɵ0$3,
+            deps: [
+                core.PLATFORM_ID,
+                [new core.Optional(), platformBrowser.TransferState],
+                [new core.Optional(), Config],
+            ],
+            multi: true,
+        },
+        {
+            provide: store.META_REDUCERS,
+            useFactory: ɵ1$3,
+            deps: [WindowRef, [new core.Optional(), Config]],
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StateModule = /** @class */ (function () {
+        function StateModule() {
+        }
+        StateModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [ConfigModule.withConfig(defaultStateConfig)],
+                        providers: __spread(stateMetaReducers),
+                    },] }
+        ];
+        return StateModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -7159,7 +7188,9 @@
          * @param {?} indexState
          * @return {?}
          */
-        function (indexState) { return entityStateSelector(indexState, pageContext.id); }));
+        function (indexState) {
+            return entityStateSelector(indexState, pageContext.id);
+        }));
     });
     /** @type {?} */
     var getPageStateIndexValue = (/**
@@ -9929,7 +9960,10 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderSuccessSelector(state) && !loaderLoadingSelector(state); };
+    function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state);
+    };
     /** @type {?} */
     var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, (ɵ9));
 
@@ -23982,6 +24016,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @return {?}
      */
@@ -26318,7 +26357,9 @@
          * @param {?} entityState
          * @return {?}
          */
-        function (entityState) { return entityStateSelector(entityState, processId); }));
+        function (entityState) {
+            return entityStateSelector(entityState, processId);
+        }));
     }
     /**
      * @template T
@@ -26470,14 +26511,18 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderValueSelector(state); };
+    function (state) {
+        return loaderValueSelector(state);
+    };
     /** @type {?} */
     var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$c));
     var ɵ2$7 = /**
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderLoadingSelector(state); };
+    function (state) {
+        return loaderLoadingSelector(state);
+    };
     /** @type {?} */
     var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$7));
 
@@ -26517,21 +26562,27 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderValueSelector(state).country; };
+    function (state) {
+        return loaderValueSelector(state).country;
+    };
     /** @type {?} */
     var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$4));
     var ɵ4$3 = /**
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderLoadingSelector(state); };
+    function (state) {
+        return loaderLoadingSelector(state);
+    };
     /** @type {?} */
     var getRegionsLoading = store.createSelector(getRegionsLoaderState, (ɵ4$3));
     var ɵ5$2 = /**
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderSuccessSelector(state); };
+    function (state) {
+        return loaderSuccessSelector(state);
+    };
     /** @type {?} */
     var getRegionsLoaded = store.createSelector(getRegionsLoaderState, (ɵ5$2));
 
@@ -26604,14 +26655,18 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderValueSelector(state); };
+    function (state) {
+        return loaderValueSelector(state);
+    };
     /** @type {?} */
     var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$f));
     var ɵ2$a = /**
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderLoadingSelector(state); };
+    function (state) {
+        return loaderLoadingSelector(state);
+    };
     /** @type {?} */
     var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$a));
 
@@ -26669,14 +26724,18 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderSuccessSelector(state); };
+    function (state) {
+        return loaderSuccessSelector(state);
+    };
     /** @type {?} */
     var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$h));
     var ɵ2$b = /**
      * @param {?} state
      * @return {?}
      */
-    function (state) { return loaderValueSelector(state); };
+    function (state) {
+        return loaderValueSelector(state);
+    };
     /** @type {?} */
     var getOrders = store.createSelector(getOrdersState, (ɵ2$b));
 
@@ -29888,7 +29947,10 @@
     exports.StateConfig = StateConfig;
     exports.StateEntityActions = entity_action;
     exports.StateEntityLoaderActions = entityLoader_action;
+    exports.StateEntityLoaderSelectors = entityLoader_selectors;
+    exports.StateEntitySelectors = entity_selectors;
     exports.StateLoaderActions = loader_action;
+    exports.StateLoaderSelectors = loader_selectors;
     exports.StateModule = StateModule;
     exports.StateTransferType = StateTransferType;
     exports.StorageSyncType = StorageSyncType;
@@ -29949,14 +30011,8 @@
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
     exports.effects = effects$1;
-    exports.entityErrorSelector = entityErrorSelector;
     exports.entityLoaderReducer = entityLoaderReducer;
-    exports.entityLoadingSelector = entityLoadingSelector;
     exports.entityReducer = entityReducer;
-    exports.entitySelector = entitySelector;
-    exports.entityStateSelector = entityStateSelector;
-    exports.entitySuccessSelector = entitySuccessSelector;
-    exports.entityValueSelector = entityValueSelector;
     exports.errorHandlers = errorHandlers;
     exports.getReducers = getReducers$1;
     exports.getStateSlice = getStateSlice;
@@ -29966,11 +30022,7 @@
     exports.initialEntityState = initialEntityState;
     exports.initialLoaderState = initialLoaderState;
     exports.inititializeContext = inititializeContext;
-    exports.loaderErrorSelector = loaderErrorSelector;
-    exports.loaderLoadingSelector = loaderLoadingSelector;
     exports.loaderReducer = loaderReducer;
-    exports.loaderSuccessSelector = loaderSuccessSelector;
-    exports.loaderValueSelector = loaderValueSelector;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.metaReducers = metaReducers$1;
     exports.occConfigValidator = occConfigValidator;

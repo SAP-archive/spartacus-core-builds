@@ -1,5 +1,5 @@
 import { CmsComponent } from '../../../model/cms.model';
-import { StateEntityLoaderActions } from '../../../state/index';
+import { StateEntityLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_CMS_COMPONENT = "[Cms] Load Component";
 export declare const LOAD_CMS_COMPONENT_FAIL = "[Cms] Load Component Fail";
 export declare const LOAD_CMS_COMPONENT_SUCCESS = "[Cms] Load Component Success";

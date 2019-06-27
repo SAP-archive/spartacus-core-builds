@@ -1,5 +1,5 @@
 import { PaymentDetails } from '../../../model/cart.model';
-import { StateLoaderActions } from '../../../state/index';
+import { StateLoaderActions } from '../../../state/utils/index';
 export declare const LOAD_USER_PAYMENT_METHODS = "[User] Load User Payment Methods";
 export declare const LOAD_USER_PAYMENT_METHODS_FAIL = "[User] Load User Payment Methods Fail";
 export declare const LOAD_USER_PAYMENT_METHODS_SUCCESS = "[User] Load User Payment Methods Success";
