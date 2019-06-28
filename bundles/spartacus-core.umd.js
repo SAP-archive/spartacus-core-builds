@@ -1683,6 +1683,31 @@
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(WindowRef.prototype, "resize$", {
+            /**
+             * Returns an observable for the window resize event and emits an event
+             * every 300ms in case of resizing. An event is simulated initially.
+             *
+             * If there's no window object availale (i.e. in SSR), a null value is emitted.
+             */
+            get: /**
+             * Returns an observable for the window resize event and emits an event
+             * every 300ms in case of resizing. An event is simulated initially.
+             *
+             * If there's no window object availale (i.e. in SSR), a null value is emitted.
+             * @return {?}
+             */
+            function () {
+                if (!this.nativeWindow) {
+                    return rxjs.of(null);
+                }
+                else {
+                    return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
         WindowRef.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -5970,6 +5995,13 @@
         PRODUCT_PAGE: 'ProductPage',
         CATEGORY_PAGE: 'CategoryPage',
         CATALOG_PAGE: 'CatalogPage',
+    };
+    /** @enum {string} */
+    var CmsBannerCarouselEffect = {
+        FADE: 'FADE',
+        ZOOM: 'ZOOM',
+        CURTAIN: 'CURTAINX',
+        TURNDOWN: 'TURNDOWN',
     };
 
     /**
@@ -29877,6 +29909,7 @@
     exports.CheckoutSelectors = checkoutGroup_selectors;
     exports.CheckoutService = CheckoutService;
     exports.CmsActions = cmsGroup_actions;
+    exports.CmsBannerCarouselEffect = CmsBannerCarouselEffect;
     exports.CmsComponentAdapter = CmsComponentAdapter;
     exports.CmsComponentConnector = CmsComponentConnector;
     exports.CmsConfig = CmsConfig;
