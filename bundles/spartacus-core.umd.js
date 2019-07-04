@@ -335,11 +335,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @enum {string} */
-    var ContextPersistence = {
-        NONE: 'none',
-        ROUTE: 'route',
-    };
     /**
      * @abstract
      */
@@ -3099,9 +3094,48 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Helper function for safely getting context parameter config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameterValues(config, parameter) {
+        return (config.context && config.context[parameter]) || [];
+    }
+    /**
+     * Helper function for calculating default value for context parameter from config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameterDefault(config, parameter) {
+        /** @type {?} */
+        var param = getContextParameterValues(config, parameter);
+        return param && param.length ? param[0] : undefined;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LANGUAGE_CONTEXT_ID = 'language';
+    /** @type {?} */
+    var CURRENCY_CONTEXT_ID = 'currency';
+    /** @type {?} */
+    var BASE_SITE_CONTEXT_ID = 'baseSite';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var BaseSiteService = /** @class */ (function () {
-        function BaseSiteService(store) {
+        function BaseSiteService(store, config) {
             this.store = store;
+            this.config = config;
         }
         /**
          * Represents the current baseSite uid.
@@ -3166,16 +3200,14 @@
          */
         /**
          * Initializes the active baseSite.
-         * @param {?} defaultBaseSite
          * @return {?}
          */
         BaseSiteService.prototype.initialize = /**
          * Initializes the active baseSite.
-         * @param {?} defaultBaseSite
          * @return {?}
          */
-        function (defaultBaseSite) {
-            this.setActive(defaultBaseSite);
+        function () {
+            this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
         };
         /**
          * Get the base site details data
@@ -3205,7 +3237,8 @@
         ];
         /** @nocollapse */
         BaseSiteService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: SiteContextConfig }
         ]; };
         return BaseSiteService;
     }());
@@ -3243,321 +3276,6 @@
         };
         return DynamicTemplate;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Helper function for safely getting context parameter config
-     *
-     * @param {?} config
-     * @param {?} parameter
-     * @return {?}
-     */
-    function getContextParameter(config, parameter) {
-        return ((config.context &&
-            config.context.parameters &&
-            config.context.parameters[parameter]) ||
-            {});
-    }
-    /**
-     * Helper function for calculating default value for context parameter from config
-     *
-     * @param {?} config
-     * @param {?} parameter
-     * @return {?}
-     */
-    function getContextParameterDefault(config, parameter) {
-        /** @type {?} */
-        var param = getContextParameter(config, parameter);
-        if (param.default !== undefined) {
-            return param.default;
-        }
-        return param.values && param.values.length ? param.values[0] : undefined;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Facade that provides easy access to language state, actions and selectors.
-     */
-    var LanguageService = /** @class */ (function () {
-        function LanguageService(store, winRef) {
-            this.store = store;
-            this.sessionStorage = winRef.sessionStorage;
-        }
-        /**
-         * Represents all the languages supported by the current store.
-         */
-        /**
-         * Represents all the languages supported by the current store.
-         * @return {?}
-         */
-        LanguageService.prototype.getAll = /**
-         * Represents all the languages supported by the current store.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getAllLanguages), operators.tap((/**
-             * @param {?} languages
-             * @return {?}
-             */
-            function (languages) {
-                if (!languages) {
-                    _this.store.dispatch(new LoadLanguages());
-                }
-            })), operators.filter((/**
-             * @param {?} languages
-             * @return {?}
-             */
-            function (languages) { return Boolean(languages); })));
-        };
-        /**
-         * Represents the isocode of the active language.
-         */
-        /**
-         * Represents the isocode of the active language.
-         * @return {?}
-         */
-        LanguageService.prototype.getActive = /**
-         * Represents the isocode of the active language.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getActiveLanguage), operators.filter((/**
-             * @param {?} active
-             * @return {?}
-             */
-            function (active) { return Boolean(active); })));
-        };
-        /**
-         * Sets the active language.
-         */
-        /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        LanguageService.prototype.setActive = /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) {
-            var _this = this;
-            return this.store
-                .pipe(store.select(getActiveLanguage), operators.take(1))
-                .subscribe((/**
-             * @param {?} activeLanguage
-             * @return {?}
-             */
-            function (activeLanguage) {
-                if (activeLanguage !== isocode) {
-                    _this.store.dispatch(new SetActiveLanguage(isocode));
-                }
-            }));
-        };
-        /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         */
-        /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         * @param {?} defaultLanguage
-         * @return {?}
-         */
-        LanguageService.prototype.initialize = /**
-         * Initials the active language. The active language is either given
-         * by the last visit (stored in session storage) or by the
-         * default session language of the store.
-         * @param {?} defaultLanguage
-         * @return {?}
-         */
-        function (defaultLanguage) {
-            if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
-                this.setActive(this.sessionStorage.getItem('language'));
-            }
-            else {
-                this.setActive(defaultLanguage);
-            }
-        };
-        LanguageService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        LanguageService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef }
-        ]; };
-        return LanguageService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * Facade that provides easy access to curreny state, actions and selectors.
-     */
-    var CurrencyService = /** @class */ (function () {
-        function CurrencyService(store, winRef) {
-            this.store = store;
-            this.sessionStorage = winRef.sessionStorage;
-        }
-        /**
-         * Represents all the currencies supported by the current store.
-         */
-        /**
-         * Represents all the currencies supported by the current store.
-         * @return {?}
-         */
-        CurrencyService.prototype.getAll = /**
-         * Represents all the currencies supported by the current store.
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getAllCurrencies), operators.tap((/**
-             * @param {?} currencies
-             * @return {?}
-             */
-            function (currencies) {
-                if (!currencies) {
-                    _this.store.dispatch(new LoadCurrencies());
-                }
-            })), operators.filter((/**
-             * @param {?} currenies
-             * @return {?}
-             */
-            function (currenies) { return Boolean(currenies); })));
-        };
-        /**
-         * Represents the isocode of the active currency.
-         */
-        /**
-         * Represents the isocode of the active currency.
-         * @return {?}
-         */
-        CurrencyService.prototype.getActive = /**
-         * Represents the isocode of the active currency.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getActiveCurrency), operators.filter((/**
-             * @param {?} active
-             * @return {?}
-             */
-            function (active) { return Boolean(active); })));
-        };
-        /**
-         * Sets the active language.
-         */
-        /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        CurrencyService.prototype.setActive = /**
-         * Sets the active language.
-         * @param {?} isocode
-         * @return {?}
-         */
-        function (isocode) {
-            var _this = this;
-            return this.store
-                .pipe(store.select(getActiveCurrency), operators.take(1))
-                .subscribe((/**
-             * @param {?} activeCurrency
-             * @return {?}
-             */
-            function (activeCurrency) {
-                if (activeCurrency !== isocode) {
-                    _this.store.dispatch(new SetActiveCurrency(isocode));
-                }
-            }));
-        };
-        /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         */
-        /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         * @param {?} defaultCurrency
-         * @return {?}
-         */
-        CurrencyService.prototype.initialize = /**
-         * Initials the active currency. The active currency is either given
-         * by the last visit (stored in session storage) or by the
-         * default session currency of the store.
-         * @param {?} defaultCurrency
-         * @return {?}
-         */
-        function (defaultCurrency) {
-            if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
-                this.setActive(this.sessionStorage.getItem('currency'));
-            }
-            else {
-                this.setActive(defaultCurrency);
-            }
-        };
-        CurrencyService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CurrencyService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: WindowRef }
-        ]; };
-        return CurrencyService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    ContextServiceMap = /** @class */ (function () {
-        function ContextServiceMap() {
-        }
-        return ContextServiceMap;
-    }());
-    /** @type {?} */
-    var LANGUAGE_CONTEXT_ID = 'language';
-    /** @type {?} */
-    var CURRENCY_CONTEXT_ID = 'currency';
-    /** @type {?} */
-    var BASE_SITE_CONTEXT_ID = 'baseSite';
-    /**
-     * @return {?}
-     */
-    function serviceMapFactory() {
-        var _a;
-        return _a = {},
-            _a[LANGUAGE_CONTEXT_ID] = LanguageService,
-            _a[CURRENCY_CONTEXT_ID] = CurrencyService,
-            _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
-            _a;
-    }
-    /** @type {?} */
-    var contextServiceMapProvider = {
-        provide: ContextServiceMap,
-        useFactory: serviceMapFactory,
-    };
 
     /**
      * @fileoverview added by tsickle
@@ -13974,6 +13692,131 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Facade that provides easy access to language state, actions and selectors.
+     */
+    var LanguageService = /** @class */ (function () {
+        function LanguageService(store, winRef, config) {
+            this.store = store;
+            this.config = config;
+            this.sessionStorage = winRef.sessionStorage;
+        }
+        /**
+         * Represents all the languages supported by the current store.
+         */
+        /**
+         * Represents all the languages supported by the current store.
+         * @return {?}
+         */
+        LanguageService.prototype.getAll = /**
+         * Represents all the languages supported by the current store.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getAllLanguages), operators.tap((/**
+             * @param {?} languages
+             * @return {?}
+             */
+            function (languages) {
+                if (!languages) {
+                    _this.store.dispatch(new LoadLanguages());
+                }
+            })), operators.filter((/**
+             * @param {?} languages
+             * @return {?}
+             */
+            function (languages) { return Boolean(languages); })));
+        };
+        /**
+         * Represents the isocode of the active language.
+         */
+        /**
+         * Represents the isocode of the active language.
+         * @return {?}
+         */
+        LanguageService.prototype.getActive = /**
+         * Represents the isocode of the active language.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getActiveLanguage), operators.filter((/**
+             * @param {?} active
+             * @return {?}
+             */
+            function (active) { return Boolean(active); })));
+        };
+        /**
+         * Sets the active language.
+         */
+        /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        LanguageService.prototype.setActive = /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) {
+            var _this = this;
+            return this.store
+                .pipe(store.select(getActiveLanguage), operators.take(1))
+                .subscribe((/**
+             * @param {?} activeLanguage
+             * @return {?}
+             */
+            function (activeLanguage) {
+                if (activeLanguage !== isocode) {
+                    _this.store.dispatch(new SetActiveLanguage(isocode));
+                }
+            }));
+        };
+        /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         */
+        /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         * @return {?}
+         */
+        LanguageService.prototype.initialize = /**
+         * Initials the active language. The active language is either given
+         * by the last visit (stored in session storage) or by the
+         * default session language of the store.
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var sessionLanguage = this.sessionStorage && this.sessionStorage.getItem('language');
+            if (sessionLanguage &&
+                getContextParameterValues(this.config, LANGUAGE_CONTEXT_ID).includes(sessionLanguage)) {
+                this.setActive(sessionLanguage);
+            }
+            else {
+                this.setActive(getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID));
+            }
+        };
+        LanguageService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        LanguageService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: WindowRef },
+            { type: SiteContextConfig }
+        ]; };
+        return LanguageService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
     var CxDatePipe = /** @class */ (function (_super) {
         __extends(CxDatePipe, _super);
@@ -14188,12 +14031,14 @@
             this.duplicates = {};
             this.chunks = {};
             this.KEY_SEPARATOR = '.';
-            Object.keys(config.i18n.chunks).forEach((/**
+            /** @type {?} */
+            var chunks = (config.i18n && config.i18n.chunks) || {};
+            Object.keys(chunks).forEach((/**
              * @param {?} chunk
              * @return {?}
              */
             function (chunk) {
-                config.i18n.chunks[chunk].forEach((/**
+                chunks[chunk].forEach((/**
                  * @param {?} key
                  * @return {?}
                  */
@@ -19835,6 +19680,131 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Facade that provides easy access to curreny state, actions and selectors.
+     */
+    var CurrencyService = /** @class */ (function () {
+        function CurrencyService(store, winRef, config) {
+            this.store = store;
+            this.config = config;
+            this.sessionStorage = winRef.sessionStorage;
+        }
+        /**
+         * Represents all the currencies supported by the current store.
+         */
+        /**
+         * Represents all the currencies supported by the current store.
+         * @return {?}
+         */
+        CurrencyService.prototype.getAll = /**
+         * Represents all the currencies supported by the current store.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getAllCurrencies), operators.tap((/**
+             * @param {?} currencies
+             * @return {?}
+             */
+            function (currencies) {
+                if (!currencies) {
+                    _this.store.dispatch(new LoadCurrencies());
+                }
+            })), operators.filter((/**
+             * @param {?} currenies
+             * @return {?}
+             */
+            function (currenies) { return Boolean(currenies); })));
+        };
+        /**
+         * Represents the isocode of the active currency.
+         */
+        /**
+         * Represents the isocode of the active currency.
+         * @return {?}
+         */
+        CurrencyService.prototype.getActive = /**
+         * Represents the isocode of the active currency.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getActiveCurrency), operators.filter((/**
+             * @param {?} active
+             * @return {?}
+             */
+            function (active) { return Boolean(active); })));
+        };
+        /**
+         * Sets the active language.
+         */
+        /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        CurrencyService.prototype.setActive = /**
+         * Sets the active language.
+         * @param {?} isocode
+         * @return {?}
+         */
+        function (isocode) {
+            var _this = this;
+            return this.store
+                .pipe(store.select(getActiveCurrency), operators.take(1))
+                .subscribe((/**
+             * @param {?} activeCurrency
+             * @return {?}
+             */
+            function (activeCurrency) {
+                if (activeCurrency !== isocode) {
+                    _this.store.dispatch(new SetActiveCurrency(isocode));
+                }
+            }));
+        };
+        /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         */
+        /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         * @return {?}
+         */
+        CurrencyService.prototype.initialize = /**
+         * Initials the active currency. The active currency is either given
+         * by the last visit (stored in session storage) or by the
+         * default session currency of the store.
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var sessionCurrency = this.sessionStorage && this.sessionStorage.getItem('currency');
+            if (sessionCurrency &&
+                getContextParameterValues(this.config, CURRENCY_CONTEXT_ID).includes(sessionCurrency)) {
+                this.setActive(sessionCurrency);
+            }
+            else {
+                this.setActive(getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID));
+            }
+        };
+        CurrencyService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CurrencyService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: WindowRef },
+            { type: SiteContextConfig }
+        ]; };
+        return CurrencyService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var SiteContextInterceptor = /** @class */ (function () {
         function SiteContextInterceptor(languageService, currencyService, occEndpoints, config) {
             var _this = this;
@@ -19851,13 +19821,13 @@
              * @return {?}
              */
             function (data) { return (_this.activeLang = data); }));
-            this.currencyService
-                .getActive()
-                .subscribe((/**
+            this.currencyService.getActive().subscribe((/**
              * @param {?} data
              * @return {?}
              */
-            function (data) { return (_this.activeCurr = data); }));
+            function (data) {
+                _this.activeCurr = data;
+            }));
         }
         /**
          * @param {?} request
@@ -23741,20 +23711,51 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @param {?} config
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    ContextServiceMap = /** @class */ (function () {
+        function ContextServiceMap() {
+        }
+        return ContextServiceMap;
+    }());
+    /**
+     * @return {?}
+     */
+    function serviceMapFactory() {
+        var _a;
+        return _a = {},
+            _a[LANGUAGE_CONTEXT_ID] = LanguageService,
+            _a[CURRENCY_CONTEXT_ID] = CurrencyService,
+            _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
+            _a;
+    }
+    /** @type {?} */
+    var contextServiceMapProvider = {
+        provide: ContextServiceMap,
+        useFactory: serviceMapFactory,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
      * @param {?} baseSiteService
      * @param {?} langService
      * @param {?} currService
      * @return {?}
      */
-    function inititializeContext(config, baseSiteService, langService, currService) {
+    function inititializeContext(baseSiteService, langService, currService) {
         return (/**
          * @return {?}
          */
         function () {
-            baseSiteService.initialize(getContextParameterDefault(config, BASE_SITE_CONTEXT_ID));
-            langService.initialize(getContextParameterDefault(config, LANGUAGE_CONTEXT_ID));
-            currService.initialize(getContextParameterDefault(config, CURRENCY_CONTEXT_ID));
+            baseSiteService.initialize();
+            langService.initialize();
+            currService.initialize();
         });
     }
     /** @type {?} */
@@ -23765,7 +23766,7 @@
         {
             provide: core.APP_INITIALIZER,
             useFactory: inititializeContext,
-            deps: [OccConfig, BaseSiteService, LanguageService, CurrencyService],
+            deps: [BaseSiteService, LanguageService, CurrencyService],
             multi: true,
         },
     ];
@@ -23781,42 +23782,29 @@
             this.serviceMap = serviceMap;
         }
         /**
-         * @param {?=} persistence
          * @return {?}
          */
         SiteContextParamsService.prototype.getContextParameters = /**
-         * @param {?=} persistence
          * @return {?}
          */
-        function (persistence) {
-            /** @type {?} */
-            var contextConfig = this.config.context && this.config.context.parameters;
-            if (contextConfig) {
-                /** @type {?} */
-                var params = Object.keys(contextConfig);
-                if (persistence) {
-                    return params.filter((/**
-                     * @param {?} key
-                     * @return {?}
-                     */
-                    function (key) { return contextConfig[key].persistence === persistence; }));
-                }
-                else {
-                    return params;
-                }
+        function () {
+            if (this.config.context) {
+                return Object.keys(this.config.context).filter((/**
+                 * @param {?} param
+                 * @return {?}
+                 */
+                function (param) { return param !== 'urlParameters'; }));
             }
             return [];
         };
         /**
-         * @param {?} param
          * @return {?}
          */
-        SiteContextParamsService.prototype.getParameter = /**
-         * @param {?} param
+        SiteContextParamsService.prototype.getUrlEncodingParameters = /**
          * @return {?}
          */
-        function (param) {
-            return getContextParameter(this.config, param);
+        function () {
+            return (this.config.context && this.config.context.urlParameters) || [];
         };
         /**
          * @param {?} param
@@ -23827,7 +23815,7 @@
          * @return {?}
          */
         function (param) {
-            return this.getParameter(param).values || [];
+            return getContextParameterValues(this.config, param);
         };
         /**
          * @param {?} param
@@ -23913,12 +23901,10 @@
      */
     var SiteContextUrlSerializer = /** @class */ (function (_super) {
         __extends(SiteContextUrlSerializer, _super);
-        function SiteContextUrlSerializer(siteContextParams, config) {
+        function SiteContextUrlSerializer(siteContextParams) {
             var _this = _super.call(this) || this;
             _this.siteContextParams = siteContextParams;
-            _this.config = config;
-            _this.urlEncodingParameters =
-                (_this.config.context && _this.config.context.urlEncodingParameters) || [];
+            _this.urlEncodingParameters = _this.siteContextParams.getUrlEncodingParameters();
             return _this;
         }
         Object.defineProperty(SiteContextUrlSerializer.prototype, "hasContextInRoutes", {
@@ -24063,8 +24049,7 @@
         ];
         /** @nocollapse */
         SiteContextUrlSerializer.ctorParameters = function () { return [
-            { type: SiteContextParamsService },
-            { type: SiteContextConfig }
+            { type: SiteContextParamsService }
         ]; };
         return SiteContextUrlSerializer;
     }(router.DefaultUrlSerializer));
@@ -24092,7 +24077,7 @@
             this.router = this.injector.get(router.Router);
             this.location = this.injector.get(common.Location);
             /** @type {?} */
-            var routingParams = this.siteContextParams.getContextParameters(ContextPersistence.ROUTE);
+            var routingParams = this.siteContextParams.getUrlEncodingParameters();
             if (routingParams.length) {
                 this.setContextParamsFromRoute(this.router.url);
                 this.subscribeChanges(routingParams);
@@ -24264,59 +24249,49 @@
     function defaultSiteContextConfigFactory() {
         var _a;
         return {
-            context: {
-                parameters: (_a = {},
-                    _a[LANGUAGE_CONTEXT_ID] = {
-                        persistence: ContextPersistence.ROUTE,
-                        default: 'en',
-                        values: [
-                            'en',
-                            'de',
-                            'ja',
-                            'zh',
-                            'ru',
-                            'fr',
-                            'tr',
-                            'it',
-                            'es',
-                            'uk',
-                            'pl',
-                            'nl',
-                            'hi',
-                            'ar',
-                            'pt',
-                            'bn',
-                            'pa',
-                        ],
-                    },
-                    _a[CURRENCY_CONTEXT_ID] = {
-                        persistence: ContextPersistence.ROUTE,
-                        default: 'USD',
-                        values: [
-                            'USD',
-                            'EUR',
-                            'JPY',
-                            'GBP',
-                            'AUD',
-                            'CAD',
-                            'CHF',
-                            'CNY',
-                            'SEK',
-                            'NZD',
-                            'MXN',
-                            'SGD',
-                            'HKD',
-                            'NOK',
-                            'KRW',
-                            'TRY',
-                            'RUB',
-                            'INR',
-                            'BRL',
-                            'ZAR',
-                        ],
-                    },
-                    _a),
-            },
+            context: (_a = {},
+                _a[LANGUAGE_CONTEXT_ID] = [
+                    'en',
+                    'de',
+                    'ja',
+                    'zh',
+                    'ru',
+                    'fr',
+                    'tr',
+                    'it',
+                    'es',
+                    'uk',
+                    'pl',
+                    'nl',
+                    'hi',
+                    'ar',
+                    'pt',
+                    'bn',
+                    'pa',
+                ],
+                _a[CURRENCY_CONTEXT_ID] = [
+                    'USD',
+                    'EUR',
+                    'JPY',
+                    'GBP',
+                    'AUD',
+                    'CAD',
+                    'CHF',
+                    'CNY',
+                    'SEK',
+                    'NZD',
+                    'MXN',
+                    'SGD',
+                    'HKD',
+                    'NOK',
+                    'KRW',
+                    'TRY',
+                    'RUB',
+                    'INR',
+                    'BRL',
+                    'ZAR',
+                ],
+                _a),
         };
     }
 
@@ -29929,7 +29904,6 @@
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
     exports.ConflictHandler = ConflictHandler;
     exports.ContentPageMetaResolver = ContentPageMetaResolver;
-    exports.ContextPersistence = ContextPersistence;
     exports.ContextServiceMap = ContextServiceMap;
     exports.ConverterService = ConverterService;
     exports.CountryType = CountryType;
@@ -30227,105 +30201,104 @@
     exports.ɵcw = OpenIdTokenEffect;
     exports.ɵcx = OpenIdAuthenticationTokenService;
     exports.ɵcy = defaultKymaConfig;
-    exports.ɵcz = provideConfigFactory;
+    exports.ɵcz = defaultOccProductConfig;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = defaultOccProductConfig;
-    exports.ɵdb = defaultPersonalizationConfig;
-    exports.ɵdc = interceptors$1;
-    exports.ɵdd = OccPersonalizationIdInterceptor;
-    exports.ɵde = OccPersonalizationTimeInterceptor;
-    exports.ɵdf = ProcessStoreModule;
-    exports.ɵdg = getReducers$7;
-    exports.ɵdh = reducerToken$7;
-    exports.ɵdi = reducerProvider$7;
-    exports.ɵdj = productStoreConfigFactory;
-    exports.ɵdk = ProductStoreModule;
-    exports.ɵdl = getReducers$8;
-    exports.ɵdm = reducerToken$8;
-    exports.ɵdn = reducerProvider$8;
-    exports.ɵdo = clearProductsState;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdq = effects$6;
-    exports.ɵdr = ProductReferencesEffects;
-    exports.ɵds = ProductReviewsEffects;
-    exports.ɵdt = ProductsSearchEffects;
-    exports.ɵdu = ProductEffects;
-    exports.ɵdv = reducer$a;
-    exports.ɵdw = reducer$c;
-    exports.ɵdx = reducer$b;
-    exports.ɵdy = PageMetaResolver;
-    exports.ɵdz = UrlMatcherFactoryService;
+    exports.ɵda = defaultPersonalizationConfig;
+    exports.ɵdb = interceptors$1;
+    exports.ɵdc = OccPersonalizationIdInterceptor;
+    exports.ɵdd = OccPersonalizationTimeInterceptor;
+    exports.ɵde = ProcessStoreModule;
+    exports.ɵdf = getReducers$7;
+    exports.ɵdg = reducerToken$7;
+    exports.ɵdh = reducerProvider$7;
+    exports.ɵdi = productStoreConfigFactory;
+    exports.ɵdj = ProductStoreModule;
+    exports.ɵdk = getReducers$8;
+    exports.ɵdl = reducerToken$8;
+    exports.ɵdm = reducerProvider$8;
+    exports.ɵdn = clearProductsState;
+    exports.ɵdo = metaReducers$4;
+    exports.ɵdp = effects$6;
+    exports.ɵdq = ProductReferencesEffects;
+    exports.ɵdr = ProductReviewsEffects;
+    exports.ɵds = ProductsSearchEffects;
+    exports.ɵdt = ProductEffects;
+    exports.ɵdu = reducer$a;
+    exports.ɵdv = reducer$c;
+    exports.ɵdw = reducer$b;
+    exports.ɵdx = PageMetaResolver;
+    exports.ɵdy = UrlMatcherFactoryService;
+    exports.ɵdz = getReducers$3;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = getReducers$3;
-    exports.ɵeb = reducer$5;
-    exports.ɵec = reducerToken$3;
-    exports.ɵed = reducerProvider$3;
-    exports.ɵee = CustomSerializer;
-    exports.ɵef = effects$3;
-    exports.ɵeg = RouterEffects;
-    exports.ɵeh = SiteContextParamsService;
-    exports.ɵei = SiteContextUrlSerializer;
-    exports.ɵej = SiteContextRoutesHandler;
-    exports.ɵek = defaultSiteContextConfigFactory;
-    exports.ɵel = siteContextStoreConfigFactory;
-    exports.ɵem = SiteContextStoreModule;
-    exports.ɵen = getReducers$9;
-    exports.ɵeo = reducerToken$9;
-    exports.ɵep = reducerProvider$9;
-    exports.ɵeq = effects$7;
-    exports.ɵer = LanguagesEffects;
-    exports.ɵes = CurrenciesEffects;
-    exports.ɵet = BaseSiteEffects;
-    exports.ɵeu = reducer$d;
-    exports.ɵev = reducer$e;
-    exports.ɵew = reducer$f;
-    exports.ɵex = baseSiteConfigValidator;
-    exports.ɵey = interceptors$2;
-    exports.ɵez = CmsTicketInterceptor;
+    exports.ɵea = reducer$5;
+    exports.ɵeb = reducerToken$3;
+    exports.ɵec = reducerProvider$3;
+    exports.ɵed = CustomSerializer;
+    exports.ɵee = effects$3;
+    exports.ɵef = RouterEffects;
+    exports.ɵeg = SiteContextParamsService;
+    exports.ɵeh = SiteContextUrlSerializer;
+    exports.ɵei = SiteContextRoutesHandler;
+    exports.ɵej = defaultSiteContextConfigFactory;
+    exports.ɵek = siteContextStoreConfigFactory;
+    exports.ɵel = SiteContextStoreModule;
+    exports.ɵem = getReducers$9;
+    exports.ɵen = reducerToken$9;
+    exports.ɵeo = reducerProvider$9;
+    exports.ɵep = effects$7;
+    exports.ɵeq = LanguagesEffects;
+    exports.ɵer = CurrenciesEffects;
+    exports.ɵes = BaseSiteEffects;
+    exports.ɵet = reducer$d;
+    exports.ɵeu = reducer$e;
+    exports.ɵev = reducer$f;
+    exports.ɵew = baseSiteConfigValidator;
+    exports.ɵex = interceptors$2;
+    exports.ɵey = CmsTicketInterceptor;
+    exports.ɵez = defaultStoreFinderConfig;
     exports.ɵf = getReducers;
-    exports.ɵfa = defaultStoreFinderConfig;
-    exports.ɵfb = StoreFinderStoreModule;
-    exports.ɵfc = getReducers$a;
-    exports.ɵfd = reducerToken$a;
-    exports.ɵfe = reducerProvider$a;
-    exports.ɵff = effects$8;
-    exports.ɵfg = FindStoresEffect;
-    exports.ɵfh = ViewAllStoresEffect;
-    exports.ɵfi = UserStoreModule;
-    exports.ɵfj = getReducers$b;
-    exports.ɵfk = reducerToken$b;
-    exports.ɵfl = reducerProvider$b;
-    exports.ɵfm = clearUserState;
-    exports.ɵfn = metaReducers$5;
-    exports.ɵfo = effects$9;
-    exports.ɵfp = BillingCountriesEffect;
-    exports.ɵfq = DeliveryCountriesEffects;
-    exports.ɵfr = OrderDetailsEffect;
-    exports.ɵfs = UserPaymentMethodsEffects;
-    exports.ɵft = RegionsEffects;
-    exports.ɵfu = ResetPasswordEffects;
-    exports.ɵfv = TitlesEffects;
-    exports.ɵfw = UserAddressesEffects;
-    exports.ɵfx = UserConsentsEffect;
-    exports.ɵfy = UserDetailsEffects;
-    exports.ɵfz = UserOrdersEffect;
+    exports.ɵfa = StoreFinderStoreModule;
+    exports.ɵfb = getReducers$a;
+    exports.ɵfc = reducerToken$a;
+    exports.ɵfd = reducerProvider$a;
+    exports.ɵfe = effects$8;
+    exports.ɵff = FindStoresEffect;
+    exports.ɵfg = ViewAllStoresEffect;
+    exports.ɵfh = UserStoreModule;
+    exports.ɵfi = getReducers$b;
+    exports.ɵfj = reducerToken$b;
+    exports.ɵfk = reducerProvider$b;
+    exports.ɵfl = clearUserState;
+    exports.ɵfm = metaReducers$5;
+    exports.ɵfn = effects$9;
+    exports.ɵfo = BillingCountriesEffect;
+    exports.ɵfp = DeliveryCountriesEffects;
+    exports.ɵfq = OrderDetailsEffect;
+    exports.ɵfr = UserPaymentMethodsEffects;
+    exports.ɵfs = RegionsEffects;
+    exports.ɵft = ResetPasswordEffects;
+    exports.ɵfu = TitlesEffects;
+    exports.ɵfv = UserAddressesEffects;
+    exports.ɵfw = UserConsentsEffect;
+    exports.ɵfx = UserDetailsEffects;
+    exports.ɵfy = UserOrdersEffect;
+    exports.ɵfz = UserRegisterEffects;
     exports.ɵg = reducerToken;
-    exports.ɵga = UserRegisterEffects;
-    exports.ɵgb = ClearMiscsDataEffect;
-    exports.ɵgc = ForgotPasswordEffects;
-    exports.ɵgd = UpdateEmailEffects;
-    exports.ɵge = UpdatePasswordEffects;
-    exports.ɵgf = reducer$p;
-    exports.ɵgg = reducer$n;
-    exports.ɵgh = reducer$g;
-    exports.ɵgi = reducer$o;
-    exports.ɵgj = reducer$j;
-    exports.ɵgk = reducer$q;
-    exports.ɵgl = reducer$i;
-    exports.ɵgm = reducer$h;
-    exports.ɵgn = reducer$m;
-    exports.ɵgo = reducer$k;
-    exports.ɵgp = reducer$l;
+    exports.ɵga = ClearMiscsDataEffect;
+    exports.ɵgb = ForgotPasswordEffects;
+    exports.ɵgc = UpdateEmailEffects;
+    exports.ɵgd = UpdatePasswordEffects;
+    exports.ɵge = reducer$p;
+    exports.ɵgf = reducer$n;
+    exports.ɵgg = reducer$g;
+    exports.ɵgh = reducer$o;
+    exports.ɵgi = reducer$j;
+    exports.ɵgj = reducer$q;
+    exports.ɵgk = reducer$i;
+    exports.ɵgl = reducer$h;
+    exports.ɵgm = reducer$m;
+    exports.ɵgn = reducer$k;
+    exports.ɵgo = reducer$l;
     exports.ɵh = reducerProvider;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;

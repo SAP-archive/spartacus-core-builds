@@ -3,9 +3,11 @@ import { Observable, Subscription } from 'rxjs';
 import { BaseSite } from '../../model/misc.model';
 import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
+import { SiteContextConfig } from '../config/site-context-config';
 export declare class BaseSiteService implements SiteContext<string> {
     protected store: Store<StateWithSiteContext>;
-    constructor(store: Store<StateWithSiteContext>);
+    protected config: SiteContextConfig;
+    constructor(store: Store<StateWithSiteContext>, config: SiteContextConfig);
     /**
      * Represents the current baseSite uid.
      */
@@ -18,7 +20,7 @@ export declare class BaseSiteService implements SiteContext<string> {
     /**
      * Initializes the active baseSite.
      */
-    initialize(defaultBaseSite: string): void;
+    initialize(): void;
     /**
      * Get the base site details data
      */

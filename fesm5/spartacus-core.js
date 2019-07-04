@@ -256,11 +256,6 @@ var ConfigModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @enum {string} */
-var ContextPersistence = {
-    NONE: 'none',
-    ROUTE: 'route',
-};
 /**
  * @abstract
  */
@@ -3020,9 +3015,48 @@ var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Helper function for safely getting context parameter config
+ *
+ * @param {?} config
+ * @param {?} parameter
+ * @return {?}
+ */
+function getContextParameterValues(config, parameter) {
+    return (config.context && config.context[parameter]) || [];
+}
+/**
+ * Helper function for calculating default value for context parameter from config
+ *
+ * @param {?} config
+ * @param {?} parameter
+ * @return {?}
+ */
+function getContextParameterDefault(config, parameter) {
+    /** @type {?} */
+    var param = getContextParameterValues(config, parameter);
+    return param && param.length ? param[0] : undefined;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var LANGUAGE_CONTEXT_ID = 'language';
+/** @type {?} */
+var CURRENCY_CONTEXT_ID = 'currency';
+/** @type {?} */
+var BASE_SITE_CONTEXT_ID = 'baseSite';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var BaseSiteService = /** @class */ (function () {
-    function BaseSiteService(store) {
+    function BaseSiteService(store, config) {
         this.store = store;
+        this.config = config;
     }
     /**
      * Represents the current baseSite uid.
@@ -3087,16 +3121,14 @@ var BaseSiteService = /** @class */ (function () {
      */
     /**
      * Initializes the active baseSite.
-     * @param {?} defaultBaseSite
      * @return {?}
      */
     BaseSiteService.prototype.initialize = /**
      * Initializes the active baseSite.
-     * @param {?} defaultBaseSite
      * @return {?}
      */
-    function (defaultBaseSite) {
-        this.setActive(defaultBaseSite);
+    function () {
+        this.setActive(getContextParameterDefault(this.config, BASE_SITE_CONTEXT_ID));
     };
     /**
      * Get the base site details data
@@ -3126,7 +3158,8 @@ var BaseSiteService = /** @class */ (function () {
     ];
     /** @nocollapse */
     BaseSiteService.ctorParameters = function () { return [
-        { type: Store }
+        { type: Store },
+        { type: SiteContextConfig }
     ]; };
     return BaseSiteService;
 }());
@@ -3164,321 +3197,6 @@ var DynamicTemplate = /** @class */ (function () {
     };
     return DynamicTemplate;
 }());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Helper function for safely getting context parameter config
- *
- * @param {?} config
- * @param {?} parameter
- * @return {?}
- */
-function getContextParameter(config, parameter) {
-    return ((config.context &&
-        config.context.parameters &&
-        config.context.parameters[parameter]) ||
-        {});
-}
-/**
- * Helper function for calculating default value for context parameter from config
- *
- * @param {?} config
- * @param {?} parameter
- * @return {?}
- */
-function getContextParameterDefault(config, parameter) {
-    /** @type {?} */
-    var param = getContextParameter(config, parameter);
-    if (param.default !== undefined) {
-        return param.default;
-    }
-    return param.values && param.values.length ? param.values[0] : undefined;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to language state, actions and selectors.
- */
-var LanguageService = /** @class */ (function () {
-    function LanguageService(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the languages supported by the current store.
-     */
-    /**
-     * Represents all the languages supported by the current store.
-     * @return {?}
-     */
-    LanguageService.prototype.getAll = /**
-     * Represents all the languages supported by the current store.
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.store.pipe(select(getAllLanguages), tap((/**
-         * @param {?} languages
-         * @return {?}
-         */
-        function (languages) {
-            if (!languages) {
-                _this.store.dispatch(new LoadLanguages());
-            }
-        })), filter((/**
-         * @param {?} languages
-         * @return {?}
-         */
-        function (languages) { return Boolean(languages); })));
-    };
-    /**
-     * Represents the isocode of the active language.
-     */
-    /**
-     * Represents the isocode of the active language.
-     * @return {?}
-     */
-    LanguageService.prototype.getActive = /**
-     * Represents the isocode of the active language.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getActiveLanguage), filter((/**
-         * @param {?} active
-         * @return {?}
-         */
-        function (active) { return Boolean(active); })));
-    };
-    /**
-     * Sets the active language.
-     */
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    LanguageService.prototype.setActive = /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    function (isocode) {
-        var _this = this;
-        return this.store
-            .pipe(select(getActiveLanguage), take(1))
-            .subscribe((/**
-         * @param {?} activeLanguage
-         * @return {?}
-         */
-        function (activeLanguage) {
-            if (activeLanguage !== isocode) {
-                _this.store.dispatch(new SetActiveLanguage(isocode));
-            }
-        }));
-    };
-    /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     */
-    /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     * @param {?} defaultLanguage
-     * @return {?}
-     */
-    LanguageService.prototype.initialize = /**
-     * Initials the active language. The active language is either given
-     * by the last visit (stored in session storage) or by the
-     * default session language of the store.
-     * @param {?} defaultLanguage
-     * @return {?}
-     */
-    function (defaultLanguage) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('language')) {
-            this.setActive(this.sessionStorage.getItem('language'));
-        }
-        else {
-            this.setActive(defaultLanguage);
-        }
-    };
-    LanguageService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    LanguageService.ctorParameters = function () { return [
-        { type: Store },
-        { type: WindowRef }
-    ]; };
-    return LanguageService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Facade that provides easy access to curreny state, actions and selectors.
- */
-var CurrencyService = /** @class */ (function () {
-    function CurrencyService(store, winRef) {
-        this.store = store;
-        this.sessionStorage = winRef.sessionStorage;
-    }
-    /**
-     * Represents all the currencies supported by the current store.
-     */
-    /**
-     * Represents all the currencies supported by the current store.
-     * @return {?}
-     */
-    CurrencyService.prototype.getAll = /**
-     * Represents all the currencies supported by the current store.
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.store.pipe(select(getAllCurrencies), tap((/**
-         * @param {?} currencies
-         * @return {?}
-         */
-        function (currencies) {
-            if (!currencies) {
-                _this.store.dispatch(new LoadCurrencies());
-            }
-        })), filter((/**
-         * @param {?} currenies
-         * @return {?}
-         */
-        function (currenies) { return Boolean(currenies); })));
-    };
-    /**
-     * Represents the isocode of the active currency.
-     */
-    /**
-     * Represents the isocode of the active currency.
-     * @return {?}
-     */
-    CurrencyService.prototype.getActive = /**
-     * Represents the isocode of the active currency.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getActiveCurrency), filter((/**
-         * @param {?} active
-         * @return {?}
-         */
-        function (active) { return Boolean(active); })));
-    };
-    /**
-     * Sets the active language.
-     */
-    /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    CurrencyService.prototype.setActive = /**
-     * Sets the active language.
-     * @param {?} isocode
-     * @return {?}
-     */
-    function (isocode) {
-        var _this = this;
-        return this.store
-            .pipe(select(getActiveCurrency), take(1))
-            .subscribe((/**
-         * @param {?} activeCurrency
-         * @return {?}
-         */
-        function (activeCurrency) {
-            if (activeCurrency !== isocode) {
-                _this.store.dispatch(new SetActiveCurrency(isocode));
-            }
-        }));
-    };
-    /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     */
-    /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     * @param {?} defaultCurrency
-     * @return {?}
-     */
-    CurrencyService.prototype.initialize = /**
-     * Initials the active currency. The active currency is either given
-     * by the last visit (stored in session storage) or by the
-     * default session currency of the store.
-     * @param {?} defaultCurrency
-     * @return {?}
-     */
-    function (defaultCurrency) {
-        if (this.sessionStorage && !!this.sessionStorage.getItem('currency')) {
-            this.setActive(this.sessionStorage.getItem('currency'));
-        }
-        else {
-            this.setActive(defaultCurrency);
-        }
-    };
-    CurrencyService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    CurrencyService.ctorParameters = function () { return [
-        { type: Store },
-        { type: WindowRef }
-    ]; };
-    return CurrencyService;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-var  /**
- * @abstract
- */
-ContextServiceMap = /** @class */ (function () {
-    function ContextServiceMap() {
-    }
-    return ContextServiceMap;
-}());
-/** @type {?} */
-var LANGUAGE_CONTEXT_ID = 'language';
-/** @type {?} */
-var CURRENCY_CONTEXT_ID = 'currency';
-/** @type {?} */
-var BASE_SITE_CONTEXT_ID = 'baseSite';
-/**
- * @return {?}
- */
-function serviceMapFactory() {
-    var _a;
-    return _a = {},
-        _a[LANGUAGE_CONTEXT_ID] = LanguageService,
-        _a[CURRENCY_CONTEXT_ID] = CurrencyService,
-        _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
-        _a;
-}
-/** @type {?} */
-var contextServiceMapProvider = {
-    provide: ContextServiceMap,
-    useFactory: serviceMapFactory,
-};
 
 /**
  * @fileoverview added by tsickle
@@ -13895,6 +13613,131 @@ var GlobalMessageModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Facade that provides easy access to language state, actions and selectors.
+ */
+var LanguageService = /** @class */ (function () {
+    function LanguageService(store, winRef, config) {
+        this.store = store;
+        this.config = config;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the languages supported by the current store.
+     */
+    /**
+     * Represents all the languages supported by the current store.
+     * @return {?}
+     */
+    LanguageService.prototype.getAll = /**
+     * Represents all the languages supported by the current store.
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.store.pipe(select(getAllLanguages), tap((/**
+         * @param {?} languages
+         * @return {?}
+         */
+        function (languages) {
+            if (!languages) {
+                _this.store.dispatch(new LoadLanguages());
+            }
+        })), filter((/**
+         * @param {?} languages
+         * @return {?}
+         */
+        function (languages) { return Boolean(languages); })));
+    };
+    /**
+     * Represents the isocode of the active language.
+     */
+    /**
+     * Represents the isocode of the active language.
+     * @return {?}
+     */
+    LanguageService.prototype.getActive = /**
+     * Represents the isocode of the active language.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getActiveLanguage), filter((/**
+         * @param {?} active
+         * @return {?}
+         */
+        function (active) { return Boolean(active); })));
+    };
+    /**
+     * Sets the active language.
+     */
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    LanguageService.prototype.setActive = /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    function (isocode) {
+        var _this = this;
+        return this.store
+            .pipe(select(getActiveLanguage), take(1))
+            .subscribe((/**
+         * @param {?} activeLanguage
+         * @return {?}
+         */
+        function (activeLanguage) {
+            if (activeLanguage !== isocode) {
+                _this.store.dispatch(new SetActiveLanguage(isocode));
+            }
+        }));
+    };
+    /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     */
+    /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     * @return {?}
+     */
+    LanguageService.prototype.initialize = /**
+     * Initials the active language. The active language is either given
+     * by the last visit (stored in session storage) or by the
+     * default session language of the store.
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var sessionLanguage = this.sessionStorage && this.sessionStorage.getItem('language');
+        if (sessionLanguage &&
+            getContextParameterValues(this.config, LANGUAGE_CONTEXT_ID).includes(sessionLanguage)) {
+            this.setActive(sessionLanguage);
+        }
+        else {
+            this.setActive(getContextParameterDefault(this.config, LANGUAGE_CONTEXT_ID));
+        }
+    };
+    LanguageService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    LanguageService.ctorParameters = function () { return [
+        { type: Store },
+        { type: WindowRef },
+        { type: SiteContextConfig }
+    ]; };
+    return LanguageService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
 var CxDatePipe = /** @class */ (function (_super) {
     __extends(CxDatePipe, _super);
@@ -14109,12 +13952,14 @@ var TranslationChunkService = /** @class */ (function () {
         this.duplicates = {};
         this.chunks = {};
         this.KEY_SEPARATOR = '.';
-        Object.keys(config.i18n.chunks).forEach((/**
+        /** @type {?} */
+        var chunks = (config.i18n && config.i18n.chunks) || {};
+        Object.keys(chunks).forEach((/**
          * @param {?} chunk
          * @return {?}
          */
         function (chunk) {
-            config.i18n.chunks[chunk].forEach((/**
+            chunks[chunk].forEach((/**
              * @param {?} key
              * @return {?}
              */
@@ -19756,6 +19601,131 @@ SiteAdapter = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Facade that provides easy access to curreny state, actions and selectors.
+ */
+var CurrencyService = /** @class */ (function () {
+    function CurrencyService(store, winRef, config) {
+        this.store = store;
+        this.config = config;
+        this.sessionStorage = winRef.sessionStorage;
+    }
+    /**
+     * Represents all the currencies supported by the current store.
+     */
+    /**
+     * Represents all the currencies supported by the current store.
+     * @return {?}
+     */
+    CurrencyService.prototype.getAll = /**
+     * Represents all the currencies supported by the current store.
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.store.pipe(select(getAllCurrencies), tap((/**
+         * @param {?} currencies
+         * @return {?}
+         */
+        function (currencies) {
+            if (!currencies) {
+                _this.store.dispatch(new LoadCurrencies());
+            }
+        })), filter((/**
+         * @param {?} currenies
+         * @return {?}
+         */
+        function (currenies) { return Boolean(currenies); })));
+    };
+    /**
+     * Represents the isocode of the active currency.
+     */
+    /**
+     * Represents the isocode of the active currency.
+     * @return {?}
+     */
+    CurrencyService.prototype.getActive = /**
+     * Represents the isocode of the active currency.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getActiveCurrency), filter((/**
+         * @param {?} active
+         * @return {?}
+         */
+        function (active) { return Boolean(active); })));
+    };
+    /**
+     * Sets the active language.
+     */
+    /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    CurrencyService.prototype.setActive = /**
+     * Sets the active language.
+     * @param {?} isocode
+     * @return {?}
+     */
+    function (isocode) {
+        var _this = this;
+        return this.store
+            .pipe(select(getActiveCurrency), take(1))
+            .subscribe((/**
+         * @param {?} activeCurrency
+         * @return {?}
+         */
+        function (activeCurrency) {
+            if (activeCurrency !== isocode) {
+                _this.store.dispatch(new SetActiveCurrency(isocode));
+            }
+        }));
+    };
+    /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     */
+    /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     * @return {?}
+     */
+    CurrencyService.prototype.initialize = /**
+     * Initials the active currency. The active currency is either given
+     * by the last visit (stored in session storage) or by the
+     * default session currency of the store.
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var sessionCurrency = this.sessionStorage && this.sessionStorage.getItem('currency');
+        if (sessionCurrency &&
+            getContextParameterValues(this.config, CURRENCY_CONTEXT_ID).includes(sessionCurrency)) {
+            this.setActive(sessionCurrency);
+        }
+        else {
+            this.setActive(getContextParameterDefault(this.config, CURRENCY_CONTEXT_ID));
+        }
+    };
+    CurrencyService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    CurrencyService.ctorParameters = function () { return [
+        { type: Store },
+        { type: WindowRef },
+        { type: SiteContextConfig }
+    ]; };
+    return CurrencyService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var SiteContextInterceptor = /** @class */ (function () {
     function SiteContextInterceptor(languageService, currencyService, occEndpoints, config) {
         var _this = this;
@@ -19772,13 +19742,13 @@ var SiteContextInterceptor = /** @class */ (function () {
          * @return {?}
          */
         function (data) { return (_this.activeLang = data); }));
-        this.currencyService
-            .getActive()
-            .subscribe((/**
+        this.currencyService.getActive().subscribe((/**
          * @param {?} data
          * @return {?}
          */
-        function (data) { return (_this.activeCurr = data); }));
+        function (data) {
+            _this.activeCurr = data;
+        }));
     }
     /**
      * @param {?} request
@@ -23662,20 +23632,51 @@ var SiteConnector = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
- * @param {?} config
+ * @abstract
+ */
+var  /**
+ * @abstract
+ */
+ContextServiceMap = /** @class */ (function () {
+    function ContextServiceMap() {
+    }
+    return ContextServiceMap;
+}());
+/**
+ * @return {?}
+ */
+function serviceMapFactory() {
+    var _a;
+    return _a = {},
+        _a[LANGUAGE_CONTEXT_ID] = LanguageService,
+        _a[CURRENCY_CONTEXT_ID] = CurrencyService,
+        _a[BASE_SITE_CONTEXT_ID] = BaseSiteService,
+        _a;
+}
+/** @type {?} */
+var contextServiceMapProvider = {
+    provide: ContextServiceMap,
+    useFactory: serviceMapFactory,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
  * @param {?} baseSiteService
  * @param {?} langService
  * @param {?} currService
  * @return {?}
  */
-function inititializeContext(config, baseSiteService, langService, currService) {
+function inititializeContext(baseSiteService, langService, currService) {
     return (/**
      * @return {?}
      */
     function () {
-        baseSiteService.initialize(getContextParameterDefault(config, BASE_SITE_CONTEXT_ID));
-        langService.initialize(getContextParameterDefault(config, LANGUAGE_CONTEXT_ID));
-        currService.initialize(getContextParameterDefault(config, CURRENCY_CONTEXT_ID));
+        baseSiteService.initialize();
+        langService.initialize();
+        currService.initialize();
     });
 }
 /** @type {?} */
@@ -23686,7 +23687,7 @@ var contextServiceProviders = [
     {
         provide: APP_INITIALIZER,
         useFactory: inititializeContext,
-        deps: [OccConfig, BaseSiteService, LanguageService, CurrencyService],
+        deps: [BaseSiteService, LanguageService, CurrencyService],
         multi: true,
     },
 ];
@@ -23702,42 +23703,29 @@ var SiteContextParamsService = /** @class */ (function () {
         this.serviceMap = serviceMap;
     }
     /**
-     * @param {?=} persistence
      * @return {?}
      */
     SiteContextParamsService.prototype.getContextParameters = /**
-     * @param {?=} persistence
      * @return {?}
      */
-    function (persistence) {
-        /** @type {?} */
-        var contextConfig = this.config.context && this.config.context.parameters;
-        if (contextConfig) {
-            /** @type {?} */
-            var params = Object.keys(contextConfig);
-            if (persistence) {
-                return params.filter((/**
-                 * @param {?} key
-                 * @return {?}
-                 */
-                function (key) { return contextConfig[key].persistence === persistence; }));
-            }
-            else {
-                return params;
-            }
+    function () {
+        if (this.config.context) {
+            return Object.keys(this.config.context).filter((/**
+             * @param {?} param
+             * @return {?}
+             */
+            function (param) { return param !== 'urlParameters'; }));
         }
         return [];
     };
     /**
-     * @param {?} param
      * @return {?}
      */
-    SiteContextParamsService.prototype.getParameter = /**
-     * @param {?} param
+    SiteContextParamsService.prototype.getUrlEncodingParameters = /**
      * @return {?}
      */
-    function (param) {
-        return getContextParameter(this.config, param);
+    function () {
+        return (this.config.context && this.config.context.urlParameters) || [];
     };
     /**
      * @param {?} param
@@ -23748,7 +23736,7 @@ var SiteContextParamsService = /** @class */ (function () {
      * @return {?}
      */
     function (param) {
-        return this.getParameter(param).values || [];
+        return getContextParameterValues(this.config, param);
     };
     /**
      * @param {?} param
@@ -23834,12 +23822,10 @@ var SiteContextParamsService = /** @class */ (function () {
  */
 var SiteContextUrlSerializer = /** @class */ (function (_super) {
     __extends(SiteContextUrlSerializer, _super);
-    function SiteContextUrlSerializer(siteContextParams, config) {
+    function SiteContextUrlSerializer(siteContextParams) {
         var _this = _super.call(this) || this;
         _this.siteContextParams = siteContextParams;
-        _this.config = config;
-        _this.urlEncodingParameters =
-            (_this.config.context && _this.config.context.urlEncodingParameters) || [];
+        _this.urlEncodingParameters = _this.siteContextParams.getUrlEncodingParameters();
         return _this;
     }
     Object.defineProperty(SiteContextUrlSerializer.prototype, "hasContextInRoutes", {
@@ -23984,8 +23970,7 @@ var SiteContextUrlSerializer = /** @class */ (function (_super) {
     ];
     /** @nocollapse */
     SiteContextUrlSerializer.ctorParameters = function () { return [
-        { type: SiteContextParamsService },
-        { type: SiteContextConfig }
+        { type: SiteContextParamsService }
     ]; };
     return SiteContextUrlSerializer;
 }(DefaultUrlSerializer));
@@ -24013,7 +23998,7 @@ var SiteContextRoutesHandler = /** @class */ (function () {
         this.router = this.injector.get(Router);
         this.location = this.injector.get(Location);
         /** @type {?} */
-        var routingParams = this.siteContextParams.getContextParameters(ContextPersistence.ROUTE);
+        var routingParams = this.siteContextParams.getUrlEncodingParameters();
         if (routingParams.length) {
             this.setContextParamsFromRoute(this.router.url);
             this.subscribeChanges(routingParams);
@@ -24185,59 +24170,49 @@ var siteContextParamsProviders = [
 function defaultSiteContextConfigFactory() {
     var _a;
     return {
-        context: {
-            parameters: (_a = {},
-                _a[LANGUAGE_CONTEXT_ID] = {
-                    persistence: ContextPersistence.ROUTE,
-                    default: 'en',
-                    values: [
-                        'en',
-                        'de',
-                        'ja',
-                        'zh',
-                        'ru',
-                        'fr',
-                        'tr',
-                        'it',
-                        'es',
-                        'uk',
-                        'pl',
-                        'nl',
-                        'hi',
-                        'ar',
-                        'pt',
-                        'bn',
-                        'pa',
-                    ],
-                },
-                _a[CURRENCY_CONTEXT_ID] = {
-                    persistence: ContextPersistence.ROUTE,
-                    default: 'USD',
-                    values: [
-                        'USD',
-                        'EUR',
-                        'JPY',
-                        'GBP',
-                        'AUD',
-                        'CAD',
-                        'CHF',
-                        'CNY',
-                        'SEK',
-                        'NZD',
-                        'MXN',
-                        'SGD',
-                        'HKD',
-                        'NOK',
-                        'KRW',
-                        'TRY',
-                        'RUB',
-                        'INR',
-                        'BRL',
-                        'ZAR',
-                    ],
-                },
-                _a),
-        },
+        context: (_a = {},
+            _a[LANGUAGE_CONTEXT_ID] = [
+                'en',
+                'de',
+                'ja',
+                'zh',
+                'ru',
+                'fr',
+                'tr',
+                'it',
+                'es',
+                'uk',
+                'pl',
+                'nl',
+                'hi',
+                'ar',
+                'pt',
+                'bn',
+                'pa',
+            ],
+            _a[CURRENCY_CONTEXT_ID] = [
+                'USD',
+                'EUR',
+                'JPY',
+                'GBP',
+                'AUD',
+                'CAD',
+                'CHF',
+                'CNY',
+                'SEK',
+                'NZD',
+                'MXN',
+                'SGD',
+                'HKD',
+                'NOK',
+                'KRW',
+                'TRY',
+                'RUB',
+                'INR',
+                'BRL',
+                'ZAR',
+            ],
+            _a),
     };
 }
 
@@ -29794,5 +29769,5 @@ var UserModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextPersistence, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CartPageMetaResolver as ɵbc, CheckoutStoreModule as ɵbd, getReducers$2 as ɵbe, reducerToken$2 as ɵbf, reducerProvider$2 as ɵbg, effects$2 as ɵbh, AddressVerificationEffect as ɵbi, CardTypesEffects as ɵbj, CheckoutEffects as ɵbk, reducer$4 as ɵbl, reducer$3 as ɵbm, reducer$2 as ɵbn, cmsStoreConfigFactory as ɵbo, CmsStoreModule as ɵbp, getReducers$4 as ɵbq, reducerToken$4 as ɵbr, reducerProvider$4 as ɵbs, clearCmsState as ɵbt, metaReducers$2 as ɵbu, effects$4 as ɵbv, PageEffects as ɵbw, ComponentEffects as ɵbx, NavigationEntryItemEffects as ɵby, reducer$7 as ɵbz, stateMetaReducers as ɵc, reducer$8 as ɵca, reducer$6 as ɵcb, GlobalMessageStoreModule as ɵcc, getReducers$5 as ɵcd, reducerToken$5 as ɵce, reducerProvider$5 as ɵcf, reducer$9 as ɵcg, GlobalMessageEffect as ɵch, defaultGlobalMessageConfigFactory as ɵci, HttpErrorInterceptor as ɵcj, defaultI18nConfig as ɵck, i18nextProviders as ɵcl, i18nextInit as ɵcm, MockTranslationService as ɵcn, kymaStoreConfigFactory as ɵco, KymaStoreModule as ɵcp, getReducers$6 as ɵcq, reducerToken$6 as ɵcr, reducerProvider$6 as ɵcs, clearKymaState as ɵct, metaReducers$3 as ɵcu, effects$5 as ɵcv, OpenIdTokenEffect as ɵcw, OpenIdAuthenticationTokenService as ɵcx, defaultKymaConfig as ɵcy, provideConfigFactory as ɵcz, getStorageSyncReducer as ɵd, defaultOccProductConfig as ɵda, defaultPersonalizationConfig as ɵdb, interceptors$1 as ɵdc, OccPersonalizationIdInterceptor as ɵdd, OccPersonalizationTimeInterceptor as ɵde, ProcessStoreModule as ɵdf, getReducers$7 as ɵdg, reducerToken$7 as ɵdh, reducerProvider$7 as ɵdi, productStoreConfigFactory as ɵdj, ProductStoreModule as ɵdk, getReducers$8 as ɵdl, reducerToken$8 as ɵdm, reducerProvider$8 as ɵdn, clearProductsState as ɵdo, metaReducers$4 as ɵdp, effects$6 as ɵdq, ProductReferencesEffects as ɵdr, ProductReviewsEffects as ɵds, ProductsSearchEffects as ɵdt, ProductEffects as ɵdu, reducer$a as ɵdv, reducer$c as ɵdw, reducer$b as ɵdx, PageMetaResolver as ɵdy, UrlMatcherFactoryService as ɵdz, getTransferStateReducer as ɵe, getReducers$3 as ɵea, reducer$5 as ɵeb, reducerToken$3 as ɵec, reducerProvider$3 as ɵed, CustomSerializer as ɵee, effects$3 as ɵef, RouterEffects as ɵeg, SiteContextParamsService as ɵeh, SiteContextUrlSerializer as ɵei, SiteContextRoutesHandler as ɵej, defaultSiteContextConfigFactory as ɵek, siteContextStoreConfigFactory as ɵel, SiteContextStoreModule as ɵem, getReducers$9 as ɵen, reducerToken$9 as ɵeo, reducerProvider$9 as ɵep, effects$7 as ɵeq, LanguagesEffects as ɵer, CurrenciesEffects as ɵes, BaseSiteEffects as ɵet, reducer$d as ɵeu, reducer$e as ɵev, reducer$f as ɵew, baseSiteConfigValidator as ɵex, interceptors$2 as ɵey, CmsTicketInterceptor as ɵez, getReducers as ɵf, defaultStoreFinderConfig as ɵfa, StoreFinderStoreModule as ɵfb, getReducers$a as ɵfc, reducerToken$a as ɵfd, reducerProvider$a as ɵfe, effects$8 as ɵff, FindStoresEffect as ɵfg, ViewAllStoresEffect as ɵfh, UserStoreModule as ɵfi, getReducers$b as ɵfj, reducerToken$b as ɵfk, reducerProvider$b as ɵfl, clearUserState as ɵfm, metaReducers$5 as ɵfn, effects$9 as ɵfo, BillingCountriesEffect as ɵfp, DeliveryCountriesEffects as ɵfq, OrderDetailsEffect as ɵfr, UserPaymentMethodsEffects as ɵfs, RegionsEffects as ɵft, ResetPasswordEffects as ɵfu, TitlesEffects as ɵfv, UserAddressesEffects as ɵfw, UserConsentsEffect as ɵfx, UserDetailsEffects as ɵfy, UserOrdersEffect as ɵfz, reducerToken as ɵg, UserRegisterEffects as ɵga, ClearMiscsDataEffect as ɵgb, ForgotPasswordEffects as ɵgc, UpdateEmailEffects as ɵgd, UpdatePasswordEffects as ɵge, reducer$p as ɵgf, reducer$n as ɵgg, reducer$g as ɵgh, reducer$o as ɵgi, reducer$j as ɵgj, reducer$q as ɵgk, reducer$i as ɵgl, reducer$h as ɵgm, reducer$m as ɵgn, reducer$k as ɵgo, reducer$l as ɵgp, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, interceptors as ɵq, ClientTokenInterceptor as ɵr, UserTokenInterceptor as ɵs, AuthErrorInterceptor as ɵt, UserErrorHandlingService as ɵu, UrlParsingService as ɵv, ClientErrorHandlingService as ɵw, AuthServices as ɵx, defaultAuthConfig as ɵy, cartStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CartPageMetaResolver as ɵbc, CheckoutStoreModule as ɵbd, getReducers$2 as ɵbe, reducerToken$2 as ɵbf, reducerProvider$2 as ɵbg, effects$2 as ɵbh, AddressVerificationEffect as ɵbi, CardTypesEffects as ɵbj, CheckoutEffects as ɵbk, reducer$4 as ɵbl, reducer$3 as ɵbm, reducer$2 as ɵbn, cmsStoreConfigFactory as ɵbo, CmsStoreModule as ɵbp, getReducers$4 as ɵbq, reducerToken$4 as ɵbr, reducerProvider$4 as ɵbs, clearCmsState as ɵbt, metaReducers$2 as ɵbu, effects$4 as ɵbv, PageEffects as ɵbw, ComponentEffects as ɵbx, NavigationEntryItemEffects as ɵby, reducer$7 as ɵbz, stateMetaReducers as ɵc, reducer$8 as ɵca, reducer$6 as ɵcb, GlobalMessageStoreModule as ɵcc, getReducers$5 as ɵcd, reducerToken$5 as ɵce, reducerProvider$5 as ɵcf, reducer$9 as ɵcg, GlobalMessageEffect as ɵch, defaultGlobalMessageConfigFactory as ɵci, HttpErrorInterceptor as ɵcj, defaultI18nConfig as ɵck, i18nextProviders as ɵcl, i18nextInit as ɵcm, MockTranslationService as ɵcn, kymaStoreConfigFactory as ɵco, KymaStoreModule as ɵcp, getReducers$6 as ɵcq, reducerToken$6 as ɵcr, reducerProvider$6 as ɵcs, clearKymaState as ɵct, metaReducers$3 as ɵcu, effects$5 as ɵcv, OpenIdTokenEffect as ɵcw, OpenIdAuthenticationTokenService as ɵcx, defaultKymaConfig as ɵcy, defaultOccProductConfig as ɵcz, getStorageSyncReducer as ɵd, defaultPersonalizationConfig as ɵda, interceptors$1 as ɵdb, OccPersonalizationIdInterceptor as ɵdc, OccPersonalizationTimeInterceptor as ɵdd, ProcessStoreModule as ɵde, getReducers$7 as ɵdf, reducerToken$7 as ɵdg, reducerProvider$7 as ɵdh, productStoreConfigFactory as ɵdi, ProductStoreModule as ɵdj, getReducers$8 as ɵdk, reducerToken$8 as ɵdl, reducerProvider$8 as ɵdm, clearProductsState as ɵdn, metaReducers$4 as ɵdo, effects$6 as ɵdp, ProductReferencesEffects as ɵdq, ProductReviewsEffects as ɵdr, ProductsSearchEffects as ɵds, ProductEffects as ɵdt, reducer$a as ɵdu, reducer$c as ɵdv, reducer$b as ɵdw, PageMetaResolver as ɵdx, UrlMatcherFactoryService as ɵdy, getReducers$3 as ɵdz, getTransferStateReducer as ɵe, reducer$5 as ɵea, reducerToken$3 as ɵeb, reducerProvider$3 as ɵec, CustomSerializer as ɵed, effects$3 as ɵee, RouterEffects as ɵef, SiteContextParamsService as ɵeg, SiteContextUrlSerializer as ɵeh, SiteContextRoutesHandler as ɵei, defaultSiteContextConfigFactory as ɵej, siteContextStoreConfigFactory as ɵek, SiteContextStoreModule as ɵel, getReducers$9 as ɵem, reducerToken$9 as ɵen, reducerProvider$9 as ɵeo, effects$7 as ɵep, LanguagesEffects as ɵeq, CurrenciesEffects as ɵer, BaseSiteEffects as ɵes, reducer$d as ɵet, reducer$e as ɵeu, reducer$f as ɵev, baseSiteConfigValidator as ɵew, interceptors$2 as ɵex, CmsTicketInterceptor as ɵey, defaultStoreFinderConfig as ɵez, getReducers as ɵf, StoreFinderStoreModule as ɵfa, getReducers$a as ɵfb, reducerToken$a as ɵfc, reducerProvider$a as ɵfd, effects$8 as ɵfe, FindStoresEffect as ɵff, ViewAllStoresEffect as ɵfg, UserStoreModule as ɵfh, getReducers$b as ɵfi, reducerToken$b as ɵfj, reducerProvider$b as ɵfk, clearUserState as ɵfl, metaReducers$5 as ɵfm, effects$9 as ɵfn, BillingCountriesEffect as ɵfo, DeliveryCountriesEffects as ɵfp, OrderDetailsEffect as ɵfq, UserPaymentMethodsEffects as ɵfr, RegionsEffects as ɵfs, ResetPasswordEffects as ɵft, TitlesEffects as ɵfu, UserAddressesEffects as ɵfv, UserConsentsEffect as ɵfw, UserDetailsEffects as ɵfx, UserOrdersEffect as ɵfy, UserRegisterEffects as ɵfz, reducerToken as ɵg, ClearMiscsDataEffect as ɵga, ForgotPasswordEffects as ɵgb, UpdateEmailEffects as ɵgc, UpdatePasswordEffects as ɵgd, reducer$p as ɵge, reducer$n as ɵgf, reducer$g as ɵgg, reducer$o as ɵgh, reducer$j as ɵgi, reducer$q as ɵgj, reducer$i as ɵgk, reducer$h as ɵgl, reducer$m as ɵgm, reducer$k as ɵgn, reducer$l as ɵgo, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, interceptors as ɵq, ClientTokenInterceptor as ɵr, UserTokenInterceptor as ɵs, AuthErrorInterceptor as ɵt, UserErrorHandlingService as ɵu, UrlParsingService as ɵv, ClientErrorHandlingService as ɵw, AuthServices as ɵx, defaultAuthConfig as ɵy, cartStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

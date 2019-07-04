@@ -4,13 +4,15 @@ import { Currency } from '../../model/misc.model';
 import { WindowRef } from '../../window/window-ref';
 import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
+import { SiteContextConfig } from '../config/site-context-config';
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
  */
 export declare class CurrencyService implements SiteContext<Currency> {
     protected store: Store<StateWithSiteContext>;
+    protected config: SiteContextConfig;
     private sessionStorage;
-    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef);
+    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef, config: SiteContextConfig);
     /**
      * Represents all the currencies supported by the current store.
      */
@@ -28,5 +30,5 @@ export declare class CurrencyService implements SiteContext<Currency> {
      * by the last visit (stored in session storage) or by the
      * default session currency of the store.
      */
-    initialize(defaultCurrency: string): void;
+    initialize(): void;
 }

@@ -4,13 +4,15 @@ import { Language } from '../../model/misc.model';
 import { WindowRef } from '../../window/window-ref';
 import { StateWithSiteContext } from '../store/state';
 import { SiteContext } from './site-context.interface';
+import { SiteContextConfig } from '../config/site-context-config';
 /**
  * Facade that provides easy access to language state, actions and selectors.
  */
 export declare class LanguageService implements SiteContext<Language> {
     protected store: Store<StateWithSiteContext>;
+    protected config: SiteContextConfig;
     private sessionStorage;
-    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef);
+    constructor(store: Store<StateWithSiteContext>, winRef: WindowRef, config: SiteContextConfig);
     /**
      * Represents all the languages supported by the current store.
      */
@@ -28,5 +30,5 @@ export declare class LanguageService implements SiteContext<Language> {
      * by the last visit (stored in session storage) or by the
      * default session language of the store.
      */
-    initialize(defaultLanguage: string): void;
+    initialize(): void;
 }
