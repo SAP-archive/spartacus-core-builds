@@ -5031,6 +5031,8 @@
     var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
     /** @type {?} */
     var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+    /** @type {?} */
+    var CLEAR_CART = '[Cart] Clear Cart';
     var CreateCart = /** @class */ (function (_super) {
         __extends(CreateCart, _super);
         function CreateCart(payload) {
@@ -5111,6 +5113,15 @@
         }
         return ResetCartDetails;
     }());
+    var ClearCart = /** @class */ (function (_super) {
+        __extends(ClearCart, _super);
+        function ClearCart() {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.type = CLEAR_CART;
+            return _this;
+        }
+        return ClearCart;
+    }(LoaderResetAction));
 
     /**
      * @fileoverview added by tsickle
@@ -5145,6 +5156,7 @@
         MERGE_CART: MERGE_CART,
         MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
         RESET_CART_DETAILS: RESET_CART_DETAILS,
+        CLEAR_CART: CLEAR_CART,
         CreateCart: CreateCart,
         CreateCartFail: CreateCartFail,
         CreateCartSuccess: CreateCartSuccess,
@@ -5153,7 +5165,8 @@
         LoadCartSuccess: LoadCartSuccess,
         MergeCart: MergeCart,
         MergeCartSuccess: MergeCartSuccess,
-        ResetCartDetails: ResetCartDetails
+        ResetCartDetails: ResetCartDetails,
+        ClearCart: ClearCart
     });
 
     /**
@@ -6552,6 +6565,17 @@
                  * @return {?}
                  */
                 function (error) {
+                    if (error && error.error && error.error.errors) {
+                        /** @type {?} */
+                        var cartNotFoundErrors = error.error.errors.filter((/**
+                         * @param {?} err
+                         * @return {?}
+                         */
+                        function (err) { return err.reason === 'notFound'; }));
+                        if (cartNotFoundErrors.length > 0) {
+                            return rxjs.of(new ClearCart());
+                        }
+                    }
                     return rxjs.of(new LoadCartFail(makeErrorSerializable(error)));
                 })));
             })));
@@ -7369,6 +7393,9 @@
                     refresh: false,
                     cartMergeComplete: false,
                 };
+            }
+            case CLEAR_CART: {
+                return initialState$1;
             }
         }
         return state;

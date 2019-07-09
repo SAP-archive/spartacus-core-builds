@@ -4395,6 +4395,8 @@ const MERGE_CART = '[Cart] Merge Cart';
 const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 /** @type {?} */
 const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+/** @type {?} */
+const CLEAR_CART = '[Cart] Clear Cart';
 class CreateCart extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -4478,6 +4480,12 @@ class ResetCartDetails {
         this.type = RESET_CART_DETAILS;
     }
 }
+class ClearCart extends LoaderResetAction {
+    constructor() {
+        super(CART_DATA);
+        this.type = CLEAR_CART;
+    }
+}
 
 /**
  * @fileoverview added by tsickle
@@ -4512,6 +4520,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
+    CLEAR_CART: CLEAR_CART,
     CreateCart: CreateCart,
     CreateCartFail: CreateCartFail,
     CreateCartSuccess: CreateCartSuccess,
@@ -4520,7 +4529,8 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     LoadCartSuccess: LoadCartSuccess,
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
-    ResetCartDetails: ResetCartDetails
+    ResetCartDetails: ResetCartDetails,
+    ClearCart: ClearCart
 });
 
 /**
@@ -5651,7 +5661,20 @@ class CartEffects {
              * @param {?} error
              * @return {?}
              */
-            error => of(new LoadCartFail(makeErrorSerializable(error))))));
+            error => {
+                if (error && error.error && error.error.errors) {
+                    /** @type {?} */
+                    const cartNotFoundErrors = error.error.errors.filter((/**
+                     * @param {?} err
+                     * @return {?}
+                     */
+                    err => err.reason === 'notFound'));
+                    if (cartNotFoundErrors.length > 0) {
+                        return of(new ClearCart());
+                    }
+                }
+                return of(new LoadCartFail(makeErrorSerializable(error)));
+            })));
         })));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
@@ -6467,6 +6490,9 @@ function reducer$1(state = initialState$1, action) {
                 refresh: false,
                 cartMergeComplete: false,
             };
+        }
+        case CLEAR_CART: {
+            return initialState$1;
         }
     }
     return state;

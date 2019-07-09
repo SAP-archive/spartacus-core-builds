@@ -9,6 +9,7 @@ export declare const LOAD_CART_SUCCESS = "[Cart] Load Cart Success";
 export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
 export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
+export declare const CLEAR_CART = "[Cart] Clear Cart";
 export declare class CreateCart extends StateLoaderActions.LoaderLoadAction {
     payload: any;
     readonly type = "[Cart] Create Cart";
@@ -59,4 +60,8 @@ export declare class ResetCartDetails implements Action {
     readonly type = "[Cart] Reset Cart Details";
     constructor();
 }
-export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails;
+export declare class ClearCart extends StateLoaderActions.LoaderResetAction {
+    readonly type = "[Cart] Clear Cart";
+    constructor();
+}
+export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | ClearCart;

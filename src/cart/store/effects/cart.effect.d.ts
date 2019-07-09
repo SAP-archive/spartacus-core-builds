@@ -7,7 +7,7 @@ export declare class CartEffects {
     private actions$;
     private cartConnector;
     private cartData;
-    loadCart$: Observable<CartActions.LoadCartFail | CartActions.LoadCartSuccess>;
+    loadCart$: Observable<CartActions.LoadCartFail | CartActions.LoadCartSuccess | CartActions.ClearCart>;
     createCart$: Observable<CartActions.MergeCartSuccess | CartActions.CreateCartSuccess | CartActions.CreateCartFail>;
     mergeCart$: Observable<CartActions.CreateCart>;
     refresh$: Observable<CartActions.LoadCart>;
