@@ -21719,7 +21719,6 @@ class SmartEditService {
         this.winRef = winRef;
         this.isPreviewPage = false;
         this.getCmsTicket();
-        this.addPageContract();
         if (winRef.nativeWindow) {
             /** @type {?} */
             const window = (/** @type {?} */ (winRef.nativeWindow));
@@ -21757,19 +21756,27 @@ class SmartEditService {
          * @param {?} __0
          * @return {?}
          */
-        ([cmsPage]) => cmsPage === undefined)))
-            .subscribe((/**
+        ([cmsPage]) => cmsPage === undefined)), filter((/**
          * @param {?} __0
          * @return {?}
          */
         ([, routerState]) => {
             if (routerState.nextState && !this._cmsTicketId) {
-                this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
+                this._cmsTicketId =
+                    routerState.nextState.queryParams['cmsTicketId'];
                 if (this._cmsTicketId) {
-                    this.cmsService.launchInSmartEdit = true;
-                    this.getDefaultPreviewCode();
+                    return true;
                 }
             }
+            return false;
+        })), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        _ => {
+            this.cmsService.launchInSmartEdit = true;
+            this.getDefaultPreviewCode();
         }));
     }
     /**
@@ -21791,6 +21798,7 @@ class SmartEditService {
         site => {
             this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
             this.defaultPreviewProductCode = site.defaultPreviewProductCode;
+            this.addPageContract();
         }));
     }
     /**

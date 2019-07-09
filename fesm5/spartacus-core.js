@@ -24700,7 +24700,6 @@ var SmartEditService = /** @class */ (function () {
         this.winRef = winRef;
         this.isPreviewPage = false;
         this.getCmsTicket();
-        this.addPageContract();
         if (winRef.nativeWindow) {
             /** @type {?} */
             var window_1 = (/** @type {?} */ (winRef.nativeWindow));
@@ -24750,20 +24749,28 @@ var SmartEditService = /** @class */ (function () {
         function (_a) {
             var _b = __read(_a, 1), cmsPage = _b[0];
             return cmsPage === undefined;
-        })))
-            .subscribe((/**
+        })), filter((/**
          * @param {?} __0
          * @return {?}
          */
         function (_a) {
             var _b = __read(_a, 2), routerState = _b[1];
             if (routerState.nextState && !_this._cmsTicketId) {
-                _this._cmsTicketId = routerState.nextState.queryParams['cmsTicketId'];
+                _this._cmsTicketId =
+                    routerState.nextState.queryParams['cmsTicketId'];
                 if (_this._cmsTicketId) {
-                    _this.cmsService.launchInSmartEdit = true;
-                    _this.getDefaultPreviewCode();
+                    return true;
                 }
             }
+            return false;
+        })), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        function (_) {
+            _this.cmsService.launchInSmartEdit = true;
+            _this.getDefaultPreviewCode();
         }));
     };
     /**
@@ -24790,6 +24797,7 @@ var SmartEditService = /** @class */ (function () {
         function (site) {
             _this.defaultPreviewCategoryCode = site.defaultPreviewCategoryCode;
             _this.defaultPreviewProductCode = site.defaultPreviewProductCode;
+            _this.addPageContract();
         }));
     };
     /**

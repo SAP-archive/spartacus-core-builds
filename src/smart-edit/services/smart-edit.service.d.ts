@@ -1,8 +1,8 @@
 import { NgZone } from '@angular/core';
-import { RoutingService } from '../../routing/facade/routing.service';
 import { CmsService } from '../../cms/facade/cms.service';
-import { BaseSiteService } from '../../site-context/facade/base-site.service';
 import { Page } from '../../cms/model/page.model';
+import { RoutingService } from '../../routing/facade/routing.service';
+import { BaseSiteService } from '../../site-context/facade/base-site.service';
 import { WindowRef } from '../../window/window-ref';
 export declare class SmartEditService {
     protected cmsService: CmsService;
