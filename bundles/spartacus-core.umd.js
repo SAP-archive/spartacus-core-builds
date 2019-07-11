@@ -4103,6 +4103,10 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var UNKNOWN_ERROR = {
+        error: 'unknown error',
+    };
     /**
      * @param {?} error
      * @return {?}
@@ -4116,15 +4120,20 @@
             }));
         }
         if (error instanceof http.HttpErrorResponse) {
+            /** @type {?} */
+            var serializableError = error.error;
+            if (isObject(error.error)) {
+                serializableError = JSON.stringify(error.error);
+            }
             return (/** @type {?} */ ({
                 message: error.message,
-                error: error.error,
+                error: serializableError,
                 status: error.status,
                 statusText: error.statusText,
                 url: error.url,
             }));
         }
-        return error;
+        return isObject(error) ? UNKNOWN_ERROR : error;
     }
 
     /**
