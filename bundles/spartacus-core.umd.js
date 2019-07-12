@@ -15086,6 +15086,9 @@
                     keys: {
                         'kyma.openIdToken.value': StorageSyncType.LOCAL_STORAGE,
                     },
+                    excludeKeys: {
+                        'kyma.openIdToken.value.refresh_token': StorageSyncType.LOCAL_STORAGE,
+                    },
                 },
             },
         };
