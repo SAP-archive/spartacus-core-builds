@@ -10890,19 +10890,26 @@ var ConfigurableRoutesService = /** @class */ (function () {
      * @return {?}
      */
     function (route) {
-        if (this.getRouteName(route)) {
+        /** @type {?} */
+        var routeName = this.getRouteName(route);
+        if (routeName) {
             /** @type {?} */
-            var paths = this.getConfiguredPaths(route);
-            switch (paths.length) {
-                case 0:
-                    delete route.path;
-                    return __assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-                case 1:
-                    delete route.matcher;
-                    return __assign({}, route, { path: paths[0] });
-                default:
-                    delete route.path;
-                    return __assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+            var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+            /** @type {?} */
+            var paths = this.getConfiguredPaths(routeConfig, routeName, route);
+            /** @type {?} */
+            var isDisabled = routeConfig && routeConfig.disabled;
+            if (isDisabled || !paths.length) {
+                delete route.path;
+                return __assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+            }
+            else if (paths.length === 1) {
+                delete route.matcher;
+                return __assign({}, route, { path: paths[0] });
+            }
+            else {
+                delete route.path;
+                return __assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
             }
         }
         return route; // if route doesn't have a name, just pass the original route
@@ -10922,19 +10929,19 @@ var ConfigurableRoutesService = /** @class */ (function () {
     };
     /**
      * @private
+     * @param {?} routeConfig
+     * @param {?} routeName
      * @param {?} route
      * @return {?}
      */
     ConfigurableRoutesService.prototype.getConfiguredPaths = /**
      * @private
+     * @param {?} routeConfig
+     * @param {?} routeName
      * @param {?} route
      * @return {?}
      */
-    function (route) {
-        /** @type {?} */
-        var routeName = this.getRouteName(route);
-        /** @type {?} */
-        var routeConfig = this.routingConfigService.getRouteConfig(routeName);
+    function (routeConfig, routeName, route) {
         if (routeConfig === undefined) {
             this.warn("Could not configure the named route '" + routeName + "'", route, "due to undefined key '" + routeName + "' in the routes config");
             return [];

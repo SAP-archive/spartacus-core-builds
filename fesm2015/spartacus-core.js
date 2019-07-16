@@ -9642,19 +9642,26 @@ class ConfigurableRoutesService {
      * @return {?}
      */
     configureRoute(route) {
-        if (this.getRouteName(route)) {
+        /** @type {?} */
+        const routeName = this.getRouteName(route);
+        if (routeName) {
             /** @type {?} */
-            const paths = this.getConfiguredPaths(route);
-            switch (paths.length) {
-                case 0:
-                    delete route.path;
-                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
-                case 1:
-                    delete route.matcher;
-                    return Object.assign({}, route, { path: paths[0] });
-                default:
-                    delete route.path;
-                    return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
+            const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+            /** @type {?} */
+            const paths = this.getConfiguredPaths(routeConfig, routeName, route);
+            /** @type {?} */
+            const isDisabled = routeConfig && routeConfig.disabled;
+            if (isDisabled || !paths.length) {
+                delete route.path;
+                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getFalsyUrlMatcher() });
+            }
+            else if (paths.length === 1) {
+                delete route.matcher;
+                return Object.assign({}, route, { path: paths[0] });
+            }
+            else {
+                delete route.path;
+                return Object.assign({}, route, { matcher: this.urlMatcherFactory.getMultiplePathsUrlMatcher(paths) });
             }
         }
         return route; // if route doesn't have a name, just pass the original route
@@ -9669,14 +9676,12 @@ class ConfigurableRoutesService {
     }
     /**
      * @private
+     * @param {?} routeConfig
+     * @param {?} routeName
      * @param {?} route
      * @return {?}
      */
-    getConfiguredPaths(route) {
-        /** @type {?} */
-        const routeName = this.getRouteName(route);
-        /** @type {?} */
-        const routeConfig = this.routingConfigService.getRouteConfig(routeName);
+    getConfiguredPaths(routeConfig, routeName, route) {
         if (routeConfig === undefined) {
             this.warn(`Could not configure the named route '${routeName}'`, route, `due to undefined key '${routeName}' in the routes config`);
             return [];
