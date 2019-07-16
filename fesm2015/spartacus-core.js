@@ -15660,7 +15660,51 @@ class OccCartNormalizer {
              */
             entry => (Object.assign({}, entry, { product: this.converter.convert(entry.product, PRODUCT_NORMALIZER) }))));
         }
+        this.removeDuplicatePromotions(source, target);
         return target;
+    }
+    /**
+     * Remove all duplicate promotions
+     * @private
+     * @param {?} source
+     * @param {?} target
+     * @return {?}
+     */
+    removeDuplicatePromotions(source, target) {
+        if (source && source.potentialOrderPromotions) {
+            target.potentialOrderPromotions = this.removeDuplicateItems(source.potentialOrderPromotions);
+        }
+        if (source && source.potentialProductPromotions) {
+            target.potentialProductPromotions = this.removeDuplicateItems(source.potentialProductPromotions);
+        }
+        if (source && source.appliedOrderPromotions) {
+            target.appliedOrderPromotions = this.removeDuplicateItems(source.appliedOrderPromotions);
+        }
+        if (source && source.appliedProductPromotions) {
+            target.appliedProductPromotions = this.removeDuplicateItems(source.appliedProductPromotions);
+        }
+    }
+    /**
+     * @private
+     * @param {?} itemList
+     * @return {?}
+     */
+    removeDuplicateItems(itemList) {
+        return itemList.filter((/**
+         * @param {?} p
+         * @param {?} i
+         * @param {?} a
+         * @return {?}
+         */
+        (p, i, a) => {
+            /** @type {?} */
+            const b = a.map((/**
+             * @param {?} el
+             * @return {?}
+             */
+            el => JSON.stringify(el)));
+            return i === b.indexOf(JSON.stringify(p));
+        }));
     }
 }
 OccCartNormalizer.decorators = [
