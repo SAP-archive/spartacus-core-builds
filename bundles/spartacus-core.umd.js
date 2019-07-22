@@ -18388,6 +18388,9 @@
                 params[mappingLabels['hybris_billTo_region']] =
                     paymentDetails.billingAddress.region.isocodeShort;
             }
+            else {
+                params[mappingLabels['hybris_billTo_region']] = '';
+            }
             params[mappingLabels['hybris_billTo_postalcode']] =
                 paymentDetails.billingAddress.postalCode;
             return params;
