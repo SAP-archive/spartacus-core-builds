@@ -14295,6 +14295,9 @@ var I18nextTranslationService = /** @class */ (function () {
              * @return {?}
              */
             function () {
+                if (!i18next.isInitialized) {
+                    return;
+                }
                 if (i18next.exists(namespacedKey, options)) {
                     subscriber.next(i18next.t(namespacedKey, options));
                 }
