@@ -4408,7 +4408,7 @@ var AuthRedirectService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        var _a = this.getCurrentNavigation(), url = _a.url, initialUrl = _a.initialUrl, navigationId = _a.navigationId;
+        var _a = this.getCurrentNavigation(), url = _a.url, initialUrl = _a.initialUrl, navigationId = _a.navigationId, state = _a.state;
         this.ignoredUrls.add(url);
         // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
         if (!this.ignoredUrls.has(initialUrl)) {
@@ -4416,7 +4416,7 @@ var AuthRedirectService = /** @class */ (function () {
             // than the last opened page
             if (!this.lastAuthGuardNavigation ||
                 this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
-                this.redirectUrl = initialUrl;
+                this.redirectUrl = state ? state.redirectUrl : initialUrl;
                 this.lastAuthGuardNavigation = undefined;
             }
         }
@@ -4436,10 +4436,13 @@ var AuthRedirectService = /** @class */ (function () {
         var navigation = this.router.getCurrentNavigation();
         /** @type {?} */
         var url = this.router.serializeUrl(navigation.finalUrl);
+        /** @type {?} */
+        var state = navigation.extras.state ? navigation.extras.state : undefined;
         return {
             navigationId: navigation.id,
             url: url,
             initialUrl: initialUrl,
+            state: state,
         };
     };
     AuthRedirectService.decorators = [

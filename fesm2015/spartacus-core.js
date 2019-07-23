@@ -3883,7 +3883,7 @@ class AuthRedirectService {
      * @return {?}
      */
     reportNotAuthGuard() {
-        const { url, initialUrl, navigationId } = this.getCurrentNavigation();
+        const { url, initialUrl, navigationId, state, } = this.getCurrentNavigation();
         this.ignoredUrls.add(url);
         // Don't save redirect url if you've already come from page with NotAuthGuard (i.e. user has come from login to register)
         if (!this.ignoredUrls.has(initialUrl)) {
@@ -3891,7 +3891,7 @@ class AuthRedirectService {
             // than the last opened page
             if (!this.lastAuthGuardNavigation ||
                 this.lastAuthGuardNavigation.navigationId < navigationId - 1) {
-                this.redirectUrl = initialUrl;
+                this.redirectUrl = state ? state.redirectUrl : initialUrl;
                 this.lastAuthGuardNavigation = undefined;
             }
         }
@@ -3907,10 +3907,13 @@ class AuthRedirectService {
         const navigation = this.router.getCurrentNavigation();
         /** @type {?} */
         const url = this.router.serializeUrl(navigation.finalUrl);
+        /** @type {?} */
+        const state = navigation.extras.state ? navigation.extras.state : undefined;
         return {
             navigationId: navigation.id,
             url,
             initialUrl,
+            state,
         };
     }
 }
