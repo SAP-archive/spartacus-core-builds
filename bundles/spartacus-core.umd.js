@@ -13051,6 +13051,7 @@
         FORBIDDEN: 403,
         NOT_FOUND: 404,
         CONFLICT: 409,
+        INTERNAL_SERVER_ERROR: 500,
         BAD_GATEWAY: 502,
         GATEWAY_TIMEOUT: 504,
     };
@@ -13059,6 +13060,7 @@
     HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
     HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
     HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
+    HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
     HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
     HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
 
@@ -13085,141 +13087,6 @@
         /** @nocollapse */ HttpErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
         return HttpErrorHandler;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var HttpErrorInterceptor = /** @class */ (function () {
-        function HttpErrorInterceptor(handlers) {
-            this.handlers = handlers;
-            // We reverse the handlers to allow for custom handlers
-            // that replace standard handlers
-            this.handlers.reverse();
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        function (request, next) {
-            var _this = this;
-            return next.handle(request).pipe(operators.catchError((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                if (response instanceof http.HttpErrorResponse) {
-                    _this.handleErrorResponse(request, response);
-                    return rxjs.throwError(response);
-                }
-            })));
-        };
-        /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.handleErrorResponse = /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        function (request, response) {
-            /** @type {?} */
-            var handler = this.getResponseHandler(response);
-            if (handler) {
-                handler.handleError(request, response);
-            }
-        };
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         */
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.getResponseHandler = /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-        function (response) {
-            /** @type {?} */
-            var status = response.status;
-            /** @type {?} */
-            var handler = this.handlers.find((/**
-             * @param {?} h
-             * @return {?}
-             */
-            function (h) { return h.responseStatus === status; }));
-            if (!handler) {
-                handler = this.handlers.find((/**
-                 * @param {?} h
-                 * @return {?}
-                 */
-                function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; }));
-            }
-            return handler;
-        };
-        HttpErrorInterceptor.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        HttpErrorInterceptor.ctorParameters = function () { return [
-            { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
-        ]; };
-        return HttpErrorInterceptor;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UnknownErrorHandler = /** @class */ (function (_super) {
-        __extends(UnknownErrorHandler, _super);
-        function UnknownErrorHandler(globalMessageService) {
-            var _this = _super.call(this, globalMessageService) || this;
-            _this.globalMessageService = globalMessageService;
-            _this.responseStatus = HttpResponseStatus.UNKNOWN;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        UnknownErrorHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            if (core.isDevMode()) {
-                console.warn("Unknown http response error: " + this.responseStatus);
-            }
-        };
-        UnknownErrorHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UnknownErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
-        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-        return UnknownErrorHandler;
-    }(HttpErrorHandler));
 
     /**
      * @fileoverview added by tsickle
@@ -13425,6 +13292,35 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var InternalServerErrorHandler = /** @class */ (function (_super) {
+        __extends(InternalServerErrorHandler, _super);
+        function InternalServerErrorHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        InternalServerErrorHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        InternalServerErrorHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+        return InternalServerErrorHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var NotFoundHandler = /** @class */ (function (_super) {
         __extends(NotFoundHandler, _super);
         function NotFoundHandler() {
@@ -13451,6 +13347,141 @@
         /** @nocollapse */ NotFoundHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
         return NotFoundHandler;
     }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UnknownErrorHandler = /** @class */ (function (_super) {
+        __extends(UnknownErrorHandler, _super);
+        function UnknownErrorHandler(globalMessageService) {
+            var _this = _super.call(this, globalMessageService) || this;
+            _this.globalMessageService = globalMessageService;
+            _this.responseStatus = HttpResponseStatus.UNKNOWN;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        UnknownErrorHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            if (core.isDevMode()) {
+                console.warn("Unknown http response error: " + this.responseStatus);
+            }
+        };
+        UnknownErrorHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UnknownErrorHandler.ctorParameters = function () { return [
+            { type: GlobalMessageService }
+        ]; };
+        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+        return UnknownErrorHandler;
+    }(HttpErrorHandler));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var HttpErrorInterceptor = /** @class */ (function () {
+        function HttpErrorInterceptor(handlers) {
+            this.handlers = handlers;
+            // We reverse the handlers to allow for custom handlers
+            // that replace standard handlers
+            this.handlers.reverse();
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        function (request, next) {
+            var _this = this;
+            return next.handle(request).pipe(operators.catchError((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                if (response instanceof http.HttpErrorResponse) {
+                    _this.handleErrorResponse(request, response);
+                    return rxjs.throwError(response);
+                }
+            })));
+        };
+        /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.handleErrorResponse = /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        function (request, response) {
+            /** @type {?} */
+            var handler = this.getResponseHandler(response);
+            if (handler) {
+                handler.handleError(request, response);
+            }
+        };
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         */
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.getResponseHandler = /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+        function (response) {
+            /** @type {?} */
+            var status = response.status;
+            /** @type {?} */
+            var handler = this.handlers.find((/**
+             * @param {?} h
+             * @return {?}
+             */
+            function (h) { return h.responseStatus === status; }));
+            if (!handler) {
+                handler = this.handlers.find((/**
+                 * @param {?} h
+                 * @return {?}
+                 */
+                function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; }));
+            }
+            return handler;
+        };
+        HttpErrorInterceptor.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        HttpErrorInterceptor.ctorParameters = function () { return [
+            { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
+        ]; };
+        return HttpErrorInterceptor;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -13486,6 +13517,11 @@
         {
             provide: HttpErrorHandler,
             useExisting: GatewayTimeoutHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: InternalServerErrorHandler,
             multi: true,
         },
         {
@@ -30382,120 +30418,121 @@
     exports.ɵcg = reducer$9;
     exports.ɵch = GlobalMessageEffect;
     exports.ɵci = defaultGlobalMessageConfigFactory;
-    exports.ɵcj = HttpErrorInterceptor;
-    exports.ɵck = defaultI18nConfig;
-    exports.ɵcl = i18nextProviders;
-    exports.ɵcm = i18nextInit;
-    exports.ɵcn = MockTranslationService;
-    exports.ɵco = kymaStoreConfigFactory;
-    exports.ɵcp = KymaStoreModule;
-    exports.ɵcq = getReducers$6;
-    exports.ɵcr = reducerToken$6;
-    exports.ɵcs = reducerProvider$6;
-    exports.ɵct = clearKymaState;
-    exports.ɵcu = metaReducers$3;
-    exports.ɵcv = effects$5;
-    exports.ɵcw = OpenIdTokenEffect;
-    exports.ɵcx = OpenIdAuthenticationTokenService;
-    exports.ɵcy = defaultKymaConfig;
-    exports.ɵcz = defaultOccProductConfig;
+    exports.ɵcj = InternalServerErrorHandler;
+    exports.ɵck = HttpErrorInterceptor;
+    exports.ɵcl = defaultI18nConfig;
+    exports.ɵcm = i18nextProviders;
+    exports.ɵcn = i18nextInit;
+    exports.ɵco = MockTranslationService;
+    exports.ɵcp = kymaStoreConfigFactory;
+    exports.ɵcq = KymaStoreModule;
+    exports.ɵcr = getReducers$6;
+    exports.ɵcs = reducerToken$6;
+    exports.ɵct = reducerProvider$6;
+    exports.ɵcu = clearKymaState;
+    exports.ɵcv = metaReducers$3;
+    exports.ɵcw = effects$5;
+    exports.ɵcx = OpenIdTokenEffect;
+    exports.ɵcy = OpenIdAuthenticationTokenService;
+    exports.ɵcz = defaultKymaConfig;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = defaultPersonalizationConfig;
-    exports.ɵdb = interceptors$1;
-    exports.ɵdc = OccPersonalizationIdInterceptor;
-    exports.ɵdd = OccPersonalizationTimeInterceptor;
-    exports.ɵde = ProcessStoreModule;
-    exports.ɵdf = getReducers$7;
-    exports.ɵdg = reducerToken$7;
-    exports.ɵdh = reducerProvider$7;
-    exports.ɵdi = productStoreConfigFactory;
-    exports.ɵdj = ProductStoreModule;
-    exports.ɵdk = getReducers$8;
-    exports.ɵdl = reducerToken$8;
-    exports.ɵdm = reducerProvider$8;
-    exports.ɵdn = clearProductsState;
-    exports.ɵdo = metaReducers$4;
-    exports.ɵdp = effects$6;
-    exports.ɵdq = ProductReferencesEffects;
-    exports.ɵdr = ProductReviewsEffects;
-    exports.ɵds = ProductsSearchEffects;
-    exports.ɵdt = ProductEffects;
-    exports.ɵdu = reducer$a;
-    exports.ɵdv = reducer$c;
-    exports.ɵdw = reducer$b;
-    exports.ɵdx = PageMetaResolver;
-    exports.ɵdy = UrlMatcherFactoryService;
-    exports.ɵdz = getReducers$3;
+    exports.ɵda = defaultOccProductConfig;
+    exports.ɵdb = defaultPersonalizationConfig;
+    exports.ɵdc = interceptors$1;
+    exports.ɵdd = OccPersonalizationIdInterceptor;
+    exports.ɵde = OccPersonalizationTimeInterceptor;
+    exports.ɵdf = ProcessStoreModule;
+    exports.ɵdg = getReducers$7;
+    exports.ɵdh = reducerToken$7;
+    exports.ɵdi = reducerProvider$7;
+    exports.ɵdj = productStoreConfigFactory;
+    exports.ɵdk = ProductStoreModule;
+    exports.ɵdl = getReducers$8;
+    exports.ɵdm = reducerToken$8;
+    exports.ɵdn = reducerProvider$8;
+    exports.ɵdo = clearProductsState;
+    exports.ɵdp = metaReducers$4;
+    exports.ɵdq = effects$6;
+    exports.ɵdr = ProductReferencesEffects;
+    exports.ɵds = ProductReviewsEffects;
+    exports.ɵdt = ProductsSearchEffects;
+    exports.ɵdu = ProductEffects;
+    exports.ɵdv = reducer$a;
+    exports.ɵdw = reducer$c;
+    exports.ɵdx = reducer$b;
+    exports.ɵdy = PageMetaResolver;
+    exports.ɵdz = UrlMatcherFactoryService;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = reducer$5;
-    exports.ɵeb = reducerToken$3;
-    exports.ɵec = reducerProvider$3;
-    exports.ɵed = CustomSerializer;
-    exports.ɵee = effects$3;
-    exports.ɵef = RouterEffects;
-    exports.ɵeg = SiteContextParamsService;
-    exports.ɵeh = SiteContextUrlSerializer;
-    exports.ɵei = SiteContextRoutesHandler;
-    exports.ɵej = defaultSiteContextConfigFactory;
-    exports.ɵek = siteContextStoreConfigFactory;
-    exports.ɵel = SiteContextStoreModule;
-    exports.ɵem = getReducers$9;
-    exports.ɵen = reducerToken$9;
-    exports.ɵeo = reducerProvider$9;
-    exports.ɵep = effects$7;
-    exports.ɵeq = LanguagesEffects;
-    exports.ɵer = CurrenciesEffects;
-    exports.ɵes = BaseSiteEffects;
-    exports.ɵet = reducer$d;
-    exports.ɵeu = reducer$e;
-    exports.ɵev = reducer$f;
-    exports.ɵew = baseSiteConfigValidator;
-    exports.ɵex = interceptors$2;
-    exports.ɵey = CmsTicketInterceptor;
-    exports.ɵez = defaultStoreFinderConfig;
+    exports.ɵea = getReducers$3;
+    exports.ɵeb = reducer$5;
+    exports.ɵec = reducerToken$3;
+    exports.ɵed = reducerProvider$3;
+    exports.ɵee = CustomSerializer;
+    exports.ɵef = effects$3;
+    exports.ɵeg = RouterEffects;
+    exports.ɵeh = SiteContextParamsService;
+    exports.ɵei = SiteContextUrlSerializer;
+    exports.ɵej = SiteContextRoutesHandler;
+    exports.ɵek = defaultSiteContextConfigFactory;
+    exports.ɵel = siteContextStoreConfigFactory;
+    exports.ɵem = SiteContextStoreModule;
+    exports.ɵen = getReducers$9;
+    exports.ɵeo = reducerToken$9;
+    exports.ɵep = reducerProvider$9;
+    exports.ɵeq = effects$7;
+    exports.ɵer = LanguagesEffects;
+    exports.ɵes = CurrenciesEffects;
+    exports.ɵet = BaseSiteEffects;
+    exports.ɵeu = reducer$d;
+    exports.ɵev = reducer$e;
+    exports.ɵew = reducer$f;
+    exports.ɵex = baseSiteConfigValidator;
+    exports.ɵey = interceptors$2;
+    exports.ɵez = CmsTicketInterceptor;
     exports.ɵf = getReducers;
-    exports.ɵfa = StoreFinderStoreModule;
-    exports.ɵfb = getReducers$a;
-    exports.ɵfc = reducerToken$a;
-    exports.ɵfd = reducerProvider$a;
-    exports.ɵfe = effects$8;
-    exports.ɵff = FindStoresEffect;
-    exports.ɵfg = ViewAllStoresEffect;
-    exports.ɵfh = UserStoreModule;
-    exports.ɵfi = getReducers$b;
-    exports.ɵfj = reducerToken$b;
-    exports.ɵfk = reducerProvider$b;
-    exports.ɵfl = clearUserState;
-    exports.ɵfm = metaReducers$5;
-    exports.ɵfn = effects$9;
-    exports.ɵfo = BillingCountriesEffect;
-    exports.ɵfp = DeliveryCountriesEffects;
-    exports.ɵfq = OrderDetailsEffect;
-    exports.ɵfr = UserPaymentMethodsEffects;
-    exports.ɵfs = RegionsEffects;
-    exports.ɵft = ResetPasswordEffects;
-    exports.ɵfu = TitlesEffects;
-    exports.ɵfv = UserAddressesEffects;
-    exports.ɵfw = UserConsentsEffect;
-    exports.ɵfx = UserDetailsEffects;
-    exports.ɵfy = UserOrdersEffect;
-    exports.ɵfz = UserRegisterEffects;
+    exports.ɵfa = defaultStoreFinderConfig;
+    exports.ɵfb = StoreFinderStoreModule;
+    exports.ɵfc = getReducers$a;
+    exports.ɵfd = reducerToken$a;
+    exports.ɵfe = reducerProvider$a;
+    exports.ɵff = effects$8;
+    exports.ɵfg = FindStoresEffect;
+    exports.ɵfh = ViewAllStoresEffect;
+    exports.ɵfi = UserStoreModule;
+    exports.ɵfj = getReducers$b;
+    exports.ɵfk = reducerToken$b;
+    exports.ɵfl = reducerProvider$b;
+    exports.ɵfm = clearUserState;
+    exports.ɵfn = metaReducers$5;
+    exports.ɵfo = effects$9;
+    exports.ɵfp = BillingCountriesEffect;
+    exports.ɵfq = DeliveryCountriesEffects;
+    exports.ɵfr = OrderDetailsEffect;
+    exports.ɵfs = UserPaymentMethodsEffects;
+    exports.ɵft = RegionsEffects;
+    exports.ɵfu = ResetPasswordEffects;
+    exports.ɵfv = TitlesEffects;
+    exports.ɵfw = UserAddressesEffects;
+    exports.ɵfx = UserConsentsEffect;
+    exports.ɵfy = UserDetailsEffects;
+    exports.ɵfz = UserOrdersEffect;
     exports.ɵg = reducerToken;
-    exports.ɵga = ClearMiscsDataEffect;
-    exports.ɵgb = ForgotPasswordEffects;
-    exports.ɵgc = UpdateEmailEffects;
-    exports.ɵgd = UpdatePasswordEffects;
-    exports.ɵge = reducer$p;
-    exports.ɵgf = reducer$n;
-    exports.ɵgg = reducer$g;
-    exports.ɵgh = reducer$o;
-    exports.ɵgi = reducer$j;
-    exports.ɵgj = reducer$q;
-    exports.ɵgk = reducer$i;
-    exports.ɵgl = reducer$h;
-    exports.ɵgm = reducer$m;
-    exports.ɵgn = reducer$k;
-    exports.ɵgo = reducer$l;
+    exports.ɵga = UserRegisterEffects;
+    exports.ɵgb = ClearMiscsDataEffect;
+    exports.ɵgc = ForgotPasswordEffects;
+    exports.ɵgd = UpdateEmailEffects;
+    exports.ɵge = UpdatePasswordEffects;
+    exports.ɵgf = reducer$p;
+    exports.ɵgg = reducer$n;
+    exports.ɵgh = reducer$g;
+    exports.ɵgi = reducer$o;
+    exports.ɵgj = reducer$j;
+    exports.ɵgk = reducer$q;
+    exports.ɵgl = reducer$i;
+    exports.ɵgm = reducer$h;
+    exports.ɵgn = reducer$m;
+    exports.ɵgo = reducer$k;
+    exports.ɵgp = reducer$l;
     exports.ɵh = reducerProvider;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;
