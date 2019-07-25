@@ -4028,6 +4028,28 @@ var StateModule = /** @class */ (function () {
 var UNKNOWN_ERROR = {
     error: 'unknown error',
 };
+/** @type {?} */
+var circularReplacer = (/**
+ * @return {?}
+ */
+function () {
+    /** @type {?} */
+    var seen = new WeakSet();
+    return (/**
+     * @param {?} _key
+     * @param {?} value
+     * @return {?}
+     */
+    function (_key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+});
 /**
  * @param {?} error
  * @return {?}
@@ -4044,7 +4066,7 @@ function makeErrorSerializable(error) {
         /** @type {?} */
         var serializableError = error.error;
         if (isObject(error.error)) {
-            serializableError = JSON.stringify(error.error);
+            serializableError = JSON.stringify(error.error, circularReplacer());
         }
         return (/** @type {?} */ ({
             message: error.message,

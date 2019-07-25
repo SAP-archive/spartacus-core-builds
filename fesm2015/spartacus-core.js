@@ -3522,6 +3522,28 @@ StateModule.decorators = [
 const UNKNOWN_ERROR = {
     error: 'unknown error',
 };
+/** @type {?} */
+const circularReplacer = (/**
+ * @return {?}
+ */
+() => {
+    /** @type {?} */
+    const seen = new WeakSet();
+    return (/**
+     * @param {?} _key
+     * @param {?} value
+     * @return {?}
+     */
+    (_key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+});
 /**
  * @param {?} error
  * @return {?}
@@ -3538,7 +3560,7 @@ function makeErrorSerializable(error) {
         /** @type {?} */
         let serializableError = error.error;
         if (isObject(error.error)) {
-            serializableError = JSON.stringify(error.error);
+            serializableError = JSON.stringify(error.error, circularReplacer());
         }
         return (/** @type {?} */ ({
             message: error.message,
