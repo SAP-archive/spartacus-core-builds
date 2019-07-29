@@ -13747,7 +13747,7 @@
             this.actions$ = actions$;
             this.store = store$1;
             this.config = config;
-            this.hideAfterDelay$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.mergeMap((/**
+            this.hideAfterDelay$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
              * @param {?} type
              * @return {?}
              */
