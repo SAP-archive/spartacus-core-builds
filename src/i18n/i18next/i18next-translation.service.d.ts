@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
+import { TranslationService } from '../translation.service';
 import { I18nConfig } from '../config/i18n-config';
 import { TranslationChunkService } from '../translation-chunk.service';
-import { TranslationService } from '../translation.service';
 export declare class I18nextTranslationService implements TranslationService {
     protected config: I18nConfig;
     protected translationChunk: TranslationChunkService;
