@@ -12991,18 +12991,18 @@ var HttpResponseStatus = {
     FORBIDDEN: 403,
     NOT_FOUND: 404,
     CONFLICT: 409,
-    INTERNAL_SERVER_ERROR: 500,
     BAD_GATEWAY: 502,
     GATEWAY_TIMEOUT: 504,
+    INTERNAL_SERVER_ERROR: 500,
 };
 HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
 HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
 HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
 HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
 HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
 HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
 HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
+HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
 
 /**
  * @fileoverview added by tsickle
