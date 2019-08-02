@@ -13562,6 +13562,95 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var initialState$9 = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$9(state, action) {
+        var _a, _b, _c, _d;
+        if (state === void 0) { state = initialState$9; }
+        switch (action.type) {
+            case ADD_MESSAGE: {
+                /** @type {?} */
+                var message = action.payload;
+                if (state.entities[message.type] === undefined) {
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message.type] = [message.text], _a)) });
+                }
+                else {
+                    /** @type {?} */
+                    var messages = state.entities[message.type];
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(messages, [message.text]), _b)) });
+                }
+            }
+            case REMOVE_MESSAGE: {
+                /** @type {?} */
+                var msgType = action.payload.type;
+                /** @type {?} */
+                var msgIndex = action.payload.index;
+                if (Object.keys(state.entities).length === 0 ||
+                    !state.entities[msgType]) {
+                    return state;
+                }
+                /** @type {?} */
+                var messages = __spread(state.entities[msgType]);
+                messages.splice(msgIndex, 1);
+                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
+            }
+            case REMOVE_MESSAGES_BY_TYPE: {
+                /** @type {?} */
+                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
+                return __assign({}, state, { entities: entities });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$5() {
+        return reducer$9;
+    }
+    /** @type {?} */
+    var reducerToken$5 = new core.InjectionToken('GlobalMessageReducers');
+    /** @type {?} */
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageStoreModule = /** @class */ (function () {
+        function GlobalMessageStoreModule() {
+        }
+        GlobalMessageStoreModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            StateModule,
+                            store.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
+                        ],
+                        providers: [reducerProvider$5],
+                    },] }
+        ];
+        return GlobalMessageStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @param {?} objA
      * @param {?} objB
@@ -13637,102 +13726,36 @@
             return true;
         }
     }
-
     /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$9 = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
+     * @param {?} obj
+     * @param {?} arr
      * @return {?}
      */
-    function reducer$9(state, action) {
-        var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case ADD_MESSAGE: {
-                /** @type {?} */
-                var message_1 = action.payload;
-                if (state.entities[message_1.type] === undefined) {
-                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message_1.type] = [message_1.text], _a)) });
-                }
-                else {
-                    /** @type {?} */
-                    var messages = state.entities[message_1.type];
-                    if (!messages.some((/**
-                     * @param {?} msg
-                     * @return {?}
-                     */
-                    function (msg) { return deepEqualObjects(msg, message_1.text); }))) {
-                        return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message_1.type] = __spread(messages, [message_1.text]), _b)) });
-                    }
-                }
-                return state;
+    function countOfDeepEqualObjects(obj, arr) {
+        return arr.reduce((/**
+         * @param {?} acc
+         * @param {?} curr
+         * @return {?}
+         */
+        function (acc, curr) {
+            if (deepEqualObjects(obj, curr)) {
+                acc++;
             }
-            case REMOVE_MESSAGE: {
-                /** @type {?} */
-                var msgType = action.payload.type;
-                /** @type {?} */
-                var msgIndex = action.payload.index;
-                if (Object.keys(state.entities).length === 0 ||
-                    !state.entities[msgType]) {
-                    return state;
-                }
-                /** @type {?} */
-                var messages = __spread(state.entities[msgType]);
-                messages.splice(msgIndex, 1);
-                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
-            }
-            case REMOVE_MESSAGES_BY_TYPE: {
-                /** @type {?} */
-                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
-                return __assign({}, state, { entities: entities });
-            }
-        }
-        return state;
+            return acc;
+        }), 0);
     }
-
     /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
+     * @param {?} obj
+     * @param {?} arr
      * @return {?}
      */
-    function getReducers$5() {
-        return reducer$9;
-    }
-    /** @type {?} */
-    var reducerToken$5 = new core.InjectionToken('GlobalMessageReducers');
-    /** @type {?} */
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageStoreModule = /** @class */ (function () {
-        function GlobalMessageStoreModule() {
+    function indexOfFirstOccurrence(obj, arr) {
+        for (var index = 0; index < arr.length; index++) {
+            if (deepEqualObjects(arr[index], obj)) {
+                return index;
+            }
         }
-        GlobalMessageStoreModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            StateModule,
-                            store.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
-                        ],
-                        providers: [reducerProvider$5],
-                    },] }
-        ];
-        return GlobalMessageStoreModule;
-    }());
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -13744,6 +13767,30 @@
             this.actions$ = actions$;
             this.store = store$1;
             this.config = config;
+            this.removeDuplicated$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
+             * @param {?} message
+             * @return {?}
+             */
+            function (message) {
+                return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                    return countOfDeepEqualObjects(text, messages) > 1;
+                })), operators.map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                    return new RemoveMessage({
+                        type: message.type,
+                        index: indexOfFirstOccurrence(text, messages),
+                    });
+                })));
+            })));
             this.hideAfterDelay$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
              * @param {?} type
              * @return {?}
@@ -13758,13 +13805,12 @@
                 function (count) {
                     return config && config.timeout !== undefined && count && count > 0;
                 })), operators.switchMap((/**
-                 * @param {?} count
                  * @return {?}
                  */
-                function (count) {
+                function () {
                     return rxjs.of(new RemoveMessage({
                         type: type,
-                        index: count - 1,
+                        index: 0,
                     })).pipe(operators.delay(config.timeout));
                 })));
             })));
@@ -13778,6 +13824,10 @@
             { type: store.Store },
             { type: GlobalMessageConfig }
         ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
         __decorate([
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)

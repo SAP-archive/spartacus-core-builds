@@ -2,7 +2,7 @@ import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, 
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, isDevMode, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, Injector, INJECTOR, Pipe, APP_INITIALIZER, ChangeDetectorRef, NgZone } from '@angular/core';
 import { of, fromEvent, throwError, Observable, combineLatest, asyncScheduler, iif, Subscription } from 'rxjs';
-import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, groupBy, concatMap, delay, withLatestFrom, takeWhile } from 'rxjs/operators';
+import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, groupBy, withLatestFrom, concatMap, delay, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
@@ -11846,6 +11846,90 @@ const httpErrorInterceptors = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const initialState$9 = {
+    entities: {},
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$9(state = initialState$9, action) {
+    switch (action.type) {
+        case ADD_MESSAGE: {
+            /** @type {?} */
+            const message = action.payload;
+            if (state.entities[message.type] === undefined) {
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
+            }
+            else {
+                /** @type {?} */
+                const messages = state.entities[message.type];
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...messages, message.text] }) });
+            }
+        }
+        case REMOVE_MESSAGE: {
+            /** @type {?} */
+            const msgType = action.payload.type;
+            /** @type {?} */
+            const msgIndex = action.payload.index;
+            if (Object.keys(state.entities).length === 0 ||
+                !state.entities[msgType]) {
+                return state;
+            }
+            /** @type {?} */
+            const messages = [...state.entities[msgType]];
+            messages.splice(msgIndex, 1);
+            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
+        }
+        case REMOVE_MESSAGES_BY_TYPE: {
+            /** @type {?} */
+            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
+            return Object.assign({}, state, { entities });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$5() {
+    return reducer$9;
+}
+/** @type {?} */
+const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
+/** @type {?} */
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageStoreModule {
+}
+GlobalMessageStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StateModule,
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
+                ],
+                providers: [reducerProvider$5],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @param {?} objA
  * @param {?} objB
@@ -11921,97 +12005,36 @@ function deepEqualObjects(objA, objB) {
         return true;
     }
 }
-
 /**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$9 = {
-    entities: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
+ * @param {?} obj
+ * @param {?} arr
  * @return {?}
  */
-function reducer$9(state = initialState$9, action) {
-    switch (action.type) {
-        case ADD_MESSAGE: {
-            /** @type {?} */
-            const message = action.payload;
-            if (state.entities[message.type] === undefined) {
-                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
-            }
-            else {
-                /** @type {?} */
-                const messages = state.entities[message.type];
-                if (!messages.some((/**
-                 * @param {?} msg
-                 * @return {?}
-                 */
-                msg => deepEqualObjects(msg, message.text)))) {
-                    return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...messages, message.text] }) });
-                }
-            }
-            return state;
+function countOfDeepEqualObjects(obj, arr) {
+    return arr.reduce((/**
+     * @param {?} acc
+     * @param {?} curr
+     * @return {?}
+     */
+    (acc, curr) => {
+        if (deepEqualObjects(obj, curr)) {
+            acc++;
         }
-        case REMOVE_MESSAGE: {
-            /** @type {?} */
-            const msgType = action.payload.type;
-            /** @type {?} */
-            const msgIndex = action.payload.index;
-            if (Object.keys(state.entities).length === 0 ||
-                !state.entities[msgType]) {
-                return state;
-            }
-            /** @type {?} */
-            const messages = [...state.entities[msgType]];
-            messages.splice(msgIndex, 1);
-            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
-        }
-        case REMOVE_MESSAGES_BY_TYPE: {
-            /** @type {?} */
-            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
-            return Object.assign({}, state, { entities });
+        return acc;
+    }), 0);
+}
+/**
+ * @param {?} obj
+ * @param {?} arr
+ * @return {?}
+ */
+function indexOfFirstOccurrence(obj, arr) {
+    for (let index = 0; index < arr.length; index++) {
+        if (deepEqualObjects(arr[index], obj)) {
+            return index;
         }
     }
-    return state;
 }
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$5() {
-    return reducer$9;
-}
-/** @type {?} */
-const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
-/** @type {?} */
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageStoreModule {
-}
-GlobalMessageStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
-                ],
-                providers: [reducerProvider$5],
-            },] }
-];
 
 /**
  * @fileoverview added by tsickle
@@ -12027,6 +12050,22 @@ class GlobalMessageEffect {
         this.actions$ = actions$;
         this.store = store;
         this.config = config;
+        this.removeDuplicated$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), switchMap((/**
+         * @param {?} message
+         * @return {?}
+         */
+        (message) => of(message.text).pipe(withLatestFrom(this.store.pipe(select(getGlobalMessageEntitiesByType(message.type)))), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([text, messages]) => countOfDeepEqualObjects(text, messages) > 1)), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([text, messages]) => new RemoveMessage({
+            type: message.type,
+            index: indexOfFirstOccurrence(text, messages),
+        })))))));
         this.hideAfterDelay$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((/**
          * @param {?} type
          * @return {?}
@@ -12039,12 +12078,11 @@ class GlobalMessageEffect {
              * @return {?}
              */
             (count) => config && config.timeout !== undefined && count && count > 0)), switchMap((/**
-             * @param {?} count
              * @return {?}
              */
-            (count) => of(new RemoveMessage({
+            () => of(new RemoveMessage({
                 type,
-                index: count - 1,
+                index: 0,
             })).pipe(delay(config.timeout)))));
         })));
     }
@@ -12058,6 +12096,10 @@ GlobalMessageEffect.ctorParameters = () => [
     { type: Store },
     { type: GlobalMessageConfig }
 ];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
