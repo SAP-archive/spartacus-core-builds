@@ -24573,7 +24573,7 @@ function reducer$k(state = initialState$k, action) {
             const entities = action.payload.entities;
             /** @type {?} */
             const country = action.payload.country;
-            if (entities) {
+            if (entities || country) {
                 return Object.assign({}, state, { entities,
                     country });
             }

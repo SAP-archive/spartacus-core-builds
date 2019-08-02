@@ -28625,7 +28625,7 @@
                 var entities = action.payload.entities;
                 /** @type {?} */
                 var country = action.payload.country;
-                if (entities) {
+                if (entities || country) {
                     return __assign({}, state, { entities: entities,
                         country: country });
                 }
