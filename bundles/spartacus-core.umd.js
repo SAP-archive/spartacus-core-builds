@@ -30122,6 +30122,269 @@
         return UserModule;
     }());
 
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
+        }
+        return FeaturesConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} config
+     * @return {?}
+     */
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    /**
+     * @param {?} level
+     * @param {?} version
+     * @return {?}
+     */
+    function isInLevel(level, version) {
+        /** @type {?} */
+        var levelParts = level.split('.');
+        /** @type {?} */
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
+            /** @type {?} */
+            var versionNumberPart = Number(versionParts[i]);
+            /** @type {?} */
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
+            }
+        }
+        return true;
+    }
+    /**
+     * @param {?} config
+     * @param {?} level
+     * @return {?}
+     */
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return isInLevel(config.features.level, level);
+        }
+    }
+    /**
+     * @param {?} config
+     * @param {?} feature
+     * @return {?}
+     */
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            /** @type {?} */
+            var featureConfig = config.features[feature];
+            return typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
+        }
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
+            this.config = config;
+        }
+        /**
+         * @param {?} version
+         * @return {?}
+         */
+        FeatureConfigService.prototype.isLevel = /**
+         * @param {?} version
+         * @return {?}
+         */
+        function (version) {
+            return isFeatureLevel(this.config, version);
+        };
+        /**
+         * @param {?} feature
+         * @return {?}
+         */
+        FeatureConfigService.prototype.isEnabled = /**
+         * @param {?} feature
+         * @return {?}
+         */
+        function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        /** @nocollapse */ FeatureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        return FeatureConfigService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeatureLevelDirective = /** @class */ (function () {
+        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
+            set: /**
+             * @param {?} level
+             * @return {?}
+             */
+            function (level) {
+                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureLevelDirective.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cxFeatureLevel]',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureLevelDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        FeatureLevelDirective.propDecorators = {
+            cxFeatureLevel: [{ type: core.Input }]
+        };
+        return FeatureLevelDirective;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeatureDirective = /** @class */ (function () {
+        function FeatureDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
+            set: /**
+             * @param {?} feature
+             * @return {?}
+             */
+            function (feature) {
+                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureDirective.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cxFeature]',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        FeatureDirective.propDecorators = {
+            cxFeature: [{ type: core.Input }]
+        };
+        return FeatureDirective;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeaturesConfigModule = /** @class */ (function () {
+        function FeaturesConfigModule() {
+        }
+        /**
+         * @param {?=} defaultLevel
+         * @return {?}
+         */
+        FeaturesConfigModule.forRoot = /**
+         * @param {?=} defaultLevel
+         * @return {?}
+         */
+        function (defaultLevel) {
+            return {
+                ngModule: FeaturesConfigModule,
+                providers: [
+                    provideConfig((/** @type {?} */ ({
+                        features: {
+                            level: defaultLevel || '999',
+                        },
+                    }))),
+                    {
+                        provide: FeaturesConfig,
+                        useExisting: Config,
+                    },
+                ],
+            };
+        };
+        FeaturesConfigModule.decorators = [
+            { type: core.NgModule, args: [{
+                        declarations: [FeatureLevelDirective, FeatureDirective],
+                        exports: [FeatureLevelDirective, FeatureDirective],
+                    },] }
+        ];
+        return FeaturesConfigModule;
+    }());
+
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
@@ -30213,6 +30476,11 @@
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
+    exports.FeatureConfigService = FeatureConfigService;
+    exports.FeatureDirective = FeatureDirective;
+    exports.FeatureLevelDirective = FeatureLevelDirective;
+    exports.FeaturesConfig = FeaturesConfig;
+    exports.FeaturesConfigModule = FeaturesConfigModule;
     exports.ForbiddenHandler = ForbiddenHandler;
     exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
     exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
@@ -30428,6 +30696,8 @@
     exports.initialEntityState = initialEntityState;
     exports.initialLoaderState = initialLoaderState;
     exports.inititializeContext = inititializeContext;
+    exports.isFeatureEnabled = isFeatureEnabled;
+    exports.isFeatureLevel = isFeatureLevel;
     exports.loaderReducer = loaderReducer;
     exports.mediaServerConfigFromMetaTagFactory = mediaServerConfigFromMetaTagFactory;
     exports.metaReducers = metaReducers$1;

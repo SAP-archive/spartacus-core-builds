@@ -1,0 +1,11 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { FeaturesConfigModule } from './features-config.module';
+export { isFeatureLevel, isFeatureEnabled } from './utils/feature-config-utils';
+export { FeaturesConfig } from './config/features-config';
+export { FeatureConfigService } from './services/feature-config.service';
+export { FeatureLevelDirective } from './directives/feature-level.directive';
+export { FeatureDirective } from './directives/feature.directive';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvZmVhdHVyZXMtY29uZmlnL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxxQ0FBYywwQkFBMEIsQ0FBQztBQUN6QyxpREFBYyw4QkFBOEIsQ0FBQztBQUM3QywrQkFBYywwQkFBMEIsQ0FBQztBQUN6QyxxQ0FBYyxtQ0FBbUMsQ0FBQztBQUNsRCxzQ0FBYyxzQ0FBc0MsQ0FBQztBQUNyRCxpQ0FBYyxnQ0FBZ0MsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vZmVhdHVyZXMtY29uZmlnLm1vZHVsZSc7XG5leHBvcnQgKiBmcm9tICcuL3V0aWxzL2ZlYXR1cmUtY29uZmlnLXV0aWxzJztcbmV4cG9ydCAqIGZyb20gJy4vY29uZmlnL2ZlYXR1cmVzLWNvbmZpZyc7XG5leHBvcnQgKiBmcm9tICcuL3NlcnZpY2VzL2ZlYXR1cmUtY29uZmlnLnNlcnZpY2UnO1xuZXhwb3J0ICogZnJvbSAnLi9kaXJlY3RpdmVzL2ZlYXR1cmUtbGV2ZWwuZGlyZWN0aXZlJztcbmV4cG9ydCAqIGZyb20gJy4vZGlyZWN0aXZlcy9mZWF0dXJlLmRpcmVjdGl2ZSc7XG4iXX0=
