@@ -974,16 +974,15 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var OBJECT_SEPARATOR = '.';
     /**
+     * @template T, E
      * @param {?} keys
      * @param {?} state
      * @return {?}
      */
     function getStateSliceValue(keys, state) {
         return keys
-            .split(OBJECT_SEPARATOR)
+            .split('.')
             .reduce((/**
          * @param {?} previous
          * @param {?} current
@@ -992,37 +991,44 @@
         function (previous, current) { return (previous ? previous[current] : undefined); }), state);
     }
     /**
+     * @template T, E
      * @param {?} key
-     * @param {?} excludeKeys
      * @param {?} value
      * @return {?}
      */
-    function createShellObject(key, excludeKeys, value) {
+    function createShellObject(key, value) {
         if (!key || !value || Object.keys(value).length === 0) {
-            return {};
+            return (/** @type {?} */ ({}));
         }
         /** @type {?} */
-        var shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
-         * @param {?} acc
-         * @param {?} previous
-         * @return {?}
-         */
-        function (acc, previous) {
-            var _a;
-            return _a = {}, _a[previous] = acc, _a;
-        }), value);
-        return handleExclusions(key, excludeKeys, shell);
+        var keySplit = key.split('.');
+        /** @type {?} */
+        var newObject = {};
+        /** @type {?} */
+        var tempNewObject = newObject;
+        for (var i = 0; i < keySplit.length; i++) {
+            /** @type {?} */
+            var currentKey = keySplit[i];
+            // last iteration
+            if (i === keySplit.length - 1) {
+                tempNewObject = tempNewObject[currentKey] = value;
+            }
+            else {
+                tempNewObject = tempNewObject[currentKey] = {};
+            }
+        }
+        return (/** @type {?} */ (newObject));
     }
     /**
+     * @template T, E
      * @param {?} keys
-     * @param {?} excludeKeys
      * @param {?} state
      * @return {?}
      */
-    function getStateSlice(keys, excludeKeys, state) {
+    function getStateSlice(keys, state) {
         var e_1, _a;
         if (keys && keys.length === 0) {
-            return {};
+            return (/** @type {?} */ ({}));
         }
         /** @type {?} */
         var stateSlices = {};
@@ -1032,7 +1038,7 @@
                 /** @type {?} */
                 var stateValue = getStateSliceValue(currentKey, state);
                 /** @type {?} */
-                var shell = createShellObject(currentKey, excludeKeys, stateValue);
+                var shell = createShellObject(currentKey, stateValue);
                 stateSlices = deepMerge(stateSlices, shell);
             }
         }
@@ -1043,82 +1049,7 @@
             }
             finally { if (e_1) throw e_1.error; }
         }
-        return stateSlices;
-    }
-    /**
-     * @param {?} key
-     * @param {?} excludeKeys
-     * @param {?} value
-     * @return {?}
-     */
-    function handleExclusions(key, excludeKeys, value) {
-        var e_2, _a;
-        /** @type {?} */
-        var exclusionKeys = getExclusionKeys(key, excludeKeys);
-        if (exclusionKeys.length === 0) {
-            return value;
-        }
-        /** @type {?} */
-        var finalValue = deepMerge({}, value);
-        try {
-            for (var exclusionKeys_1 = __values(exclusionKeys), exclusionKeys_1_1 = exclusionKeys_1.next(); !exclusionKeys_1_1.done; exclusionKeys_1_1 = exclusionKeys_1.next()) {
-                var currentExclusionKey = exclusionKeys_1_1.value;
-                /** @type {?} */
-                var exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
-                /** @type {?} */
-                var nestedTemp = finalValue;
-                for (var i = 0; i < exclusionChunksSplit.length; i++) {
-                    /** @type {?} */
-                    var currentChunk = exclusionChunksSplit[i];
-                    // last iteration
-                    if (i === exclusionChunksSplit.length - 1) {
-                        if (nestedTemp && nestedTemp[currentChunk]) {
-                            delete nestedTemp[currentChunk];
-                        }
-                    }
-                    else {
-                        nestedTemp = nestedTemp[currentChunk];
-                    }
-                }
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (exclusionKeys_1_1 && !exclusionKeys_1_1.done && (_a = exclusionKeys_1.return)) _a.call(exclusionKeys_1);
-            }
-            finally { if (e_2) throw e_2.error; }
-        }
-        return finalValue;
-    }
-    /**
-     * @param {?} key
-     * @param {?} excludeKeys
-     * @return {?}
-     */
-    function getExclusionKeys(key, excludeKeys) {
-        var e_3, _a;
-        if (!key || !excludeKeys) {
-            return [];
-        }
-        /** @type {?} */
-        var exclusionKeys = [];
-        try {
-            for (var excludeKeys_1 = __values(excludeKeys), excludeKeys_1_1 = excludeKeys_1.next(); !excludeKeys_1_1.done; excludeKeys_1_1 = excludeKeys_1.next()) {
-                var exclusionKey = excludeKeys_1_1.value;
-                if (exclusionKey.includes(key)) {
-                    exclusionKeys.push(exclusionKey);
-                }
-            }
-        }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
-        finally {
-            try {
-                if (excludeKeys_1_1 && !excludeKeys_1_1.done && (_a = excludeKeys_1.return)) _a.call(excludeKeys_1);
-            }
-            finally { if (e_3) throw e_3.error; }
-        }
-        return exclusionKeys;
+        return (/** @type {?} */ (stateSlices));
     }
 
     /**
@@ -3815,7 +3746,6 @@
                 localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
                 sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
                 keys: {},
-                excludeKeys: {},
             },
         },
     };
@@ -3867,17 +3797,13 @@
                     /** @type {?} */
                     var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
                     /** @type {?} */
-                    var localStorageExclusionKeys = getKeysForStorage(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
-                    /** @type {?} */
-                    var localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, state);
+                    var localStorageStateSlices = getStateSlice(localStorageKeys, state);
                     persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                     // handle session storage
                     /** @type {?} */
                     var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
                     /** @type {?} */
-                    var sessionStorageExclusionKeys = getKeysForStorage(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
-                    /** @type {?} */
-                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, state);
+                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
                     persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
                 }
                 return newState;
@@ -3890,9 +3816,6 @@
      * @return {?}
      */
     function getKeysForStorage(keys, storageType) {
-        if (!keys) {
-            return [];
-        }
         return Object.keys(keys).filter((/**
          * @param {?} key
          * @return {?}
@@ -3999,7 +3922,7 @@
                 var newState = reducer(state, action);
                 if (newState) {
                     /** @type {?} */
-                    var stateSlice = getStateSlice(Object.keys(keys), [], newState);
+                    var stateSlice = getStateSlice(Object.keys(keys), newState);
                     transferState.set(CX_KEY, stateSlice);
                 }
                 return newState;
@@ -4036,7 +3959,7 @@
                         /** @type {?} */
                         var cxKey = transferState.get(CX_KEY, {});
                         /** @type {?} */
-                        var transferredStateSlice = getStateSlice(Object.keys(keys), [], cxKey);
+                        var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
                         state = deepMerge({}, state, transferredStateSlice);
                     }
                     return state;
@@ -4394,10 +4317,12 @@
             state: {
                 storageSync: {
                     keys: {
-                        'auth.userToken.token': StorageSyncType.LOCAL_STORAGE,
-                    },
-                    excludeKeys: {
-                        'auth.userToken.token.refresh_token': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.access_token': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.token_type': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.expires_in': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.expiration_time': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.scope': StorageSyncType.LOCAL_STORAGE,
+                        'auth.userToken.token.userId': StorageSyncType.LOCAL_STORAGE,
                     },
                 },
             },
@@ -15200,9 +15125,6 @@
                 storageSync: {
                     keys: {
                         'kyma.openIdToken.value': StorageSyncType.LOCAL_STORAGE,
-                    },
-                    excludeKeys: {
-                        'kyma.openIdToken.value.refresh_token': StorageSyncType.LOCAL_STORAGE,
                     },
                 },
             },
