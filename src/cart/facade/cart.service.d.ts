@@ -30,4 +30,5 @@ export declare class CartService {
      */
     private isIncomplete;
     private isJustLoggedIn;
+    private isLoggedIn;
 }

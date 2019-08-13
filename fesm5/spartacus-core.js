@@ -5067,6 +5067,7 @@ var CartService = /** @class */ (function () {
             this.store.select(getCartContent),
             this.store.select(getCartLoading),
             this.authService.getUserToken(),
+            this.store.select(getCartLoaded),
         ]).pipe(
         // combineLatest emits multiple times on each property update instead of one emit
         // additionally dispatching actions that changes selectors used here needs to happen in order
@@ -5083,11 +5084,15 @@ var CartService = /** @class */ (function () {
          * @return {?}
          */
         function (_a) {
-            var _b = __read(_a, 3), cart = _b[0], userToken = _b[2];
+            var _b = __read(_a, 4), cart = _b[0], userToken = _b[2], loaded = _b[3];
             if (_this.isJustLoggedIn(userToken.userId)) {
                 _this.loadOrMerge();
             }
-            else if (_this.isCreated(cart) && _this.isIncomplete(cart)) {
+            else if ((_this.isCreated(cart) && _this.isIncomplete(cart)) ||
+                (_this.isLoggedIn(userToken.userId) &&
+                    !_this.isCreated(cart) &&
+                    !loaded) // try to load current cart for logged in user (loaded flag to prevent infinite loop when user doesn't have cart)
+            ) {
                 _this.load();
             }
             _this.previousUserId = userToken.userId;
@@ -5327,10 +5332,23 @@ var CartService = /** @class */ (function () {
      * @return {?}
      */
     function (userId) {
-        return (typeof userId !== 'undefined' && // logged in user
+        return (this.isLoggedIn(userId) &&
             this.previousUserId !== userId && // *just* logged in
             this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
         );
+    };
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    CartService.prototype.isLoggedIn = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return typeof userId !== 'undefined';
     };
     CartService.decorators = [
         { type: Injectable }

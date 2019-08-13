@@ -4537,6 +4537,7 @@ class CartService {
             this.store.select(getCartContent),
             this.store.select(getCartLoading),
             this.authService.getUserToken(),
+            this.store.select(getCartLoaded),
         ]).pipe(
         // combineLatest emits multiple times on each property update instead of one emit
         // additionally dispatching actions that changes selectors used here needs to happen in order
@@ -4549,11 +4550,15 @@ class CartService {
          * @param {?} __0
          * @return {?}
          */
-        ([cart, , userToken]) => {
+        ([cart, , userToken, loaded]) => {
             if (this.isJustLoggedIn(userToken.userId)) {
                 this.loadOrMerge();
             }
-            else if (this.isCreated(cart) && this.isIncomplete(cart)) {
+            else if ((this.isCreated(cart) && this.isIncomplete(cart)) ||
+                (this.isLoggedIn(userToken.userId) &&
+                    !this.isCreated(cart) &&
+                    !loaded) // try to load current cart for logged in user (loaded flag to prevent infinite loop when user doesn't have cart)
+            ) {
                 this.load();
             }
             this.previousUserId = userToken.userId;
@@ -4727,10 +4732,18 @@ class CartService {
      * @return {?}
      */
     isJustLoggedIn(userId) {
-        return (typeof userId !== 'undefined' && // logged in user
+        return (this.isLoggedIn(userId) &&
             this.previousUserId !== userId && // *just* logged in
             this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
         );
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    isLoggedIn(userId) {
+        return typeof userId !== 'undefined';
     }
 }
 CartService.decorators = [
