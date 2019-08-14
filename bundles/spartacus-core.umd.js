@@ -3797,13 +3797,13 @@
                     /** @type {?} */
                     var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
                     /** @type {?} */
-                    var localStorageStateSlices = getStateSlice(localStorageKeys, state);
+                    var localStorageStateSlices = getStateSlice(localStorageKeys, newState);
                     persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                     // handle session storage
                     /** @type {?} */
                     var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
                     /** @type {?} */
-                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
+                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, newState);
                     persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
                 }
                 return newState;

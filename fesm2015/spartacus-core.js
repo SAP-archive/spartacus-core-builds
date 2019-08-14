@@ -3240,13 +3240,13 @@ function getStorageSyncReducer(winRef, config) {
                 /** @type {?} */
                 const localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
                 /** @type {?} */
-                const localStorageStateSlices = getStateSlice(localStorageKeys, state);
+                const localStorageStateSlices = getStateSlice(localStorageKeys, newState);
                 persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                 // handle session storage
                 /** @type {?} */
                 const sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
                 /** @type {?} */
-                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, state);
+                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, newState);
                 persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
             }
             return newState;
