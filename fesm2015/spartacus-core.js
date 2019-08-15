@@ -18516,7 +18516,7 @@ class OccUserOrderAdapter {
      */
     legacyLoad(userId, orderCode) {
         /** @type {?} */
-        const url = this.getOrderEndpoint(userId) + '/xxxx' + orderCode;
+        const url = this.getOrderEndpoint(userId) + '/' + orderCode;
         /** @type {?} */
         const params = new HttpParams({
             fromString: 'fields=FULL',

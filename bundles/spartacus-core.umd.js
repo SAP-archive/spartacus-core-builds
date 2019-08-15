@@ -21259,7 +21259,7 @@
          */
         function (userId, orderCode) {
             /** @type {?} */
-            var url = this.getOrderEndpoint(userId) + '/xxxx' + orderCode;
+            var url = this.getOrderEndpoint(userId) + '/' + orderCode;
             /** @type {?} */
             var params = new http.HttpParams({
                 fromString: 'fields=FULL',

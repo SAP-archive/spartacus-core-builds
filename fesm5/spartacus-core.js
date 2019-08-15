@@ -21180,7 +21180,7 @@ var OccUserOrderAdapter = /** @class */ (function () {
      */
     function (userId, orderCode) {
         /** @type {?} */
-        var url = this.getOrderEndpoint(userId) + '/xxxx' + orderCode;
+        var url = this.getOrderEndpoint(userId) + '/' + orderCode;
         /** @type {?} */
         var params = new HttpParams({
             fromString: 'fields=FULL',
