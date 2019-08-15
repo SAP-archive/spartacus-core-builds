@@ -393,6 +393,13 @@
             client_id: 'mobile_android',
             client_secret: 'secret',
         },
+        backend: {
+            occ: {
+                endpoints: {
+                    login: '/authorizationserver/oauth/token',
+                },
+            },
+        },
     };
 
     /**
@@ -2762,6 +2769,67 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var DynamicTemplate = /** @class */ (function () {
+        function DynamicTemplate() {
+        }
+        /**
+         * @param {?} templateString
+         * @param {?} templateVariables
+         * @return {?}
+         */
+        DynamicTemplate.resolve = /**
+         * @param {?} templateString
+         * @param {?} templateVariables
+         * @return {?}
+         */
+        function (templateString, templateVariables) {
+            /** @type {?} */
+            var keys = Object.keys(templateVariables);
+            // Can't use Object.values as the compilation settings are to es2015 not es2017
+            /** @type {?} */
+            var values = keys.map((/**
+             * @param {?} key
+             * @return {?}
+             */
+            function (key) { return templateVariables[key]; }));
+            /** @type {?} */
+            var templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString + "`;"])))();
+            return templateFunction.apply(void 0, __spread(values));
+        };
+        return DynamicTemplate;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Helper function for safely getting context parameter config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameterValues(config, parameter) {
+        return (config.context && config.context[parameter]) || [];
+    }
+    /**
+     * Helper function for calculating default value for context parameter from config
+     *
+     * @param {?} config
+     * @param {?} parameter
+     * @return {?}
+     */
+    function getContextParameterDefault(config, parameter) {
+        /** @type {?} */
+        var param = getContextParameterValues(config, parameter);
+        return param && param.length ? param[0] : undefined;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var LOAD_BASE_SITE = '[Site-context] Load BaseSite';
     /** @type {?} */
@@ -3094,33 +3162,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * Helper function for safely getting context parameter config
-     *
-     * @param {?} config
-     * @param {?} parameter
-     * @return {?}
-     */
-    function getContextParameterValues(config, parameter) {
-        return (config.context && config.context[parameter]) || [];
-    }
-    /**
-     * Helper function for calculating default value for context parameter from config
-     *
-     * @param {?} config
-     * @param {?} parameter
-     * @return {?}
-     */
-    function getContextParameterDefault(config, parameter) {
-        /** @type {?} */
-        var param = getContextParameterValues(config, parameter);
-        return param && param.length ? param[0] : undefined;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var LANGUAGE_CONTEXT_ID = 'language';
     /** @type {?} */
@@ -3247,40 +3288,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var DynamicTemplate = /** @class */ (function () {
-        function DynamicTemplate() {
-        }
-        /**
-         * @param {?} templateString
-         * @param {?} templateVariables
-         * @return {?}
-         */
-        DynamicTemplate.resolve = /**
-         * @param {?} templateString
-         * @param {?} templateVariables
-         * @return {?}
-         */
-        function (templateString, templateVariables) {
-            /** @type {?} */
-            var keys = Object.keys(templateVariables);
-            // Can't use Object.values as the compilation settings are to es2015 not es2017
-            /** @type {?} */
-            var values = keys.map((/**
-             * @param {?} key
-             * @return {?}
-             */
-            function (key) { return templateVariables[key]; }));
-            /** @type {?} */
-            var templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString + "`;"])))();
-            return templateFunction.apply(void 0, __spread(values));
-        };
-        return DynamicTemplate;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccEndpointsService = /** @class */ (function () {
         function OccEndpointsService(config, baseSiteService) {
             var _this = this;
@@ -3299,9 +3306,38 @@
             }
         }
         /**
+         * Returns and endpoint starting from the OCC baseUrl (no baseSite)
+         * @param endpoint Endpoint suffix
+         */
+        /**
+         * Returns and endpoint starting from the OCC baseUrl (no baseSite)
+         * @param {?} endpoint Endpoint suffix
+         * @return {?}
+         */
+        OccEndpointsService.prototype.getRawEndpoint = /**
+         * Returns and endpoint starting from the OCC baseUrl (no baseSite)
+         * @param {?} endpoint Endpoint suffix
+         * @return {?}
+         */
+        function (endpoint) {
+            if (!this.config || !this.config.backend || !this.config.backend.occ) {
+                return '';
+            }
+            endpoint = this.config.backend.occ.endpoints[endpoint];
+            if (!endpoint.startsWith('/')) {
+                endpoint = '/' + endpoint;
+            }
+            return this.config.backend.occ.baseUrl + endpoint;
+        };
+        /**
+         * Returns base OCC endpoint (baseUrl + prefix + baseSite)
+         */
+        /**
+         * Returns base OCC endpoint (baseUrl + prefix + baseSite)
          * @return {?}
          */
         OccEndpointsService.prototype.getBaseEndpoint = /**
+         * Returns base OCC endpoint (baseUrl + prefix + baseSite)
          * @return {?}
          */
         function () {
@@ -3313,11 +3349,17 @@
                 this.activeBaseSite);
         };
         /**
-         * @param {?} endpoint
+         * Returns an OCC endpoint including baseUrl and baseSite
+         * @param endpoint Endpoint suffix
+         */
+        /**
+         * Returns an OCC endpoint including baseUrl and baseSite
+         * @param {?} endpoint Endpoint suffix
          * @return {?}
          */
         OccEndpointsService.prototype.getEndpoint = /**
-         * @param {?} endpoint
+         * Returns an OCC endpoint including baseUrl and baseSite
+         * @param {?} endpoint Endpoint suffix
          * @return {?}
          */
         function (endpoint) {
@@ -3327,15 +3369,23 @@
             return this.getBaseEndpoint() + endpoint;
         };
         /**
-         * @param {?} endpoint
-         * @param {?=} urlParams
-         * @param {?=} queryParams
+         * Returns a fully qualified OCC Url (including baseUrl and baseSite)
+         * @param endpoint Name of the OCC endpoint key config
+         * @param urlParams  URL parameters
+         * @param queryParams Query parameters
+         */
+        /**
+         * Returns a fully qualified OCC Url (including baseUrl and baseSite)
+         * @param {?} endpoint Name of the OCC endpoint key config
+         * @param {?=} urlParams  URL parameters
+         * @param {?=} queryParams Query parameters
          * @return {?}
          */
         OccEndpointsService.prototype.getUrl = /**
-         * @param {?} endpoint
-         * @param {?=} urlParams
-         * @param {?=} queryParams
+         * Returns a fully qualified OCC Url (including baseUrl and baseSite)
+         * @param {?} endpoint Name of the OCC endpoint key config
+         * @param {?=} urlParams  URL parameters
+         * @param {?=} queryParams Query parameters
          * @return {?}
          */
         function (endpoint, urlParams, queryParams) {
@@ -3550,12 +3600,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var ClientAuthenticationTokenService = /** @class */ (function () {
-        function ClientAuthenticationTokenService(config, http) {
+        function ClientAuthenticationTokenService(config, http, occEndpointsService) {
             this.config = config;
             this.http = http;
+            this.occEndpointsService = occEndpointsService;
         }
         /**
          * @return {?}
@@ -3565,7 +3614,7 @@
          */
         function () {
             /** @type {?} */
-            var url = this.getOAuthEndpoint();
+            var url = this.occEndpointsService.getRawEndpoint('login');
             /** @type {?} */
             var params = new http.HttpParams()
                 .set('client_id', encodeURIComponent(this.config.authentication.client_id))
@@ -3577,24 +3626,14 @@
             });
             return this.http.post(url, params, { headers: headers });
         };
-        /**
-         * @protected
-         * @return {?}
-         */
-        ClientAuthenticationTokenService.prototype.getOAuthEndpoint = /**
-         * @protected
-         * @return {?}
-         */
-        function () {
-            return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$1;
-        };
         ClientAuthenticationTokenService.decorators = [
             { type: core.Injectable }
         ];
         /** @nocollapse */
         ClientAuthenticationTokenService.ctorParameters = function () { return [
             { type: AuthConfig },
-            { type: http.HttpClient }
+            { type: http.HttpClient },
+            { type: OccEndpointsService }
         ]; };
         return ClientAuthenticationTokenService;
     }());
@@ -3603,12 +3642,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
     var UserAuthenticationTokenService = /** @class */ (function () {
-        function UserAuthenticationTokenService(http, config) {
+        function UserAuthenticationTokenService(http, config, occEndpointsService) {
             this.http = http;
             this.config = config;
+            this.occEndpointsService = occEndpointsService;
         }
         /**
          * @param {?} userId
@@ -3622,12 +3660,12 @@
          */
         function (userId, password) {
             /** @type {?} */
-            var url = this.getOAuthEndpoint();
+            var url = this.occEndpointsService.getRawEndpoint('login');
             /** @type {?} */
             var params = new http.HttpParams()
                 .set('client_id', this.config.authentication.client_id)
                 .set('client_secret', this.config.authentication.client_secret)
-                .set('grant_type', 'password') // authorization_code, client_credentials, password
+                .set('grant_type', 'password')
                 .set('username', userId)
                 .set('password', password);
             /** @type {?} */
@@ -3652,7 +3690,7 @@
          */
         function (refreshToken) {
             /** @type {?} */
-            var url = this.getOAuthEndpoint();
+            var url = this.occEndpointsService.getRawEndpoint('login');
             /** @type {?} */
             var params = new http.HttpParams()
                 .set('client_id', encodeURIComponent(this.config.authentication.client_id))
@@ -3671,24 +3709,14 @@
              */
             function (error) { return rxjs.throwError(error); })));
         };
-        /**
-         * @protected
-         * @return {?}
-         */
-        UserAuthenticationTokenService.prototype.getOAuthEndpoint = /**
-         * @protected
-         * @return {?}
-         */
-        function () {
-            return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
-        };
         UserAuthenticationTokenService.decorators = [
             { type: core.Injectable }
         ];
         /** @nocollapse */
         UserAuthenticationTokenService.ctorParameters = function () { return [
             { type: http.HttpClient },
-            { type: AuthConfig }
+            { type: AuthConfig },
+            { type: OccEndpointsService }
         ]; };
         return UserAuthenticationTokenService;
     }());
@@ -4366,13 +4394,17 @@
                 ngModule: AuthModule,
                 providers: __spread(interceptors, AuthServices, [
                     { provide: AuthConfig, useExisting: Config },
-                    provideConfig(defaultAuthConfig),
                 ]),
             };
         };
         AuthModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [common.CommonModule, http.HttpClientModule, AuthStoreModule],
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            AuthStoreModule,
+                            ConfigModule.withConfig(defaultAuthConfig),
+                        ],
                     },] }
         ];
         return AuthModule;
@@ -13084,7 +13116,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var OAUTH_ENDPOINT$3 = '/authorizationserver/oauth/token';
+    var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var BadRequestHandler = /** @class */ (function (_super) {
         __extends(BadRequestHandler, _super);
         function BadRequestHandler() {
@@ -13104,7 +13136,7 @@
          */
         function (request, response) {
             var _this = this;
-            if (response.url.includes(OAUTH_ENDPOINT$3) &&
+            if (response.url.includes(OAUTH_ENDPOINT$1) &&
                 response.error &&
                 response.error.error === 'invalid_grant' &&
                 request.body.get('grant_type') === 'password') {
@@ -14946,7 +14978,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var OAUTH_ENDPOINT$4 = '/authorizationserver/oauth/token';
+    var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
     var OpenIdAuthenticationTokenService = /** @class */ (function () {
         function OpenIdAuthenticationTokenService(config, http) {
             this.config = config;
@@ -14994,7 +15026,7 @@
          * @return {?}
          */
         function () {
-            return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$4;
+            return (this.config.backend.occ.baseUrl || '') + OAUTH_ENDPOINT$2;
         };
         OpenIdAuthenticationTokenService.decorators = [
             { type: core.Injectable }
@@ -15359,6 +15391,11 @@
             return 'Please configure backend.occ.baseUrl before using storefront library!';
         }
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -17231,6 +17268,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var PRODUCT_NORMALIZER = new core.InjectionToken('ProductNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ConverterService = /** @class */ (function () {
         function ConverterService(injector) {
             this.injector = injector;
@@ -17439,277 +17483,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
-        'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
-        'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
-        'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-        'appliedVouchers,productDiscounts(formattedValue)';
-    var OccCartAdapter = /** @class */ (function () {
-        function OccCartAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        OccCartAdapter.prototype.getCartEndpoint = /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var cartEndpoint = "users/" + userId + "/carts/";
-            return this.occEndpoints.getEndpoint(cartEndpoint);
-        };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccCartAdapter.prototype.loadAll = /**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId);
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
-            });
-            return this.http.get(url, { params: params }).pipe(operators.pluck('carts'), this.converter.pipeableMany(CART_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        OccCartAdapter.prototype.load = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @return {?}
-         */
-        function (userId, cartId) {
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId) + cartId;
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: "fields=" + DETAILS_PARAMS,
-            });
-            if (cartId === 'current') {
-                return this.loadAll(userId).pipe(operators.map((/**
-                 * @param {?} carts
-                 * @return {?}
-                 */
-                function (carts) {
-                    if (carts) {
-                        /** @type {?} */
-                        var activeCart = carts.find((/**
-                         * @param {?} cart
-                         * @return {?}
-                         */
-                        function (cart) {
-                            return cart['saveTime'] === undefined;
-                        }));
-                        return activeCart;
-                    }
-                    else {
-                        return null;
-                    }
-                })));
-            }
-            else {
-                return this.http
-                    .get(url, { params: params })
-                    .pipe(this.converter.pipeable(CART_NORMALIZER));
-            }
-        };
-        /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-        OccCartAdapter.prototype.create = /**
-         * @param {?} userId
-         * @param {?=} oldCartId
-         * @param {?=} toMergeCartGuid
-         * @return {?}
-         */
-        function (userId, oldCartId, toMergeCartGuid) {
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId);
-            /** @type {?} */
-            var toAdd = JSON.stringify({});
-            /** @type {?} */
-            var queryString = "fields=" + DETAILS_PARAMS;
-            if (oldCartId) {
-                queryString = queryString + "&oldCartId=" + oldCartId;
-            }
-            if (toMergeCartGuid) {
-                queryString = queryString + "&toMergeCartGuid=" + toMergeCartGuid;
-            }
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: queryString,
-            });
-            return this.http
-                .post(url, toAdd, { params: params })
-                .pipe(this.converter.pipeable(CART_NORMALIZER));
-        };
-        OccCartAdapter.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OccCartAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        return OccCartAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var OccCartEntryAdapter = /** @class */ (function () {
-        function OccCartEntryAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        OccCartEntryAdapter.prototype.getCartEndpoint = /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var cartEndpoint = 'users/' + userId + '/carts/';
-            return this.occEndpoints.getEndpoint(cartEndpoint);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        OccCartEntryAdapter.prototype.add = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        function (userId, cartId, productCode, quantity) {
-            if (quantity === void 0) { quantity = 1; }
-            /** @type {?} */
-            var toAdd = JSON.stringify({});
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId) + cartId + '/entries';
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: 'code=' + productCode + '&qty=' + quantity,
-            });
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .post(url, toAdd, { headers: headers, params: params })
-                .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        OccCartEntryAdapter.prototype.update = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber, qty, pickupStore) {
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-            /** @type {?} */
-            var queryString = 'qty=' + qty;
-            if (pickupStore) {
-                queryString = queryString + '&pickupStore=' + pickupStore;
-            }
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: queryString,
-            });
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http
-                .patch(url, {}, { headers: headers, params: params })
-                .pipe(this.converter.pipeable(CART_MODIFICATION_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        OccCartEntryAdapter.prototype.remove = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber) {
-            /** @type {?} */
-            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http.delete(url, { headers: headers });
-        };
-        OccCartEntryAdapter.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OccCartEntryAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        return OccCartEntryAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PRODUCT_NORMALIZER = new core.InjectionToken('ProductNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccCartNormalizer = /** @class */ (function () {
         function OccCartNormalizer(converter) {
             this.converter = converter;
@@ -17811,12 +17584,667 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var defaultOccCartConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    // tslint:disable:max-line-length
+                    carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
+                    cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
+                    createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
+                    addEntries: 'users/${userId}/carts/${cartId}/entries?code=${productCode}&qty=${quantity}',
+                    updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}?qty=${quantity}',
+                    removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
+        }
+        return FeaturesConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} config
+     * @return {?}
+     */
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    /**
+     * @param {?} level
+     * @param {?} version
+     * @return {?}
+     */
+    function isInLevel(level, version) {
+        /** @type {?} */
+        var levelParts = level.split('.');
+        /** @type {?} */
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
+            /** @type {?} */
+            var versionNumberPart = Number(versionParts[i]);
+            /** @type {?} */
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
+            }
+        }
+        return true;
+    }
+    /**
+     * @param {?} config
+     * @param {?} level
+     * @return {?}
+     */
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return isInLevel(config.features.level, level);
+        }
+    }
+    /**
+     * @param {?} config
+     * @param {?} feature
+     * @return {?}
+     */
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            /** @type {?} */
+            var featureConfig = config.features[feature];
+            return typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
+        }
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
+            this.config = config;
+        }
+        /**
+         * @param {?} version
+         * @return {?}
+         */
+        FeatureConfigService.prototype.isLevel = /**
+         * @param {?} version
+         * @return {?}
+         */
+        function (version) {
+            return isFeatureLevel(this.config, version);
+        };
+        /**
+         * @param {?} feature
+         * @return {?}
+         */
+        FeatureConfigService.prototype.isEnabled = /**
+         * @param {?} feature
+         * @return {?}
+         */
+        function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        /** @nocollapse */ FeatureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        return FeatureConfigService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCartEntryAdapter = /** @class */ (function () {
+        function OccCartEntryAdapter(http, occEndpointsService, converterService, featureConfigService) {
+            this.http = http;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
+            this.featureConfigService = featureConfigService;
+        }
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.getCartEndpoint = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var cartEndpoint = 'users/' + userId + '/carts/';
+            return this.occEndpointsService.getEndpoint(cartEndpoint);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        function (userId, cartId, productCode, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            /** @type {?} */
+            var toAdd = JSON.stringify({});
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyAdd(userId, cartId, productCode, quantity);
+            }
+            /** @type {?} */
+            var url = this.occEndpointsService.getUrl('addEntries', {
+                userId: userId,
+                cartId: cartId,
+                productCode: productCode,
+                quantity: quantity,
+            });
+            return this.http
+                .post(url, toAdd, { headers: headers })
+                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.update = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber, qty, pickupStore) {
+            /** @type {?} */
+            var params = {};
+            if (pickupStore) {
+                params = { pickupStore: pickupStore };
+            }
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
+            }
+            /** @type {?} */
+            var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber, quantity: qty }, params);
+            return this.http
+                .patch(url, {}, { headers: headers })
+                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber) {
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyRemove(userId, cartId, entryNumber);
+            }
+            /** @type {?} */
+            var url = this.occEndpointsService.getUrl('removeEntries', {
+                userId: userId,
+                cartId: cartId,
+                entryNumber: entryNumber,
+            });
+            return this.http.delete(url, { headers: headers });
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.legacyAdd = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        function (userId, cartId, productCode, quantity) {
+            if (quantity === void 0) { quantity = 1; }
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId) + cartId + '/entries';
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: 'code=' + productCode + '&qty=' + quantity,
+            });
+            /** @type {?} */
+            var toAdd = JSON.stringify({});
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http
+                .post(url, toAdd, { headers: headers, params: params })
+                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.legacyUpdate = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber, qty, pickupStore) {
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
+            /** @type {?} */
+            var queryString = 'qty=' + qty;
+            if (pickupStore) {
+                queryString = queryString + '&pickupStore=' + pickupStore;
+            }
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: queryString,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http
+                .patch(url, {}, { headers: headers, params: params })
+                .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        OccCartEntryAdapter.prototype.legacyRemove = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber) {
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId) + cartId + '/entries/' + entryNumber;
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http.delete(url, { headers: headers });
+        };
+        OccCartEntryAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartEntryAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService },
+            { type: FeatureConfigService }
+        ]; };
+        return OccCartEntryAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // TODO 2.0: Remove
+    /** @type {?} */
+    var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
+        'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
+        'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
+        'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
+        'appliedVouchers,productDiscounts(formattedValue)';
+    var OccCartAdapter = /** @class */ (function () {
+        function OccCartAdapter(http, occEndpointsService, converterService, featureConfigService) {
+            this.http = http;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
+            this.featureConfigService = featureConfigService;
+        }
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.getCartEndpoint = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var cartEndpoint = "users/" + userId + "/carts/";
+            return this.occEndpointsService.getEndpoint(cartEndpoint);
+        };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.loadAll = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyLoadAll(userId);
+            }
+            return this.http
+                .get(this.occEndpointsService.getUrl('carts', { userId: userId }))
+                .pipe(operators.pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.load = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            if (cartId === 'current') {
+                return this.loadAll(userId).pipe(operators.map((/**
+                 * @param {?} carts
+                 * @return {?}
+                 */
+                function (carts) {
+                    if (carts) {
+                        /** @type {?} */
+                        var activeCart = carts.find((/**
+                         * @param {?} cart
+                         * @return {?}
+                         */
+                        function (cart) {
+                            return cart['saveTime'] === undefined;
+                        }));
+                        return activeCart;
+                    }
+                    else {
+                        return null;
+                    }
+                })));
+            }
+            else {
+                // TODO 2.0: Remove
+                if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                    return this.legacyLoad(userId, cartId);
+                }
+                return this.http
+                    .get(this.occEndpointsService.getUrl('cart', { userId: userId, cartId: cartId }))
+                    .pipe(this.converterService.pipeable(CART_NORMALIZER));
+            }
+        };
+        /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        OccCartAdapter.prototype.create = /**
+         * @param {?} userId
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        function (userId, oldCartId, toMergeCartGuid) {
+            /** @type {?} */
+            var toAdd = JSON.stringify({});
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid);
+            }
+            /** @type {?} */
+            var params = {};
+            if (oldCartId) {
+                params = { oldCartId: oldCartId };
+            }
+            if (toMergeCartGuid) {
+                params['toMergeCartGuid'] = toMergeCartGuid;
+            }
+            return this.http
+                .post(this.occEndpointsService.getUrl('createCart', { userId: userId }, params), toAdd)
+                .pipe(this.converterService.pipeable(CART_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.legacyLoadAll = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId);
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: "fields=carts(" + DETAILS_PARAMS + ",saveTime)",
+            });
+            return this.http.get(url, { params: params }).pipe(operators.pluck('carts'), this.converterService.pipeableMany(CART_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.legacyLoad = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId) + cartId;
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: "fields=" + DETAILS_PARAMS,
+            });
+            return this.http
+                .get(url, { params: params })
+                .pipe(this.converterService.pipeable(CART_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} toAdd
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        OccCartAdapter.prototype.legacyCreate = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} toAdd
+         * @param {?=} oldCartId
+         * @param {?=} toMergeCartGuid
+         * @return {?}
+         */
+        function (userId, toAdd, oldCartId, toMergeCartGuid) {
+            /** @type {?} */
+            var url = this.getCartEndpoint(userId);
+            /** @type {?} */
+            var queryString = "fields=" + DETAILS_PARAMS;
+            if (oldCartId) {
+                queryString = queryString + "&oldCartId=" + oldCartId;
+            }
+            if (toMergeCartGuid) {
+                queryString = queryString + "&toMergeCartGuid=" + toMergeCartGuid;
+            }
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: queryString,
+            });
+            return this.http
+                .post(url, toAdd, { params: params })
+                .pipe(this.converterService.pipeable(CART_NORMALIZER));
+        };
+        OccCartAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService },
+            { type: FeatureConfigService }
+        ]; };
+        return OccCartAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CartOccModule = /** @class */ (function () {
         function CartOccModule() {
         }
         CartOccModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [common.CommonModule, http.HttpClientModule],
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            ConfigModule.withConfig(defaultOccCartConfig),
+                        ],
                         providers: [
                             {
                                 provide: CartAdapter,
@@ -19750,6 +20178,40 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    SiteAdapter = /** @class */ (function () {
+        function SiteAdapter() {
+        }
+        return SiteAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultOccSiteContextConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    languages: 'languages',
+                    currencies: 'currencies',
+                    countries: 'countries',
+                    regions: 'countries/${isoCode}/regions?fields=regions(name,isocode,isocodeShort)',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var LANGUAGE_NORMALIZER = new core.InjectionToken('LanguageNormalizer');
     /** @type {?} */
@@ -19763,15 +20225,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var COUNTRIES_ENDPOINT = 'countries';
-    /** @type {?} */
-    var REGIONS_ENDPOINT = 'regions';
     var OccSiteAdapter = /** @class */ (function () {
-        function OccSiteAdapter(http, occEndpoints, converter) {
+        function OccSiteAdapter(http, occEndpointsService, converterService) {
             this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
         }
         /**
          * @return {?}
@@ -19781,12 +20239,12 @@
          */
         function () {
             return this.http
-                .get(this.occEndpoints.getEndpoint('languages'))
+                .get(this.occEndpointsService.getUrl('languages'))
                 .pipe(operators.map((/**
              * @param {?} languageList
              * @return {?}
              */
-            function (languageList) { return languageList.languages; })), this.converter.pipeableMany(LANGUAGE_NORMALIZER));
+            function (languageList) { return languageList.languages; })), this.converterService.pipeableMany(LANGUAGE_NORMALIZER));
         };
         /**
          * @return {?}
@@ -19796,12 +20254,12 @@
          */
         function () {
             return this.http
-                .get(this.occEndpoints.getEndpoint('currencies'))
+                .get(this.occEndpointsService.getUrl('currencies'))
                 .pipe(operators.map((/**
              * @param {?} currencyList
              * @return {?}
              */
-            function (currencyList) { return currencyList.currencies; })), this.converter.pipeableMany(CURRENCY_NORMALIZER));
+            function (currencyList) { return currencyList.currencies; })), this.converterService.pipeableMany(CURRENCY_NORMALIZER));
         };
         /**
          * @param {?=} type
@@ -19812,20 +20270,13 @@
          * @return {?}
          */
         function (type) {
-            /** @type {?} */
-            var params;
-            if (type) {
-                params = new http.HttpParams().set('type', type);
-            }
             return this.http
-                .get(this.occEndpoints.getEndpoint(COUNTRIES_ENDPOINT), {
-                params: params,
-            })
+                .get(this.occEndpointsService.getUrl('countries', undefined, type ? { type: type } : undefined))
                 .pipe(operators.map((/**
              * @param {?} countryList
              * @return {?}
              */
-            function (countryList) { return countryList.countries; })), this.converter.pipeableMany(COUNTRY_NORMALIZER));
+            function (countryList) { return countryList.countries; })), this.converterService.pipeableMany(COUNTRY_NORMALIZER));
         };
         /**
          * @param {?} countryIsoCode
@@ -19836,15 +20287,13 @@
          * @return {?}
          */
         function (countryIsoCode) {
-            /** @type {?} */
-            var regionsEndpoint = COUNTRIES_ENDPOINT + "/" + countryIsoCode + "/" + REGIONS_ENDPOINT + "?fields=regions(name,isocode,isocodeShort)";
             return this.http
-                .get(this.occEndpoints.getEndpoint(regionsEndpoint))
+                .get(this.occEndpointsService.getUrl('regions', { isoCode: countryIsoCode }))
                 .pipe(operators.map((/**
              * @param {?} regionList
              * @return {?}
              */
-            function (regionList) { return regionList.regions; })), this.converter.pipeableMany(REGION_NORMALIZER));
+            function (regionList) { return regionList.regions; })), this.converterService.pipeableMany(REGION_NORMALIZER));
         };
         /**
          * @return {?}
@@ -19854,7 +20303,7 @@
          */
         function () {
             /** @type {?} */
-            var baseUrl = this.occEndpoints.getBaseEndpoint();
+            var baseUrl = this.occEndpointsService.getBaseEndpoint();
             /** @type {?} */
             var urlSplits = baseUrl.split('/');
             /** @type {?} */
@@ -19889,22 +20338,6 @@
             { type: ConverterService }
         ]; };
         return OccSiteAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    SiteAdapter = /** @class */ (function () {
-        function SiteAdapter() {
-        }
-        return SiteAdapter;
     }());
 
     /**
@@ -20103,7 +20536,11 @@
         }
         SiteContextOccModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [common.CommonModule, http.HttpClientModule],
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            ConfigModule.withConfig(defaultOccSiteContextConfig),
+                        ],
                         providers: [
                             {
                                 provide: SiteAdapter,
@@ -20135,6 +20572,23 @@
         }
         return StoreFinderAdapter;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultOccStoreFinderConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    store: 'stores/${storeId}?fields=FULL',
+                    stores: 'stores?fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),pagination(DEFAULT),sorts(DEFAULT)',
+                    storescounts: 'stores/storescounts',
+                },
+            },
+        },
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -20210,13 +20664,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var STORES_ENDPOINT = 'stores';
     var OccStoreFinderAdapter = /** @class */ (function () {
-        function OccStoreFinderAdapter(http, occEndpoints, converter) {
+        function OccStoreFinderAdapter(http, occEndpointsService, converterService) {
             this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
         }
         /**
          * @param {?} query
@@ -20231,7 +20683,7 @@
          * @return {?}
          */
         function (query, searchConfig, longitudeLatitude) {
-            return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converter.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
+            return this.callOccFindStores(query, searchConfig, longitudeLatitude).pipe(this.converterService.pipeable(STORE_FINDER_SEARCH_PAGE_NORMALIZER));
         };
         /**
          * @return {?}
@@ -20240,16 +20692,16 @@
          * @return {?}
          */
         function () {
-            /** @type {?} */
-            var storeCountUrl = this.getStoresEndpoint('storescounts');
-            return this.http.get(storeCountUrl).pipe(operators.map((/**
+            return this.http
+                .get(this.occEndpointsService.getUrl('storescounts'))
+                .pipe(operators.map((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
                 var countriesAndRegionsStoreCount = _a.countriesAndRegionsStoreCount;
                 return countriesAndRegionsStoreCount;
-            })), this.converter.pipeableMany(STORE_COUNT_NORMALIZER));
+            })), this.converterService.pipeableMany(STORE_COUNT_NORMALIZER));
         };
         /**
          * @param {?} storeId
@@ -20260,13 +20712,9 @@
          * @return {?}
          */
         function (storeId) {
-            /** @type {?} */
-            var storeDetailsUrl = this.getStoresEndpoint(storeId);
-            /** @type {?} */
-            var params = { fields: 'FULL' };
             return this.http
-                .get(storeDetailsUrl, { params: params })
-                .pipe(this.converter.pipeable(POINT_OF_SERVICE_NORMALIZER));
+                .get(this.occEndpointsService.getUrl('store', { storeId: storeId }))
+                .pipe(this.converterService.pipeable(POINT_OF_SERVICE_NORMALIZER));
         };
         /**
          * @protected
@@ -20284,46 +20732,24 @@
          */
         function (query, searchConfig, longitudeLatitude) {
             /** @type {?} */
-            var url = this.getStoresEndpoint();
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: 'fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),' +
-                    'geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),' +
-                    'pagination(DEFAULT),' +
-                    'sorts(DEFAULT)',
-            });
+            var params = {};
             if (longitudeLatitude) {
-                params = params.set('longitude', String(longitudeLatitude.longitude));
-                params = params.set('latitude', String(longitudeLatitude.latitude));
+                params['longitude'] = String(longitudeLatitude.longitude);
+                params['latitude'] = String(longitudeLatitude.latitude);
             }
             else {
-                params = params.set('query', query);
+                params['query'] = query;
             }
             if (searchConfig.pageSize) {
-                params = params.set('pageSize', String(searchConfig.pageSize));
+                params['pageSize'] = String(searchConfig.pageSize);
             }
             if (searchConfig.currentPage) {
-                params = params.set('currentPage', String(searchConfig.currentPage));
+                params['currentPage'] = String(searchConfig.currentPage);
             }
             if (searchConfig.sort) {
-                params = params.set('sort', searchConfig.sort);
+                params['sort'] = searchConfig.sort;
             }
-            return this.http.get(url, { params: params });
-        };
-        /**
-         * @protected
-         * @param {?=} url
-         * @return {?}
-         */
-        OccStoreFinderAdapter.prototype.getStoresEndpoint = /**
-         * @protected
-         * @param {?=} url
-         * @return {?}
-         */
-        function (url) {
-            /** @type {?} */
-            var baseUrl = this.occEndpoints.getEndpoint(STORES_ENDPOINT);
-            return url ? baseUrl + '/' + url : baseUrl;
+            return this.http.get(this.occEndpointsService.getUrl('stores', undefined, params));
         };
         OccStoreFinderAdapter.decorators = [
             { type: core.Injectable }
@@ -20346,10 +20772,27 @@
         }
         StoreFinderOccModule.decorators = [
             { type: core.NgModule, args: [{
+                        imports: [ConfigModule.withConfig(defaultOccStoreFinderConfig)],
                         providers: [{ provide: StoreFinderAdapter, useClass: OccStoreFinderAdapter }],
                     },] }
         ];
         return StoreFinderOccModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    UserConsentAdapter = /** @class */ (function () {
+        function UserConsentAdapter() {
+        }
+        return UserConsentAdapter;
     }());
 
     /**
@@ -20372,104 +20815,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ORDER_HISTORY_NORMALIZER = new core.InjectionToken('OrderHistoryNormalizer');
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    UserPaymentAdapter = /** @class */ (function () {
+        function UserPaymentAdapter() {
+        }
+        return UserPaymentAdapter;
+    }());
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    // To be changed to a more optimised params after ticket: C3PO-1076
-    /** @type {?} */
-    var FULL_PARAMS$1 = 'fields=FULL';
-    var OccUserOrderAdapter = /** @class */ (function () {
-        function OccUserOrderAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    UserAdapter = /** @class */ (function () {
+        function UserAdapter() {
         }
-        /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserOrderAdapter.prototype.getOrderEndpoint = /**
-         * @protected
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var orderEndpoint = 'users/' + userId + '/orders';
-            return this.occEndpoints.getEndpoint(orderEndpoint);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} orderCode
-         * @return {?}
-         */
-        OccUserOrderAdapter.prototype.load = /**
-         * @param {?} userId
-         * @param {?} orderCode
-         * @return {?}
-         */
-        function (userId, orderCode) {
-            /** @type {?} */
-            var url = this.getOrderEndpoint(userId);
-            /** @type {?} */
-            var orderUrl = url + '/' + orderCode;
-            /** @type {?} */
-            var params = new http.HttpParams({
-                fromString: FULL_PARAMS$1,
-            });
-            return this.http
-                .get(orderUrl, {
-                params: params,
-            })
-                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?=} pageSize
-         * @param {?=} currentPage
-         * @param {?=} sort
-         * @return {?}
-         */
-        OccUserOrderAdapter.prototype.loadHistory = /**
-         * @param {?} userId
-         * @param {?=} pageSize
-         * @param {?=} currentPage
-         * @param {?=} sort
-         * @return {?}
-         */
-        function (userId, pageSize, currentPage, sort) {
-            /** @type {?} */
-            var url = this.getOrderEndpoint(userId);
-            /** @type {?} */
-            var params = new http.HttpParams();
-            if (pageSize) {
-                params = params.set('pageSize', pageSize.toString());
-            }
-            if (currentPage) {
-                params = params.set('currentPage', currentPage.toString());
-            }
-            if (sort) {
-                params = params.set('sort', sort);
-            }
-            return this.http
-                .get(url, { params: params })
-                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
-        };
-        OccUserOrderAdapter.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OccUserOrderAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        return OccUserOrderAdapter;
+        return UserAdapter;
     }());
 
     /**
@@ -20477,32 +20848,42 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USER_ENDPOINT = 'users/';
-    /** @type {?} */
-    var ADDRESSES_ENDPOINT = '/addresses';
-    /** @type {?} */
-    var ADDRESSES_VERIFICATION_ENDPOINT = '/addresses/verification';
+    var defaultOccUserConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    user: 'users/${userId}',
+                    userRegister: 'users',
+                    userForgotPassword: 'forgottenpasswordtokens',
+                    userResetPassword: 'resetpassword',
+                    userUpdateLoginId: 'users/${userId}/login',
+                    userUpdatePassword: 'users/${userId}/password',
+                    titles: 'titles',
+                    paymentDetailsAll: 'users/${userId}/paymentdetails',
+                    paymentDetail: 'users/${userId}/paymentdetails/${paymentDetailId}',
+                    orderHistory: 'users/${userId}/orders',
+                    orderDetail: 'users/${userId}/orders/${orderId}?fields=FULL',
+                    consentTemplates: 'users/${userId}/consenttemplates',
+                    consents: 'users/${userId}/consents',
+                    consentDetail: 'users/${userId}/consents/${consentId}',
+                    addresses: 'users/${userId}/addresses',
+                    addressDetail: 'users/${userId}/addresses/${addressId}',
+                    addressVerification: 'users/${userId}/addresses/verification',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var OccUserAddressAdapter = /** @class */ (function () {
         function OccUserAddressAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
-        /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserAddressAdapter.prototype.getUserEndpoint = /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var endpoint = "" + USER_ENDPOINT + userId;
-            return this.occEndpoints.getEndpoint(endpoint);
-        };
         /**
          * @param {?} userId
          * @return {?}
@@ -20513,7 +20894,7 @@
          */
         function (userId) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
+            var url = this.occEndpoints.getUrl('addresses', { userId: userId });
             /** @type {?} */
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
@@ -20540,7 +20921,7 @@
          */
         function (userId, address) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT;
+            var url = this.occEndpoints.getUrl('addresses', { userId: userId });
             /** @type {?} */
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
@@ -20568,7 +20949,10 @@
          */
         function (userId, addressId, address) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
+            var url = this.occEndpoints.getUrl('addressDetail', {
+                userId: userId,
+                addressId: addressId,
+            });
             /** @type {?} */
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
@@ -20594,7 +20978,7 @@
          */
         function (userId, address) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + ADDRESSES_VERIFICATION_ENDPOINT;
+            var url = this.occEndpoints.getUrl('addressVerification', { userId: userId });
             /** @type {?} */
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
@@ -20618,7 +21002,10 @@
          */
         function (userId, addressId) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + ADDRESSES_ENDPOINT + '/' + addressId;
+            var url = this.occEndpoints.getUrl('addressDetail', {
+                userId: userId,
+                addressId: addressId,
+            });
             /** @type {?} */
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
@@ -20647,388 +21034,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    UserAdapter = /** @class */ (function () {
-        function UserAdapter() {
-        }
-        return UserAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_NORMALIZER = new core.InjectionToken('UserNormalizer');
-    /** @type {?} */
-    var USER_SERIALIZER = new core.InjectionToken('UserSerializer');
-    /** @type {?} */
-    var USER_SIGN_UP_SERIALIZER = new core.InjectionToken('UserSignUpSerializer');
-    /** @type {?} */
-    var TITLE_NORMALIZER = new core.InjectionToken('TitleNormalizer');
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_ENDPOINT$1 = 'users/';
-    /** @type {?} */
-    var FORGOT_PASSWORD_ENDPOINT = '/forgottenpasswordtokens';
-    /** @type {?} */
-    var RESET_PASSWORD_ENDPOINT = '/resetpassword';
-    /** @type {?} */
-    var UPDATE_EMAIL_ENDPOINT = '/login';
-    /** @type {?} */
-    var UPDATE_PASSWORD_ENDPOINT = '/password';
-    /** @type {?} */
-    var TITLES_ENDPOINT = 'titles';
-    var OccUserAdapter = /** @class */ (function () {
-        function OccUserAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @private
-         * @param {?=} userId
-         * @return {?}
-         */
-        OccUserAdapter.prototype.getUserEndpoint = /**
-         * @private
-         * @param {?=} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var endpoint = userId ? "" + USER_ENDPOINT$1 + userId : USER_ENDPOINT$1;
-            return this.occEndpoints.getEndpoint(endpoint);
-        };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserAdapter.prototype.load = /**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var url = this.getUserEndpoint(userId);
-            return this.http
-                .get(url)
-                .pipe(this.converter.pipeable(USER_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} user
-         * @return {?}
-         */
-        OccUserAdapter.prototype.update = /**
-         * @param {?} userId
-         * @param {?} user
-         * @return {?}
-         */
-        function (userId, user) {
-            /** @type {?} */
-            var url = this.getUserEndpoint(userId);
-            user = this.converter.convert(user, USER_SERIALIZER);
-            return this.http.patch(url, user);
-        };
-        /**
-         * @param {?} user
-         * @return {?}
-         */
-        OccUserAdapter.prototype.register = /**
-         * @param {?} user
-         * @return {?}
-         */
-        function (user) {
-            /** @type {?} */
-            var url = this.getUserEndpoint();
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
-            return this.http
-                .post(url, user, { headers: headers })
-                .pipe(this.converter.pipeable(USER_NORMALIZER));
-        };
-        /**
-         * @param {?} userEmailAddress
-         * @return {?}
-         */
-        OccUserAdapter.prototype.requestForgotPasswordEmail = /**
-         * @param {?} userEmailAddress
-         * @return {?}
-         */
-        function (userEmailAddress) {
-            /** @type {?} */
-            var url = this.occEndpoints.getEndpoint(FORGOT_PASSWORD_ENDPOINT);
-            /** @type {?} */
-            var httpParams = new http.HttpParams().set('userId', userEmailAddress);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            return this.http.post(url, httpParams, { headers: headers });
-        };
-        /**
-         * @param {?} token
-         * @param {?} newPassword
-         * @return {?}
-         */
-        OccUserAdapter.prototype.resetPassword = /**
-         * @param {?} token
-         * @param {?} newPassword
-         * @return {?}
-         */
-        function (token, newPassword) {
-            /** @type {?} */
-            var url = this.occEndpoints.getEndpoint(RESET_PASSWORD_ENDPOINT);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
-            return this.http.post(url, { token: token, newPassword: newPassword }, { headers: headers });
-        };
-        /**
-         * @param {?} userId
-         * @param {?} currentPassword
-         * @param {?} newUserId
-         * @return {?}
-         */
-        OccUserAdapter.prototype.updateEmail = /**
-         * @param {?} userId
-         * @param {?} currentPassword
-         * @param {?} newUserId
-         * @return {?}
-         */
-        function (userId, currentPassword, newUserId) {
-            /** @type {?} */
-            var url = this.getUserEndpoint(userId) + UPDATE_EMAIL_ENDPOINT;
-            /** @type {?} */
-            var httpParams = new http.HttpParams()
-                .set('password', currentPassword)
-                .set('newLogin', newUserId);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http.put(url, httpParams, { headers: headers });
-        };
-        /**
-         * @param {?} userId
-         * @param {?} oldPassword
-         * @param {?} newPassword
-         * @return {?}
-         */
-        OccUserAdapter.prototype.updatePassword = /**
-         * @param {?} userId
-         * @param {?} oldPassword
-         * @param {?} newPassword
-         * @return {?}
-         */
-        function (userId, oldPassword, newPassword) {
-            /** @type {?} */
-            var url = this.getUserEndpoint(userId) + UPDATE_PASSWORD_ENDPOINT;
-            /** @type {?} */
-            var httpParams = new http.HttpParams()
-                .set('old', oldPassword)
-                .set('new', newPassword);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/x-www-form-urlencoded',
-            });
-            return this.http.put(url, httpParams, { headers: headers });
-        };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserAdapter.prototype.remove = /**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var url = this.getUserEndpoint(userId);
-            return this.http.delete(url);
-        };
-        /**
-         * @return {?}
-         */
-        OccUserAdapter.prototype.loadTitles = /**
-         * @return {?}
-         */
-        function () {
-            return this.http
-                .get(this.occEndpoints.getEndpoint(TITLES_ENDPOINT))
-                .pipe(operators.map((/**
-             * @param {?} titleList
-             * @return {?}
-             */
-            function (titleList) { return titleList.titles; })), this.converter.pipeableMany(TITLE_NORMALIZER));
-        };
-        OccUserAdapter.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OccUserAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        return OccUserAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    UserPaymentAdapter = /** @class */ (function () {
-        function UserPaymentAdapter() {
-        }
-        return UserPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var USER_ENDPOINT$2 = 'users/';
-    /** @type {?} */
-    var PAYMENT_DETAILS_ENDPOINT = '/paymentdetails';
-    var OccUserPaymentAdapter = /** @class */ (function () {
-        function OccUserPaymentAdapter(http, occEndpoints, converter) {
-            this.http = http;
-            this.occEndpoints = occEndpoints;
-            this.converter = converter;
-        }
-        /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.getPaymentDetailsEndpoint = /**
-         * @private
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var endpoint = "" + USER_ENDPOINT$2 + userId + PAYMENT_DETAILS_ENDPOINT;
-            return this.occEndpoints.getEndpoint(endpoint);
-        };
-        /**
-         * @param {?} userId
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.loadAll = /**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var url = this.getPaymentDetailsEndpoint(userId) + '?saved=true';
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-            return this.http.get(url, { headers: headers }).pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })), operators.map((/**
-             * @param {?} methodList
-             * @return {?}
-             */
-            function (methodList) { return methodList.payments; })), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.delete = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        function (userId, paymentMethodID) {
-            /** @type {?} */
-            var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-            return this.http
-                .delete(url, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
-        };
-        /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        OccUserPaymentAdapter.prototype.setDefault = /**
-         * @param {?} userId
-         * @param {?} paymentMethodID
-         * @return {?}
-         */
-        function (userId, paymentMethodID) {
-            /** @type {?} */
-            var url = this.getPaymentDetailsEndpoint(userId) + ("/" + paymentMethodID);
-            /** @type {?} */
-            var headers = new http.HttpHeaders({
-                'Content-Type': 'application/json',
-            });
-            return this.http
-                .patch(url, 
-            // TODO: Remove billingAddress property
-            { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
-                .pipe(operators.catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            function (error) { return rxjs.throwError(error); })));
-        };
-        OccUserPaymentAdapter.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        OccUserPaymentAdapter.ctorParameters = function () { return [
-            { type: http.HttpClient },
-            { type: OccEndpointsService },
-            { type: ConverterService }
-        ]; };
-        return OccUserPaymentAdapter;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var CONSENT_TEMPLATE_NORMALIZER = new core.InjectionToken('ConsentTemplateNormalizer');
 
@@ -21036,33 +21041,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var USER_ENDPOINT$3 = 'users/';
-    /** @type {?} */
-    var CONSENTS_TEMPLATES_ENDPOINT = '/consenttemplates';
-    /** @type {?} */
-    var CONSENTS_ENDPOINT = '/consents';
     var OccUserConsentAdapter = /** @class */ (function () {
         function OccUserConsentAdapter(http, occEndpoints, converter) {
             this.http = http;
             this.occEndpoints = occEndpoints;
             this.converter = converter;
         }
-        /**
-         * @private
-         * @param {?=} userId
-         * @return {?}
-         */
-        OccUserConsentAdapter.prototype.getUserEndpoint = /**
-         * @private
-         * @param {?=} userId
-         * @return {?}
-         */
-        function (userId) {
-            /** @type {?} */
-            var endpoint = userId ? "" + USER_ENDPOINT$3 + userId : USER_ENDPOINT$3;
-            return this.occEndpoints.getEndpoint(endpoint);
-        };
         /**
          * @param {?} userId
          * @return {?}
@@ -21073,7 +21057,7 @@
          */
         function (userId) {
             /** @type {?} */
-            var url = this.getUserEndpoint(userId) + CONSENTS_TEMPLATES_ENDPOINT;
+            var url = this.occEndpoints.getUrl('consentTemplates', { userId: userId });
             /** @type {?} */
             var headers = new http.HttpHeaders({ 'Cache-Control': 'no-cache' });
             return this.http.get(url, { headers: headers }).pipe(operators.catchError((/**
@@ -21100,7 +21084,7 @@
          */
         function (userId, consentTemplateId, consentTemplateVersion) {
             /** @type {?} */
-            var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT;
+            var url = this.occEndpoints.getUrl('consents', { userId: userId });
             /** @type {?} */
             var httpParams = new http.HttpParams()
                 .set('consentTemplateId', consentTemplateId)
@@ -21134,7 +21118,10 @@
                 'Cache-Control': 'no-cache',
             });
             /** @type {?} */
-            var url = this.getUserEndpoint() + userId + CONSENTS_ENDPOINT + '/' + consentCode;
+            var url = this.occEndpoints.getUrl('consentDetail', {
+                userId: userId,
+                consentId: consentCode,
+            });
             return this.http.delete(url, { headers: headers });
         };
         OccUserConsentAdapter.decorators = [
@@ -21153,16 +21140,499 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var ORDER_HISTORY_NORMALIZER = new core.InjectionToken('OrderHistoryNormalizer');
+
     /**
-     * @abstract
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var   /**
-     * @abstract
-     */
-    UserConsentAdapter = /** @class */ (function () {
-        function UserConsentAdapter() {
+    var OccUserOrderAdapter = /** @class */ (function () {
+        function OccUserOrderAdapter(http, occEndpoints, converter, featureConfigService) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+            this.featureConfigService = featureConfigService;
         }
-        return UserConsentAdapter;
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.getOrderEndpoint = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var orderEndpoint = 'users/' + userId + '/orders';
+            return this.occEndpoints.getEndpoint(orderEndpoint);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.load = /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+        function (userId, orderCode) {
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyLoad(userId, orderCode);
+            }
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('orderDetail', {
+                userId: userId,
+                orderId: orderCode,
+            });
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.loadHistory = /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            // TODO 2.0: Remove
+            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                return this.legacyLoadHistory(userId, pageSize, currentPage, sort);
+            }
+            /** @type {?} */
+            var params = {};
+            if (pageSize) {
+                params['pageSize'] = pageSize.toString();
+            }
+            if (currentPage) {
+                params['currentPage'] = currentPage.toString();
+            }
+            if (sort) {
+                params['sort'] = sort.toString();
+            }
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('orderHistory', { userId: userId }, params);
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.legacyLoad = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?} orderCode
+         * @return {?}
+         */
+        function (userId, orderCode) {
+            /** @type {?} */
+            var url = this.getOrderEndpoint(userId) + '/xxxx' + orderCode;
+            /** @type {?} */
+            var params = new http.HttpParams({
+                fromString: 'fields=FULL',
+            });
+            return this.http
+                .get(url, {
+                params: params,
+            })
+                .pipe(this.converter.pipeable(ORDER_NORMALIZER));
+        };
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         */
+        /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.legacyLoadHistory = /**
+         * @deprecated Since 1.1
+         * Use configurable endpoints. Will be removed as of 2.0.
+         * @private
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            /** @type {?} */
+            var url = this.getOrderEndpoint(userId);
+            /** @type {?} */
+            var params = new http.HttpParams();
+            if (pageSize) {
+                params = params.set('pageSize', pageSize.toString());
+            }
+            if (currentPage) {
+                params = params.set('currentPage', currentPage.toString());
+            }
+            if (sort) {
+                params = params.set('sort', sort);
+            }
+            return this.http
+                .get(url, { params: params })
+                .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        };
+        OccUserOrderAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccUserOrderAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService },
+            { type: FeatureConfigService }
+        ]; };
+        return OccUserOrderAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccUserPaymentAdapter = /** @class */ (function () {
+        function OccUserPaymentAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.loadAll = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('paymentDetailsAll', { userId: userId }) + '?saved=true';
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            return this.http.get(url, { headers: headers }).pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })), operators.map((/**
+             * @param {?} methodList
+             * @return {?}
+             */
+            function (methodList) { return methodList.payments; })), this.converter.pipeableMany(PAYMENT_DETAILS_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        function (userId, paymentMethodID) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('paymentDetail', {
+                userId: userId,
+                paymentDetailId: paymentMethodID,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            return this.http
+                .delete(url, { headers: headers })
+                .pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        OccUserPaymentAdapter.prototype.setDefault = /**
+         * @param {?} userId
+         * @param {?} paymentMethodID
+         * @return {?}
+         */
+        function (userId, paymentMethodID) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('paymentDetail', {
+                userId: userId,
+                paymentDetailId: paymentMethodID,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            return this.http
+                .patch(url, 
+            // TODO: Remove billingAddress property
+            { billingAddress: { titleCode: 'mr' }, defaultPayment: true }, { headers: headers })
+                .pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })));
+        };
+        OccUserPaymentAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccUserPaymentAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        return OccUserPaymentAdapter;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var USER_NORMALIZER = new core.InjectionToken('UserNormalizer');
+    /** @type {?} */
+    var USER_SERIALIZER = new core.InjectionToken('UserSerializer');
+    /** @type {?} */
+    var USER_SIGN_UP_SERIALIZER = new core.InjectionToken('UserSignUpSerializer');
+    /** @type {?} */
+    var TITLE_NORMALIZER = new core.InjectionToken('TitleNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccUserAdapter = /** @class */ (function () {
+        function OccUserAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserAdapter.prototype.load = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('user', { userId: userId });
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(USER_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} user
+         * @return {?}
+         */
+        OccUserAdapter.prototype.update = /**
+         * @param {?} userId
+         * @param {?} user
+         * @return {?}
+         */
+        function (userId, user) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('user', { userId: userId });
+            user = this.converter.convert(user, USER_SERIALIZER);
+            return this.http.patch(url, user);
+        };
+        /**
+         * @param {?} user
+         * @return {?}
+         */
+        OccUserAdapter.prototype.register = /**
+         * @param {?} user
+         * @return {?}
+         */
+        function (user) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userRegister');
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
+            return this.http
+                .post(url, user, { headers: headers })
+                .pipe(this.converter.pipeable(USER_NORMALIZER));
+        };
+        /**
+         * @param {?} userEmailAddress
+         * @return {?}
+         */
+        OccUserAdapter.prototype.requestForgotPasswordEmail = /**
+         * @param {?} userEmailAddress
+         * @return {?}
+         */
+        function (userEmailAddress) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userForgotPassword');
+            /** @type {?} */
+            var httpParams = new http.HttpParams().set('userId', userEmailAddress);
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            return this.http.post(url, httpParams, { headers: headers });
+        };
+        /**
+         * @param {?} token
+         * @param {?} newPassword
+         * @return {?}
+         */
+        OccUserAdapter.prototype.resetPassword = /**
+         * @param {?} token
+         * @param {?} newPassword
+         * @return {?}
+         */
+        function (token, newPassword) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userResetPassword');
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            return this.http.post(url, { token: token, newPassword: newPassword }, { headers: headers });
+        };
+        /**
+         * @param {?} userId
+         * @param {?} currentPassword
+         * @param {?} newUserId
+         * @return {?}
+         */
+        OccUserAdapter.prototype.updateEmail = /**
+         * @param {?} userId
+         * @param {?} currentPassword
+         * @param {?} newUserId
+         * @return {?}
+         */
+        function (userId, currentPassword, newUserId) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userUpdateLoginId', { userId: userId });
+            /** @type {?} */
+            var httpParams = new http.HttpParams()
+                .set('password', currentPassword)
+                .set('newLogin', newUserId);
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http.put(url, httpParams, { headers: headers });
+        };
+        /**
+         * @param {?} userId
+         * @param {?} oldPassword
+         * @param {?} newPassword
+         * @return {?}
+         */
+        OccUserAdapter.prototype.updatePassword = /**
+         * @param {?} userId
+         * @param {?} oldPassword
+         * @param {?} newPassword
+         * @return {?}
+         */
+        function (userId, oldPassword, newPassword) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userUpdatePassword', { userId: userId });
+            /** @type {?} */
+            var httpParams = new http.HttpParams()
+                .set('old', oldPassword)
+                .set('new', newPassword);
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http.put(url, httpParams, { headers: headers });
+        };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        OccUserAdapter.prototype.remove = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('user', { userId: userId });
+            return this.http.delete(url);
+        };
+        /**
+         * @return {?}
+         */
+        OccUserAdapter.prototype.loadTitles = /**
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('titles');
+            return this.http.get(url).pipe(operators.map((/**
+             * @param {?} titleList
+             * @return {?}
+             */
+            function (titleList) { return titleList.titles; })), this.converter.pipeableMany(TITLE_NORMALIZER));
+        };
+        OccUserAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccUserAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        return OccUserAdapter;
     }());
 
     /**
@@ -21174,7 +21644,11 @@
         }
         UserOccModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [common.CommonModule, http.HttpClientModule],
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            ConfigModule.withConfig(defaultOccUserConfig),
+                        ],
                         providers: [
                             { provide: UserAdapter, useClass: OccUserAdapter },
                             { provide: UserAddressAdapter, useClass: OccUserAddressAdapter },
@@ -30081,122 +30555,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    FeaturesConfig = /** @class */ (function () {
-        function FeaturesConfig() {
-        }
-        return FeaturesConfig;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} config
-     * @return {?}
-     */
-    function isFeatureConfig(config) {
-        return typeof config === 'object' && config.features;
-    }
-    /**
-     * @param {?} level
-     * @param {?} version
-     * @return {?}
-     */
-    function isInLevel(level, version) {
-        /** @type {?} */
-        var levelParts = level.split('.');
-        /** @type {?} */
-        var versionParts = version.split('.');
-        for (var i = 0; i < versionParts.length; i++) {
-            /** @type {?} */
-            var versionNumberPart = Number(versionParts[i]);
-            /** @type {?} */
-            var levelNumberPart = Number(levelParts[i]) || 0;
-            if (versionNumberPart !== levelNumberPart) {
-                return levelNumberPart > versionNumberPart;
-            }
-        }
-        return true;
-    }
-    /**
-     * @param {?} config
-     * @param {?} level
-     * @return {?}
-     */
-    function isFeatureLevel(config, level) {
-        if (isFeatureConfig(config)) {
-            return isInLevel(config.features.level, level);
-        }
-    }
-    /**
-     * @param {?} config
-     * @param {?} feature
-     * @return {?}
-     */
-    function isFeatureEnabled(config, feature) {
-        if (isFeatureConfig(config)) {
-            /** @type {?} */
-            var featureConfig = config.features[feature];
-            return typeof featureConfig === 'string'
-                ? isFeatureLevel(config, featureConfig)
-                : featureConfig;
-        }
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FeatureConfigService = /** @class */ (function () {
-        function FeatureConfigService(config) {
-            this.config = config;
-        }
-        /**
-         * @param {?} version
-         * @return {?}
-         */
-        FeatureConfigService.prototype.isLevel = /**
-         * @param {?} version
-         * @return {?}
-         */
-        function (version) {
-            return isFeatureLevel(this.config, version);
-        };
-        /**
-         * @param {?} feature
-         * @return {?}
-         */
-        FeatureConfigService.prototype.isEnabled = /**
-         * @param {?} feature
-         * @return {?}
-         */
-        function (feature) {
-            return isFeatureEnabled(this.config, feature);
-        };
-        FeatureConfigService.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        /** @nocollapse */ FeatureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        return FeatureConfigService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var FeatureLevelDirective = /** @class */ (function () {
         function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
             this.templateRef = templateRef;
@@ -30712,103 +31070,107 @@
     exports.ɵcy = OpenIdAuthenticationTokenService;
     exports.ɵcz = defaultKymaConfig;
     exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = defaultOccProductConfig;
-    exports.ɵdb = defaultPersonalizationConfig;
-    exports.ɵdc = interceptors$1;
-    exports.ɵdd = OccPersonalizationIdInterceptor;
-    exports.ɵde = OccPersonalizationTimeInterceptor;
-    exports.ɵdf = ProcessStoreModule;
-    exports.ɵdg = getReducers$7;
-    exports.ɵdh = reducerToken$7;
-    exports.ɵdi = reducerProvider$7;
-    exports.ɵdj = productStoreConfigFactory;
-    exports.ɵdk = ProductStoreModule;
-    exports.ɵdl = getReducers$8;
-    exports.ɵdm = reducerToken$8;
-    exports.ɵdn = reducerProvider$8;
-    exports.ɵdo = clearProductsState;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdq = effects$6;
-    exports.ɵdr = ProductReferencesEffects;
-    exports.ɵds = ProductReviewsEffects;
-    exports.ɵdt = ProductsSearchEffects;
-    exports.ɵdu = ProductEffects;
-    exports.ɵdv = reducer$a;
-    exports.ɵdw = reducer$c;
-    exports.ɵdx = reducer$b;
-    exports.ɵdy = PageMetaResolver;
-    exports.ɵdz = UrlMatcherFactoryService;
+    exports.ɵda = defaultOccCartConfig;
+    exports.ɵdb = defaultOccProductConfig;
+    exports.ɵdc = defaultOccSiteContextConfig;
+    exports.ɵdd = defaultOccStoreFinderConfig;
+    exports.ɵde = defaultOccUserConfig;
+    exports.ɵdf = defaultPersonalizationConfig;
+    exports.ɵdg = interceptors$1;
+    exports.ɵdh = OccPersonalizationIdInterceptor;
+    exports.ɵdi = OccPersonalizationTimeInterceptor;
+    exports.ɵdj = ProcessStoreModule;
+    exports.ɵdk = getReducers$7;
+    exports.ɵdl = reducerToken$7;
+    exports.ɵdm = reducerProvider$7;
+    exports.ɵdn = productStoreConfigFactory;
+    exports.ɵdo = ProductStoreModule;
+    exports.ɵdp = getReducers$8;
+    exports.ɵdq = reducerToken$8;
+    exports.ɵdr = reducerProvider$8;
+    exports.ɵds = clearProductsState;
+    exports.ɵdt = metaReducers$4;
+    exports.ɵdu = effects$6;
+    exports.ɵdv = ProductReferencesEffects;
+    exports.ɵdw = ProductReviewsEffects;
+    exports.ɵdx = ProductsSearchEffects;
+    exports.ɵdy = ProductEffects;
+    exports.ɵdz = reducer$a;
     exports.ɵe = getTransferStateReducer;
-    exports.ɵea = getReducers$3;
-    exports.ɵeb = reducer$5;
-    exports.ɵec = reducerToken$3;
-    exports.ɵed = reducerProvider$3;
-    exports.ɵee = CustomSerializer;
-    exports.ɵef = effects$3;
-    exports.ɵeg = RouterEffects;
-    exports.ɵeh = SiteContextParamsService;
-    exports.ɵei = SiteContextUrlSerializer;
-    exports.ɵej = SiteContextRoutesHandler;
-    exports.ɵek = defaultSiteContextConfigFactory;
-    exports.ɵel = siteContextStoreConfigFactory;
-    exports.ɵem = SiteContextStoreModule;
-    exports.ɵen = getReducers$9;
-    exports.ɵeo = reducerToken$9;
-    exports.ɵep = reducerProvider$9;
-    exports.ɵeq = effects$7;
-    exports.ɵer = LanguagesEffects;
-    exports.ɵes = CurrenciesEffects;
-    exports.ɵet = BaseSiteEffects;
-    exports.ɵeu = reducer$d;
-    exports.ɵev = reducer$e;
-    exports.ɵew = reducer$f;
-    exports.ɵex = baseSiteConfigValidator;
-    exports.ɵey = interceptors$2;
-    exports.ɵez = CmsTicketInterceptor;
+    exports.ɵea = reducer$c;
+    exports.ɵeb = reducer$b;
+    exports.ɵec = PageMetaResolver;
+    exports.ɵed = UrlMatcherFactoryService;
+    exports.ɵee = getReducers$3;
+    exports.ɵef = reducer$5;
+    exports.ɵeg = reducerToken$3;
+    exports.ɵeh = reducerProvider$3;
+    exports.ɵei = CustomSerializer;
+    exports.ɵej = effects$3;
+    exports.ɵek = RouterEffects;
+    exports.ɵel = SiteContextParamsService;
+    exports.ɵem = SiteContextUrlSerializer;
+    exports.ɵen = SiteContextRoutesHandler;
+    exports.ɵeo = defaultSiteContextConfigFactory;
+    exports.ɵep = siteContextStoreConfigFactory;
+    exports.ɵeq = SiteContextStoreModule;
+    exports.ɵer = getReducers$9;
+    exports.ɵes = reducerToken$9;
+    exports.ɵet = reducerProvider$9;
+    exports.ɵeu = effects$7;
+    exports.ɵev = LanguagesEffects;
+    exports.ɵew = CurrenciesEffects;
+    exports.ɵex = BaseSiteEffects;
+    exports.ɵey = reducer$d;
+    exports.ɵez = reducer$e;
     exports.ɵf = getReducers;
-    exports.ɵfa = defaultStoreFinderConfig;
-    exports.ɵfb = StoreFinderStoreModule;
-    exports.ɵfc = getReducers$a;
-    exports.ɵfd = reducerToken$a;
-    exports.ɵfe = reducerProvider$a;
-    exports.ɵff = effects$8;
-    exports.ɵfg = FindStoresEffect;
-    exports.ɵfh = ViewAllStoresEffect;
-    exports.ɵfi = UserStoreModule;
-    exports.ɵfj = getReducers$b;
-    exports.ɵfk = reducerToken$b;
-    exports.ɵfl = reducerProvider$b;
-    exports.ɵfm = clearUserState;
-    exports.ɵfn = metaReducers$5;
-    exports.ɵfo = effects$9;
-    exports.ɵfp = BillingCountriesEffect;
-    exports.ɵfq = DeliveryCountriesEffects;
-    exports.ɵfr = OrderDetailsEffect;
-    exports.ɵfs = UserPaymentMethodsEffects;
-    exports.ɵft = RegionsEffects;
-    exports.ɵfu = ResetPasswordEffects;
-    exports.ɵfv = TitlesEffects;
-    exports.ɵfw = UserAddressesEffects;
-    exports.ɵfx = UserConsentsEffect;
-    exports.ɵfy = UserDetailsEffects;
-    exports.ɵfz = UserOrdersEffect;
+    exports.ɵfa = reducer$f;
+    exports.ɵfb = baseSiteConfigValidator;
+    exports.ɵfc = interceptors$2;
+    exports.ɵfd = CmsTicketInterceptor;
+    exports.ɵfe = defaultStoreFinderConfig;
+    exports.ɵff = StoreFinderStoreModule;
+    exports.ɵfg = getReducers$a;
+    exports.ɵfh = reducerToken$a;
+    exports.ɵfi = reducerProvider$a;
+    exports.ɵfj = effects$8;
+    exports.ɵfk = FindStoresEffect;
+    exports.ɵfl = ViewAllStoresEffect;
+    exports.ɵfm = UserStoreModule;
+    exports.ɵfn = getReducers$b;
+    exports.ɵfo = reducerToken$b;
+    exports.ɵfp = reducerProvider$b;
+    exports.ɵfq = clearUserState;
+    exports.ɵfr = metaReducers$5;
+    exports.ɵfs = effects$9;
+    exports.ɵft = BillingCountriesEffect;
+    exports.ɵfu = DeliveryCountriesEffects;
+    exports.ɵfv = OrderDetailsEffect;
+    exports.ɵfw = UserPaymentMethodsEffects;
+    exports.ɵfx = RegionsEffects;
+    exports.ɵfy = ResetPasswordEffects;
+    exports.ɵfz = TitlesEffects;
     exports.ɵg = reducerToken;
-    exports.ɵga = UserRegisterEffects;
-    exports.ɵgb = ClearMiscsDataEffect;
-    exports.ɵgc = ForgotPasswordEffects;
-    exports.ɵgd = UpdateEmailEffects;
-    exports.ɵge = UpdatePasswordEffects;
-    exports.ɵgf = reducer$p;
-    exports.ɵgg = reducer$n;
-    exports.ɵgh = reducer$g;
-    exports.ɵgi = reducer$o;
-    exports.ɵgj = reducer$j;
-    exports.ɵgk = reducer$q;
-    exports.ɵgl = reducer$i;
-    exports.ɵgm = reducer$h;
-    exports.ɵgn = reducer$m;
-    exports.ɵgo = reducer$k;
-    exports.ɵgp = reducer$l;
+    exports.ɵga = UserAddressesEffects;
+    exports.ɵgb = UserConsentsEffect;
+    exports.ɵgc = UserDetailsEffects;
+    exports.ɵgd = UserOrdersEffect;
+    exports.ɵge = UserRegisterEffects;
+    exports.ɵgf = ClearMiscsDataEffect;
+    exports.ɵgg = ForgotPasswordEffects;
+    exports.ɵgh = UpdateEmailEffects;
+    exports.ɵgi = UpdatePasswordEffects;
+    exports.ɵgj = reducer$p;
+    exports.ɵgk = reducer$n;
+    exports.ɵgl = reducer$g;
+    exports.ɵgm = reducer$o;
+    exports.ɵgn = reducer$j;
+    exports.ɵgo = reducer$q;
+    exports.ɵgp = reducer$i;
+    exports.ɵgq = reducer$h;
+    exports.ɵgr = reducer$m;
+    exports.ɵgs = reducer$k;
+    exports.ɵgt = reducer$l;
     exports.ɵh = reducerProvider;
     exports.ɵi = clearAuthState;
     exports.ɵj = metaReducers;
@@ -30818,15 +31180,15 @@
     exports.ɵn = UserAuthenticationTokenService;
     exports.ɵo = ClientAuthenticationTokenService;
     exports.ɵp = reducer;
-    exports.ɵq = interceptors;
-    exports.ɵr = ClientTokenInterceptor;
-    exports.ɵs = UserTokenInterceptor;
-    exports.ɵt = AuthErrorInterceptor;
-    exports.ɵu = UserErrorHandlingService;
-    exports.ɵv = UrlParsingService;
-    exports.ɵw = ClientErrorHandlingService;
-    exports.ɵx = AuthServices;
-    exports.ɵy = defaultAuthConfig;
+    exports.ɵq = defaultAuthConfig;
+    exports.ɵr = interceptors;
+    exports.ɵs = ClientTokenInterceptor;
+    exports.ɵt = UserTokenInterceptor;
+    exports.ɵu = AuthErrorInterceptor;
+    exports.ɵv = UserErrorHandlingService;
+    exports.ɵw = UrlParsingService;
+    exports.ɵx = ClientErrorHandlingService;
+    exports.ɵy = AuthServices;
     exports.ɵz = cartStoreConfigFactory;
 
     Object.defineProperty(exports, '__esModule', { value: true });

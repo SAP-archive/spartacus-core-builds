@@ -1,12 +1,11 @@
 import { SiteContextConfig } from '../../site-context/config/site-context-config';
+import { OccEndpoints } from '../occ-models/occ-endpoints.model';
 export declare abstract class OccConfig extends SiteContextConfig {
     backend?: {
         occ?: {
             baseUrl?: string;
             prefix?: string;
-            endpoints?: {
-                [endpoint: string]: string;
-            };
+            endpoints?: OccEndpoints;
             legacy?: boolean;
         };
         media?: {

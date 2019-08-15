@@ -10,12 +10,11 @@ import { Occ } from '../../occ-models/occ.models';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccStoreFinderAdapter implements StoreFinderAdapter {
     protected http: HttpClient;
-    protected occEndpoints: OccEndpointsService;
-    protected converter: ConverterService;
-    constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
+    protected occEndpointsService: OccEndpointsService;
+    protected converterService: ConverterService;
+    constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService);
     search(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<StoreFinderSearchPage>;
     loadCounts(): Observable<StoreCount[]>;
     load(storeId: string): Observable<PointOfService>;
     protected callOccFindStores(query: string, searchConfig: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint): Observable<Occ.StoreFinderSearchPage>;
-    protected getStoresEndpoint(url?: string): string;
 }

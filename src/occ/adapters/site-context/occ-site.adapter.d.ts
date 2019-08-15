@@ -7,9 +7,9 @@ import { ConverterService } from '../../../util/converter.service';
 import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccSiteAdapter implements SiteAdapter {
     protected http: HttpClient;
-    protected occEndpoints: OccEndpointsService;
-    protected converter: ConverterService;
-    constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
+    protected occEndpointsService: OccEndpointsService;
+    protected converterService: ConverterService;
+    constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService);
     loadLanguages(): Observable<Language[]>;
     loadCurrencies(): Observable<Currency[]>;
     loadCountries(type?: CountryType): Observable<Country[]>;

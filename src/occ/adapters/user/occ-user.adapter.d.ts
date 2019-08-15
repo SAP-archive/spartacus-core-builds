@@ -9,7 +9,6 @@ export declare class OccUserAdapter implements UserAdapter {
     protected occEndpoints: OccEndpointsService;
     protected converter: ConverterService;
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService);
-    private getUserEndpoint;
     load(userId: string): Observable<User>;
     update(userId: string, user: User): Observable<{}>;
     register(user: UserSignUp): Observable<User>;
