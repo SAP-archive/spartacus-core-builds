@@ -1058,6 +1058,18 @@
         }
         return (/** @type {?} */ (stateSlices));
     }
+    /**
+     * @param {?} keys
+     * @param {?} type
+     * @return {?}
+     */
+    function filterKeysByType(keys, type) {
+        return Object.keys(keys).filter((/**
+         * @param {?} key
+         * @return {?}
+         */
+        function (key) { return keys[key] === type; }));
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -3802,6 +3814,10 @@
         }
         /** @type {?} */
         var storageSyncConfig = config.state.storageSync;
+        /** @type {?} */
+        var localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+        /** @type {?} */
+        var sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
         return (/**
          * @param {?} reducer
          * @return {?}
@@ -3823,13 +3839,9 @@
                 if (action.type !== store.INIT) {
                     // handle local storage
                     /** @type {?} */
-                    var localStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                    /** @type {?} */
                     var localStorageStateSlices = getStateSlice(localStorageKeys, newState);
                     persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                     // handle session storage
-                    /** @type {?} */
-                    var sessionStorageKeys = getKeysForStorage(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
                     /** @type {?} */
                     var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, newState);
                     persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
@@ -3837,18 +3849,6 @@
                 return newState;
             });
         });
-    }
-    /**
-     * @param {?} keys
-     * @param {?} storageType
-     * @return {?}
-     */
-    function getKeysForStorage(keys, storageType) {
-        return Object.keys(keys).filter((/**
-         * @param {?} key
-         * @return {?}
-         */
-        function (key) { return keys[key] === storageType; }));
     }
     /**
      * @template T
@@ -3935,6 +3935,8 @@
      * @return {?}
      */
     function getServerTransferStateReducer(transferState, keys) {
+        /** @type {?} */
+        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
         return (/**
          * @param {?} reducer
          * @return {?}
@@ -3950,7 +3952,7 @@
                 var newState = reducer(state, action);
                 if (newState) {
                     /** @type {?} */
-                    var stateSlice = getStateSlice(Object.keys(keys), newState);
+                    var stateSlice = getStateSlice(transferStateKeys, newState);
                     transferState.set(CX_KEY, stateSlice);
                 }
                 return newState;
@@ -3963,6 +3965,8 @@
      * @return {?}
      */
     function getBrowserTransferStateReducer(transferState, keys) {
+        /** @type {?} */
+        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
         return (/**
          * @param {?} reducer
          * @return {?}
@@ -3987,7 +3991,7 @@
                         /** @type {?} */
                         var cxKey = transferState.get(CX_KEY, {});
                         /** @type {?} */
-                        var transferredStateSlice = getStateSlice(Object.keys(keys), cxKey);
+                        var transferredStateSlice = getStateSlice(transferStateKeys, cxKey);
                         state = deepMerge({}, state, transferredStateSlice);
                     }
                     return state;
