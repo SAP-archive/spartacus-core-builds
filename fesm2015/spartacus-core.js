@@ -2319,7 +2319,15 @@ class DynamicTemplate {
         key => templateVariables[key]));
         /** @type {?} */
         const templateFunction = new Function(...keys, `return \`${templateString}\`;`);
-        return templateFunction(...values);
+        try {
+            return templateFunction(...values);
+        }
+        catch (e) {
+            if (isDevMode() && e instanceof ReferenceError) {
+                console.warn(`Key "${e.message.split(' ')[0]}" not found`);
+            }
+            return templateString;
+        }
     }
 }
 
@@ -4112,9 +4120,12 @@ const ɵ6 = /**
  * @param {?} state
  * @return {?}
  */
-state => loaderSuccessSelector(state) &&
+state => (loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state) &&
-    !loaderValueSelector(state).refresh;
+    !loaderValueSelector(state).refresh) ||
+    (loaderErrorSelector(state) &&
+        !loaderLoadingSelector(state) &&
+        !loaderValueSelector(state).refresh);
 /** @type {?} */
 const getCartLoaded = createSelector(getActiveCartState, (ɵ6));
 const ɵ7 = /**
@@ -5681,7 +5692,7 @@ class CartEffects {
                      * @param {?} err
                      * @return {?}
                      */
-                    err => err.reason === 'notFound'));
+                    err => err.reason === 'notFound' || 'UnknownResourceError'));
                     if (cartNotFoundErrors.length > 0) {
                         return of(new ClearCart());
                     }

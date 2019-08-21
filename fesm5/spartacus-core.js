@@ -2727,7 +2727,15 @@ var DynamicTemplate = /** @class */ (function () {
         function (key) { return templateVariables[key]; }));
         /** @type {?} */
         var templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString + "`;"])))();
-        return templateFunction.apply(void 0, __spread(values));
+        try {
+            return templateFunction.apply(void 0, __spread(values));
+        }
+        catch (e) {
+            if (isDevMode() && e instanceof ReferenceError) {
+                console.warn("Key \"" + e.message.split(' ')[0] + "\" not found");
+            }
+            return templateString;
+        }
     };
     return DynamicTemplate;
 }());
@@ -4646,9 +4654,12 @@ var ɵ6 = /**
  * @return {?}
  */
 function (state) {
-    return loaderSuccessSelector(state) &&
+    return (loaderSuccessSelector(state) &&
         !loaderLoadingSelector(state) &&
-        !loaderValueSelector(state).refresh;
+        !loaderValueSelector(state).refresh) ||
+        (loaderErrorSelector(state) &&
+            !loaderLoadingSelector(state) &&
+            !loaderValueSelector(state).refresh);
 };
 /** @type {?} */
 var getCartLoaded = createSelector(getActiveCartState, (ɵ6));
@@ -6502,7 +6513,7 @@ var CartEffects = /** @class */ (function () {
                      * @param {?} err
                      * @return {?}
                      */
-                    function (err) { return err.reason === 'notFound'; }));
+                    function (err) { return err.reason === 'notFound' || 'UnknownResourceError'; }));
                     if (cartNotFoundErrors.length > 0) {
                         return of(new ClearCart());
                     }
