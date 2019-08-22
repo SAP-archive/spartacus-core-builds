@@ -10428,14 +10428,14 @@ class PageEffects {
          * @param {?} _
          * @return {?}
          */
-        _ => this.routingService.getRouterState().pipe(take(1), filter((/**
+        _ => this.routingService.getRouterState().pipe(filter((/**
          * @param {?} routerState
          * @return {?}
          */
         routerState => routerState &&
             routerState.state &&
             routerState.state.cmsRequired &&
-            !routerState.nextState)), map((/**
+            !routerState.nextState)), take(1), map((/**
          * @param {?} routerState
          * @return {?}
          */

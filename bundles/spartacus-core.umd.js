@@ -11956,7 +11956,7 @@
              * @return {?}
              */
             function (_) {
-                return _this.routingService.getRouterState().pipe(operators.take(1), operators.filter((/**
+                return _this.routingService.getRouterState().pipe(operators.filter((/**
                  * @param {?} routerState
                  * @return {?}
                  */
@@ -11965,7 +11965,7 @@
                         routerState.state &&
                         routerState.state.cmsRequired &&
                         !routerState.nextState;
-                })), operators.map((/**
+                })), operators.take(1), operators.map((/**
                  * @param {?} routerState
                  * @return {?}
                  */

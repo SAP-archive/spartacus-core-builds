@@ -11877,7 +11877,7 @@ var PageEffects = /** @class */ (function () {
          * @return {?}
          */
         function (_) {
-            return _this.routingService.getRouterState().pipe(take(1), filter((/**
+            return _this.routingService.getRouterState().pipe(filter((/**
              * @param {?} routerState
              * @return {?}
              */
@@ -11886,7 +11886,7 @@ var PageEffects = /** @class */ (function () {
                     routerState.state &&
                     routerState.state.cmsRequired &&
                     !routerState.nextState;
-            })), map((/**
+            })), take(1), map((/**
              * @param {?} routerState
              * @return {?}
              */
