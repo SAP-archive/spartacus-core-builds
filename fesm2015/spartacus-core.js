@@ -849,6 +849,8 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const OBJECT_SEPARATOR = '.';
 /**
  * @template T, E
  * @param {?} keys
@@ -857,7 +859,7 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
  */
 function getStateSliceValue(keys, state) {
     return keys
-        .split('.')
+        .split(OBJECT_SEPARATOR)
         .reduce((/**
      * @param {?} previous
      * @param {?} current
@@ -868,39 +870,33 @@ function getStateSliceValue(keys, state) {
 /**
  * @template T, E
  * @param {?} key
+ * @param {?} excludeKeys
  * @param {?} value
  * @return {?}
  */
-function createShellObject(key, value) {
+function createShellObject(key, excludeKeys, value) {
     if (!key || !value || Object.keys(value).length === 0) {
         return (/** @type {?} */ ({}));
     }
     /** @type {?} */
-    const keySplit = key.split('.');
-    /** @type {?} */
-    const newObject = {};
-    /** @type {?} */
-    let tempNewObject = newObject;
-    for (let i = 0; i < keySplit.length; i++) {
-        /** @type {?} */
-        const currentKey = keySplit[i];
-        // last iteration
-        if (i === keySplit.length - 1) {
-            tempNewObject = tempNewObject[currentKey] = value;
-        }
-        else {
-            tempNewObject = tempNewObject[currentKey] = {};
-        }
-    }
-    return (/** @type {?} */ (newObject));
+    const shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
+     * @param {?} acc
+     * @param {?} previous
+     * @return {?}
+     */
+    (acc, previous) => {
+        return (/** @type {?} */ (((/** @type {?} */ ({ [previous]: acc })))));
+    }), value);
+    return handleExclusions(key, excludeKeys, shell);
 }
 /**
  * @template T, E
  * @param {?} keys
+ * @param {?} excludeKeys
  * @param {?} state
  * @return {?}
  */
-function getStateSlice(keys, state) {
+function getStateSlice(keys, excludeKeys, state) {
     if (keys && keys.length === 0) {
         return (/** @type {?} */ ({}));
     }
@@ -910,10 +906,63 @@ function getStateSlice(keys, state) {
         /** @type {?} */
         const stateValue = getStateSliceValue(currentKey, state);
         /** @type {?} */
-        const shell = createShellObject(currentKey, stateValue);
+        const shell = createShellObject(currentKey, excludeKeys, stateValue);
         stateSlices = deepMerge(stateSlices, shell);
     }
     return (/** @type {?} */ (stateSlices));
+}
+/**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @param {?} value
+ * @return {?}
+ */
+function handleExclusions(key, excludeKeys, value) {
+    /** @type {?} */
+    const exclusionKeys = getExclusionKeys(key, excludeKeys);
+    if (exclusionKeys.length === 0) {
+        return value;
+    }
+    /** @type {?} */
+    const finalValue = deepMerge({}, value);
+    for (const currentExclusionKey of exclusionKeys) {
+        /** @type {?} */
+        const exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
+        /** @type {?} */
+        let nestedTemp = finalValue;
+        for (let i = 0; i < exclusionChunksSplit.length; i++) {
+            /** @type {?} */
+            const currentChunk = exclusionChunksSplit[i];
+            // last iteration
+            if (i === exclusionChunksSplit.length - 1) {
+                if (nestedTemp && nestedTemp[currentChunk]) {
+                    delete nestedTemp[currentChunk];
+                }
+            }
+            else {
+                nestedTemp = nestedTemp[currentChunk];
+            }
+        }
+    }
+    return finalValue;
+}
+/**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @return {?}
+ */
+function getExclusionKeys(key, excludeKeys) {
+    if (!key || !excludeKeys) {
+        return [];
+    }
+    /** @type {?} */
+    const exclusionKeys = [];
+    for (const exclusionKey of excludeKeys) {
+        if (exclusionKey.includes(key)) {
+            exclusionKeys.push(exclusionKey);
+        }
+    }
+    return exclusionKeys;
 }
 /**
  * @param {?} keys
@@ -921,6 +970,9 @@ function getStateSlice(keys, state) {
  * @return {?}
  */
 function filterKeysByType(keys, type) {
+    if (!keys) {
+        return [];
+    }
     return Object.keys(keys).filter((/**
      * @param {?} key
      * @return {?}
@@ -3222,6 +3274,7 @@ const defaultStateConfig = {
             localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
             sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
             keys: {},
+            excludeKeys: {},
         },
     },
 };
@@ -3250,10 +3303,6 @@ function getStorageSyncReducer(winRef, config) {
     }
     /** @type {?} */
     const storageSyncConfig = config.state.storageSync;
-    /** @type {?} */
-    const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-    /** @type {?} */
-    const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
     return (/**
      * @param {?} reducer
      * @return {?}
@@ -3275,11 +3324,19 @@ function getStorageSyncReducer(winRef, config) {
             if (action.type !== INIT) {
                 // handle local storage
                 /** @type {?} */
-                const localStorageStateSlices = getStateSlice(localStorageKeys, newState);
+                const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                const localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                const localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
                 persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                 // handle session storage
                 /** @type {?} */
-                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, newState);
+                const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                const sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
                 persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
             }
             return newState;
@@ -3388,7 +3445,7 @@ function getServerTransferStateReducer(transferState, keys) {
             const newState = reducer(state, action);
             if (newState) {
                 /** @type {?} */
-                const stateSlice = getStateSlice(transferStateKeys, newState);
+                const stateSlice = getStateSlice(transferStateKeys, [], newState);
                 transferState.set(CX_KEY, stateSlice);
             }
             return newState;
@@ -3427,7 +3484,7 @@ function getBrowserTransferStateReducer(transferState, keys) {
                     /** @type {?} */
                     const cxKey = transferState.get(CX_KEY, {});
                     /** @type {?} */
-                    const transferredStateSlice = getStateSlice(transferStateKeys, cxKey);
+                    const transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
                     state = deepMerge({}, state, transferredStateSlice);
                 }
                 return state;

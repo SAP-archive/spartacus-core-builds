@@ -902,6 +902,8 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var OBJECT_SEPARATOR = '.';
 /**
  * @template T, E
  * @param {?} keys
@@ -910,7 +912,7 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
  */
 function getStateSliceValue(keys, state) {
     return keys
-        .split('.')
+        .split(OBJECT_SEPARATOR)
         .reduce((/**
      * @param {?} previous
      * @param {?} current
@@ -921,39 +923,34 @@ function getStateSliceValue(keys, state) {
 /**
  * @template T, E
  * @param {?} key
+ * @param {?} excludeKeys
  * @param {?} value
  * @return {?}
  */
-function createShellObject(key, value) {
+function createShellObject(key, excludeKeys, value) {
     if (!key || !value || Object.keys(value).length === 0) {
         return (/** @type {?} */ ({}));
     }
     /** @type {?} */
-    var keySplit = key.split('.');
-    /** @type {?} */
-    var newObject = {};
-    /** @type {?} */
-    var tempNewObject = newObject;
-    for (var i = 0; i < keySplit.length; i++) {
-        /** @type {?} */
-        var currentKey = keySplit[i];
-        // last iteration
-        if (i === keySplit.length - 1) {
-            tempNewObject = tempNewObject[currentKey] = value;
-        }
-        else {
-            tempNewObject = tempNewObject[currentKey] = {};
-        }
-    }
-    return (/** @type {?} */ (newObject));
+    var shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
+     * @param {?} acc
+     * @param {?} previous
+     * @return {?}
+     */
+    function (acc, previous) {
+        var _a;
+        return (/** @type {?} */ (((/** @type {?} */ (_a = {}, _a[previous] = acc, _a)))));
+    }), value);
+    return handleExclusions(key, excludeKeys, shell);
 }
 /**
  * @template T, E
  * @param {?} keys
+ * @param {?} excludeKeys
  * @param {?} state
  * @return {?}
  */
-function getStateSlice(keys, state) {
+function getStateSlice(keys, excludeKeys, state) {
     var e_1, _a;
     if (keys && keys.length === 0) {
         return (/** @type {?} */ ({}));
@@ -966,7 +963,7 @@ function getStateSlice(keys, state) {
             /** @type {?} */
             var stateValue = getStateSliceValue(currentKey, state);
             /** @type {?} */
-            var shell = createShellObject(currentKey, stateValue);
+            var shell = createShellObject(currentKey, excludeKeys, stateValue);
             stateSlices = deepMerge(stateSlices, shell);
         }
     }
@@ -980,11 +977,89 @@ function getStateSlice(keys, state) {
     return (/** @type {?} */ (stateSlices));
 }
 /**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @param {?} value
+ * @return {?}
+ */
+function handleExclusions(key, excludeKeys, value) {
+    var e_2, _a;
+    /** @type {?} */
+    var exclusionKeys = getExclusionKeys(key, excludeKeys);
+    if (exclusionKeys.length === 0) {
+        return value;
+    }
+    /** @type {?} */
+    var finalValue = deepMerge({}, value);
+    try {
+        for (var exclusionKeys_1 = __values(exclusionKeys), exclusionKeys_1_1 = exclusionKeys_1.next(); !exclusionKeys_1_1.done; exclusionKeys_1_1 = exclusionKeys_1.next()) {
+            var currentExclusionKey = exclusionKeys_1_1.value;
+            /** @type {?} */
+            var exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
+            /** @type {?} */
+            var nestedTemp = finalValue;
+            for (var i = 0; i < exclusionChunksSplit.length; i++) {
+                /** @type {?} */
+                var currentChunk = exclusionChunksSplit[i];
+                // last iteration
+                if (i === exclusionChunksSplit.length - 1) {
+                    if (nestedTemp && nestedTemp[currentChunk]) {
+                        delete nestedTemp[currentChunk];
+                    }
+                }
+                else {
+                    nestedTemp = nestedTemp[currentChunk];
+                }
+            }
+        }
+    }
+    catch (e_2_1) { e_2 = { error: e_2_1 }; }
+    finally {
+        try {
+            if (exclusionKeys_1_1 && !exclusionKeys_1_1.done && (_a = exclusionKeys_1.return)) _a.call(exclusionKeys_1);
+        }
+        finally { if (e_2) throw e_2.error; }
+    }
+    return finalValue;
+}
+/**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @return {?}
+ */
+function getExclusionKeys(key, excludeKeys) {
+    var e_3, _a;
+    if (!key || !excludeKeys) {
+        return [];
+    }
+    /** @type {?} */
+    var exclusionKeys = [];
+    try {
+        for (var excludeKeys_1 = __values(excludeKeys), excludeKeys_1_1 = excludeKeys_1.next(); !excludeKeys_1_1.done; excludeKeys_1_1 = excludeKeys_1.next()) {
+            var exclusionKey = excludeKeys_1_1.value;
+            if (exclusionKey.includes(key)) {
+                exclusionKeys.push(exclusionKey);
+            }
+        }
+    }
+    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+    finally {
+        try {
+            if (excludeKeys_1_1 && !excludeKeys_1_1.done && (_a = excludeKeys_1.return)) _a.call(excludeKeys_1);
+        }
+        finally { if (e_3) throw e_3.error; }
+    }
+    return exclusionKeys;
+}
+/**
  * @param {?} keys
  * @param {?} type
  * @return {?}
  */
 function filterKeysByType(keys, type) {
+    if (!keys) {
+        return [];
+    }
     return Object.keys(keys).filter((/**
      * @param {?} key
      * @return {?}
@@ -3715,6 +3790,7 @@ var defaultStateConfig = {
             localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
             sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
             keys: {},
+            excludeKeys: {},
         },
     },
 };
@@ -3743,10 +3819,6 @@ function getStorageSyncReducer(winRef, config) {
     }
     /** @type {?} */
     var storageSyncConfig = config.state.storageSync;
-    /** @type {?} */
-    var localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-    /** @type {?} */
-    var sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
     return (/**
      * @param {?} reducer
      * @return {?}
@@ -3768,11 +3840,19 @@ function getStorageSyncReducer(winRef, config) {
             if (action.type !== INIT) {
                 // handle local storage
                 /** @type {?} */
-                var localStorageStateSlices = getStateSlice(localStorageKeys, newState);
+                var localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                var localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                var localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
                 persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
                 // handle session storage
                 /** @type {?} */
-                var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, newState);
+                var sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                var sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
                 persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
             }
             return newState;
@@ -3881,7 +3961,7 @@ function getServerTransferStateReducer(transferState, keys) {
             var newState = reducer(state, action);
             if (newState) {
                 /** @type {?} */
-                var stateSlice = getStateSlice(transferStateKeys, newState);
+                var stateSlice = getStateSlice(transferStateKeys, [], newState);
                 transferState.set(CX_KEY, stateSlice);
             }
             return newState;
@@ -3920,7 +4000,7 @@ function getBrowserTransferStateReducer(transferState, keys) {
                     /** @type {?} */
                     var cxKey = transferState.get(CX_KEY, {});
                     /** @type {?} */
-                    var transferredStateSlice = getStateSlice(transferStateKeys, cxKey);
+                    var transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
                     state = deepMerge({}, state, transferredStateSlice);
                 }
                 return state;
