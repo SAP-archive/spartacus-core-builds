@@ -21542,6 +21542,9 @@ SiteContextParamsService.ctorParameters = () => [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const UrlSplit = /(^[^#?]*)(.*)/;
+// used to split url into path and query/fragment parts
 class SiteContextUrlSerializer extends DefaultUrlSerializer {
     /**
      * @param {?} siteContextParams
@@ -21579,8 +21582,9 @@ class SiteContextUrlSerializer extends DefaultUrlSerializer {
      * @return {?}
      */
     urlExtractContextParameters(url) {
+        const [, urlPart, queryPart] = url.match(UrlSplit);
         /** @type {?} */
-        const segments = url.split('/');
+        const segments = urlPart.split('/');
         if (segments[0] === '') {
             segments.shift();
         }
@@ -21602,7 +21606,7 @@ class SiteContextUrlSerializer extends DefaultUrlSerializer {
             }
             paramId++;
         }
-        url = segments.slice(Object.keys(params).length).join('/');
+        url = segments.slice(Object.keys(params).length).join('/') + queryPart;
         return { url, params };
     }
     /**

@@ -24620,6 +24620,9 @@ var SiteContextParamsService = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+var UrlSplit = /(^[^#?]*)(.*)/;
+// used to split url into path and query/fragment parts
 var SiteContextUrlSerializer = /** @class */ (function (_super) {
     __extends(SiteContextUrlSerializer, _super);
     function SiteContextUrlSerializer(siteContextParams) {
@@ -24668,8 +24671,9 @@ var SiteContextUrlSerializer = /** @class */ (function (_super) {
      * @return {?}
      */
     function (url) {
+        var _a = __read(url.match(UrlSplit), 3), urlPart = _a[1], queryPart = _a[2];
         /** @type {?} */
-        var segments = url.split('/');
+        var segments = urlPart.split('/');
         if (segments[0] === '') {
             segments.shift();
         }
@@ -24691,7 +24695,7 @@ var SiteContextUrlSerializer = /** @class */ (function (_super) {
             }
             paramId++;
         }
-        url = segments.slice(Object.keys(params).length).join('/');
+        url = segments.slice(Object.keys(params).length).join('/') + queryPart;
         return { url: url, params: params };
     };
     /**
