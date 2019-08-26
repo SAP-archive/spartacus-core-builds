@@ -2807,7 +2807,19 @@ var DynamicTemplate = /** @class */ (function () {
         }
         catch (e) {
             if (isDevMode() && e instanceof ReferenceError) {
-                console.warn("Key \"" + e.message.split(' ')[0] + "\" not found");
+                console.warn("Key \"" + e.message.split(' ')[0] + "\" not found.");
+            }
+            if (templateString.indexOf('?') > -1) {
+                templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString.split('?')[0] + "`;"])))();
+                try {
+                    return templateFunction.apply(void 0, __spread(values));
+                }
+                catch (e) {
+                    if (isDevMode()) {
+                        console.warn('Could not resolve endpoint.');
+                    }
+                    return templateString;
+                }
             }
             return templateString;
         }
@@ -10659,9 +10671,9 @@ var defaultCmsModuleConfig = {
         occ: {
             endpoints: {
                 component: 'cms/components/${id}',
-                components: 'cms/components?fields=${fields}',
-                pages: 'cms/pages?fields=${fields}',
-                page: 'cms/pages/${id}?fields=${fields}',
+                components: 'cms/components',
+                pages: 'cms/pages',
+                page: 'cms/pages/${id}',
             },
             legacy: false,
         },
@@ -17609,8 +17621,8 @@ var defaultOccCartConfig = {
                 carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
                 cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
                 createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
-                addEntries: 'users/${userId}/carts/${cartId}/entries?code=${productCode}&qty=${quantity}',
-                updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}?qty=${quantity}',
+                addEntries: 'users/${userId}/carts/${cartId}/entries',
+                updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                 removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
             },
         },
@@ -17797,9 +17809,7 @@ var OccCartEntryAdapter = /** @class */ (function () {
         var url = this.occEndpointsService.getUrl('addEntries', {
             userId: userId,
             cartId: cartId,
-            productCode: productCode,
-            quantity: quantity,
-        });
+        }, { code: productCode, qty: quantity });
         return this.http
             .post(url, toAdd, { headers: headers })
             .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -17835,7 +17845,7 @@ var OccCartEntryAdapter = /** @class */ (function () {
             return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
         }
         /** @type {?} */
-        var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber, quantity: qty }, params);
+        var url = this.occEndpointsService.getUrl('updateEntries', { userId: userId, cartId: cartId, entryNumber: entryNumber }, __assign({ qty: qty }, params));
         return this.http
             .patch(url, {}, { headers: headers })
             .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -19099,7 +19109,7 @@ var OccCmsComponentAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (requestParams, fields) {
-        return this.occEndpoints.getUrl('components', { fields: fields }, requestParams);
+        return this.occEndpoints.getUrl('components', {}, __assign({ fields: fields }, requestParams));
     };
     /**
      * @private
@@ -19389,8 +19399,7 @@ var OccCmsPageAdapter = /** @class */ (function () {
             return this.http
                 .get(this.occEndpoints.getUrl('page', {
                 id: pageContext.id,
-                fields: fields ? fields : 'DEFAULT',
-            }), {
+            }, { fields: fields ? fields : 'DEFAULT' }), {
                 headers: this.headers,
             })
                 .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
@@ -19418,7 +19427,7 @@ var OccCmsPageAdapter = /** @class */ (function () {
      */
     function (params, fields) {
         fields = fields ? fields : 'DEFAULT';
-        return this.occEndpoints.getUrl('pages', { fields: fields }, params);
+        return this.occEndpoints.getUrl('pages', {}, __assign({ fields: fields }, params));
     };
     /**
      * @private
@@ -19970,9 +19979,8 @@ var OccProductSearchAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (query, searchConfig) {
-        return this.occEndpoints.getUrl('productSearch', {
+        return this.occEndpoints.getUrl('productSearch', {}, {
             query: query,
-        }, {
             pageSize: searchConfig.pageSize,
             currentPage: searchConfig.currentPage,
             sort: searchConfig.sortCode,
@@ -19991,10 +19999,7 @@ var OccProductSearchAdapter = /** @class */ (function () {
      * @return {?}
      */
     function (term, max) {
-        return this.occEndpoints.getUrl('productSuggestions', {
-            term: term,
-            max: max,
-        });
+        return this.occEndpoints.getUrl('productSuggestions', {}, { term: term, max: max });
     };
     OccProductSearchAdapter.decorators = [
         { type: Injectable }
@@ -20125,9 +20130,9 @@ var defaultOccProductConfig = {
                 //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
                 productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
                 // tslint:disable:max-line-length
-                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch&query=${query}',
+                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch',
                 // tslint:enable
-                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
+                productSuggestions: 'products/suggestions',
             },
         },
     },

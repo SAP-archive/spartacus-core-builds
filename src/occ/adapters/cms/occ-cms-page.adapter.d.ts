@@ -1,10 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
-import { PageContext } from '../../../routing';
 import { CmsPageAdapter } from '../../../cms/connectors/page/cms-page.adapter';
-import { ConverterService } from '../../../util/converter.service';
 import { CmsStructureModel } from '../../../cms/model/page.model';
+import { PageContext } from '../../../routing';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccCmsPageAdapter implements CmsPageAdapter {
     private http;
     private occEndpoints;

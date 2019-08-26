@@ -2370,13 +2370,25 @@ class DynamicTemplate {
          */
         key => templateVariables[key]));
         /** @type {?} */
-        const templateFunction = new Function(...keys, `return \`${templateString}\`;`);
+        let templateFunction = new Function(...keys, `return \`${templateString}\`;`);
         try {
             return templateFunction(...values);
         }
         catch (e) {
             if (isDevMode() && e instanceof ReferenceError) {
-                console.warn(`Key "${e.message.split(' ')[0]}" not found`);
+                console.warn(`Key "${e.message.split(' ')[0]}" not found.`);
+            }
+            if (templateString.indexOf('?') > -1) {
+                templateFunction = new Function(...keys, `return \`${templateString.split('?')[0]}\`;`);
+                try {
+                    return templateFunction(...values);
+                }
+                catch (e) {
+                    if (isDevMode()) {
+                        console.warn('Could not resolve endpoint.');
+                    }
+                    return templateString;
+                }
             }
             return templateString;
         }
@@ -9452,9 +9464,9 @@ const defaultCmsModuleConfig = {
         occ: {
             endpoints: {
                 component: 'cms/components/${id}',
-                components: 'cms/components?fields=${fields}',
-                pages: 'cms/pages?fields=${fields}',
-                page: 'cms/pages/${id}?fields=${fields}',
+                components: 'cms/components',
+                pages: 'cms/pages',
+                page: 'cms/pages/${id}',
             },
             legacy: false,
         },
@@ -15649,8 +15661,8 @@ const defaultOccCartConfig = {
                 carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
                 cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
                 createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
-                addEntries: 'users/${userId}/carts/${cartId}/entries?code=${productCode}&qty=${quantity}',
-                updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}?qty=${quantity}',
+                addEntries: 'users/${userId}/carts/${cartId}/entries',
+                updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                 removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
             },
         },
@@ -15812,9 +15824,7 @@ class OccCartEntryAdapter {
         const url = this.occEndpointsService.getUrl('addEntries', {
             userId,
             cartId,
-            productCode,
-            quantity,
-        });
+        }, { code: productCode, qty: quantity });
         return this.http
             .post(url, toAdd, { headers })
             .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -15842,7 +15852,7 @@ class OccCartEntryAdapter {
             return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
         }
         /** @type {?} */
-        const url = this.occEndpointsService.getUrl('updateEntries', { userId, cartId, entryNumber, quantity: qty }, params);
+        const url = this.occEndpointsService.getUrl('updateEntries', { userId, cartId, entryNumber }, Object.assign({ qty }, params));
         return this.http
             .patch(url, {}, { headers })
             .pipe(this.converterService.pipeable(CART_MODIFICATION_NORMALIZER));
@@ -16829,7 +16839,7 @@ class OccCmsComponentAdapter {
      * @return {?}
      */
     getComponentsEndpoint(requestParams, fields) {
-        return this.occEndpoints.getUrl('components', { fields }, requestParams);
+        return this.occEndpoints.getUrl('components', {}, Object.assign({ fields }, requestParams));
     }
     /**
      * @private
@@ -17020,8 +17030,7 @@ class OccCmsPageAdapter {
             return this.http
                 .get(this.occEndpoints.getUrl('page', {
                 id: pageContext.id,
-                fields: fields ? fields : 'DEFAULT',
-            }), {
+            }, { fields: fields ? fields : 'DEFAULT' }), {
                 headers: this.headers,
             })
                 .pipe(this.converter.pipeable(CMS_PAGE_NORMALIZER));
@@ -17043,7 +17052,7 @@ class OccCmsPageAdapter {
      */
     getPagesEndpoint(params, fields) {
         fields = fields ? fields : 'DEFAULT';
-        return this.occEndpoints.getUrl('pages', { fields }, params);
+        return this.occEndpoints.getUrl('pages', {}, Object.assign({ fields }, params));
     }
     /**
      * @private
@@ -17484,9 +17493,8 @@ class OccProductSearchAdapter {
      * @return {?}
      */
     getSearchEndpoint(query, searchConfig) {
-        return this.occEndpoints.getUrl('productSearch', {
+        return this.occEndpoints.getUrl('productSearch', {}, {
             query,
-        }, {
             pageSize: searchConfig.pageSize,
             currentPage: searchConfig.currentPage,
             sort: searchConfig.sortCode,
@@ -17499,10 +17507,7 @@ class OccProductSearchAdapter {
      * @return {?}
      */
     getSuggestionEndpoint(term, max) {
-        return this.occEndpoints.getUrl('productSuggestions', {
-            term,
-            max,
-        });
+        return this.occEndpoints.getUrl('productSuggestions', {}, { term, max });
     }
 }
 OccProductSearchAdapter.decorators = [
@@ -17619,9 +17624,9 @@ const defaultOccProductConfig = {
                 //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
                 productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
                 // tslint:disable:max-line-length
-                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch&query=${query}',
+                productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch',
                 // tslint:enable
-                productSuggestions: 'products/suggestions?term=${term}&max=${max}',
+                productSuggestions: 'products/suggestions',
             },
         },
     },

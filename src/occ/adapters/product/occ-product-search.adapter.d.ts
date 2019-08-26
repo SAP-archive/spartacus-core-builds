@@ -1,10 +1,10 @@
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ProductSearchPage, Suggestion } from '../../../model/product-search.model';
 import { ProductSearchAdapter } from '../../../product/connectors/search/product-search.adapter';
 import { SearchConfig } from '../../../product/model/search-config';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { OccEndpointsService } from '../../services/occ-endpoints.service';
 import { ConverterService } from '../../../util/converter.service';
-import { Suggestion, ProductSearchPage } from '../../../model/product-search.model';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
 export declare class OccProductSearchAdapter implements ProductSearchAdapter {
     protected http: HttpClient;
     protected occEndpoints: OccEndpointsService;
