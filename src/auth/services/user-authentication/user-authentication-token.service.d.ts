@@ -7,7 +7,12 @@ export declare class UserAuthenticationTokenService {
     protected http: HttpClient;
     protected config: AuthConfig;
     protected occEndpointsService?: OccEndpointsService;
-    constructor(http: HttpClient, config: AuthConfig, occEndpointsService?: OccEndpointsService);
+    constructor(http: HttpClient, config: AuthConfig, occEndpointsService: OccEndpointsService);
+    /**
+     * @deprecated since version 1.1
+     * Use constructor(http: HttpClient, config: AuthConfig, occEndpointsService: OccEndpointsService) instead
+     */
+    constructor(http: HttpClient, config: AuthConfig);
     loadToken(userId: string, password: string): Observable<UserToken>;
     refreshToken(refreshToken: string): Observable<UserToken>;
 }

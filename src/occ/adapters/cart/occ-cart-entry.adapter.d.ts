@@ -13,7 +13,8 @@ export declare class OccCartEntryAdapter implements CartEntryAdapter {
     constructor(http: HttpClient, occEndpointsService: OccEndpointsService, converterService: ConverterService, featureConfigService?: FeatureConfigService);
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     protected getCartEndpoint(userId: string): string;
     add(userId: string, cartId: string, productCode: string, quantity?: number): Observable<CartModification>;
@@ -21,17 +22,20 @@ export declare class OccCartEntryAdapter implements CartEntryAdapter {
     remove(userId: string, cartId: string, entryNumber: string): Observable<any>;
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     private legacyAdd;
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     private legacyUpdate;
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     private legacyRemove;
 }

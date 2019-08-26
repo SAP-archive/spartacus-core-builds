@@ -17837,18 +17837,21 @@
         }
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
          */
         OccCartEntryAdapter.prototype.getCartEndpoint = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
@@ -17880,7 +17883,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue: #4125
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyAdd(userId, cartId, productCode, quantity);
             }
@@ -17919,7 +17922,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue: #4125
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
             }
@@ -17946,7 +17949,7 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue: #4125
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyRemove(userId, cartId, entryNumber);
             }
@@ -17960,11 +17963,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -17974,7 +17979,8 @@
          */
         OccCartEntryAdapter.prototype.legacyAdd = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18002,11 +18008,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18017,7 +18025,8 @@
          */
         OccCartEntryAdapter.prototype.legacyUpdate = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18048,11 +18057,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18061,7 +18072,8 @@
          */
         OccCartEntryAdapter.prototype.legacyRemove = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18094,7 +18106,7 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    // TODO 2.0: Remove
+    // TODO: Deprecated, remove Issue: #4125. Use configurable endpoints.
     /** @type {?} */
     var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,' +
         'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
@@ -18110,18 +18122,21 @@
         }
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
          */
         OccCartAdapter.prototype.getCartEndpoint = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
@@ -18140,7 +18155,7 @@
          * @return {?}
          */
         function (userId) {
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue: #4125.
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyLoadAll(userId);
             }
@@ -18182,7 +18197,7 @@
                 })));
             }
             else {
-                // TODO 2.0: Remove
+                // TODO: Deprecated, remove Issue: #4125.
                 if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                     return this.legacyLoad(userId, cartId);
                 }
@@ -18206,7 +18221,7 @@
         function (userId, oldCartId, toMergeCartGuid) {
             /** @type {?} */
             var toAdd = JSON.stringify({});
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue: #4125.
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid);
             }
@@ -18224,18 +18239,21 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @return {?}
          */
         OccCartAdapter.prototype.legacyLoadAll = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @return {?}
@@ -18251,11 +18269,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18263,7 +18283,8 @@
          */
         OccCartAdapter.prototype.legacyLoad = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} cartId
@@ -18282,11 +18303,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} toAdd
@@ -18296,7 +18319,8 @@
          */
         OccCartAdapter.prototype.legacyCreate = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} toAdd
@@ -21256,18 +21280,21 @@
         }
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
          */
         OccUserOrderAdapter.prototype.getOrderEndpoint = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @protected
          * @param {?} userId
          * @return {?}
@@ -21288,7 +21315,7 @@
          * @return {?}
          */
         function (userId, orderCode) {
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue #4125
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyLoad(userId, orderCode);
             }
@@ -21316,7 +21343,7 @@
          * @return {?}
          */
         function (userId, pageSize, currentPage, sort) {
-            // TODO 2.0: Remove
+            // TODO: Deprecated, remove Issue #4125
             if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
                 return this.legacyLoadHistory(userId, pageSize, currentPage, sort);
             }
@@ -21339,11 +21366,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} orderCode
@@ -21351,7 +21380,8 @@
          */
         OccUserOrderAdapter.prototype.legacyLoad = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?} orderCode
@@ -21372,11 +21402,13 @@
         };
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          */
         /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?=} pageSize
@@ -21386,7 +21418,8 @@
          */
         OccUserOrderAdapter.prototype.legacyLoadHistory = /**
          * @deprecated Since 1.1
-         * Use configurable endpoints. Will be removed as of 2.0.
+         * Use configurable endpoints.
+         * Remove issue: #4125
          * @private
          * @param {?} userId
          * @param {?=} pageSize

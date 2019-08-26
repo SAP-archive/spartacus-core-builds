@@ -13,19 +13,22 @@ export declare class OccUserOrderAdapter implements UserOrderAdapter {
     constructor(http: HttpClient, occEndpoints: OccEndpointsService, converter: ConverterService, featureConfigService?: FeatureConfigService);
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     protected getOrderEndpoint(userId: string): string;
     load(userId: string, orderCode: string): Observable<Order>;
     loadHistory(userId: string, pageSize?: number, currentPage?: number, sort?: string): Observable<OrderHistoryList>;
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     private legacyLoad;
     /**
      * @deprecated Since 1.1
-     * Use configurable endpoints. Will be removed as of 2.0.
+     * Use configurable endpoints.
+     * Remove issue: #4125
      */
     private legacyLoadHistory;
 }
