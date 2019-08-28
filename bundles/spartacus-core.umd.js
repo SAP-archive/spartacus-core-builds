@@ -17908,7 +17908,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyAdd(userId, cartId, productCode, quantity);
             }
             /** @type {?} */
@@ -17947,7 +17947,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyUpdate(userId, cartId, entryNumber, qty, pickupStore);
             }
             /** @type {?} */
@@ -17974,7 +17974,7 @@
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
             // TODO: Deprecated, remove Issue: #4125
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyRemove(userId, cartId, entryNumber);
             }
             /** @type {?} */
@@ -18180,7 +18180,7 @@
          */
         function (userId) {
             // TODO: Deprecated, remove Issue: #4125.
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyLoadAll(userId);
             }
             return this.http
@@ -18222,7 +18222,7 @@
             }
             else {
                 // TODO: Deprecated, remove Issue: #4125.
-                if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+                if (!this.featureConfigService.isLevel('1.1')) {
                     return this.legacyLoad(userId, cartId);
                 }
                 return this.http
@@ -18246,7 +18246,7 @@
             /** @type {?} */
             var toAdd = JSON.stringify({});
             // TODO: Deprecated, remove Issue: #4125.
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyCreate(userId, toAdd, oldCartId, toMergeCartGuid);
             }
             /** @type {?} */
@@ -21340,7 +21340,7 @@
          */
         function (userId, orderCode) {
             // TODO: Deprecated, remove Issue #4125
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyLoad(userId, orderCode);
             }
             /** @type {?} */
@@ -21368,7 +21368,7 @@
          */
         function (userId, pageSize, currentPage, sort) {
             // TODO: Deprecated, remove Issue #4125
-            if (!this.featureConfigService.isEnabled('configurableOccEndpoints')) {
+            if (!this.featureConfigService.isLevel('1.1')) {
                 return this.legacyLoadHistory(userId, pageSize, currentPage, sort);
             }
             /** @type {?} */
