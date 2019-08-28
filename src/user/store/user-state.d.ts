@@ -1,13 +1,14 @@
 import { Address, Country, Region } from '../../model/address.model';
 import { PaymentDetails } from '../../model/cart.model';
+import { ConsentTemplate } from '../../model/consent.model';
 import { Title, User } from '../../model/misc.model';
 import { Order, OrderHistoryList } from '../../model/order.model';
 import { LoaderState } from '../../state';
-import { ConsentTemplate } from '../../model/consent.model';
 export declare const USER_FEATURE = "user";
 export declare const UPDATE_EMAIL_PROCESS_ID = "updateEmail";
 export declare const UPDATE_PASSWORD_PROCESS_ID = "updatePassword";
 export declare const UPDATE_USER_DETAILS_PROCESS_ID = "updateUserDetails";
+export declare const REGISTER_USER_PROCESS_ID = "registerUser";
 export declare const REMOVE_USER_PROCESS_ID = "removeUser";
 export declare const GIVE_CONSENT_PROCESS_ID = "giveConsent";
 export declare const WITHDRAW_CONSENT_PROCESS_ID = "withdrawConsent";

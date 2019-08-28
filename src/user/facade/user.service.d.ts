@@ -21,6 +21,22 @@ export declare class UserService {
      */
     register(userRegisterFormData: UserSignUp): void;
     /**
+     * Returns the register user process loading flag
+     */
+    getRegisterUserResultLoading(): Observable<boolean>;
+    /**
+     * Returns the register user process success flag
+     */
+    getRegisterUserResultSuccess(): Observable<boolean>;
+    /**
+     * Returns the register user process error flag
+     */
+    getRegisterUserResultError(): Observable<boolean>;
+    /**
+     * Resets the register user process flags
+     */
+    resetRegisterUserProcessState(): void;
+    /**
      * Remove user account, that's also called close user's account
      */
     remove(): void;

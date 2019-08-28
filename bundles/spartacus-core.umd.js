@@ -8663,6 +8663,8 @@
     /** @type {?} */
     var UPDATE_USER_DETAILS_PROCESS_ID = 'updateUserDetails';
     /** @type {?} */
+    var REGISTER_USER_PROCESS_ID = 'registerUser';
+    /** @type {?} */
     var REMOVE_USER_PROCESS_ID = 'removeUser';
     /** @type {?} */
     var GIVE_CONSENT_PROCESS_ID = 'giveConsent';
@@ -9466,6 +9468,8 @@
     /** @type {?} */
     var REGISTER_USER_SUCCESS = '[User] Register User Success';
     /** @type {?} */
+    var RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
+    /** @type {?} */
     var REMOVE_USER = '[User] Remove User';
     /** @type {?} */
     var REMOVE_USER_FAIL = '[User] Remove User Fail';
@@ -9473,26 +9477,44 @@
     var REMOVE_USER_SUCCESS = '[User] Remove User Success';
     /** @type {?} */
     var REMOVE_USER_RESET = '[User] Reset Remove User Process State';
-    var RegisterUser = /** @class */ (function () {
+    var RegisterUser = /** @class */ (function (_super) {
+        __extends(RegisterUser, _super);
         function RegisterUser(payload) {
-            this.payload = payload;
-            this.type = REGISTER_USER;
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = REGISTER_USER;
+            return _this;
         }
         return RegisterUser;
-    }());
-    var RegisterUserFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var RegisterUserFail = /** @class */ (function (_super) {
+        __extends(RegisterUserFail, _super);
         function RegisterUserFail(payload) {
-            this.payload = payload;
-            this.type = REGISTER_USER_FAIL;
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = REGISTER_USER_FAIL;
+            return _this;
         }
         return RegisterUserFail;
-    }());
-    var RegisterUserSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var RegisterUserSuccess = /** @class */ (function (_super) {
+        __extends(RegisterUserSuccess, _super);
         function RegisterUserSuccess() {
-            this.type = REGISTER_USER_SUCCESS;
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.type = REGISTER_USER_SUCCESS;
+            return _this;
         }
         return RegisterUserSuccess;
-    }());
+    }(EntitySuccessAction));
+    var ResetRegisterUserProcess = /** @class */ (function (_super) {
+        __extends(ResetRegisterUserProcess, _super);
+        function ResetRegisterUserProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, REGISTER_USER_PROCESS_ID) || this;
+            _this.type = RESET_REGISTER_USER_PROCESS;
+            return _this;
+        }
+        return ResetRegisterUserProcess;
+    }(EntityResetAction));
     var RemoveUser = /** @class */ (function (_super) {
         __extends(RemoveUser, _super);
         function RemoveUser(payload) {
@@ -9693,6 +9715,7 @@
         REGISTER_USER: REGISTER_USER,
         REGISTER_USER_FAIL: REGISTER_USER_FAIL,
         REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
+        RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
         REMOVE_USER: REMOVE_USER,
         REMOVE_USER_FAIL: REMOVE_USER_FAIL,
         REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
@@ -9700,6 +9723,7 @@
         RegisterUser: RegisterUser,
         RegisterUserFail: RegisterUserFail,
         RegisterUserSuccess: RegisterUserSuccess,
+        ResetRegisterUserProcess: ResetRegisterUserProcess,
         RemoveUser: RemoveUser,
         RemoveUserFail: RemoveUserFail,
         RemoveUserSuccess: RemoveUserSuccess,
@@ -27850,6 +27874,62 @@
             this.store.dispatch(new RegisterUser(userRegisterFormData));
         };
         /**
+         * Returns the register user process loading flag
+         */
+        /**
+         * Returns the register user process loading flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultLoading = /**
+         * Returns the register user process loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process success flag
+         */
+        /**
+         * Returns the register user process success flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultSuccess = /**
+         * Returns the register user process success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process error flag
+         */
+        /**
+         * Returns the register user process error flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultError = /**
+         * Returns the register user process error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the register user process flags
+         */
+        /**
+         * Resets the register user process flags
+         * @return {?}
+         */
+        UserService.prototype.resetRegisterUserProcessState = /**
+         * Resets the register user process flags
+         * @return {?}
+         */
+        function () {
+            return this.store.dispatch(new ResetRegisterUserProcess());
+        };
+        /**
          * Remove user account, that's also called close user's account
          */
         /**
@@ -30537,17 +30617,10 @@
              * @return {?}
              */
             function (user) {
-                return _this.userConnector.register(user).pipe(operators.switchMap((/**
-                 * @param {?} _result
+                return _this.userConnector.register(user).pipe(operators.map((/**
                  * @return {?}
                  */
-                function (_result) { return [
-                    new LoadUserToken({
-                        userId: user.uid,
-                        password: user.password,
-                    }),
-                    new RegisterUserSuccess(),
-                ]; })), operators.catchError((/**
+                function () { return new RegisterUserSuccess(); })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -31027,6 +31100,7 @@
     exports.ProductService = ProductService;
     exports.REGIONS = REGIONS;
     exports.REGION_NORMALIZER = REGION_NORMALIZER;
+    exports.REGISTER_USER_PROCESS_ID = REGISTER_USER_PROCESS_ID;
     exports.REMOVE_USER_PROCESS_ID = REMOVE_USER_PROCESS_ID;
     exports.ROUTING_FEATURE = ROUTING_FEATURE;
     exports.RoutingActions = routingGroup_actions;

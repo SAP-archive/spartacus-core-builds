@@ -6,7 +6,7 @@ import { UserActions } from '../actions/index';
 export declare class UserRegisterEffects {
     private actions$;
     private userConnector;
-    registerUser$: Observable<UserActions.UserRegisterOrRemoveAction | AuthActions.LoadUserToken>;
+    registerUser$: Observable<UserActions.UserRegisterOrRemoveAction>;
     removeUser$: Observable<UserActions.UserRegisterOrRemoveAction | AuthActions.Logout>;
     constructor(actions$: Actions, userConnector: UserConnector);
 }
