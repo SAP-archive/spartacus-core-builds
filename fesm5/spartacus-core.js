@@ -5638,6 +5638,8 @@ var LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
 /** @type {?} */
 var LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
 /** @type {?} */
+var CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
+/** @type {?} */
 var CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
 var LoadCmsPageData = /** @class */ (function (_super) {
     __extends(LoadCmsPageData, _super);
@@ -5666,6 +5668,15 @@ var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
         return _this;
     }
     return LoadCmsPageDataSuccess;
+}(EntitySuccessAction));
+var CmsSetPageSuccessIndex = /** @class */ (function (_super) {
+    __extends(CmsSetPageSuccessIndex, _super);
+    function CmsSetPageSuccessIndex(pageContext, payload) {
+        var _this = _super.call(this, pageContext.type, pageContext.id, payload) || this;
+        _this.type = CMS_SET_PAGE_SUCCESS_INDEX;
+        return _this;
+    }
+    return CmsSetPageSuccessIndex;
 }(EntitySuccessAction));
 var CmsSetPageFailIndex = /** @class */ (function (_super) {
     __extends(CmsSetPageFailIndex, _super);
@@ -5701,10 +5712,12 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
     LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
     LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
+    CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
     CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
     LoadCmsPageData: LoadCmsPageData,
     LoadCmsPageDataFail: LoadCmsPageDataFail,
     LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
+    CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
     CmsSetPageFailIndex: CmsSetPageFailIndex
 });
 
@@ -6359,6 +6372,34 @@ var CmsService = /** @class */ (function () {
          * @return {?}
          */
         function () { return of(false); })));
+    };
+    /**
+     * Given pageContext, return the CMS page data
+     **/
+    /**
+     * Given pageContext, return the CMS page data
+     *
+     * @param {?} pageContext
+     * @param {?=} forceReload
+     * @return {?}
+     */
+    CmsService.prototype.getPage = /**
+     * Given pageContext, return the CMS page data
+     *
+     * @param {?} pageContext
+     * @param {?=} forceReload
+     * @return {?}
+     */
+    function (pageContext, forceReload) {
+        var _this = this;
+        if (forceReload === void 0) { forceReload = false; }
+        return this.hasPage(pageContext, forceReload).pipe(switchMap((/**
+         * @param {?} hasPage
+         * @return {?}
+         */
+        function (hasPage) {
+            return hasPage ? _this.getPageState(pageContext) : of(null);
+        })));
     };
     /**
      * @param {?} pageContext
@@ -12035,10 +12076,19 @@ var PageEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (cmsStructure) {
-                    return [
+                    /** @type {?} */
+                    var actions = [
                         new CmsGetComponentFromPage(cmsStructure.components),
                         new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
                     ];
+                    /** @type {?} */
+                    var pageLabel = cmsStructure.page.label;
+                    // For content pages the page label returned from backend can be different than page ID initially assumed from route.
+                    // In such a case let's save the success response not only for initially assumed page ID, but also for correct page label.
+                    if (pageLabel && pageLabel !== pageContext.id) {
+                        actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
+                    }
+                    return actions;
                 })), catchError((/**
                  * @param {?} error
                  * @return {?}
@@ -12473,6 +12523,9 @@ function reducer$8(entityType) {
                 }
                 case CMS_SET_PAGE_FAIL_INDEX: {
                     return action.payload;
+                }
+                case CMS_SET_PAGE_SUCCESS_INDEX: {
+                    return action.payload.pageId;
                 }
             }
         }
@@ -19275,6 +19328,7 @@ var OccCmsPageNormalizer = /** @class */ (function () {
             template: source.template,
             slots: {},
             properties: source.properties,
+            label: source.label,
         };
     };
     /**

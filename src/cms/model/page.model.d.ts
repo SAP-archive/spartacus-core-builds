@@ -11,6 +11,7 @@ export interface Page {
         [key: string]: ContentSlotData;
     };
     properties?: any;
+    label?: string;
 }
 /**
  * Represents the cms structure for pages, slots and components.

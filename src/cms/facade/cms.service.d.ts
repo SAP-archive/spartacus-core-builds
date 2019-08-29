@@ -78,6 +78,10 @@ export declare class CmsService {
      * @param pageContext
      */
     hasPage(pageContext: PageContext, forceReload?: boolean): Observable<boolean>;
+    /**
+     * Given pageContext, return the CMS page data
+     **/
+    getPage(pageContext: PageContext, forceReload?: boolean): Observable<Page>;
     getPageIndex(pageContext: PageContext): Observable<string>;
     setPageFailIndex(pageContext: PageContext, value: string): void;
 }

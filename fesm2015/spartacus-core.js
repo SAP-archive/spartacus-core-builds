@@ -4991,6 +4991,8 @@ const LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
 /** @type {?} */
 const LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
 /** @type {?} */
+const CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
+/** @type {?} */
 const CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
 class LoadCmsPageData extends EntityLoadAction {
     /**
@@ -5020,6 +5022,16 @@ class LoadCmsPageDataSuccess extends EntitySuccessAction {
     constructor(pageContext, payload) {
         super(pageContext.type, pageContext.id, payload);
         this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
+    }
+}
+class CmsSetPageSuccessIndex extends EntitySuccessAction {
+    /**
+     * @param {?} pageContext
+     * @param {?} payload
+     */
+    constructor(pageContext, payload) {
+        super(pageContext.type, pageContext.id, payload);
+        this.type = CMS_SET_PAGE_SUCCESS_INDEX;
     }
 }
 class CmsSetPageFailIndex extends EntityFailAction {
@@ -5057,10 +5069,12 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
     LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
     LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
+    CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
     CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
     LoadCmsPageData: LoadCmsPageData,
     LoadCmsPageDataFail: LoadCmsPageDataFail,
     LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
+    CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
     CmsSetPageFailIndex: CmsSetPageFailIndex
 });
 
@@ -5556,6 +5570,20 @@ class CmsService {
          * @return {?}
          */
         () => of(false))));
+    }
+    /**
+     * Given pageContext, return the CMS page data
+     *
+     * @param {?} pageContext
+     * @param {?=} forceReload
+     * @return {?}
+     */
+    getPage(pageContext, forceReload = false) {
+        return this.hasPage(pageContext, forceReload).pipe(switchMap((/**
+         * @param {?} hasPage
+         * @return {?}
+         */
+        hasPage => hasPage ? this.getPageState(pageContext) : of(null))));
     }
     /**
      * @param {?} pageContext
@@ -10549,10 +10577,19 @@ class PageEffects {
          * @return {?}
          */
         (cmsStructure) => {
-            return [
+            /** @type {?} */
+            const actions = [
                 new CmsGetComponentFromPage(cmsStructure.components),
                 new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
             ];
+            /** @type {?} */
+            const pageLabel = cmsStructure.page.label;
+            // For content pages the page label returned from backend can be different than page ID initially assumed from route.
+            // In such a case let's save the success response not only for initially assumed page ID, but also for correct page label.
+            if (pageLabel && pageLabel !== pageContext.id) {
+                actions.unshift(new CmsSetPageSuccessIndex({ id: pageLabel, type: pageContext.type }, cmsStructure.page));
+            }
+            return actions;
         })), catchError((/**
          * @param {?} error
          * @return {?}
@@ -10949,6 +10986,9 @@ function reducer$8(entityType) {
                 }
                 case CMS_SET_PAGE_FAIL_INDEX: {
                     return action.payload;
+                }
+                case CMS_SET_PAGE_SUCCESS_INDEX: {
+                    return action.payload.pageId;
                 }
             }
         }
@@ -16953,6 +16993,7 @@ class OccCmsPageNormalizer {
             template: source.template,
             slots: {},
             properties: source.properties,
+            label: source.label,
         };
     }
     /**
