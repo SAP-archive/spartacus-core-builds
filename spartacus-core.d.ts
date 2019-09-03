@@ -78,8 +78,8 @@ export { clearProductsState as ɵds, getReducers as ɵdp, metaReducers as ɵdt, 
 export { reducer as ɵeb } from './src/product/store/reducers/product-references.reducer';
 export { reducer as ɵea } from './src/product/store/reducers/product-reviews.reducer';
 export { reducer as ɵdz } from './src/product/store/reducers/product-search.reducer';
-export { UrlMatcherFactoryService as ɵed } from './src/routing/configurable-routes/url-matcher-factory.service';
 export { UrlParsingService as ɵw } from './src/routing/configurable-routes/url-translation/url-parsing.service';
+export { addExternalRoutesFactory as ɵed } from './src/routing/external-routes/external-routes.providers';
 export { effects as ɵej } from './src/routing/store/effects/index';
 export { RouterEffects as ɵek } from './src/routing/store/effects/router.effect';
 export { CustomSerializer as ɵei, getReducers as ɵee, reducer as ɵef, reducerProvider as ɵeh, reducerToken as ɵeg } from './src/routing/store/reducers/router.reducer';

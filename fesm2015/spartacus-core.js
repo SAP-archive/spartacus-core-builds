@@ -9611,8 +9611,164 @@ CmsPageTitleModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const QUESTION_MARK = '[^/]';
+/** @type {?} */
+const WILD_SINGLE = '[^/]*';
+/** @type {?} */
+const WILD_OPEN = '(?:.+\\/)?';
+/** @type {?} */
+const TO_ESCAPE_BASE = [
+    { replace: /\./g, with: '\\.' },
+    { replace: /\+/g, with: '\\+' },
+    { replace: /\*/g, with: WILD_SINGLE },
+];
+/** @type {?} */
+const TO_ESCAPE_WILDCARD_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: QUESTION_MARK },
+];
+/** @type {?} */
+const TO_ESCAPE_LITERAL_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: '\\?' },
+];
+/**
+ * Converts the glob-like pattern into regex string.
+ * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+ *
+ * Patterns use a limited glob format:
+ * `**` matches 0 or more path segments
+ * `*` matches 0 or more characters excluding `/`
+ * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+ * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+ *
+ * @param {?} glob glob-like pattern
+ * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+ * @return {?}
+ */
+function globToRegex(glob, literalQuestionMark = false) {
+    /** @type {?} */
+    const toEscape = literalQuestionMark
+        ? TO_ESCAPE_LITERAL_QM
+        : TO_ESCAPE_WILDCARD_QM;
+    /** @type {?} */
+    const segments = glob.split('/').reverse();
+    /** @type {?} */
+    let regex = '';
+    while (segments.length > 0) {
+        /** @type {?} */
+        const segment = segments.pop();
+        if (segment === '**') {
+            if (segments.length > 0) {
+                regex += WILD_OPEN;
+            }
+            else {
+                regex += '.*';
+            }
+        }
+        else {
+            /** @type {?} */
+            const processed = toEscape.reduce((/**
+             * @param {?} seg
+             * @param {?} escape
+             * @return {?}
+             */
+            (seg, escape) => seg.replace(escape.replace, escape.with)), segment);
+            regex += processed;
+            if (segments.length > 0) {
+                regex += '\\/';
+            }
+        }
+    }
+    return regex;
+}
+/**
+ * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+ * @param {?} urls
+ * @return {?}
+ */
+function processGlobPatterns(urls) {
+    return urls.map((/**
+     * @param {?} url
+     * @return {?}
+     */
+    url => {
+        /** @type {?} */
+        const positive = !url.startsWith('!');
+        url = positive ? url : url.substr(1);
+        return { positive, regex: `^${globToRegex(url)}$` };
+    }));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobService {
+    /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    getValidator(patterns) {
+        /** @type {?} */
+        const processedPatterns = processGlobPatterns(patterns).map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ positive, regex }) => ({
+            positive,
+            regex: new RegExp(regex),
+        })));
+        /** @type {?} */
+        const includePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        spec => spec.positive));
+        /** @type {?} */
+        const excludePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        spec => !spec.positive));
+        return (/**
+         * @param {?} url
+         * @return {?}
+         */
+        (url) => includePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        pattern => pattern.regex.test(url))) &&
+            !excludePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            pattern => pattern.regex.test(url))));
+    }
+}
+GlobService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */ GlobService.ngInjectableDef = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UrlMatcherFactoryService {
     /**
+     * @param {?} globService
+     */
+    constructor(globService) {
+        this.globService = globService;
+    }
+    /**
+     * Returns a matcher that is always fails
      * @return {?}
      */
     getFalsyUrlMatcher() {
@@ -9624,6 +9780,7 @@ class UrlMatcherFactoryService {
         });
     }
     /**
+     * Returns a matcher for given list of paths
      * @param {?} paths
      * @return {?}
      */
@@ -9650,9 +9807,11 @@ class UrlMatcherFactoryService {
         matcher.paths = paths; // property added for easier debugging of routes
         return matcher;
     }
-    // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
     /**
-     * @private
+     * Similar to Angular's defaultUrlMatcher. Differences:
+     * - the `path` comes from function's argument, not from `route.path`
+     * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+     * @protected
      * @param {?=} path
      * @return {?}
      */
@@ -9664,6 +9823,14 @@ class UrlMatcherFactoryService {
          * @return {?}
          */
         (segments, segmentGroup, route) => {
+            // use function's argument, not the `route.path`
+            if (path === '') {
+                if (route.pathMatch === 'full' &&
+                    (segmentGroup.hasChildren() || segments.length > 0)) {
+                    return null;
+                }
+                return { consumed: [], posParams: {} };
+            }
             /** @type {?} */
             const parts = path.split('/');
             if (parts.length > segments.length) {
@@ -9696,11 +9863,63 @@ class UrlMatcherFactoryService {
             return { consumed: segments.slice(0, parts.length), posParams };
         });
     }
+    /**
+     * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+     * @param {?} originalMatcher
+     * @return {?}
+     */
+    getOppositeUrlMatcher(originalMatcher) {
+        /** @type {?} */
+        const matcher = (/**
+         * @param {?} segments
+         * @param {?} group
+         * @param {?} route
+         * @return {?}
+         */
+        function oppositeUrlMatcher(segments, group, route) {
+            return originalMatcher(segments, group, route)
+                ? null
+                : { consumed: segments, posParams: {} };
+        });
+        matcher.originalMatcher = originalMatcher; // property added for easier debugging of routes
+        return matcher;
+    }
+    /**
+     * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+     * @param {?} globPatterns
+     * @return {?}
+     */
+    getGlobUrlMatcher(globPatterns) {
+        /** @type {?} */
+        const globValidator = this.globService.getValidator(globPatterns);
+        /** @type {?} */
+        const matcher = (/**
+         * @param {?} segments
+         * @return {?}
+         */
+        function globUrlMatcher(segments) {
+            /** @type {?} */
+            const fullPath = `/${segments.map((/**
+             * @param {?} s
+             * @return {?}
+             */
+            s => s.path)).join('/')}`;
+            return globValidator(fullPath)
+                ? { consumed: segments, posParams: {} }
+                : null;
+        });
+        matcher.globPatterns = globPatterns; // property added for easier debugging of routes
+        return matcher;
+    }
 }
 UrlMatcherFactoryService.decorators = [
     { type: Injectable, args: [{ providedIn: 'root' },] }
 ];
-/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+/** @nocollapse */
+UrlMatcherFactoryService.ctorParameters = () => [
+    { type: GlobService }
+];
+/** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(ɵɵinject(GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -9899,6 +10118,199 @@ UrlModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class ExternalRoutesConfig {
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ExternalRoutesGuard {
+    /**
+     * @param {?} winRef
+     * @param {?} platformId
+     */
+    constructor(winRef, platformId) {
+        this.winRef = winRef;
+        this.platformId = platformId;
+    }
+    /**
+     * Redirects to different storefront system for anticipated URL
+     * @param {?} route
+     * @param {?} state
+     * @return {?}
+     */
+    canActivate(route, state) {
+        if (isPlatformBrowser(this.platformId)) {
+            this.redirect(route, state);
+        }
+        return false;
+    }
+    /**
+     * Redirects to anticipated URL using full page reload, not Angular routing
+     * @protected
+     * @param {?} _
+     * @param {?} state
+     * @return {?}
+     */
+    redirect(_, state) {
+        /** @type {?} */
+        const window = this.winRef.nativeWindow;
+        if (window && window.location) {
+            window.location.href = state.url;
+        }
+    }
+}
+ExternalRoutesGuard.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */
+ExternalRoutesGuard.ctorParameters = () => [
+    { type: WindowRef },
+    { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
+];
+/** @nocollapse */ ExternalRoutesGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} service
+ * @return {?}
+ */
+function addExternalRoutesFactory(service) {
+    /** @type {?} */
+    const result = (/**
+     * @return {?}
+     */
+    () => {
+        service.addRoutes();
+    });
+    return result;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Service that helps redirecting to different storefront systems for configured URLs
+ */
+class ExternalRoutesService {
+    /**
+     * @param {?} config
+     * @param {?} matcherFactory
+     * @param {?} injector
+     */
+    constructor(config, matcherFactory, injector) {
+        this.config = config;
+        this.matcherFactory = matcherFactory;
+        this.injector = injector;
+    }
+    /**
+     * @protected
+     * @return {?}
+     */
+    get internalUrlPatterns() {
+        return ((this.config && this.config.routing && this.config.routing.internal) || []);
+    }
+    /**
+     * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+     * @return {?}
+     */
+    addRoutes() {
+        /** @type {?} */
+        const router = this.injector.get(Router);
+        /** @type {?} */
+        const newRoutes = this.getRoutes();
+        if (newRoutes.length) {
+            router.resetConfig([...newRoutes, ...router.config]);
+        }
+    }
+    /**
+     * Returns routes that are responsible for redirection to different storefront systems
+     * @protected
+     * @return {?}
+     */
+    getRoutes() {
+        if (!this.internalUrlPatterns.length) {
+            return [];
+        }
+        /** @type {?} */
+        const routes = [];
+        routes.push({
+            pathMatch: 'full',
+            matcher: this.getUrlMatcher(),
+            canActivate: [ExternalRoutesGuard],
+            component: (/** @type {?} */ ({})),
+        });
+        return routes;
+    }
+    /**
+     * Returns the URL matcher for the external route
+     * @protected
+     * @return {?}
+     */
+    getUrlMatcher() {
+        /** @type {?} */
+        const matcher = this.matcherFactory.getGlobUrlMatcher(this.internalUrlPatterns);
+        return this.matcherFactory.getOppositeUrlMatcher(matcher); // the external route should be activated only when it's NOT an internal route
+    }
+}
+ExternalRoutesService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ExternalRoutesService.ctorParameters = () => [
+    { type: ExternalRoutesConfig },
+    { type: UrlMatcherFactoryService },
+    { type: Injector }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Prepends the external route that redirects to a different storefront system for configured URLs
+ */
+class ExternalRoutesModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: ExternalRoutesModule,
+            providers: [
+                ExternalRoutesService,
+                { provide: ExternalRoutesConfig, useExisting: Config },
+                {
+                    provide: APP_INITIALIZER,
+                    multi: true,
+                    useFactory: addExternalRoutesFactory,
+                    deps: [ExternalRoutesService],
+                },
+            ],
+        };
+    }
+}
+ExternalRoutesModule.decorators = [
+    { type: NgModule }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -10217,6 +10629,11 @@ RoutingModule.decorators = [
                 ],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -26626,5 +27043,5 @@ FeaturesConfigModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CartPageMetaResolver as ɵbc, CheckoutStoreModule as ɵbd, getReducers$2 as ɵbe, reducerToken$2 as ɵbf, reducerProvider$2 as ɵbg, effects$2 as ɵbh, AddressVerificationEffect as ɵbi, CardTypesEffects as ɵbj, CheckoutEffects as ɵbk, reducer$4 as ɵbl, reducer$3 as ɵbm, reducer$2 as ɵbn, cmsStoreConfigFactory as ɵbo, CmsStoreModule as ɵbp, getReducers$4 as ɵbq, reducerToken$4 as ɵbr, reducerProvider$4 as ɵbs, clearCmsState as ɵbt, metaReducers$2 as ɵbu, effects$4 as ɵbv, PageEffects as ɵbw, ComponentEffects as ɵbx, NavigationEntryItemEffects as ɵby, reducer$7 as ɵbz, stateMetaReducers as ɵc, reducer$8 as ɵca, reducer$6 as ɵcb, GlobalMessageStoreModule as ɵcc, getReducers$5 as ɵcd, reducerToken$5 as ɵce, reducerProvider$5 as ɵcf, reducer$9 as ɵcg, GlobalMessageEffect as ɵch, defaultGlobalMessageConfigFactory as ɵci, InternalServerErrorHandler as ɵcj, HttpErrorInterceptor as ɵck, defaultI18nConfig as ɵcl, i18nextProviders as ɵcm, i18nextInit as ɵcn, MockTranslationService as ɵco, kymaStoreConfigFactory as ɵcp, KymaStoreModule as ɵcq, getReducers$6 as ɵcr, reducerToken$6 as ɵcs, reducerProvider$6 as ɵct, clearKymaState as ɵcu, metaReducers$3 as ɵcv, effects$5 as ɵcw, OpenIdTokenEffect as ɵcx, OpenIdAuthenticationTokenService as ɵcy, defaultKymaConfig as ɵcz, getStorageSyncReducer as ɵd, defaultOccCartConfig as ɵda, defaultOccProductConfig as ɵdb, defaultOccSiteContextConfig as ɵdc, defaultOccStoreFinderConfig as ɵdd, defaultOccUserConfig as ɵde, defaultPersonalizationConfig as ɵdf, interceptors$1 as ɵdg, OccPersonalizationIdInterceptor as ɵdh, OccPersonalizationTimeInterceptor as ɵdi, ProcessStoreModule as ɵdj, getReducers$7 as ɵdk, reducerToken$7 as ɵdl, reducerProvider$7 as ɵdm, productStoreConfigFactory as ɵdn, ProductStoreModule as ɵdo, getReducers$8 as ɵdp, reducerToken$8 as ɵdq, reducerProvider$8 as ɵdr, clearProductsState as ɵds, metaReducers$4 as ɵdt, effects$6 as ɵdu, ProductReferencesEffects as ɵdv, ProductReviewsEffects as ɵdw, ProductsSearchEffects as ɵdx, ProductEffects as ɵdy, reducer$a as ɵdz, getTransferStateReducer as ɵe, reducer$c as ɵea, reducer$b as ɵeb, PageMetaResolver as ɵec, UrlMatcherFactoryService as ɵed, getReducers$3 as ɵee, reducer$5 as ɵef, reducerToken$3 as ɵeg, reducerProvider$3 as ɵeh, CustomSerializer as ɵei, effects$3 as ɵej, RouterEffects as ɵek, SiteContextParamsService as ɵel, SiteContextUrlSerializer as ɵem, SiteContextRoutesHandler as ɵen, defaultSiteContextConfigFactory as ɵeo, siteContextStoreConfigFactory as ɵep, SiteContextStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, effects$7 as ɵeu, LanguagesEffects as ɵev, CurrenciesEffects as ɵew, BaseSiteEffects as ɵex, reducer$d as ɵey, reducer$e as ɵez, getReducers as ɵf, reducer$f as ɵfa, baseSiteConfigValidator as ɵfb, interceptors$2 as ɵfc, CmsTicketInterceptor as ɵfd, defaultStoreFinderConfig as ɵfe, StoreFinderStoreModule as ɵff, getReducers$a as ɵfg, reducerToken$a as ɵfh, reducerProvider$a as ɵfi, effects$8 as ɵfj, FindStoresEffect as ɵfk, ViewAllStoresEffect as ɵfl, UserStoreModule as ɵfm, getReducers$b as ɵfn, reducerToken$b as ɵfo, reducerProvider$b as ɵfp, clearUserState as ɵfq, metaReducers$5 as ɵfr, effects$9 as ɵfs, BillingCountriesEffect as ɵft, DeliveryCountriesEffects as ɵfu, OrderDetailsEffect as ɵfv, UserPaymentMethodsEffects as ɵfw, RegionsEffects as ɵfx, ResetPasswordEffects as ɵfy, TitlesEffects as ɵfz, reducerToken as ɵg, UserAddressesEffects as ɵga, UserConsentsEffect as ɵgb, UserDetailsEffects as ɵgc, UserOrdersEffect as ɵgd, UserRegisterEffects as ɵge, ClearMiscsDataEffect as ɵgf, ForgotPasswordEffects as ɵgg, UpdateEmailEffects as ɵgh, UpdatePasswordEffects as ɵgi, reducer$p as ɵgj, reducer$n as ɵgk, reducer$g as ɵgl, reducer$o as ɵgm, reducer$j as ɵgn, reducer$q as ɵgo, reducer$i as ɵgp, reducer$h as ɵgq, reducer$m as ɵgr, reducer$k as ɵgs, reducer$l as ɵgt, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, defaultAuthConfig as ɵq, interceptors as ɵr, ClientTokenInterceptor as ɵs, UserTokenInterceptor as ɵt, AuthErrorInterceptor as ɵu, UserErrorHandlingService as ɵv, UrlParsingService as ɵw, ClientErrorHandlingService as ɵx, AuthServices as ɵy, cartStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CartPageMetaResolver as ɵbc, CheckoutStoreModule as ɵbd, getReducers$2 as ɵbe, reducerToken$2 as ɵbf, reducerProvider$2 as ɵbg, effects$2 as ɵbh, AddressVerificationEffect as ɵbi, CardTypesEffects as ɵbj, CheckoutEffects as ɵbk, reducer$4 as ɵbl, reducer$3 as ɵbm, reducer$2 as ɵbn, cmsStoreConfigFactory as ɵbo, CmsStoreModule as ɵbp, getReducers$4 as ɵbq, reducerToken$4 as ɵbr, reducerProvider$4 as ɵbs, clearCmsState as ɵbt, metaReducers$2 as ɵbu, effects$4 as ɵbv, PageEffects as ɵbw, ComponentEffects as ɵbx, NavigationEntryItemEffects as ɵby, reducer$7 as ɵbz, stateMetaReducers as ɵc, reducer$8 as ɵca, reducer$6 as ɵcb, GlobalMessageStoreModule as ɵcc, getReducers$5 as ɵcd, reducerToken$5 as ɵce, reducerProvider$5 as ɵcf, reducer$9 as ɵcg, GlobalMessageEffect as ɵch, defaultGlobalMessageConfigFactory as ɵci, InternalServerErrorHandler as ɵcj, HttpErrorInterceptor as ɵck, defaultI18nConfig as ɵcl, i18nextProviders as ɵcm, i18nextInit as ɵcn, MockTranslationService as ɵco, kymaStoreConfigFactory as ɵcp, KymaStoreModule as ɵcq, getReducers$6 as ɵcr, reducerToken$6 as ɵcs, reducerProvider$6 as ɵct, clearKymaState as ɵcu, metaReducers$3 as ɵcv, effects$5 as ɵcw, OpenIdTokenEffect as ɵcx, OpenIdAuthenticationTokenService as ɵcy, defaultKymaConfig as ɵcz, getStorageSyncReducer as ɵd, defaultOccCartConfig as ɵda, defaultOccProductConfig as ɵdb, defaultOccSiteContextConfig as ɵdc, defaultOccStoreFinderConfig as ɵdd, defaultOccUserConfig as ɵde, defaultPersonalizationConfig as ɵdf, interceptors$1 as ɵdg, OccPersonalizationIdInterceptor as ɵdh, OccPersonalizationTimeInterceptor as ɵdi, ProcessStoreModule as ɵdj, getReducers$7 as ɵdk, reducerToken$7 as ɵdl, reducerProvider$7 as ɵdm, productStoreConfigFactory as ɵdn, ProductStoreModule as ɵdo, getReducers$8 as ɵdp, reducerToken$8 as ɵdq, reducerProvider$8 as ɵdr, clearProductsState as ɵds, metaReducers$4 as ɵdt, effects$6 as ɵdu, ProductReferencesEffects as ɵdv, ProductReviewsEffects as ɵdw, ProductsSearchEffects as ɵdx, ProductEffects as ɵdy, reducer$a as ɵdz, getTransferStateReducer as ɵe, reducer$c as ɵea, reducer$b as ɵeb, PageMetaResolver as ɵec, addExternalRoutesFactory as ɵed, getReducers$3 as ɵee, reducer$5 as ɵef, reducerToken$3 as ɵeg, reducerProvider$3 as ɵeh, CustomSerializer as ɵei, effects$3 as ɵej, RouterEffects as ɵek, SiteContextParamsService as ɵel, SiteContextUrlSerializer as ɵem, SiteContextRoutesHandler as ɵen, defaultSiteContextConfigFactory as ɵeo, siteContextStoreConfigFactory as ɵep, SiteContextStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, effects$7 as ɵeu, LanguagesEffects as ɵev, CurrenciesEffects as ɵew, BaseSiteEffects as ɵex, reducer$d as ɵey, reducer$e as ɵez, getReducers as ɵf, reducer$f as ɵfa, baseSiteConfigValidator as ɵfb, interceptors$2 as ɵfc, CmsTicketInterceptor as ɵfd, defaultStoreFinderConfig as ɵfe, StoreFinderStoreModule as ɵff, getReducers$a as ɵfg, reducerToken$a as ɵfh, reducerProvider$a as ɵfi, effects$8 as ɵfj, FindStoresEffect as ɵfk, ViewAllStoresEffect as ɵfl, UserStoreModule as ɵfm, getReducers$b as ɵfn, reducerToken$b as ɵfo, reducerProvider$b as ɵfp, clearUserState as ɵfq, metaReducers$5 as ɵfr, effects$9 as ɵfs, BillingCountriesEffect as ɵft, DeliveryCountriesEffects as ɵfu, OrderDetailsEffect as ɵfv, UserPaymentMethodsEffects as ɵfw, RegionsEffects as ɵfx, ResetPasswordEffects as ɵfy, TitlesEffects as ɵfz, reducerToken as ɵg, UserAddressesEffects as ɵga, UserConsentsEffect as ɵgb, UserDetailsEffects as ɵgc, UserOrdersEffect as ɵgd, UserRegisterEffects as ɵge, ClearMiscsDataEffect as ɵgf, ForgotPasswordEffects as ɵgg, UpdateEmailEffects as ɵgh, UpdatePasswordEffects as ɵgi, reducer$p as ɵgj, reducer$n as ɵgk, reducer$g as ɵgl, reducer$o as ɵgm, reducer$j as ɵgn, reducer$q as ɵgo, reducer$i as ɵgp, reducer$h as ɵgq, reducer$m as ɵgr, reducer$k as ɵgs, reducer$l as ɵgt, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, defaultAuthConfig as ɵq, interceptors as ɵr, ClientTokenInterceptor as ɵs, UserTokenInterceptor as ɵt, AuthErrorInterceptor as ɵu, UserErrorHandlingService as ɵv, UrlParsingService as ɵw, ClientErrorHandlingService as ɵx, AuthServices as ɵy, cartStoreConfigFactory as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

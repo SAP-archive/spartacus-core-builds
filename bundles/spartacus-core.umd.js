@@ -10942,13 +10942,187 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UrlMatcherFactoryService = /** @class */ (function () {
-        function UrlMatcherFactoryService() {
+    /** @type {?} */
+    var QUESTION_MARK = '[^/]';
+    /** @type {?} */
+    var WILD_SINGLE = '[^/]*';
+    /** @type {?} */
+    var WILD_OPEN = '(?:.+\\/)?';
+    /** @type {?} */
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    /** @type {?} */
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    /** @type {?} */
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param {?} glob glob-like pattern
+     * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+     * @return {?}
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        /** @type {?} */
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        /** @type {?} */
+        var segments = glob.split('/').reverse();
+        /** @type {?} */
+        var regex = '';
+        while (segments.length > 0) {
+            /** @type {?} */
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                /** @type {?} */
+                var processed = toEscape.reduce((/**
+                 * @param {?} seg
+                 * @param {?} escape
+                 * @return {?}
+                 */
+                function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     * @param {?} urls
+     * @return {?}
+     */
+    function processGlobPatterns(urls) {
+        return urls.map((/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            /** @type {?} */
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        }));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
         }
         /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        GlobService.prototype.getValidator = /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        function (patterns) {
+            /** @type {?} */
+            var processedPatterns = processGlobPatterns(patterns).map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            }));
+            /** @type {?} */
+            var includePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return spec.positive; }));
+            /** @type {?} */
+            var excludePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return !spec.positive; }));
+            return (/**
+             * @param {?} url
+             * @return {?}
+             */
+            function (url) {
+                return includePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); })) &&
+                    !excludePatterns.some((/**
+                     * @param {?} pattern
+                     * @return {?}
+                     */
+                    function (pattern) { return pattern.regex.test(url); }));
+            });
+        };
+        GlobService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */ GlobService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+        return GlobService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UrlMatcherFactoryService = /** @class */ (function () {
+        function UrlMatcherFactoryService(globService) {
+            this.globService = globService;
+        }
+        /**
+         * Returns a matcher that is always fails
+         */
+        /**
+         * Returns a matcher that is always fails
          * @return {?}
          */
         UrlMatcherFactoryService.prototype.getFalsyUrlMatcher = /**
+         * Returns a matcher that is always fails
          * @return {?}
          */
         function () {
@@ -10960,10 +11134,15 @@
             });
         };
         /**
+         * Returns a matcher for given list of paths
+         */
+        /**
+         * Returns a matcher for given list of paths
          * @param {?} paths
          * @return {?}
          */
         UrlMatcherFactoryService.prototype.getMultiplePathsUrlMatcher = /**
+         * Returns a matcher for given list of paths
          * @param {?} paths
          * @return {?}
          */
@@ -10990,17 +11169,24 @@
             matcher.paths = paths; // property added for easier debugging of routes
             return matcher;
         };
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
         /**
-         * @private
+         * Similar to Angular's defaultUrlMatcher. Differences:
+         * - the `path` comes from function's argument, not from `route.path`
+         * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+         */
+        /**
+         * Similar to Angular's defaultUrlMatcher. Differences:
+         * - the `path` comes from function's argument, not from `route.path`
+         * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+         * @protected
          * @param {?=} path
          * @return {?}
          */
-        UrlMatcherFactoryService.prototype.getPathUrlMatcher = 
-        // Similar to Angular's defaultUrlMatcher. The difference is that `path` comes from function's argument, not from `route.path`
-        /**
-         * @private
+        UrlMatcherFactoryService.prototype.getPathUrlMatcher = /**
+         * Similar to Angular's defaultUrlMatcher. Differences:
+         * - the `path` comes from function's argument, not from `route.path`
+         * - the empty path `''` is handled here, but in Angular is handled one level higher in the match() function
+         * @protected
          * @param {?=} path
          * @return {?}
          */
@@ -11013,6 +11199,14 @@
              * @return {?}
              */
             function (segments, segmentGroup, route) {
+                // use function's argument, not the `route.path`
+                if (path === '') {
+                    if (route.pathMatch === 'full' &&
+                        (segmentGroup.hasChildren() || segments.length > 0)) {
+                        return null;
+                    }
+                    return { consumed: [], posParams: {} };
+                }
                 /** @type {?} */
                 var parts = path.split('/');
                 if (parts.length > segments.length) {
@@ -11045,10 +11239,78 @@
                 return { consumed: segments.slice(0, parts.length), posParams: posParams };
             });
         };
+        /**
+         * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+         */
+        /**
+         * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+         * @param {?} originalMatcher
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getOppositeUrlMatcher = /**
+         * Returns URL matcher that accepts almost everything (like `**` route), but not paths accepted by the given matcher
+         * @param {?} originalMatcher
+         * @return {?}
+         */
+        function (originalMatcher) {
+            /** @type {?} */
+            var matcher = (/**
+             * @param {?} segments
+             * @param {?} group
+             * @param {?} route
+             * @return {?}
+             */
+            function oppositeUrlMatcher(segments, group, route) {
+                return originalMatcher(segments, group, route)
+                    ? null
+                    : { consumed: segments, posParams: {} };
+            });
+            matcher.originalMatcher = originalMatcher; // property added for easier debugging of routes
+            return matcher;
+        };
+        /**
+         * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+         */
+        /**
+         * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+         * @param {?} globPatterns
+         * @return {?}
+         */
+        UrlMatcherFactoryService.prototype.getGlobUrlMatcher = /**
+         * Returns URL matcher for the given list of glob-like patterns. Each pattern must start with `/` or `!/`.
+         * @param {?} globPatterns
+         * @return {?}
+         */
+        function (globPatterns) {
+            /** @type {?} */
+            var globValidator = this.globService.getValidator(globPatterns);
+            /** @type {?} */
+            var matcher = (/**
+             * @param {?} segments
+             * @return {?}
+             */
+            function globUrlMatcher(segments) {
+                /** @type {?} */
+                var fullPath = "/" + segments.map((/**
+                 * @param {?} s
+                 * @return {?}
+                 */
+                function (s) { return s.path; })).join('/');
+                return globValidator(fullPath)
+                    ? { consumed: segments, posParams: {} }
+                    : null;
+            });
+            matcher.globPatterns = globPatterns; // property added for easier debugging of routes
+            return matcher;
+        };
         UrlMatcherFactoryService.decorators = [
             { type: core.Injectable, args: [{ providedIn: 'root' },] }
         ];
-        /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(); }, token: UrlMatcherFactoryService, providedIn: "root" });
+        /** @nocollapse */
+        UrlMatcherFactoryService.ctorParameters = function () { return [
+            { type: GlobService }
+        ]; };
+        /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(core.ɵɵinject(GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
         return UrlMatcherFactoryService;
     }());
 
@@ -11295,6 +11557,250 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    ExternalRoutesConfig = /** @class */ (function () {
+        function ExternalRoutesConfig() {
+        }
+        return ExternalRoutesConfig;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ExternalRoutesGuard = /** @class */ (function () {
+        function ExternalRoutesGuard(winRef, platformId) {
+            this.winRef = winRef;
+            this.platformId = platformId;
+        }
+        /**
+         * Redirects to different storefront system for anticipated URL
+         */
+        /**
+         * Redirects to different storefront system for anticipated URL
+         * @param {?} route
+         * @param {?} state
+         * @return {?}
+         */
+        ExternalRoutesGuard.prototype.canActivate = /**
+         * Redirects to different storefront system for anticipated URL
+         * @param {?} route
+         * @param {?} state
+         * @return {?}
+         */
+        function (route, state) {
+            if (common.isPlatformBrowser(this.platformId)) {
+                this.redirect(route, state);
+            }
+            return false;
+        };
+        /**
+         * Redirects to anticipated URL using full page reload, not Angular routing
+         */
+        /**
+         * Redirects to anticipated URL using full page reload, not Angular routing
+         * @protected
+         * @param {?} _
+         * @param {?} state
+         * @return {?}
+         */
+        ExternalRoutesGuard.prototype.redirect = /**
+         * Redirects to anticipated URL using full page reload, not Angular routing
+         * @protected
+         * @param {?} _
+         * @param {?} state
+         * @return {?}
+         */
+        function (_, state) {
+            /** @type {?} */
+            var window = this.winRef.nativeWindow;
+            if (window && window.location) {
+                window.location.href = state.url;
+            }
+        };
+        ExternalRoutesGuard.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        ExternalRoutesGuard.ctorParameters = function () { return [
+            { type: WindowRef },
+            { type: Object, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
+        ]; };
+        /** @nocollapse */ ExternalRoutesGuard.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(core.ɵɵinject(WindowRef), core.ɵɵinject(core.PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+        return ExternalRoutesGuard;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} service
+     * @return {?}
+     */
+    function addExternalRoutesFactory(service) {
+        /** @type {?} */
+        var result = (/**
+         * @return {?}
+         */
+        function () {
+            service.addRoutes();
+        });
+        return result;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Service that helps redirecting to different storefront systems for configured URLs
+     */
+    var ExternalRoutesService = /** @class */ (function () {
+        function ExternalRoutesService(config, matcherFactory, injector) {
+            this.config = config;
+            this.matcherFactory = matcherFactory;
+            this.injector = injector;
+        }
+        Object.defineProperty(ExternalRoutesService.prototype, "internalUrlPatterns", {
+            get: /**
+             * @protected
+             * @return {?}
+             */
+            function () {
+                return ((this.config && this.config.routing && this.config.routing.internal) || []);
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+         */
+        /**
+         * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+         * @return {?}
+         */
+        ExternalRoutesService.prototype.addRoutes = /**
+         * Prepends routes (to the Router.config) that are responsible for redirecting to a different storefront system
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var router$1 = this.injector.get(router.Router);
+            /** @type {?} */
+            var newRoutes = this.getRoutes();
+            if (newRoutes.length) {
+                router$1.resetConfig(__spread(newRoutes, router$1.config));
+            }
+        };
+        /**
+         * Returns routes that are responsible for redirection to different storefront systems
+         */
+        /**
+         * Returns routes that are responsible for redirection to different storefront systems
+         * @protected
+         * @return {?}
+         */
+        ExternalRoutesService.prototype.getRoutes = /**
+         * Returns routes that are responsible for redirection to different storefront systems
+         * @protected
+         * @return {?}
+         */
+        function () {
+            if (!this.internalUrlPatterns.length) {
+                return [];
+            }
+            /** @type {?} */
+            var routes = [];
+            routes.push({
+                pathMatch: 'full',
+                matcher: this.getUrlMatcher(),
+                canActivate: [ExternalRoutesGuard],
+                component: (/** @type {?} */ ({})),
+            });
+            return routes;
+        };
+        /**
+         * Returns the URL matcher for the external route
+         */
+        /**
+         * Returns the URL matcher for the external route
+         * @protected
+         * @return {?}
+         */
+        ExternalRoutesService.prototype.getUrlMatcher = /**
+         * Returns the URL matcher for the external route
+         * @protected
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var matcher = this.matcherFactory.getGlobUrlMatcher(this.internalUrlPatterns);
+            return this.matcherFactory.getOppositeUrlMatcher(matcher); // the external route should be activated only when it's NOT an internal route
+        };
+        ExternalRoutesService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ExternalRoutesService.ctorParameters = function () { return [
+            { type: ExternalRoutesConfig },
+            { type: UrlMatcherFactoryService },
+            { type: core.Injector }
+        ]; };
+        return ExternalRoutesService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Prepends the external route that redirects to a different storefront system for configured URLs
+     */
+    var ExternalRoutesModule = /** @class */ (function () {
+        function ExternalRoutesModule() {
+        }
+        /**
+         * @return {?}
+         */
+        ExternalRoutesModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: ExternalRoutesModule,
+                providers: [
+                    ExternalRoutesService,
+                    { provide: ExternalRoutesConfig, useExisting: Config },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: addExternalRoutesFactory,
+                        deps: [ExternalRoutesService],
+                    },
+                ],
+            };
+        };
+        ExternalRoutesModule.decorators = [
+            { type: core.NgModule }
+        ];
+        return ExternalRoutesModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -11625,6 +12131,11 @@
         ];
         return RoutingModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -31038,6 +31549,10 @@
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
+    exports.ExternalRoutesConfig = ExternalRoutesConfig;
+    exports.ExternalRoutesGuard = ExternalRoutesGuard;
+    exports.ExternalRoutesModule = ExternalRoutesModule;
+    exports.ExternalRoutesService = ExternalRoutesService;
     exports.FeatureConfigService = FeatureConfigService;
     exports.FeatureDirective = FeatureDirective;
     exports.FeatureLevelDirective = FeatureLevelDirective;
@@ -31047,6 +31562,7 @@
     exports.GIVE_CONSENT_PROCESS_ID = GIVE_CONSENT_PROCESS_ID;
     exports.GLOBAL_MESSAGE_FEATURE = GLOBAL_MESSAGE_FEATURE;
     exports.GatewayTimeoutHandler = GatewayTimeoutHandler;
+    exports.GlobService = GlobService;
     exports.GlobalMessageActions = globalMessageGroup_actions;
     exports.GlobalMessageConfig = GlobalMessageConfig;
     exports.GlobalMessageModule = GlobalMessageModule;
@@ -31217,6 +31733,7 @@
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
     exports.UnknownErrorHandler = UnknownErrorHandler;
+    exports.UrlMatcherFactoryService = UrlMatcherFactoryService;
     exports.UrlModule = UrlModule;
     exports.UrlPipe = UrlPipe;
     exports.UserActions = userGroup_actions;
@@ -31365,7 +31882,7 @@
     exports.ɵea = reducer$c;
     exports.ɵeb = reducer$b;
     exports.ɵec = PageMetaResolver;
-    exports.ɵed = UrlMatcherFactoryService;
+    exports.ɵed = addExternalRoutesFactory;
     exports.ɵee = getReducers$3;
     exports.ɵef = reducer$5;
     exports.ɵeg = reducerToken$3;

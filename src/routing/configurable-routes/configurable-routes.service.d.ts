@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
+import { UrlMatcherFactoryService } from '../services/url-matcher-factory.service';
 import { RoutingConfigService } from './routing-config.service';
-import { UrlMatcherFactoryService } from './url-matcher-factory.service';
 export declare class ConfigurableRoutesService {
     private injector;
     private routingConfigService;
