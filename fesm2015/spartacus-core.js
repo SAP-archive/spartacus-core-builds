@@ -17,6 +17,40 @@ import { ReactiveFormsModule } from '@angular/forms';
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
+/**
+ * Use to probide config validation at app bootstrap (when all config chunks are merged)
+ *
+ * @param {?} configValidator
+ * @return {?}
+ */
+function provideConfigValidator(configValidator) {
+    return {
+        provide: ConfigValidatorToken,
+        useValue: configValidator,
+        multi: true,
+    };
+}
+/**
+ * @param {?} config
+ * @param {?} configValidators
+ * @return {?}
+ */
+function validateConfig(config, configValidators) {
+    for (const validate of configValidators) {
+        /** @type {?} */
+        const warning = validate(config);
+        if (warning) {
+            console.warn(warning);
+        }
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @param {?} item
  * @return {?}
@@ -52,40 +86,6 @@ function deepMerge(target = {}, ...sources) {
         }
     }
     return deepMerge(target, ...sources);
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
-/**
- * Use to probide config validation at app bootstrap (when all config chunks are merged)
- *
- * @param {?} configValidator
- * @return {?}
- */
-function provideConfigValidator(configValidator) {
-    return {
-        provide: ConfigValidatorToken,
-        useValue: configValidator,
-        multi: true,
-    };
-}
-/**
- * @param {?} config
- * @param {?} configValidators
- * @return {?}
- */
-function validateConfig(config, configValidators) {
-    for (const validate of configValidators) {
-        /** @type {?} */
-        const warning = validate(config);
-        if (warning) {
-            console.warn(warning);
-        }
-    }
 }
 
 /**
@@ -11734,6 +11734,91 @@ DynamicAttributeService.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} cookie
+ * @param {?} name
+ * @return {?}
+ */
+function getCookie(cookie, name) {
+    /** @type {?} */
+    const regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+    /** @type {?} */
+    const result = regExp.exec(cookie);
+    return (result && decodeURIComponent(result[1])) || '';
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
+/**
+ * @param {?} config
+ * @return {?}
+ */
+function parseConfigJSON(config) {
+    try {
+        return JSON.parse(config);
+    }
+    catch (_) {
+        return {};
+    }
+}
+/**
+ * @param {?} cookieName
+ * @param {?} platform
+ * @param {?} document
+ * @return {?}
+ */
+function configFromCookieFactory(cookieName, platform, document) {
+    if (isPlatformBrowser(platform) && cookieName) {
+        /** @type {?} */
+        const config = getCookie(document.cookie, cookieName);
+        return parseConfigJSON(config);
+    }
+    return {};
+}
+/**
+ * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+ *
+ * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+ */
+class TestConfigModule {
+    /**
+     * Injects JSON config from the cookie of the given name.
+     *
+     * Be aware of the cookie limitations (4096 bytes).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     * @param {?} options
+     * @return {?}
+     */
+    static forRoot(options) {
+        return {
+            ngModule: TestConfigModule,
+            providers: [
+                {
+                    provide: TEST_CONFIG_COOKIE_NAME,
+                    useValue: options && options.cookie,
+                },
+                provideConfigFactory(configFromCookieFactory, [
+                    TEST_CONFIG_COOKIE_NAME,
+                    PLATFORM_ID,
+                    DOCUMENT,
+                ]),
+            ],
+        };
+    }
+}
+TestConfigModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
 
 /**
  * @fileoverview added by tsickle
@@ -27043,5 +27128,5 @@ FeaturesConfigModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, authStoreConfigFactory as ɵa, AuthStoreModule as ɵb, CartStoreModule as ɵba, reducer$1 as ɵbb, CartPageMetaResolver as ɵbc, CheckoutStoreModule as ɵbd, getReducers$2 as ɵbe, reducerToken$2 as ɵbf, reducerProvider$2 as ɵbg, effects$2 as ɵbh, AddressVerificationEffect as ɵbi, CardTypesEffects as ɵbj, CheckoutEffects as ɵbk, reducer$4 as ɵbl, reducer$3 as ɵbm, reducer$2 as ɵbn, cmsStoreConfigFactory as ɵbo, CmsStoreModule as ɵbp, getReducers$4 as ɵbq, reducerToken$4 as ɵbr, reducerProvider$4 as ɵbs, clearCmsState as ɵbt, metaReducers$2 as ɵbu, effects$4 as ɵbv, PageEffects as ɵbw, ComponentEffects as ɵbx, NavigationEntryItemEffects as ɵby, reducer$7 as ɵbz, stateMetaReducers as ɵc, reducer$8 as ɵca, reducer$6 as ɵcb, GlobalMessageStoreModule as ɵcc, getReducers$5 as ɵcd, reducerToken$5 as ɵce, reducerProvider$5 as ɵcf, reducer$9 as ɵcg, GlobalMessageEffect as ɵch, defaultGlobalMessageConfigFactory as ɵci, InternalServerErrorHandler as ɵcj, HttpErrorInterceptor as ɵck, defaultI18nConfig as ɵcl, i18nextProviders as ɵcm, i18nextInit as ɵcn, MockTranslationService as ɵco, kymaStoreConfigFactory as ɵcp, KymaStoreModule as ɵcq, getReducers$6 as ɵcr, reducerToken$6 as ɵcs, reducerProvider$6 as ɵct, clearKymaState as ɵcu, metaReducers$3 as ɵcv, effects$5 as ɵcw, OpenIdTokenEffect as ɵcx, OpenIdAuthenticationTokenService as ɵcy, defaultKymaConfig as ɵcz, getStorageSyncReducer as ɵd, defaultOccCartConfig as ɵda, defaultOccProductConfig as ɵdb, defaultOccSiteContextConfig as ɵdc, defaultOccStoreFinderConfig as ɵdd, defaultOccUserConfig as ɵde, defaultPersonalizationConfig as ɵdf, interceptors$1 as ɵdg, OccPersonalizationIdInterceptor as ɵdh, OccPersonalizationTimeInterceptor as ɵdi, ProcessStoreModule as ɵdj, getReducers$7 as ɵdk, reducerToken$7 as ɵdl, reducerProvider$7 as ɵdm, productStoreConfigFactory as ɵdn, ProductStoreModule as ɵdo, getReducers$8 as ɵdp, reducerToken$8 as ɵdq, reducerProvider$8 as ɵdr, clearProductsState as ɵds, metaReducers$4 as ɵdt, effects$6 as ɵdu, ProductReferencesEffects as ɵdv, ProductReviewsEffects as ɵdw, ProductsSearchEffects as ɵdx, ProductEffects as ɵdy, reducer$a as ɵdz, getTransferStateReducer as ɵe, reducer$c as ɵea, reducer$b as ɵeb, PageMetaResolver as ɵec, addExternalRoutesFactory as ɵed, getReducers$3 as ɵee, reducer$5 as ɵef, reducerToken$3 as ɵeg, reducerProvider$3 as ɵeh, CustomSerializer as ɵei, effects$3 as ɵej, RouterEffects as ɵek, SiteContextParamsService as ɵel, SiteContextUrlSerializer as ɵem, SiteContextRoutesHandler as ɵen, defaultSiteContextConfigFactory as ɵeo, siteContextStoreConfigFactory as ɵep, SiteContextStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, effects$7 as ɵeu, LanguagesEffects as ɵev, CurrenciesEffects as ɵew, BaseSiteEffects as ɵex, reducer$d as ɵey, reducer$e as ɵez, getReducers as ɵf, reducer$f as ɵfa, baseSiteConfigValidator as ɵfb, interceptors$2 as ɵfc, CmsTicketInterceptor as ɵfd, defaultStoreFinderConfig as ɵfe, StoreFinderStoreModule as ɵff, getReducers$a as ɵfg, reducerToken$a as ɵfh, reducerProvider$a as ɵfi, effects$8 as ɵfj, FindStoresEffect as ɵfk, ViewAllStoresEffect as ɵfl, UserStoreModule as ɵfm, getReducers$b as ɵfn, reducerToken$b as ɵfo, reducerProvider$b as ɵfp, clearUserState as ɵfq, metaReducers$5 as ɵfr, effects$9 as ɵfs, BillingCountriesEffect as ɵft, DeliveryCountriesEffects as ɵfu, OrderDetailsEffect as ɵfv, UserPaymentMethodsEffects as ɵfw, RegionsEffects as ɵfx, ResetPasswordEffects as ɵfy, TitlesEffects as ɵfz, reducerToken as ɵg, UserAddressesEffects as ɵga, UserConsentsEffect as ɵgb, UserDetailsEffects as ɵgc, UserOrdersEffect as ɵgd, UserRegisterEffects as ɵge, ClearMiscsDataEffect as ɵgf, ForgotPasswordEffects as ɵgg, UpdateEmailEffects as ɵgh, UpdatePasswordEffects as ɵgi, reducer$p as ɵgj, reducer$n as ɵgk, reducer$g as ɵgl, reducer$o as ɵgm, reducer$j as ɵgn, reducer$q as ɵgo, reducer$i as ɵgp, reducer$h as ɵgq, reducer$m as ɵgr, reducer$k as ɵgs, reducer$l as ɵgt, reducerProvider as ɵh, clearAuthState as ɵi, metaReducers as ɵj, effects as ɵk, ClientTokenEffect as ɵl, UserTokenEffects as ɵm, UserAuthenticationTokenService as ɵn, ClientAuthenticationTokenService as ɵo, reducer as ɵp, defaultAuthConfig as ɵq, interceptors as ɵr, ClientTokenInterceptor as ɵs, UserTokenInterceptor as ɵt, AuthErrorInterceptor as ɵu, UserErrorHandlingService as ɵv, UrlParsingService as ɵw, ClientErrorHandlingService as ɵx, AuthServices as ɵy, cartStoreConfigFactory as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$5 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, DeliveryCountriesEffects as ɵfw, OrderDetailsEffect as ɵfx, UserPaymentMethodsEffects as ɵfy, RegionsEffects as ɵfz, getTransferStateReducer as ɵg, ResetPasswordEffects as ɵga, TitlesEffects as ɵgb, UserAddressesEffects as ɵgc, UserConsentsEffect as ɵgd, UserDetailsEffects as ɵge, UserOrdersEffect as ɵgf, UserRegisterEffects as ɵgg, ClearMiscsDataEffect as ɵgh, ForgotPasswordEffects as ɵgi, UpdateEmailEffects as ɵgj, UpdatePasswordEffects as ɵgk, reducer$p as ɵgl, reducer$n as ɵgm, reducer$g as ɵgn, reducer$o as ɵgo, reducer$j as ɵgp, reducer$q as ɵgq, reducer$i as ɵgr, reducer$h as ɵgs, reducer$m as ɵgt, reducer$k as ɵgu, reducer$l as ɵgv, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

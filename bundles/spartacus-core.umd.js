@@ -96,6 +96,51 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
+    /**
+     * Use to probide config validation at app bootstrap (when all config chunks are merged)
+     *
+     * @param {?} configValidator
+     * @return {?}
+     */
+    function provideConfigValidator(configValidator) {
+        return {
+            provide: ConfigValidatorToken,
+            useValue: configValidator,
+            multi: true,
+        };
+    }
+    /**
+     * @param {?} config
+     * @param {?} configValidators
+     * @return {?}
+     */
+    function validateConfig(config, configValidators) {
+        var e_1, _a;
+        try {
+            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
+                var validate = configValidators_1_1.value;
+                /** @type {?} */
+                var warning = validate(config);
+                if (warning) {
+                    console.warn(warning);
+                }
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @param {?} item
      * @return {?}
@@ -137,51 +182,6 @@
             }
         }
         return deepMerge.apply(void 0, __spread([target], sources));
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var ConfigValidatorToken = new core.InjectionToken('ConfigurationValidator');
-    /**
-     * Use to probide config validation at app bootstrap (when all config chunks are merged)
-     *
-     * @param {?} configValidator
-     * @return {?}
-     */
-    function provideConfigValidator(configValidator) {
-        return {
-            provide: ConfigValidatorToken,
-            useValue: configValidator,
-            multi: true,
-        };
-    }
-    /**
-     * @param {?} config
-     * @param {?} configValidators
-     * @return {?}
-     */
-    function validateConfig(config, configValidators) {
-        var e_1, _a;
-        try {
-            for (var configValidators_1 = __values(configValidators), configValidators_1_1 = configValidators_1.next(); !configValidators_1_1.done; configValidators_1_1 = configValidators_1.next()) {
-                var validate = configValidators_1_1.value;
-                /** @type {?} */
-                var warning = validate(config);
-                if (warning) {
-                    console.warn(warning);
-                }
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (configValidators_1_1 && !configValidators_1_1.done && (_a = configValidators_1.return)) _a.call(configValidators_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
     }
 
     /**
@@ -13488,6 +13488,110 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} cookie
+     * @param {?} name
+     * @return {?}
+     */
+    function getCookie(cookie, name) {
+        /** @type {?} */
+        var regExp = new RegExp('(?:^|;\\s*)' + name + '=([^;]*)', 'g');
+        /** @type {?} */
+        var result = regExp.exec(cookie);
+        return (result && decodeURIComponent(result[1])) || '';
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var TEST_CONFIG_COOKIE_NAME = new core.InjectionToken('TEST_CONFIG_COOKIE_NAME');
+    /**
+     * @param {?} config
+     * @return {?}
+     */
+    function parseConfigJSON(config) {
+        try {
+            return JSON.parse(config);
+        }
+        catch (_) {
+            return {};
+        }
+    }
+    /**
+     * @param {?} cookieName
+     * @param {?} platform
+     * @param {?} document
+     * @return {?}
+     */
+    function configFromCookieFactory(cookieName, platform, document) {
+        if (common.isPlatformBrowser(platform) && cookieName) {
+            /** @type {?} */
+            var config = getCookie(document.cookie, cookieName);
+            return parseConfigJSON(config);
+        }
+        return {};
+    }
+    /**
+     * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
+     *
+     * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+     */
+    var TestConfigModule = /** @class */ (function () {
+        function TestConfigModule() {
+        }
+        /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         */
+        /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         * @param {?} options
+         * @return {?}
+         */
+        TestConfigModule.forRoot = /**
+         * Injects JSON config from the cookie of the given name.
+         *
+         * Be aware of the cookie limitations (4096 bytes).
+         *
+         * CAUTION: DON'T USE IT IN PRODUCTION! IT HASN'T BEEN REVIEWED FOR SECURITY ISSUES.
+         * @param {?} options
+         * @return {?}
+         */
+        function (options) {
+            return {
+                ngModule: TestConfigModule,
+                providers: [
+                    {
+                        provide: TEST_CONFIG_COOKIE_NAME,
+                        useValue: options && options.cookie,
+                    },
+                    provideConfigFactory(configFromCookieFactory, [
+                        TEST_CONFIG_COOKIE_NAME,
+                        core.PLATFORM_ID,
+                        common.DOCUMENT,
+                    ]),
+                ],
+            };
+        };
+        TestConfigModule.decorators = [
+            { type: core.NgModule, args: [{},] }
+        ];
+        return TestConfigModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -31717,6 +31821,7 @@
     exports.StoreFinderSelectors = storeFinderGroup_selectors;
     exports.StoreFinderService = StoreFinderService;
     exports.TITLE_NORMALIZER = TITLE_NORMALIZER;
+    exports.TestConfigModule = TestConfigModule;
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationChunkService = TranslationChunkService;
     exports.TranslationService = TranslationService;
@@ -31796,182 +31901,184 @@
     exports.siteContextParamsProviders = siteContextParamsProviders;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
-    exports.ɵa = authStoreConfigFactory;
-    exports.ɵb = AuthStoreModule;
-    exports.ɵba = CartStoreModule;
-    exports.ɵbb = reducer$1;
-    exports.ɵbc = CartPageMetaResolver;
-    exports.ɵbd = CheckoutStoreModule;
-    exports.ɵbe = getReducers$2;
-    exports.ɵbf = reducerToken$2;
-    exports.ɵbg = reducerProvider$2;
-    exports.ɵbh = effects$2;
-    exports.ɵbi = AddressVerificationEffect;
-    exports.ɵbj = CardTypesEffects;
-    exports.ɵbk = CheckoutEffects;
-    exports.ɵbl = reducer$4;
-    exports.ɵbm = reducer$3;
-    exports.ɵbn = reducer$2;
-    exports.ɵbo = cmsStoreConfigFactory;
-    exports.ɵbp = CmsStoreModule;
-    exports.ɵbq = getReducers$4;
-    exports.ɵbr = reducerToken$4;
-    exports.ɵbs = reducerProvider$4;
-    exports.ɵbt = clearCmsState;
-    exports.ɵbu = metaReducers$2;
-    exports.ɵbv = effects$4;
-    exports.ɵbw = PageEffects;
-    exports.ɵbx = ComponentEffects;
-    exports.ɵby = NavigationEntryItemEffects;
-    exports.ɵbz = reducer$7;
-    exports.ɵc = stateMetaReducers;
-    exports.ɵca = reducer$8;
-    exports.ɵcb = reducer$6;
-    exports.ɵcc = GlobalMessageStoreModule;
-    exports.ɵcd = getReducers$5;
-    exports.ɵce = reducerToken$5;
-    exports.ɵcf = reducerProvider$5;
-    exports.ɵcg = reducer$9;
-    exports.ɵch = GlobalMessageEffect;
-    exports.ɵci = defaultGlobalMessageConfigFactory;
-    exports.ɵcj = InternalServerErrorHandler;
-    exports.ɵck = HttpErrorInterceptor;
-    exports.ɵcl = defaultI18nConfig;
-    exports.ɵcm = i18nextProviders;
-    exports.ɵcn = i18nextInit;
-    exports.ɵco = MockTranslationService;
-    exports.ɵcp = kymaStoreConfigFactory;
-    exports.ɵcq = KymaStoreModule;
-    exports.ɵcr = getReducers$6;
-    exports.ɵcs = reducerToken$6;
-    exports.ɵct = reducerProvider$6;
-    exports.ɵcu = clearKymaState;
-    exports.ɵcv = metaReducers$3;
-    exports.ɵcw = effects$5;
-    exports.ɵcx = OpenIdTokenEffect;
-    exports.ɵcy = OpenIdAuthenticationTokenService;
-    exports.ɵcz = defaultKymaConfig;
-    exports.ɵd = getStorageSyncReducer;
-    exports.ɵda = defaultOccCartConfig;
-    exports.ɵdb = defaultOccProductConfig;
-    exports.ɵdc = defaultOccSiteContextConfig;
-    exports.ɵdd = defaultOccStoreFinderConfig;
-    exports.ɵde = defaultOccUserConfig;
-    exports.ɵdf = defaultPersonalizationConfig;
-    exports.ɵdg = interceptors$1;
-    exports.ɵdh = OccPersonalizationIdInterceptor;
-    exports.ɵdi = OccPersonalizationTimeInterceptor;
-    exports.ɵdj = ProcessStoreModule;
-    exports.ɵdk = getReducers$7;
-    exports.ɵdl = reducerToken$7;
-    exports.ɵdm = reducerProvider$7;
-    exports.ɵdn = productStoreConfigFactory;
-    exports.ɵdo = ProductStoreModule;
-    exports.ɵdp = getReducers$8;
-    exports.ɵdq = reducerToken$8;
-    exports.ɵdr = reducerProvider$8;
-    exports.ɵds = clearProductsState;
-    exports.ɵdt = metaReducers$4;
-    exports.ɵdu = effects$6;
-    exports.ɵdv = ProductReferencesEffects;
-    exports.ɵdw = ProductReviewsEffects;
-    exports.ɵdx = ProductsSearchEffects;
-    exports.ɵdy = ProductEffects;
-    exports.ɵdz = reducer$a;
-    exports.ɵe = getTransferStateReducer;
-    exports.ɵea = reducer$c;
-    exports.ɵeb = reducer$b;
-    exports.ɵec = PageMetaResolver;
-    exports.ɵed = addExternalRoutesFactory;
-    exports.ɵee = getReducers$3;
-    exports.ɵef = reducer$5;
-    exports.ɵeg = reducerToken$3;
-    exports.ɵeh = reducerProvider$3;
-    exports.ɵei = CustomSerializer;
-    exports.ɵej = effects$3;
-    exports.ɵek = RouterEffects;
-    exports.ɵel = SiteContextParamsService;
-    exports.ɵem = SiteContextUrlSerializer;
-    exports.ɵen = SiteContextRoutesHandler;
-    exports.ɵeo = defaultSiteContextConfigFactory;
-    exports.ɵep = siteContextStoreConfigFactory;
-    exports.ɵeq = SiteContextStoreModule;
-    exports.ɵer = getReducers$9;
-    exports.ɵes = reducerToken$9;
-    exports.ɵet = reducerProvider$9;
-    exports.ɵeu = effects$7;
-    exports.ɵev = LanguagesEffects;
-    exports.ɵew = CurrenciesEffects;
-    exports.ɵex = BaseSiteEffects;
-    exports.ɵey = reducer$d;
-    exports.ɵez = reducer$e;
-    exports.ɵf = getReducers;
-    exports.ɵfa = reducer$f;
-    exports.ɵfb = baseSiteConfigValidator;
-    exports.ɵfc = interceptors$2;
-    exports.ɵfd = CmsTicketInterceptor;
-    exports.ɵfe = defaultStoreFinderConfig;
-    exports.ɵff = StoreFinderStoreModule;
-    exports.ɵfg = getReducers$a;
-    exports.ɵfh = reducerToken$a;
-    exports.ɵfi = reducerProvider$a;
-    exports.ɵfj = effects$8;
-    exports.ɵfk = FindStoresEffect;
-    exports.ɵfl = ViewAllStoresEffect;
-    exports.ɵfm = UserStoreModule;
-    exports.ɵfn = getReducers$b;
-    exports.ɵfo = reducerToken$b;
-    exports.ɵfp = reducerProvider$b;
-    exports.ɵfq = clearUserState;
-    exports.ɵfr = metaReducers$5;
-    exports.ɵfs = effects$9;
-    exports.ɵft = BillingCountriesEffect;
-    exports.ɵfu = DeliveryCountriesEffects;
-    exports.ɵfv = OrderDetailsEffect;
-    exports.ɵfw = UserPaymentMethodsEffects;
-    exports.ɵfx = RegionsEffects;
-    exports.ɵfy = ResetPasswordEffects;
-    exports.ɵfz = TitlesEffects;
-    exports.ɵg = reducerToken;
-    exports.ɵga = UserAddressesEffects;
-    exports.ɵgb = UserConsentsEffect;
-    exports.ɵgc = UserDetailsEffects;
-    exports.ɵgd = UserOrdersEffect;
-    exports.ɵge = UserRegisterEffects;
-    exports.ɵgf = ClearMiscsDataEffect;
-    exports.ɵgg = ForgotPasswordEffects;
-    exports.ɵgh = UpdateEmailEffects;
-    exports.ɵgi = UpdatePasswordEffects;
-    exports.ɵgj = reducer$p;
-    exports.ɵgk = reducer$n;
-    exports.ɵgl = reducer$g;
-    exports.ɵgm = reducer$o;
-    exports.ɵgn = reducer$j;
-    exports.ɵgo = reducer$q;
-    exports.ɵgp = reducer$i;
-    exports.ɵgq = reducer$h;
-    exports.ɵgr = reducer$m;
-    exports.ɵgs = reducer$k;
-    exports.ɵgt = reducer$l;
-    exports.ɵh = reducerProvider;
-    exports.ɵi = clearAuthState;
-    exports.ɵj = metaReducers;
-    exports.ɵk = effects;
-    exports.ɵl = ClientTokenEffect;
-    exports.ɵm = UserTokenEffects;
-    exports.ɵn = UserAuthenticationTokenService;
-    exports.ɵo = ClientAuthenticationTokenService;
-    exports.ɵp = reducer;
-    exports.ɵq = defaultAuthConfig;
-    exports.ɵr = interceptors;
-    exports.ɵs = ClientTokenInterceptor;
-    exports.ɵt = UserTokenInterceptor;
-    exports.ɵu = AuthErrorInterceptor;
-    exports.ɵv = UserErrorHandlingService;
-    exports.ɵw = UrlParsingService;
-    exports.ɵx = ClientErrorHandlingService;
-    exports.ɵy = AuthServices;
-    exports.ɵz = cartStoreConfigFactory;
+    exports.ɵa = TEST_CONFIG_COOKIE_NAME;
+    exports.ɵb = configFromCookieFactory;
+    exports.ɵba = AuthServices;
+    exports.ɵbb = cartStoreConfigFactory;
+    exports.ɵbc = CartStoreModule;
+    exports.ɵbd = reducer$1;
+    exports.ɵbe = CartPageMetaResolver;
+    exports.ɵbf = CheckoutStoreModule;
+    exports.ɵbg = getReducers$2;
+    exports.ɵbh = reducerToken$2;
+    exports.ɵbi = reducerProvider$2;
+    exports.ɵbj = effects$2;
+    exports.ɵbk = AddressVerificationEffect;
+    exports.ɵbl = CardTypesEffects;
+    exports.ɵbm = CheckoutEffects;
+    exports.ɵbn = reducer$4;
+    exports.ɵbo = reducer$3;
+    exports.ɵbp = reducer$2;
+    exports.ɵbq = cmsStoreConfigFactory;
+    exports.ɵbr = CmsStoreModule;
+    exports.ɵbs = getReducers$4;
+    exports.ɵbt = reducerToken$4;
+    exports.ɵbu = reducerProvider$4;
+    exports.ɵbv = clearCmsState;
+    exports.ɵbw = metaReducers$2;
+    exports.ɵbx = effects$4;
+    exports.ɵby = PageEffects;
+    exports.ɵbz = ComponentEffects;
+    exports.ɵc = authStoreConfigFactory;
+    exports.ɵca = NavigationEntryItemEffects;
+    exports.ɵcb = reducer$7;
+    exports.ɵcc = reducer$8;
+    exports.ɵcd = reducer$6;
+    exports.ɵce = GlobalMessageStoreModule;
+    exports.ɵcf = getReducers$5;
+    exports.ɵcg = reducerToken$5;
+    exports.ɵch = reducerProvider$5;
+    exports.ɵci = reducer$9;
+    exports.ɵcj = GlobalMessageEffect;
+    exports.ɵck = defaultGlobalMessageConfigFactory;
+    exports.ɵcl = InternalServerErrorHandler;
+    exports.ɵcm = HttpErrorInterceptor;
+    exports.ɵcn = defaultI18nConfig;
+    exports.ɵco = i18nextProviders;
+    exports.ɵcp = i18nextInit;
+    exports.ɵcq = MockTranslationService;
+    exports.ɵcr = kymaStoreConfigFactory;
+    exports.ɵcs = KymaStoreModule;
+    exports.ɵct = getReducers$6;
+    exports.ɵcu = reducerToken$6;
+    exports.ɵcv = reducerProvider$6;
+    exports.ɵcw = clearKymaState;
+    exports.ɵcx = metaReducers$3;
+    exports.ɵcy = effects$5;
+    exports.ɵcz = OpenIdTokenEffect;
+    exports.ɵd = AuthStoreModule;
+    exports.ɵda = OpenIdAuthenticationTokenService;
+    exports.ɵdb = defaultKymaConfig;
+    exports.ɵdc = defaultOccCartConfig;
+    exports.ɵdd = defaultOccProductConfig;
+    exports.ɵde = defaultOccSiteContextConfig;
+    exports.ɵdf = defaultOccStoreFinderConfig;
+    exports.ɵdg = defaultOccUserConfig;
+    exports.ɵdh = defaultPersonalizationConfig;
+    exports.ɵdi = interceptors$1;
+    exports.ɵdj = OccPersonalizationIdInterceptor;
+    exports.ɵdk = OccPersonalizationTimeInterceptor;
+    exports.ɵdl = ProcessStoreModule;
+    exports.ɵdm = getReducers$7;
+    exports.ɵdn = reducerToken$7;
+    exports.ɵdo = reducerProvider$7;
+    exports.ɵdp = productStoreConfigFactory;
+    exports.ɵdq = ProductStoreModule;
+    exports.ɵdr = getReducers$8;
+    exports.ɵds = reducerToken$8;
+    exports.ɵdt = reducerProvider$8;
+    exports.ɵdu = clearProductsState;
+    exports.ɵdv = metaReducers$4;
+    exports.ɵdw = effects$6;
+    exports.ɵdx = ProductReferencesEffects;
+    exports.ɵdy = ProductReviewsEffects;
+    exports.ɵdz = ProductsSearchEffects;
+    exports.ɵe = stateMetaReducers;
+    exports.ɵea = ProductEffects;
+    exports.ɵeb = reducer$a;
+    exports.ɵec = reducer$c;
+    exports.ɵed = reducer$b;
+    exports.ɵee = PageMetaResolver;
+    exports.ɵef = addExternalRoutesFactory;
+    exports.ɵeg = getReducers$3;
+    exports.ɵeh = reducer$5;
+    exports.ɵei = reducerToken$3;
+    exports.ɵej = reducerProvider$3;
+    exports.ɵek = CustomSerializer;
+    exports.ɵel = effects$3;
+    exports.ɵem = RouterEffects;
+    exports.ɵen = SiteContextParamsService;
+    exports.ɵeo = SiteContextUrlSerializer;
+    exports.ɵep = SiteContextRoutesHandler;
+    exports.ɵeq = defaultSiteContextConfigFactory;
+    exports.ɵer = siteContextStoreConfigFactory;
+    exports.ɵes = SiteContextStoreModule;
+    exports.ɵet = getReducers$9;
+    exports.ɵeu = reducerToken$9;
+    exports.ɵev = reducerProvider$9;
+    exports.ɵew = effects$7;
+    exports.ɵex = LanguagesEffects;
+    exports.ɵey = CurrenciesEffects;
+    exports.ɵez = BaseSiteEffects;
+    exports.ɵf = getStorageSyncReducer;
+    exports.ɵfa = reducer$d;
+    exports.ɵfb = reducer$e;
+    exports.ɵfc = reducer$f;
+    exports.ɵfd = baseSiteConfigValidator;
+    exports.ɵfe = interceptors$2;
+    exports.ɵff = CmsTicketInterceptor;
+    exports.ɵfg = defaultStoreFinderConfig;
+    exports.ɵfh = StoreFinderStoreModule;
+    exports.ɵfi = getReducers$a;
+    exports.ɵfj = reducerToken$a;
+    exports.ɵfk = reducerProvider$a;
+    exports.ɵfl = effects$8;
+    exports.ɵfm = FindStoresEffect;
+    exports.ɵfn = ViewAllStoresEffect;
+    exports.ɵfo = UserStoreModule;
+    exports.ɵfp = getReducers$b;
+    exports.ɵfq = reducerToken$b;
+    exports.ɵfr = reducerProvider$b;
+    exports.ɵfs = clearUserState;
+    exports.ɵft = metaReducers$5;
+    exports.ɵfu = effects$9;
+    exports.ɵfv = BillingCountriesEffect;
+    exports.ɵfw = DeliveryCountriesEffects;
+    exports.ɵfx = OrderDetailsEffect;
+    exports.ɵfy = UserPaymentMethodsEffects;
+    exports.ɵfz = RegionsEffects;
+    exports.ɵg = getTransferStateReducer;
+    exports.ɵga = ResetPasswordEffects;
+    exports.ɵgb = TitlesEffects;
+    exports.ɵgc = UserAddressesEffects;
+    exports.ɵgd = UserConsentsEffect;
+    exports.ɵge = UserDetailsEffects;
+    exports.ɵgf = UserOrdersEffect;
+    exports.ɵgg = UserRegisterEffects;
+    exports.ɵgh = ClearMiscsDataEffect;
+    exports.ɵgi = ForgotPasswordEffects;
+    exports.ɵgj = UpdateEmailEffects;
+    exports.ɵgk = UpdatePasswordEffects;
+    exports.ɵgl = reducer$p;
+    exports.ɵgm = reducer$n;
+    exports.ɵgn = reducer$g;
+    exports.ɵgo = reducer$o;
+    exports.ɵgp = reducer$j;
+    exports.ɵgq = reducer$q;
+    exports.ɵgr = reducer$i;
+    exports.ɵgs = reducer$h;
+    exports.ɵgt = reducer$m;
+    exports.ɵgu = reducer$k;
+    exports.ɵgv = reducer$l;
+    exports.ɵh = getReducers;
+    exports.ɵi = reducerToken;
+    exports.ɵj = reducerProvider;
+    exports.ɵk = clearAuthState;
+    exports.ɵl = metaReducers;
+    exports.ɵm = effects;
+    exports.ɵn = ClientTokenEffect;
+    exports.ɵo = UserTokenEffects;
+    exports.ɵp = UserAuthenticationTokenService;
+    exports.ɵq = ClientAuthenticationTokenService;
+    exports.ɵr = reducer;
+    exports.ɵs = defaultAuthConfig;
+    exports.ɵt = interceptors;
+    exports.ɵu = ClientTokenInterceptor;
+    exports.ɵv = UserTokenInterceptor;
+    exports.ɵw = AuthErrorInterceptor;
+    exports.ɵx = UserErrorHandlingService;
+    exports.ɵy = UrlParsingService;
+    exports.ɵz = ClientErrorHandlingService;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
