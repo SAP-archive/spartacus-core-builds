@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FeatureConfigService } from '../../../features-config/services/feature-config.service';
+import { ConsignmentTracking } from '../../../model/consignment-tracking.model';
 import { Order, OrderHistoryList } from '../../../model/order.model';
 import { UserOrderAdapter } from '../../../user/connectors/order/user-order.adapter';
 import { ConverterService } from '../../../util/converter.service';
@@ -31,4 +32,5 @@ export declare class OccUserOrderAdapter implements UserOrderAdapter {
      * Remove issue: #4125
      */
     private legacyLoadHistory;
+    getConsignmentTracking(orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
 }

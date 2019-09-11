@@ -8594,6 +8594,46 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
+    /** @type {?} */
+    var LOAD_CONSIGNMENT_TRACKING_FAIL = '[User] Load Consignment Tracking Fail';
+    /** @type {?} */
+    var LOAD_CONSIGNMENT_TRACKING_SUCCESS = '[User] Load Consignment Tracking Success';
+    /** @type {?} */
+    var CLEAR_CONSIGNMENT_TRACKING = '[User] Clear Consignment Tracking';
+    var LoadConsignmentTracking = /** @class */ (function () {
+        function LoadConsignmentTracking(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING;
+        }
+        return LoadConsignmentTracking;
+    }());
+    var LoadConsignmentTrackingFail = /** @class */ (function () {
+        function LoadConsignmentTrackingFail(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
+        }
+        return LoadConsignmentTrackingFail;
+    }());
+    var LoadConsignmentTrackingSuccess = /** @class */ (function () {
+        function LoadConsignmentTrackingSuccess(payload) {
+            this.payload = payload;
+            this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
+        }
+        return LoadConsignmentTrackingSuccess;
+    }());
+    var ClearConsignmentTracking = /** @class */ (function () {
+        function ClearConsignmentTracking() {
+            this.type = CLEAR_CONSIGNMENT_TRACKING;
+        }
+        return ClearConsignmentTracking;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
     /** @type {?} */
     var LOAD_DELIVERY_COUNTRIES_FAIL = '[User] Load Delivery Countries Fail';
@@ -9607,6 +9647,14 @@
         LoadBillingCountries: LoadBillingCountries,
         LoadBillingCountriesFail: LoadBillingCountriesFail,
         LoadBillingCountriesSuccess: LoadBillingCountriesSuccess,
+        LOAD_CONSIGNMENT_TRACKING: LOAD_CONSIGNMENT_TRACKING,
+        LOAD_CONSIGNMENT_TRACKING_FAIL: LOAD_CONSIGNMENT_TRACKING_FAIL,
+        LOAD_CONSIGNMENT_TRACKING_SUCCESS: LOAD_CONSIGNMENT_TRACKING_SUCCESS,
+        CLEAR_CONSIGNMENT_TRACKING: CLEAR_CONSIGNMENT_TRACKING,
+        LoadConsignmentTracking: LoadConsignmentTracking,
+        LoadConsignmentTrackingFail: LoadConsignmentTrackingFail,
+        LoadConsignmentTrackingSuccess: LoadConsignmentTrackingSuccess,
+        ClearConsignmentTracking: ClearConsignmentTracking,
         LOAD_DELIVERY_COUNTRIES: LOAD_DELIVERY_COUNTRIES,
         LOAD_DELIVERY_COUNTRIES_FAIL: LOAD_DELIVERY_COUNTRIES_FAIL,
         LOAD_DELIVERY_COUNTRIES_SUCCESS: LOAD_DELIVERY_COUNTRIES_SUCCESS,
@@ -16054,11 +16102,26 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @enum {string} */
     var ImageType = {
         PRIMARY: 'PRIMARY',
         GALLERY: 'GALLERY',
     };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -16084,18 +16147,8 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
     var testestsd = 'sare';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -21686,6 +21739,7 @@
                     addresses: 'users/${userId}/addresses',
                     addressDetail: 'users/${userId}/addresses/${addressId}',
                     addressVerification: 'users/${userId}/addresses/verification',
+                    consignmentTracking: 'orders/${orderCode}/consignments/${consignmentCode}/tracking',
                 },
             },
         },
@@ -21959,6 +22013,8 @@
      */
     /** @type {?} */
     var ORDER_HISTORY_NORMALIZER = new core.InjectionToken('OrderHistoryNormalizer');
+    /** @type {?} */
+    var CONSIGNMENT_TRACKING_NORMALIZER = new core.InjectionToken('ConsignmentTrackingNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -22137,6 +22193,26 @@
             return this.http
                 .get(url, { params: params })
                 .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
+        };
+        /**
+         * @param {?} orderCode
+         * @param {?} consignmentCode
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.getConsignmentTracking = /**
+         * @param {?} orderCode
+         * @param {?} consignmentCode
+         * @return {?}
+         */
+        function (orderCode, consignmentCode) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('consignmentTracking', {
+                orderCode: orderCode,
+                consignmentCode: consignmentCode,
+            });
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(CONSIGNMENT_TRACKING_NORMALIZER));
         };
         OccUserOrderAdapter.decorators = [
             { type: core.Injectable }
@@ -28063,6 +28139,19 @@
         function (userId, pageSize, currentPage, sort) {
             return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
         };
+        /**
+         * @param {?} orderCode
+         * @param {?} consignmentCode
+         * @return {?}
+         */
+        UserOrderConnector.prototype.getConsignmentTracking = /**
+         * @param {?} orderCode
+         * @param {?} consignmentCode
+         * @return {?}
+         */
+        function (orderCode, consignmentCode) {
+            return this.adapter.getConsignmentTracking(orderCode, consignmentCode);
+        };
         UserOrderConnector.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -28131,16 +28220,35 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return state.consignmentTracking; };
+    /** @type {?} */
+    var getConsignmentTrackingState = store.createSelector(getUserState, (ɵ0$h));
+    var ɵ1$a = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.tracking; };
+    /** @type {?} */
+    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, (ɵ1$a));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$i = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return state.countries; };
     /** @type {?} */
-    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$h));
-    var ɵ1$a = /**
+    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$i));
+    var ɵ1$b = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$a));
+    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$b));
     var ɵ2$6 = /**
      * @param {?} entites
      * @return {?}
@@ -28169,33 +28277,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$i = /**
+    var ɵ0$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderState = store.createSelector(getUserState, (ɵ0$i));
-    var ɵ1$b = /**
+    var getOrderState = store.createSelector(getUserState, (ɵ0$j));
+    var ɵ1$c = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$b));
+    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$c));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$j = /**
+    var ɵ0$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.payments; };
     /** @type {?} */
-    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$j));
-    var ɵ1$c = /**
+    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$k));
+    var ɵ1$d = /**
      * @param {?} state
      * @return {?}
      */
@@ -28203,7 +28311,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$c));
+    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$d));
     var ɵ2$7 = /**
      * @param {?} state
      * @return {?}
@@ -28218,14 +28326,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$k = /**
+    var ɵ0$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.regions; };
     /** @type {?} */
-    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$k));
-    var ɵ1$d = /**
+    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$l));
+    var ɵ1$e = /**
      * @param {?} state
      * @return {?}
      */
@@ -28233,7 +28341,7 @@
         return loaderValueSelector(state).entities;
     };
     /** @type {?} */
-    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$d));
+    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$e));
     var ɵ2$8 = /**
      * @param {?} state
      * @return {?}
@@ -28278,32 +28386,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$l = /**
+    var ɵ0$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.resetPassword; };
     /** @type {?} */
-    var getResetPassword = store.createSelector(getUserState, (ɵ0$l));
+    var getResetPassword = store.createSelector(getUserState, (ɵ0$m));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$m = /**
+    var ɵ0$n = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.titles; };
     /** @type {?} */
-    var getTitlesState = store.createSelector(getUserState, (ɵ0$m));
-    var ɵ1$e = /**
+    var getTitlesState = store.createSelector(getUserState, (ɵ0$n));
+    var ɵ1$f = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$e));
+    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$f));
     var ɵ2$9 = /**
      * @param {?} entites
      * @return {?}
@@ -28332,14 +28440,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$n = /**
+    var ɵ0$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addresses; };
     /** @type {?} */
-    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$n));
-    var ɵ1$f = /**
+    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$o));
+    var ɵ1$g = /**
      * @param {?} state
      * @return {?}
      */
@@ -28347,7 +28455,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$f));
+    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$g));
     var ɵ2$a = /**
      * @param {?} state
      * @return {?}
@@ -28362,13 +28470,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$o = /**
+    var ɵ0$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getConsentsState = store.createSelector(getUserState, (ɵ0$o));
+    var getConsentsState = store.createSelector(getUserState, (ɵ0$p));
     /** @type {?} */
     var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
@@ -28382,33 +28490,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$p = /**
+    var ɵ0$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.account; };
     /** @type {?} */
-    var getDetailsState = store.createSelector(getUserState, (ɵ0$p));
-    var ɵ1$g = /**
+    var getDetailsState = store.createSelector(getUserState, (ɵ0$q));
+    var ɵ1$h = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getDetails = store.createSelector(getDetailsState, (ɵ1$g));
+    var getDetails = store.createSelector(getDetailsState, (ɵ1$h));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$q = /**
+    var ɵ0$r = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.orders; };
     /** @type {?} */
-    var getOrdersState = store.createSelector(getUserState, (ɵ0$q));
-    var ɵ1$h = /**
+    var getOrdersState = store.createSelector(getUserState, (ɵ0$r));
+    var ɵ1$i = /**
      * @param {?} state
      * @return {?}
      */
@@ -28416,7 +28524,7 @@
         return loaderSuccessSelector(state);
     };
     /** @type {?} */
-    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$h));
+    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$i));
     var ɵ2$b = /**
      * @param {?} state
      * @return {?}
@@ -28436,6 +28544,8 @@
         getBillingCountriesState: getBillingCountriesState,
         getBillingCountriesEntites: getBillingCountriesEntites,
         getAllBillingCountries: getAllBillingCountries,
+        getConsignmentTrackingState: getConsignmentTrackingState,
+        getConsignmentTracking: getConsignmentTracking,
         getDeliveryCountriesState: getDeliveryCountriesState,
         getDeliveryCountriesEntites: getDeliveryCountriesEntites,
         getAllDeliveryCountries: getAllDeliveryCountries,
@@ -29807,6 +29917,57 @@
         function () {
             this.store.dispatch(new ClearUserOrders());
         };
+        /**
+         *  Returns a consignment tracking detail
+         */
+        /**
+         *  Returns a consignment tracking detail
+         * @return {?}
+         */
+        UserOrderService.prototype.getConsignmentTracking = /**
+         *  Returns a consignment tracking detail
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getConsignmentTracking));
+        };
+        /**
+         * Retrieves consignment tracking details
+         * @param orderCode an order code
+         * @param consignmentCode a consignment code
+         */
+        /**
+         * Retrieves consignment tracking details
+         * @param {?} orderCode an order code
+         * @param {?} consignmentCode a consignment code
+         * @return {?}
+         */
+        UserOrderService.prototype.loadConsignmentTracking = /**
+         * Retrieves consignment tracking details
+         * @param {?} orderCode an order code
+         * @param {?} consignmentCode a consignment code
+         * @return {?}
+         */
+        function (orderCode, consignmentCode) {
+            this.store.dispatch(new LoadConsignmentTracking({
+                orderCode: orderCode,
+                consignmentCode: consignmentCode,
+            }));
+        };
+        /**
+         * Cleaning consignment tracking
+         */
+        /**
+         * Cleaning consignment tracking
+         * @return {?}
+         */
+        UserOrderService.prototype.clearConsignmentTracking = /**
+         * Cleaning consignment tracking
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearConsignmentTracking());
+        };
         UserOrderService.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -29868,9 +30029,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$h = {
-        entities: {},
-    };
+    var initialState$h = {};
     /**
      * @param {?=} state
      * @param {?=} action
@@ -29878,6 +30037,36 @@
      */
     function reducer$h(state, action) {
         if (state === void 0) { state = initialState$h; }
+        switch (action.type) {
+            case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
+                /** @type {?} */
+                var tracking = action.payload;
+                return {
+                    tracking: tracking,
+                };
+            }
+            case CLEAR_CONSIGNMENT_TRACKING: {
+                return initialState$h;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$i = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
         switch (action.type) {
             case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 /** @type {?} */
@@ -29895,34 +30084,6 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$h;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$i = {
-        order: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
-        switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
-                /** @type {?} */
-                var order = action.payload;
-                return __assign({}, state, { order: order });
-            }
-            case CLEAR_ORDER_DETAILS: {
                 return initialState$i;
             }
         }
@@ -29934,7 +30095,9 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$j = [];
+    var initialState$j = {
+        order: {},
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -29943,10 +30106,12 @@
     function reducer$j(state, action) {
         if (state === void 0) { state = initialState$j; }
         switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$j;
+            case LOAD_ORDER_DETAILS_SUCCESS: {
+                /** @type {?} */
+                var order = action.payload;
+                return __assign({}, state, { order: order });
             }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            case CLEAR_ORDER_DETAILS: {
                 return initialState$j;
             }
         }
@@ -29958,10 +30123,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$k = {
-        entities: [],
-        country: null,
-    };
+    var initialState$k = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -29970,15 +30132,10 @@
     function reducer$k(state, action) {
         if (state === void 0) { state = initialState$k; }
         switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload.entities;
-                /** @type {?} */
-                var country = action.payload.country;
-                if (entities || country) {
-                    return __assign({}, state, { entities: entities,
-                        country: country });
-                }
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$k;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
                 return initialState$k;
             }
         }
@@ -29990,7 +30147,10 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$l = false;
+    var initialState$l = {
+        entities: [],
+        country: null,
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -29998,6 +30158,35 @@
      */
     function reducer$l(state, action) {
         if (state === void 0) { state = initialState$l; }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload.entities;
+                /** @type {?} */
+                var country = action.payload.country;
+                if (entities || country) {
+                    return __assign({}, state, { entities: entities,
+                        country: country });
+                }
+                return initialState$l;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$m = false;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$m(state, action) {
+        if (state === void 0) { state = initialState$m; }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
                 return true;
@@ -30011,7 +30200,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$m = {
+    var initialState$n = {
         entities: {},
     };
     /**
@@ -30019,8 +30208,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$m(state, action) {
-        if (state === void 0) { state = initialState$m; }
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
                 /** @type {?} */
@@ -30038,31 +30227,7 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$m;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$n = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$n;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$n;
             }
         }
         return state;
@@ -30082,10 +30247,34 @@
     function reducer$o(state, action) {
         if (state === void 0) { state = initialState$o; }
         switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$o;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$o;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$p = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
+        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 /** @type {?} */
                 var consents = action.payload;
-                return consents ? consents : initialState$o;
+                return consents ? consents : initialState$p;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 /** @type {?} */
@@ -30109,14 +30298,14 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$p = (/** @type {?} */ ({}));
+    var initialState$q = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
                 return action.payload;
@@ -30135,7 +30324,7 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$q = {
+    var initialState$r = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -30145,14 +30334,14 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
+    function reducer$r(state, action) {
+        if (state === void 0) { state = initialState$r; }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$q;
+                return action.payload ? action.payload : initialState$r;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$q;
+                return initialState$r;
             }
         }
         return state;
@@ -30168,18 +30357,19 @@
     function getReducers$b() {
         return {
             account: store.combineReducers({
-                details: reducer$p,
+                details: reducer$q,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$n),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$o),
             billingCountries: reducer$g,
-            consents: loaderReducer(USER_CONSENTS, reducer$o),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$j),
-            orders: loaderReducer(USER_ORDERS, reducer$q),
-            order: reducer$i,
-            countries: reducer$h,
-            titles: reducer$m,
-            regions: loaderReducer(REGIONS, reducer$k),
-            resetPassword: reducer$l,
+            consents: loaderReducer(USER_CONSENTS, reducer$p),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$k),
+            orders: loaderReducer(USER_ORDERS, reducer$r),
+            order: reducer$j,
+            countries: reducer$i,
+            titles: reducer$n,
+            regions: loaderReducer(REGIONS, reducer$l),
+            resetPassword: reducer$m,
+            consignmentTracking: reducer$h,
         };
     }
     /** @type {?} */
@@ -30276,6 +30466,56 @@
             __metadata("design:type", rxjs.Observable)
         ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
         return ClearMiscsDataEffect;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ConsignmentTrackingEffects = /** @class */ (function () {
+        function ConsignmentTrackingEffects(actions$, userOrderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userOrderConnector = userOrderConnector;
+            this.loadConsignmentTracking$ = this.actions$.pipe(effects$a.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.userOrderConnector
+                    .getConsignmentTracking(payload.orderCode, payload.consignmentCode)
+                    .pipe(operators.map((/**
+                 * @param {?} tracking
+                 * @return {?}
+                 */
+                function (tracking) {
+                    return new LoadConsignmentTrackingSuccess(tracking);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadConsignmentTrackingFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        ConsignmentTrackingEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        ConsignmentTrackingEffects.ctorParameters = function () { return [
+            { type: effects$a.Actions },
+            { type: UserOrderConnector }
+        ]; };
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
+        return ConsignmentTrackingEffects;
     }());
 
     /**
@@ -31363,6 +31603,7 @@
         UpdateEmailEffects,
         UpdatePasswordEffects,
         UserConsentsEffect,
+        ConsignmentTrackingEffects,
     ];
 
     /**
@@ -31592,6 +31833,7 @@
     exports.CMS_PAGE_NORMALIZER = CMS_PAGE_NORMALIZER;
     exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
+    exports.CONSIGNMENT_TRACKING_NORMALIZER = CONSIGNMENT_TRACKING_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
@@ -32033,33 +32275,35 @@
     exports.ɵft = metaReducers$5;
     exports.ɵfu = effects$9;
     exports.ɵfv = BillingCountriesEffect;
-    exports.ɵfw = DeliveryCountriesEffects;
-    exports.ɵfx = OrderDetailsEffect;
-    exports.ɵfy = UserPaymentMethodsEffects;
-    exports.ɵfz = RegionsEffects;
+    exports.ɵfw = ClearMiscsDataEffect;
+    exports.ɵfx = ConsignmentTrackingEffects;
+    exports.ɵfy = DeliveryCountriesEffects;
+    exports.ɵfz = OrderDetailsEffect;
     exports.ɵg = getTransferStateReducer;
-    exports.ɵga = ResetPasswordEffects;
-    exports.ɵgb = TitlesEffects;
-    exports.ɵgc = UserAddressesEffects;
-    exports.ɵgd = UserConsentsEffect;
-    exports.ɵge = UserDetailsEffects;
-    exports.ɵgf = UserOrdersEffect;
-    exports.ɵgg = UserRegisterEffects;
-    exports.ɵgh = ClearMiscsDataEffect;
-    exports.ɵgi = ForgotPasswordEffects;
-    exports.ɵgj = UpdateEmailEffects;
-    exports.ɵgk = UpdatePasswordEffects;
-    exports.ɵgl = reducer$p;
-    exports.ɵgm = reducer$n;
-    exports.ɵgn = reducer$g;
-    exports.ɵgo = reducer$o;
-    exports.ɵgp = reducer$j;
-    exports.ɵgq = reducer$q;
-    exports.ɵgr = reducer$i;
-    exports.ɵgs = reducer$h;
-    exports.ɵgt = reducer$m;
-    exports.ɵgu = reducer$k;
+    exports.ɵga = UserPaymentMethodsEffects;
+    exports.ɵgb = RegionsEffects;
+    exports.ɵgc = ResetPasswordEffects;
+    exports.ɵgd = TitlesEffects;
+    exports.ɵge = UserAddressesEffects;
+    exports.ɵgf = UserConsentsEffect;
+    exports.ɵgg = UserDetailsEffects;
+    exports.ɵgh = UserOrdersEffect;
+    exports.ɵgi = UserRegisterEffects;
+    exports.ɵgj = ForgotPasswordEffects;
+    exports.ɵgk = UpdateEmailEffects;
+    exports.ɵgl = UpdatePasswordEffects;
+    exports.ɵgm = reducer$q;
+    exports.ɵgn = reducer$o;
+    exports.ɵgo = reducer$g;
+    exports.ɵgp = reducer$p;
+    exports.ɵgq = reducer$k;
+    exports.ɵgr = reducer$r;
+    exports.ɵgs = reducer$j;
+    exports.ɵgt = reducer$i;
+    exports.ɵgu = reducer$n;
     exports.ɵgv = reducer$l;
+    exports.ɵgw = reducer$m;
+    exports.ɵgx = reducer$h;
     exports.ɵh = getReducers;
     exports.ɵi = reducerToken;
     exports.ɵj = reducerProvider;
