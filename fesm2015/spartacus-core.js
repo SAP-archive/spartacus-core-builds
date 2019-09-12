@@ -18659,7 +18659,7 @@ const defaultOccStoreFinderConfig = {
         occ: {
             endpoints: {
                 store: 'stores/${storeId}?fields=FULL',
-                stores: 'stores?fields=stores(name,displayName,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),pagination(DEFAULT),sorts(DEFAULT)',
+                stores: 'stores?fields=stores(name,displayName,formattedDistance,openingHours(weekDayOpeningList(FULL),specialDayOpeningList(FULL)),geoPoint(latitude,longitude),address(line1,line2,town,region(FULL),postalCode,phone,country,email), features),pagination(DEFAULT),sorts(DEFAULT)',
                 storescounts: 'stores/storescounts',
             },
         },
@@ -18783,6 +18783,7 @@ class OccStoreFinderAdapter {
         if (longitudeLatitude) {
             params['longitude'] = String(longitudeLatitude.longitude);
             params['latitude'] = String(longitudeLatitude.latitude);
+            params['radius'] = String('10000000');
         }
         else {
             params['query'] = query;
@@ -23471,10 +23472,14 @@ class StoreFinderService {
     /**
      * @param {?} store
      * @param {?} winRef
+     * @param {?} globalMessageService
+     * @param {?} routingService
      */
-    constructor(store, winRef) {
+    constructor(store, winRef, globalMessageService, routingService) {
         this.store = store;
         this.winRef = winRef;
+        this.globalMessageService = globalMessageService;
+        this.routingService = routingService;
         this.geolocationWatchId = null;
     }
     /**
@@ -23508,18 +23513,47 @@ class StoreFinderService {
     /**
      * Store finding action functionality
      * @param {?} queryText text query
-     * @param {?} longitudeLatitude longitude and latitude coordinates
-     * @param {?} searchConfig search configuration
+     * @param {?=} searchConfig search configuration
+     * @param {?=} longitudeLatitude longitude and latitude coordinates
      * @param {?=} countryIsoCode country ISO code
+     * @param {?=} useMyLocation current location coordinates
      * @return {?}
      */
-    findStoresAction(queryText, longitudeLatitude, searchConfig, countryIsoCode) {
-        this.store.dispatch(new FindStores({
-            queryText: queryText,
-            longitudeLatitude: longitudeLatitude,
-            searchConfig: searchConfig,
-            countryIsoCode: countryIsoCode,
-        }));
+    findStoresAction(queryText, searchConfig, longitudeLatitude, countryIsoCode, useMyLocation) {
+        if (useMyLocation && this.winRef.nativeWindow) {
+            this.clearWatchGeolocation(new FindStoresOnHold());
+            this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition((/**
+             * @param {?} pos
+             * @return {?}
+             */
+            (pos) => {
+                /** @type {?} */
+                const position = {
+                    longitude: pos.coords.longitude,
+                    latitude: pos.coords.latitude,
+                };
+                this.clearWatchGeolocation(new FindStores({
+                    queryText: queryText,
+                    searchConfig: searchConfig,
+                    longitudeLatitude: position,
+                    countryIsoCode: countryIsoCode,
+                }));
+            }), (/**
+             * @return {?}
+             */
+            () => {
+                this.globalMessageService.add({ key: 'storeFinder.geolocationNotEnabled' }, GlobalMessageType.MSG_TYPE_ERROR);
+                this.routingService.go(['/store-finder']);
+            }));
+        }
+        else {
+            this.clearWatchGeolocation(new FindStores({
+                queryText: queryText,
+                searchConfig: searchConfig,
+                longitudeLatitude: longitudeLatitude,
+                countryIsoCode: countryIsoCode,
+            }));
+        }
     }
     /**
      * View all stores
@@ -23535,32 +23569,6 @@ class StoreFinderService {
      */
     viewStoreById(storeId) {
         this.clearWatchGeolocation(new FindStoreById({ storeId }));
-    }
-    /**
-     * Find all stores
-     * @param {?} queryText text query
-     * @param {?=} useMyLocation use current location
-     * @return {?}
-     */
-    findStores(queryText, useMyLocation) {
-        if (useMyLocation && this.winRef.nativeWindow) {
-            this.clearWatchGeolocation(new FindStoresOnHold());
-            this.geolocationWatchId = this.winRef.nativeWindow.navigator.geolocation.watchPosition((/**
-             * @param {?} pos
-             * @return {?}
-             */
-            (pos) => {
-                /** @type {?} */
-                const longitudeLatitude = {
-                    longitude: pos.coords.longitude,
-                    latitude: pos.coords.latitude,
-                };
-                this.clearWatchGeolocation(new FindStores({ queryText, longitudeLatitude }));
-            }));
-        }
-        else {
-            this.clearWatchGeolocation(new FindStores({ queryText }));
-        }
     }
     /**
      * @private
@@ -23581,7 +23589,9 @@ StoreFinderService.decorators = [
 /** @nocollapse */
 StoreFinderService.ctorParameters = () => [
     { type: Store },
-    { type: WindowRef }
+    { type: WindowRef },
+    { type: GlobalMessageService },
+    { type: RoutingService }
 ];
 
 /**
@@ -23625,18 +23635,14 @@ class StoreDataService {
     getStoreClosingTime(location, date) {
         /** @type {?} */
         const requestedDaySchedule = this.getSchedule(location, date);
-        /** @type {?} */
-        let result = null;
-        if (requestedDaySchedule.closed === false) {
-            /** @type {?} */
-            const closingHour = requestedDaySchedule.closingTime.formattedHour.split(':')[0];
-            /** @type {?} */
-            const closingMinute = requestedDaySchedule.closingTime.minute;
-            result = new Date(date.valueOf());
-            result.setHours(closingHour);
-            result.setMinutes(closingMinute);
+        if (requestedDaySchedule) {
+            if (requestedDaySchedule.closed && requestedDaySchedule.closed === true) {
+                return 'closed';
+            }
+            if (requestedDaySchedule.closingTime) {
+                return requestedDaySchedule.closingTime.formattedHour;
+            }
         }
-        return result;
     }
     /**
      * Returns store opening time
@@ -23647,38 +23653,14 @@ class StoreDataService {
     getStoreOpeningTime(location, date) {
         /** @type {?} */
         const requestedDaySchedule = this.getSchedule(location, date);
-        /** @type {?} */
-        let result = null;
-        if (requestedDaySchedule.closed === false) {
-            /** @type {?} */
-            const openingHour = requestedDaySchedule.openingTime.formattedHour.split(':')[0];
-            /** @type {?} */
-            const openingMinutes = requestedDaySchedule.openingTime.minute;
-            result = new Date(date.valueOf());
-            result.setHours(openingHour);
-            result.setMinutes(openingMinutes);
+        if (requestedDaySchedule) {
+            if (requestedDaySchedule.closed && requestedDaySchedule.closed === true) {
+                return 'closed';
+            }
+            if (requestedDaySchedule.openingTime) {
+                return requestedDaySchedule.openingTime.formattedHour;
+            }
         }
-        return result;
-    }
-    /**
-     * Returns information about store open status
-     * @param {?} location store location
-     * @param {?} date date to compare
-     * @return {?}
-     */
-    isStoreOpen(location, date) {
-        /** @type {?} */
-        const requestedDaySchedule = this.getSchedule(location, date);
-        /** @type {?} */
-        let result = false;
-        if (requestedDaySchedule.closed === false) {
-            /** @type {?} */
-            const openingDate = this.getStoreOpeningTime(location, date);
-            /** @type {?} */
-            const closingDate = this.getStoreClosingTime(location, date);
-            result = date > openingDate && date < closingDate;
-        }
-        return result;
     }
     /**
      * Extracts schedule from the given location for the given date
@@ -23860,10 +23842,13 @@ class GoogleMapRendererService {
      */
     initMap(mapElement, mapCenter) {
         /** @type {?} */
+        const gestureOption = 'greedy';
+        /** @type {?} */
         const mapProp = {
             center: mapCenter,
             zoom: this.config.googleMaps.scale,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
+            gestureHandling: gestureOption,
         };
         this.googleMap = new google.maps.Map(mapElement, mapProp);
     }
@@ -23948,8 +23933,8 @@ const defaultStoreFinderConfig = {
     googleMaps: {
         apiUrl: 'https://maps.googleapis.com/maps/api/js',
         apiKey: '',
-        scale: 12,
-        selectedMarkerScale: 16,
+        scale: 5,
+        selectedMarkerScale: 17,
     },
 };
 
@@ -24070,7 +24055,16 @@ class ViewAllStoresEffect {
              * @param {?} data
              * @return {?}
              */
-            data => new ViewAllStoresSuccess(data))), catchError((/**
+            data => {
+                /** @type {?} */
+                const result = data.sort((/**
+                 * @param {?} a
+                 * @param {?} b
+                 * @return {?}
+                 */
+                (a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+                return new ViewAllStoresSuccess(result);
+            })), catchError((/**
              * @param {?} error
              * @return {?}
              */

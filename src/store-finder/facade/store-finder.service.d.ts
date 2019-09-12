@@ -4,11 +4,15 @@ import { GeoPoint } from '../../model/misc.model';
 import { WindowRef } from '../../window/window-ref';
 import { FindStoresState, StateWithStoreFinder, ViewAllStoresState } from '../store/store-finder-state';
 import { StoreFinderSearchConfig } from './../model/search-config';
+import { GlobalMessageService } from '../../global-message/index';
+import { RoutingService } from '../../routing/index';
 export declare class StoreFinderService {
     protected store: Store<StateWithStoreFinder>;
     protected winRef: WindowRef;
+    protected globalMessageService: GlobalMessageService;
+    protected routingService: RoutingService;
     private geolocationWatchId;
-    constructor(store: Store<StateWithStoreFinder>, winRef: WindowRef);
+    constructor(store: Store<StateWithStoreFinder>, winRef: WindowRef, globalMessageService: GlobalMessageService, routingService: RoutingService);
     /**
      * Returns boolean observable for store's loading state
      */
@@ -28,11 +32,12 @@ export declare class StoreFinderService {
     /**
      * Store finding action functionality
      * @param queryText text query
-     * @param longitudeLatitude longitude and latitude coordinates
      * @param searchConfig search configuration
+     * @param longitudeLatitude longitude and latitude coordinates
      * @param countryIsoCode country ISO code
+     * @param useMyLocation current location coordinates
      */
-    findStoresAction(queryText: string, longitudeLatitude: GeoPoint, searchConfig: StoreFinderSearchConfig, countryIsoCode?: string): void;
+    findStoresAction(queryText: string, searchConfig?: StoreFinderSearchConfig, longitudeLatitude?: GeoPoint, countryIsoCode?: string, useMyLocation?: boolean): void;
     /**
      * View all stores
      */
@@ -42,11 +47,5 @@ export declare class StoreFinderService {
      * @param storeId store id
      */
     viewStoreById(storeId: string): void;
-    /**
-     * Find all stores
-     * @param queryText text query
-     * @param useMyLocation use current location
-     */
-    findStores(queryText: string, useMyLocation?: boolean): void;
     private clearWatchGeolocation;
 }

@@ -15,17 +15,17 @@ export declare class FindStoresOnHold extends StateLoaderActions.LoaderLoadActio
 export declare class FindStores extends StateLoaderActions.LoaderLoadAction {
     payload: {
         queryText: string;
+        searchConfig?: StoreFinderSearchConfig;
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
-        searchConfig?: StoreFinderSearchConfig;
         countryIsoCode?: string;
     };
     readonly type = "[StoreFinder] Find Stores";
     constructor(payload: {
         queryText: string;
+        searchConfig?: StoreFinderSearchConfig;
         longitudeLatitude?: GeoPoint;
         useMyLocation?: boolean;
-        searchConfig?: StoreFinderSearchConfig;
         countryIsoCode?: string;
     });
 }

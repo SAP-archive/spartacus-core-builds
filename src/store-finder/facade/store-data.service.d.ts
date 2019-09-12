@@ -25,19 +25,13 @@ export declare class StoreDataService {
      * @param location store location
      * @param date date to compare
      */
-    getStoreClosingTime(location: PointOfService, date: Date): Date;
+    getStoreClosingTime(location: PointOfService, date: Date): string;
     /**
      * Returns store opening time
      * @param location store location
      * @param date date to compare
      */
-    getStoreOpeningTime(location: PointOfService, date: Date): Date;
-    /**
-     * Returns information about store open status
-     * @param location store location
-     * @param date date to compare
-     */
-    isStoreOpen(location: PointOfService, date: Date): boolean;
+    getStoreOpeningTime(location: PointOfService, date: Date): string;
     /**
      * Extracts schedule from the given location for the given date
      * @param location location
