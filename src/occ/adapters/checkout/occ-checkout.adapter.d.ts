@@ -13,4 +13,6 @@ export declare class OccCheckoutAdapter implements CheckoutAdapter {
     protected getEndpoint(userId: string, subEndpoint: string): string;
     placeOrder(userId: string, cartId: string): Observable<Order>;
     loadCheckoutDetails(userId: string, cartId: string): Observable<CheckoutDetails>;
+    clearCheckoutDeliveryAddress(userId: string, cartId: string): Observable<any>;
+    clearCheckoutDeliveryMode(userId: string, cartId: string): Observable<any>;
 }

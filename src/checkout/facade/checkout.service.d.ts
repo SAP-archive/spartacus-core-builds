@@ -20,7 +20,14 @@ export declare class CheckoutService {
      * @param stepNumber : the step number to be cleared
      */
     clearCheckoutStep(stepNumber: number): void;
+    /**
+     * Load checkout details data
+     * @param cartId : string Cart ID of loaded cart
+     */
     loadCheckoutDetails(cartId: string): void;
+    /**
+     * Get status of checkout details loaded
+     */
     getCheckoutDetailsLoaded(): Observable<boolean>;
     /**
      * Get order details

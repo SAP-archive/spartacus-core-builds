@@ -4,6 +4,10 @@ import { Address, AddressValidation } from '../../model/address.model';
 import { DeliveryMode, Order } from '../../model/order.model';
 export declare const CHECKOUT_FEATURE = "checkout";
 export declare const CHECKOUT_DETAILS = "[Checkout] Checkout Details";
+export declare const SET_DELIVERY_ADDRESS_PROCESS_ID = "setDeliveryAddress";
+export declare const SET_DELIVERY_MODE_PROCESS_ID = "setDeliveryMode";
+export declare const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = "setSupportedDeliveryMode";
+export declare const SET_PAYMENT_DETAILS_PROCESS_ID = "setPaymentDetails";
 export interface StateWithCheckout {
     [CHECKOUT_FEATURE]: CheckoutState;
 }

@@ -5290,7 +5290,7 @@
             // combineLatest emits multiple times on each property update instead of one emit
             // additionally dispatching actions that changes selectors used here needs to happen in order
             // for this asyncScheduler is used here
-            operators.debounceTime(1, rxjs.asyncScheduler), operators.filter((/**
+            operators.debounceTime(0), operators.filter((/**
              * @param {?} __0
              * @return {?}
              */
@@ -7135,14 +7135,41 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var CHECKOUT_FEATURE = 'checkout';
-    /** @type {?} */
-    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+    var PROCESS_FEATURE = 'process';
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var CHECKOUT_FEATURE = 'checkout';
+    /** @type {?} */
+    var CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+    /** @type {?} */
+    var SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+    /** @type {?} */
+    var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+    /** @type {?} */
+    var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+    /** @type {?} */
+    var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+    /** @type {?} */
+    var CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
     /** @type {?} */
     var ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
     /** @type {?} */
@@ -7155,6 +7182,8 @@
     var SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
     /** @type {?} */
     var SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+    /** @type {?} */
+    var RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
     /** @type {?} */
     var LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
     /** @type {?} */
@@ -7170,6 +7199,16 @@
     /** @type {?} */
     var SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
     /** @type {?} */
+    var RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+    /** @type {?} */
+    var SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+    /** @type {?} */
+    var SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+    /** @type {?} */
+    var SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+    /** @type {?} */
+    var RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+    /** @type {?} */
     var CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
     /** @type {?} */
     var CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
@@ -7181,6 +7220,8 @@
     var SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
     /** @type {?} */
     var SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+    /** @type {?} */
+    var RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
     /** @type {?} */
     var PLACE_ORDER = '[Checkout] Place Order';
     /** @type {?} */
@@ -7220,69 +7261,123 @@
         }
         return AddDeliveryAddressSuccess;
     }());
-    var SetDeliveryAddress = /** @class */ (function () {
+    var SetDeliveryAddress = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddress, _super);
         function SetDeliveryAddress(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS;
+            return _this;
         }
         return SetDeliveryAddress;
-    }());
-    var SetDeliveryAddressFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var SetDeliveryAddressFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressFail, _super);
         function SetDeliveryAddressFail(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS_FAIL;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_FAIL;
+            return _this;
         }
         return SetDeliveryAddressFail;
-    }());
-    var SetDeliveryAddressSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryAddressSuccess, _super);
         function SetDeliveryAddressSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_ADDRESS_SUCCESS;
+            return _this;
         }
         return SetDeliveryAddressSuccess;
-    }());
-    var LoadSupportedDeliveryModes = /** @class */ (function () {
+    }(EntitySuccessAction));
+    var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryAddressProcess, _super);
+        function ResetSetDeliveryAddressProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryAddressProcess;
+    }(EntityResetAction));
+    var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModes, _super);
         function LoadSupportedDeliveryModes(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES;
+            return _this;
         }
         return LoadSupportedDeliveryModes;
-    }());
-    var LoadSupportedDeliveryModesFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesFail, _super);
         function LoadSupportedDeliveryModesFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
+            return _this;
         }
         return LoadSupportedDeliveryModesFail;
-    }());
-    var LoadSupportedDeliveryModesSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
+        __extends(LoadSupportedDeliveryModesSuccess, _super);
         function LoadSupportedDeliveryModesSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
+            return _this;
         }
         return LoadSupportedDeliveryModesSuccess;
-    }());
-    var SetDeliveryMode = /** @class */ (function () {
+    }(EntitySuccessAction));
+    var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
+        __extends(ResetLoadSupportedDeliveryModesProcess, _super);
+        function ResetLoadSupportedDeliveryModesProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+            return _this;
+        }
+        return ResetLoadSupportedDeliveryModesProcess;
+    }(EntityResetAction));
+    var SetDeliveryMode = /** @class */ (function (_super) {
+        __extends(SetDeliveryMode, _super);
         function SetDeliveryMode(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE;
+            return _this;
         }
         return SetDeliveryMode;
-    }());
-    var SetDeliveryModeFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var SetDeliveryModeFail = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeFail, _super);
         function SetDeliveryModeFail(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE_FAIL;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_FAIL;
+            return _this;
         }
         return SetDeliveryModeFail;
-    }());
-    var SetDeliveryModeSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var SetDeliveryModeSuccess = /** @class */ (function (_super) {
+        __extends(SetDeliveryModeSuccess, _super);
         function SetDeliveryModeSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_DELIVERY_MODE_SUCCESS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_DELIVERY_MODE_SUCCESS;
+            return _this;
         }
         return SetDeliveryModeSuccess;
-    }());
+    }(EntitySuccessAction));
+    var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
+        __extends(ResetSetDeliveryModeProcess, _super);
+        function ResetSetDeliveryModeProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID) || this;
+            _this.type = RESET_SET_DELIVERY_MODE_PROCESS;
+            return _this;
+        }
+        return ResetSetDeliveryModeProcess;
+    }(EntityResetAction));
     var CreatePaymentDetails = /** @class */ (function () {
         function CreatePaymentDetails(payload) {
             this.payload = payload;
@@ -7304,27 +7399,45 @@
         }
         return CreatePaymentDetailsSuccess;
     }());
-    var SetPaymentDetails = /** @class */ (function () {
+    var SetPaymentDetails = /** @class */ (function (_super) {
+        __extends(SetPaymentDetails, _super);
         function SetPaymentDetails(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS;
+            return _this;
         }
         return SetPaymentDetails;
-    }());
-    var SetPaymentDetailsFail = /** @class */ (function () {
+    }(EntityLoadAction));
+    var SetPaymentDetailsFail = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsFail, _super);
         function SetPaymentDetailsFail(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS_FAIL;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_FAIL;
+            return _this;
         }
         return SetPaymentDetailsFail;
-    }());
-    var SetPaymentDetailsSuccess = /** @class */ (function () {
+    }(EntityFailAction));
+    var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
+        __extends(SetPaymentDetailsSuccess, _super);
         function SetPaymentDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = SET_PAYMENT_DETAILS_SUCCESS;
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SET_PAYMENT_DETAILS_SUCCESS;
+            return _this;
         }
         return SetPaymentDetailsSuccess;
-    }());
+    }(EntitySuccessAction));
+    var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
+        __extends(ResetSetPaymentDetailsProcess, _super);
+        function ResetSetPaymentDetailsProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+            _this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
+            return _this;
+        }
+        return ResetSetPaymentDetailsProcess;
+    }(EntityResetAction));
     var PlaceOrder = /** @class */ (function () {
         function PlaceOrder(payload) {
             this.payload = payload;
@@ -7401,6 +7514,46 @@
         }
         return CheckoutClearMiscsData;
     }());
+    var ClearCheckoutDeliveryAddress = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddress(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+        }
+        return ClearCheckoutDeliveryAddress;
+    }());
+    var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressSuccess() {
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+        }
+        return ClearCheckoutDeliveryAddressSuccess;
+    }());
+    var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
+        function ClearCheckoutDeliveryAddressFail(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+        }
+        return ClearCheckoutDeliveryAddressFail;
+    }());
+    var ClearCheckoutDeliveryMode = /** @class */ (function () {
+        function ClearCheckoutDeliveryMode(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+        }
+        return ClearCheckoutDeliveryMode;
+    }());
+    var ClearCheckoutDeliveryModeSuccess = /** @class */ (function () {
+        function ClearCheckoutDeliveryModeSuccess() {
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+        }
+        return ClearCheckoutDeliveryModeSuccess;
+    }());
+    var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
+        function ClearCheckoutDeliveryModeFail(payload) {
+            this.payload = payload;
+            this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+        }
+        return ClearCheckoutDeliveryModeFail;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -7422,12 +7575,19 @@
         LoadCardTypes: LoadCardTypes,
         LoadCardTypesFail: LoadCardTypesFail,
         LoadCardTypesSuccess: LoadCardTypesSuccess,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+        CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+        CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+        CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
         ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
         ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
         ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
         SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
         SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
         SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+        RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
         LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
         LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
         LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
@@ -7435,12 +7595,18 @@
         SET_DELIVERY_MODE: SET_DELIVERY_MODE,
         SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
         SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+        RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+        SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+        SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+        SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+        RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
         CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
         CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
         CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
         SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
         SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
         SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+        RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
         PLACE_ORDER: PLACE_ORDER,
         PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
         PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
@@ -7456,18 +7622,22 @@
         SetDeliveryAddress: SetDeliveryAddress,
         SetDeliveryAddressFail: SetDeliveryAddressFail,
         SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+        ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
         LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
         LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
         LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+        ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
         SetDeliveryMode: SetDeliveryMode,
         SetDeliveryModeFail: SetDeliveryModeFail,
         SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+        ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
         CreatePaymentDetails: CreatePaymentDetails,
         CreatePaymentDetailsFail: CreatePaymentDetailsFail,
         CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
         SetPaymentDetails: SetPaymentDetails,
         SetPaymentDetailsFail: SetPaymentDetailsFail,
         SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+        ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
         PlaceOrder: PlaceOrder,
         PlaceOrderFail: PlaceOrderFail,
         PlaceOrderSuccess: PlaceOrderSuccess,
@@ -7477,7 +7647,13 @@
         LoadCheckoutDetails: LoadCheckoutDetails,
         LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
         LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-        CheckoutClearMiscsData: CheckoutClearMiscsData
+        CheckoutClearMiscsData: CheckoutClearMiscsData,
+        ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+        ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+        ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+        ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+        ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+        ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
     });
 
     /**
@@ -7806,11 +7982,12 @@
      * @return {?}
      */
     function (deliveryMode) {
-        return Object.keys(deliveryMode.supported).map((/**
-         * @param {?} code
-         * @return {?}
-         */
-        function (code) { return deliveryMode.supported[code]; }));
+        return (deliveryMode &&
+            Object.keys(deliveryMode.supported).map((/**
+             * @param {?} code
+             * @return {?}
+             */
+            function (code) { return deliveryMode.supported[code]; })));
     };
     /** @type {?} */
     var getSupportedDeliveryModes = store.createSelector(getDeliveryMode, (ɵ6$1));
@@ -7819,7 +7996,7 @@
      * @return {?}
      */
     function (deliveryMode) {
-        return deliveryMode.selected;
+        return deliveryMode && deliveryMode.selected;
     };
     /** @type {?} */
     var getSelectedDeliveryModeCode = store.createSelector(getDeliveryMode, (ɵ7$1));
@@ -8026,11 +8203,17 @@
             this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
         };
         /**
-         * @param {?} cartId
+         * Load checkout details data
+         * @param cartId : string Cart ID of loaded cart
+         */
+        /**
+         * Load checkout details data
+         * @param {?} cartId : string Cart ID of loaded cart
          * @return {?}
          */
         CheckoutService.prototype.loadCheckoutDetails = /**
-         * @param {?} cartId
+         * Load checkout details data
+         * @param {?} cartId : string Cart ID of loaded cart
          * @return {?}
          */
         function (cartId) {
@@ -8040,9 +8223,14 @@
             }));
         };
         /**
+         * Get status of checkout details loaded
+         */
+        /**
+         * Get status of checkout details loaded
          * @return {?}
          */
         CheckoutService.prototype.getCheckoutDetailsLoaded = /**
+         * Get status of checkout details loaded
          * @return {?}
          */
         function () {
@@ -8266,6 +8454,12 @@
             }
             case LOAD_CHECKOUT_DETAILS_SUCCESS: {
                 return __assign({}, state, { address: action.payload.deliveryAddress, deliveryMode: __assign({}, state.deliveryMode, { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
+            }
+            case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
+                return __assign({}, state, { address: {} });
+            }
+            case CLEAR_CHECKOUT_DELIVERY_MODE: {
+                return __assign({}, state, { deliveryMode: __assign({}, state.deliveryMode, { selected: '' }) });
             }
         }
         return state;
@@ -8985,13 +9179,6 @@
         }
         return LoadTitlesSuccess;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var PROCESS_FEATURE = 'process';
 
     /**
      * @fileoverview added by tsickle
@@ -9874,6 +10061,32 @@
         function (userId, cartId) {
             return this.adapter.loadCheckoutDetails(userId, cartId);
         };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutConnector.prototype.clearCheckoutDeliveryAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CheckoutConnector.prototype.clearCheckoutDeliveryMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
+        };
         CheckoutConnector.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -10055,6 +10268,7 @@
                  */
                 function () { return [
                     new SetDeliveryAddressSuccess(payload.address),
+                    new ResetLoadSupportedDeliveryModesProcess(),
                     new LoadSupportedDeliveryModes({
                         userId: payload.userId,
                         cartId: payload.cartId,
@@ -10247,6 +10461,50 @@
                     cartId: payload.cartId ? payload.cartId : 'current',
                 });
             })));
+            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.checkoutConnector
+                    .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () { return new ClearCheckoutDeliveryAddressSuccess(); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$a.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.checkoutConnector
+                    .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () { return new ClearCheckoutDeliveryModeSuccess(); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new ClearCheckoutDeliveryModeFail(makeErrorSerializable(error)));
+                })));
+            })));
         }
         CheckoutEffects.decorators = [
             { type: core.Injectable }
@@ -10306,6 +10564,14 @@
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
         return CheckoutEffects;
     }());
 
@@ -10424,6 +10690,85 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @template T
+     * @return {?}
+     */
+    function getProcessState() {
+        return store.createFeatureSelector(PROCESS_FEATURE);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} processId
+     * @return {?}
+     */
+    function getProcessStateFactory(processId) {
+        return store.createSelector(getProcessState(), (/**
+         * @param {?} entityState
+         * @return {?}
+         */
+        function (entityState) {
+            return entityStateSelector(entityState, processId);
+        }));
+    }
+    /**
+     * @template T
+     * @param {?} processId
+     * @return {?}
+     */
+    function getProcessLoadingFactory(processId) {
+        return store.createSelector(getProcessStateFactory(processId), (/**
+         * @param {?} loaderState
+         * @return {?}
+         */
+        function (loaderState) { return loaderLoadingSelector(loaderState); }));
+    }
+    /**
+     * @template T
+     * @param {?} processId
+     * @return {?}
+     */
+    function getProcessSuccessFactory(processId) {
+        return store.createSelector(getProcessStateFactory(processId), (/**
+         * @param {?} loaderState
+         * @return {?}
+         */
+        function (loaderState) { return loaderSuccessSelector(loaderState); }));
+    }
+    /**
+     * @template T
+     * @param {?} processId
+     * @return {?}
+     */
+    function getProcessErrorFactory(processId) {
+        return store.createSelector(getProcessStateFactory(processId), (/**
+         * @param {?} loaderState
+         * @return {?}
+         */
+        function (loaderState) { return loaderErrorSelector(loaderState); }));
+    }
+
+    var process_selectors = /*#__PURE__*/Object.freeze({
+        getProcessStateFactory: getProcessStateFactory,
+        getProcessLoadingFactory: getProcessLoadingFactory,
+        getProcessSuccessFactory: getProcessSuccessFactory,
+        getProcessErrorFactory: getProcessErrorFactory
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CheckoutDeliveryService = /** @class */ (function () {
         function CheckoutDeliveryService(checkoutStore, cartData) {
             this.checkoutStore = checkoutStore;
@@ -10442,15 +10787,16 @@
          */
         function () {
             var _this = this;
-            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes), operators.tap((/**
-             * @param {?} deliveryModes
+            return this.checkoutStore.pipe(store.select(getSupportedDeliveryModes), operators.withLatestFrom(this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), operators.tap((/**
+             * @param {?} __0
              * @return {?}
              */
-            function (deliveryModes) {
-                if (Object.keys(deliveryModes).length === 0) {
+            function (_a) {
+                var _b = __read(_a, 2), loadingState = _b[1];
+                if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                     _this.loadSupportedDeliveryModes();
                 }
-            })), operators.shareReplay({ bufferSize: 1, refCount: true }));
+            })), operators.pluck(0), operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
          * Get selected delivery mode
@@ -10493,6 +10839,104 @@
          */
         function () {
             return this.checkoutStore.pipe(store.select(getDeliveryAddress));
+        };
+        /**
+         * Get status about successfully set Delivery Address
+         */
+        /**
+         * Get status about successfully set Delivery Address
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getSetDeliveryAddressProcess = /**
+         * Get status about successfully set Delivery Address
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Delivery Address
+         */
+        /**
+         * Clear info about process of setting Delivery Address
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.resetSetDeliveryAddressProcess = /**
+         * Clear info about process of setting Delivery Address
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
+        };
+        /**
+         * Get status about of set Delivery Mode process
+         */
+        /**
+         * Get status about of set Delivery Mode process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getSetDeliveryModeProcess = /**
+         * Get status about of set Delivery Mode process
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Delivery Mode
+         */
+        /**
+         * Clear info about process of setting Delivery Mode
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.resetSetDeliveryModeProcess = /**
+         * Clear info about process of setting Delivery Mode
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
+        };
+        /**
+         * Clear info about process of setting Supported Delivery Modes
+         */
+        /**
+         * Clear info about process of setting Supported Delivery Modes
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.resetLoadSupportedDeliveryModesProcess = /**
+         * Clear info about process of setting Supported Delivery Modes
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
+        };
+        /**
+         * Get status about of set supported Delivery Modes process
+         */
+        /**
+         * Get status about of set supported Delivery Modes process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.getLoadSupportedDeliveryModeProcess = /**
+         * Get status about of set supported Delivery Modes process
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+        };
+        /**
+         * Clear supported delivery modes loaded in last checkout process
+         */
+        /**
+         * Clear supported delivery modes loaded in last checkout process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryModes = /**
+         * Clear supported delivery modes loaded in last checkout process
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
         };
         /**
          * Get address verification results
@@ -10637,6 +11081,56 @@
             this.checkoutStore.dispatch(new ClearAddressVerificationResults());
         };
         /**
+         * Clear address already setup in last checkout process
+         */
+        /**
+         * Clear address already setup in last checkout process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryAddress = /**
+         * Clear address already setup in last checkout process
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+            }));
+        };
+        /**
+         * Clear selected delivery mode setup in last checkout process
+         */
+        /**
+         * Clear selected delivery mode setup in last checkout process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryMode = /**
+         * Clear selected delivery mode setup in last checkout process
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+            }));
+        };
+        /**
+         * Clear address and delivery mode already setup in last checkout process
+         */
+        /**
+         * Clear address and delivery mode already setup in last checkout process
+         * @return {?}
+         */
+        CheckoutDeliveryService.prototype.clearCheckoutDeliveryDetails = /**
+         * Clear address and delivery mode already setup in last checkout process
+         * @return {?}
+         */
+        function () {
+            this.clearCheckoutDeliveryAddress();
+            this.clearCheckoutDeliveryMode();
+            this.clearCheckoutDeliveryModes();
+        };
+        /**
          * @protected
          * @return {?}
          */
@@ -10697,6 +11191,34 @@
          */
         function () {
             return this.checkoutStore.pipe(store.select(getPaymentDetails));
+        };
+        /**
+         * Get status about set Payment Details process
+         */
+        /**
+         * Get status about set Payment Details process
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.getSetPaymentDetailsResultProcess = /**
+         * Get status about set Payment Details process
+         * @return {?}
+         */
+        function () {
+            return this.checkoutStore.pipe(store.select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Clear info about process of setting Payment Details
+         */
+        /**
+         * Clear info about process of setting Payment Details
+         * @return {?}
+         */
+        CheckoutPaymentService.prototype.resetSetPaymentDetailsProcess = /**
+         * Clear info about process of setting Payment Details
+         * @return {?}
+         */
+        function () {
+            this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
         };
         /**
          * Load the supported card types
@@ -19219,6 +19741,36 @@
             });
             return this.http.get(url, { params: params });
         };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutAdapter.prototype.clearCheckoutDeliveryAddress = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            /** @type {?} */
+            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/addresses/delivery";
+            return this.http.delete(url);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCheckoutAdapter.prototype.clearCheckoutDeliveryMode = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            /** @type {?} */
+            var url = "" + this.getEndpoint(userId, CARTS_ENDPOINT) + cartId + "/deliverymode";
+            return this.http.delete(url);
+        };
         OccCheckoutAdapter.decorators = [
             { type: core.Injectable }
         ];
@@ -23062,80 +23614,6 @@
         ];
         return ProcessModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @return {?}
-     */
-    function getProcessState() {
-        return store.createFeatureSelector(PROCESS_FEATURE);
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} processId
-     * @return {?}
-     */
-    function getProcessStateFactory(processId) {
-        return store.createSelector(getProcessState(), (/**
-         * @param {?} entityState
-         * @return {?}
-         */
-        function (entityState) {
-            return entityStateSelector(entityState, processId);
-        }));
-    }
-    /**
-     * @template T
-     * @param {?} processId
-     * @return {?}
-     */
-    function getProcessLoadingFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), (/**
-         * @param {?} loaderState
-         * @return {?}
-         */
-        function (loaderState) { return loaderLoadingSelector(loaderState); }));
-    }
-    /**
-     * @template T
-     * @param {?} processId
-     * @return {?}
-     */
-    function getProcessSuccessFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), (/**
-         * @param {?} loaderState
-         * @return {?}
-         */
-        function (loaderState) { return loaderSuccessSelector(loaderState); }));
-    }
-    /**
-     * @template T
-     * @param {?} processId
-     * @return {?}
-     */
-    function getProcessErrorFactory(processId) {
-        return store.createSelector(getProcessStateFactory(processId), (/**
-         * @param {?} loaderState
-         * @return {?}
-         */
-        function (loaderState) { return loaderErrorSelector(loaderState); }));
-    }
-
-    var process_selectors = /*#__PURE__*/Object.freeze({
-        getProcessStateFactory: getProcessStateFactory,
-        getProcessLoadingFactory: getProcessLoadingFactory,
-        getProcessSuccessFactory: getProcessSuccessFactory,
-        getProcessErrorFactory: getProcessErrorFactory
-    });
 
     /**
      * @fileoverview added by tsickle
@@ -28295,6 +28773,16 @@
     };
     /** @type {?} */
     var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$7));
+    var ɵ3$4 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state);
+    };
+    /** @type {?} */
+    var getPaymentMethodsLoadedSuccess = store.createSelector(getPaymentMethodsState, (ɵ3$4));
 
     /**
      * @fileoverview added by tsickle
@@ -28328,7 +28816,7 @@
     }); };
     /** @type {?} */
     var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$8));
-    var ɵ3$4 = /**
+    var ɵ3$5 = /**
      * @param {?} state
      * @return {?}
      */
@@ -28336,7 +28824,7 @@
         return loaderValueSelector(state).country;
     };
     /** @type {?} */
-    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$4));
+    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$5));
     var ɵ4$3 = /**
      * @param {?} state
      * @return {?}
@@ -28439,6 +28927,16 @@
     };
     /** @type {?} */
     var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$a));
+    var ɵ3$6 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state);
+    };
+    /** @type {?} */
+    var getAddressesLoadedSuccess = store.createSelector(getAddressesLoaderState, (ɵ3$6));
 
     /**
      * @fileoverview added by tsickle
@@ -28530,6 +29028,7 @@
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
         getPaymentMethodsLoading: getPaymentMethodsLoading,
+        getPaymentMethodsLoadedSuccess: getPaymentMethodsLoadedSuccess,
         getRegionsLoaderState: getRegionsLoaderState,
         getAllRegions: getAllRegions,
         getRegionsDataAndLoading: getRegionsDataAndLoading,
@@ -28544,6 +29043,7 @@
         getAddressesLoaderState: getAddressesLoaderState,
         getAddresses: getAddresses,
         getAddressesLoading: getAddressesLoading,
+        getAddressesLoadedSuccess: getAddressesLoadedSuccess,
         getConsentsState: getConsentsState,
         getConsentsValue: getConsentsValue,
         getConsentsLoading: getConsentsLoading,
@@ -29220,6 +29720,15 @@
             return this.store.pipe(store.select(getAddressesLoading));
         };
         /**
+         * @return {?}
+         */
+        UserAddressService.prototype.getAddressesLoadedSuccess = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAddressesLoadedSuccess));
+        };
+        /**
          * Retrieves delivery countries
          */
         /**
@@ -29658,6 +30167,15 @@
          */
         function () {
             return this.store.pipe(store.select(getPaymentMethodsLoading));
+        };
+        /**
+         * @return {?}
+         */
+        UserPaymentService.prototype.getPaymentMethodsLoadedSuccess = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getPaymentMethodsLoadedSuccess));
         };
         /**
          * Sets the payment as a default one
@@ -31999,6 +32517,10 @@
     exports.RoutingModule = RoutingModule;
     exports.RoutingSelector = routingGroup_selectors;
     exports.RoutingService = RoutingService;
+    exports.SET_DELIVERY_ADDRESS_PROCESS_ID = SET_DELIVERY_ADDRESS_PROCESS_ID;
+    exports.SET_DELIVERY_MODE_PROCESS_ID = SET_DELIVERY_MODE_PROCESS_ID;
+    exports.SET_PAYMENT_DETAILS_PROCESS_ID = SET_PAYMENT_DETAILS_PROCESS_ID;
+    exports.SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID;
     exports.SITE_CONTEXT_FEATURE = SITE_CONTEXT_FEATURE;
     exports.STORE_COUNT_NORMALIZER = STORE_COUNT_NORMALIZER;
     exports.STORE_FINDER_DATA = STORE_FINDER_DATA;

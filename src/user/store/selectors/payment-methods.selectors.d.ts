@@ -5,3 +5,4 @@ import { StateWithUser } from '../user-state';
 export declare const getPaymentMethodsState: MemoizedSelector<StateWithUser, LoaderState<PaymentDetails[]>>;
 export declare const getPaymentMethods: MemoizedSelector<StateWithUser, PaymentDetails[]>;
 export declare const getPaymentMethodsLoading: MemoizedSelector<StateWithUser, boolean>;
+export declare const getPaymentMethodsLoadedSuccess: MemoizedSelector<StateWithUser, boolean>;

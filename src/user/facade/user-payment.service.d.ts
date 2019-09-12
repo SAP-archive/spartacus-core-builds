@@ -19,6 +19,7 @@ export declare class UserPaymentService {
      * Returns a loading flag for payment methods
      */
     getPaymentMethodsLoading(): Observable<boolean>;
+    getPaymentMethodsLoadedSuccess(): Observable<boolean>;
     /**
      * Sets the payment as a default one
      * @param paymentMethodId a payment method ID

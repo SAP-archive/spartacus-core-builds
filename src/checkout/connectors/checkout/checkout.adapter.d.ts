@@ -16,4 +16,18 @@ export declare abstract class CheckoutAdapter {
      * @param cartId
      */
     abstract loadCheckoutDetails(userId: string, cartId: string): Observable<CheckoutDetails>;
+    /**
+     * Abstract method used to clear checkout delivery address
+     *
+     * @param userId
+     * @param cartId
+     */
+    abstract clearCheckoutDeliveryAddress(userId: string, cartId: string): Observable<any>;
+    /**
+     * Abstract method used to clear checkout delivery mode
+     *
+     * @param userId
+     * @param cartId
+     */
+    abstract clearCheckoutDeliveryMode(userId: string, cartId: string): Observable<any>;
 }

@@ -5,3 +5,4 @@ import { StateWithUser } from '../user-state';
 export declare const getAddressesLoaderState: MemoizedSelector<StateWithUser, LoaderState<Address[]>>;
 export declare const getAddresses: MemoizedSelector<StateWithUser, Address[]>;
 export declare const getAddressesLoading: MemoizedSelector<StateWithUser, boolean>;
+export declare const getAddressesLoadedSuccess: MemoizedSelector<StateWithUser, boolean>;

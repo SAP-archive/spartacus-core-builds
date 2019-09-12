@@ -39,6 +39,7 @@ export declare class UserAddressService {
      * Returns a loading flag for addresses
      */
     getAddressesLoading(): Observable<boolean>;
+    getAddressesLoadedSuccess(): Observable<boolean>;
     /**
      * Retrieves delivery countries
      */

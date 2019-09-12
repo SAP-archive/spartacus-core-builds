@@ -4,10 +4,12 @@ import { CartDataService } from '../../cart/facade/cart-data.service';
 import { Address, AddressValidation } from '../../model/address.model';
 import { DeliveryMode } from '../../model/order.model';
 import { StateWithCheckout } from '../store/checkout-state';
+import { StateWithProcess } from '../../process/store/process-state';
+import { LoaderState } from '../../state/utils/loader/loader-state';
 export declare class CheckoutDeliveryService {
-    protected checkoutStore: Store<StateWithCheckout>;
+    protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected cartData: CartDataService;
-    constructor(checkoutStore: Store<StateWithCheckout>, cartData: CartDataService);
+    constructor(checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>, cartData: CartDataService);
     /**
      * Get supported delivery modes
      */
@@ -24,6 +26,34 @@ export declare class CheckoutDeliveryService {
      * Get delivery address
      */
     getDeliveryAddress(): Observable<Address>;
+    /**
+     * Get status about successfully set Delivery Address
+     */
+    getSetDeliveryAddressProcess(): Observable<LoaderState<void>>;
+    /**
+     * Clear info about process of setting Delivery Address
+     */
+    resetSetDeliveryAddressProcess(): void;
+    /**
+     * Get status about of set Delivery Mode process
+     */
+    getSetDeliveryModeProcess(): Observable<LoaderState<void>>;
+    /**
+     * Clear info about process of setting Delivery Mode
+     */
+    resetSetDeliveryModeProcess(): void;
+    /**
+     * Clear info about process of setting Supported Delivery Modes
+     */
+    resetLoadSupportedDeliveryModesProcess(): void;
+    /**
+     * Get status about of set supported Delivery Modes process
+     */
+    getLoadSupportedDeliveryModeProcess(): Observable<LoaderState<void>>;
+    /**
+     * Clear supported delivery modes loaded in last checkout process
+     */
+    clearCheckoutDeliveryModes(): void;
     /**
      * Get address verification results
      */
@@ -56,5 +86,17 @@ export declare class CheckoutDeliveryService {
      * Clear address verification results
      */
     clearAddressVerificationResults(): void;
+    /**
+     * Clear address already setup in last checkout process
+     */
+    clearCheckoutDeliveryAddress(): void;
+    /**
+     * Clear selected delivery mode setup in last checkout process
+     */
+    clearCheckoutDeliveryMode(): void;
+    /**
+     * Clear address and delivery mode already setup in last checkout process
+     */
+    clearCheckoutDeliveryDetails(): void;
     protected actionAllowed(): boolean;
 }

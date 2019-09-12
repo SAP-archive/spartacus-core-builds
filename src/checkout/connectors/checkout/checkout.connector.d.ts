@@ -7,4 +7,6 @@ export declare class CheckoutConnector {
     constructor(adapter: CheckoutAdapter);
     placeOrder(userId: string, cartId: string): Observable<Order>;
     loadCheckoutDetails(userId: string, cartId: string): Observable<CheckoutDetails>;
+    clearCheckoutDeliveryAddress(userId: string, cartId: string): Observable<any>;
+    clearCheckoutDeliveryMode(userId: string, cartId: string): Observable<any>;
 }

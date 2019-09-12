@@ -1,8 +1,8 @@
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { InjectionToken, isDevMode, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, Injector, INJECTOR, Pipe, APP_INITIALIZER, ChangeDetectorRef, NgZone, Directive, TemplateRef, ViewContainerRef, Input } from '@angular/core';
-import { of, fromEvent, throwError, Observable, combineLatest, asyncScheduler, iif, Subscription } from 'rxjs';
-import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, groupBy, withLatestFrom, concatMap, delay, takeWhile } from 'rxjs/operators';
+import { of, fromEvent, throwError, Observable, combineLatest, iif, Subscription } from 'rxjs';
+import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, withLatestFrom, groupBy, concatMap, delay, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
@@ -4643,7 +4643,7 @@ class CartService {
         // combineLatest emits multiple times on each property update instead of one emit
         // additionally dispatching actions that changes selectors used here needs to happen in order
         // for this asyncScheduler is used here
-        debounceTime(1, asyncScheduler), filter((/**
+        debounceTime(0), filter((/**
          * @param {?} __0
          * @return {?}
          */
@@ -6160,14 +6160,41 @@ class LoadCardTypesSuccess {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const CHECKOUT_FEATURE = 'checkout';
-/** @type {?} */
-const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+const PROCESS_FEATURE = 'process';
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const CHECKOUT_FEATURE = 'checkout';
+/** @type {?} */
+const CHECKOUT_DETAILS = '[Checkout] Checkout Details';
+/** @type {?} */
+const SET_DELIVERY_ADDRESS_PROCESS_ID = 'setDeliveryAddress';
+/** @type {?} */
+const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
+/** @type {?} */
+const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
+/** @type {?} */
+const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Clear Checkout Delivery Address Success';
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL = '[Checkout] Clear Checkout Delivery Address Fail';
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_MODE = '[Checkout] Clear Checkout Delivery Mode';
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS = '[Checkout] Clear Checkout Delivery Mode Success';
+/** @type {?} */
+const CLEAR_CHECKOUT_DELIVERY_MODE_FAIL = '[Checkout] Clear Checkout Delivery Mode Fail';
 /** @type {?} */
 const ADD_DELIVERY_ADDRESS = '[Checkout] Add Delivery Address';
 /** @type {?} */
@@ -6180,6 +6207,8 @@ const SET_DELIVERY_ADDRESS = '[Checkout] Set Delivery Address';
 const SET_DELIVERY_ADDRESS_FAIL = '[Checkout] Set Delivery Address Fail';
 /** @type {?} */
 const SET_DELIVERY_ADDRESS_SUCCESS = '[Checkout] Set Delivery Address Success';
+/** @type {?} */
+const RESET_SET_DELIVERY_ADDRESS_PROCESS = '[Checkout] Reset Set Delivery Address Process';
 /** @type {?} */
 const LOAD_SUPPORTED_DELIVERY_MODES = '[Checkout] Load Supported Delivery Modes';
 /** @type {?} */
@@ -6195,6 +6224,16 @@ const SET_DELIVERY_MODE_FAIL = '[Checkout] Set Delivery Mode Fail';
 /** @type {?} */
 const SET_DELIVERY_MODE_SUCCESS = '[Checkout] Set Delivery Mode Success';
 /** @type {?} */
+const RESET_SET_DELIVERY_MODE_PROCESS = '[Checkout] Reset Set Delivery Mode Process';
+/** @type {?} */
+const SET_SUPPORTED_DELIVERY_MODES = '[Checkout] Set Supported Delivery Modes';
+/** @type {?} */
+const SET_SUPPORTED_DELIVERY_MODES_FAIL = '[Checkout] Set Supported Delivery Modes Fail';
+/** @type {?} */
+const SET_SUPPORTED_DELIVERY_MODES_SUCCESS = '[Checkout] Set Supported Delivery Modes Success';
+/** @type {?} */
+const RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS = '[Checkout] Reset Set Supported Delivery Modes Process';
+/** @type {?} */
 const CREATE_PAYMENT_DETAILS = '[Checkout] Create Payment Details';
 /** @type {?} */
 const CREATE_PAYMENT_DETAILS_FAIL = '[Checkout] Create Payment Details Fail';
@@ -6206,6 +6245,8 @@ const SET_PAYMENT_DETAILS = '[Checkout] Set Payment Details';
 const SET_PAYMENT_DETAILS_FAIL = '[Checkout] Set Payment Details Fail';
 /** @type {?} */
 const SET_PAYMENT_DETAILS_SUCCESS = '[Checkout] Set Payment Details Success';
+/** @type {?} */
+const RESET_SET_PAYMENT_DETAILS_PROCESS = '[Checkout] Reset Set Payment Details Process';
 /** @type {?} */
 const PLACE_ORDER = '[Checkout] Place Order';
 /** @type {?} */
@@ -6251,85 +6292,112 @@ class AddDeliveryAddressSuccess {
         this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
     }
 }
-class SetDeliveryAddress {
+class SetDeliveryAddress extends EntityLoadAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
         this.payload = payload;
         this.type = SET_DELIVERY_ADDRESS;
     }
 }
-class SetDeliveryAddressFail {
+class SetDeliveryAddressFail extends EntityFailAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID, payload);
         this.payload = payload;
         this.type = SET_DELIVERY_ADDRESS_FAIL;
     }
 }
-class SetDeliveryAddressSuccess {
+class SetDeliveryAddressSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
         this.payload = payload;
         this.type = SET_DELIVERY_ADDRESS_SUCCESS;
     }
 }
-class LoadSupportedDeliveryModes {
+class ResetSetDeliveryAddressProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
+    }
+}
+class LoadSupportedDeliveryModes extends EntityLoadAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
         this.payload = payload;
         this.type = LOAD_SUPPORTED_DELIVERY_MODES;
     }
 }
-class LoadSupportedDeliveryModesFail {
+class LoadSupportedDeliveryModesFail extends EntityFailAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
         this.payload = payload;
         this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
     }
 }
-class LoadSupportedDeliveryModesSuccess {
+class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
         this.payload = payload;
         this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
     }
 }
-class SetDeliveryMode {
+class ResetLoadSupportedDeliveryModesProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
+    }
+}
+class SetDeliveryMode extends EntityLoadAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
         this.payload = payload;
         this.type = SET_DELIVERY_MODE;
     }
 }
-class SetDeliveryModeFail {
+class SetDeliveryModeFail extends EntityFailAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID, payload);
         this.payload = payload;
         this.type = SET_DELIVERY_MODE_FAIL;
     }
 }
-class SetDeliveryModeSuccess {
+class SetDeliveryModeSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
         this.payload = payload;
         this.type = SET_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ResetSetDeliveryModeProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
+        this.type = RESET_SET_DELIVERY_MODE_PROCESS;
     }
 }
 class CreatePaymentDetails {
@@ -6359,31 +6427,40 @@ class CreatePaymentDetailsSuccess {
         this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
     }
 }
-class SetPaymentDetails {
+class SetPaymentDetails extends EntityLoadAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
         this.payload = payload;
         this.type = SET_PAYMENT_DETAILS;
     }
 }
-class SetPaymentDetailsFail {
+class SetPaymentDetailsFail extends EntityFailAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID, payload);
         this.payload = payload;
         this.type = SET_PAYMENT_DETAILS_FAIL;
     }
 }
-class SetPaymentDetailsSuccess {
+class SetPaymentDetailsSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
         this.payload = payload;
         this.type = SET_PAYMENT_DETAILS_SUCCESS;
+    }
+}
+class ResetSetPaymentDetailsProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
     }
 }
 class PlaceOrder {
@@ -6467,6 +6544,52 @@ class CheckoutClearMiscsData {
         this.type = CHECKOUT_CLEAR_MISCS_DATA;
     }
 }
+class ClearCheckoutDeliveryAddress {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
+    }
+}
+class ClearCheckoutDeliveryAddressSuccess {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryAddressFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
+    }
+}
+class ClearCheckoutDeliveryMode {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
+    }
+}
+class ClearCheckoutDeliveryModeSuccess {
+    constructor() {
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
+    }
+}
+class ClearCheckoutDeliveryModeFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
+    }
+}
 
 /**
  * @fileoverview added by tsickle
@@ -6488,12 +6611,19 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     LoadCardTypes: LoadCardTypes,
     LoadCardTypesFail: LoadCardTypesFail,
     LoadCardTypesSuccess: LoadCardTypesSuccess,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS: CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL: CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL,
+    CLEAR_CHECKOUT_DELIVERY_MODE: CLEAR_CHECKOUT_DELIVERY_MODE,
+    CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS: CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS,
+    CLEAR_CHECKOUT_DELIVERY_MODE_FAIL: CLEAR_CHECKOUT_DELIVERY_MODE_FAIL,
     ADD_DELIVERY_ADDRESS: ADD_DELIVERY_ADDRESS,
     ADD_DELIVERY_ADDRESS_FAIL: ADD_DELIVERY_ADDRESS_FAIL,
     ADD_DELIVERY_ADDRESS_SUCCESS: ADD_DELIVERY_ADDRESS_SUCCESS,
     SET_DELIVERY_ADDRESS: SET_DELIVERY_ADDRESS,
     SET_DELIVERY_ADDRESS_FAIL: SET_DELIVERY_ADDRESS_FAIL,
     SET_DELIVERY_ADDRESS_SUCCESS: SET_DELIVERY_ADDRESS_SUCCESS,
+    RESET_SET_DELIVERY_ADDRESS_PROCESS: RESET_SET_DELIVERY_ADDRESS_PROCESS,
     LOAD_SUPPORTED_DELIVERY_MODES: LOAD_SUPPORTED_DELIVERY_MODES,
     LOAD_SUPPORTED_DELIVERY_MODES_FAIL: LOAD_SUPPORTED_DELIVERY_MODES_FAIL,
     LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS: LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS,
@@ -6501,12 +6631,18 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     SET_DELIVERY_MODE: SET_DELIVERY_MODE,
     SET_DELIVERY_MODE_FAIL: SET_DELIVERY_MODE_FAIL,
     SET_DELIVERY_MODE_SUCCESS: SET_DELIVERY_MODE_SUCCESS,
+    RESET_SET_DELIVERY_MODE_PROCESS: RESET_SET_DELIVERY_MODE_PROCESS,
+    SET_SUPPORTED_DELIVERY_MODES: SET_SUPPORTED_DELIVERY_MODES,
+    SET_SUPPORTED_DELIVERY_MODES_FAIL: SET_SUPPORTED_DELIVERY_MODES_FAIL,
+    SET_SUPPORTED_DELIVERY_MODES_SUCCESS: SET_SUPPORTED_DELIVERY_MODES_SUCCESS,
+    RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS: RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS,
     CREATE_PAYMENT_DETAILS: CREATE_PAYMENT_DETAILS,
     CREATE_PAYMENT_DETAILS_FAIL: CREATE_PAYMENT_DETAILS_FAIL,
     CREATE_PAYMENT_DETAILS_SUCCESS: CREATE_PAYMENT_DETAILS_SUCCESS,
     SET_PAYMENT_DETAILS: SET_PAYMENT_DETAILS,
     SET_PAYMENT_DETAILS_FAIL: SET_PAYMENT_DETAILS_FAIL,
     SET_PAYMENT_DETAILS_SUCCESS: SET_PAYMENT_DETAILS_SUCCESS,
+    RESET_SET_PAYMENT_DETAILS_PROCESS: RESET_SET_PAYMENT_DETAILS_PROCESS,
     PLACE_ORDER: PLACE_ORDER,
     PLACE_ORDER_FAIL: PLACE_ORDER_FAIL,
     PLACE_ORDER_SUCCESS: PLACE_ORDER_SUCCESS,
@@ -6522,18 +6658,22 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     SetDeliveryAddress: SetDeliveryAddress,
     SetDeliveryAddressFail: SetDeliveryAddressFail,
     SetDeliveryAddressSuccess: SetDeliveryAddressSuccess,
+    ResetSetDeliveryAddressProcess: ResetSetDeliveryAddressProcess,
     LoadSupportedDeliveryModes: LoadSupportedDeliveryModes,
     LoadSupportedDeliveryModesFail: LoadSupportedDeliveryModesFail,
     LoadSupportedDeliveryModesSuccess: LoadSupportedDeliveryModesSuccess,
+    ResetLoadSupportedDeliveryModesProcess: ResetLoadSupportedDeliveryModesProcess,
     SetDeliveryMode: SetDeliveryMode,
     SetDeliveryModeFail: SetDeliveryModeFail,
     SetDeliveryModeSuccess: SetDeliveryModeSuccess,
+    ResetSetDeliveryModeProcess: ResetSetDeliveryModeProcess,
     CreatePaymentDetails: CreatePaymentDetails,
     CreatePaymentDetailsFail: CreatePaymentDetailsFail,
     CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
     SetPaymentDetails: SetPaymentDetails,
     SetPaymentDetailsFail: SetPaymentDetailsFail,
     SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
+    ResetSetPaymentDetailsProcess: ResetSetPaymentDetailsProcess,
     PlaceOrder: PlaceOrder,
     PlaceOrderFail: PlaceOrderFail,
     PlaceOrderSuccess: PlaceOrderSuccess,
@@ -6543,7 +6683,13 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     LoadCheckoutDetails: LoadCheckoutDetails,
     LoadCheckoutDetailsFail: LoadCheckoutDetailsFail,
     LoadCheckoutDetailsSuccess: LoadCheckoutDetailsSuccess,
-    CheckoutClearMiscsData: CheckoutClearMiscsData
+    CheckoutClearMiscsData: CheckoutClearMiscsData,
+    ClearCheckoutDeliveryAddress: ClearCheckoutDeliveryAddress,
+    ClearCheckoutDeliveryAddressSuccess: ClearCheckoutDeliveryAddressSuccess,
+    ClearCheckoutDeliveryAddressFail: ClearCheckoutDeliveryAddressFail,
+    ClearCheckoutDeliveryMode: ClearCheckoutDeliveryMode,
+    ClearCheckoutDeliveryModeSuccess: ClearCheckoutDeliveryModeSuccess,
+    ClearCheckoutDeliveryModeFail: ClearCheckoutDeliveryModeFail
 });
 
 /**
@@ -6853,11 +6999,12 @@ const ɵ6$1 = /**
  * @return {?}
  */
 deliveryMode => {
-    return Object.keys(deliveryMode.supported).map((/**
-     * @param {?} code
-     * @return {?}
-     */
-    code => deliveryMode.supported[code]));
+    return (deliveryMode &&
+        Object.keys(deliveryMode.supported).map((/**
+         * @param {?} code
+         * @return {?}
+         */
+        code => deliveryMode.supported[code])));
 };
 /** @type {?} */
 const getSupportedDeliveryModes = createSelector(getDeliveryMode, (ɵ6$1));
@@ -6866,7 +7013,7 @@ const ɵ7$1 = /**
  * @return {?}
  */
 deliveryMode => {
-    return deliveryMode.selected;
+    return deliveryMode && deliveryMode.selected;
 };
 /** @type {?} */
 const getSelectedDeliveryModeCode = createSelector(getDeliveryMode, (ɵ7$1));
@@ -7050,7 +7197,8 @@ class CheckoutService {
         this.checkoutStore.dispatch(new ClearCheckoutStep(stepNumber));
     }
     /**
-     * @param {?} cartId
+     * Load checkout details data
+     * @param {?} cartId : string Cart ID of loaded cart
      * @return {?}
      */
     loadCheckoutDetails(cartId) {
@@ -7060,6 +7208,7 @@ class CheckoutService {
         }));
     }
     /**
+     * Get status of checkout details loaded
      * @return {?}
      */
     getCheckoutDetailsLoaded() {
@@ -7248,6 +7397,12 @@ function reducer$4(state = initialState$4, action) {
         }
         case LOAD_CHECKOUT_DETAILS_SUCCESS: {
             return Object.assign({}, state, { address: action.payload.deliveryAddress, deliveryMode: Object.assign({}, state.deliveryMode, { selected: action.payload.deliveryMode && action.payload.deliveryMode.code }), paymentDetails: action.payload.paymentInfo });
+        }
+        case CLEAR_CHECKOUT_DELIVERY_ADDRESS: {
+            return Object.assign({}, state, { address: {} });
+        }
+        case CLEAR_CHECKOUT_DELIVERY_MODE: {
+            return Object.assign({}, state, { deliveryMode: Object.assign({}, state.deliveryMode, { selected: '' }) });
         }
     }
     return state;
@@ -7941,13 +8096,6 @@ class LoadTitlesSuccess {
         this.type = LOAD_TITLES_SUCCESS;
     }
 }
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const PROCESS_FEATURE = 'process';
 
 /**
  * @fileoverview added by tsickle
@@ -8779,6 +8927,22 @@ class CheckoutConnector {
     loadCheckoutDetails(userId, cartId) {
         return this.adapter.loadCheckoutDetails(userId, cartId);
     }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    clearCheckoutDeliveryAddress(userId, cartId) {
+        return this.adapter.clearCheckoutDeliveryAddress(userId, cartId);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    clearCheckoutDeliveryMode(userId, cartId) {
+        return this.adapter.clearCheckoutDeliveryMode(userId, cartId);
+    }
 }
 CheckoutConnector.decorators = [
     { type: Injectable, args: [{
@@ -8928,6 +9092,7 @@ class CheckoutEffects {
              */
             () => [
                 new SetDeliveryAddressSuccess(payload.address),
+                new ResetLoadSupportedDeliveryModesProcess(),
                 new LoadSupportedDeliveryModes({
                     userId: payload.userId,
                     cartId: payload.cartId,
@@ -9102,6 +9267,46 @@ class CheckoutEffects {
                 cartId: payload.cartId ? payload.cartId : 'current',
             });
         })));
+        this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), switchMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.checkoutConnector
+                .clearCheckoutDeliveryAddress(payload.userId, payload.cartId)
+                .pipe(map((/**
+             * @return {?}
+             */
+            () => new ClearCheckoutDeliveryAddressSuccess())), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error))))));
+        })));
+        this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), switchMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.checkoutConnector
+                .clearCheckoutDeliveryMode(payload.userId, payload.cartId)
+                .pipe(map((/**
+             * @return {?}
+             */
+            () => new ClearCheckoutDeliveryModeSuccess())), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new ClearCheckoutDeliveryModeFail(makeErrorSerializable(error))))));
+        })));
     }
 }
 CheckoutEffects.decorators = [
@@ -9162,6 +9367,14 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
 
 /**
  * @fileoverview added by tsickle
@@ -9269,6 +9482,83 @@ const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @template T
+ * @return {?}
+ */
+function getProcessState() {
+    return createFeatureSelector(PROCESS_FEATURE);
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} processId
+ * @return {?}
+ */
+function getProcessStateFactory(processId) {
+    return createSelector(getProcessState(), (/**
+     * @param {?} entityState
+     * @return {?}
+     */
+    entityState => entityStateSelector(entityState, processId)));
+}
+/**
+ * @template T
+ * @param {?} processId
+ * @return {?}
+ */
+function getProcessLoadingFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (/**
+     * @param {?} loaderState
+     * @return {?}
+     */
+    loaderState => loaderLoadingSelector(loaderState)));
+}
+/**
+ * @template T
+ * @param {?} processId
+ * @return {?}
+ */
+function getProcessSuccessFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (/**
+     * @param {?} loaderState
+     * @return {?}
+     */
+    loaderState => loaderSuccessSelector(loaderState)));
+}
+/**
+ * @template T
+ * @param {?} processId
+ * @return {?}
+ */
+function getProcessErrorFactory(processId) {
+    return createSelector(getProcessStateFactory(processId), (/**
+     * @param {?} loaderState
+     * @return {?}
+     */
+    loaderState => loaderErrorSelector(loaderState)));
+}
+
+var process_selectors = /*#__PURE__*/Object.freeze({
+    getProcessStateFactory: getProcessStateFactory,
+    getProcessLoadingFactory: getProcessLoadingFactory,
+    getProcessSuccessFactory: getProcessSuccessFactory,
+    getProcessErrorFactory: getProcessErrorFactory
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class CheckoutDeliveryService {
     /**
      * @param {?} checkoutStore
@@ -9283,15 +9573,15 @@ class CheckoutDeliveryService {
      * @return {?}
      */
     getSupportedDeliveryModes() {
-        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), tap((/**
-         * @param {?} deliveryModes
+        return this.checkoutStore.pipe(select(getSupportedDeliveryModes), withLatestFrom(this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)))), tap((/**
+         * @param {?} __0
          * @return {?}
          */
-        deliveryModes => {
-            if (Object.keys(deliveryModes).length === 0) {
+        ([, loadingState]) => {
+            if (!(loadingState.loading || loadingState.success || loadingState.error)) {
                 this.loadSupportedDeliveryModes();
             }
-        })), shareReplay({ bufferSize: 1, refCount: true }));
+        })), pluck(0), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * Get selected delivery mode
@@ -9313,6 +9603,55 @@ class CheckoutDeliveryService {
      */
     getDeliveryAddress() {
         return this.checkoutStore.pipe(select(getDeliveryAddress));
+    }
+    /**
+     * Get status about successfully set Delivery Address
+     * @return {?}
+     */
+    getSetDeliveryAddressProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_ADDRESS_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Delivery Address
+     * @return {?}
+     */
+    resetSetDeliveryAddressProcess() {
+        this.checkoutStore.dispatch(new ResetSetDeliveryAddressProcess());
+    }
+    /**
+     * Get status about of set Delivery Mode process
+     * @return {?}
+     */
+    getSetDeliveryModeProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_DELIVERY_MODE_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Delivery Mode
+     * @return {?}
+     */
+    resetSetDeliveryModeProcess() {
+        this.checkoutStore.dispatch(new ResetSetDeliveryModeProcess());
+    }
+    /**
+     * Clear info about process of setting Supported Delivery Modes
+     * @return {?}
+     */
+    resetLoadSupportedDeliveryModesProcess() {
+        this.checkoutStore.dispatch(new ResetLoadSupportedDeliveryModesProcess());
+    }
+    /**
+     * Get status about of set supported Delivery Modes process
+     * @return {?}
+     */
+    getLoadSupportedDeliveryModeProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID)));
+    }
+    /**
+     * Clear supported delivery modes loaded in last checkout process
+     * @return {?}
+     */
+    clearCheckoutDeliveryModes() {
+        this.checkoutStore.dispatch(new ClearSupportedDeliveryModes());
     }
     /**
      * Get address verification results
@@ -9400,6 +9739,35 @@ class CheckoutDeliveryService {
         this.checkoutStore.dispatch(new ClearAddressVerificationResults());
     }
     /**
+     * Clear address already setup in last checkout process
+     * @return {?}
+     */
+    clearCheckoutDeliveryAddress() {
+        this.checkoutStore.dispatch(new ClearCheckoutDeliveryAddress({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+        }));
+    }
+    /**
+     * Clear selected delivery mode setup in last checkout process
+     * @return {?}
+     */
+    clearCheckoutDeliveryMode() {
+        this.checkoutStore.dispatch(new ClearCheckoutDeliveryMode({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+        }));
+    }
+    /**
+     * Clear address and delivery mode already setup in last checkout process
+     * @return {?}
+     */
+    clearCheckoutDeliveryDetails() {
+        this.clearCheckoutDeliveryAddress();
+        this.clearCheckoutDeliveryMode();
+        this.clearCheckoutDeliveryModes();
+    }
+    /**
      * @protected
      * @return {?}
      */
@@ -9445,6 +9813,20 @@ class CheckoutPaymentService {
      */
     getPaymentDetails() {
         return this.checkoutStore.pipe(select(getPaymentDetails));
+    }
+    /**
+     * Get status about set Payment Details process
+     * @return {?}
+     */
+    getSetPaymentDetailsResultProcess() {
+        return this.checkoutStore.pipe(select(getProcessStateFactory(SET_PAYMENT_DETAILS_PROCESS_ID)));
+    }
+    /**
+     * Clear info about process of setting Payment Details
+     * @return {?}
+     */
+    resetSetPaymentDetailsProcess() {
+        this.checkoutStore.dispatch(new ResetSetPaymentDetailsProcess());
     }
     /**
      * Load the supported card types
@@ -16879,6 +17261,26 @@ class OccCheckoutAdapter {
         });
         return this.http.get(url, { params });
     }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    clearCheckoutDeliveryAddress(userId, cartId) {
+        /** @type {?} */
+        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/addresses/delivery`;
+        return this.http.delete(url);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    clearCheckoutDeliveryMode(userId, cartId) {
+        /** @type {?} */
+        const url = `${this.getEndpoint(userId, CARTS_ENDPOINT)}${cartId}/deliverymode`;
+        return this.http.delete(url);
+    }
 }
 OccCheckoutAdapter.decorators = [
     { type: Injectable }
@@ -20007,78 +20409,6 @@ ProcessModule.decorators = [
                 imports: [ProcessStoreModule],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @return {?}
- */
-function getProcessState() {
-    return createFeatureSelector(PROCESS_FEATURE);
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} processId
- * @return {?}
- */
-function getProcessStateFactory(processId) {
-    return createSelector(getProcessState(), (/**
-     * @param {?} entityState
-     * @return {?}
-     */
-    entityState => entityStateSelector(entityState, processId)));
-}
-/**
- * @template T
- * @param {?} processId
- * @return {?}
- */
-function getProcessLoadingFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (/**
-     * @param {?} loaderState
-     * @return {?}
-     */
-    loaderState => loaderLoadingSelector(loaderState)));
-}
-/**
- * @template T
- * @param {?} processId
- * @return {?}
- */
-function getProcessSuccessFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (/**
-     * @param {?} loaderState
-     * @return {?}
-     */
-    loaderState => loaderSuccessSelector(loaderState)));
-}
-/**
- * @template T
- * @param {?} processId
- * @return {?}
- */
-function getProcessErrorFactory(processId) {
-    return createSelector(getProcessStateFactory(processId), (/**
-     * @param {?} loaderState
-     * @return {?}
-     */
-    loaderState => loaderErrorSelector(loaderState)));
-}
-
-var process_selectors = /*#__PURE__*/Object.freeze({
-    getProcessStateFactory: getProcessStateFactory,
-    getProcessLoadingFactory: getProcessLoadingFactory,
-    getProcessSuccessFactory: getProcessSuccessFactory,
-    getProcessErrorFactory: getProcessErrorFactory
-});
 
 /**
  * @fileoverview added by tsickle
@@ -24540,6 +24870,14 @@ const ɵ2$7 = /**
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
 const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$7));
+const ɵ3$4 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderSuccessSelector(state) &&
+    !loaderLoadingSelector(state);
+/** @type {?} */
+const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (ɵ3$4));
 
 /**
  * @fileoverview added by tsickle
@@ -24573,13 +24911,13 @@ const ɵ2$8 = /**
 });
 /** @type {?} */
 const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$8));
-const ɵ3$4 = /**
+const ɵ3$5 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state).country;
 /** @type {?} */
-const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$4));
+const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$5));
 const ɵ4$3 = /**
  * @param {?} state
  * @return {?}
@@ -24672,6 +25010,14 @@ const ɵ2$a = /**
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
 const getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$a));
+const ɵ3$6 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderSuccessSelector(state) &&
+    !loaderLoadingSelector(state);
+/** @type {?} */
+const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$6));
 
 /**
  * @fileoverview added by tsickle
@@ -24759,6 +25105,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getPaymentMethodsState: getPaymentMethodsState,
     getPaymentMethods: getPaymentMethods,
     getPaymentMethodsLoading: getPaymentMethodsLoading,
+    getPaymentMethodsLoadedSuccess: getPaymentMethodsLoadedSuccess,
     getRegionsLoaderState: getRegionsLoaderState,
     getAllRegions: getAllRegions,
     getRegionsDataAndLoading: getRegionsDataAndLoading,
@@ -24773,6 +25120,7 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getAddressesLoaderState: getAddressesLoaderState,
     getAddresses: getAddresses,
     getAddressesLoading: getAddressesLoading,
+    getAddressesLoadedSuccess: getAddressesLoadedSuccess,
     getConsentsState: getConsentsState,
     getConsentsValue: getConsentsValue,
     getConsentsLoading: getConsentsLoading,
@@ -25147,6 +25495,12 @@ class UserAddressService {
         return this.store.pipe(select(getAddressesLoading));
     }
     /**
+     * @return {?}
+     */
+    getAddressesLoadedSuccess() {
+        return this.store.pipe(select(getAddressesLoadedSuccess));
+    }
+    /**
      * Retrieves delivery countries
      * @return {?}
      */
@@ -25401,6 +25755,12 @@ class UserPaymentService {
      */
     getPaymentMethodsLoading() {
         return this.store.pipe(select(getPaymentMethodsLoading));
+    }
+    /**
+     * @return {?}
+     */
+    getPaymentMethodsLoadedSuccess() {
+        return this.store.pipe(select(getPaymentMethodsLoadedSuccess));
     }
     /**
      * Sets the payment as a default one
@@ -27330,5 +27690,5 @@ FeaturesConfigModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$5 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$5 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map
