@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { CART_ADD_ENTRY, CART_ADD_ENTRY_SUCCESS, CART_ADD_ENTRY_FAIL, CART_REMOVE_ENTRY, CART_REMOVE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_FAIL, CART_UPDATE_ENTRY, CART_UPDATE_ENTRY_SUCCESS, CART_UPDATE_ENTRY_FAIL, CartAddEntry, CartAddEntrySuccess, CartAddEntryFail, CartRemoveEntry, CartRemoveEntrySuccess, CartRemoveEntryFail, CartUpdateEntry, CartUpdateEntrySuccess, CartUpdateEntryFail } from './cart-entry.action';
 export { CREATE_CART, CREATE_CART_FAIL, CREATE_CART_SUCCESS, LOAD_CART, LOAD_CART_FAIL, LOAD_CART_SUCCESS, MERGE_CART, MERGE_CART_SUCCESS, RESET_CART_DETAILS, CLEAR_CART, CreateCart, CreateCartFail, CreateCartSuccess, LoadCart, LoadCartFail, LoadCartSuccess, MergeCart, MergeCartSuccess, ResetCartDetails, ClearCart } from './cart.action';

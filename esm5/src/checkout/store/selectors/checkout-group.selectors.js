@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { getAddressVerificationResultsState, getAddressVerificationResults } from './address-verification.selectors';
 export { getCardTypesState, getCardTypesEntites, getAllCardTypes } from './card-types.selectors';

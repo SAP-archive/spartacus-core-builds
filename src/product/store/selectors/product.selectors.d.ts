@@ -4,10 +4,10 @@ import { EntityLoaderState } from '../../../state/utils/entity-loader/entity-loa
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { StateWithProduct } from '../product-state';
 export declare const getProductState: MemoizedSelector<StateWithProduct, EntityLoaderState<Product>>;
-export declare const getSelectedProductsFactory: (codes: string[]) => MemoizedSelector<StateWithProduct, Product[], import("@ngrx/store/src/selector").DefaultProjectorFn<Product[]>>;
-export declare const getSelectedProductStateFactory: (code: string) => MemoizedSelector<StateWithProduct, LoaderState<Product>, import("@ngrx/store/src/selector").DefaultProjectorFn<LoaderState<Product>>>;
-export declare const getSelectedProductFactory: (code: string) => MemoizedSelector<StateWithProduct, Product, import("@ngrx/store/src/selector").DefaultProjectorFn<Product>>;
-export declare const getSelectedProductLoadingFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store/src/selector").DefaultProjectorFn<boolean>>;
-export declare const getSelectedProductSuccessFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store/src/selector").DefaultProjectorFn<boolean>>;
-export declare const getSelectedProductErrorFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store/src/selector").DefaultProjectorFn<boolean>>;
+export declare const getSelectedProductsFactory: (codes: string[]) => MemoizedSelector<StateWithProduct, Product[], import("@ngrx/store").DefaultProjectorFn<Product[]>>;
+export declare const getSelectedProductStateFactory: (code: string) => MemoizedSelector<StateWithProduct, LoaderState<Product>, import("@ngrx/store").DefaultProjectorFn<LoaderState<Product>>>;
+export declare const getSelectedProductFactory: (code: string) => MemoizedSelector<StateWithProduct, Product, import("@ngrx/store").DefaultProjectorFn<Product>>;
+export declare const getSelectedProductLoadingFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
+export declare const getSelectedProductSuccessFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
+export declare const getSelectedProductErrorFactory: (code: string) => MemoizedSelector<StateWithProduct, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;
 export declare const getAllProductCodes: MemoizedSelector<StateWithProduct, string[]>;

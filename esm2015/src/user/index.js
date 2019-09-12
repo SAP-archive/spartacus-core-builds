@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { UserConnector, UserAdapter, USER_NORMALIZER, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, TITLE_NORMALIZER, UserAddressConnector, UserAddressAdapter, ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, UserConsentConnector, UserConsentAdapter, CONSENT_TEMPLATE_NORMALIZER, UserPaymentConnector, UserPaymentAdapter, UserOrderConnector, UserOrderAdapter, ORDER_HISTORY_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER } from './connectors/index';
 export { UserService, UserAddressService, UserConsentService, UserPaymentService, UserOrderService } from './facade/index';

@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { getProcessState } from './feature.selector';
 export { getProcessStateFactory, getProcessLoadingFactory, getProcessSuccessFactory, getProcessErrorFactory } from './process.selectors';

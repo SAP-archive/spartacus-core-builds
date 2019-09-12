@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { getBillingCountriesState, getBillingCountriesEntites, getAllBillingCountries } from './billing-countries.selectors';
 export { getConsignmentTrackingState, getConsignmentTracking } from './consignment-tracking.selectors';

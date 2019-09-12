@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { CheckoutConnector, CheckoutAdapter, ORDER_NORMALIZER } from './checkout/index';
 export { CheckoutDeliveryConnector, CheckoutDeliveryAdapter, DELIVERY_MODE_NORMALIZER } from './delivery/index';

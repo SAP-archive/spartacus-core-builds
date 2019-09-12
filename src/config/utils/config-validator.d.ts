@@ -1,5 +1,5 @@
 import { InjectionToken, Provider } from '@angular/core';
-export declare const ConfigValidatorToken: InjectionToken<{}>;
+export declare const ConfigValidatorToken: InjectionToken<unknown>;
 /**
  * ConfigValidator is used to validate config and display warning messages in development mode.
  *

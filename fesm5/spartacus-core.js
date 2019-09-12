@@ -6,16 +6,16 @@ import { of, fromEvent, throwError, Observable, combineLatest, iif, Subscription
 import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, withLatestFrom, groupBy, concatMap, delay, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
-import { Effect, ofType, Actions, EffectsModule } from '@ngrx/effects';
+import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
-import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
 import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
@@ -60,7 +60,7 @@ function validateConfig(config, configValidators) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} item
@@ -107,7 +107,7 @@ function deepMerge(target) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
@@ -254,7 +254,7 @@ var ConfigModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -267,10 +267,14 @@ SiteContextConfig = /** @class */ (function () {
     }
     return SiteContextConfig;
 }());
+if (false) {
+    /** @type {?} */
+    SiteContextConfig.prototype.context;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -285,10 +289,14 @@ OccConfig = /** @class */ (function (_super) {
     }
     return OccConfig;
 }(SiteContextConfig));
+if (false) {
+    /** @type {?} */
+    OccConfig.prototype.backend;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -303,10 +311,14 @@ AuthConfig = /** @class */ (function (_super) {
     }
     return AuthConfig;
 }(OccConfig));
+if (false) {
+    /** @type {?} */
+    AuthConfig.prototype.authentication;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultAuthConfig = {
@@ -325,7 +337,7 @@ var defaultAuthConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
@@ -335,6 +347,14 @@ var ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
  * @record
  */
 function EntityMeta() { }
+if (false) {
+    /** @type {?} */
+    EntityMeta.prototype.entityType;
+    /** @type {?} */
+    EntityMeta.prototype.entityId;
+    /** @type {?|undefined} */
+    EntityMeta.prototype.entityRemove;
+}
 /**
  * @param {?} type
  * @param {?} id
@@ -373,6 +393,12 @@ function entityRemoveAllMeta(type) {
  * @record
  */
 function EntityAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    EntityAction.prototype.payload;
+    /** @type {?|undefined} */
+    EntityAction.prototype.meta;
+}
 var EntityRemoveAction = /** @class */ (function () {
     function EntityRemoveAction(entityType, id) {
         this.type = ENTITY_REMOVE_ACTION;
@@ -380,6 +406,12 @@ var EntityRemoveAction = /** @class */ (function () {
     }
     return EntityRemoveAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntityRemoveAction.prototype.type;
+    /** @type {?} */
+    EntityRemoveAction.prototype.meta;
+}
 var EntityRemoveAllAction = /** @class */ (function () {
     function EntityRemoveAllAction(entityType) {
         this.type = ENTITY_REMOVE_ALL_ACTION;
@@ -387,6 +419,12 @@ var EntityRemoveAllAction = /** @class */ (function () {
     }
     return EntityRemoveAllAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntityRemoveAllAction.prototype.type;
+    /** @type {?} */
+    EntityRemoveAllAction.prototype.meta;
+}
 
 var entity_action = /*#__PURE__*/Object.freeze({
     ENTITY_REMOVE_ACTION: ENTITY_REMOVE_ACTION,
@@ -402,7 +440,7 @@ var entity_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOADER_LOAD_ACTION = '[LOADER] LOAD';
@@ -416,10 +454,22 @@ var LOADER_RESET_ACTION = '[LOADER] RESET';
  * @record
  */
 function LoaderMeta() { }
+if (false) {
+    /** @type {?} */
+    LoaderMeta.prototype.entityType;
+    /** @type {?} */
+    LoaderMeta.prototype.loader;
+}
 /**
  * @record
  */
 function LoaderAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoaderAction.prototype.payload;
+    /** @type {?|undefined} */
+    LoaderAction.prototype.meta;
+}
 /**
  * @param {?} entityType
  * @return {?}
@@ -474,6 +524,12 @@ var LoaderLoadAction = /** @class */ (function () {
     }
     return LoaderLoadAction;
 }());
+if (false) {
+    /** @type {?} */
+    LoaderLoadAction.prototype.type;
+    /** @type {?} */
+    LoaderLoadAction.prototype.meta;
+}
 var LoaderFailAction = /** @class */ (function () {
     function LoaderFailAction(entityType, error) {
         this.type = LOADER_FAIL_ACTION;
@@ -481,6 +537,12 @@ var LoaderFailAction = /** @class */ (function () {
     }
     return LoaderFailAction;
 }());
+if (false) {
+    /** @type {?} */
+    LoaderFailAction.prototype.type;
+    /** @type {?} */
+    LoaderFailAction.prototype.meta;
+}
 var LoaderSuccessAction = /** @class */ (function () {
     function LoaderSuccessAction(entityType) {
         this.type = LOADER_SUCCESS_ACTION;
@@ -488,6 +550,12 @@ var LoaderSuccessAction = /** @class */ (function () {
     }
     return LoaderSuccessAction;
 }());
+if (false) {
+    /** @type {?} */
+    LoaderSuccessAction.prototype.type;
+    /** @type {?} */
+    LoaderSuccessAction.prototype.meta;
+}
 var LoaderResetAction = /** @class */ (function () {
     function LoaderResetAction(entityType) {
         this.type = LOADER_RESET_ACTION;
@@ -495,6 +563,12 @@ var LoaderResetAction = /** @class */ (function () {
     }
     return LoaderResetAction;
 }());
+if (false) {
+    /** @type {?} */
+    LoaderResetAction.prototype.type;
+    /** @type {?} */
+    LoaderResetAction.prototype.meta;
+}
 
 var loader_action = /*#__PURE__*/Object.freeze({
     LOADER_LOAD_ACTION: LOADER_LOAD_ACTION,
@@ -515,7 +589,7 @@ var loader_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
@@ -533,6 +607,12 @@ function EntityLoaderMeta() { }
  * @record
  */
 function EntityLoaderAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    EntityLoaderAction.prototype.payload;
+    /** @type {?|undefined} */
+    EntityLoaderAction.prototype.meta;
+}
 /**
  * @param {?} entityType
  * @param {?} id
@@ -573,6 +653,12 @@ var EntityLoadAction = /** @class */ (function () {
     }
     return EntityLoadAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntityLoadAction.prototype.type;
+    /** @type {?} */
+    EntityLoadAction.prototype.meta;
+}
 var EntityFailAction = /** @class */ (function () {
     function EntityFailAction(entityType, id, error) {
         this.type = ENTITY_FAIL_ACTION;
@@ -580,6 +666,12 @@ var EntityFailAction = /** @class */ (function () {
     }
     return EntityFailAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntityFailAction.prototype.type;
+    /** @type {?} */
+    EntityFailAction.prototype.meta;
+}
 var EntitySuccessAction = /** @class */ (function () {
     function EntitySuccessAction(entityType, id, payload) {
         this.payload = payload;
@@ -588,6 +680,14 @@ var EntitySuccessAction = /** @class */ (function () {
     }
     return EntitySuccessAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntitySuccessAction.prototype.type;
+    /** @type {?} */
+    EntitySuccessAction.prototype.meta;
+    /** @type {?} */
+    EntitySuccessAction.prototype.payload;
+}
 var EntityResetAction = /** @class */ (function () {
     function EntityResetAction(entityType, id) {
         this.type = ENTITY_RESET_ACTION;
@@ -595,6 +695,12 @@ var EntityResetAction = /** @class */ (function () {
     }
     return EntityResetAction;
 }());
+if (false) {
+    /** @type {?} */
+    EntityResetAction.prototype.type;
+    /** @type {?} */
+    EntityResetAction.prototype.meta;
+}
 
 var entityLoader_action = /*#__PURE__*/Object.freeze({
     ENTITY_LOAD_ACTION: ENTITY_LOAD_ACTION,
@@ -615,12 +721,12 @@ var entityLoader_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialLoaderState = {
@@ -681,7 +787,7 @@ function loaderReducer(loadActionType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -747,17 +853,17 @@ var entityLoader_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialEntityState = { entities: {} };
@@ -841,7 +947,7 @@ function entityReducer(entityType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
@@ -857,17 +963,17 @@ function entityLoaderReducer(entityType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -885,22 +991,31 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ * @template T
+ */
+function EntityState() { }
+if (false) {
+    /** @type {?} */
+    EntityState.prototype.entities;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var OBJECT_SEPARATOR = '.';
@@ -1069,12 +1184,12 @@ function filterKeysByType(keys, type) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -1118,17 +1233,32 @@ var loader_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ * @template T
+ */
+function LoaderState() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoaderState.prototype.loading;
+    /** @type {?|undefined} */
+    LoaderState.prototype.error;
+    /** @type {?|undefined} */
+    LoaderState.prototype.success;
+    /** @type {?|undefined} */
+    LoaderState.prototype.value;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} entityType
@@ -1182,26 +1312,52 @@ function ofLoaderSuccess(entityType) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var AUTH_FEATURE = 'auth';
 /** @type {?} */
 var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+/**
+ * @record
+ */
+function StateWithAuth() { }
+if (false) {
+    /* Skipping unnamed member:
+    [AUTH_FEATURE]: AuthState;*/
+}
+/**
+ * @record
+ */
+function AuthState() { }
+if (false) {
+    /** @type {?} */
+    AuthState.prototype.userToken;
+    /** @type {?} */
+    AuthState.prototype.clientToken;
+}
+/**
+ * @record
+ */
+function UserTokenState() { }
+if (false) {
+    /** @type {?} */
+    UserTokenState.prototype.token;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
@@ -1218,6 +1374,10 @@ var LoadClientToken = /** @class */ (function (_super) {
     }
     return LoadClientToken;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadClientToken.prototype.type;
+}
 var LoadClientTokenFail = /** @class */ (function (_super) {
     __extends(LoadClientTokenFail, _super);
     function LoadClientTokenFail(payload) {
@@ -1228,6 +1388,12 @@ var LoadClientTokenFail = /** @class */ (function (_super) {
     }
     return LoadClientTokenFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadClientTokenFail.prototype.type;
+    /** @type {?} */
+    LoadClientTokenFail.prototype.payload;
+}
 var LoadClientTokenSuccess = /** @class */ (function (_super) {
     __extends(LoadClientTokenSuccess, _super);
     function LoadClientTokenSuccess(payload) {
@@ -1238,10 +1404,16 @@ var LoadClientTokenSuccess = /** @class */ (function (_super) {
     }
     return LoadClientTokenSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadClientTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadClientTokenSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOGIN = '[Auth] Login';
@@ -1253,16 +1425,24 @@ var Login = /** @class */ (function () {
     }
     return Login;
 }());
+if (false) {
+    /** @type {?} */
+    Login.prototype.type;
+}
 var Logout = /** @class */ (function () {
     function Logout() {
         this.type = LOGOUT;
     }
     return Logout;
 }());
+if (false) {
+    /** @type {?} */
+    Logout.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_TOKEN = '[Auth] Load User Token';
@@ -1283,6 +1463,12 @@ var LoadUserToken = /** @class */ (function () {
     }
     return LoadUserToken;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserToken.prototype.type;
+    /** @type {?} */
+    LoadUserToken.prototype.payload;
+}
 var LoadUserTokenFail = /** @class */ (function () {
     function LoadUserTokenFail(payload) {
         this.payload = payload;
@@ -1290,6 +1476,12 @@ var LoadUserTokenFail = /** @class */ (function () {
     }
     return LoadUserTokenFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserTokenFail.prototype.type;
+    /** @type {?} */
+    LoadUserTokenFail.prototype.payload;
+}
 var LoadUserTokenSuccess = /** @class */ (function () {
     function LoadUserTokenSuccess(payload) {
         this.payload = payload;
@@ -1297,6 +1489,12 @@ var LoadUserTokenSuccess = /** @class */ (function () {
     }
     return LoadUserTokenSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserTokenSuccess.prototype.payload;
+}
 var RefreshUserToken = /** @class */ (function () {
     function RefreshUserToken(payload) {
         this.payload = payload;
@@ -1304,6 +1502,12 @@ var RefreshUserToken = /** @class */ (function () {
     }
     return RefreshUserToken;
 }());
+if (false) {
+    /** @type {?} */
+    RefreshUserToken.prototype.type;
+    /** @type {?} */
+    RefreshUserToken.prototype.payload;
+}
 var RefreshUserTokenSuccess = /** @class */ (function () {
     function RefreshUserTokenSuccess(payload) {
         this.payload = payload;
@@ -1311,6 +1515,12 @@ var RefreshUserTokenSuccess = /** @class */ (function () {
     }
     return RefreshUserTokenSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    RefreshUserTokenSuccess.prototype.type;
+    /** @type {?} */
+    RefreshUserTokenSuccess.prototype.payload;
+}
 var RefreshUserTokenFail = /** @class */ (function () {
     function RefreshUserTokenFail(payload) {
         this.payload = payload;
@@ -1318,10 +1528,16 @@ var RefreshUserTokenFail = /** @class */ (function () {
     }
     return RefreshUserTokenFail;
 }());
+if (false) {
+    /** @type {?} */
+    RefreshUserTokenFail.prototype.type;
+    /** @type {?} */
+    RefreshUserTokenFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var authGroup_actions = /*#__PURE__*/Object.freeze({
@@ -1351,19 +1567,19 @@ var authGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getAuthState = createFeatureSelector(AUTH_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ɵ0 = /**
  * @param {?} state
@@ -1375,7 +1591,7 @@ var getClientTokenState = createSelector(getAuthState, (ɵ0));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getUserTokenSelector = (/**
@@ -1383,6 +1599,7 @@ var getUserTokenSelector = (/**
  * @return {?}
  */
 function (state) { return state.token; });
+var ɵ0$1 = getUserTokenSelector;
 var ɵ1 = /**
  * @param {?} state
  * @return {?}
@@ -1395,7 +1612,7 @@ var getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var authGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -1407,12 +1624,12 @@ var authGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AuthService = /** @class */ (function () {
     function AuthService(store) {
@@ -1594,10 +1811,17 @@ var AuthService = /** @class */ (function () {
     /** @nocollapse */ AuthService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
     return AuthService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ClientErrorHandlingService = /** @class */ (function () {
     function ClientErrorHandlingService(authService) {
@@ -1652,10 +1876,17 @@ var ClientErrorHandlingService = /** @class */ (function () {
     ]; };
     return ClientErrorHandlingService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientErrorHandlingService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var WindowRef = /** @class */ (function () {
     function WindowRef(document) {
@@ -1730,10 +1961,14 @@ var WindowRef = /** @class */ (function () {
     /** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
     return WindowRef;
 }());
+if (false) {
+    /** @type {?} */
+    WindowRef.prototype.document;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UrlParsingService = /** @class */ (function () {
     function UrlParsingService(router) {
@@ -1785,10 +2020,17 @@ var UrlParsingService = /** @class */ (function () {
     /** @nocollapse */ UrlParsingService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
     return UrlParsingService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UrlParsingService.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var isParam = (/**
@@ -1802,10 +2044,27 @@ var getParamName = (/**
  * @return {?}
  */
 function (segment) { return segment.slice(1); });
+// it just removes leading ':'
+/** @type {?} */
+var ensureLeadingSlash = (/**
+ * @param {?} path
+ * @return {?}
+ */
+function (path) {
+    return path.startsWith('/') ? path : '/' + path;
+});
+/** @type {?} */
+var removeLeadingSlash = (/**
+ * @param {?} path
+ * @return {?}
+ */
+function (path) {
+    return path.startsWith('/') ? path.slice(1) : path;
+});
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -1818,10 +2077,14 @@ RoutingConfig = /** @class */ (function () {
     }
     return RoutingConfig;
 }());
+if (false) {
+    /** @type {?} */
+    RoutingConfig.prototype.routing;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var RoutingConfigService = /** @class */ (function () {
     function RoutingConfigService(config) {
@@ -1874,10 +2137,17 @@ var RoutingConfigService = /** @class */ (function () {
     /** @nocollapse */ RoutingConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
     return RoutingConfigService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingConfigService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SemanticPathService = /** @class */ (function () {
     function SemanticPathService(routingConfigService, urlParser) {
@@ -2172,10 +2442,24 @@ var SemanticPathService = /** @class */ (function () {
     /** @nocollapse */ SemanticPathService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
     return SemanticPathService;
 }());
+if (false) {
+    /** @type {?} */
+    SemanticPathService.prototype.ROOT_URL;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SemanticPathService.prototype.routingConfigService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SemanticPathService.prototype.urlParser;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ROUTER_GO = '[Router] Go';
@@ -2192,6 +2476,12 @@ var RouteGoAction = /** @class */ (function () {
     }
     return RouteGoAction;
 }());
+if (false) {
+    /** @type {?} */
+    RouteGoAction.prototype.type;
+    /** @type {?} */
+    RouteGoAction.prototype.payload;
+}
 var RouteGoByUrlAction = /** @class */ (function () {
     function RouteGoByUrlAction(payload) {
         this.payload = payload;
@@ -2199,22 +2489,36 @@ var RouteGoByUrlAction = /** @class */ (function () {
     }
     return RouteGoByUrlAction;
 }());
+if (false) {
+    /** @type {?} */
+    RouteGoByUrlAction.prototype.type;
+    /** @type {?} */
+    RouteGoByUrlAction.prototype.payload;
+}
 var RouteBackAction = /** @class */ (function () {
     function RouteBackAction() {
         this.type = ROUTER_BACK;
     }
     return RouteBackAction;
 }());
+if (false) {
+    /** @type {?} */
+    RouteBackAction.prototype.type;
+}
 var RouteForwardAction = /** @class */ (function () {
     function RouteForwardAction() {
         this.type = ROUTER_FORWARD;
     }
     return RouteForwardAction;
 }());
+if (false) {
+    /** @type {?} */
+    RouteForwardAction.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var routingGroup_actions = /*#__PURE__*/Object.freeze({
@@ -2230,29 +2534,61 @@ var routingGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ROUTING_FEATURE = 'router';
+/**
+ * @record
+ */
+function RouterState() { }
+if (false) {
+    /** @type {?|undefined} */
+    RouterState.prototype.nextState;
+}
+/**
+ * @record
+ */
+function ActivatedRouterStateSnapshot() { }
+if (false) {
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.url;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.queryParams;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.params;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.context;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.cmsRequired;
+}
+/**
+ * @record
+ */
+function State() { }
+if (false) {
+    /* Skipping unnamed member:
+    [ROUTING_FEATURE]: RouterState;*/
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-var ɵ0$1 = /**
+var ɵ0$2 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.router; };
 /** @type {?} */
-var getRouterState = createSelector(getRouterFeatureState, (ɵ0$1));
+var getRouterState = createSelector(getRouterFeatureState, (ɵ0$2));
 var ɵ1$1 = /**
  * @param {?} routingState
  * @return {?}
@@ -2281,7 +2617,7 @@ var isNavigating = createSelector(getNextPageContext, (ɵ3));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var routingGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -2294,12 +2630,12 @@ var routingGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var RoutingService = /** @class */ (function () {
     function RoutingService(store, winRef, semanticPathService) {
@@ -2483,10 +2819,27 @@ var RoutingService = /** @class */ (function () {
     /** @nocollapse */ RoutingService.ngInjectableDef = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
     return RoutingService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.semanticPathService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserErrorHandlingService = /** @class */ (function () {
     function UserErrorHandlingService(authService, routingService) {
@@ -2587,10 +2940,22 @@ var UserErrorHandlingService = /** @class */ (function () {
     ]; };
     return UserErrorHandlingService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserErrorHandlingService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserErrorHandlingService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var USE_CLIENT_TOKEN = 'cx-use-client-token';
@@ -2658,7 +3023,7 @@ var InterceptorUtil = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
@@ -2772,10 +3137,27 @@ var AuthErrorInterceptor = /** @class */ (function () {
     ]; };
     return AuthErrorInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.userErrorHandlingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.clientErrorHandlingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var DynamicTemplate = /** @class */ (function () {
     function DynamicTemplate() {
@@ -2829,7 +3211,7 @@ var DynamicTemplate = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Helper function for safely getting context parameter config
@@ -2856,7 +3238,7 @@ function getContextParameterDefault(config, parameter) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_BASE_SITE = '[Site-context] Load BaseSite';
@@ -2874,6 +3256,10 @@ var LoadBaseSite = /** @class */ (function () {
     }
     return LoadBaseSite;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBaseSite.prototype.type;
+}
 var LoadBaseSiteFail = /** @class */ (function () {
     function LoadBaseSiteFail(payload) {
         this.payload = payload;
@@ -2881,6 +3267,12 @@ var LoadBaseSiteFail = /** @class */ (function () {
     }
     return LoadBaseSiteFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBaseSiteFail.prototype.type;
+    /** @type {?} */
+    LoadBaseSiteFail.prototype.payload;
+}
 var LoadBaseSiteSuccess = /** @class */ (function () {
     function LoadBaseSiteSuccess(payload) {
         this.payload = payload;
@@ -2888,6 +3280,12 @@ var LoadBaseSiteSuccess = /** @class */ (function () {
     }
     return LoadBaseSiteSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBaseSiteSuccess.prototype.type;
+    /** @type {?} */
+    LoadBaseSiteSuccess.prototype.payload;
+}
 var SetActiveBaseSite = /** @class */ (function () {
     function SetActiveBaseSite(payload) {
         this.payload = payload;
@@ -2895,16 +3293,26 @@ var SetActiveBaseSite = /** @class */ (function () {
     }
     return SetActiveBaseSite;
 }());
+if (false) {
+    /** @type {?} */
+    SetActiveBaseSite.prototype.type;
+    /** @type {?} */
+    SetActiveBaseSite.prototype.payload;
+}
 var BaseSiteChange = /** @class */ (function () {
     function BaseSiteChange() {
         this.type = BASE_SITE_CHANGE;
     }
     return BaseSiteChange;
 }());
+if (false) {
+    /** @type {?} */
+    BaseSiteChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CURRENCIES = '[Site-context] Load Currencies';
@@ -2922,6 +3330,10 @@ var LoadCurrencies = /** @class */ (function () {
     }
     return LoadCurrencies;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCurrencies.prototype.type;
+}
 var LoadCurrenciesFail = /** @class */ (function () {
     function LoadCurrenciesFail(payload) {
         this.payload = payload;
@@ -2929,6 +3341,12 @@ var LoadCurrenciesFail = /** @class */ (function () {
     }
     return LoadCurrenciesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCurrenciesFail.prototype.type;
+    /** @type {?} */
+    LoadCurrenciesFail.prototype.payload;
+}
 var LoadCurrenciesSuccess = /** @class */ (function () {
     function LoadCurrenciesSuccess(payload) {
         this.payload = payload;
@@ -2936,6 +3354,12 @@ var LoadCurrenciesSuccess = /** @class */ (function () {
     }
     return LoadCurrenciesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCurrenciesSuccess.prototype.type;
+    /** @type {?} */
+    LoadCurrenciesSuccess.prototype.payload;
+}
 var SetActiveCurrency = /** @class */ (function () {
     function SetActiveCurrency(payload) {
         this.payload = payload;
@@ -2943,16 +3367,26 @@ var SetActiveCurrency = /** @class */ (function () {
     }
     return SetActiveCurrency;
 }());
+if (false) {
+    /** @type {?} */
+    SetActiveCurrency.prototype.type;
+    /** @type {?} */
+    SetActiveCurrency.prototype.payload;
+}
 var CurrencyChange = /** @class */ (function () {
     function CurrencyChange() {
         this.type = CURRENCY_CHANGE;
     }
     return CurrencyChange;
 }());
+if (false) {
+    /** @type {?} */
+    CurrencyChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_LANGUAGES = '[Site-context] Load Languages';
@@ -2970,6 +3404,10 @@ var LoadLanguages = /** @class */ (function () {
     }
     return LoadLanguages;
 }());
+if (false) {
+    /** @type {?} */
+    LoadLanguages.prototype.type;
+}
 var LoadLanguagesFail = /** @class */ (function () {
     function LoadLanguagesFail(payload) {
         this.payload = payload;
@@ -2977,6 +3415,12 @@ var LoadLanguagesFail = /** @class */ (function () {
     }
     return LoadLanguagesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadLanguagesFail.prototype.type;
+    /** @type {?} */
+    LoadLanguagesFail.prototype.payload;
+}
 var LoadLanguagesSuccess = /** @class */ (function () {
     function LoadLanguagesSuccess(payload) {
         this.payload = payload;
@@ -2984,6 +3428,12 @@ var LoadLanguagesSuccess = /** @class */ (function () {
     }
     return LoadLanguagesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadLanguagesSuccess.prototype.type;
+    /** @type {?} */
+    LoadLanguagesSuccess.prototype.payload;
+}
 var SetActiveLanguage = /** @class */ (function () {
     function SetActiveLanguage(payload) {
         this.payload = payload;
@@ -2991,16 +3441,26 @@ var SetActiveLanguage = /** @class */ (function () {
     }
     return SetActiveLanguage;
 }());
+if (false) {
+    /** @type {?} */
+    SetActiveLanguage.prototype.type;
+    /** @type {?} */
+    SetActiveLanguage.prototype.payload;
+}
 var LanguageChange = /** @class */ (function () {
     function LanguageChange() {
         this.type = LANGUAGE_CHANGE;
     }
     return LanguageChange;
 }());
+if (false) {
+    /** @type {?} */
+    LanguageChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
@@ -3038,28 +3498,86 @@ var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var SITE_CONTEXT_FEATURE = 'siteContext';
+/**
+ * @record
+ */
+function StateWithSiteContext() { }
+if (false) {
+    /* Skipping unnamed member:
+    [SITE_CONTEXT_FEATURE]: SiteContextState;*/
+}
+/**
+ * @record
+ */
+function SiteContextState() { }
+if (false) {
+    /** @type {?} */
+    SiteContextState.prototype.languages;
+    /** @type {?} */
+    SiteContextState.prototype.currencies;
+    /** @type {?} */
+    SiteContextState.prototype.baseSite;
+}
+/**
+ * @record
+ */
+function CurrencyEntities() { }
+/**
+ * @record
+ */
+function CurrenciesState() { }
+if (false) {
+    /** @type {?} */
+    CurrenciesState.prototype.entities;
+    /** @type {?} */
+    CurrenciesState.prototype.activeCurrency;
+}
+/**
+ * @record
+ */
+function LanguagesEntities() { }
+/**
+ * @record
+ */
+function LanguagesState() { }
+if (false) {
+    /** @type {?} */
+    LanguagesState.prototype.entities;
+    /** @type {?} */
+    LanguagesState.prototype.activeLanguage;
+}
+/**
+ * @record
+ */
+function BaseSiteState() { }
+if (false) {
+    /** @type {?} */
+    BaseSiteState.prototype.activeSite;
+    /** @type {?} */
+    BaseSiteState.prototype.details;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$2 = /**
+var ɵ0$3 = /**
  * @param {?} state
  * @return {?}
  */
@@ -3067,7 +3585,7 @@ function (state) {
     return state && state.baseSite && state.baseSite.activeSite;
 };
 /** @type {?} */
-var getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$2));
+var getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
 var ɵ1$2 = /**
  * @param {?} state
  * @return {?}
@@ -3078,7 +3596,7 @@ var getBaseSiteData = createSelector(getSiteContextState, (ɵ1$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var currenciesEntitiesSelector = (/**
@@ -3086,12 +3604,14 @@ var currenciesEntitiesSelector = (/**
  * @return {?}
  */
 function (state) { return state.entities; });
+var ɵ0$4 = currenciesEntitiesSelector;
 /** @type {?} */
 var activeCurrencySelector = (/**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.activeCurrency; });
+var ɵ1$3 = activeCurrencySelector;
 var ɵ2$1 = /**
  * @param {?} state
  * @return {?}
@@ -3121,7 +3641,7 @@ var getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$1));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var activeLanguageSelector = (/**
@@ -3129,12 +3649,14 @@ var activeLanguageSelector = (/**
  * @return {?}
  */
 function (state) { return state.activeLanguage; });
+var ɵ0$5 = activeLanguageSelector;
 /** @type {?} */
 var languagesEntitiesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entities; });
+var ɵ1$4 = languagesEntitiesSelector;
 var ɵ2$2 = /**
  * @param {?} state
  * @return {?}
@@ -3164,7 +3686,7 @@ var getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -3183,12 +3705,12 @@ var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LANGUAGE_CONTEXT_ID = 'language';
@@ -3199,7 +3721,7 @@ var BASE_SITE_CONTEXT_ID = 'baseSite';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var BaseSiteService = /** @class */ (function () {
     function BaseSiteService(store, config) {
@@ -3311,10 +3833,22 @@ var BaseSiteService = /** @class */ (function () {
     ]; };
     return BaseSiteService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    BaseSiteService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    BaseSiteService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccEndpointsService = /** @class */ (function () {
     function OccEndpointsService(config, baseSiteService) {
@@ -3474,10 +4008,27 @@ var OccEndpointsService = /** @class */ (function () {
     /** @nocollapse */ OccEndpointsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
     return OccEndpointsService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.activeBaseSite;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.baseSiteService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ClientTokenInterceptor = /** @class */ (function () {
     function ClientTokenInterceptor(authService, occEndpoints) {
@@ -3538,10 +4089,22 @@ var ClientTokenInterceptor = /** @class */ (function () {
     ]; };
     return ClientTokenInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenInterceptor.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenInterceptor.prototype.occEndpoints;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserTokenInterceptor = /** @class */ (function () {
     function UserTokenInterceptor(authService, occEndpoints) {
@@ -3600,10 +4163,22 @@ var UserTokenInterceptor = /** @class */ (function () {
     ]; };
     return UserTokenInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenInterceptor.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenInterceptor.prototype.occEndpoints;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var interceptors = [
@@ -3626,7 +4201,7 @@ var interceptors = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ClientAuthenticationTokenService = /** @class */ (function () {
     function ClientAuthenticationTokenService(config, http, occEndpointsService) {
@@ -3665,10 +4240,27 @@ var ClientAuthenticationTokenService = /** @class */ (function () {
     ]; };
     return ClientAuthenticationTokenService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.occEndpointsService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserAuthenticationTokenService = /** @class */ (function () {
     function UserAuthenticationTokenService(http, config, occEndpointsService) {
@@ -3748,10 +4340,27 @@ var UserAuthenticationTokenService = /** @class */ (function () {
     ]; };
     return UserAuthenticationTokenService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.occEndpointsService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var AuthServices = [
@@ -3763,7 +4372,7 @@ var AuthServices = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {string} */
 var StorageSyncType = {
@@ -3786,10 +4395,14 @@ StateConfig = /** @class */ (function () {
     }
     return StateConfig;
 }());
+if (false) {
+    /** @type {?} */
+    StateConfig.prototype.state;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
@@ -3809,7 +4422,7 @@ var defaultStateConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -3885,6 +4498,46 @@ function rehydrate(config, winRef) {
     return deepMerge(localStorageValue, sessionStorageValue);
 }
 /**
+ * @param {?} value
+ * @return {?}
+ */
+function exists(value) {
+    if (value != null) {
+        if (typeof value === 'object') {
+            return Object.keys(value).length !== 0;
+        }
+        return value !== '';
+    }
+    return false;
+}
+/**
+ * @param {?} storageType
+ * @param {?} winRef
+ * @return {?}
+ */
+function getStorage(storageType, winRef) {
+    /** @type {?} */
+    var storage;
+    switch (storageType) {
+        case StorageSyncType.LOCAL_STORAGE: {
+            storage = winRef.localStorage;
+            break;
+        }
+        case StorageSyncType.SESSION_STORAGE: {
+            storage = winRef.sessionStorage;
+            break;
+        }
+        case StorageSyncType.NO_STORAGE: {
+            storage = undefined;
+            break;
+        }
+        default: {
+            storage = winRef.sessionStorage;
+        }
+    }
+    return storage;
+}
+/**
  * @param {?} configKey
  * @param {?} value
  * @param {?} storage
@@ -3921,7 +4574,7 @@ function isSsr(storage) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CX_KEY = makeStateKey('cx-state');
@@ -4024,14 +4677,14 @@ function getBrowserTransferStateReducer(transferState, keys) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$3 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
+var ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
 /** @type {?} */
 var stateMetaReducers = [
     {
         provide: META_REDUCERS,
-        useFactory: ɵ0$3,
+        useFactory: ɵ0$6,
         deps: [
             PLATFORM_ID,
             [new Optional(), TransferState],
@@ -4041,7 +4694,7 @@ var stateMetaReducers = [
     },
     {
         provide: META_REDUCERS,
-        useFactory: ɵ1$3,
+        useFactory: ɵ1$5,
         deps: [WindowRef, [new Optional(), Config]],
         multi: true,
     },
@@ -4049,7 +4702,7 @@ var stateMetaReducers = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StateModule = /** @class */ (function () {
     function StateModule() {
@@ -4077,7 +4730,7 @@ var StateModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var UNKNOWN_ERROR = {
@@ -4105,6 +4758,7 @@ function () {
         return value;
     });
 });
+var ɵ0$7 = circularReplacer;
 /**
  * @param {?} error
  * @return {?}
@@ -4136,7 +4790,7 @@ function makeErrorSerializable(error) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ClientTokenEffect = /** @class */ (function () {
     function ClientTokenEffect(actions$, clientAuthenticationTokenService) {
@@ -4178,17 +4832,31 @@ var ClientTokenEffect = /** @class */ (function () {
     ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
     return ClientTokenEffect;
 }());
+if (false) {
+    /** @type {?} */
+    ClientTokenEffect.prototype.loadClientToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenEffect.prototype.clientAuthenticationTokenService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var USERID_CURRENT = 'current';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserTokenEffects = /** @class */ (function () {
     function UserTokenEffects(actions$, userTokenService) {
@@ -4278,17 +4946,35 @@ var UserTokenEffects = /** @class */ (function () {
     ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
     return UserTokenEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UserTokenEffects.prototype.loadUserToken$;
+    /** @type {?} */
+    UserTokenEffects.prototype.login$;
+    /** @type {?} */
+    UserTokenEffects.prototype.refreshUserToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenEffects.prototype.userTokenService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects = [UserTokenEffects, ClientTokenEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState = (/** @type {?} */ ({}));
@@ -4318,7 +5004,7 @@ function reducer(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -4358,7 +5044,7 @@ var metaReducers = [clearAuthState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -4403,7 +5089,7 @@ var AuthStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AuthModule = /** @class */ (function () {
     function AuthModule() {
@@ -4437,7 +5123,7 @@ var AuthModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AuthRedirectService = /** @class */ (function () {
     /**
@@ -4538,10 +5224,37 @@ var AuthRedirectService = /** @class */ (function () {
     /** @nocollapse */ AuthRedirectService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router)); }, token: AuthRedirectService, providedIn: "root" });
     return AuthRedirectService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.redirectUrl;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.ignoredUrls;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.lastAuthGuardNavigation;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.routing;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AuthGuard = /** @class */ (function () {
     function AuthGuard(routingService, authService, authRedirectService, router) {
@@ -4585,10 +5298,32 @@ var AuthGuard = /** @class */ (function () {
     /** @nocollapse */ AuthGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router)); }, token: AuthGuard, providedIn: "root" });
     return AuthGuard;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.authRedirectService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var NotAuthGuard = /** @class */ (function () {
     function NotAuthGuard(routingService, authService, authRedirectService) {
@@ -4631,25 +5366,76 @@ var NotAuthGuard = /** @class */ (function () {
     /** @nocollapse */ NotAuthGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
     return NotAuthGuard;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    NotAuthGuard.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    NotAuthGuard.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotAuthGuard.prototype.authRedirectService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function UserToken() { }
+if (false) {
+    /** @type {?} */
+    UserToken.prototype.access_token;
+    /** @type {?} */
+    UserToken.prototype.token_type;
+    /** @type {?} */
+    UserToken.prototype.refresh_token;
+    /** @type {?} */
+    UserToken.prototype.expires_in;
+    /** @type {?} */
+    UserToken.prototype.scope;
+    /** @type {?} */
+    UserToken.prototype.userId;
+    /** @type {?|undefined} */
+    UserToken.prototype.expiration_time;
+}
+/**
+ * @record
+ */
+function ClientToken() { }
+if (false) {
+    /** @type {?} */
+    ClientToken.prototype.access_token;
+    /** @type {?} */
+    ClientToken.prototype.token_type;
+    /** @type {?} */
+    ClientToken.prototype.expires_in;
+    /** @type {?} */
+    ClientToken.prototype.scope;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -4681,19 +5467,60 @@ PageMetaResolver = /** @class */ (function () {
     };
     return PageMetaResolver;
 }());
+if (false) {
+    /** @type {?} */
+    PageMetaResolver.prototype.pageType;
+    /** @type {?} */
+    PageMetaResolver.prototype.pageTemplate;
+    /**
+     * @abstract
+     * @return {?}
+     */
+    PageMetaResolver.prototype.resolve = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CART_FEATURE = 'cart';
 /** @type {?} */
 var CART_DATA = '[Cart] Cart Data';
+/**
+ * @record
+ */
+function StateWithCart() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CART_FEATURE]: CartsState;*/
+}
+/**
+ * @record
+ */
+function CartsState() { }
+if (false) {
+    /** @type {?} */
+    CartsState.prototype.active;
+}
+/**
+ * @record
+ */
+function CartState() { }
+if (false) {
+    /** @type {?} */
+    CartState.prototype.content;
+    /** @type {?} */
+    CartState.prototype.entries;
+    /** @type {?} */
+    CartState.prototype.refresh;
+    /** @type {?} */
+    CartState.prototype.cartMergeComplete;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getCartContentSelector = (/**
@@ -4701,18 +5528,21 @@ var getCartContentSelector = (/**
  * @return {?}
  */
 function (state) { return state.content; });
+var ɵ0$8 = getCartContentSelector;
 /** @type {?} */
 var getCartRefreshSelector = (/**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.refresh; });
+var ɵ1$6 = getCartRefreshSelector;
 /** @type {?} */
 var getCartEntriesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entries; });
+var ɵ2$3 = getCartEntriesSelector;
 /** @type {?} */
 var getCartMergeCompleteSelector = (/**
  * @param {?} state
@@ -4721,6 +5551,7 @@ var getCartMergeCompleteSelector = (/**
 function (state) {
     return state.cartMergeComplete;
 });
+var ɵ3$3 = getCartMergeCompleteSelector;
 /** @type {?} */
 var getCartsState = createFeatureSelector(CART_FEATURE);
 var ɵ4 = /**
@@ -4798,7 +5629,7 @@ var getCartEntries = createSelector(getCartEntriesMap, (ɵ8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cartGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -4817,12 +5648,12 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ANONYMOUS_USERID = 'anonymous';
@@ -4911,10 +5742,32 @@ var CartDataService = /** @class */ (function () {
     ]; };
     return CartDataService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartDataService.prototype._userId;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartDataService.prototype._cart;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartDataService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartDataService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
@@ -4944,6 +5797,12 @@ var CartAddEntry = /** @class */ (function (_super) {
     }
     return CartAddEntry;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    CartAddEntry.prototype.type;
+    /** @type {?} */
+    CartAddEntry.prototype.payload;
+}
 var CartAddEntrySuccess = /** @class */ (function (_super) {
     __extends(CartAddEntrySuccess, _super);
     function CartAddEntrySuccess(payload) {
@@ -4954,6 +5813,12 @@ var CartAddEntrySuccess = /** @class */ (function (_super) {
     }
     return CartAddEntrySuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    CartAddEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartAddEntrySuccess.prototype.payload;
+}
 var CartAddEntryFail = /** @class */ (function (_super) {
     __extends(CartAddEntryFail, _super);
     function CartAddEntryFail(payload) {
@@ -4964,6 +5829,12 @@ var CartAddEntryFail = /** @class */ (function (_super) {
     }
     return CartAddEntryFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    CartAddEntryFail.prototype.type;
+    /** @type {?} */
+    CartAddEntryFail.prototype.payload;
+}
 var CartRemoveEntry = /** @class */ (function (_super) {
     __extends(CartRemoveEntry, _super);
     function CartRemoveEntry(payload) {
@@ -4974,6 +5845,12 @@ var CartRemoveEntry = /** @class */ (function (_super) {
     }
     return CartRemoveEntry;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    CartRemoveEntry.prototype.type;
+    /** @type {?} */
+    CartRemoveEntry.prototype.payload;
+}
 var CartRemoveEntrySuccess = /** @class */ (function (_super) {
     __extends(CartRemoveEntrySuccess, _super);
     function CartRemoveEntrySuccess(payload) {
@@ -4984,6 +5861,12 @@ var CartRemoveEntrySuccess = /** @class */ (function (_super) {
     }
     return CartRemoveEntrySuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    CartRemoveEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartRemoveEntrySuccess.prototype.payload;
+}
 var CartRemoveEntryFail = /** @class */ (function (_super) {
     __extends(CartRemoveEntryFail, _super);
     function CartRemoveEntryFail(payload) {
@@ -4994,6 +5877,12 @@ var CartRemoveEntryFail = /** @class */ (function (_super) {
     }
     return CartRemoveEntryFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    CartRemoveEntryFail.prototype.type;
+    /** @type {?} */
+    CartRemoveEntryFail.prototype.payload;
+}
 var CartUpdateEntry = /** @class */ (function (_super) {
     __extends(CartUpdateEntry, _super);
     function CartUpdateEntry(payload) {
@@ -5004,6 +5893,12 @@ var CartUpdateEntry = /** @class */ (function (_super) {
     }
     return CartUpdateEntry;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    CartUpdateEntry.prototype.type;
+    /** @type {?} */
+    CartUpdateEntry.prototype.payload;
+}
 var CartUpdateEntrySuccess = /** @class */ (function (_super) {
     __extends(CartUpdateEntrySuccess, _super);
     function CartUpdateEntrySuccess(payload) {
@@ -5014,6 +5909,12 @@ var CartUpdateEntrySuccess = /** @class */ (function (_super) {
     }
     return CartUpdateEntrySuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    CartUpdateEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartUpdateEntrySuccess.prototype.payload;
+}
 var CartUpdateEntryFail = /** @class */ (function (_super) {
     __extends(CartUpdateEntryFail, _super);
     function CartUpdateEntryFail(payload) {
@@ -5024,10 +5925,16 @@ var CartUpdateEntryFail = /** @class */ (function (_super) {
     }
     return CartUpdateEntryFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    CartUpdateEntryFail.prototype.type;
+    /** @type {?} */
+    CartUpdateEntryFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CREATE_CART = '[Cart] Create Cart';
@@ -5059,6 +5966,12 @@ var CreateCart = /** @class */ (function (_super) {
     }
     return CreateCart;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    CreateCart.prototype.type;
+    /** @type {?} */
+    CreateCart.prototype.payload;
+}
 var CreateCartFail = /** @class */ (function (_super) {
     __extends(CreateCartFail, _super);
     function CreateCartFail(payload) {
@@ -5069,6 +5982,12 @@ var CreateCartFail = /** @class */ (function (_super) {
     }
     return CreateCartFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    CreateCartFail.prototype.type;
+    /** @type {?} */
+    CreateCartFail.prototype.payload;
+}
 var CreateCartSuccess = /** @class */ (function (_super) {
     __extends(CreateCartSuccess, _super);
     function CreateCartSuccess(payload) {
@@ -5079,6 +5998,12 @@ var CreateCartSuccess = /** @class */ (function (_super) {
     }
     return CreateCartSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    CreateCartSuccess.prototype.type;
+    /** @type {?} */
+    CreateCartSuccess.prototype.payload;
+}
 var LoadCart = /** @class */ (function (_super) {
     __extends(LoadCart, _super);
     function LoadCart(payload) {
@@ -5089,6 +6014,12 @@ var LoadCart = /** @class */ (function (_super) {
     }
     return LoadCart;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadCart.prototype.type;
+    /** @type {?} */
+    LoadCart.prototype.payload;
+}
 var LoadCartFail = /** @class */ (function (_super) {
     __extends(LoadCartFail, _super);
     function LoadCartFail(payload) {
@@ -5099,6 +6030,12 @@ var LoadCartFail = /** @class */ (function (_super) {
     }
     return LoadCartFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadCartFail.prototype.type;
+    /** @type {?} */
+    LoadCartFail.prototype.payload;
+}
 var LoadCartSuccess = /** @class */ (function (_super) {
     __extends(LoadCartSuccess, _super);
     function LoadCartSuccess(payload) {
@@ -5109,6 +6046,12 @@ var LoadCartSuccess = /** @class */ (function (_super) {
     }
     return LoadCartSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadCartSuccess.prototype.type;
+    /** @type {?} */
+    LoadCartSuccess.prototype.payload;
+}
 var MergeCart = /** @class */ (function () {
     function MergeCart(payload) {
         this.payload = payload;
@@ -5116,6 +6059,12 @@ var MergeCart = /** @class */ (function () {
     }
     return MergeCart;
 }());
+if (false) {
+    /** @type {?} */
+    MergeCart.prototype.type;
+    /** @type {?} */
+    MergeCart.prototype.payload;
+}
 var MergeCartSuccess = /** @class */ (function () {
     function MergeCartSuccess(payload) {
         this.payload = payload;
@@ -5123,12 +6072,22 @@ var MergeCartSuccess = /** @class */ (function () {
     }
     return MergeCartSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    MergeCartSuccess.prototype.type;
+    /** @type {?} */
+    MergeCartSuccess.prototype.payload;
+}
 var ResetCartDetails = /** @class */ (function () {
     function ResetCartDetails() {
         this.type = RESET_CART_DETAILS;
     }
     return ResetCartDetails;
 }());
+if (false) {
+    /** @type {?} */
+    ResetCartDetails.prototype.type;
+}
 var ClearCart = /** @class */ (function (_super) {
     __extends(ClearCart, _super);
     function ClearCart() {
@@ -5138,10 +6097,14 @@ var ClearCart = /** @class */ (function (_super) {
     }
     return ClearCart;
 }(LoaderResetAction));
+if (false) {
+    /** @type {?} */
+    ClearCart.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cartGroup_actions = /*#__PURE__*/Object.freeze({
@@ -5187,12 +6150,12 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartService = /** @class */ (function () {
     function CartService(store, cartData, authService) {
@@ -5500,15 +6463,47 @@ var CartService = /** @class */ (function () {
     ]; };
     return CartService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.previousUserId;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype._activeCart$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.cartData;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CMS_FEATURE = 'cms';
@@ -5516,10 +6511,44 @@ var CMS_FEATURE = 'cms';
 var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
 /** @type {?} */
 var COMPONENT_ENTITY = '[Cms[ Component Entity';
+/**
+ * @record
+ */
+function StateWithCms() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CMS_FEATURE]: CmsState;*/
+}
+/**
+ * @record
+ */
+function NavigationNodes() { }
+/**
+ * @record
+ */
+function PageState() { }
+if (false) {
+    /** @type {?} */
+    PageState.prototype.pageData;
+    /** @type {?} */
+    PageState.prototype.index;
+}
+/**
+ * @record
+ */
+function CmsState() { }
+if (false) {
+    /** @type {?} */
+    CmsState.prototype.page;
+    /** @type {?} */
+    CmsState.prototype.component;
+    /** @type {?} */
+    CmsState.prototype.navigation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CMS_COMPONENT = '[Cms] Load Component';
@@ -5539,6 +6568,12 @@ var LoadCmsComponent = /** @class */ (function (_super) {
     }
     return LoadCmsComponent;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsComponent.prototype.type;
+    /** @type {?} */
+    LoadCmsComponent.prototype.payload;
+}
 var LoadCmsComponentFail = /** @class */ (function (_super) {
     __extends(LoadCmsComponentFail, _super);
     function LoadCmsComponentFail(uid, payload) {
@@ -5549,6 +6584,12 @@ var LoadCmsComponentFail = /** @class */ (function (_super) {
     }
     return LoadCmsComponentFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.payload;
+}
 /**
  * @template T
  */
@@ -5565,6 +6606,12 @@ LoadCmsComponentSuccess = /** @class */ (function (_super) {
     }
     return LoadCmsComponentSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.payload;
+}
 /**
  * @template T
  */
@@ -5585,10 +6632,16 @@ CmsGetComponentFromPage = /** @class */ (function (_super) {
     }
     return CmsGetComponentFromPage;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.type;
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
@@ -5606,6 +6659,12 @@ var LoadCmsNavigationItems = /** @class */ (function (_super) {
     }
     return LoadCmsNavigationItems;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.payload;
+}
 var LoadCmsNavigationItemsFail = /** @class */ (function (_super) {
     __extends(LoadCmsNavigationItemsFail, _super);
     function LoadCmsNavigationItemsFail(nodeId, payload) {
@@ -5616,6 +6675,12 @@ var LoadCmsNavigationItemsFail = /** @class */ (function (_super) {
     }
     return LoadCmsNavigationItemsFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.payload;
+}
 var LoadCmsNavigationItemsSuccess = /** @class */ (function (_super) {
     __extends(LoadCmsNavigationItemsSuccess, _super);
     function LoadCmsNavigationItemsSuccess(payload) {
@@ -5626,10 +6691,16 @@ var LoadCmsNavigationItemsSuccess = /** @class */ (function (_super) {
     }
     return LoadCmsNavigationItemsSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
@@ -5651,6 +6722,12 @@ var LoadCmsPageData = /** @class */ (function (_super) {
     }
     return LoadCmsPageData;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsPageData.prototype.type;
+    /** @type {?} */
+    LoadCmsPageData.prototype.payload;
+}
 var LoadCmsPageDataFail = /** @class */ (function (_super) {
     __extends(LoadCmsPageDataFail, _super);
     function LoadCmsPageDataFail(pageContext, error) {
@@ -5660,6 +6737,10 @@ var LoadCmsPageDataFail = /** @class */ (function (_super) {
     }
     return LoadCmsPageDataFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataFail.prototype.type;
+}
 var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
     __extends(LoadCmsPageDataSuccess, _super);
     function LoadCmsPageDataSuccess(pageContext, payload) {
@@ -5669,6 +6750,10 @@ var LoadCmsPageDataSuccess = /** @class */ (function (_super) {
     }
     return LoadCmsPageDataSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataSuccess.prototype.type;
+}
 var CmsSetPageSuccessIndex = /** @class */ (function (_super) {
     __extends(CmsSetPageSuccessIndex, _super);
     function CmsSetPageSuccessIndex(pageContext, payload) {
@@ -5678,6 +6763,10 @@ var CmsSetPageSuccessIndex = /** @class */ (function (_super) {
     }
     return CmsSetPageSuccessIndex;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    CmsSetPageSuccessIndex.prototype.type;
+}
 var CmsSetPageFailIndex = /** @class */ (function (_super) {
     __extends(CmsSetPageFailIndex, _super);
     function CmsSetPageFailIndex(pageContext, payload) {
@@ -5688,10 +6777,16 @@ var CmsSetPageFailIndex = /** @class */ (function (_super) {
     }
     return CmsSetPageFailIndex;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.type;
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cmsGroup_actions = /*#__PURE__*/Object.freeze({
@@ -5723,19 +6818,19 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getCmsState = createFeatureSelector(CMS_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getComponentEntitiesSelector = (/**
@@ -5753,13 +6848,14 @@ function (state) {
         return acc;
     }), {});
 });
-var ɵ1$4 = /**
+var ɵ0$9 = getComponentEntitiesSelector;
+var ɵ1$7 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.component; };
 /** @type {?} */
-var getComponentState = createSelector(getCmsState, (ɵ1$4));
+var getComponentState = createSelector(getCmsState, (ɵ1$7));
 /** @type {?} */
 var getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
 /** @type {?} */
@@ -5804,15 +6900,15 @@ function (uid) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$4 = /**
+var ɵ0$a = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.navigation; };
 /** @type {?} */
-var getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$4));
+var getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$a));
 /** @type {?} */
 var getSelectedNavigationEntryItemState = (/**
  * @param {?} nodeId
@@ -5840,8 +6936,24 @@ function (nodeId) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function CmsComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsComponent.prototype.modifiedTime;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.name;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.otherProperties;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.typeCode;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.uid;
+}
 /** @enum {string} */
 var PageType = {
     CONTENT_PAGE: 'ContentPage',
@@ -5849,6 +6961,124 @@ var PageType = {
     CATEGORY_PAGE: 'CategoryPage',
     CATALOG_PAGE: 'CatalogPage',
 };
+/**
+ * @record
+ */
+function CmsLinkComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.url;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.external;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.contentPage;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.contentPageLabelOrId;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.linkName;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.target;
+}
+/**
+ * @record
+ */
+function CmsSiteContextSelectorComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsSiteContextSelectorComponent.prototype.context;
+}
+/**
+ * @record
+ */
+function CmsSearchBoxComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.maxSuggestions;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.maxProducts;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displaySuggestions;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displayProducts;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displayProductImages;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.waitTimeBeforeRequest;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.minCharactersBeforeRequest;
+}
+/**
+ * @record
+ */
+function CmsParagraphComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.content;
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.title;
+}
+/**
+ * @record
+ */
+function CMSTabParagraphContainer() { }
+if (false) {
+    /** @type {?|undefined} */
+    CMSTabParagraphContainer.prototype.container;
+    /** @type {?|undefined} */
+    CMSTabParagraphContainer.prototype.components;
+}
+/**
+ * @record
+ */
+function CmsBannerComponentMedia() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.altText;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.code;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.mime;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.url;
+}
+/**
+ * @record
+ */
+function CmsResponsiveBannerComponentMedia() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.desktop;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.mobile;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.tablet;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.widescreen;
+}
+/**
+ * @record
+ */
+function CmsBannerComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.headline;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.content;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.media;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.urlLink;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.external;
+}
 /** @enum {string} */
 var CmsBannerCarouselEffect = {
     FADE: 'FADE',
@@ -5856,10 +7086,136 @@ var CmsBannerCarouselEffect = {
     CURTAIN: 'CURTAINX',
     TURNDOWN: 'TURNDOWN',
 };
+/**
+ * @record
+ */
+function CmsBannerCarouselComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerCarouselComponent.prototype.banners;
+    /** @type {?|undefined} */
+    CmsBannerCarouselComponent.prototype.effect;
+}
+/**
+ * @record
+ */
+function CmsProductCarouselComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.productCodes;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.popup;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.scroll;
+}
+/**
+ * @record
+ */
+function CmsProductReferencesComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.displayProductTitles;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.displayProductPrices;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.maximumNumberProducts;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.productReferenceTypes;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.container;
+}
+/**
+ * @record
+ */
+function CmsMiniCartComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.shownProductCount;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.totalDisplay;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.lightboxBannerComponent;
+}
+/**
+ * @record
+ */
+function CmsBreadcrumbsComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBreadcrumbsComponent.prototype.container;
+}
+/**
+ * @record
+ */
+function CmsNavigationNode() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.uid;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.title;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.children;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.entries;
+}
+/**
+ * @record
+ */
+function CmsNavigationEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemId;
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemSuperType;
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemType;
+}
+/**
+ * @record
+ */
+function CmsNavigationComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.styleClass;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.wrapAfter;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.notice;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.showLanguageCurrency;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.navigationNode;
+}
+/**
+ * @record
+ */
+function CmsProductFacetNavigationComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.activeFacetValueCode;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.searchResult;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.minPerFacet;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getPageEntitiesSelector = (/**
@@ -5867,6 +7223,7 @@ var getPageEntitiesSelector = (/**
  * @return {?}
  */
 function (state) { return state.pageData.entities; });
+var ɵ0$b = getPageEntitiesSelector;
 /** @type {?} */
 var getIndexByType = (/**
  * @param {?} index
@@ -5890,6 +7247,7 @@ function (index, type) {
     }
     return { entities: {} };
 });
+var ɵ1$8 = getIndexByType;
 /** @type {?} */
 var getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -5904,7 +7262,7 @@ function (page) {
             for (var _c = __values(Object.keys(page.slots)), _d = _c.next(); !_d.done; _d = _c.next()) {
                 var slot = _d.value;
                 try {
-                    for (var _e = __values(page.slots[slot].components || []), _f = _e.next(); !_f.done; _f = _e.next()) {
+                    for (var _e = (e_2 = void 0, __values(page.slots[slot].components || [])), _f = _e.next(); !_f.done; _f = _e.next()) {
                         var component = _f.value;
                         componentTypes.add(component.flexType);
                     }
@@ -5928,13 +7286,14 @@ function (page) {
     }
     return Array.from(componentTypes);
 });
-var ɵ3$3 = /**
+var ɵ2$4 = getPageComponentTypesSelector;
+var ɵ3$4 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.page; };
 /** @type {?} */
-var getPageState = createSelector(getCmsState, (ɵ3$3));
+var getPageState = createSelector(getCmsState, (ɵ3$4));
 var ɵ4$1 = /**
  * @param {?} page
  * @return {?}
@@ -6029,7 +7388,7 @@ function (pageContext, position) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -6054,12 +7413,12 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsService = /** @class */ (function () {
     function CmsService(store, routingService) {
@@ -6438,11 +7797,109 @@ var CmsService = /** @class */ (function () {
     /** @nocollapse */ CmsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
     return CmsService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype._launchInSmartEdit;
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype.components;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Page() { }
+if (false) {
+    /** @type {?|undefined} */
+    Page.prototype.pageId;
+    /** @type {?|undefined} */
+    Page.prototype.name;
+    /** @type {?|undefined} */
+    Page.prototype.type;
+    /** @type {?|undefined} */
+    Page.prototype.title;
+    /** @type {?|undefined} */
+    Page.prototype.template;
+    /** @type {?|undefined} */
+    Page.prototype.loadTime;
+    /** @type {?} */
+    Page.prototype.slots;
+    /** @type {?|undefined} */
+    Page.prototype.properties;
+    /** @type {?|undefined} */
+    Page.prototype.label;
+}
+/**
+ * Represents the cms structure for pages, slots and components.
+ * @record
+ */
+function CmsStructureModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.page;
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.components;
+}
+/**
+ * Represents the page meta data that can be used
+ * to resolve page data and seo related data.
+ * @record
+ */
+function PageMeta() { }
+if (false) {
+    /**
+     * the page title is used for the page title tag which
+     * is visible in the browser navigation as well as in the
+     * Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.title;
+    /**
+     * the page heading is typically used in the UI
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.heading;
+    /**
+     * the page description is used in the Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.description;
+    /**
+     * the robots information drives search engines to index the page and
+     * follow links in the page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.robots;
+    /**
+     * image that can be added to the og:image metatag
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.image;
+    /**
+     * the list of breadcrumbs that can be rendered in the page UI.
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.breadcrumbs;
+}
 /** @enum {string} */
 var PageRobotsMeta = {
     INDEX: 'INDEX',
@@ -6453,7 +7910,7 @@ var PageRobotsMeta = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartPageMetaResolver = /** @class */ (function (_super) {
     __extends(CartPageMetaResolver, _super);
@@ -6523,10 +7980,17 @@ var CartPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
     return CartPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartPageMetaResolver.prototype.cms;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -6539,10 +8003,39 @@ CartAdapter = /** @class */ (function () {
     }
     return CartAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load all carts
+     *
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    CartAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * Abstract method used to load cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CartAdapter.prototype.load = function (userId, cartId) { };
+    /**
+     * Abstract method used to create cart. If toMergeCartGuid is specified, cart will be merged with existing one
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?=} oldCartId
+     * @param {?=} toMergeCartGuid
+     * @return {?}
+     */
+    CartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartConnector = /** @class */ (function () {
     function CartConnector(adapter) {
@@ -6599,10 +8092,17 @@ var CartConnector = /** @class */ (function () {
     /** @nocollapse */ CartConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
     return CartConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartEffects = /** @class */ (function () {
     function CartEffects(actions$, cartConnector, cartData) {
@@ -6772,10 +8272,37 @@ var CartEffects = /** @class */ (function () {
     ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
     return CartEffects;
 }());
+if (false) {
+    /** @type {?} */
+    CartEffects.prototype.loadCart$;
+    /** @type {?} */
+    CartEffects.prototype.createCart$;
+    /** @type {?} */
+    CartEffects.prototype.mergeCart$;
+    /** @type {?} */
+    CartEffects.prototype.refresh$;
+    /** @type {?} */
+    CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -6788,10 +8315,44 @@ CartEntryAdapter = /** @class */ (function () {
     }
     return CartEntryAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to add entry to cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?=} quantity
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) { };
+    /**
+     * Abstract method used to update entry in cart
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} qty
+     * @param {?=} pickupStore
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) { };
+    /**
+     * Abstract method used to remove entry from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartEntryConnector = /** @class */ (function () {
     function CartEntryConnector(adapter) {
@@ -6860,10 +8421,17 @@ var CartEntryConnector = /** @class */ (function () {
     /** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
     return CartEntryConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartEntryConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartEntryEffects = /** @class */ (function () {
     function CartEntryEffects(actions$, cartEntryConnector) {
@@ -6972,17 +8540,35 @@ var CartEntryEffects = /** @class */ (function () {
     ], CartEntryEffects.prototype, "updateEntry$", void 0);
     return CartEntryEffects;
 }());
+if (false) {
+    /** @type {?} */
+    CartEntryEffects.prototype.addEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.removeEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.updateEntry$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.cartEntryConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$1 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var VERIFY_ADDRESS = '[Checkout] Verify Address';
@@ -6999,6 +8585,12 @@ var VerifyAddress = /** @class */ (function () {
     }
     return VerifyAddress;
 }());
+if (false) {
+    /** @type {?} */
+    VerifyAddress.prototype.type;
+    /** @type {?} */
+    VerifyAddress.prototype.payload;
+}
 var VerifyAddressFail = /** @class */ (function () {
     function VerifyAddressFail(payload) {
         this.payload = payload;
@@ -7006,6 +8598,12 @@ var VerifyAddressFail = /** @class */ (function () {
     }
     return VerifyAddressFail;
 }());
+if (false) {
+    /** @type {?} */
+    VerifyAddressFail.prototype.type;
+    /** @type {?} */
+    VerifyAddressFail.prototype.payload;
+}
 var VerifyAddressSuccess = /** @class */ (function () {
     function VerifyAddressSuccess(payload) {
         this.payload = payload;
@@ -7013,16 +8611,26 @@ var VerifyAddressSuccess = /** @class */ (function () {
     }
     return VerifyAddressSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    VerifyAddressSuccess.prototype.type;
+    /** @type {?} */
+    VerifyAddressSuccess.prototype.payload;
+}
 var ClearAddressVerificationResults = /** @class */ (function () {
     function ClearAddressVerificationResults() {
         this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
     }
     return ClearAddressVerificationResults;
 }());
+if (false) {
+    /** @type {?} */
+    ClearAddressVerificationResults.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CARD_TYPES = '[Checkout] Load Card Types';
@@ -7036,6 +8644,10 @@ var LoadCardTypes = /** @class */ (function () {
     }
     return LoadCardTypes;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCardTypes.prototype.type;
+}
 var LoadCardTypesFail = /** @class */ (function () {
     function LoadCardTypesFail(payload) {
         this.payload = payload;
@@ -7043,6 +8655,12 @@ var LoadCardTypesFail = /** @class */ (function () {
     }
     return LoadCardTypesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCardTypesFail.prototype.type;
+    /** @type {?} */
+    LoadCardTypesFail.prototype.payload;
+}
 var LoadCardTypesSuccess = /** @class */ (function () {
     function LoadCardTypesSuccess(payload) {
         this.payload = payload;
@@ -7050,17 +8668,32 @@ var LoadCardTypesSuccess = /** @class */ (function () {
     }
     return LoadCardTypesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadCardTypesSuccess.prototype.type;
+    /** @type {?} */
+    LoadCardTypesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PROCESS_FEATURE = 'process';
+/**
+ * @record
+ * @template T
+ */
+function StateWithProcess() { }
+if (false) {
+    /* Skipping unnamed member:
+    [PROCESS_FEATURE]: EntityLoaderState<T>;*/
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CHECKOUT_FEATURE = 'checkout';
@@ -7074,10 +8707,60 @@ var SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
 var SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
 /** @type {?} */
 var SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+/**
+ * @record
+ */
+function StateWithCheckout() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CHECKOUT_FEATURE]: CheckoutState;*/
+}
+/**
+ * @record
+ */
+function AddressVerificationState() { }
+if (false) {
+    /** @type {?} */
+    AddressVerificationState.prototype.results;
+}
+/**
+ * @record
+ */
+function CardTypesState() { }
+if (false) {
+    /** @type {?} */
+    CardTypesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function CheckoutStepsState() { }
+if (false) {
+    /** @type {?} */
+    CheckoutStepsState.prototype.address;
+    /** @type {?} */
+    CheckoutStepsState.prototype.deliveryMode;
+    /** @type {?} */
+    CheckoutStepsState.prototype.paymentDetails;
+    /** @type {?} */
+    CheckoutStepsState.prototype.orderDetails;
+}
+/**
+ * @record
+ */
+function CheckoutState() { }
+if (false) {
+    /** @type {?} */
+    CheckoutState.prototype.steps;
+    /** @type {?} */
+    CheckoutState.prototype.cardTypes;
+    /** @type {?} */
+    CheckoutState.prototype.addressVerification;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
@@ -7168,6 +8851,12 @@ var AddDeliveryAddress = /** @class */ (function () {
     }
     return AddDeliveryAddress;
 }());
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddress.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddress.prototype.payload;
+}
 var AddDeliveryAddressFail = /** @class */ (function () {
     function AddDeliveryAddressFail(payload) {
         this.payload = payload;
@@ -7175,6 +8864,12 @@ var AddDeliveryAddressFail = /** @class */ (function () {
     }
     return AddDeliveryAddressFail;
 }());
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddressFail.prototype.payload;
+}
 var AddDeliveryAddressSuccess = /** @class */ (function () {
     function AddDeliveryAddressSuccess(payload) {
         this.payload = payload;
@@ -7182,6 +8877,12 @@ var AddDeliveryAddressSuccess = /** @class */ (function () {
     }
     return AddDeliveryAddressSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddressSuccess.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddressSuccess.prototype.payload;
+}
 var SetDeliveryAddress = /** @class */ (function (_super) {
     __extends(SetDeliveryAddress, _super);
     function SetDeliveryAddress(payload) {
@@ -7192,6 +8893,12 @@ var SetDeliveryAddress = /** @class */ (function (_super) {
     }
     return SetDeliveryAddress;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddress.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddress.prototype.payload;
+}
 var SetDeliveryAddressFail = /** @class */ (function (_super) {
     __extends(SetDeliveryAddressFail, _super);
     function SetDeliveryAddressFail(payload) {
@@ -7202,6 +8909,12 @@ var SetDeliveryAddressFail = /** @class */ (function (_super) {
     }
     return SetDeliveryAddressFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddressFail.prototype.payload;
+}
 var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
     __extends(SetDeliveryAddressSuccess, _super);
     function SetDeliveryAddressSuccess(payload) {
@@ -7212,6 +8925,12 @@ var SetDeliveryAddressSuccess = /** @class */ (function (_super) {
     }
     return SetDeliveryAddressSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddressSuccess.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddressSuccess.prototype.payload;
+}
 var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
     __extends(ResetSetDeliveryAddressProcess, _super);
     function ResetSetDeliveryAddressProcess() {
@@ -7221,6 +8940,10 @@ var ResetSetDeliveryAddressProcess = /** @class */ (function (_super) {
     }
     return ResetSetDeliveryAddressProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetSetDeliveryAddressProcess.prototype.type;
+}
 var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
     __extends(LoadSupportedDeliveryModes, _super);
     function LoadSupportedDeliveryModes(payload) {
@@ -7231,6 +8954,12 @@ var LoadSupportedDeliveryModes = /** @class */ (function (_super) {
     }
     return LoadSupportedDeliveryModes;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModes.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModes.prototype.payload;
+}
 var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
     __extends(LoadSupportedDeliveryModesFail, _super);
     function LoadSupportedDeliveryModesFail(payload) {
@@ -7241,6 +8970,12 @@ var LoadSupportedDeliveryModesFail = /** @class */ (function (_super) {
     }
     return LoadSupportedDeliveryModesFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModesFail.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModesFail.prototype.payload;
+}
 var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
     __extends(LoadSupportedDeliveryModesSuccess, _super);
     function LoadSupportedDeliveryModesSuccess(payload) {
@@ -7251,6 +8986,12 @@ var LoadSupportedDeliveryModesSuccess = /** @class */ (function (_super) {
     }
     return LoadSupportedDeliveryModesSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModesSuccess.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModesSuccess.prototype.payload;
+}
 var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
     __extends(ResetLoadSupportedDeliveryModesProcess, _super);
     function ResetLoadSupportedDeliveryModesProcess() {
@@ -7260,6 +9001,10 @@ var ResetLoadSupportedDeliveryModesProcess = /** @class */ (function (_super) {
     }
     return ResetLoadSupportedDeliveryModesProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetLoadSupportedDeliveryModesProcess.prototype.type;
+}
 var SetDeliveryMode = /** @class */ (function (_super) {
     __extends(SetDeliveryMode, _super);
     function SetDeliveryMode(payload) {
@@ -7270,6 +9015,12 @@ var SetDeliveryMode = /** @class */ (function (_super) {
     }
     return SetDeliveryMode;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryMode.prototype.type;
+    /** @type {?} */
+    SetDeliveryMode.prototype.payload;
+}
 var SetDeliveryModeFail = /** @class */ (function (_super) {
     __extends(SetDeliveryModeFail, _super);
     function SetDeliveryModeFail(payload) {
@@ -7280,6 +9031,12 @@ var SetDeliveryModeFail = /** @class */ (function (_super) {
     }
     return SetDeliveryModeFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryModeFail.prototype.type;
+    /** @type {?} */
+    SetDeliveryModeFail.prototype.payload;
+}
 var SetDeliveryModeSuccess = /** @class */ (function (_super) {
     __extends(SetDeliveryModeSuccess, _super);
     function SetDeliveryModeSuccess(payload) {
@@ -7290,6 +9047,12 @@ var SetDeliveryModeSuccess = /** @class */ (function (_super) {
     }
     return SetDeliveryModeSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    SetDeliveryModeSuccess.prototype.type;
+    /** @type {?} */
+    SetDeliveryModeSuccess.prototype.payload;
+}
 var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
     __extends(ResetSetDeliveryModeProcess, _super);
     function ResetSetDeliveryModeProcess() {
@@ -7299,6 +9062,10 @@ var ResetSetDeliveryModeProcess = /** @class */ (function (_super) {
     }
     return ResetSetDeliveryModeProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetSetDeliveryModeProcess.prototype.type;
+}
 var CreatePaymentDetails = /** @class */ (function () {
     function CreatePaymentDetails(payload) {
         this.payload = payload;
@@ -7306,6 +9073,12 @@ var CreatePaymentDetails = /** @class */ (function () {
     }
     return CreatePaymentDetails;
 }());
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetails.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetails.prototype.payload;
+}
 var CreatePaymentDetailsFail = /** @class */ (function () {
     function CreatePaymentDetailsFail(payload) {
         this.payload = payload;
@@ -7313,6 +9086,12 @@ var CreatePaymentDetailsFail = /** @class */ (function () {
     }
     return CreatePaymentDetailsFail;
 }());
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetailsFail.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetailsFail.prototype.payload;
+}
 var CreatePaymentDetailsSuccess = /** @class */ (function () {
     function CreatePaymentDetailsSuccess(payload) {
         this.payload = payload;
@@ -7320,6 +9099,12 @@ var CreatePaymentDetailsSuccess = /** @class */ (function () {
     }
     return CreatePaymentDetailsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetailsSuccess.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetailsSuccess.prototype.payload;
+}
 var SetPaymentDetails = /** @class */ (function (_super) {
     __extends(SetPaymentDetails, _super);
     function SetPaymentDetails(payload) {
@@ -7330,6 +9115,12 @@ var SetPaymentDetails = /** @class */ (function (_super) {
     }
     return SetPaymentDetails;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    SetPaymentDetails.prototype.type;
+    /** @type {?} */
+    SetPaymentDetails.prototype.payload;
+}
 var SetPaymentDetailsFail = /** @class */ (function (_super) {
     __extends(SetPaymentDetailsFail, _super);
     function SetPaymentDetailsFail(payload) {
@@ -7340,6 +9131,12 @@ var SetPaymentDetailsFail = /** @class */ (function (_super) {
     }
     return SetPaymentDetailsFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    SetPaymentDetailsFail.prototype.type;
+    /** @type {?} */
+    SetPaymentDetailsFail.prototype.payload;
+}
 var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
     __extends(SetPaymentDetailsSuccess, _super);
     function SetPaymentDetailsSuccess(payload) {
@@ -7350,6 +9147,12 @@ var SetPaymentDetailsSuccess = /** @class */ (function (_super) {
     }
     return SetPaymentDetailsSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    SetPaymentDetailsSuccess.prototype.type;
+    /** @type {?} */
+    SetPaymentDetailsSuccess.prototype.payload;
+}
 var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
     __extends(ResetSetPaymentDetailsProcess, _super);
     function ResetSetPaymentDetailsProcess() {
@@ -7359,6 +9162,10 @@ var ResetSetPaymentDetailsProcess = /** @class */ (function (_super) {
     }
     return ResetSetPaymentDetailsProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetSetPaymentDetailsProcess.prototype.type;
+}
 var PlaceOrder = /** @class */ (function () {
     function PlaceOrder(payload) {
         this.payload = payload;
@@ -7366,6 +9173,12 @@ var PlaceOrder = /** @class */ (function () {
     }
     return PlaceOrder;
 }());
+if (false) {
+    /** @type {?} */
+    PlaceOrder.prototype.type;
+    /** @type {?} */
+    PlaceOrder.prototype.payload;
+}
 var PlaceOrderFail = /** @class */ (function () {
     function PlaceOrderFail(payload) {
         this.payload = payload;
@@ -7373,6 +9186,12 @@ var PlaceOrderFail = /** @class */ (function () {
     }
     return PlaceOrderFail;
 }());
+if (false) {
+    /** @type {?} */
+    PlaceOrderFail.prototype.type;
+    /** @type {?} */
+    PlaceOrderFail.prototype.payload;
+}
 var PlaceOrderSuccess = /** @class */ (function () {
     function PlaceOrderSuccess(payload) {
         this.payload = payload;
@@ -7380,12 +9199,22 @@ var PlaceOrderSuccess = /** @class */ (function () {
     }
     return PlaceOrderSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    PlaceOrderSuccess.prototype.type;
+    /** @type {?} */
+    PlaceOrderSuccess.prototype.payload;
+}
 var ClearSupportedDeliveryModes = /** @class */ (function () {
     function ClearSupportedDeliveryModes() {
         this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
     }
     return ClearSupportedDeliveryModes;
 }());
+if (false) {
+    /** @type {?} */
+    ClearSupportedDeliveryModes.prototype.type;
+}
 var ClearCheckoutStep = /** @class */ (function () {
     function ClearCheckoutStep(payload) {
         this.payload = payload;
@@ -7393,12 +9222,22 @@ var ClearCheckoutStep = /** @class */ (function () {
     }
     return ClearCheckoutStep;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutStep.prototype.type;
+    /** @type {?} */
+    ClearCheckoutStep.prototype.payload;
+}
 var ClearCheckoutData = /** @class */ (function () {
     function ClearCheckoutData() {
         this.type = CLEAR_CHECKOUT_DATA;
     }
     return ClearCheckoutData;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutData.prototype.type;
+}
 var LoadCheckoutDetails = /** @class */ (function (_super) {
     __extends(LoadCheckoutDetails, _super);
     function LoadCheckoutDetails(payload) {
@@ -7409,6 +9248,12 @@ var LoadCheckoutDetails = /** @class */ (function (_super) {
     }
     return LoadCheckoutDetails;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetails.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetails.prototype.payload;
+}
 var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
     __extends(LoadCheckoutDetailsFail, _super);
     function LoadCheckoutDetailsFail(payload) {
@@ -7419,6 +9264,12 @@ var LoadCheckoutDetailsFail = /** @class */ (function (_super) {
     }
     return LoadCheckoutDetailsFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetailsFail.prototype.payload;
+}
 var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
     __extends(LoadCheckoutDetailsSuccess, _super);
     function LoadCheckoutDetailsSuccess(payload) {
@@ -7429,12 +9280,22 @@ var LoadCheckoutDetailsSuccess = /** @class */ (function (_super) {
     }
     return LoadCheckoutDetailsSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetailsSuccess.prototype.payload;
+}
 var CheckoutClearMiscsData = /** @class */ (function () {
     function CheckoutClearMiscsData() {
         this.type = CHECKOUT_CLEAR_MISCS_DATA;
     }
     return CheckoutClearMiscsData;
 }());
+if (false) {
+    /** @type {?} */
+    CheckoutClearMiscsData.prototype.type;
+}
 var ClearCheckoutDeliveryAddress = /** @class */ (function () {
     function ClearCheckoutDeliveryAddress(payload) {
         this.payload = payload;
@@ -7442,12 +9303,22 @@ var ClearCheckoutDeliveryAddress = /** @class */ (function () {
     }
     return ClearCheckoutDeliveryAddress;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddress.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryAddress.prototype.payload;
+}
 var ClearCheckoutDeliveryAddressSuccess = /** @class */ (function () {
     function ClearCheckoutDeliveryAddressSuccess() {
         this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
     }
     return ClearCheckoutDeliveryAddressSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressSuccess.prototype.type;
+}
 var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
     function ClearCheckoutDeliveryAddressFail(payload) {
         this.payload = payload;
@@ -7455,6 +9326,12 @@ var ClearCheckoutDeliveryAddressFail = /** @class */ (function () {
     }
     return ClearCheckoutDeliveryAddressFail;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressFail.prototype.payload;
+}
 var ClearCheckoutDeliveryMode = /** @class */ (function () {
     function ClearCheckoutDeliveryMode(payload) {
         this.payload = payload;
@@ -7462,12 +9339,22 @@ var ClearCheckoutDeliveryMode = /** @class */ (function () {
     }
     return ClearCheckoutDeliveryMode;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryMode.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryMode.prototype.payload;
+}
 var ClearCheckoutDeliveryModeSuccess = /** @class */ (function () {
     function ClearCheckoutDeliveryModeSuccess() {
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
     }
     return ClearCheckoutDeliveryModeSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryModeSuccess.prototype.type;
+}
 var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
     function ClearCheckoutDeliveryModeFail(payload) {
         this.payload = payload;
@@ -7475,10 +9362,16 @@ var ClearCheckoutDeliveryModeFail = /** @class */ (function () {
     }
     return ClearCheckoutDeliveryModeFail;
 }());
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryModeFail.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryModeFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
@@ -7579,12 +9472,12 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$1 = {
@@ -7654,7 +9547,7 @@ function reducer$1(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -7694,7 +9587,7 @@ var metaReducers$1 = [clearCartState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -7735,7 +9628,7 @@ var CartStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartModule = /** @class */ (function () {
     function CartModule() {
@@ -7770,46 +9663,46 @@ var CartModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CART_NORMALIZER = new InjectionToken('CartNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$2 = {
@@ -7846,7 +9739,7 @@ function (state) { return state.results; });
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getDeliveryAddressSelector = (/**
@@ -7854,6 +9747,7 @@ var getDeliveryAddressSelector = (/**
  * @return {?}
  */
 function (state) { return state.address; });
+var ɵ0$c = getDeliveryAddressSelector;
 /** @type {?} */
 var getDeliveryModeSelector = (/**
  * @param {?} state
@@ -7862,6 +9756,7 @@ var getDeliveryModeSelector = (/**
 function (state) {
     return state.deliveryMode;
 });
+var ɵ1$9 = getDeliveryModeSelector;
 /** @type {?} */
 var getPaymentDetailsSelector = (/**
  * @param {?} state
@@ -7870,6 +9765,7 @@ var getPaymentDetailsSelector = (/**
 function (state) {
     return state.paymentDetails;
 });
+var ɵ2$5 = getPaymentDetailsSelector;
 /** @type {?} */
 var getOrderDetailsSelector = (/**
  * @param {?} state
@@ -7878,6 +9774,7 @@ var getOrderDetailsSelector = (/**
 function (state) {
     return state.orderDetails;
 });
+var ɵ3$5 = getOrderDetailsSelector;
 /** @type {?} */
 var getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
 var ɵ4$2 = /**
@@ -7952,21 +9849,21 @@ var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$5 = /**
+var ɵ0$d = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.addressVerification; };
 /** @type {?} */
-var getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$5));
+var getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$d));
 /** @type {?} */
 var getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$3 = {
@@ -8010,18 +9907,18 @@ function (state) { return state.entities; });
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$6 = /**
+var ɵ0$e = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.cardTypes; };
 /** @type {?} */
-var getCardTypesState = createSelector(getCheckoutState, (ɵ0$6));
+var getCardTypesState = createSelector(getCheckoutState, (ɵ0$e));
 /** @type {?} */
 var getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-var ɵ1$5 = /**
+var ɵ1$a = /**
  * @param {?} entites
  * @return {?}
  */
@@ -8033,11 +9930,11 @@ function (entites) {
     function (code) { return entites[code]; }));
 };
 /** @type {?} */
-var getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$5));
+var getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$a));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -8061,12 +9958,12 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutService = /** @class */ (function () {
     function CheckoutService(checkoutStore, cartData) {
@@ -8192,10 +10089,22 @@ var CheckoutService = /** @class */ (function () {
     ]; };
     return CheckoutService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -8208,10 +10117,30 @@ TranslationService = /** @class */ (function () {
     }
     return TranslationService;
 }());
+if (false) {
+    /**
+     * Translates given key with options.
+     * If key is missing, it tries to load the chunk and emits a value when chunk is loaded.
+     * If key is missing after loaded chunk, a fallback value is emitted
+     *
+     * \@param key translation key
+     * \@param options values for interpolation in translation
+     * \@param whitespaceUntilLoaded if true, immediately emits a non-breaking space
+     * @type {?}
+     */
+    TranslationService.prototype.translate;
+    /**
+     * Loads chunks with translations
+     *
+     * \@param chunkNames array of chunk names to be loaded
+     * @type {?}
+     */
+    TranslationService.prototype.loadChunks;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutPageMetaResolver = /** @class */ (function (_super) {
     __extends(CheckoutPageMetaResolver, _super);
@@ -8281,10 +10210,22 @@ var CheckoutPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(CartService), ɵɵinject(TranslationService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
     return CheckoutPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPageMetaResolver.prototype.cartService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$4 = {
@@ -8388,7 +10329,7 @@ function reducer$4(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -8410,7 +10351,7 @@ var reducerProvider$2 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -8423,10 +10364,47 @@ UserAddressAdapter = /** @class */ (function () {
     }
     return UserAddressAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.add = function (userId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} addressId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.update = function (userId, addressId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.verify = function (userId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} addressId
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.delete = function (userId, addressId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserAddressConnector = /** @class */ (function () {
     function UserAddressConnector(adapter) {
@@ -8509,10 +10487,17 @@ var UserAddressConnector = /** @class */ (function () {
     /** @nocollapse */ UserAddressConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
     return UserAddressConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAddressConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var AddressVerificationEffect = /** @class */ (function () {
     function AddressVerificationEffect(actions$, userAddressConnector) {
@@ -8555,10 +10540,24 @@ var AddressVerificationEffect = /** @class */ (function () {
     ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
     return AddressVerificationEffect;
 }());
+if (false) {
+    /** @type {?} */
+    AddressVerificationEffect.prototype.verifyAddress$;
+    /**
+     * @type {?}
+     * @private
+     */
+    AddressVerificationEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    AddressVerificationEffect.prototype.userAddressConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -8571,10 +10570,38 @@ CheckoutPaymentAdapter = /** @class */ (function () {
     }
     return CheckoutPaymentAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to create payment details on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} paymentDetails
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.create = function (userId, cartId, paymentDetails) { };
+    /**
+     * Abstract method used to set payment details on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} paymentDetailsId
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.set = function (userId, cartId, paymentDetailsId) { };
+    /**
+     * Abstract method used to get available cart types
+     * @abstract
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.loadCardTypes = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutPaymentConnector = /** @class */ (function () {
     function CheckoutPaymentConnector(adapter) {
@@ -8631,10 +10658,17 @@ var CheckoutPaymentConnector = /** @class */ (function () {
     /** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
     return CheckoutPaymentConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CardTypesEffects = /** @class */ (function () {
     function CardTypesEffects(actions$, checkoutPaymentConnector) {
@@ -8672,10 +10706,24 @@ var CardTypesEffects = /** @class */ (function () {
     ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
     return CardTypesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    CardTypesEffects.prototype.loadCardTypes$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CardTypesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CardTypesEffects.prototype.checkoutPaymentConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
@@ -8689,6 +10737,10 @@ var LoadBillingCountries = /** @class */ (function () {
     }
     return LoadBillingCountries;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBillingCountries.prototype.type;
+}
 var LoadBillingCountriesFail = /** @class */ (function () {
     function LoadBillingCountriesFail(payload) {
         this.payload = payload;
@@ -8696,6 +10748,12 @@ var LoadBillingCountriesFail = /** @class */ (function () {
     }
     return LoadBillingCountriesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBillingCountriesFail.prototype.type;
+    /** @type {?} */
+    LoadBillingCountriesFail.prototype.payload;
+}
 var LoadBillingCountriesSuccess = /** @class */ (function () {
     function LoadBillingCountriesSuccess(payload) {
         this.payload = payload;
@@ -8703,10 +10761,16 @@ var LoadBillingCountriesSuccess = /** @class */ (function () {
     }
     return LoadBillingCountriesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadBillingCountriesSuccess.prototype.type;
+    /** @type {?} */
+    LoadBillingCountriesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
@@ -8723,6 +10787,12 @@ var LoadConsignmentTracking = /** @class */ (function () {
     }
     return LoadConsignmentTracking;
 }());
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTracking.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTracking.prototype.payload;
+}
 var LoadConsignmentTrackingFail = /** @class */ (function () {
     function LoadConsignmentTrackingFail(payload) {
         this.payload = payload;
@@ -8730,6 +10800,12 @@ var LoadConsignmentTrackingFail = /** @class */ (function () {
     }
     return LoadConsignmentTrackingFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTrackingFail.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTrackingFail.prototype.payload;
+}
 var LoadConsignmentTrackingSuccess = /** @class */ (function () {
     function LoadConsignmentTrackingSuccess(payload) {
         this.payload = payload;
@@ -8737,16 +10813,26 @@ var LoadConsignmentTrackingSuccess = /** @class */ (function () {
     }
     return LoadConsignmentTrackingSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTrackingSuccess.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTrackingSuccess.prototype.payload;
+}
 var ClearConsignmentTracking = /** @class */ (function () {
     function ClearConsignmentTracking() {
         this.type = CLEAR_CONSIGNMENT_TRACKING;
     }
     return ClearConsignmentTracking;
 }());
+if (false) {
+    /** @type {?} */
+    ClearConsignmentTracking.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
@@ -8760,6 +10846,10 @@ var LoadDeliveryCountries = /** @class */ (function () {
     }
     return LoadDeliveryCountries;
 }());
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountries.prototype.type;
+}
 var LoadDeliveryCountriesFail = /** @class */ (function () {
     function LoadDeliveryCountriesFail(payload) {
         this.payload = payload;
@@ -8767,6 +10857,12 @@ var LoadDeliveryCountriesFail = /** @class */ (function () {
     }
     return LoadDeliveryCountriesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountriesFail.prototype.type;
+    /** @type {?} */
+    LoadDeliveryCountriesFail.prototype.payload;
+}
 var LoadDeliveryCountriesSuccess = /** @class */ (function () {
     function LoadDeliveryCountriesSuccess(payload) {
         this.payload = payload;
@@ -8774,10 +10870,16 @@ var LoadDeliveryCountriesSuccess = /** @class */ (function () {
     }
     return LoadDeliveryCountriesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountriesSuccess.prototype.type;
+    /** @type {?} */
+    LoadDeliveryCountriesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
@@ -8792,6 +10894,12 @@ var ForgotPasswordEmailRequest = /** @class */ (function () {
     }
     return ForgotPasswordEmailRequest;
 }());
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequest.prototype.type;
+    /** @type {?} */
+    ForgotPasswordEmailRequest.prototype.payload;
+}
 var ForgotPasswordEmailRequestFail = /** @class */ (function () {
     function ForgotPasswordEmailRequestFail(payload) {
         this.payload = payload;
@@ -8799,16 +10907,26 @@ var ForgotPasswordEmailRequestFail = /** @class */ (function () {
     }
     return ForgotPasswordEmailRequestFail;
 }());
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequestFail.prototype.type;
+    /** @type {?} */
+    ForgotPasswordEmailRequestFail.prototype.payload;
+}
 var ForgotPasswordEmailRequestSuccess = /** @class */ (function () {
     function ForgotPasswordEmailRequestSuccess() {
         this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
     }
     return ForgotPasswordEmailRequestSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequestSuccess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_ORDER_DETAILS = '[User] Load Order Details';
@@ -8825,6 +10943,12 @@ var LoadOrderDetails = /** @class */ (function () {
     }
     return LoadOrderDetails;
 }());
+if (false) {
+    /** @type {?} */
+    LoadOrderDetails.prototype.type;
+    /** @type {?} */
+    LoadOrderDetails.prototype.payload;
+}
 var LoadOrderDetailsFail = /** @class */ (function () {
     function LoadOrderDetailsFail(payload) {
         this.payload = payload;
@@ -8832,6 +10956,12 @@ var LoadOrderDetailsFail = /** @class */ (function () {
     }
     return LoadOrderDetailsFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadOrderDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadOrderDetailsFail.prototype.payload;
+}
 var LoadOrderDetailsSuccess = /** @class */ (function () {
     function LoadOrderDetailsSuccess(payload) {
         this.payload = payload;
@@ -8839,16 +10969,26 @@ var LoadOrderDetailsSuccess = /** @class */ (function () {
     }
     return LoadOrderDetailsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadOrderDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadOrderDetailsSuccess.prototype.payload;
+}
 var ClearOrderDetails = /** @class */ (function () {
     function ClearOrderDetails() {
         this.type = CLEAR_ORDER_DETAILS;
     }
     return ClearOrderDetails;
 }());
+if (false) {
+    /** @type {?} */
+    ClearOrderDetails.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var USER_FEATURE = 'user';
@@ -8876,10 +11016,118 @@ var USER_ORDERS = '[User] User Orders';
 var USER_ADDRESSES = '[User] User Addresses';
 /** @type {?} */
 var REGIONS = '[User] Regions';
+/**
+ * @record
+ */
+function StateWithUser() { }
+if (false) {
+    /* Skipping unnamed member:
+    [USER_FEATURE]: UserState;*/
+}
+/**
+ * @record
+ */
+function UserState() { }
+if (false) {
+    /** @type {?} */
+    UserState.prototype.account;
+    /** @type {?} */
+    UserState.prototype.addresses;
+    /** @type {?} */
+    UserState.prototype.consents;
+    /** @type {?} */
+    UserState.prototype.billingCountries;
+    /** @type {?} */
+    UserState.prototype.countries;
+    /** @type {?} */
+    UserState.prototype.payments;
+    /** @type {?} */
+    UserState.prototype.orders;
+    /** @type {?} */
+    UserState.prototype.order;
+    /** @type {?} */
+    UserState.prototype.titles;
+    /** @type {?} */
+    UserState.prototype.regions;
+    /** @type {?} */
+    UserState.prototype.resetPassword;
+    /** @type {?} */
+    UserState.prototype.consignmentTracking;
+}
+/**
+ * @record
+ */
+function OrderDetailsState() { }
+if (false) {
+    /** @type {?} */
+    OrderDetailsState.prototype.order;
+}
+/**
+ * @record
+ */
+function RegionsState() { }
+if (false) {
+    /** @type {?} */
+    RegionsState.prototype.entities;
+    /** @type {?} */
+    RegionsState.prototype.country;
+}
+/**
+ * @record
+ */
+function BillingCountryEntities() { }
+/**
+ * @record
+ */
+function BillingCountriesState() { }
+if (false) {
+    /** @type {?} */
+    BillingCountriesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function DeliveryCountryEntities() { }
+/**
+ * @record
+ */
+function DeliveryCountriesState() { }
+if (false) {
+    /** @type {?} */
+    DeliveryCountriesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function TitleEntities() { }
+/**
+ * @record
+ */
+function TitlesState() { }
+if (false) {
+    /** @type {?} */
+    TitlesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function UserDetailsState() { }
+if (false) {
+    /** @type {?} */
+    UserDetailsState.prototype.details;
+}
+/**
+ * @record
+ */
+function ConsignmentTrackingState() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTrackingState.prototype.tracking;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
@@ -8909,6 +11157,12 @@ var LoadUserPaymentMethods = /** @class */ (function (_super) {
     }
     return LoadUserPaymentMethods;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethods.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethods.prototype.payload;
+}
 var LoadUserPaymentMethodsFail = /** @class */ (function (_super) {
     __extends(LoadUserPaymentMethodsFail, _super);
     function LoadUserPaymentMethodsFail(payload) {
@@ -8919,6 +11173,12 @@ var LoadUserPaymentMethodsFail = /** @class */ (function (_super) {
     }
     return LoadUserPaymentMethodsFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethodsFail.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethodsFail.prototype.payload;
+}
 var LoadUserPaymentMethodsSuccess = /** @class */ (function (_super) {
     __extends(LoadUserPaymentMethodsSuccess, _super);
     function LoadUserPaymentMethodsSuccess(payload) {
@@ -8929,6 +11189,12 @@ var LoadUserPaymentMethodsSuccess = /** @class */ (function (_super) {
     }
     return LoadUserPaymentMethodsSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethodsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethodsSuccess.prototype.payload;
+}
 var SetDefaultUserPaymentMethod = /** @class */ (function (_super) {
     __extends(SetDefaultUserPaymentMethod, _super);
     function SetDefaultUserPaymentMethod(payload) {
@@ -8939,6 +11205,12 @@ var SetDefaultUserPaymentMethod = /** @class */ (function (_super) {
     }
     return SetDefaultUserPaymentMethod;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethod.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethod.prototype.payload;
+}
 var SetDefaultUserPaymentMethodFail = /** @class */ (function (_super) {
     __extends(SetDefaultUserPaymentMethodFail, _super);
     function SetDefaultUserPaymentMethodFail(payload) {
@@ -8949,6 +11221,12 @@ var SetDefaultUserPaymentMethodFail = /** @class */ (function (_super) {
     }
     return SetDefaultUserPaymentMethodFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethodFail.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethodFail.prototype.payload;
+}
 var SetDefaultUserPaymentMethodSuccess = /** @class */ (function (_super) {
     __extends(SetDefaultUserPaymentMethodSuccess, _super);
     function SetDefaultUserPaymentMethodSuccess(payload) {
@@ -8959,6 +11237,12 @@ var SetDefaultUserPaymentMethodSuccess = /** @class */ (function (_super) {
     }
     return SetDefaultUserPaymentMethodSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethodSuccess.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethodSuccess.prototype.payload;
+}
 var DeleteUserPaymentMethod = /** @class */ (function (_super) {
     __extends(DeleteUserPaymentMethod, _super);
     function DeleteUserPaymentMethod(payload) {
@@ -8969,6 +11253,12 @@ var DeleteUserPaymentMethod = /** @class */ (function (_super) {
     }
     return DeleteUserPaymentMethod;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethod.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethod.prototype.payload;
+}
 var DeleteUserPaymentMethodFail = /** @class */ (function (_super) {
     __extends(DeleteUserPaymentMethodFail, _super);
     function DeleteUserPaymentMethodFail(payload) {
@@ -8979,6 +11269,12 @@ var DeleteUserPaymentMethodFail = /** @class */ (function (_super) {
     }
     return DeleteUserPaymentMethodFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethodFail.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethodFail.prototype.payload;
+}
 var DeleteUserPaymentMethodSuccess = /** @class */ (function (_super) {
     __extends(DeleteUserPaymentMethodSuccess, _super);
     function DeleteUserPaymentMethodSuccess(payload) {
@@ -8989,10 +11285,16 @@ var DeleteUserPaymentMethodSuccess = /** @class */ (function (_super) {
     }
     return DeleteUserPaymentMethodSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethodSuccess.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethodSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_REGIONS = '[User] Load Regions';
@@ -9012,6 +11314,12 @@ var LoadRegions = /** @class */ (function (_super) {
     }
     return LoadRegions;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadRegions.prototype.type;
+    /** @type {?} */
+    LoadRegions.prototype.payload;
+}
 var LoadRegionsFail = /** @class */ (function (_super) {
     __extends(LoadRegionsFail, _super);
     function LoadRegionsFail(payload) {
@@ -9022,6 +11330,12 @@ var LoadRegionsFail = /** @class */ (function (_super) {
     }
     return LoadRegionsFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadRegionsFail.prototype.type;
+    /** @type {?} */
+    LoadRegionsFail.prototype.payload;
+}
 var LoadRegionsSuccess = /** @class */ (function (_super) {
     __extends(LoadRegionsSuccess, _super);
     function LoadRegionsSuccess(payload) {
@@ -9032,16 +11346,26 @@ var LoadRegionsSuccess = /** @class */ (function (_super) {
     }
     return LoadRegionsSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadRegionsSuccess.prototype.type;
+    /** @type {?} */
+    LoadRegionsSuccess.prototype.payload;
+}
 var ClearRegions = /** @class */ (function () {
     function ClearRegions() {
         this.type = CLEAR_REGIONS;
     }
     return ClearRegions;
 }());
+if (false) {
+    /** @type {?} */
+    ClearRegions.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var RESET_PASSWORD = '[User] Reset Password';
@@ -9056,6 +11380,12 @@ var ResetPassword = /** @class */ (function () {
     }
     return ResetPassword;
 }());
+if (false) {
+    /** @type {?} */
+    ResetPassword.prototype.type;
+    /** @type {?} */
+    ResetPassword.prototype.payload;
+}
 var ResetPasswordFail = /** @class */ (function () {
     function ResetPasswordFail(payload) {
         this.payload = payload;
@@ -9063,16 +11393,26 @@ var ResetPasswordFail = /** @class */ (function () {
     }
     return ResetPasswordFail;
 }());
+if (false) {
+    /** @type {?} */
+    ResetPasswordFail.prototype.type;
+    /** @type {?} */
+    ResetPasswordFail.prototype.payload;
+}
 var ResetPasswordSuccess = /** @class */ (function () {
     function ResetPasswordSuccess() {
         this.type = RESET_PASSWORD_SUCCESS;
     }
     return ResetPasswordSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    ResetPasswordSuccess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_TITLES = '[User] Load Tiltes';
@@ -9086,6 +11426,10 @@ var LoadTitles = /** @class */ (function () {
     }
     return LoadTitles;
 }());
+if (false) {
+    /** @type {?} */
+    LoadTitles.prototype.type;
+}
 var LoadTitlesFail = /** @class */ (function () {
     function LoadTitlesFail(payload) {
         this.payload = payload;
@@ -9093,6 +11437,12 @@ var LoadTitlesFail = /** @class */ (function () {
     }
     return LoadTitlesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadTitlesFail.prototype.type;
+    /** @type {?} */
+    LoadTitlesFail.prototype.payload;
+}
 var LoadTitlesSuccess = /** @class */ (function () {
     function LoadTitlesSuccess(payload) {
         this.payload = payload;
@@ -9100,10 +11450,16 @@ var LoadTitlesSuccess = /** @class */ (function () {
     }
     return LoadTitlesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadTitlesSuccess.prototype.type;
+    /** @type {?} */
+    LoadTitlesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var UPDATE_EMAIL = '[User] Update Email';
@@ -9123,6 +11479,12 @@ var UpdateEmailAction = /** @class */ (function (_super) {
     }
     return UpdateEmailAction;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    UpdateEmailAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailAction.prototype.payload;
+}
 var UpdateEmailSuccessAction = /** @class */ (function (_super) {
     __extends(UpdateEmailSuccessAction, _super);
     function UpdateEmailSuccessAction(newUid) {
@@ -9133,6 +11495,12 @@ var UpdateEmailSuccessAction = /** @class */ (function (_super) {
     }
     return UpdateEmailSuccessAction;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    UpdateEmailSuccessAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailSuccessAction.prototype.newUid;
+}
 var UpdateEmailErrorAction = /** @class */ (function (_super) {
     __extends(UpdateEmailErrorAction, _super);
     function UpdateEmailErrorAction(payload) {
@@ -9143,6 +11511,12 @@ var UpdateEmailErrorAction = /** @class */ (function (_super) {
     }
     return UpdateEmailErrorAction;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    UpdateEmailErrorAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailErrorAction.prototype.payload;
+}
 var ResetUpdateEmailAction = /** @class */ (function (_super) {
     __extends(ResetUpdateEmailAction, _super);
     function ResetUpdateEmailAction() {
@@ -9152,10 +11526,14 @@ var ResetUpdateEmailAction = /** @class */ (function (_super) {
     }
     return ResetUpdateEmailAction;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetUpdateEmailAction.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var UPDATE_PASSWORD = '[User] Update Password';
@@ -9175,6 +11553,12 @@ var UpdatePassword = /** @class */ (function (_super) {
     }
     return UpdatePassword;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    UpdatePassword.prototype.type;
+    /** @type {?} */
+    UpdatePassword.prototype.payload;
+}
 var UpdatePasswordFail = /** @class */ (function (_super) {
     __extends(UpdatePasswordFail, _super);
     function UpdatePasswordFail(payload) {
@@ -9185,6 +11569,12 @@ var UpdatePasswordFail = /** @class */ (function (_super) {
     }
     return UpdatePasswordFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    UpdatePasswordFail.prototype.type;
+    /** @type {?} */
+    UpdatePasswordFail.prototype.payload;
+}
 var UpdatePasswordSuccess = /** @class */ (function (_super) {
     __extends(UpdatePasswordSuccess, _super);
     function UpdatePasswordSuccess() {
@@ -9194,6 +11584,10 @@ var UpdatePasswordSuccess = /** @class */ (function (_super) {
     }
     return UpdatePasswordSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    UpdatePasswordSuccess.prototype.type;
+}
 var UpdatePasswordReset = /** @class */ (function (_super) {
     __extends(UpdatePasswordReset, _super);
     function UpdatePasswordReset() {
@@ -9203,10 +11597,14 @@ var UpdatePasswordReset = /** @class */ (function (_super) {
     }
     return UpdatePasswordReset;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    UpdatePasswordReset.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_ADDRESSES = '[User] Load User Addresses';
@@ -9242,6 +11640,12 @@ var LoadUserAddresses = /** @class */ (function (_super) {
     }
     return LoadUserAddresses;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadUserAddresses.prototype.type;
+    /** @type {?} */
+    LoadUserAddresses.prototype.payload;
+}
 var LoadUserAddressesFail = /** @class */ (function (_super) {
     __extends(LoadUserAddressesFail, _super);
     function LoadUserAddressesFail(payload) {
@@ -9252,6 +11656,12 @@ var LoadUserAddressesFail = /** @class */ (function (_super) {
     }
     return LoadUserAddressesFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadUserAddressesFail.prototype.type;
+    /** @type {?} */
+    LoadUserAddressesFail.prototype.payload;
+}
 var LoadUserAddressesSuccess = /** @class */ (function (_super) {
     __extends(LoadUserAddressesSuccess, _super);
     function LoadUserAddressesSuccess(payload) {
@@ -9262,6 +11672,12 @@ var LoadUserAddressesSuccess = /** @class */ (function (_super) {
     }
     return LoadUserAddressesSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadUserAddressesSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserAddressesSuccess.prototype.payload;
+}
 // Adding address actions
 var 
 // Adding address actions
@@ -9275,6 +11691,12 @@ AddUserAddress = /** @class */ (function (_super) {
     }
     return AddUserAddress;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    AddUserAddress.prototype.type;
+    /** @type {?} */
+    AddUserAddress.prototype.payload;
+}
 var AddUserAddressFail = /** @class */ (function (_super) {
     __extends(AddUserAddressFail, _super);
     function AddUserAddressFail(payload) {
@@ -9285,6 +11707,12 @@ var AddUserAddressFail = /** @class */ (function (_super) {
     }
     return AddUserAddressFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    AddUserAddressFail.prototype.type;
+    /** @type {?} */
+    AddUserAddressFail.prototype.payload;
+}
 var AddUserAddressSuccess = /** @class */ (function (_super) {
     __extends(AddUserAddressSuccess, _super);
     function AddUserAddressSuccess(payload) {
@@ -9295,6 +11723,12 @@ var AddUserAddressSuccess = /** @class */ (function (_super) {
     }
     return AddUserAddressSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    AddUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    AddUserAddressSuccess.prototype.payload;
+}
 // Updating address actions
 var 
 // Updating address actions
@@ -9308,6 +11742,12 @@ UpdateUserAddress = /** @class */ (function (_super) {
     }
     return UpdateUserAddress;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserAddress.prototype.type;
+    /** @type {?} */
+    UpdateUserAddress.prototype.payload;
+}
 var UpdateUserAddressFail = /** @class */ (function (_super) {
     __extends(UpdateUserAddressFail, _super);
     function UpdateUserAddressFail(payload) {
@@ -9318,6 +11758,12 @@ var UpdateUserAddressFail = /** @class */ (function (_super) {
     }
     return UpdateUserAddressFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserAddressFail.prototype.type;
+    /** @type {?} */
+    UpdateUserAddressFail.prototype.payload;
+}
 var UpdateUserAddressSuccess = /** @class */ (function (_super) {
     __extends(UpdateUserAddressSuccess, _super);
     function UpdateUserAddressSuccess(payload) {
@@ -9328,6 +11774,12 @@ var UpdateUserAddressSuccess = /** @class */ (function (_super) {
     }
     return UpdateUserAddressSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    UpdateUserAddressSuccess.prototype.payload;
+}
 // Deleting address actions
 var 
 // Deleting address actions
@@ -9341,6 +11793,12 @@ DeleteUserAddress = /** @class */ (function (_super) {
     }
     return DeleteUserAddress;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserAddress.prototype.type;
+    /** @type {?} */
+    DeleteUserAddress.prototype.payload;
+}
 var DeleteUserAddressFail = /** @class */ (function (_super) {
     __extends(DeleteUserAddressFail, _super);
     function DeleteUserAddressFail(payload) {
@@ -9351,6 +11809,12 @@ var DeleteUserAddressFail = /** @class */ (function (_super) {
     }
     return DeleteUserAddressFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserAddressFail.prototype.type;
+    /** @type {?} */
+    DeleteUserAddressFail.prototype.payload;
+}
 var DeleteUserAddressSuccess = /** @class */ (function (_super) {
     __extends(DeleteUserAddressSuccess, _super);
     function DeleteUserAddressSuccess(payload) {
@@ -9361,10 +11825,16 @@ var DeleteUserAddressSuccess = /** @class */ (function (_super) {
     }
     return DeleteUserAddressSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    DeleteUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    DeleteUserAddressSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_CONSENTS = '[User] Load User Consents';
@@ -9400,6 +11870,12 @@ var LoadUserConsents = /** @class */ (function (_super) {
     }
     return LoadUserConsents;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadUserConsents.prototype.type;
+    /** @type {?} */
+    LoadUserConsents.prototype.payload;
+}
 var LoadUserConsentsFail = /** @class */ (function (_super) {
     __extends(LoadUserConsentsFail, _super);
     function LoadUserConsentsFail(payload) {
@@ -9410,6 +11886,12 @@ var LoadUserConsentsFail = /** @class */ (function (_super) {
     }
     return LoadUserConsentsFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadUserConsentsFail.prototype.type;
+    /** @type {?} */
+    LoadUserConsentsFail.prototype.payload;
+}
 var LoadUserConsentsSuccess = /** @class */ (function (_super) {
     __extends(LoadUserConsentsSuccess, _super);
     function LoadUserConsentsSuccess(payload) {
@@ -9420,6 +11902,12 @@ var LoadUserConsentsSuccess = /** @class */ (function (_super) {
     }
     return LoadUserConsentsSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadUserConsentsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserConsentsSuccess.prototype.payload;
+}
 var ResetLoadUserConsents = /** @class */ (function (_super) {
     __extends(ResetLoadUserConsents, _super);
     function ResetLoadUserConsents() {
@@ -9429,6 +11917,10 @@ var ResetLoadUserConsents = /** @class */ (function (_super) {
     }
     return ResetLoadUserConsents;
 }(LoaderResetAction));
+if (false) {
+    /** @type {?} */
+    ResetLoadUserConsents.prototype.type;
+}
 var GiveUserConsent = /** @class */ (function (_super) {
     __extends(GiveUserConsent, _super);
     function GiveUserConsent(payload) {
@@ -9439,6 +11931,12 @@ var GiveUserConsent = /** @class */ (function (_super) {
     }
     return GiveUserConsent;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    GiveUserConsent.prototype.type;
+    /** @type {?} */
+    GiveUserConsent.prototype.payload;
+}
 var GiveUserConsentFail = /** @class */ (function (_super) {
     __extends(GiveUserConsentFail, _super);
     function GiveUserConsentFail(payload) {
@@ -9448,6 +11946,10 @@ var GiveUserConsentFail = /** @class */ (function (_super) {
     }
     return GiveUserConsentFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    GiveUserConsentFail.prototype.type;
+}
 var GiveUserConsentSuccess = /** @class */ (function (_super) {
     __extends(GiveUserConsentSuccess, _super);
     function GiveUserConsentSuccess(consentTemplate) {
@@ -9458,6 +11960,12 @@ var GiveUserConsentSuccess = /** @class */ (function (_super) {
     }
     return GiveUserConsentSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    GiveUserConsentSuccess.prototype.type;
+    /** @type {?} */
+    GiveUserConsentSuccess.prototype.consentTemplate;
+}
 var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
     __extends(ResetGiveUserConsentProcess, _super);
     function ResetGiveUserConsentProcess() {
@@ -9467,6 +11975,10 @@ var ResetGiveUserConsentProcess = /** @class */ (function (_super) {
     }
     return ResetGiveUserConsentProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetGiveUserConsentProcess.prototype.type;
+}
 var WithdrawUserConsent = /** @class */ (function (_super) {
     __extends(WithdrawUserConsent, _super);
     function WithdrawUserConsent(payload) {
@@ -9477,6 +11989,12 @@ var WithdrawUserConsent = /** @class */ (function (_super) {
     }
     return WithdrawUserConsent;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsent.prototype.type;
+    /** @type {?} */
+    WithdrawUserConsent.prototype.payload;
+}
 var WithdrawUserConsentFail = /** @class */ (function (_super) {
     __extends(WithdrawUserConsentFail, _super);
     function WithdrawUserConsentFail(payload) {
@@ -9486,6 +12004,10 @@ var WithdrawUserConsentFail = /** @class */ (function (_super) {
     }
     return WithdrawUserConsentFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsentFail.prototype.type;
+}
 var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
     __extends(WithdrawUserConsentSuccess, _super);
     function WithdrawUserConsentSuccess() {
@@ -9495,6 +12017,10 @@ var WithdrawUserConsentSuccess = /** @class */ (function (_super) {
     }
     return WithdrawUserConsentSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsentSuccess.prototype.type;
+}
 var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
     __extends(ResetWithdrawUserConsentProcess, _super);
     function ResetWithdrawUserConsentProcess() {
@@ -9504,10 +12030,14 @@ var ResetWithdrawUserConsentProcess = /** @class */ (function (_super) {
     }
     return ResetWithdrawUserConsentProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetWithdrawUserConsentProcess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_DETAILS = '[User] Load User Details';
@@ -9530,6 +12060,12 @@ var LoadUserDetails = /** @class */ (function () {
     }
     return LoadUserDetails;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserDetails.prototype.type;
+    /** @type {?} */
+    LoadUserDetails.prototype.payload;
+}
 var LoadUserDetailsFail = /** @class */ (function () {
     function LoadUserDetailsFail(payload) {
         this.payload = payload;
@@ -9537,6 +12073,12 @@ var LoadUserDetailsFail = /** @class */ (function () {
     }
     return LoadUserDetailsFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadUserDetailsFail.prototype.payload;
+}
 var LoadUserDetailsSuccess = /** @class */ (function () {
     function LoadUserDetailsSuccess(payload) {
         this.payload = payload;
@@ -9544,6 +12086,12 @@ var LoadUserDetailsSuccess = /** @class */ (function () {
     }
     return LoadUserDetailsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadUserDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserDetailsSuccess.prototype.payload;
+}
 var UpdateUserDetails = /** @class */ (function (_super) {
     __extends(UpdateUserDetails, _super);
     function UpdateUserDetails(payload) {
@@ -9554,6 +12102,12 @@ var UpdateUserDetails = /** @class */ (function (_super) {
     }
     return UpdateUserDetails;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserDetails.prototype.type;
+    /** @type {?} */
+    UpdateUserDetails.prototype.payload;
+}
 var UpdateUserDetailsFail = /** @class */ (function (_super) {
     __extends(UpdateUserDetailsFail, _super);
     function UpdateUserDetailsFail(payload) {
@@ -9564,6 +12118,12 @@ var UpdateUserDetailsFail = /** @class */ (function (_super) {
     }
     return UpdateUserDetailsFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserDetailsFail.prototype.type;
+    /** @type {?} */
+    UpdateUserDetailsFail.prototype.payload;
+}
 var UpdateUserDetailsSuccess = /** @class */ (function (_super) {
     __extends(UpdateUserDetailsSuccess, _super);
     function UpdateUserDetailsSuccess(userUpdates) {
@@ -9574,6 +12134,12 @@ var UpdateUserDetailsSuccess = /** @class */ (function (_super) {
     }
     return UpdateUserDetailsSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    UpdateUserDetailsSuccess.prototype.type;
+    /** @type {?} */
+    UpdateUserDetailsSuccess.prototype.userUpdates;
+}
 var ResetUpdateUserDetails = /** @class */ (function (_super) {
     __extends(ResetUpdateUserDetails, _super);
     function ResetUpdateUserDetails() {
@@ -9583,10 +12149,14 @@ var ResetUpdateUserDetails = /** @class */ (function (_super) {
     }
     return ResetUpdateUserDetails;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetUpdateUserDetails.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
@@ -9596,10 +12166,14 @@ var ClearUserMiscsData = /** @class */ (function () {
     }
     return ClearUserMiscsData;
 }());
+if (false) {
+    /** @type {?} */
+    ClearUserMiscsData.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_USER_ORDERS = '[User] Load User Orders';
@@ -9619,6 +12193,12 @@ var LoadUserOrders = /** @class */ (function (_super) {
     }
     return LoadUserOrders;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadUserOrders.prototype.type;
+    /** @type {?} */
+    LoadUserOrders.prototype.payload;
+}
 var LoadUserOrdersFail = /** @class */ (function (_super) {
     __extends(LoadUserOrdersFail, _super);
     function LoadUserOrdersFail(payload) {
@@ -9629,6 +12209,12 @@ var LoadUserOrdersFail = /** @class */ (function (_super) {
     }
     return LoadUserOrdersFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadUserOrdersFail.prototype.type;
+    /** @type {?} */
+    LoadUserOrdersFail.prototype.payload;
+}
 var LoadUserOrdersSuccess = /** @class */ (function (_super) {
     __extends(LoadUserOrdersSuccess, _super);
     function LoadUserOrdersSuccess(payload) {
@@ -9639,16 +12225,26 @@ var LoadUserOrdersSuccess = /** @class */ (function (_super) {
     }
     return LoadUserOrdersSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadUserOrdersSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserOrdersSuccess.prototype.payload;
+}
 var ClearUserOrders = /** @class */ (function () {
     function ClearUserOrders() {
         this.type = CLEAR_USER_ORDERS;
     }
     return ClearUserOrders;
 }());
+if (false) {
+    /** @type {?} */
+    ClearUserOrders.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var REGISTER_USER = '[User] Register User';
@@ -9676,6 +12272,12 @@ var RegisterUser = /** @class */ (function (_super) {
     }
     return RegisterUser;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    RegisterUser.prototype.type;
+    /** @type {?} */
+    RegisterUser.prototype.payload;
+}
 var RegisterUserFail = /** @class */ (function (_super) {
     __extends(RegisterUserFail, _super);
     function RegisterUserFail(payload) {
@@ -9686,6 +12288,12 @@ var RegisterUserFail = /** @class */ (function (_super) {
     }
     return RegisterUserFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    RegisterUserFail.prototype.type;
+    /** @type {?} */
+    RegisterUserFail.prototype.payload;
+}
 var RegisterUserSuccess = /** @class */ (function (_super) {
     __extends(RegisterUserSuccess, _super);
     function RegisterUserSuccess() {
@@ -9695,6 +12303,10 @@ var RegisterUserSuccess = /** @class */ (function (_super) {
     }
     return RegisterUserSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    RegisterUserSuccess.prototype.type;
+}
 var ResetRegisterUserProcess = /** @class */ (function (_super) {
     __extends(ResetRegisterUserProcess, _super);
     function ResetRegisterUserProcess() {
@@ -9704,6 +12316,10 @@ var ResetRegisterUserProcess = /** @class */ (function (_super) {
     }
     return ResetRegisterUserProcess;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    ResetRegisterUserProcess.prototype.type;
+}
 var RemoveUser = /** @class */ (function (_super) {
     __extends(RemoveUser, _super);
     function RemoveUser(payload) {
@@ -9714,6 +12330,12 @@ var RemoveUser = /** @class */ (function (_super) {
     }
     return RemoveUser;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    RemoveUser.prototype.type;
+    /** @type {?} */
+    RemoveUser.prototype.payload;
+}
 var RemoveUserFail = /** @class */ (function (_super) {
     __extends(RemoveUserFail, _super);
     function RemoveUserFail(payload) {
@@ -9724,6 +12346,12 @@ var RemoveUserFail = /** @class */ (function (_super) {
     }
     return RemoveUserFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    RemoveUserFail.prototype.type;
+    /** @type {?} */
+    RemoveUserFail.prototype.payload;
+}
 var RemoveUserSuccess = /** @class */ (function (_super) {
     __extends(RemoveUserSuccess, _super);
     function RemoveUserSuccess() {
@@ -9733,6 +12361,10 @@ var RemoveUserSuccess = /** @class */ (function (_super) {
     }
     return RemoveUserSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    RemoveUserSuccess.prototype.type;
+}
 var RemoveUserReset = /** @class */ (function (_super) {
     __extends(RemoveUserReset, _super);
     function RemoveUserReset() {
@@ -9742,10 +12374,14 @@ var RemoveUserReset = /** @class */ (function (_super) {
     }
     return RemoveUserReset;
 }(EntityResetAction));
+if (false) {
+    /** @type {?} */
+    RemoveUserReset.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var userGroup_actions = /*#__PURE__*/Object.freeze({
@@ -9929,12 +12565,12 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -9947,10 +12583,48 @@ CheckoutAdapter = /** @class */ (function () {
     }
     return CheckoutAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to place an order.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} cartId The `cartId` for cart used for placing order
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.placeOrder = function (userId, cartId) { };
+    /**
+     * Abstract method used to load checkout details
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) { };
+    /**
+     * Abstract method used to clear checkout delivery address
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) { };
+    /**
+     * Abstract method used to clear checkout delivery mode
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.clearCheckoutDeliveryMode = function (userId, cartId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutConnector = /** @class */ (function () {
     function CheckoutConnector(adapter) {
@@ -10020,10 +12694,17 @@ var CheckoutConnector = /** @class */ (function () {
     /** @nocollapse */ CheckoutConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
     return CheckoutConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -10036,10 +12717,60 @@ CheckoutDeliveryAdapter = /** @class */ (function () {
     }
     return CheckoutDeliveryAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to create address in cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} address
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.createAddress = function (userId, cartId, address) { };
+    /**
+     * Abstract method used to set adress for delivery
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} addressId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.setAddress = function (userId, cartId, addressId) { };
+    /**
+     * Abstract method used to set delivery mode on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} deliveryModeId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.setMode = function (userId, cartId, deliveryModeId) { };
+    /**
+     * Abstract method used to get current delivery mode from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.getMode = function (userId, cartId) { };
+    /**
+     * Abstract method used to get supported delivery modes for cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.getSupportedModes = function (userId, cartId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutDeliveryConnector = /** @class */ (function () {
     function CheckoutDeliveryConnector(adapter) {
@@ -10128,10 +12859,17 @@ var CheckoutDeliveryConnector = /** @class */ (function () {
     /** @nocollapse */ CheckoutDeliveryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
     return CheckoutDeliveryConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutEffects = /** @class */ (function () {
     function CheckoutEffects(actions$, checkoutDeliveryConnector, checkoutPaymentConnector, checkoutConnector) {
@@ -10495,10 +13233,60 @@ var CheckoutEffects = /** @class */ (function () {
     ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
     return CheckoutEffects;
 }());
+if (false) {
+    /** @type {?} */
+    CheckoutEffects.prototype.addDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.loadSupportedDeliveryModes$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutMiscsDataOnLanguageChange$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearDeliveryModesOnCurrencyChange$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDataOnLogout$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setDeliveryMode$;
+    /** @type {?} */
+    CheckoutEffects.prototype.createPaymentDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setPaymentDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.placeOrder$;
+    /** @type {?} */
+    CheckoutEffects.prototype.loadCheckoutDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.reloadDetailsOnMergeCart$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDeliveryMode$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutDeliveryConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutPaymentConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$2 = [
@@ -10509,7 +13297,7 @@ var effects$2 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutStoreModule = /** @class */ (function () {
     function CheckoutStoreModule() {
@@ -10530,7 +13318,7 @@ var CheckoutStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutModule = /** @class */ (function () {
     function CheckoutModule() {
@@ -10564,31 +13352,31 @@ var CheckoutModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var DELIVERY_MODE_NORMALIZER = new InjectionToken('DeliveryModeNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
@@ -10599,17 +13387,17 @@ var CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -10621,7 +13409,7 @@ function getProcessState() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -10683,12 +13471,12 @@ var process_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutDeliveryService = /** @class */ (function () {
     function CheckoutDeliveryService(checkoutStore, cartData) {
@@ -11075,10 +13863,22 @@ var CheckoutDeliveryService = /** @class */ (function () {
     /** @nocollapse */ CheckoutDeliveryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
     return CheckoutDeliveryService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutPaymentService = /** @class */ (function () {
     function CheckoutPaymentService(checkoutStore, cartData) {
@@ -11225,35 +14025,127 @@ var CheckoutPaymentService = /** @class */ (function () {
     /** @nocollapse */ CheckoutPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutPaymentService, providedIn: "root" });
     return CheckoutPaymentService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function StandardCmsComponentConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSSiteContextComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSLinkComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SimpleResponsiveBannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SimpleBannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.BannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSParagraphComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.BreadcrumbComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.NavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.FooterNavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CategoryNavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductAddToCartComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.MiniCartComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductCarouselComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SearchBoxComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductReferencesComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSTabParagraphComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.LoginComponent;
+}
+/**
+ * @record
+ */
+function JspIncludeCmsComponentConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.AccountAddressBookComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ForgotPasswordComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ResetPasswordComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductDetailsTabComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductSpecsTabComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductReviewsTabComponent;
+}
 /** @type {?} */
 var JSP_INCLUDE_CMS_COMPONENT_TYPE = 'JspIncludeComponent';
 /** @type {?} */
 var CMS_FLEX_COMPONENT_TYPE = 'CMSFlexComponent';
+/**
+ * @record
+ */
+function CmsComponentMapping() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.component;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.providers;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.childRoutes;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.disableSSR;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.i18nKeys;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.guards;
+}
+/**
+ * @record
+ */
+function CMSComponentConfig() { }
 /**
  * @abstract
  */
@@ -11267,11 +14159,77 @@ CmsConfig = /** @class */ (function (_super) {
     }
     return CmsConfig;
 }(OccConfig));
+if (false) {
+    /** @type {?} */
+    CmsConfig.prototype.authentication;
+    /** @type {?} */
+    CmsConfig.prototype.cmsComponents;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * The `CmsPageConfig` is used to build pages by configuration.
+ * The interfaces are designed to have a clean configuration for
+ * static CMS structure. Ordinary attributes that are not
+ * required for configurable pages have been left out and
+ * will not be serialized in the adapter logic.
+ * @record
+ */
+function CmsPageConfig() { }
+if (false) {
+    /**
+     * When the `ignoreBackend` is set to true, the CMS backend
+     * will not be consumed. This saves network latency and is
+     * useful for commodity commerce pages.
+     *
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.ignoreBackend;
+    /** @type {?|undefined} */
+    CmsPageConfig.prototype.pageId;
+    /** @type {?|undefined} */
+    CmsPageConfig.prototype.type;
+    /**
+     * The page title is typically used to display the page heading
+     * as well as for the page title tag. The latter is used for browser
+     * navigation as well as SEO and social share platforms.
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.title;
+    /**
+     * the template is used to bind to the layout
+     * configuration and css layout class
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.template;
+    /**
+     * The page slots represent various sections on the page that
+     * can contain components.
+     * @type {?}
+     */
+    CmsPageConfig.prototype.slots;
+}
+/**
+ * The `CmsPageSlotsConfig` (plural) holds `CmsPageSlotConfig` objects.
+ * @record
+ */
+function CmsPageSlotsConfig() { }
+/**
+ * The `CmsPageSlotConfig` is a simplified configuration model
+ * that can be used to configure slots in static configuration,
+ * rather than loading from a backend.
+ * @record
+ */
+function CmsPageSlotConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsPageSlotConfig.prototype.componentIds;
+    /** @type {?|undefined} */
+    CmsPageSlotConfig.prototype.properties;
+}
 /**
  * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
  * instead of using a backend CMS system. The configuration can be used to build
@@ -11295,10 +14253,14 @@ CmsStructureConfig = /** @class */ (function (_super) {
     }
     return CmsStructureConfig;
 }(CmsConfig));
+if (false) {
+    /** @type {?} */
+    CmsStructureConfig.prototype.cmsStructure;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultCmsModuleConfig = {
@@ -11318,7 +14280,7 @@ var defaultCmsModuleConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ContentPageMetaResolver = /** @class */ (function (_super) {
     __extends(ContentPageMetaResolver, _super);
@@ -11407,10 +14369,22 @@ var ContentPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ ContentPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
     return ContentPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ContentPageMetaResolver.prototype.cms;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ContentPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsPageTitleModule = /** @class */ (function () {
     function CmsPageTitleModule() {
@@ -11431,7 +14405,7 @@ var CmsPageTitleModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var QUESTION_MARK = '[^/]';
@@ -11505,6 +14479,55 @@ function globToRegex(glob, literalQuestionMark) {
     return regex;
 }
 /**
+ * For given list of glob-like patterns, returns a matcher function.
+ *
+ * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+ * @param {?} patterns
+ * @return {?}
+ */
+function getGlobMatcher(patterns) {
+    /** @type {?} */
+    var processedPatterns = processGlobPatterns(patterns).map((/**
+     * @param {?} __0
+     * @return {?}
+     */
+    function (_a) {
+        var positive = _a.positive, regex = _a.regex;
+        return ({
+            positive: positive,
+            regex: new RegExp(regex),
+        });
+    }));
+    /** @type {?} */
+    var includePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    function (spec) { return spec.positive; }));
+    /** @type {?} */
+    var excludePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    function (spec) { return !spec.positive; }));
+    return (/**
+     * @param {?} url
+     * @return {?}
+     */
+    function (url) {
+        return includePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        function (pattern) { return pattern.regex.test(url); })) &&
+            !excludePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            function (pattern) { return pattern.regex.test(url); }));
+    });
+}
+/**
  * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
  * @param {?} urls
  * @return {?}
@@ -11524,7 +14547,7 @@ function processGlobPatterns(urls) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GlobService = /** @class */ (function () {
     function GlobService() {
@@ -11599,7 +14622,7 @@ var GlobService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UrlMatcherFactoryService = /** @class */ (function () {
     function UrlMatcherFactoryService(globService) {
@@ -11804,10 +14827,17 @@ var UrlMatcherFactoryService = /** @class */ (function () {
     /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(ɵɵinject(GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
     return UrlMatcherFactoryService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UrlMatcherFactoryService.prototype.globService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ConfigurableRoutesService = /** @class */ (function () {
     function ConfigurableRoutesService(injector, routingConfigService, urlMatcherFactory) {
@@ -11985,15 +15015,57 @@ var ConfigurableRoutesService = /** @class */ (function () {
     /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
     return ConfigurableRoutesService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.initCalled;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.injector;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.routingConfigService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.urlMatcherFactory;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function RoutesConfig() { }
+/**
+ * @record
+ */
+function RouteConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    RouteConfig.prototype.paths;
+    /** @type {?|undefined} */
+    RouteConfig.prototype.paramsMapping;
+    /** @type {?|undefined} */
+    RouteConfig.prototype.disabled;
+}
+/**
+ * @record
+ */
+function ParamsMapping() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UrlPipe = /** @class */ (function () {
     function UrlPipe(urlService) {
@@ -12021,10 +15093,17 @@ var UrlPipe = /** @class */ (function () {
     ]; };
     return UrlPipe;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UrlPipe.prototype.urlService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UrlModule = /** @class */ (function () {
     function UrlModule() {
@@ -12041,22 +15120,32 @@ var UrlModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function UrlCommandRoute() { }
+if (false) {
+    /** @type {?|undefined} */
+    UrlCommandRoute.prototype.cxRoute;
+    /** @type {?|undefined} */
+    UrlCommandRoute.prototype.params;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -12069,10 +15158,14 @@ ExternalRoutesConfig = /** @class */ (function () {
     }
     return ExternalRoutesConfig;
 }());
+if (false) {
+    /** @type {?} */
+    ExternalRoutesConfig.prototype.routing;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ExternalRoutesGuard = /** @class */ (function () {
     function ExternalRoutesGuard(winRef, platformId) {
@@ -12135,10 +15228,22 @@ var ExternalRoutesGuard = /** @class */ (function () {
     /** @nocollapse */ ExternalRoutesGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
     return ExternalRoutesGuard;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesGuard.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesGuard.prototype.platformId;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} service
@@ -12157,7 +15262,7 @@ function addExternalRoutesFactory(service) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Service that helps redirecting to different storefront systems for configured URLs
@@ -12255,10 +15360,27 @@ var ExternalRoutesService = /** @class */ (function () {
     ]; };
     return ExternalRoutesService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.matcherFactory;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Prepends the external route that redirects to a different storefront system for configured URLs
@@ -12295,17 +15417,43 @@ var ExternalRoutesModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function CmsRouteData() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsRouteData.prototype.cxCmsRouteContext;
+    /** @type {?|undefined} */
+    CmsRouteData.prototype.pageLabel;
+}
+/**
+ * @record
+ */
+function CmsRoute() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsRoute.prototype.data;
+}
+/**
+ * @record
+ */
+function CmsActivatedRouteSnapshot() { }
+if (false) {
+    /** @type {?} */
+    CmsActivatedRouteSnapshot.prototype.data;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PageContext = /** @class */ (function () {
     function PageContext(id, type) {
@@ -12314,10 +15462,16 @@ var PageContext = /** @class */ (function () {
     }
     return PageContext;
 }());
+if (false) {
+    /** @type {?} */
+    PageContext.prototype.id;
+    /** @type {?} */
+    PageContext.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var RouterEffects = /** @class */ (function () {
     function RouterEffects(actions$, router, location) {
@@ -12403,17 +15557,44 @@ var RouterEffects = /** @class */ (function () {
     ], RouterEffects.prototype, "navigateForward$", void 0);
     return RouterEffects;
 }());
+if (false) {
+    /** @type {?} */
+    RouterEffects.prototype.navigate$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateBuUrl$;
+    /** @type {?} */
+    RouterEffects.prototype.clearCmsRoutes$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateBack$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateForward$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.router;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.location;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$3 = [RouterEffects];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$5 = {
@@ -12566,7 +15747,7 @@ CustomSerializer = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} service
@@ -12625,17 +15806,17 @@ var RoutingModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Abstract class that can be used to implement custom loader logic
@@ -12652,10 +15833,22 @@ CmsPageAdapter = /** @class */ (function () {
     }
     return CmsPageAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method must be used to load the page structure for a given `PageContext`.
+     * The page can be loaded from alternative sources, as long as the structure
+     * converts to the `CmsStructureModel`.
+     *
+     * @abstract
+     * @param {?} pageContext The `PageContext` holding the page Id.
+     * @return {?}
+     */
+    CmsPageAdapter.prototype.load = function (pageContext) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Service that provides access to CMS structure from a static
@@ -12892,7 +16085,7 @@ var CmsStructureConfigService = /** @class */ (function () {
                     // the global slot isn't yet part of the page structure
                     pageStructure.page.slots[position] = {};
                     try {
-                        for (var _e = __values(this.getComponentsByPosition(slots, position)), _f = _e.next(); !_f.done; _f = _e.next()) {
+                        for (var _e = (e_2 = void 0, __values(this.getComponentsByPosition(slots, position))), _f = _e.next(); !_f.done; _f = _e.next()) {
                             var component = _f.value;
                             if (!pageStructure.page.slots[position].components) {
                                 pageStructure.page.slots[position].components = [];
@@ -12995,10 +16188,17 @@ var CmsStructureConfigService = /** @class */ (function () {
     /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
     return CmsStructureConfigService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsStructureConfigService.prototype.cmsDataConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsPageConnector = /** @class */ (function () {
     function CmsPageConnector(cmsPageAdapter, cmsStructureConfigService) {
@@ -13099,10 +16299,22 @@ var CmsPageConnector = /** @class */ (function () {
     /** @nocollapse */ CmsPageConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(ɵɵinject(CmsPageAdapter), ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
     return CmsPageConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsPageConnector.prototype.cmsPageAdapter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsPageConnector.prototype.cmsStructureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PageEffects = /** @class */ (function () {
     function PageEffects(actions$, cmsPageConnector, routingService) {
@@ -13199,10 +16411,31 @@ var PageEffects = /** @class */ (function () {
     ], PageEffects.prototype, "loadPageData$", void 0);
     return PageEffects;
 }());
+if (false) {
+    /** @type {?} */
+    PageEffects.prototype.refreshPage$;
+    /** @type {?} */
+    PageEffects.prototype.loadPageData$;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.cmsPageConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -13215,10 +16448,39 @@ CmsComponentAdapter = /** @class */ (function () {
     }
     return CmsComponentAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method must be used to load the component for a given `id` and `PageContext`.
+     * The component can be loaded from alternative backend, as long as the structure
+     * converts to the `CmsStructureModel`.
+     *
+     * @abstract
+     * @template T
+     * @param {?} id
+     * @param {?} pageContext The `PageContext` holding the page Id.
+     * @param {?=} fields
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.load = function (id, pageContext, fields) { };
+    /**
+     * @abstract
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.findComponentsByIds = function (ids, pageContext) { };
+    /**
+     * @abstract
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.findComponentsByIdsLegacy = function (ids, pageContext) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsComponentConnector = /** @class */ (function () {
     function CmsComponentConnector(cmsStructureConfigService, adapter, config) {
@@ -13311,10 +16573,27 @@ var CmsComponentConnector = /** @class */ (function () {
     /** @nocollapse */ CmsComponentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
     return CmsComponentConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.cmsStructureConfigService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.adapter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ComponentEffects = /** @class */ (function () {
     function ComponentEffects(actions$, cmsComponentLoader, routingService) {
@@ -13383,10 +16662,29 @@ var ComponentEffects = /** @class */ (function () {
     ], ComponentEffects.prototype, "loadComponent$", void 0);
     return ComponentEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ComponentEffects.prototype.loadComponent$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.cmsComponentLoader;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var NavigationEntryItemEffects = /** @class */ (function () {
     function NavigationEntryItemEffects(actions$, cmsComponentConnector, routingService) {
@@ -13447,8 +16745,14 @@ var NavigationEntryItemEffects = /** @class */ (function () {
                     })));
                 })));
             }
-            else if (data.ids.pageIds.length > 0) ;
-            else if (data.ids.mediaIds.length > 0) ;
+            else if (data.ids.pageIds.length > 0) {
+                // TODO: future work
+                // dispatch action to load cms page one by one
+            }
+            else if (data.ids.mediaIds.length > 0) {
+                // TODO: future work
+                // send request to get list of media
+            }
             else {
                 return of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
             }
@@ -13505,10 +16809,29 @@ var NavigationEntryItemEffects = /** @class */ (function () {
     ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
     return NavigationEntryItemEffects;
 }());
+if (false) {
+    /** @type {?} */
+    NavigationEntryItemEffects.prototype.loadNavigationItems$;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.cmsComponentConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$4 = [
@@ -13519,7 +16842,7 @@ var effects$4 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$6 = undefined;
@@ -13554,7 +16877,7 @@ function reducer$6(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$7 = { entities: {} };
@@ -13578,7 +16901,7 @@ function reducer$7(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$8 = undefined;
@@ -13616,7 +16939,7 @@ function reducer$8(entityType) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -13667,7 +16990,7 @@ var metaReducers$2 = [clearCmsState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -13706,7 +17029,7 @@ var CmsStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsModule = /** @class */ (function () {
     function CmsModule() {
@@ -13738,41 +17061,41 @@ var CmsModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CMS_PAGE_NORMALIZER = new InjectionToken('CmsPageNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CMS_COMPONENT_NORMALIZER = new InjectionToken('CmsComponentNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PageMetaService = /** @class */ (function () {
     function PageMetaService(resolvers, cms) {
@@ -13855,40 +17178,159 @@ var PageMetaService = /** @class */ (function () {
     /** @nocollapse */ PageMetaService.ngInjectableDef = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
     return PageMetaService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    PageMetaService.prototype.resolvers;
+    /**
+     * @type {?}
+     * @protected
+     */
+    PageMetaService.prototype.cms;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ContentSlotComponentData() { }
+if (false) {
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.uid;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.typeCode;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.flexType;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.properties;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ContentSlotData() { }
+if (false) {
+    /** @type {?|undefined} */
+    ContentSlotData.prototype.components;
+    /** @type {?|undefined} */
+    ContentSlotData.prototype.properties;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function NodeItem() { }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Resolves the page heading which is used in the UI.
+ * @record
+ */
+function PageHeadingResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageHeadingResolver.prototype.resolveHeading = function (args) { };
+}
+/**
+ * Resolves the page title which is first and foremost
+ * used for the page title tag, but could also be used for the
+ * page heading in the UI.
+ * @record
+ */
+function PageTitleResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageTitleResolver.prototype.resolveTitle = function (args) { };
+}
+/**
+ * Resolves the page description. The page description is used
+ * in the Search Engine Result Page (SERP).
+ * @record
+ */
+function PageDescriptionResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageDescriptionResolver.prototype.resolveDescription = function (args) { };
+}
+/**
+ * Resolves breadcrumbs for the page, which is used in the `BreadcrumbComponent`/
+ * @record
+ */
+function PageBreadcrumbResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageBreadcrumbResolver.prototype.resolveBreadcrumbs = function (args) { };
+}
+/**
+ * Resolves the main image for the page. This is typically used
+ * for social sharing (using `og:image` metatag)
+ * @record
+ */
+function PageImageResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageImageResolver.prototype.resolveImage = function (args) { };
+}
+/**
+ * Resolves the robot information for the page. This is used by
+ * search engines to understand whether the page and subsequential links
+ * should be indexed.
+ *
+ * @record
+ */
+function PageRobotsResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageRobotsResolver.prototype.resolveRobots = function (args) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var DynamicAttributeService = /** @class */ (function () {
     function DynamicAttributeService() {
@@ -13972,17 +17414,17 @@ var DynamicAttributeService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} cookie
@@ -13999,7 +17441,7 @@ function getCookie(cookie, name) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
@@ -14028,6 +17470,14 @@ function configFromCookieFactory(cookieName, platform, document) {
         return parseConfigJSON(config);
     }
     return {};
+}
+/**
+ * @record
+ */
+function TestConfigModuleOptions() { }
+if (false) {
+    /** @type {?} */
+    TestConfigModuleOptions.prototype.cookie;
 }
 /**
  * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
@@ -14086,12 +17536,12 @@ var TestConfigModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {string} */
 var GlobalMessageType = {
@@ -14099,10 +17549,20 @@ var GlobalMessageType = {
     MSG_TYPE_ERROR: '[GlobalMessage] Error',
     MSG_TYPE_INFO: '[GlobalMessage] Information',
 };
+/**
+ * @record
+ */
+function GlobalMessage() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessage.prototype.text;
+    /** @type {?} */
+    GlobalMessage.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -14115,10 +17575,14 @@ GlobalMessageConfig = /** @class */ (function () {
     }
     return GlobalMessageConfig;
 }());
+if (false) {
+    /** @type {?} */
+    GlobalMessageConfig.prototype.globalMessages;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ADD_MESSAGE = '[Global-message] Add a Message';
@@ -14133,6 +17597,12 @@ var AddMessage = /** @class */ (function () {
     }
     return AddMessage;
 }());
+if (false) {
+    /** @type {?} */
+    AddMessage.prototype.type;
+    /** @type {?} */
+    AddMessage.prototype.payload;
+}
 var RemoveMessage = /** @class */ (function () {
     function RemoveMessage(payload) {
         this.payload = payload;
@@ -14140,6 +17610,12 @@ var RemoveMessage = /** @class */ (function () {
     }
     return RemoveMessage;
 }());
+if (false) {
+    /** @type {?} */
+    RemoveMessage.prototype.type;
+    /** @type {?} */
+    RemoveMessage.prototype.payload;
+}
 var RemoveMessagesByType = /** @class */ (function () {
     function RemoveMessagesByType(payload) {
         this.payload = payload;
@@ -14147,10 +17623,16 @@ var RemoveMessagesByType = /** @class */ (function () {
     }
     return RemoveMessagesByType;
 }());
+if (false) {
+    /** @type {?} */
+    RemoveMessagesByType.prototype.type;
+    /** @type {?} */
+    RemoveMessagesByType.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
@@ -14164,34 +17646,54 @@ var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var GLOBAL_MESSAGE_FEATURE = 'global-message';
+/**
+ * @record
+ */
+function StateWithGlobalMessage() { }
+if (false) {
+    /* Skipping unnamed member:
+    [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
+}
+/**
+ * @record
+ */
+function GlobalMessageState() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessageState.prototype.entities;
+}
+/**
+ * @record
+ */
+function GlobalMessageEntities() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$7 = /**
+var ɵ0$f = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entities; };
 /** @type {?} */
-var getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$7));
+var getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$f));
 /** @type {?} */
 var getGlobalMessageEntitiesByType = (/**
  * @param {?} type
@@ -14219,7 +17721,7 @@ function (type) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -14231,12 +17733,12 @@ var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GlobalMessageService = /** @class */ (function () {
     function GlobalMessageService(store) {
@@ -14318,15 +17820,22 @@ var GlobalMessageService = /** @class */ (function () {
     ]; };
     return GlobalMessageService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    GlobalMessageService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {number} */
 var HttpResponseStatus = {
@@ -14350,7 +17859,7 @@ HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -14371,10 +17880,32 @@ var HttpErrorHandler = /** @class */ (function () {
     /** @nocollapse */ HttpErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
     return HttpErrorHandler;
 }());
+if (false) {
+    /**
+     * The http response status number which is handled by this handler.
+     * Implementations can set the response status number, i.e. 404, so that
+     * the handler can be found by the error interceptor.
+     * @type {?}
+     */
+    HttpErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorHandler.prototype.globalMessageService;
+    /**
+     * Handles the error response for the respose status that is register for the handler
+     * @abstract
+     * @param {?} request
+     * @param {?} errorResponse
+     * @return {?}
+     */
+    HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var BadGatewayHandler = /** @class */ (function (_super) {
     __extends(BadGatewayHandler, _super);
@@ -14400,10 +17931,14 @@ var BadGatewayHandler = /** @class */ (function (_super) {
     /** @nocollapse */ BadGatewayHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
     return BadGatewayHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    BadGatewayHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
@@ -14484,10 +18019,14 @@ var BadRequestHandler = /** @class */ (function (_super) {
     /** @nocollapse */ BadRequestHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
     return BadRequestHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    BadRequestHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ConflictHandler = /** @class */ (function (_super) {
     __extends(ConflictHandler, _super);
@@ -14513,10 +18052,14 @@ var ConflictHandler = /** @class */ (function (_super) {
     /** @nocollapse */ ConflictHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
     return ConflictHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    ConflictHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ForbiddenHandler = /** @class */ (function (_super) {
     __extends(ForbiddenHandler, _super);
@@ -14542,10 +18085,14 @@ var ForbiddenHandler = /** @class */ (function (_super) {
     /** @nocollapse */ ForbiddenHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
     return ForbiddenHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    ForbiddenHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GatewayTimeoutHandler = /** @class */ (function (_super) {
     __extends(GatewayTimeoutHandler, _super);
@@ -14571,10 +18118,14 @@ var GatewayTimeoutHandler = /** @class */ (function (_super) {
     /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
     return GatewayTimeoutHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    GatewayTimeoutHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var InternalServerErrorHandler = /** @class */ (function (_super) {
     __extends(InternalServerErrorHandler, _super);
@@ -14600,10 +18151,14 @@ var InternalServerErrorHandler = /** @class */ (function (_super) {
     /** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
     return InternalServerErrorHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    InternalServerErrorHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var NotFoundHandler = /** @class */ (function (_super) {
     __extends(NotFoundHandler, _super);
@@ -14631,10 +18186,14 @@ var NotFoundHandler = /** @class */ (function (_super) {
     /** @nocollapse */ NotFoundHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
     return NotFoundHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    NotFoundHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UnknownErrorHandler = /** @class */ (function (_super) {
     __extends(UnknownErrorHandler, _super);
@@ -14667,10 +18226,19 @@ var UnknownErrorHandler = /** @class */ (function (_super) {
     /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
     return UnknownErrorHandler;
 }(HttpErrorHandler));
+if (false) {
+    /** @type {?} */
+    UnknownErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UnknownErrorHandler.prototype.globalMessageService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var HttpErrorInterceptor = /** @class */ (function () {
     function HttpErrorInterceptor(handlers) {
@@ -14766,10 +18334,17 @@ var HttpErrorInterceptor = /** @class */ (function () {
     ]; };
     return HttpErrorInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorInterceptor.prototype.handlers;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var errorHandlers = [
@@ -14825,7 +18400,7 @@ var httpErrorInterceptors = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$9 = {
@@ -14877,7 +18452,7 @@ function reducer$9(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -14895,7 +18470,7 @@ var reducerProvider$5 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GlobalMessageStoreModule = /** @class */ (function () {
     function GlobalMessageStoreModule() {
@@ -14914,7 +18489,7 @@ var GlobalMessageStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} objA
@@ -15024,7 +18599,7 @@ function indexOfFirstOccurrence(obj, arr) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GlobalMessageEffect = /** @class */ (function () {
     function GlobalMessageEffect(actions$, store, config) {
@@ -15099,10 +18674,31 @@ var GlobalMessageEffect = /** @class */ (function () {
     ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
     return GlobalMessageEffect;
 }());
+if (false) {
+    /** @type {?} */
+    GlobalMessageEffect.prototype.removeDuplicated$;
+    /** @type {?} */
+    GlobalMessageEffect.prototype.hideAfterDelay$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.store;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -15126,7 +18722,7 @@ function defaultGlobalMessageConfigFactory() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GlobalMessageModule = /** @class */ (function () {
     function GlobalMessageModule() {
@@ -15161,27 +18757,47 @@ var GlobalMessageModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function TranslationResources() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Translatable() { }
+if (false) {
+    /** @type {?|undefined} */
+    Translatable.prototype.key;
+    /** @type {?|undefined} */
+    Translatable.prototype.params;
+    /** @type {?|undefined} */
+    Translatable.prototype.raw;
+}
+/**
+ * @record
+ */
+function TranslatableParams() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Facade that provides easy access to language state, actions and selectors.
@@ -15303,10 +18919,27 @@ var LanguageService = /** @class */ (function () {
     ]; };
     return LanguageService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguageService.prototype.sessionStorage;
+    /**
+     * @type {?}
+     * @protected
+     */
+    LanguageService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    LanguageService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
 var CxDatePipe = /** @class */ (function (_super) {
@@ -15396,10 +19029,17 @@ var CxDatePipe = /** @class */ (function (_super) {
     ]; };
     return CxDatePipe;
 }(DatePipe));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CxDatePipe.prototype.language;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var TranslatePipe = /** @class */ (function () {
     function TranslatePipe(service, cd) {
@@ -15494,10 +19134,42 @@ var TranslatePipe = /** @class */ (function () {
     ]; };
     return TranslatePipe;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.lastKey;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.lastOptions;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.translatedValue;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.sub;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslatePipe.prototype.service;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslatePipe.prototype.cd;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -15510,10 +19182,14 @@ I18nConfig = /** @class */ (function () {
     }
     return I18nConfig;
 }());
+if (false) {
+    /** @type {?} */
+    I18nConfig.prototype.i18n;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var TranslationChunkService = /** @class */ (function () {
     function TranslationChunkService(config) {
@@ -15599,10 +19275,32 @@ var TranslationChunkService = /** @class */ (function () {
     ]; };
     return TranslationChunkService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.duplicates;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.chunks;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.KEY_SEPARATOR;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -15674,14 +19372,14 @@ function syncI18nextWithSiteContext(language) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$8 = i18nextInit;
+var ɵ0$g = i18nextInit;
 /** @type {?} */
 var i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$8,
+        useFactory: ɵ0$g,
         deps: [I18nConfig, LanguageService],
         multi: true,
     },
@@ -15689,7 +19387,7 @@ var i18nextProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultI18nConfig = {
@@ -15701,7 +19399,7 @@ var defaultI18nConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var I18nextTranslationService = /** @class */ (function () {
     function I18nextTranslationService(config, translationChunk) {
@@ -15848,10 +19546,32 @@ var I18nextTranslationService = /** @class */ (function () {
     ]; };
     return I18nextTranslationService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    I18nextTranslationService.prototype.NON_BREAKING_SPACE;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.NAMESPACE_SEPARATOR;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.translationChunk;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var I18nModule = /** @class */ (function () {
     function I18nModule() {
@@ -15884,12 +19604,12 @@ var I18nModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} key
@@ -15912,7 +19632,7 @@ function mockTranslate(key, options) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var MockTranslatePipe = /** @class */ (function () {
     function MockTranslatePipe() {
@@ -15947,7 +19667,7 @@ var MockTranslatePipe = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var MockTranslationService = /** @class */ (function () {
     function MockTranslationService() {
@@ -15997,7 +19717,7 @@ var MockTranslationService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var MockDatePipe = /** @class */ (function (_super) {
     __extends(MockDatePipe, _super);
@@ -16027,7 +19747,7 @@ var MockDatePipe = /** @class */ (function (_super) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var I18nTestingModule = /** @class */ (function () {
     function I18nTestingModule() {
@@ -16046,17 +19766,17 @@ var I18nTestingModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -16071,19 +19791,39 @@ KymaConfig = /** @class */ (function (_super) {
     }
     return KymaConfig;
 }(OccConfig));
+if (false) {
+    /** @type {?} */
+    KymaConfig.prototype.authentication;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var KYMA_FEATURE = 'kyma';
 /** @type {?} */
 var OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
+/**
+ * @record
+ */
+function StateWithKyma() { }
+if (false) {
+    /* Skipping unnamed member:
+    [KYMA_FEATURE]: KymaState;*/
+}
+/**
+ * @record
+ */
+function KymaState() { }
+if (false) {
+    /** @type {?} */
+    KymaState.prototype.openIdToken;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_OPEN_ID_TOKEN = '[Kyma] Load Open ID Token';
@@ -16101,6 +19841,12 @@ var LoadOpenIdToken = /** @class */ (function (_super) {
     }
     return LoadOpenIdToken;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadOpenIdToken.prototype.type;
+    /** @type {?} */
+    LoadOpenIdToken.prototype.payload;
+}
 var LoadOpenIdTokenFail = /** @class */ (function (_super) {
     __extends(LoadOpenIdTokenFail, _super);
     function LoadOpenIdTokenFail(payload) {
@@ -16111,6 +19857,12 @@ var LoadOpenIdTokenFail = /** @class */ (function (_super) {
     }
     return LoadOpenIdTokenFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    LoadOpenIdTokenFail.prototype.type;
+    /** @type {?} */
+    LoadOpenIdTokenFail.prototype.payload;
+}
 var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
     __extends(LoadOpenIdTokenSuccess, _super);
     function LoadOpenIdTokenSuccess(payload) {
@@ -16121,10 +19873,16 @@ var LoadOpenIdTokenSuccess = /** @class */ (function (_super) {
     }
     return LoadOpenIdTokenSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadOpenIdTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadOpenIdTokenSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var kymaGroup_actions = /*#__PURE__*/Object.freeze({
@@ -16138,27 +19896,27 @@ var kymaGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getKymaState = createFeatureSelector(KYMA_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$9 = /**
+var ɵ0$h = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.openIdToken; };
 /** @type {?} */
-var getOpenIdTokenState = createSelector(getKymaState, (ɵ0$9));
+var getOpenIdTokenState = createSelector(getKymaState, (ɵ0$h));
 /** @type {?} */
 var getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 /** @type {?} */
@@ -16170,7 +19928,7 @@ var getOpenIdTokenError = createSelector(getOpenIdTokenState, loaderErrorSelecto
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -16184,12 +19942,12 @@ var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var KymaService = /** @class */ (function () {
     function KymaService(store) {
@@ -16244,15 +20002,22 @@ var KymaService = /** @class */ (function () {
     /** @nocollapse */ KymaService.ngInjectableDef = ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(ɵɵinject(Store)); }, token: KymaService, providedIn: "root" });
     return KymaService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    KymaService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultKymaConfig = {
@@ -16265,7 +20030,7 @@ var defaultKymaConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
@@ -16328,17 +20093,29 @@ var OpenIdAuthenticationTokenService = /** @class */ (function () {
     ]; };
     return OpenIdAuthenticationTokenService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdAuthenticationTokenService.prototype.http;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var KymaServices = [OpenIdAuthenticationTokenService];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OpenIdTokenEffect = /** @class */ (function () {
     function OpenIdTokenEffect(actions$, openIdTokenService, config) {
@@ -16403,17 +20180,38 @@ var OpenIdTokenEffect = /** @class */ (function () {
     ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
     return OpenIdTokenEffect;
 }());
+if (false) {
+    /** @type {?} */
+    OpenIdTokenEffect.prototype.triggerOpenIdTokenLoading$;
+    /** @type {?} */
+    OpenIdTokenEffect.prototype.loadOpenIdToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.openIdTokenService;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$5 = [OpenIdTokenEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -16452,7 +20250,7 @@ var metaReducers$3 = [clearKymaState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -16492,7 +20290,7 @@ var KymaStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var KymaModule = /** @class */ (function () {
     function KymaModule() {
@@ -16513,99 +20311,1463 @@ var KymaModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function OpenIdToken() { }
+if (false) {
+    /** @type {?} */
+    OpenIdToken.prototype.id_token;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @record
  */
+function Country() { }
+if (false) {
+    /** @type {?|undefined} */
+    Country.prototype.isocode;
+    /** @type {?|undefined} */
+    Country.prototype.name;
+}
 /** @enum {string} */
 var CountryType = {
     BILLING: 'BILLING',
     SHIPPING: 'SHIPPING',
 };
+/**
+ * @record
+ */
+function Region() { }
+if (false) {
+    /** @type {?|undefined} */
+    Region.prototype.countryIso;
+    /** @type {?|undefined} */
+    Region.prototype.isocode;
+    /** @type {?|undefined} */
+    Region.prototype.isocodeShort;
+    /** @type {?|undefined} */
+    Region.prototype.name;
+}
+/**
+ * @record
+ */
+function Address() { }
+if (false) {
+    /** @type {?|undefined} */
+    Address.prototype.companyName;
+    /** @type {?|undefined} */
+    Address.prototype.country;
+    /** @type {?|undefined} */
+    Address.prototype.defaultAddress;
+    /** @type {?|undefined} */
+    Address.prototype.email;
+    /** @type {?|undefined} */
+    Address.prototype.firstName;
+    /** @type {?|undefined} */
+    Address.prototype.formattedAddress;
+    /** @type {?|undefined} */
+    Address.prototype.id;
+    /** @type {?|undefined} */
+    Address.prototype.lastName;
+    /** @type {?|undefined} */
+    Address.prototype.line1;
+    /** @type {?|undefined} */
+    Address.prototype.line2;
+    /** @type {?|undefined} */
+    Address.prototype.phone;
+    /** @type {?|undefined} */
+    Address.prototype.postalCode;
+    /** @type {?|undefined} */
+    Address.prototype.region;
+    /** @type {?|undefined} */
+    Address.prototype.shippingAddress;
+    /** @type {?|undefined} */
+    Address.prototype.title;
+    /** @type {?|undefined} */
+    Address.prototype.titleCode;
+    /** @type {?|undefined} */
+    Address.prototype.town;
+    /** @type {?|undefined} */
+    Address.prototype.visibleInAddressBook;
+}
+/**
+ * @record
+ */
+function AddressValidation() { }
+if (false) {
+    /** @type {?|undefined} */
+    AddressValidation.prototype.decision;
+    /** @type {?|undefined} */
+    AddressValidation.prototype.errors;
+    /** @type {?|undefined} */
+    AddressValidation.prototype.suggestedAddresses;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function PromotionResult() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionResult.prototype.consumedEntries;
+    /** @type {?|undefined} */
+    PromotionResult.prototype.description;
+    /** @type {?|undefined} */
+    PromotionResult.prototype.promotion;
+}
+/**
+ * @record
+ */
+function Voucher() { }
+if (false) {
+    /** @type {?|undefined} */
+    Voucher.prototype.appliedValue;
+    /** @type {?|undefined} */
+    Voucher.prototype.code;
+    /** @type {?|undefined} */
+    Voucher.prototype.currency;
+    /** @type {?|undefined} */
+    Voucher.prototype.description;
+    /** @type {?|undefined} */
+    Voucher.prototype.freeShipping;
+    /** @type {?|undefined} */
+    Voucher.prototype.name;
+    /** @type {?|undefined} */
+    Voucher.prototype.value;
+    /** @type {?|undefined} */
+    Voucher.prototype.valueFormatted;
+    /** @type {?|undefined} */
+    Voucher.prototype.valueString;
+    /** @type {?|undefined} */
+    Voucher.prototype.voucherCode;
+}
+/**
+ * @record
+ */
+function DeliveryOrderEntryGroup() { }
+if (false) {
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.entries;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.quantity;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.totalPriceWithTax;
+}
+/**
+ * @record
+ */
+function Principal() { }
+if (false) {
+    /** @type {?|undefined} */
+    Principal.prototype.name;
+    /** @type {?|undefined} */
+    Principal.prototype.uid;
+}
+/**
+ * @record
+ */
+function CardType() { }
+if (false) {
+    /** @type {?|undefined} */
+    CardType.prototype.code;
+    /** @type {?|undefined} */
+    CardType.prototype.name;
+}
+/**
+ * @record
+ */
+function PaymentDetails() { }
+if (false) {
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.accountHolderName;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.billingAddress;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cardNumber;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cardType;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cvn;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.defaultPayment;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.expiryMonth;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.expiryYear;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.id;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.issueNumber;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.saved;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.startMonth;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.startYear;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.subscriptionId;
+}
+/**
+ * @record
+ */
+function Cart() { }
+if (false) {
+    /** @type {?|undefined} */
+    Cart.prototype.appliedOrderPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.appliedProductPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.appliedVouchers;
+    /** @type {?|undefined} */
+    Cart.prototype.calculated;
+    /** @type {?|undefined} */
+    Cart.prototype.code;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryItemsQuantity;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryOrderGroups;
+    /** @type {?|undefined} */
+    Cart.prototype.description;
+    /** @type {?|undefined} */
+    Cart.prototype.entries;
+    /** @type {?|undefined} */
+    Cart.prototype.expirationTime;
+    /** @type {?|undefined} */
+    Cart.prototype.guid;
+    /** @type {?|undefined} */
+    Cart.prototype.name;
+    /** @type {?|undefined} */
+    Cart.prototype.net;
+    /** @type {?|undefined} */
+    Cart.prototype.orderDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.paymentInfo;
+    /** @type {?|undefined} */
+    Cart.prototype.pickupItemsQuantity;
+    /** @type {?|undefined} */
+    Cart.prototype.pickupOrderGroups;
+    /** @type {?|undefined} */
+    Cart.prototype.potentialOrderPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.potentialProductPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.productDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.saveTime;
+    /** @type {?|undefined} */
+    Cart.prototype.savedBy;
+    /** @type {?|undefined} */
+    Cart.prototype.site;
+    /** @type {?|undefined} */
+    Cart.prototype.store;
+    /** @type {?|undefined} */
+    Cart.prototype.subTotal;
+    /** @type {?|undefined} */
+    Cart.prototype.totalDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.totalItems;
+    /** @type {?|undefined} */
+    Cart.prototype.totalPrice;
+    /** @type {?|undefined} */
+    Cart.prototype.totalPriceWithTax;
+    /** @type {?|undefined} */
+    Cart.prototype.totalTax;
+    /** @type {?|undefined} */
+    Cart.prototype.totalUnitCount;
+    /** @type {?|undefined} */
+    Cart.prototype.user;
+}
+/**
+ * @record
+ */
+function CartModification() { }
+if (false) {
+    /** @type {?|undefined} */
+    CartModification.prototype.deliveryModeChanged;
+    /** @type {?|undefined} */
+    CartModification.prototype.entry;
+    /** @type {?|undefined} */
+    CartModification.prototype.quantity;
+    /** @type {?|undefined} */
+    CartModification.prototype.quantityAdded;
+    /** @type {?|undefined} */
+    CartModification.prototype.statusCode;
+    /** @type {?|undefined} */
+    CartModification.prototype.statusMessage;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ConsentTemplate() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.id;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.name;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.description;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.version;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.currentConsent;
+}
+/**
+ * @record
+ */
+function Consent() { }
+if (false) {
+    /** @type {?|undefined} */
+    Consent.prototype.code;
+    /** @type {?|undefined} */
+    Consent.prototype.consentGivenDate;
+    /** @type {?|undefined} */
+    Consent.prototype.consentWithdrawnDate;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ConsignmentTrackingEvent() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.eventDate;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.detail;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.location;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.referenceCode;
+}
+/**
+ * @record
+ */
+function Carrier() { }
+if (false) {
+    /** @type {?|undefined} */
+    Carrier.prototype.code;
+    /** @type {?|undefined} */
+    Carrier.prototype.name;
+}
+/**
+ * @record
+ */
+function ConsignmentTracking() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.carrierDetails;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingID;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingUrl;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.targetArrivalDate;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingEvents;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Images() { }
+/**
+ * @record
+ */
+function Image() { }
+if (false) {
+    /** @type {?|undefined} */
+    Image.prototype.altText;
+    /** @type {?|undefined} */
+    Image.prototype.format;
+    /** @type {?|undefined} */
+    Image.prototype.galleryIndex;
+    /** @type {?|undefined} */
+    Image.prototype.imageType;
+    /** @type {?|undefined} */
+    Image.prototype.url;
+}
 /** @enum {string} */
 var ImageType = {
     PRIMARY: 'PRIMARY',
     GALLERY: 'GALLERY',
 };
+/**
+ * @record
+ */
+function ImageGroup() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Currency() { }
+if (false) {
+    /** @type {?|undefined} */
+    Currency.prototype.active;
+    /** @type {?|undefined} */
+    Currency.prototype.isocode;
+    /** @type {?|undefined} */
+    Currency.prototype.name;
+    /** @type {?|undefined} */
+    Currency.prototype.symbol;
+}
+/**
+ * @record
+ */
+function Time() { }
+if (false) {
+    /** @type {?|undefined} */
+    Time.prototype.formattedHour;
+    /** @type {?|undefined} */
+    Time.prototype.hour;
+    /** @type {?|undefined} */
+    Time.prototype.minute;
+}
+/**
+ * @record
+ */
+function GeoPoint() { }
+if (false) {
+    /** @type {?|undefined} */
+    GeoPoint.prototype.latitude;
+    /** @type {?|undefined} */
+    GeoPoint.prototype.longitude;
+}
+/**
+ * @record
+ */
+function Language() { }
+if (false) {
+    /** @type {?|undefined} */
+    Language.prototype.active;
+    /** @type {?|undefined} */
+    Language.prototype.isocode;
+    /** @type {?|undefined} */
+    Language.prototype.name;
+    /** @type {?|undefined} */
+    Language.prototype.nativeName;
+}
+/**
+ * @record
+ */
+function User() { }
+if (false) {
+    /** @type {?|undefined} */
+    User.prototype.currency;
+    /** @type {?|undefined} */
+    User.prototype.customerId;
+    /** @type {?|undefined} */
+    User.prototype.deactivationDate;
+    /** @type {?|undefined} */
+    User.prototype.defaultAddress;
+    /** @type {?|undefined} */
+    User.prototype.displayUid;
+    /** @type {?|undefined} */
+    User.prototype.firstName;
+    /** @type {?|undefined} */
+    User.prototype.language;
+    /** @type {?|undefined} */
+    User.prototype.lastName;
+    /** @type {?|undefined} */
+    User.prototype.name;
+    /** @type {?|undefined} */
+    User.prototype.title;
+    /** @type {?|undefined} */
+    User.prototype.titleCode;
+    /** @type {?|undefined} */
+    User.prototype.uid;
+}
+/**
+ * @record
+ */
+function PaginationModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    PaginationModel.prototype.currentPage;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.pageSize;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.sort;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.totalPages;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.totalResults;
+}
+/**
+ * @record
+ */
+function SortModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    SortModel.prototype.code;
+    /** @type {?|undefined} */
+    SortModel.prototype.name;
+    /** @type {?|undefined} */
+    SortModel.prototype.selected;
+}
+/**
+ * @record
+ */
+function Title() { }
+if (false) {
+    /** @type {?|undefined} */
+    Title.prototype.code;
+    /** @type {?|undefined} */
+    Title.prototype.name;
+}
+/**
+ * @record
+ */
+function ErrorModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    ErrorModel.prototype.message;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.reason;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.subject;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.subjectType;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.type;
+}
+/**
+ * @record
+ */
+function HttpErrorModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.message;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.error;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.status;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.statusText;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.url;
+}
+/**
+ * @record
+ */
+function BaseSite() { }
+if (false) {
+    /** @type {?|undefined} */
+    BaseSite.prototype.channel;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultLanguage;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewCatalogId;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewCategoryCode;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewProductCode;
+    /** @type {?|undefined} */
+    BaseSite.prototype.locale;
+    /** @type {?|undefined} */
+    BaseSite.prototype.name;
+    /** @type {?|undefined} */
+    BaseSite.prototype.theme;
+    /** @type {?|undefined} */
+    BaseSite.prototype.uid;
+}
+/**
+ * @record
+ */
+function UserSignUp() { }
+if (false) {
+    /** @type {?|undefined} */
+    UserSignUp.prototype.firstName;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.lastName;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.password;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.titleCode;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.uid;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function DeliveryMode() { }
+if (false) {
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.code;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.description;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.name;
+}
+/**
+ * @record
+ */
+function OrderEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderEntry.prototype.basePrice;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.entryNumber;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.product;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.quantity;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.totalPrice;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.updateable;
+}
+/**
+ * @record
+ */
+function PickupOrderEntryGroup() { }
+if (false) {
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.distance;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.entries;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.quantity;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.totalPriceWithTax;
+}
+/**
+ * @record
+ */
+function PromotionOrderEntryConsumed() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.adjustedUnitPrice;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.code;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.orderEntryNumber;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.quantity;
+}
+/**
+ * @record
+ */
+function ConsignmentEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.orderEntry;
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.quantity;
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.shippedQuantity;
+}
+/**
+ * @record
+ */
+function Consignment() { }
+if (false) {
+    /** @type {?|undefined} */
+    Consignment.prototype.code;
+    /** @type {?|undefined} */
+    Consignment.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    Consignment.prototype.entries;
+    /** @type {?|undefined} */
+    Consignment.prototype.shippingAddress;
+    /** @type {?|undefined} */
+    Consignment.prototype.status;
+    /** @type {?|undefined} */
+    Consignment.prototype.statusDate;
+    /** @type {?|undefined} */
+    Consignment.prototype.trackingID;
+}
+/**
+ * @record
+ */
+function OrderHistory() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderHistory.prototype.code;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.guid;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.placed;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.status;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.total;
+}
+/**
+ * @record
+ */
+function OrderHistoryList() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.orders;
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.pagination;
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.sorts;
+}
+/**
+ * @record
+ */
+function Order() { }
+if (false) {
+    /** @type {?|undefined} */
+    Order.prototype.appliedOrderPromotions;
+    /** @type {?|undefined} */
+    Order.prototype.appliedProductPromotions;
+    /** @type {?|undefined} */
+    Order.prototype.appliedVouchers;
+    /** @type {?|undefined} */
+    Order.prototype.calculated;
+    /** @type {?|undefined} */
+    Order.prototype.code;
+    /** @type {?|undefined} */
+    Order.prototype.consignments;
+    /** @type {?|undefined} */
+    Order.prototype.created;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryItemsQuantity;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryOrderGroups;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryStatus;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryStatusDisplay;
+    /** @type {?|undefined} */
+    Order.prototype.entries;
+    /** @type {?|undefined} */
+    Order.prototype.guestCustomer;
+    /** @type {?|undefined} */
+    Order.prototype.guid;
+    /** @type {?|undefined} */
+    Order.prototype.net;
+    /** @type {?|undefined} */
+    Order.prototype.orderDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.paymentInfo;
+    /** @type {?|undefined} */
+    Order.prototype.pickupItemsQuantity;
+    /** @type {?|undefined} */
+    Order.prototype.pickupOrderGroups;
+    /** @type {?|undefined} */
+    Order.prototype.productDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.site;
+    /** @type {?|undefined} */
+    Order.prototype.status;
+    /** @type {?|undefined} */
+    Order.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    Order.prototype.store;
+    /** @type {?|undefined} */
+    Order.prototype.subTotal;
+    /** @type {?|undefined} */
+    Order.prototype.totalDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.totalItems;
+    /** @type {?|undefined} */
+    Order.prototype.totalPrice;
+    /** @type {?|undefined} */
+    Order.prototype.totalPriceWithTax;
+    /** @type {?|undefined} */
+    Order.prototype.totalTax;
+    /** @type {?|undefined} */
+    Order.prototype.unconsignedEntries;
+    /** @type {?|undefined} */
+    Order.prototype.user;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function PointOfService() { }
+if (false) {
+    /** @type {?|undefined} */
+    PointOfService.prototype.address;
+    /** @type {?|undefined} */
+    PointOfService.prototype.description;
+    /** @type {?|undefined} */
+    PointOfService.prototype.displayName;
+    /** @type {?|undefined} */
+    PointOfService.prototype.distanceKm;
+    /** @type {?|undefined} */
+    PointOfService.prototype.features;
+    /** @type {?|undefined} */
+    PointOfService.prototype.formattedDistance;
+    /** @type {?|undefined} */
+    PointOfService.prototype.geoPoint;
+    /** @type {?|undefined} */
+    PointOfService.prototype.mapIcon;
+    /** @type {?|undefined} */
+    PointOfService.prototype.name;
+    /** @type {?|undefined} */
+    PointOfService.prototype.openingHours;
+    /** @type {?|undefined} */
+    PointOfService.prototype.storeContent;
+    /** @type {?|undefined} */
+    PointOfService.prototype.storeImages;
+    /** @type {?|undefined} */
+    PointOfService.prototype.url;
+}
+/**
+ * @record
+ */
+function SpecialOpeningDay() { }
+if (false) {
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.closed;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.closingTime;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.comment;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.date;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.formattedDate;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.name;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.openingTime;
+}
+/**
+ * @record
+ */
+function WeekdayOpeningDay() { }
+if (false) {
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.closed;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.closingTime;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.openingTime;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.weekDay;
+}
+/**
+ * @record
+ */
+function OpeningSchedule() { }
+if (false) {
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.code;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.name;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.specialDayOpeningList;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.weekDayOpeningList;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function SearchQuery() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchQuery.prototype.value;
+}
+/**
+ * @record
+ */
+function SearchState() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchState.prototype.query;
+    /** @type {?|undefined} */
+    SearchState.prototype.url;
+}
+/**
+ * @record
+ */
+function FacetValue() { }
+if (false) {
+    /** @type {?|undefined} */
+    FacetValue.prototype.count;
+    /** @type {?|undefined} */
+    FacetValue.prototype.name;
+    /** @type {?|undefined} */
+    FacetValue.prototype.query;
+    /** @type {?|undefined} */
+    FacetValue.prototype.selected;
+}
+/**
+ * @record
+ */
+function Breadcrumb() { }
+if (false) {
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetCode;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetName;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetValueCode;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetValueName;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.removeQuery;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.truncateQuery;
+}
+/**
+ * @record
+ */
+function Facet() { }
+if (false) {
+    /** @type {?|undefined} */
+    Facet.prototype.category;
+    /** @type {?|undefined} */
+    Facet.prototype.multiSelect;
+    /** @type {?|undefined} */
+    Facet.prototype.name;
+    /** @type {?|undefined} */
+    Facet.prototype.priority;
+    /** @type {?|undefined} */
+    Facet.prototype.topValues;
+    /** @type {?|undefined} */
+    Facet.prototype.values;
+    /** @type {?|undefined} */
+    Facet.prototype.visible;
+}
+/**
+ * @record
+ */
+function SpellingSuggestion() { }
+if (false) {
+    /** @type {?|undefined} */
+    SpellingSuggestion.prototype.query;
+    /** @type {?|undefined} */
+    SpellingSuggestion.prototype.suggestion;
+}
+/**
+ * @record
+ */
+function ProductSearchPage() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.breadcrumbs;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.categoryCode;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.currentQuery;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.facets;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.freeTextSearch;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.keywordRedirectUrl;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.pagination;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.products;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.sorts;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.spellingSuggestion;
+}
+/**
+ * @record
+ */
+function Suggestion() { }
+if (false) {
+    /** @type {?|undefined} */
+    Suggestion.prototype.value;
+}
+/**
+ * @record
+ */
+function ClearSearch() { }
+if (false) {
+    /** @type {?|undefined} */
+    ClearSearch.prototype.clearPageResults;
+    /** @type {?|undefined} */
+    ClearSearch.prototype.clearSearchboxResults;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function VariantOptionQualifier() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.image;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.name;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.qualifier;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.value;
+}
+/**
+ * @record
+ */
+function PromotionRestriction() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionRestriction.prototype.description;
+    /** @type {?|undefined} */
+    PromotionRestriction.prototype.restrictionType;
+}
+/**
+ * @record
+ */
+function FeatureUnit() { }
+if (false) {
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.name;
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.symbol;
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.unitType;
+}
+/**
+ * @record
+ */
+function FeatureValue() { }
+if (false) {
+    /** @type {?|undefined} */
+    FeatureValue.prototype.value;
+}
+/**
+ * @record
+ */
+function Feature() { }
+if (false) {
+    /** @type {?|undefined} */
+    Feature.prototype.code;
+    /** @type {?|undefined} */
+    Feature.prototype.comparable;
+    /** @type {?|undefined} */
+    Feature.prototype.description;
+    /** @type {?|undefined} */
+    Feature.prototype.featureUnit;
+    /** @type {?|undefined} */
+    Feature.prototype.featureValues;
+    /** @type {?|undefined} */
+    Feature.prototype.name;
+    /** @type {?|undefined} */
+    Feature.prototype.range;
+    /** @type {?|undefined} */
+    Feature.prototype.type;
+}
+/**
+ * @record
+ */
+function VariantCategory() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantCategory.prototype.hasImage;
+    /** @type {?|undefined} */
+    VariantCategory.prototype.name;
+    /** @type {?|undefined} */
+    VariantCategory.prototype.priority;
+}
+/**
+ * @record
+ */
+function VariantValueCategory() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.name;
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.sequence;
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.superCategories;
+}
 /** @enum {string} */
 var PriceType = {
     BUY: 'BUY',
     FROM: 'FROM',
 };
+/**
+ * @record
+ */
+function Price() { }
+if (false) {
+    /** @type {?|undefined} */
+    Price.prototype.currencyIso;
+    /** @type {?|undefined} */
+    Price.prototype.formattedValue;
+    /** @type {?|undefined} */
+    Price.prototype.maxQuantity;
+    /** @type {?|undefined} */
+    Price.prototype.minQuantity;
+    /** @type {?|undefined} */
+    Price.prototype.priceType;
+    /** @type {?|undefined} */
+    Price.prototype.value;
+}
+/**
+ * @record
+ */
+function Stock() { }
+if (false) {
+    /** @type {?|undefined} */
+    Stock.prototype.stockLevel;
+    /** @type {?|undefined} */
+    Stock.prototype.stockLevelStatus;
+}
+/**
+ * @record
+ */
+function VariantOption() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantOption.prototype.code;
+    /** @type {?|undefined} */
+    VariantOption.prototype.priceData;
+    /** @type {?|undefined} */
+    VariantOption.prototype.stock;
+    /** @type {?|undefined} */
+    VariantOption.prototype.url;
+    /** @type {?|undefined} */
+    VariantOption.prototype.variantOptionQualifiers;
+}
+/**
+ * @record
+ */
+function Promotion() { }
+if (false) {
+    /** @type {?|undefined} */
+    Promotion.prototype.code;
+    /** @type {?|undefined} */
+    Promotion.prototype.couldFireMessages;
+    /** @type {?|undefined} */
+    Promotion.prototype.description;
+    /** @type {?|undefined} */
+    Promotion.prototype.enabled;
+    /** @type {?|undefined} */
+    Promotion.prototype.endDate;
+    /** @type {?|undefined} */
+    Promotion.prototype.firedMessages;
+    /** @type {?|undefined} */
+    Promotion.prototype.priority;
+    /** @type {?|undefined} */
+    Promotion.prototype.productBanner;
+    /** @type {?|undefined} */
+    Promotion.prototype.promotionGroup;
+    /** @type {?|undefined} */
+    Promotion.prototype.promotionType;
+    /** @type {?|undefined} */
+    Promotion.prototype.restrictions;
+    /** @type {?|undefined} */
+    Promotion.prototype.startDate;
+    /** @type {?|undefined} */
+    Promotion.prototype.title;
+}
+/**
+ * @record
+ */
+function Category() { }
+if (false) {
+    /** @type {?|undefined} */
+    Category.prototype.code;
+    /** @type {?|undefined} */
+    Category.prototype.name;
+    /** @type {?|undefined} */
+    Category.prototype.image;
+    /** @type {?|undefined} */
+    Category.prototype.url;
+}
+/**
+ * @record
+ */
+function Classification() { }
+if (false) {
+    /** @type {?|undefined} */
+    Classification.prototype.code;
+    /** @type {?|undefined} */
+    Classification.prototype.features;
+    /** @type {?|undefined} */
+    Classification.prototype.name;
+}
+/**
+ * @record
+ */
+function FutureStock() { }
+if (false) {
+    /** @type {?|undefined} */
+    FutureStock.prototype.date;
+    /** @type {?|undefined} */
+    FutureStock.prototype.formattedDate;
+    /** @type {?|undefined} */
+    FutureStock.prototype.stock;
+}
+/**
+ * @record
+ */
+function PriceRange() { }
+if (false) {
+    /** @type {?|undefined} */
+    PriceRange.prototype.maxPrice;
+    /** @type {?|undefined} */
+    PriceRange.prototype.minPrice;
+}
+/**
+ * @record
+ */
+function ProductReference() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProductReference.prototype.description;
+    /** @type {?|undefined} */
+    ProductReference.prototype.preselected;
+    /** @type {?|undefined} */
+    ProductReference.prototype.quantity;
+    /** @type {?|undefined} */
+    ProductReference.prototype.referenceType;
+    /** @type {?|undefined} */
+    ProductReference.prototype.target;
+}
+/**
+ * @record
+ */
+function Review() { }
+if (false) {
+    /** @type {?|undefined} */
+    Review.prototype.alias;
+    /** @type {?|undefined} */
+    Review.prototype.comment;
+    /** @type {?|undefined} */
+    Review.prototype.date;
+    /** @type {?|undefined} */
+    Review.prototype.headline;
+    /** @type {?|undefined} */
+    Review.prototype.id;
+    /** @type {?|undefined} */
+    Review.prototype.principal;
+    /** @type {?|undefined} */
+    Review.prototype.rating;
+}
+/**
+ * @record
+ */
+function VariantMatrixElement() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.elements;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.isLeaf;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.parentVariantCategory;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.variantOption;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.variantValueCategory;
+}
+/**
+ * @record
+ */
+function ProductReferences() { }
+/**
+ * @record
+ */
+function BaseOption() { }
+if (false) {
+    /** @type {?|undefined} */
+    BaseOption.prototype.options;
+    /** @type {?|undefined} */
+    BaseOption.prototype.selected;
+    /** @type {?|undefined} */
+    BaseOption.prototype.variantType;
+}
+/**
+ * @record
+ */
+function Product() { }
+if (false) {
+    /** @type {?|undefined} */
+    Product.prototype.availableForPickup;
+    /** @type {?|undefined} */
+    Product.prototype.averageRating;
+    /** @type {?|undefined} */
+    Product.prototype.baseOptions;
+    /** @type {?|undefined} */
+    Product.prototype.baseProduct;
+    /** @type {?|undefined} */
+    Product.prototype.categories;
+    /** @type {?|undefined} */
+    Product.prototype.classifications;
+    /** @type {?|undefined} */
+    Product.prototype.code;
+    /** @type {?|undefined} */
+    Product.prototype.description;
+    /** @type {?|undefined} */
+    Product.prototype.futureStocks;
+    /** @type {?|undefined} */
+    Product.prototype.images;
+    /** @type {?|undefined} */
+    Product.prototype.manufacturer;
+    /** @type {?|undefined} */
+    Product.prototype.multidimensional;
+    /** @type {?|undefined} */
+    Product.prototype.name;
+    /** @type {?|undefined} */
+    Product.prototype.nameHtml;
+    /** @type {?|undefined} */
+    Product.prototype.numberOfReviews;
+    /** @type {?|undefined} */
+    Product.prototype.potentialPromotions;
+    /** @type {?|undefined} */
+    Product.prototype.price;
+    /** @type {?|undefined} */
+    Product.prototype.priceRange;
+    /** @type {?|undefined} */
+    Product.prototype.productReferences;
+    /** @type {?|undefined} */
+    Product.prototype.purchasable;
+    /** @type {?|undefined} */
+    Product.prototype.reviews;
+    /** @type {?|undefined} */
+    Product.prototype.stock;
+    /** @type {?|undefined} */
+    Product.prototype.summary;
+    /** @type {?|undefined} */
+    Product.prototype.url;
+    /** @type {?|undefined} */
+    Product.prototype.variantMatrix;
+    /** @type {?|undefined} */
+    Product.prototype.variantOptions;
+    /** @type {?|undefined} */
+    Product.prototype.variantType;
+    /** @type {?|undefined} */
+    Product.prototype.volumePrices;
+    /** @type {?|undefined} */
+    Product.prototype.volumePricesFlag;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var testestsd = 'sare';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchPage() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundEastLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundNorthLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundSouthLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundWestLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.locationText;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.pagination;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sorts;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sourceLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sourceLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.stores;
+}
+/**
+ * @record
+ */
+function StoreCount() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreCount.prototype.count;
+    /** @type {?|undefined} */
+    StoreCount.prototype.isoCode;
+    /** @type {?|undefined} */
+    StoreCount.prototype.name;
+    /** @type {?|undefined} */
+    StoreCount.prototype.type;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
@@ -16659,7 +21821,7 @@ function provideConfigFromMetaTags() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccConfig = {
@@ -16673,7 +21835,7 @@ var defaultOccConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -16689,12 +21851,305 @@ function occConfigValidator(config) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function OccEndpoints() { }
+if (false) {
+    /**
+     * Client login (get authorization token)
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.login;
+    /**
+     * Get product details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.product;
+    /**
+     * Get reviews for a product
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productReviews;
+    /**
+     * Get a list of product references
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productReferences;
+    /**
+     * Get a list of products and additional data
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productSearch;
+    /**
+     * Get a list of available suggestions
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productSuggestions;
+    /**
+     * Get CMS component details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.component;
+    /**
+     * Get a list of CMS component details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.components;
+    /**
+     * Get page data with list of cms content slots
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.pages;
+    /**
+     * Get page data with list of cms content slots
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.page;
+    /**
+     * Get all carts
+     *
+     * \@member {string} [carts]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.carts;
+    /**
+     * Get a cart with a given identifier
+     *
+     * \@member {string} [cart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.cart;
+    /**
+     * Creates or restore a cart for a user
+     *
+     * \@member {string} [createCart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.createCart;
+    /**
+     * Adds a product to the cart
+     *
+     * \@member {string} [addEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addEntries;
+    /**
+     * Update quantity and store the details of a cart entry
+     *
+     * \@member {string} [updateEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.updateEntries;
+    /**
+     * Deletes cart entry
+     *
+     * \@member {string} [removeEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.removeEntries;
+    /**
+     * Get a store location
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.store;
+    /**
+     * Get a list of store locations
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.stores;
+    /**
+     * Gets a store location count per country and regions
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.storescounts;
+    /**
+     * Get a list of available languages
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.languages;
+    /**
+     * Get a list of available currencies
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.currencies;
+    /**
+     * Get a list of countries
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.countries;
+    /**
+     * Fetch the list of regions for the provided country
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.regions;
+    /**
+     * Titles used for user's personal info.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.titles;
+    /**
+     * Get user details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.user;
+    /**
+     * Register a new user.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userRegister;
+    /**
+     * Request an email to reset the password
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userForgotPassword;
+    /**
+     * Reset the password once the email is recieved.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userResetPassword;
+    /**
+     * Update the user id with which the user authenticates.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userUpdateLoginId;
+    /**
+     * Update the user's password
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userUpdatePassword;
+    /**
+     * Payment details root endpoint.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.paymentDetailsAll;
+    /**
+     * Endpoint for a specific payment method.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.paymentDetail;
+    /**
+     * Endpoint for the list of one user's orders
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.orderHistory;
+    /**
+     * Endpoint for the details of one user's order
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.orderDetail;
+    /**
+     * Endpoint for consent templates
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consentTemplates;
+    /**
+     * Endpoint for a user's consents
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consents;
+    /**
+     * Endpoint for a user's specific previously given consent.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consentDetail;
+    /**
+     * Endpoint for a user's addresses
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addresses;
+    /**
+     * Endpoint for a user's specific address
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addressDetail;
+    /**
+     * Endpoint for address verification
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addressVerification;
+    /**
+     * Endpoint for consignment tracking
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consignmentTracking;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var Occ;
 (function (Occ) {
@@ -16705,6 +22160,18 @@ var Occ;
      */
     function Country() { }
     Occ.Country = Country;
+    if (false) {
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Country.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Country.prototype.name;
+    }
     /**
      *
      * An interface representing Region.
@@ -16712,6 +22179,28 @@ var Occ;
      */
     function Region() { }
     Occ.Region = Region;
+    if (false) {
+        /**
+         * \@member {string} [countryIso]
+         * @type {?|undefined}
+         */
+        Region.prototype.countryIso;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Region.prototype.isocode;
+        /**
+         * \@member {string} [isocodeShort]
+         * @type {?|undefined}
+         */
+        Region.prototype.isocodeShort;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Region.prototype.name;
+    }
     /**
      *
      * An interface representing RegionList.
@@ -16719,6 +22208,13 @@ var Occ;
      */
     function RegionList() { }
     Occ.RegionList = RegionList;
+    if (false) {
+        /**
+         * \@member {Region[]} [regions]
+         * @type {?|undefined}
+         */
+        RegionList.prototype.regions;
+    }
     /**
      *
      * An interface representing Address.
@@ -16726,6 +22222,98 @@ var Occ;
      */
     function Address() { }
     Occ.Address = Address;
+    if (false) {
+        /**
+         * \@member {string} [companyName]
+         * @type {?|undefined}
+         */
+        Address.prototype.companyName;
+        /**
+         * \@member {Country} [country]
+         * @type {?|undefined}
+         */
+        Address.prototype.country;
+        /**
+         * \@member {boolean} [defaultAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.defaultAddress;
+        /**
+         * \@member {string} [email]
+         * @type {?|undefined}
+         */
+        Address.prototype.email;
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        Address.prototype.firstName;
+        /**
+         * \@member {string} [formattedAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.formattedAddress;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Address.prototype.id;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        Address.prototype.lastName;
+        /**
+         * \@member {string} [line1]
+         * @type {?|undefined}
+         */
+        Address.prototype.line1;
+        /**
+         * \@member {string} [line2]
+         * @type {?|undefined}
+         */
+        Address.prototype.line2;
+        /**
+         * \@member {string} [phone]
+         * @type {?|undefined}
+         */
+        Address.prototype.phone;
+        /**
+         * \@member {string} [postalCode]
+         * @type {?|undefined}
+         */
+        Address.prototype.postalCode;
+        /**
+         * \@member {Region} [region]
+         * @type {?|undefined}
+         */
+        Address.prototype.region;
+        /**
+         * \@member {boolean} [shippingAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.shippingAddress;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        Address.prototype.title;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        Address.prototype.titleCode;
+        /**
+         * \@member {string} [town]
+         * @type {?|undefined}
+         */
+        Address.prototype.town;
+        /**
+         * \@member {boolean} [visibleInAddressBook]
+         * @type {?|undefined}
+         */
+        Address.prototype.visibleInAddressBook;
+    }
     /**
      *
      * An interface representing AddressList.
@@ -16733,6 +22321,13 @@ var Occ;
      */
     function AddressList() { }
     Occ.AddressList = AddressList;
+    if (false) {
+        /**
+         * \@member {Address[]} [addresses]
+         * @type {?|undefined}
+         */
+        AddressList.prototype.addresses;
+    }
     /**
      *
      * An interface representing ErrorModel.
@@ -16742,6 +22337,35 @@ var Occ;
      */
     function ErrorModel() { }
     Occ.ErrorModel = ErrorModel;
+    if (false) {
+        /**
+         * \@member {string} [message] Descriptive, human readable error message.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.message;
+        /**
+         * \@member {string} [reason] Additional classification specific for each
+         * error type e.g. 'noStock'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.reason;
+        /**
+         * \@member {string} [subject] Identifier of the related object e.g. '1'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.subject;
+        /**
+         * \@member {string} [subjectType] Type of the object related to the error
+         * e.g. 'entry'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.subjectType;
+        /**
+         * \@member {string} [type] Type of the error e.g. 'LowStockError'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.type;
+    }
     /**
      *
      * An interface representing ErrorList.
@@ -16751,6 +22375,13 @@ var Occ;
      */
     function ErrorList() { }
     Occ.ErrorList = ErrorList;
+    if (false) {
+        /**
+         * \@member {ErrorModel[]} [errors]
+         * @type {?|undefined}
+         */
+        ErrorList.prototype.errors;
+    }
     /**
      *
      * An interface representing AddressValidation.
@@ -16758,6 +22389,23 @@ var Occ;
      */
     function AddressValidation() { }
     Occ.AddressValidation = AddressValidation;
+    if (false) {
+        /**
+         * \@member {string} [decision]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.decision;
+        /**
+         * \@member {ErrorList} [errors]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.errors;
+        /**
+         * \@member {Address[]} [suggestedAddresses]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.suggestedAddresses;
+    }
     /**
      *
      * An interface representing Price.
@@ -16765,6 +22413,38 @@ var Occ;
      */
     function Price() { }
     Occ.Price = Price;
+    if (false) {
+        /**
+         * \@member {string} [currencyIso]
+         * @type {?|undefined}
+         */
+        Price.prototype.currencyIso;
+        /**
+         * \@member {string} [formattedValue]
+         * @type {?|undefined}
+         */
+        Price.prototype.formattedValue;
+        /**
+         * \@member {number} [maxQuantity]
+         * @type {?|undefined}
+         */
+        Price.prototype.maxQuantity;
+        /**
+         * \@member {number} [minQuantity]
+         * @type {?|undefined}
+         */
+        Price.prototype.minQuantity;
+        /**
+         * \@member {PriceType} [priceType] Possible values include: 'BUY', 'FROM'
+         * @type {?|undefined}
+         */
+        Price.prototype.priceType;
+        /**
+         * \@member {number} [value]
+         * @type {?|undefined}
+         */
+        Price.prototype.value;
+    }
     /**
      *
      * An interface representing Stock.
@@ -16772,6 +22452,18 @@ var Occ;
      */
     function Stock() { }
     Occ.Stock = Stock;
+    if (false) {
+        /**
+         * \@member {number} [stockLevel]
+         * @type {?|undefined}
+         */
+        Stock.prototype.stockLevel;
+        /**
+         * \@member {string} [stockLevelStatus]
+         * @type {?|undefined}
+         */
+        Stock.prototype.stockLevelStatus;
+    }
     /**
      *
      * An interface representing Image.
@@ -16779,6 +22471,34 @@ var Occ;
      */
     function Image() { }
     Occ.Image = Image;
+    if (false) {
+        /**
+         * \@member {string} [altText]
+         * @type {?|undefined}
+         */
+        Image.prototype.altText;
+        /**
+         * \@member {string} [format]
+         * @type {?|undefined}
+         */
+        Image.prototype.format;
+        /**
+         * \@member {number} [galleryIndex]
+         * @type {?|undefined}
+         */
+        Image.prototype.galleryIndex;
+        /**
+         * \@member {ImageType} [imageType] Possible values include: 'PRIMARY',
+         * 'GALLERY'
+         * @type {?|undefined}
+         */
+        Image.prototype.imageType;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Image.prototype.url;
+    }
     /**
      *
      * An interface representing VariantOptionQualifier.
@@ -16786,6 +22506,28 @@ var Occ;
      */
     function VariantOptionQualifier() { }
     Occ.VariantOptionQualifier = VariantOptionQualifier;
+    if (false) {
+        /**
+         * \@member {Image} [image]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.image;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.name;
+        /**
+         * \@member {string} [qualifier]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.qualifier;
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.value;
+    }
     /**
      *
      * An interface representing VariantOption.
@@ -16793,6 +22535,33 @@ var Occ;
      */
     function VariantOption() { }
     Occ.VariantOption = VariantOption;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.code;
+        /**
+         * \@member {Price} [priceData]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.priceData;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.stock;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.url;
+        /**
+         * \@member {VariantOptionQualifier[]} [variantOptionQualifiers]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.variantOptionQualifiers;
+    }
     /**
      *
      * An interface representing BaseOption.
@@ -16800,6 +22569,23 @@ var Occ;
      */
     function BaseOption() { }
     Occ.BaseOption = BaseOption;
+    if (false) {
+        /**
+         * \@member {VariantOption[]} [options]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.options;
+        /**
+         * \@member {VariantOption} [selected]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.selected;
+        /**
+         * \@member {string} [variantType]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.variantType;
+    }
     /**
      *
      * An interface representing SearchQuery.
@@ -16807,6 +22593,13 @@ var Occ;
      */
     function SearchQuery() { }
     Occ.SearchQuery = SearchQuery;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        SearchQuery.prototype.value;
+    }
     /**
      *
      * An interface representing SearchState.
@@ -16814,6 +22607,18 @@ var Occ;
      */
     function SearchState() { }
     Occ.SearchState = SearchState;
+    if (false) {
+        /**
+         * \@member {SearchQuery} [query]
+         * @type {?|undefined}
+         */
+        SearchState.prototype.query;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        SearchState.prototype.url;
+    }
     /**
      *
      * An interface representing Breadcrumb.
@@ -16821,6 +22626,38 @@ var Occ;
      */
     function Breadcrumb() { }
     Occ.Breadcrumb = Breadcrumb;
+    if (false) {
+        /**
+         * \@member {string} [facetCode]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetCode;
+        /**
+         * \@member {string} [facetName]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetName;
+        /**
+         * \@member {string} [facetValueCode]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetValueCode;
+        /**
+         * \@member {string} [facetValueName]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetValueName;
+        /**
+         * \@member {SearchState} [removeQuery]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.removeQuery;
+        /**
+         * \@member {SearchState} [truncateQuery]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.truncateQuery;
+    }
     /**
      *
      * An interface representing Component.
@@ -16828,6 +22665,33 @@ var Occ;
      */
     function Component() { }
     Occ.Component = Component;
+    if (false) {
+        /**
+         * \@member {Date} [modifiedTime]
+         * @type {?|undefined}
+         */
+        Component.prototype.modifiedTime;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Component.prototype.name;
+        /**
+         * \@member {any} [otherProperties]
+         * @type {?|undefined}
+         */
+        Component.prototype.otherProperties;
+        /**
+         * \@member {string} [typeCode]
+         * @type {?|undefined}
+         */
+        Component.prototype.typeCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        Component.prototype.uid;
+    }
     /**
      *
      * An interface representing ComponentList.
@@ -16835,6 +22699,13 @@ var Occ;
      */
     function ComponentList() { }
     Occ.ComponentList = ComponentList;
+    if (false) {
+        /**
+         * \@member {Component[]} [component]
+         * @type {?|undefined}
+         */
+        ComponentList.prototype.component;
+    }
     /**
      *
      * An interface representing ContentSlot.
@@ -16842,6 +22713,38 @@ var Occ;
      */
     function ContentSlot() { }
     Occ.ContentSlot = ContentSlot;
+    if (false) {
+        /**
+         * \@member {ComponentList} [components]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.components;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.name;
+        /**
+         * \@member {string} [position]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.position;
+        /**
+         * \@member {string} [slotId]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotId;
+        /**
+         * \@member {boolean} [slotShared]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotShared;
+        /**
+         * \@member {string} [slotStatus]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotStatus;
+    }
     /**
      *
      * An interface representing ContentSlotList.
@@ -16849,6 +22752,13 @@ var Occ;
      */
     function ContentSlotList() { }
     Occ.ContentSlotList = ContentSlotList;
+    if (false) {
+        /**
+         * \@member {ContentSlot[]} [contentSlot]
+         * @type {?|undefined}
+         */
+        ContentSlotList.prototype.contentSlot;
+    }
     /**
      *
      * An interface representing CMSPage.
@@ -16856,6 +22766,43 @@ var Occ;
      */
     function CMSPage() { }
     Occ.CMSPage = CMSPage;
+    if (false) {
+        /**
+         * \@member {ContentSlotList} [contentSlots]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.contentSlots;
+        /**
+         * \@member {boolean} [defaultPage]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.defaultPage;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.name;
+        /**
+         * \@member {string} [template]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.template;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.title;
+        /**
+         * \@member {string} [typeCode]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.typeCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.uid;
+    }
     /**
      *
      * An interface representing CardType.
@@ -16863,6 +22810,18 @@ var Occ;
      */
     function CardType() { }
     Occ.CardType = CardType;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        CardType.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CardType.prototype.name;
+    }
     /**
      *
      * An interface representing CardTypeList.
@@ -16870,6 +22829,13 @@ var Occ;
      */
     function CardTypeList() { }
     Occ.CardTypeList = CardTypeList;
+    if (false) {
+        /**
+         * \@member {CardType[]} [cardTypes]
+         * @type {?|undefined}
+         */
+        CardTypeList.prototype.cardTypes;
+    }
     /**
      *
      * An interface representing PromotionOrderEntryConsumed.
@@ -16877,6 +22843,28 @@ var Occ;
      */
     function PromotionOrderEntryConsumed() { }
     Occ.PromotionOrderEntryConsumed = PromotionOrderEntryConsumed;
+    if (false) {
+        /**
+         * \@member {number} [adjustedUnitPrice]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.adjustedUnitPrice;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.code;
+        /**
+         * \@member {number} [orderEntryNumber]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.orderEntryNumber;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.quantity;
+    }
     /**
      *
      * An interface representing PromotionRestriction.
@@ -16884,6 +22872,18 @@ var Occ;
      */
     function PromotionRestriction() { }
     Occ.PromotionRestriction = PromotionRestriction;
+    if (false) {
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PromotionRestriction.prototype.description;
+        /**
+         * \@member {string} [restrictionType]
+         * @type {?|undefined}
+         */
+        PromotionRestriction.prototype.restrictionType;
+    }
     /**
      *
      * An interface representing Promotion.
@@ -16891,6 +22891,73 @@ var Occ;
      */
     function Promotion() { }
     Occ.Promotion = Promotion;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.code;
+        /**
+         * \@member {string[]} [couldFireMessages]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.couldFireMessages;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.description;
+        /**
+         * \@member {boolean} [enabled]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.enabled;
+        /**
+         * \@member {Date} [endDate]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.endDate;
+        /**
+         * \@member {string[]} [firedMessages]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.firedMessages;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.priority;
+        /**
+         * \@member {Image} [productBanner]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.productBanner;
+        /**
+         * \@member {string} [promotionGroup]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.promotionGroup;
+        /**
+         * \@member {string} [promotionType]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.promotionType;
+        /**
+         * \@member {PromotionRestriction[]} [restrictions]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.restrictions;
+        /**
+         * \@member {Date} [startDate]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.startDate;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.title;
+    }
     /**
      *
      * An interface representing PromotionResult.
@@ -16898,6 +22965,23 @@ var Occ;
      */
     function PromotionResult() { }
     Occ.PromotionResult = PromotionResult;
+    if (false) {
+        /**
+         * \@member {PromotionOrderEntryConsumed[]} [consumedEntries]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.consumedEntries;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.description;
+        /**
+         * \@member {Promotion} [promotion]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.promotion;
+    }
     /**
      *
      * An interface representing Currency.
@@ -16905,6 +22989,28 @@ var Occ;
      */
     function Currency() { }
     Occ.Currency = Currency;
+    if (false) {
+        /**
+         * \@member {boolean} [active]
+         * @type {?|undefined}
+         */
+        Currency.prototype.active;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Currency.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Currency.prototype.name;
+        /**
+         * \@member {string} [symbol]
+         * @type {?|undefined}
+         */
+        Currency.prototype.symbol;
+    }
     /**
      *
      * An interface representing Voucher.
@@ -16912,6 +23018,58 @@ var Occ;
      */
     function Voucher() { }
     Occ.Voucher = Voucher;
+    if (false) {
+        /**
+         * \@member {Price} [appliedValue]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.appliedValue;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.code;
+        /**
+         * \@member {Currency} [currency]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.currency;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.description;
+        /**
+         * \@member {boolean} [freeShipping]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.freeShipping;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.name;
+        /**
+         * \@member {number} [value]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.value;
+        /**
+         * \@member {string} [valueFormatted]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.valueFormatted;
+        /**
+         * \@member {string} [valueString]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.valueString;
+        /**
+         * \@member {string} [voucherCode]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.voucherCode;
+    }
     /**
      *
      * An interface representing DeliveryMode.
@@ -16919,6 +23077,28 @@ var Occ;
      */
     function DeliveryMode() { }
     Occ.DeliveryMode = DeliveryMode;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.code;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.deliveryCost;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.description;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.name;
+    }
     /**
      *
      * An interface representing GeoPoint.
@@ -16926,6 +23106,18 @@ var Occ;
      */
     function GeoPoint() { }
     Occ.GeoPoint = GeoPoint;
+    if (false) {
+        /**
+         * \@member {number} [latitude]
+         * @type {?|undefined}
+         */
+        GeoPoint.prototype.latitude;
+        /**
+         * \@member {number} [longitude]
+         * @type {?|undefined}
+         */
+        GeoPoint.prototype.longitude;
+    }
     /**
      *
      * An interface representing Time.
@@ -16933,6 +23125,23 @@ var Occ;
      */
     function Time() { }
     Occ.Time = Time;
+    if (false) {
+        /**
+         * \@member {string} [formattedHour]
+         * @type {?|undefined}
+         */
+        Time.prototype.formattedHour;
+        /**
+         * \@member {number} [hour]
+         * @type {?|undefined}
+         */
+        Time.prototype.hour;
+        /**
+         * \@member {number} [minute]
+         * @type {?|undefined}
+         */
+        Time.prototype.minute;
+    }
     /**
      *
      * An interface representing SpecialOpeningDay.
@@ -16940,6 +23149,43 @@ var Occ;
      */
     function SpecialOpeningDay() { }
     Occ.SpecialOpeningDay = SpecialOpeningDay;
+    if (false) {
+        /**
+         * \@member {boolean} [closed]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.closed;
+        /**
+         * \@member {Time} [closingTime]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.closingTime;
+        /**
+         * \@member {string} [comment]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.comment;
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.date;
+        /**
+         * \@member {string} [formattedDate]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.formattedDate;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.name;
+        /**
+         * \@member {Time} [openingTime]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.openingTime;
+    }
     /**
      *
      * An interface representing WeekdayOpeningDay.
@@ -16947,6 +23193,28 @@ var Occ;
      */
     function WeekdayOpeningDay() { }
     Occ.WeekdayOpeningDay = WeekdayOpeningDay;
+    if (false) {
+        /**
+         * \@member {boolean} [closed]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.closed;
+        /**
+         * \@member {Time} [closingTime]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.closingTime;
+        /**
+         * \@member {Time} [openingTime]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.openingTime;
+        /**
+         * \@member {string} [weekDay]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.weekDay;
+    }
     /**
      *
      * An interface representing OpeningSchedule.
@@ -16954,6 +23222,28 @@ var Occ;
      */
     function OpeningSchedule() { }
     Occ.OpeningSchedule = OpeningSchedule;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.name;
+        /**
+         * \@member {SpecialOpeningDay[]} [specialDayOpeningList]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.specialDayOpeningList;
+        /**
+         * \@member {WeekdayOpeningDay[]} [weekDayOpeningList]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.weekDayOpeningList;
+    }
     /**
      *
      * An interface representing PointOfService.
@@ -16961,6 +23251,73 @@ var Occ;
      */
     function PointOfService() { }
     Occ.PointOfService = PointOfService;
+    if (false) {
+        /**
+         * \@member {Address} [address]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.address;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.description;
+        /**
+         * \@member {string} [displayName]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.displayName;
+        /**
+         * \@member {number} [distanceKm]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.distanceKm;
+        /**
+         * \@member {{ [propertyName: string]: string }} [features]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.features;
+        /**
+         * \@member {string} [formattedDistance]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.formattedDistance;
+        /**
+         * \@member {GeoPoint} [geoPoint]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.geoPoint;
+        /**
+         * \@member {Image} [mapIcon]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.mapIcon;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.name;
+        /**
+         * \@member {OpeningSchedule} [openingHours]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.openingHours;
+        /**
+         * \@member {string} [storeContent]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.storeContent;
+        /**
+         * \@member {Image[]} [storeImages]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.storeImages;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.url;
+    }
     /**
      *
      * An interface representing Category.
@@ -16968,6 +23325,28 @@ var Occ;
      */
     function Category() { }
     Occ.Category = Category;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Category.prototype.code;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Category.prototype.name;
+        /**
+         * \@member {Image} [image]
+         * @type {?|undefined}
+         */
+        Category.prototype.image;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Category.prototype.url;
+    }
     /**
      *
      * An interface representing FeatureUnit.
@@ -16975,6 +23354,23 @@ var Occ;
      */
     function FeatureUnit() { }
     Occ.FeatureUnit = FeatureUnit;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.name;
+        /**
+         * \@member {string} [symbol]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.symbol;
+        /**
+         * \@member {string} [unitType]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.unitType;
+    }
     /**
      *
      * An interface representing FeatureValue.
@@ -16982,6 +23378,13 @@ var Occ;
      */
     function FeatureValue() { }
     Occ.FeatureValue = FeatureValue;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        FeatureValue.prototype.value;
+    }
     /**
      *
      * An interface representing Feature.
@@ -16989,6 +23392,48 @@ var Occ;
      */
     function Feature() { }
     Occ.Feature = Feature;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Feature.prototype.code;
+        /**
+         * \@member {boolean} [comparable]
+         * @type {?|undefined}
+         */
+        Feature.prototype.comparable;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Feature.prototype.description;
+        /**
+         * \@member {FeatureUnit} [featureUnit]
+         * @type {?|undefined}
+         */
+        Feature.prototype.featureUnit;
+        /**
+         * \@member {FeatureValue[]} [featureValues]
+         * @type {?|undefined}
+         */
+        Feature.prototype.featureValues;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Feature.prototype.name;
+        /**
+         * \@member {boolean} [range]
+         * @type {?|undefined}
+         */
+        Feature.prototype.range;
+        /**
+         * \@member {string} [type]
+         * @type {?|undefined}
+         */
+        Feature.prototype.type;
+    }
     /**
      *
      * An interface representing Classification.
@@ -16996,6 +23441,23 @@ var Occ;
      */
     function Classification() { }
     Occ.Classification = Classification;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Classification.prototype.code;
+        /**
+         * \@member {Feature[]} [features]
+         * @type {?|undefined}
+         */
+        Classification.prototype.features;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Classification.prototype.name;
+    }
     /**
      *
      * An interface representing FutureStock.
@@ -17003,6 +23465,23 @@ var Occ;
      */
     function FutureStock() { }
     Occ.FutureStock = FutureStock;
+    if (false) {
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.date;
+        /**
+         * \@member {string} [formattedDate]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.formattedDate;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.stock;
+    }
     /**
      *
      * An interface representing PriceRange.
@@ -17010,6 +23489,18 @@ var Occ;
      */
     function PriceRange() { }
     Occ.PriceRange = PriceRange;
+    if (false) {
+        /**
+         * \@member {Price} [maxPrice]
+         * @type {?|undefined}
+         */
+        PriceRange.prototype.maxPrice;
+        /**
+         * \@member {Price} [minPrice]
+         * @type {?|undefined}
+         */
+        PriceRange.prototype.minPrice;
+    }
     /**
      *
      * An interface representing ProductReference.
@@ -17017,6 +23508,33 @@ var Occ;
      */
     function ProductReference() { }
     Occ.ProductReference = ProductReference;
+    if (false) {
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.description;
+        /**
+         * \@member {boolean} [preselected]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.preselected;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.quantity;
+        /**
+         * \@member {string} [referenceType]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.referenceType;
+        /**
+         * \@member {Product} [target]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.target;
+    }
     /**
      *
      * An interface representing Language.
@@ -17024,6 +23542,28 @@ var Occ;
      */
     function Language() { }
     Occ.Language = Language;
+    if (false) {
+        /**
+         * \@member {boolean} [active]
+         * @type {?|undefined}
+         */
+        Language.prototype.active;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Language.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Language.prototype.name;
+        /**
+         * \@member {string} [nativeName]
+         * @type {?|undefined}
+         */
+        Language.prototype.nativeName;
+    }
     /**
      *
      * An interface representing User.
@@ -17031,6 +23571,68 @@ var Occ;
      */
     function User() { }
     Occ.User = User;
+    if (false) {
+        /**
+         * \@member {Currency} [currency]
+         * @type {?|undefined}
+         */
+        User.prototype.currency;
+        /**
+         * \@member {string} [customerId]
+         * @type {?|undefined}
+         */
+        User.prototype.customerId;
+        /**
+         * \@member {Date} [deactivationDate]
+         * @type {?|undefined}
+         */
+        User.prototype.deactivationDate;
+        /**
+         * \@member {Address} [defaultAddress]
+         * @type {?|undefined}
+         */
+        User.prototype.defaultAddress;
+        /**
+         * \@member {string} [displayUid]
+         * @type {?|undefined}
+         */
+        User.prototype.displayUid;
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        User.prototype.firstName;
+        /**
+         * \@member {Language} [language]
+         * @type {?|undefined}
+         */
+        User.prototype.language;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        User.prototype.lastName;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        User.prototype.name;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        User.prototype.title;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        User.prototype.titleCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        User.prototype.uid;
+    }
     /**
      *
      * An interface representing Review.
@@ -17038,6 +23640,43 @@ var Occ;
      */
     function Review() { }
     Occ.Review = Review;
+    if (false) {
+        /**
+         * \@member {string} [alias]
+         * @type {?|undefined}
+         */
+        Review.prototype.alias;
+        /**
+         * \@member {string} [comment]
+         * @type {?|undefined}
+         */
+        Review.prototype.comment;
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        Review.prototype.date;
+        /**
+         * \@member {string} [headline]
+         * @type {?|undefined}
+         */
+        Review.prototype.headline;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Review.prototype.id;
+        /**
+         * \@member {User} [principal]
+         * @type {?|undefined}
+         */
+        Review.prototype.principal;
+        /**
+         * \@member {number} [rating]
+         * @type {?|undefined}
+         */
+        Review.prototype.rating;
+    }
     /**
      *
      * An interface representing VariantCategory.
@@ -17045,6 +23684,23 @@ var Occ;
      */
     function VariantCategory() { }
     Occ.VariantCategory = VariantCategory;
+    if (false) {
+        /**
+         * \@member {boolean} [hasImage]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.hasImage;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.name;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.priority;
+    }
     /**
      *
      * An interface representing VariantValueCategory.
@@ -17052,6 +23708,23 @@ var Occ;
      */
     function VariantValueCategory() { }
     Occ.VariantValueCategory = VariantValueCategory;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.name;
+        /**
+         * \@member {number} [sequence]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.sequence;
+        /**
+         * \@member {VariantCategory[]} [superCategories]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.superCategories;
+    }
     /**
      *
      * An interface representing VariantMatrixElement.
@@ -17059,6 +23732,33 @@ var Occ;
      */
     function VariantMatrixElement() { }
     Occ.VariantMatrixElement = VariantMatrixElement;
+    if (false) {
+        /**
+         * \@member {VariantMatrixElement[]} [elements]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.elements;
+        /**
+         * \@member {boolean} [isLeaf]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.isLeaf;
+        /**
+         * \@member {VariantCategory} [parentVariantCategory]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.parentVariantCategory;
+        /**
+         * \@member {VariantOption} [variantOption]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.variantOption;
+        /**
+         * \@member {VariantValueCategory} [variantValueCategory]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.variantValueCategory;
+    }
     /**
      *
      * An interface representing Product.
@@ -17066,6 +23766,148 @@ var Occ;
      */
     function Product() { }
     Occ.Product = Product;
+    if (false) {
+        /**
+         * \@member {boolean} [availableForPickup]
+         * @type {?|undefined}
+         */
+        Product.prototype.availableForPickup;
+        /**
+         * \@member {number} [averageRating]
+         * @type {?|undefined}
+         */
+        Product.prototype.averageRating;
+        /**
+         * \@member {BaseOption[]} [baseOptions]
+         * @type {?|undefined}
+         */
+        Product.prototype.baseOptions;
+        /**
+         * \@member {string} [baseProduct]
+         * @type {?|undefined}
+         */
+        Product.prototype.baseProduct;
+        /**
+         * \@member {Category[]} [categories]
+         * @type {?|undefined}
+         */
+        Product.prototype.categories;
+        /**
+         * \@member {Classification[]} [classifications]
+         * @type {?|undefined}
+         */
+        Product.prototype.classifications;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Product.prototype.code;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Product.prototype.description;
+        /**
+         * \@member {FutureStock[]} [futureStocks]
+         * @type {?|undefined}
+         */
+        Product.prototype.futureStocks;
+        /**
+         * \@member {Image[]} [images]
+         * @type {?|undefined}
+         */
+        Product.prototype.images;
+        /**
+         * \@member {string} [manufacturer]
+         * @type {?|undefined}
+         */
+        Product.prototype.manufacturer;
+        /**
+         * \@member {boolean} [multidimensional]
+         * @type {?|undefined}
+         */
+        Product.prototype.multidimensional;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Product.prototype.name;
+        /**
+         * \@member {number} [numberOfReviews]
+         * @type {?|undefined}
+         */
+        Product.prototype.numberOfReviews;
+        /**
+         * \@member {Promotion[]} [potentialPromotions]
+         * @type {?|undefined}
+         */
+        Product.prototype.potentialPromotions;
+        /**
+         * \@member {Price} [price]
+         * @type {?|undefined}
+         */
+        Product.prototype.price;
+        /**
+         * \@member {PriceRange} [priceRange]
+         * @type {?|undefined}
+         */
+        Product.prototype.priceRange;
+        /**
+         * \@member {ProductReference[]} [productReferences]
+         * @type {?|undefined}
+         */
+        Product.prototype.productReferences;
+        /**
+         * \@member {boolean} [purchasable]
+         * @type {?|undefined}
+         */
+        Product.prototype.purchasable;
+        /**
+         * \@member {Review[]} [reviews]
+         * @type {?|undefined}
+         */
+        Product.prototype.reviews;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        Product.prototype.stock;
+        /**
+         * \@member {string} [summary]
+         * @type {?|undefined}
+         */
+        Product.prototype.summary;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Product.prototype.url;
+        /**
+         * \@member {VariantMatrixElement[]} [variantMatrix]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantMatrix;
+        /**
+         * \@member {VariantOption[]} [variantOptions]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantOptions;
+        /**
+         * \@member {string} [variantType]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantType;
+        /**
+         * \@member {Price[]} [volumePrices]
+         * @type {?|undefined}
+         */
+        Product.prototype.volumePrices;
+        /**
+         * \@member {boolean} [volumePricesFlag]
+         * @type {?|undefined}
+         */
+        Product.prototype.volumePricesFlag;
+    }
     /**
      *
      * An interface representing OrderEntry.
@@ -17073,6 +23915,48 @@ var Occ;
      */
     function OrderEntry() { }
     Occ.OrderEntry = OrderEntry;
+    if (false) {
+        /**
+         * \@member {Price} [basePrice]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.basePrice;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.deliveryMode;
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.deliveryPointOfService;
+        /**
+         * \@member {number} [entryNumber]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.entryNumber;
+        /**
+         * \@member {Product} [product]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.product;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.quantity;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.totalPrice;
+        /**
+         * \@member {boolean} [updateable]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.updateable;
+    }
     /**
      *
      * An interface representing DeliveryOrderEntryGroup.
@@ -17080,6 +23964,28 @@ var Occ;
      */
     function DeliveryOrderEntryGroup() { }
     Occ.DeliveryOrderEntryGroup = DeliveryOrderEntryGroup;
+    if (false) {
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.deliveryAddress;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.entries;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.quantity;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.totalPriceWithTax;
+    }
     /**
      *
      * An interface representing PaymentDetails.
@@ -17087,6 +23993,78 @@ var Occ;
      */
     function PaymentDetails() { }
     Occ.PaymentDetails = PaymentDetails;
+    if (false) {
+        /**
+         * \@member {string} [accountHolderName]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.accountHolderName;
+        /**
+         * \@member {Address} [billingAddress]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.billingAddress;
+        /**
+         * \@member {string} [cardNumber]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cardNumber;
+        /**
+         * \@member {CardType} [cardType]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cardType;
+        /**
+         * \@member {string} [cvn]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cvn;
+        /**
+         * \@member {boolean} [defaultPayment]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.defaultPayment;
+        /**
+         * \@member {string} [expiryMonth]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.expiryMonth;
+        /**
+         * \@member {string} [expiryYear]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.expiryYear;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.id;
+        /**
+         * \@member {string} [issueNumber]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.issueNumber;
+        /**
+         * \@member {boolean} [saved]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.saved;
+        /**
+         * \@member {string} [startMonth]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.startMonth;
+        /**
+         * \@member {string} [startYear]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.startYear;
+        /**
+         * \@member {string} [subscriptionId]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.subscriptionId;
+    }
     /**
      *
      * An interface representing PickupOrderEntryGroup.
@@ -17094,6 +24072,33 @@ var Occ;
      */
     function PickupOrderEntryGroup() { }
     Occ.PickupOrderEntryGroup = PickupOrderEntryGroup;
+    if (false) {
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.deliveryPointOfService;
+        /**
+         * \@member {number} [distance]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.distance;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.entries;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.quantity;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.totalPriceWithTax;
+    }
     /**
      *
      * An interface representing Principal.
@@ -17101,6 +24106,18 @@ var Occ;
      */
     function Principal() { }
     Occ.Principal = Principal;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Principal.prototype.name;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        Principal.prototype.uid;
+    }
     /**
      *
      * An interface representing Cart.
@@ -17108,6 +24125,183 @@ var Occ;
      */
     function Cart() { }
     Occ.Cart = Cart;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [appliedOrderPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [appliedProductPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedProductPromotions;
+        /**
+         * \@member {Voucher[]} [appliedVouchers]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedVouchers;
+        /**
+         * \@member {boolean} [calculated]
+         * @type {?|undefined}
+         */
+        Cart.prototype.calculated;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Cart.prototype.code;
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryAddress;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryCost;
+        /**
+         * \@member {number} [deliveryItemsQuantity]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryItemsQuantity;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryMode;
+        /**
+         * \@member {DeliveryOrderEntryGroup[]} [deliveryOrderGroups]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryOrderGroups;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Cart.prototype.description;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Cart.prototype.entries;
+        /**
+         * \@member {Date} [expirationTime]
+         * @type {?|undefined}
+         */
+        Cart.prototype.expirationTime;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        Cart.prototype.guid;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Cart.prototype.name;
+        /**
+         * \@member {boolean} [net]
+         * @type {?|undefined}
+         */
+        Cart.prototype.net;
+        /**
+         * \@member {Price} [orderDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.orderDiscounts;
+        /**
+         * \@member {PaymentDetails} [paymentInfo]
+         * @type {?|undefined}
+         */
+        Cart.prototype.paymentInfo;
+        /**
+         * \@member {number} [pickupItemsQuantity]
+         * @type {?|undefined}
+         */
+        Cart.prototype.pickupItemsQuantity;
+        /**
+         * \@member {PickupOrderEntryGroup[]} [pickupOrderGroups]
+         * @type {?|undefined}
+         */
+        Cart.prototype.pickupOrderGroups;
+        /**
+         * \@member {PromotionResult[]} [potentialOrderPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.potentialOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [potentialProductPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.potentialProductPromotions;
+        /**
+         * \@member {Price} [productDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.productDiscounts;
+        /**
+         * \@member {Date} [saveTime]
+         * @type {?|undefined}
+         */
+        Cart.prototype.saveTime;
+        /**
+         * \@member {Principal} [savedBy]
+         * @type {?|undefined}
+         */
+        Cart.prototype.savedBy;
+        /**
+         * \@member {string} [site]
+         * @type {?|undefined}
+         */
+        Cart.prototype.site;
+        /**
+         * \@member {string} [store]
+         * @type {?|undefined}
+         */
+        Cart.prototype.store;
+        /**
+         * \@member {Price} [subTotal]
+         * @type {?|undefined}
+         */
+        Cart.prototype.subTotal;
+        /**
+         * \@member {Price} [totalDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalDiscounts;
+        /**
+         * \@member {number} [totalItems]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalItems;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalPrice;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalPriceWithTax;
+        /**
+         * \@member {Price} [totalTax]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalTax;
+        /**
+         * \@member {number} [totalUnitCount]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalUnitCount;
+        /**
+         * \@member {Principal} [user]
+         * @type {?|undefined}
+         */
+        Cart.prototype.user;
+    }
     /**
      *
      * An interface representing CartList.
@@ -17115,6 +24309,13 @@ var Occ;
      */
     function CartList() { }
     Occ.CartList = CartList;
+    if (false) {
+        /**
+         * \@member {Cart[]} [carts]
+         * @type {?|undefined}
+         */
+        CartList.prototype.carts;
+    }
     /**
      *
      * An interface representing CartModification.
@@ -17122,6 +24323,38 @@ var Occ;
      */
     function CartModification() { }
     Occ.CartModification = CartModification;
+    if (false) {
+        /**
+         * \@member {boolean} [deliveryModeChanged]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.deliveryModeChanged;
+        /**
+         * \@member {OrderEntry} [entry]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.entry;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.quantity;
+        /**
+         * \@member {number} [quantityAdded]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.quantityAdded;
+        /**
+         * \@member {string} [statusCode]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.statusCode;
+        /**
+         * \@member {string} [statusMessage]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.statusMessage;
+    }
     /**
      *
      * An interface representing CategoryHierarchy.
@@ -17129,6 +24362,33 @@ var Occ;
      */
     function CategoryHierarchy() { }
     Occ.CategoryHierarchy = CategoryHierarchy;
+    if (false) {
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.name;
+        /**
+         * \@member {CategoryHierarchy[]} [subcategories]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.subcategories;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.url;
+    }
     /**
      *
      * An interface representing CatalogVersion.
@@ -17136,6 +24396,33 @@ var Occ;
      */
     function CatalogVersion() { }
     Occ.CatalogVersion = CatalogVersion;
+    if (false) {
+        /**
+         * \@member {CategoryHierarchy[]} [categories]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.categories;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.name;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.url;
+    }
     /**
      *
      * An interface representing Catalog.
@@ -17143,6 +24430,33 @@ var Occ;
      */
     function Catalog() { }
     Occ.Catalog = Catalog;
+    if (false) {
+        /**
+         * \@member {CatalogVersion[]} [catalogVersions]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.catalogVersions;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.name;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.url;
+    }
     /**
      *
      * An interface representing CatalogList.
@@ -17150,6 +24464,13 @@ var Occ;
      */
     function CatalogList() { }
     Occ.CatalogList = CatalogList;
+    if (false) {
+        /**
+         * \@member {Catalog[]} [catalogs]
+         * @type {?|undefined}
+         */
+        CatalogList.prototype.catalogs;
+    }
     /**
      *
      * An interface representing ComponentIDList.
@@ -17157,6 +24478,13 @@ var Occ;
      */
     function ComponentIDList() { }
     Occ.ComponentIDList = ComponentIDList;
+    if (false) {
+        /**
+         * \@member {string[]} [idList]
+         * @type {?|undefined}
+         */
+        ComponentIDList.prototype.idList;
+    }
     /**
      *
      * An interface representing ConsignmentEntry.
@@ -17164,6 +24492,23 @@ var Occ;
      */
     function ConsignmentEntry() { }
     Occ.ConsignmentEntry = ConsignmentEntry;
+    if (false) {
+        /**
+         * \@member {OrderEntry} [orderEntry]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.orderEntry;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.quantity;
+        /**
+         * \@member {number} [shippedQuantity]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.shippedQuantity;
+    }
     /**
      *
      * An interface representing Consignment.
@@ -17171,6 +24516,43 @@ var Occ;
      */
     function Consignment() { }
     Occ.Consignment = Consignment;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.code;
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.deliveryPointOfService;
+        /**
+         * \@member {ConsignmentEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.entries;
+        /**
+         * \@member {Address} [shippingAddress]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.shippingAddress;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.status;
+        /**
+         * \@member {Date} [statusDate]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.statusDate;
+        /**
+         * \@member {string} [trackingID]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.trackingID;
+    }
     /**
      *
      * An interface representing CountryList.
@@ -17178,6 +24560,13 @@ var Occ;
      */
     function CountryList() { }
     Occ.CountryList = CountryList;
+    if (false) {
+        /**
+         * \@member {Country[]} [countries]
+         * @type {?|undefined}
+         */
+        CountryList.prototype.countries;
+    }
     /**
      *
      * An interface representing CurrencyList.
@@ -17185,6 +24574,13 @@ var Occ;
      */
     function CurrencyList() { }
     Occ.CurrencyList = CurrencyList;
+    if (false) {
+        /**
+         * \@member {Currency[]} [currencies]
+         * @type {?|undefined}
+         */
+        CurrencyList.prototype.currencies;
+    }
     /**
      *
      * An interface representing DeliveryModeList.
@@ -17192,6 +24588,13 @@ var Occ;
      */
     function DeliveryModeList() { }
     Occ.DeliveryModeList = DeliveryModeList;
+    if (false) {
+        /**
+         * \@member {DeliveryMode[]} [deliveryModes]
+         * @type {?|undefined}
+         */
+        DeliveryModeList.prototype.deliveryModes;
+    }
     /**
      *
      * An interface representing FacetValue.
@@ -17199,6 +24602,28 @@ var Occ;
      */
     function FacetValue() { }
     Occ.FacetValue = FacetValue;
+    if (false) {
+        /**
+         * \@member {number} [count]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.count;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.name;
+        /**
+         * \@member {SearchState} [query]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.query;
+        /**
+         * \@member {boolean} [selected]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.selected;
+    }
     /**
      *
      * An interface representing Facet.
@@ -17206,6 +24631,43 @@ var Occ;
      */
     function Facet() { }
     Occ.Facet = Facet;
+    if (false) {
+        /**
+         * \@member {boolean} [category]
+         * @type {?|undefined}
+         */
+        Facet.prototype.category;
+        /**
+         * \@member {boolean} [multiSelect]
+         * @type {?|undefined}
+         */
+        Facet.prototype.multiSelect;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Facet.prototype.name;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        Facet.prototype.priority;
+        /**
+         * \@member {FacetValue[]} [topValues]
+         * @type {?|undefined}
+         */
+        Facet.prototype.topValues;
+        /**
+         * \@member {FacetValue[]} [values]
+         * @type {?|undefined}
+         */
+        Facet.prototype.values;
+        /**
+         * \@member {boolean} [visible]
+         * @type {?|undefined}
+         */
+        Facet.prototype.visible;
+    }
     /**
      *
      * An interface representing LanguageList.
@@ -17213,6 +24675,13 @@ var Occ;
      */
     function LanguageList() { }
     Occ.LanguageList = LanguageList;
+    if (false) {
+        /**
+         * \@member {Language[]} [languages]
+         * @type {?|undefined}
+         */
+        LanguageList.prototype.languages;
+    }
     /**
      *
      * An interface representing Pagination.
@@ -17222,6 +24691,28 @@ var Occ;
      */
     function Pagination() { }
     Occ.Pagination = Pagination;
+    if (false) {
+        /**
+         * \@member {number} [count] Number of elements on this page
+         * @type {?|undefined}
+         */
+        Pagination.prototype.count;
+        /**
+         * \@member {number} [page] Current page number
+         * @type {?|undefined}
+         */
+        Pagination.prototype.page;
+        /**
+         * \@member {number} [totalCount] Total number of elements
+         * @type {?|undefined}
+         */
+        Pagination.prototype.totalCount;
+        /**
+         * \@member {number} [totalPages] Total number of pages
+         * @type {?|undefined}
+         */
+        Pagination.prototype.totalPages;
+    }
     /**
      *
      * An interface representing Sort.
@@ -17231,6 +24722,18 @@ var Occ;
      */
     function Sort() { }
     Occ.Sort = Sort;
+    if (false) {
+        /**
+         * \@member {boolean} [asc]
+         * @type {?|undefined}
+         */
+        Sort.prototype.asc;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Sort.prototype.code;
+    }
     /**
      *
      * An interface representing ListAdaptedComponents.
@@ -17238,6 +24741,23 @@ var Occ;
      */
     function ListAdaptedComponents() { }
     Occ.ListAdaptedComponents = ListAdaptedComponents;
+    if (false) {
+        /**
+         * \@member {any[]} [components]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.components;
+        /**
+         * \@member {Pagination} [pagination]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.pagination;
+        /**
+         * \@member {Sort[]} [sorts]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.sorts;
+    }
     /**
      *
      * An interface representing MemberList.
@@ -17245,6 +24765,13 @@ var Occ;
      */
     function MemberList() { }
     Occ.MemberList = MemberList;
+    if (false) {
+        /**
+         * \@member {Principal[]} [members]
+         * @type {?|undefined}
+         */
+        MemberList.prototype.members;
+    }
     /**
      *
      * An interface representing OrderEntryList.
@@ -17252,6 +24779,13 @@ var Occ;
      */
     function OrderEntryList() { }
     Occ.OrderEntryList = OrderEntryList;
+    if (false) {
+        /**
+         * \@member {OrderEntry[]} [orderEntries]
+         * @type {?|undefined}
+         */
+        OrderEntryList.prototype.orderEntries;
+    }
     /**
      *
      * An interface representing OrderHistory.
@@ -17259,6 +24793,38 @@ var Occ;
      */
     function OrderHistory() { }
     Occ.OrderHistory = OrderHistory;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.code;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.guid;
+        /**
+         * \@member {Date} [placed]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.placed;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.status;
+        /**
+         * \@member {string} [statusDisplay]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.statusDisplay;
+        /**
+         * \@member {Price} [total]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.total;
+    }
     /**
      *
      * An interface representing PaginationModel.
@@ -17266,6 +24832,33 @@ var Occ;
      */
     function PaginationModel() { }
     Occ.PaginationModel = PaginationModel;
+    if (false) {
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.currentPage;
+        /**
+         * \@member {number} [pageSize]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.pageSize;
+        /**
+         * \@member {string} [sort]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.sort;
+        /**
+         * \@member {number} [totalPages]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.totalPages;
+        /**
+         * \@member {number} [totalResults]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.totalResults;
+    }
     /**
      *
      * An interface representing SortModel.
@@ -17273,6 +24866,23 @@ var Occ;
      */
     function SortModel() { }
     Occ.SortModel = SortModel;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.name;
+        /**
+         * \@member {boolean} [selected]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.selected;
+    }
     /**
      *
      * An interface representing OrderHistoryList.
@@ -17280,6 +24890,23 @@ var Occ;
      */
     function OrderHistoryList() { }
     Occ.OrderHistoryList = OrderHistoryList;
+    if (false) {
+        /**
+         * \@member {OrderHistory[]} [orders]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.orders;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.pagination;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.sorts;
+    }
     /**
      *
      * An interface representing OrderStatusUpdateElement.
@@ -17287,6 +24914,23 @@ var Occ;
      */
     function OrderStatusUpdateElement() { }
     Occ.OrderStatusUpdateElement = OrderStatusUpdateElement;
+    if (false) {
+        /**
+         * \@member {string} [baseSiteId]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.baseSiteId;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.code;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.status;
+    }
     /**
      *
      * An interface representing OrderStatusUpdateElementList.
@@ -17294,6 +24938,13 @@ var Occ;
      */
     function OrderStatusUpdateElementList() { }
     Occ.OrderStatusUpdateElementList = OrderStatusUpdateElementList;
+    if (false) {
+        /**
+         * \@member {OrderStatusUpdateElement[]} [orderStatusUpdateElements]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElementList.prototype.orderStatusUpdateElements;
+    }
     /**
      *
      * An interface representing Order.
@@ -17301,6 +24952,183 @@ var Occ;
      */
     function Order() { }
     Occ.Order = Order;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [appliedOrderPromotions]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [appliedProductPromotions]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedProductPromotions;
+        /**
+         * \@member {Voucher[]} [appliedVouchers]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedVouchers;
+        /**
+         * \@member {boolean} [calculated]
+         * @type {?|undefined}
+         */
+        Order.prototype.calculated;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Order.prototype.code;
+        /**
+         * \@member {Consignment[]} [consignments]
+         * @type {?|undefined}
+         */
+        Order.prototype.consignments;
+        /**
+         * \@member {Date} [created]
+         * @type {?|undefined}
+         */
+        Order.prototype.created;
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryAddress;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryCost;
+        /**
+         * \@member {number} [deliveryItemsQuantity]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryItemsQuantity;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryMode;
+        /**
+         * \@member {DeliveryOrderEntryGroup[]} [deliveryOrderGroups]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryOrderGroups;
+        /**
+         * \@member {string} [deliveryStatus]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryStatus;
+        /**
+         * \@member {string} [deliveryStatusDisplay]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryStatusDisplay;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Order.prototype.entries;
+        /**
+         * \@member {boolean} [guestCustomer]
+         * @type {?|undefined}
+         */
+        Order.prototype.guestCustomer;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        Order.prototype.guid;
+        /**
+         * \@member {boolean} [net]
+         * @type {?|undefined}
+         */
+        Order.prototype.net;
+        /**
+         * \@member {Price} [orderDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.orderDiscounts;
+        /**
+         * \@member {PaymentDetails} [paymentInfo]
+         * @type {?|undefined}
+         */
+        Order.prototype.paymentInfo;
+        /**
+         * \@member {number} [pickupItemsQuantity]
+         * @type {?|undefined}
+         */
+        Order.prototype.pickupItemsQuantity;
+        /**
+         * \@member {PickupOrderEntryGroup[]} [pickupOrderGroups]
+         * @type {?|undefined}
+         */
+        Order.prototype.pickupOrderGroups;
+        /**
+         * \@member {Price} [productDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.productDiscounts;
+        /**
+         * \@member {string} [site]
+         * @type {?|undefined}
+         */
+        Order.prototype.site;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        Order.prototype.status;
+        /**
+         * \@member {string} [statusDisplay]
+         * @type {?|undefined}
+         */
+        Order.prototype.statusDisplay;
+        /**
+         * \@member {string} [store]
+         * @type {?|undefined}
+         */
+        Order.prototype.store;
+        /**
+         * \@member {Price} [subTotal]
+         * @type {?|undefined}
+         */
+        Order.prototype.subTotal;
+        /**
+         * \@member {Price} [totalDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalDiscounts;
+        /**
+         * \@member {number} [totalItems]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalItems;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalPrice;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalPriceWithTax;
+        /**
+         * \@member {Price} [totalTax]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalTax;
+        /**
+         * \@member {OrderEntry[]} [unconsignedEntries]
+         * @type {?|undefined}
+         */
+        Order.prototype.unconsignedEntries;
+        /**
+         * \@member {Principal} [user]
+         * @type {?|undefined}
+         */
+        Order.prototype.user;
+    }
     /**
      *
      * An interface representing PaymentDetailsList.
@@ -17308,6 +25136,13 @@ var Occ;
      */
     function PaymentDetailsList() { }
     Occ.PaymentDetailsList = PaymentDetailsList;
+    if (false) {
+        /**
+         * \@member {PaymentDetails[]} [payments]
+         * @type {?|undefined}
+         */
+        PaymentDetailsList.prototype.payments;
+    }
     /**
      *
      * An interface representing PointOfServiceStock.
@@ -17315,6 +25150,78 @@ var Occ;
      */
     function PointOfServiceStock() { }
     Occ.PointOfServiceStock = PointOfServiceStock;
+    if (false) {
+        /**
+         * \@member {Address} [address]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.address;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.description;
+        /**
+         * \@member {string} [displayName]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.displayName;
+        /**
+         * \@member {number} [distanceKm]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.distanceKm;
+        /**
+         * \@member {{ [propertyName: string]: string }} [features]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.features;
+        /**
+         * \@member {string} [formattedDistance]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.formattedDistance;
+        /**
+         * \@member {GeoPoint} [geoPoint]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.geoPoint;
+        /**
+         * \@member {Image} [mapIcon]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.mapIcon;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.name;
+        /**
+         * \@member {OpeningSchedule} [openingHours]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.openingHours;
+        /**
+         * \@member {Stock} [stockInfo]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.stockInfo;
+        /**
+         * \@member {string} [storeContent]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.storeContent;
+        /**
+         * \@member {Image[]} [storeImages]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.storeImages;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.url;
+    }
     /**
      *
      * An interface representing ProductExpressUpdateElement.
@@ -17322,6 +25229,23 @@ var Occ;
      */
     function ProductExpressUpdateElement() { }
     Occ.ProductExpressUpdateElement = ProductExpressUpdateElement;
+    if (false) {
+        /**
+         * \@member {string} [catalogId]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.catalogId;
+        /**
+         * \@member {string} [catalogVersion]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.catalogVersion;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.code;
+    }
     /**
      *
      * An interface representing ProductExpressUpdateElementList.
@@ -17329,6 +25253,13 @@ var Occ;
      */
     function ProductExpressUpdateElementList() { }
     Occ.ProductExpressUpdateElementList = ProductExpressUpdateElementList;
+    if (false) {
+        /**
+         * \@member {ProductExpressUpdateElement[]} [productExpressUpdateElements]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElementList.prototype.productExpressUpdateElements;
+    }
     /**
      *
      * An interface representing ProductList.
@@ -17336,6 +25267,38 @@ var Occ;
      */
     function ProductList() { }
     Occ.ProductList = ProductList;
+    if (false) {
+        /**
+         * \@member {string} [catalog]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.catalog;
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.currentPage;
+        /**
+         * \@member {Product[]} [products]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.products;
+        /**
+         * \@member {number} [totalPageCount]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.totalPageCount;
+        /**
+         * \@member {number} [totalProductCount]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.totalProductCount;
+        /**
+         * \@member {string} [version]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.version;
+    }
     /**
      *
      * An interface representing ProductReferenceList.
@@ -17343,6 +25306,13 @@ var Occ;
      */
     function ProductReferenceList() { }
     Occ.ProductReferenceList = ProductReferenceList;
+    if (false) {
+        /**
+         * \@member {ProductReference[]} [references]
+         * @type {?|undefined}
+         */
+        ProductReferenceList.prototype.references;
+    }
     /**
      *
      * An interface representing SpellingSuggestion.
@@ -17350,6 +25320,18 @@ var Occ;
      */
     function SpellingSuggestion() { }
     Occ.SpellingSuggestion = SpellingSuggestion;
+    if (false) {
+        /**
+         * \@member {string} [query]
+         * @type {?|undefined}
+         */
+        SpellingSuggestion.prototype.query;
+        /**
+         * \@member {string} [suggestion]
+         * @type {?|undefined}
+         */
+        SpellingSuggestion.prototype.suggestion;
+    }
     /**
      *
      * An interface representing ProductSearchPage.
@@ -17357,6 +25339,58 @@ var Occ;
      */
     function ProductSearchPage() { }
     Occ.ProductSearchPage = ProductSearchPage;
+    if (false) {
+        /**
+         * \@member {Breadcrumb[]} [breadcrumbs]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.breadcrumbs;
+        /**
+         * \@member {string} [categoryCode]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.categoryCode;
+        /**
+         * \@member {SearchState} [currentQuery]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.currentQuery;
+        /**
+         * \@member {Facet[]} [facets]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.facets;
+        /**
+         * \@member {string} [freeTextSearch]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.freeTextSearch;
+        /**
+         * \@member {string} [keywordRedirectUrl]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.keywordRedirectUrl;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.pagination;
+        /**
+         * \@member {Product[]} [products]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.products;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.sorts;
+        /**
+         * \@member {SpellingSuggestion} [spellingSuggestion]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.spellingSuggestion;
+    }
     /**
      *
      * An interface representing PromotionList.
@@ -17364,6 +25398,13 @@ var Occ;
      */
     function PromotionList() { }
     Occ.PromotionList = PromotionList;
+    if (false) {
+        /**
+         * \@member {Promotion[]} [promotions]
+         * @type {?|undefined}
+         */
+        PromotionList.prototype.promotions;
+    }
     /**
      *
      * An interface representing PromotionResultList.
@@ -17371,6 +25412,13 @@ var Occ;
      */
     function PromotionResultList() { }
     Occ.PromotionResultList = PromotionResultList;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [promotions]
+         * @type {?|undefined}
+         */
+        PromotionResultList.prototype.promotions;
+    }
     /**
      *
      * An interface representing ReviewList.
@@ -17378,6 +25426,13 @@ var Occ;
      */
     function ReviewList() { }
     Occ.ReviewList = ReviewList;
+    if (false) {
+        /**
+         * \@member {Review[]} [reviews]
+         * @type {?|undefined}
+         */
+        ReviewList.prototype.reviews;
+    }
     /**
      *
      * An interface representing SaveCartResult.
@@ -17385,6 +25440,13 @@ var Occ;
      */
     function SaveCartResult() { }
     Occ.SaveCartResult = SaveCartResult;
+    if (false) {
+        /**
+         * \@member {Cart} [savedCartData]
+         * @type {?|undefined}
+         */
+        SaveCartResult.prototype.savedCartData;
+    }
     /**
      *
      * An interface representing StoreFinderSearchPage.
@@ -17392,6 +25454,58 @@ var Occ;
      */
     function StoreFinderSearchPage() { }
     Occ.StoreFinderSearchPage = StoreFinderSearchPage;
+    if (false) {
+        /**
+         * \@member {number} [boundEastLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundEastLongitude;
+        /**
+         * \@member {number} [boundNorthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundNorthLatitude;
+        /**
+         * \@member {number} [boundSouthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundSouthLatitude;
+        /**
+         * \@member {number} [boundWestLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundWestLongitude;
+        /**
+         * \@member {string} [locationText]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.locationText;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.pagination;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sorts;
+        /**
+         * \@member {number} [sourceLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sourceLatitude;
+        /**
+         * \@member {number} [sourceLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sourceLongitude;
+        /**
+         * \@member {PointOfService[]} [stores]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.stores;
+    }
     /**
      *
      * An interface representing StoreFinderStockSearchPage.
@@ -17399,6 +25513,63 @@ var Occ;
      */
     function StoreFinderStockSearchPage() { }
     Occ.StoreFinderStockSearchPage = StoreFinderStockSearchPage;
+    if (false) {
+        /**
+         * \@member {number} [boundEastLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundEastLongitude;
+        /**
+         * \@member {number} [boundNorthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundNorthLatitude;
+        /**
+         * \@member {number} [boundSouthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundSouthLatitude;
+        /**
+         * \@member {number} [boundWestLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundWestLongitude;
+        /**
+         * \@member {string} [locationText]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.locationText;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.pagination;
+        /**
+         * \@member {Product} [product]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.product;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sorts;
+        /**
+         * \@member {number} [sourceLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sourceLatitude;
+        /**
+         * \@member {number} [sourceLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sourceLongitude;
+        /**
+         * \@member {PointOfServiceStock[]} [stores]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.stores;
+    }
     /**
      *
      * An interface representing Suggestion.
@@ -17406,6 +25577,13 @@ var Occ;
      */
     function Suggestion() { }
     Occ.Suggestion = Suggestion;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        Suggestion.prototype.value;
+    }
     /**
      *
      * An interface representing SuggestionList.
@@ -17413,6 +25591,13 @@ var Occ;
      */
     function SuggestionList() { }
     Occ.SuggestionList = SuggestionList;
+    if (false) {
+        /**
+         * \@member {Suggestion[]} [suggestions]
+         * @type {?|undefined}
+         */
+        SuggestionList.prototype.suggestions;
+    }
     /**
      *
      * An interface representing Title.
@@ -17420,6 +25605,18 @@ var Occ;
      */
     function Title() { }
     Occ.Title = Title;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Title.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Title.prototype.name;
+    }
     /**
      *
      * An interface representing TitleList.
@@ -17427,6 +25624,13 @@ var Occ;
      */
     function TitleList() { }
     Occ.TitleList = TitleList;
+    if (false) {
+        /**
+         * \@member {Title[]} [titles]
+         * @type {?|undefined}
+         */
+        TitleList.prototype.titles;
+    }
     /**
      *
      * An interface representing UserGroup.
@@ -17434,6 +25638,33 @@ var Occ;
      */
     function UserGroup() { }
     Occ.UserGroup = UserGroup;
+    if (false) {
+        /**
+         * \@member {Principal[]} [members]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.members;
+        /**
+         * \@member {number} [membersCount]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.membersCount;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.name;
+        /**
+         * \@member {UserGroup[]} [subGroups]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.subGroups;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.uid;
+    }
     /**
      *
      * An interface representing UserGroupList.
@@ -17441,6 +25672,33 @@ var Occ;
      */
     function UserGroupList() { }
     Occ.UserGroupList = UserGroupList;
+    if (false) {
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.currentPage;
+        /**
+         * \@member {number} [numberOfPages]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.numberOfPages;
+        /**
+         * \@member {number} [pageSize]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.pageSize;
+        /**
+         * \@member {number} [totalNumber]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.totalNumber;
+        /**
+         * \@member {UserGroup[]} [userGroups]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.userGroups;
+    }
     /**
      *
      * An interface representing UserSignUp.
@@ -17448,16 +25706,57 @@ var Occ;
      */
     function UserSignUp() { }
     Occ.UserSignUp = UserSignUp;
+    if (false) {
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.firstName;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.lastName;
+        /**
+         * \@member {string} [password]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.password;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.titleCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.uid;
+    }
     /**
      * @record
      */
     function StoreCount() { }
     Occ.StoreCount = StoreCount;
+    if (false) {
+        /** @type {?|undefined} */
+        StoreCount.prototype.count;
+        /** @type {?|undefined} */
+        StoreCount.prototype.isoCode;
+        /** @type {?|undefined} */
+        StoreCount.prototype.name;
+        /** @type {?|undefined} */
+        StoreCount.prototype.type;
+    }
     /**
      * @record
      */
     function StoreCountList() { }
     Occ.StoreCountList = StoreCountList;
+    if (false) {
+        /** @type {?|undefined} */
+        StoreCountList.prototype.countriesAndRegionsStoreCount;
+    }
     /**
      *
      * An interface representing VoucherList.
@@ -17465,6 +25764,13 @@ var Occ;
      */
     function VoucherList() { }
     Occ.VoucherList = VoucherList;
+    if (false) {
+        /**
+         * \@member {Voucher[]} [vouchers]
+         * @type {?|undefined}
+         */
+        VoucherList.prototype.vouchers;
+    }
     /**
      * Defines values for PriceType.
      * Possible values include: 'BUY', 'FROM'
@@ -18542,34 +26848,80 @@ var Occ;
      */
     function ConsentTemplate() { }
     Occ.ConsentTemplate = ConsentTemplate;
+    if (false) {
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.id;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.name;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.description;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.version;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.currentConsent;
+    }
     /**
      * @record
      */
     function Consent() { }
     Occ.Consent = Consent;
+    if (false) {
+        /** @type {?|undefined} */
+        Consent.prototype.code;
+        /** @type {?|undefined} */
+        Consent.prototype.consentGivenDate;
+        /** @type {?|undefined} */
+        Consent.prototype.consentWithdrawnDate;
+    }
     /**
      * @record
      */
     function ConsentTemplateList() { }
     Occ.ConsentTemplateList = ConsentTemplateList;
+    if (false) {
+        /** @type {?|undefined} */
+        ConsentTemplateList.prototype.consentTemplates;
+    }
 })(Occ || (Occ = {}));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Converter is used to convert source data model to target data model.
+ * By convention, we distinguish two flows:
+ *   - *Normalize* is the conversion from backend models to UI models
+ *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
+ *
+ * Converters can be stacked together to to apply decoupled customizations
+ * @record
+ * @template S, T
+ */
+function Converter() { }
+if (false) {
+    /**
+     * Convert converts source model to target model. Can use optional target parameter,
+     * used in case of stacking multiple converters (for example, to implement populator pattern).
+     *
+     * @param {?} source Source data model
+     * @param {?=} target Optional, partially converted target model
+     * @return {?}
+     */
+    Converter.prototype.convert = function (source, target) { };
+}
 var ConverterService = /** @class */ (function () {
     function ConverterService(injector) {
         this.injector = injector;
@@ -18773,10 +27125,22 @@ var ConverterService = /** @class */ (function () {
     /** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
     return ConverterService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConverterService.prototype.converters;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ConverterService.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCartNormalizer = /** @class */ (function () {
     function OccCartNormalizer(converter) {
@@ -18874,10 +27238,17 @@ var OccCartNormalizer = /** @class */ (function () {
     ]; };
     return OccCartNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCartNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccCartConfig = {
@@ -18898,7 +27269,7 @@ var defaultOccCartConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -18911,10 +27282,14 @@ FeaturesConfig = /** @class */ (function () {
     }
     return FeaturesConfig;
 }());
+if (false) {
+    /** @type {?} */
+    FeaturesConfig.prototype.features;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -18971,7 +27346,7 @@ function isFeatureEnabled(config, feature) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FeatureConfigService = /** @class */ (function () {
     function FeatureConfigService(config) {
@@ -19011,10 +27386,17 @@ var FeatureConfigService = /** @class */ (function () {
     /** @nocollapse */ FeatureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
     return FeatureConfigService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureConfigService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCartEntryAdapter = /** @class */ (function () {
     function OccCartEntryAdapter(http, occEndpointsService, converterService, featureConfigService) {
@@ -19289,10 +27671,32 @@ var OccCartEntryAdapter = /** @class */ (function () {
     ]; };
     return OccCartEntryAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.converterService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // TODO: Deprecated, remove Issue: #4125. Use configurable endpoints.
 /** @type {?} */
@@ -19547,10 +27951,32 @@ var OccCartAdapter = /** @class */ (function () {
     ]; };
     return OccCartAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.converterService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CartOccModule = /** @class */ (function () {
     function CartOccModule() {
@@ -19584,7 +28010,7 @@ var CartOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // To be changed to a more optimised params after ticket: C3PO-1076
 /** @type {?} */
@@ -19703,10 +28129,27 @@ var OccCheckoutAdapter = /** @class */ (function () {
     ]; };
     return OccCheckoutAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccOrderNormalizer = /** @class */ (function () {
     function OccOrderNormalizer(converter) {
@@ -19780,10 +28223,17 @@ var OccOrderNormalizer = /** @class */ (function () {
     ]; };
     return OccOrderNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccOrderNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ADDRESS_NORMALIZER = new InjectionToken('AddressNormalizer');
@@ -19794,7 +28244,7 @@ var ADDRESS_VALIDATION_NORMALIZER = new InjectionToken('AddressValidationNormali
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCheckoutDeliveryAdapter = /** @class */ (function () {
     function OccCheckoutDeliveryAdapter(http, occEndpoints, converter) {
@@ -19912,10 +28362,27 @@ var OccCheckoutDeliveryAdapter = /** @class */ (function () {
     ]; };
     return OccCheckoutDeliveryAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CustomEncoder = /** @class */ (function () {
     function CustomEncoder() {
@@ -19969,7 +28436,7 @@ var CustomEncoder = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ENDPOINT_CARD_TYPES = 'cardtypes';
@@ -20278,10 +28745,32 @@ var OccCheckoutPaymentAdapter = /** @class */ (function () {
     ]; };
     return OccCheckoutPaymentAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCheckoutPaymentAdapter.prototype.domparser;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CheckoutOccModule = /** @class */ (function () {
     function CheckoutOccModule() {
@@ -20311,7 +28800,7 @@ var CheckoutOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCmsComponentAdapter = /** @class */ (function () {
     function OccCmsComponentAdapter(http, occEndpoints, converter) {
@@ -20500,10 +28989,32 @@ var OccCmsComponentAdapter = /** @class */ (function () {
     ]; };
     return OccCmsComponentAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsComponentAdapter.prototype.headers;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsComponentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsComponentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsComponentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCmsPageNormalizer = /** @class */ (function () {
     function OccCmsPageNormalizer() {
@@ -20602,7 +29113,7 @@ var OccCmsPageNormalizer = /** @class */ (function () {
                 if (slot.components.component &&
                     Array.isArray(slot.components.component)) {
                     try {
-                        for (var _e = __values(slot.components.component), _f = _e.next(); !_f.done; _f = _e.next()) {
+                        for (var _e = (e_3 = void 0, __values(slot.components.component)), _f = _e.next(); !_f.done; _f = _e.next()) {
                             var component = _f.value;
                             /** @type {?} */
                             var comp = {
@@ -20661,7 +29172,7 @@ var OccCmsPageNormalizer = /** @class */ (function () {
                 if (slot.components.component &&
                     Array.isArray(slot.components.component)) {
                     try {
-                        for (var _e = __values((/** @type {?} */ (slot.components.component))), _f = _e.next(); !_f.done; _f = _e.next()) {
+                        for (var _e = (e_5 = void 0, __values((/** @type {?} */ (slot.components.component)))), _f = _e.next(); !_f.done; _f = _e.next()) {
                             var component = _f.value;
                             // we dont put properties into component state
                             if (component.properties) {
@@ -20696,7 +29207,7 @@ var OccCmsPageNormalizer = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccCmsPageAdapter = /** @class */ (function () {
     function OccCmsPageAdapter(http, occEndpoints, converter) {
@@ -20787,10 +29298,32 @@ var OccCmsPageAdapter = /** @class */ (function () {
     ]; };
     return OccCmsPageAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsPageAdapter.prototype.headers;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsPageAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsPageAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsPageAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsOccModule = /** @class */ (function () {
     function CmsOccModule() {
@@ -20820,7 +29353,7 @@ var CmsOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -20833,17 +29366,29 @@ ProductAdapter = /** @class */ (function () {
     }
     return ProductAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load product's details data.
+     * Product's data can be loaded from alternative sources, as long as the structure
+     * converts to the `Product`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @return {?}
+     */
+    ProductAdapter.prototype.load = function (productCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PRODUCT_REFERENCES_NORMALIZER = new InjectionToken('ProductReferencesListNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -20856,10 +29401,24 @@ ProductReferencesAdapter = /** @class */ (function () {
     }
     return ProductReferencesAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load product references for a given product.
+     * References can be loaded from alternative sources, as long as the structure
+     * converts to the `ProductReference[]`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?=} referenceType Reference type according to enum ProductReferenceTypeEnum
+     * @param {?=} pageSize Maximum number of product refrence to load
+     * @return {?}
+     */
+    ProductReferencesAdapter.prototype.load = function (productCode, referenceType, pageSize) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -20872,10 +29431,32 @@ ProductReviewsAdapter = /** @class */ (function () {
     }
     return ProductReviewsAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load reviews for a given product.
+     * Reviews can be loaded from alternative sources, as long as the structure
+     * converts to the `Review[]`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?=} maxCount Maximum number of review to load
+     * @return {?}
+     */
+    ProductReviewsAdapter.prototype.load = function (productCode, maxCount) { };
+    /**
+     * Abstract method used to post review for a given product.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?} review Review to post
+     * @return {?}
+     */
+    ProductReviewsAdapter.prototype.post = function (productCode, review) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PRODUCT_SEARCH_PAGE_NORMALIZER = new InjectionToken('ProductSearchPageNormalizer');
@@ -20884,7 +29465,7 @@ var PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNormali
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -20897,10 +29478,26 @@ ProductSearchAdapter = /** @class */ (function () {
     }
     return ProductSearchAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchAdapter.prototype.search = function (query, searchConfig) { };
+    /**
+     * @abstract
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    ProductSearchAdapter.prototype.loadSuggestions = function (term, pageSize) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccProductReferencesListNormalizer = /** @class */ (function () {
     function OccProductReferencesListNormalizer(converter) {
@@ -20940,10 +29537,17 @@ var OccProductReferencesListNormalizer = /** @class */ (function () {
     ]; };
     return OccProductReferencesListNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccProductReferencesListNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccProductSearchPageNormalizer = /** @class */ (function () {
     function OccProductSearchPageNormalizer(converterService) {
@@ -20983,10 +29587,17 @@ var OccProductSearchPageNormalizer = /** @class */ (function () {
     ]; };
     return OccProductSearchPageNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccProductSearchPageNormalizer.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductImageNormalizer = /** @class */ (function () {
     function ProductImageNormalizer(config) {
@@ -21096,10 +29707,17 @@ var ProductImageNormalizer = /** @class */ (function () {
     ]; };
     return ProductImageNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductImageNormalizer.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccProductReferencesAdapter = /** @class */ (function () {
     function OccProductReferencesAdapter(http, occEndpoints, converter) {
@@ -21154,10 +29772,27 @@ var OccProductReferencesAdapter = /** @class */ (function () {
     ]; };
     return OccProductReferencesAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PRODUCT_REVIEW_NORMALIZER = new InjectionToken('ProductReviewNormalizer');
@@ -21166,7 +29801,7 @@ var PRODUCT_REVIEW_SERIALIZER = new InjectionToken('ProductReviewSerializer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccProductReviewsAdapter = /** @class */ (function () {
     function OccProductReviewsAdapter(http, occEndpoints, converter) {
@@ -21241,10 +29876,27 @@ var OccProductReviewsAdapter = /** @class */ (function () {
     ]; };
     return OccProductReviewsAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var DEFAULT_SEARCH_CONFIG = {
@@ -21334,10 +29986,27 @@ var OccProductSearchAdapter = /** @class */ (function () {
     ]; };
     return OccProductSearchAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccProductAdapter = /** @class */ (function () {
     function OccProductAdapter(http, occEndpoints, converter) {
@@ -21384,10 +30053,27 @@ var OccProductAdapter = /** @class */ (function () {
     ]; };
     return OccProductAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductNameNormalizer = /** @class */ (function () {
     function ProductNameNormalizer(config) {
@@ -21435,10 +30121,17 @@ var ProductNameNormalizer = /** @class */ (function () {
     ]; };
     return ProductNameNormalizer;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductNameNormalizer.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccProductConfig = {
@@ -21462,7 +30155,7 @@ var defaultOccProductConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductOccModule = /** @class */ (function () {
     function ProductOccModule() {
@@ -21519,7 +30212,7 @@ var ProductOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -21532,10 +30225,44 @@ SiteAdapter = /** @class */ (function () {
     }
     return SiteAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load languages.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadLanguages = function () { };
+    /**
+     * Abstract method used to load currencies.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadCurrencies = function () { };
+    /**
+     * Abstract method used to get countries with optional type.
+     * @abstract
+     * @param {?=} type
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadCountries = function (type) { };
+    /**
+     * Abstract method used to get regions for a country.
+     * @abstract
+     * @param {?} countryIsoCode
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadRegions = function (countryIsoCode) { };
+    /**
+     * Abstract method used to get base site data.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadBaseSite = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccSiteContextConfig = {
@@ -21553,7 +30280,7 @@ var defaultOccSiteContextConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
@@ -21566,7 +30293,7 @@ var REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccSiteAdapter = /** @class */ (function () {
     function OccSiteAdapter(http, occEndpointsService, converterService) {
@@ -21682,10 +30409,27 @@ var OccSiteAdapter = /** @class */ (function () {
     ]; };
     return OccSiteAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
@@ -21807,10 +30551,27 @@ var CurrencyService = /** @class */ (function () {
     ]; };
     return CurrencyService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrencyService.prototype.sessionStorage;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CurrencyService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CurrencyService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SiteContextInterceptor = /** @class */ (function () {
     function SiteContextInterceptor(languageService, currencyService, occEndpoints, config) {
@@ -21869,10 +30630,36 @@ var SiteContextInterceptor = /** @class */ (function () {
     ]; };
     return SiteContextInterceptor;
 }());
+if (false) {
+    /** @type {?} */
+    SiteContextInterceptor.prototype.activeLang;
+    /** @type {?} */
+    SiteContextInterceptor.prototype.activeCurr;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.languageService;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.currencyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SiteContextOccModule = /** @class */ (function () {
     function SiteContextOccModule() {
@@ -21902,7 +30689,7 @@ var SiteContextOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -21915,10 +30702,31 @@ StoreFinderAdapter = /** @class */ (function () {
     }
     return StoreFinderAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} query
+     * @param {?} searchConfig
+     * @param {?=} longitudeLatitude
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.search = function (query, searchConfig, longitudeLatitude) { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.loadCounts = function () { };
+    /**
+     * @abstract
+     * @param {?} storeId
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.load = function (storeId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccStoreFinderConfig = {
@@ -21935,7 +30743,7 @@ var defaultOccStoreFinderConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreFinderConnector = /** @class */ (function () {
     function StoreFinderConnector(adapter) {
@@ -21986,10 +30794,17 @@ var StoreFinderConnector = /** @class */ (function () {
     /** @nocollapse */ StoreFinderConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
     return StoreFinderConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var POINT_OF_SERVICE_NORMALIZER = new InjectionToken('PointOfServiceNormalizer');
@@ -22000,12 +30815,12 @@ var STORE_COUNT_NORMALIZER = new InjectionToken('StoreCountNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccStoreFinderAdapter = /** @class */ (function () {
     function OccStoreFinderAdapter(http, occEndpointsService, converterService) {
@@ -22106,10 +30921,27 @@ var OccStoreFinderAdapter = /** @class */ (function () {
     ]; };
     return OccStoreFinderAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreFinderOccModule = /** @class */ (function () {
     function StoreFinderOccModule() {
@@ -22125,7 +30957,7 @@ var StoreFinderOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -22138,10 +30970,33 @@ UserConsentAdapter = /** @class */ (function () {
     }
     return UserConsentAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.loadConsents = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.giveConsent = function (userId, consentTemplateId, consentTemplateVersion) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.withdrawConsent = function (userId, consentCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -22154,10 +31009,40 @@ UserOrderAdapter = /** @class */ (function () {
     }
     return UserOrderAdapter;
 }());
+if (false) {
+    /**
+     * Abstract method used to load order data.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} orderCode The `orderCode` for given order
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.load = function (userId, orderCode) { };
+    /**
+     * Abstract method used to load order history for an user.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} pageSize
+     * @param {?} currentPage
+     * @param {?} sort Sorting method
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.loadHistory = function (userId, pageSize, currentPage, sort) { };
+    /**
+     * Abstract method used to get consignment tracking details
+     * @abstract
+     * @param {?} orderCode an order code
+     * @param {?} consignmentCode a consignment code
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -22170,10 +31055,32 @@ UserPaymentAdapter = /** @class */ (function () {
     }
     return UserPaymentAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.delete = function (userId, paymentMethodID) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.setDefault = function (userId, paymentMethodID) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -22186,10 +31093,71 @@ UserAdapter = /** @class */ (function () {
     }
     return UserAdapter;
 }());
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAdapter.prototype.load = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} username
+     * @param {?} user
+     * @return {?}
+     */
+    UserAdapter.prototype.update = function (username, user) { };
+    /**
+     * @abstract
+     * @param {?} user
+     * @return {?}
+     */
+    UserAdapter.prototype.register = function (user) { };
+    /**
+     * @abstract
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    UserAdapter.prototype.requestForgotPasswordEmail = function (userEmailAddress) { };
+    /**
+     * @abstract
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAdapter.prototype.resetPassword = function (token, newPassword) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    UserAdapter.prototype.updateEmail = function (userId, currentPassword, newUserId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAdapter.prototype.updatePassword = function (userId, oldPassword, newPassword) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAdapter.prototype.remove = function (userId) { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    UserAdapter.prototype.loadTitles = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultOccUserConfig = {
@@ -22221,7 +31189,7 @@ var defaultOccUserConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccUserAddressAdapter = /** @class */ (function () {
     function OccUserAddressAdapter(http, occEndpoints, converter) {
@@ -22374,17 +31342,34 @@ var OccUserAddressAdapter = /** @class */ (function () {
     ]; };
     return OccUserAddressAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccUserConsentAdapter = /** @class */ (function () {
     function OccUserConsentAdapter(http, occEndpoints, converter) {
@@ -22480,10 +31465,27 @@ var OccUserConsentAdapter = /** @class */ (function () {
     ]; };
     return OccUserConsentAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var ORDER_HISTORY_NORMALIZER = new InjectionToken('OrderHistoryNormalizer');
@@ -22492,7 +31494,7 @@ var CONSIGNMENT_TRACKING_NORMALIZER = new InjectionToken('ConsignmentTrackingNor
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccUserOrderAdapter = /** @class */ (function () {
     function OccUserOrderAdapter(http, occEndpoints, converter, featureConfigService) {
@@ -22700,10 +31702,32 @@ var OccUserOrderAdapter = /** @class */ (function () {
     ]; };
     return OccUserOrderAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.converter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccUserPaymentAdapter = /** @class */ (function () {
     function OccUserPaymentAdapter(http, occEndpoints, converter) {
@@ -22805,10 +31829,27 @@ var OccUserPaymentAdapter = /** @class */ (function () {
     ]; };
     return OccUserPaymentAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var USER_NORMALIZER = new InjectionToken('UserNormalizer');
@@ -22821,7 +31862,7 @@ var TITLE_NORMALIZER = new InjectionToken('TitleNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccUserAdapter = /** @class */ (function () {
     function OccUserAdapter(http, occEndpoints, converter) {
@@ -23010,10 +32051,27 @@ var OccUserAdapter = /** @class */ (function () {
     ]; };
     return OccUserAdapter;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserOccModule = /** @class */ (function () {
     function UserOccModule() {
@@ -23042,7 +32100,7 @@ var UserOccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OccModule = /** @class */ (function () {
     function OccModule() {
@@ -23081,42 +32139,42 @@ var OccModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReferenceNormalizer = /** @class */ (function () {
     function ProductReferenceNormalizer() {
@@ -23199,42 +32257,42 @@ var ProductReferenceNormalizer = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -23247,10 +32305,14 @@ PersonalizationConfig = /** @class */ (function () {
     }
     return PersonalizationConfig;
 }());
+if (false) {
+    /** @type {?} */
+    PersonalizationConfig.prototype.personalization;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultPersonalizationConfig = {
@@ -23265,7 +32327,7 @@ var defaultPersonalizationConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PERSONALIZATION_ID_KEY = 'personalization-id';
@@ -23300,8 +32362,8 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
      * @return {?}
      */
     function (request, next) {
-        var _this = this;
         var _a;
+        var _this = this;
         if (!this.enabled) {
             return next.handle(request);
         }
@@ -23342,10 +32404,47 @@ var OccPersonalizationIdInterceptor = /** @class */ (function () {
     ]; };
     return OccPersonalizationIdInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.personalizationId;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.requestHeader;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.enabled;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.winRef;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.platform;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PERSONALIZATION_TIME_KEY = 'personalization-time';
@@ -23380,8 +32479,8 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
      * @return {?}
      */
     function (request, next) {
-        var _this = this;
         var _a;
+        var _this = this;
         if (!this.enabled) {
             return next.handle(request);
         }
@@ -23422,10 +32521,47 @@ var OccPersonalizationTimeInterceptor = /** @class */ (function () {
     ]; };
     return OccPersonalizationTimeInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.timestamp;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.requestHeader;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.enabled;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.winRef;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.platform;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var interceptors$1 = [
@@ -23443,7 +32579,7 @@ var interceptors$1 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PersonalizationModule = /** @class */ (function () {
     function PersonalizationModule() {
@@ -23471,12 +32607,12 @@ var PersonalizationModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -23495,7 +32631,7 @@ var reducerProvider$7 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProcessStoreModule = /** @class */ (function () {
     function ProcessStoreModule() {
@@ -23511,7 +32647,7 @@ var ProcessStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProcessModule = /** @class */ (function () {
     function ProcessModule() {
@@ -23538,17 +32674,17 @@ var ProcessModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductConnector = /** @class */ (function () {
     function ProductConnector(adapter) {
@@ -23577,15 +32713,22 @@ var ProductConnector = /** @class */ (function () {
     /** @nocollapse */ ProductConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
     return ProductConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReferencesConnector = /** @class */ (function () {
     function ProductReferencesConnector(adapter) {
@@ -23618,15 +32761,22 @@ var ProductReferencesConnector = /** @class */ (function () {
     /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
     return ProductReferencesConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReferencesConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReviewsConnector = /** @class */ (function () {
     function ProductReviewsConnector(adapter) {
@@ -23670,15 +32820,22 @@ var ProductReviewsConnector = /** @class */ (function () {
     /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
     return ProductReviewsConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReviewsConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductSearchConnector = /** @class */ (function () {
     function ProductSearchConnector(adapter) {
@@ -23722,20 +32879,27 @@ var ProductSearchConnector = /** @class */ (function () {
     /** @nocollapse */ ProductSearchConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
     return ProductSearchConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductSearchConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
@@ -23750,6 +32914,12 @@ var LoadProductReferences = /** @class */ (function () {
     }
     return LoadProductReferences;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReferences.prototype.type;
+    /** @type {?} */
+    LoadProductReferences.prototype.payload;
+}
 var LoadProductReferencesFail = /** @class */ (function () {
     function LoadProductReferencesFail(payload) {
         this.payload = payload;
@@ -23757,6 +32927,12 @@ var LoadProductReferencesFail = /** @class */ (function () {
     }
     return LoadProductReferencesFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReferencesFail.prototype.type;
+    /** @type {?} */
+    LoadProductReferencesFail.prototype.payload;
+}
 var LoadProductReferencesSuccess = /** @class */ (function () {
     function LoadProductReferencesSuccess(payload) {
         this.payload = payload;
@@ -23764,10 +32940,16 @@ var LoadProductReferencesSuccess = /** @class */ (function () {
     }
     return LoadProductReferencesSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReferencesSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductReferencesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
@@ -23788,6 +32970,12 @@ var LoadProductReviews = /** @class */ (function () {
     }
     return LoadProductReviews;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReviews.prototype.type;
+    /** @type {?} */
+    LoadProductReviews.prototype.payload;
+}
 var LoadProductReviewsFail = /** @class */ (function () {
     function LoadProductReviewsFail(payload) {
         this.payload = payload;
@@ -23795,6 +32983,12 @@ var LoadProductReviewsFail = /** @class */ (function () {
     }
     return LoadProductReviewsFail;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReviewsFail.prototype.type;
+    /** @type {?} */
+    LoadProductReviewsFail.prototype.payload;
+}
 var LoadProductReviewsSuccess = /** @class */ (function () {
     function LoadProductReviewsSuccess(payload) {
         this.payload = payload;
@@ -23802,6 +32996,12 @@ var LoadProductReviewsSuccess = /** @class */ (function () {
     }
     return LoadProductReviewsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    LoadProductReviewsSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductReviewsSuccess.prototype.payload;
+}
 var PostProductReview = /** @class */ (function () {
     function PostProductReview(payload) {
         this.payload = payload;
@@ -23809,6 +33009,12 @@ var PostProductReview = /** @class */ (function () {
     }
     return PostProductReview;
 }());
+if (false) {
+    /** @type {?} */
+    PostProductReview.prototype.type;
+    /** @type {?} */
+    PostProductReview.prototype.payload;
+}
 var PostProductReviewFail = /** @class */ (function () {
     function PostProductReviewFail(payload) {
         this.payload = payload;
@@ -23816,6 +33022,12 @@ var PostProductReviewFail = /** @class */ (function () {
     }
     return PostProductReviewFail;
 }());
+if (false) {
+    /** @type {?} */
+    PostProductReviewFail.prototype.type;
+    /** @type {?} */
+    PostProductReviewFail.prototype.payload;
+}
 var PostProductReviewSuccess = /** @class */ (function () {
     function PostProductReviewSuccess(payload) {
         this.payload = payload;
@@ -23823,10 +33035,16 @@ var PostProductReviewSuccess = /** @class */ (function () {
     }
     return PostProductReviewSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    PostProductReviewSuccess.prototype.type;
+    /** @type {?} */
+    PostProductReviewSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var SEARCH_PRODUCTS = '[Product] Search Products';
@@ -23850,6 +33068,14 @@ var SearchProducts = /** @class */ (function () {
     }
     return SearchProducts;
 }());
+if (false) {
+    /** @type {?} */
+    SearchProducts.prototype.type;
+    /** @type {?} */
+    SearchProducts.prototype.payload;
+    /** @type {?} */
+    SearchProducts.prototype.auxiliary;
+}
 var SearchProductsFail = /** @class */ (function () {
     function SearchProductsFail(payload, auxiliary) {
         this.payload = payload;
@@ -23858,6 +33084,14 @@ var SearchProductsFail = /** @class */ (function () {
     }
     return SearchProductsFail;
 }());
+if (false) {
+    /** @type {?} */
+    SearchProductsFail.prototype.type;
+    /** @type {?} */
+    SearchProductsFail.prototype.payload;
+    /** @type {?} */
+    SearchProductsFail.prototype.auxiliary;
+}
 var SearchProductsSuccess = /** @class */ (function () {
     function SearchProductsSuccess(payload, auxiliary) {
         this.payload = payload;
@@ -23866,6 +33100,14 @@ var SearchProductsSuccess = /** @class */ (function () {
     }
     return SearchProductsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    SearchProductsSuccess.prototype.type;
+    /** @type {?} */
+    SearchProductsSuccess.prototype.payload;
+    /** @type {?} */
+    SearchProductsSuccess.prototype.auxiliary;
+}
 var GetProductSuggestions = /** @class */ (function () {
     function GetProductSuggestions(payload) {
         this.payload = payload;
@@ -23873,6 +33115,12 @@ var GetProductSuggestions = /** @class */ (function () {
     }
     return GetProductSuggestions;
 }());
+if (false) {
+    /** @type {?} */
+    GetProductSuggestions.prototype.type;
+    /** @type {?} */
+    GetProductSuggestions.prototype.payload;
+}
 var GetProductSuggestionsSuccess = /** @class */ (function () {
     function GetProductSuggestionsSuccess(payload) {
         this.payload = payload;
@@ -23880,6 +33128,12 @@ var GetProductSuggestionsSuccess = /** @class */ (function () {
     }
     return GetProductSuggestionsSuccess;
 }());
+if (false) {
+    /** @type {?} */
+    GetProductSuggestionsSuccess.prototype.type;
+    /** @type {?} */
+    GetProductSuggestionsSuccess.prototype.payload;
+}
 var GetProductSuggestionsFail = /** @class */ (function () {
     function GetProductSuggestionsFail(payload) {
         this.payload = payload;
@@ -23887,6 +33141,12 @@ var GetProductSuggestionsFail = /** @class */ (function () {
     }
     return GetProductSuggestionsFail;
 }());
+if (false) {
+    /** @type {?} */
+    GetProductSuggestionsFail.prototype.type;
+    /** @type {?} */
+    GetProductSuggestionsFail.prototype.payload;
+}
 var ClearProductSearchResult = /** @class */ (function () {
     function ClearProductSearchResult(payload) {
         if (payload === void 0) { payload = {
@@ -23898,19 +33158,79 @@ var ClearProductSearchResult = /** @class */ (function () {
     }
     return ClearProductSearchResult;
 }());
+if (false) {
+    /** @type {?} */
+    ClearProductSearchResult.prototype.type;
+    /** @type {?} */
+    ClearProductSearchResult.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var PRODUCT_FEATURE = 'product';
 /** @type {?} */
 var PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+/**
+ * @record
+ */
+function StateWithProduct() { }
+if (false) {
+    /* Skipping unnamed member:
+    [PRODUCT_FEATURE]: ProductsState;*/
+}
+/**
+ * @record
+ */
+function ProductsState() { }
+if (false) {
+    /** @type {?} */
+    ProductsState.prototype.details;
+    /** @type {?} */
+    ProductsState.prototype.search;
+    /** @type {?} */
+    ProductsState.prototype.reviews;
+    /** @type {?} */
+    ProductsState.prototype.references;
+}
+/**
+ * @record
+ */
+function ProductsSearchState() { }
+if (false) {
+    /** @type {?} */
+    ProductsSearchState.prototype.results;
+    /** @type {?} */
+    ProductsSearchState.prototype.suggestions;
+    /** @type {?} */
+    ProductsSearchState.prototype.auxResults;
+}
+/**
+ * @record
+ */
+function ProductReviewsState() { }
+if (false) {
+    /** @type {?} */
+    ProductReviewsState.prototype.productCode;
+    /** @type {?} */
+    ProductReviewsState.prototype.list;
+}
+/**
+ * @record
+ */
+function ProductReferencesState() { }
+if (false) {
+    /** @type {?} */
+    ProductReferencesState.prototype.productCode;
+    /** @type {?} */
+    ProductReferencesState.prototype.list;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var LOAD_PRODUCT = '[Product] Load Product Data';
@@ -23928,6 +33248,12 @@ var LoadProduct = /** @class */ (function (_super) {
     }
     return LoadProduct;
 }(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadProduct.prototype.type;
+    /** @type {?} */
+    LoadProduct.prototype.payload;
+}
 var LoadProductFail = /** @class */ (function (_super) {
     __extends(LoadProductFail, _super);
     function LoadProductFail(productCode, payload) {
@@ -23938,6 +33264,12 @@ var LoadProductFail = /** @class */ (function (_super) {
     }
     return LoadProductFail;
 }(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadProductFail.prototype.type;
+    /** @type {?} */
+    LoadProductFail.prototype.payload;
+}
 var LoadProductSuccess = /** @class */ (function (_super) {
     __extends(LoadProductSuccess, _super);
     function LoadProductSuccess(payload) {
@@ -23948,10 +33280,16 @@ var LoadProductSuccess = /** @class */ (function (_super) {
     }
     return LoadProductSuccess;
 }(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadProductSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var productGroup_actions = /*#__PURE__*/Object.freeze({
@@ -23997,27 +33335,27 @@ var productGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$a = /**
+var ɵ0$i = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.references; };
 /** @type {?} */
-var getProductReferencesState = createSelector(getProductsState, (ɵ0$a));
+var getProductReferencesState = createSelector(getProductsState, (ɵ0$i));
 /** @type {?} */
 var getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
@@ -24037,15 +33375,15 @@ function (productCode) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$b = /**
+var ɵ0$j = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.reviews; };
 /** @type {?} */
-var getProductReviewsState = createSelector(getProductsState, (ɵ0$b));
+var getProductReviewsState = createSelector(getProductsState, (ɵ0$j));
 /** @type {?} */
 var getSelectedProductReviewsFactory = (/**
  * @param {?} productCode
@@ -24065,7 +33403,7 @@ function (productCode) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$a = {
@@ -24124,15 +33462,15 @@ function (state) { return state.suggestions; });
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$c = /**
+var ɵ0$k = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.search; };
 /** @type {?} */
-var getProductsSearchState = createSelector(getProductsState, (ɵ0$c));
+var getProductsSearchState = createSelector(getProductsState, (ɵ0$k));
 /** @type {?} */
 var getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 /** @type {?} */
@@ -24142,15 +33480,15 @@ var getProductSuggestions$1 = createSelector(getProductsSearchState, getProductS
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$d = /**
+var ɵ0$l = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.details; };
 /** @type {?} */
-var getProductState = createSelector(getProductsState, (ɵ0$d));
+var getProductState = createSelector(getProductsState, (ɵ0$l));
 /** @type {?} */
 var getSelectedProductsFactory = (/**
  * @param {?} codes
@@ -24237,7 +33575,7 @@ function (code) {
      */
     function (productState) { return loaderErrorSelector(productState); }));
 });
-var ɵ1$6 = /**
+var ɵ1$b = /**
  * @param {?} details
  * @return {?}
  */
@@ -24245,11 +33583,11 @@ function (details) {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-var getAllProductCodes = createSelector(getProductState, (ɵ1$6));
+var getAllProductCodes = createSelector(getProductState, (ɵ1$b));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var productGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -24274,12 +33612,12 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReferenceService = /** @class */ (function () {
     function ProductReferenceService(store) {
@@ -24322,10 +33660,17 @@ var ProductReferenceService = /** @class */ (function () {
     ]; };
     return ProductReferenceService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReferenceService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReviewService = /** @class */ (function () {
     function ProductReviewService(store) {
@@ -24376,10 +33721,17 @@ var ProductReviewService = /** @class */ (function () {
     ]; };
     return ProductReviewService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReviewService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductSearchService = /** @class */ (function () {
     function ProductSearchService(store) {
@@ -24430,10 +33782,17 @@ var ProductSearchService = /** @class */ (function () {
     ]; };
     return ProductSearchService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductSearchService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductService = /** @class */ (function () {
     function ProductService(store) {
@@ -24565,10 +33924,22 @@ var ProductService = /** @class */ (function () {
     ]; };
     return ProductService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductService.prototype.products;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SearchboxService = /** @class */ (function (_super) {
     __extends(SearchboxService, _super);
@@ -24657,22 +34028,34 @@ var SearchboxService = /** @class */ (function (_super) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function SearchConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchConfig.prototype.pageSize;
+    /** @type {?|undefined} */
+    SearchConfig.prototype.currentPage;
+    /** @type {?|undefined} */
+    SearchConfig.prototype.sortCode;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CategoryPageMetaResolver = /** @class */ (function (_super) {
     __extends(CategoryPageMetaResolver, _super);
@@ -24837,10 +34220,32 @@ var CategoryPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
     return CategoryPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.productSearchService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.cms;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductPageMetaResolver = /** @class */ (function (_super) {
     __extends(ProductPageMetaResolver, _super);
@@ -24864,7 +34269,11 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
          * @param {?} state
          * @return {?}
          */
-        function (state) { return state.state.params['productCode']; })), filter(Boolean), switchMap((/**
+        function (state) { return state.state.params['productCode']; })), filter((/**
+         * @param {?} code
+         * @return {?}
+         */
+        function (code) { return !!code; })), switchMap((/**
          * @param {?} code
          * @return {?}
          */
@@ -25050,10 +34459,27 @@ var ProductPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ ProductPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
     return ProductPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.productService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SearchPageMetaResolver = /** @class */ (function (_super) {
     __extends(SearchPageMetaResolver, _super);
@@ -25089,7 +34515,11 @@ var SearchPageMetaResolver = /** @class */ (function (_super) {
          * @param {?} state
          * @return {?}
          */
-        function (state) { return state.state.params['query']; })), filter(Boolean));
+        function (state) { return state.state.params['query']; })), filter((/**
+         * @param {?} q
+         * @return {?}
+         */
+        function (q) { return !!q; })));
         return combineLatest([total$, query$]).pipe(switchMap((/**
          * @param {?} __0
          * @return {?}
@@ -25133,10 +34563,27 @@ var SearchPageMetaResolver = /** @class */ (function (_super) {
     /** @nocollapse */ SearchPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
     return SearchPageMetaResolver;
 }(PageMetaResolver));
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.productSearchService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReferencesEffects = /** @class */ (function () {
     function ProductReferencesEffects(actions$, productReferencesConnector) {
@@ -25188,10 +34635,24 @@ var ProductReferencesEffects = /** @class */ (function () {
     ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
     return ProductReferencesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ProductReferencesEffects.prototype.loadProductReferences$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReferencesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReferencesEffects.prototype.productReferencesConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductReviewsEffects = /** @class */ (function () {
     function ProductReviewsEffects(actions$, productReviewsConnector) {
@@ -25270,10 +34731,26 @@ var ProductReviewsEffects = /** @class */ (function () {
     ], ProductReviewsEffects.prototype, "postProductReview", void 0);
     return ProductReviewsEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ProductReviewsEffects.prototype.loadProductReviews$;
+    /** @type {?} */
+    ProductReviewsEffects.prototype.postProductReview;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReviewsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReviewsEffects.prototype.productReviewsConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductsSearchEffects = /** @class */ (function () {
     function ProductsSearchEffects(actions$, productSearchConnector) {
@@ -25358,10 +34835,26 @@ var ProductsSearchEffects = /** @class */ (function () {
     ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
     return ProductsSearchEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ProductsSearchEffects.prototype.searchProducts$;
+    /** @type {?} */
+    ProductsSearchEffects.prototype.getProductSuggestions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductsSearchEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductsSearchEffects.prototype.productSearchConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ProductEffects = /** @class */ (function () {
     function ProductEffects(actions$, productConnector) {
@@ -25416,10 +34909,24 @@ var ProductEffects = /** @class */ (function () {
     ], ProductEffects.prototype, "loadProduct$", void 0);
     return ProductEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ProductEffects.prototype.loadProduct$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductEffects.prototype.productConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$6 = [
@@ -25431,7 +34938,7 @@ var effects$6 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$b = {
@@ -25457,10 +34964,22 @@ function reducer$b(state, action) {
     }
     return state;
 }
+/** @type {?} */
+var getProductReferenceList = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.list; });
+/** @type {?} */
+var getProductReferenceProductCode = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) { return state.productCode; });
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$c = {
@@ -25486,10 +35005,26 @@ function reducer$c(state, action) {
     }
     return state;
 }
+/** @type {?} */
+var getReviewList = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) {
+    return state.list;
+});
+/** @type {?} */
+var getReviewProductCode = (/**
+ * @param {?} state
+ * @return {?}
+ */
+function (state) {
+    return state.productCode;
+});
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -25532,7 +35067,7 @@ var metaReducers$4 = [clearProductsState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -25570,7 +35105,7 @@ var ProductStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var pageTitleResolvers = [
@@ -25620,17 +35155,17 @@ var ProductModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SiteConnector = /** @class */ (function () {
     function SiteConnector(adapter) {
@@ -25697,25 +35232,52 @@ var SiteConnector = /** @class */ (function () {
     /** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
     return SiteConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    SiteConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ * @template T
+ */
+function SiteContext() { }
+if (false) {
+    /**
+     * @return {?}
+     */
+    SiteContext.prototype.getAll = function () { };
+    /**
+     * @return {?}
+     */
+    SiteContext.prototype.getActive = function () { };
+    /**
+     * @param {?} isocode
+     * @return {?}
+     */
+    SiteContext.prototype.setActive = function (isocode) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -25747,7 +35309,7 @@ var contextServiceMapProvider = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} baseSiteService
@@ -25780,7 +35342,7 @@ var contextServiceProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SiteContextParamsService = /** @class */ (function () {
     function SiteContextParamsService(config, injector, serviceMap) {
@@ -25901,11 +35463,40 @@ var SiteContextParamsService = /** @class */ (function () {
     ]; };
     return SiteContextParamsService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.injector;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.serviceMap;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ParamValuesMap() { }
+/**
+ * @record
+ */
+function UrlTreeWithSiteContext() { }
+if (false) {
+    /** @type {?|undefined} */
+    UrlTreeWithSiteContext.prototype.siteContext;
+}
 /** @type {?} */
 var UrlSplit = /(^[^#?]*)(.*)/;
 // used to split url into path and query/fragment parts
@@ -26064,10 +35655,22 @@ var SiteContextUrlSerializer = /** @class */ (function (_super) {
     ]; };
     return SiteContextUrlSerializer;
 }(DefaultUrlSerializer));
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextUrlSerializer.prototype.urlEncodingParameters;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextUrlSerializer.prototype.siteContextParams;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SiteContextRoutesHandler = /** @class */ (function () {
     function SiteContextRoutesHandler(siteContextParams, serializer, injector) {
@@ -26210,10 +35813,52 @@ var SiteContextRoutesHandler = /** @class */ (function () {
     /** @nocollapse */ SiteContextRoutesHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
     return SiteContextRoutesHandler;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.subscription;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.contextValues;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.router;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.location;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.isNavigating;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.siteContextParams;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.serializer;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} siteContextRoutesHandler
@@ -26242,17 +35887,17 @@ var siteContextParamsProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -26308,7 +35953,7 @@ function defaultSiteContextConfigFactory() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var LanguagesEffects = /** @class */ (function () {
     function LanguagesEffects(actions$, siteConnector, winRef) {
@@ -26364,10 +36009,31 @@ var LanguagesEffects = /** @class */ (function () {
     ], LanguagesEffects.prototype, "activateLanguage$", void 0);
     return LanguagesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    LanguagesEffects.prototype.loadLanguages$;
+    /** @type {?} */
+    LanguagesEffects.prototype.activateLanguage$;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.siteConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CurrenciesEffects = /** @class */ (function () {
     function CurrenciesEffects(actions$, siteConnector, winRef) {
@@ -26423,10 +36089,31 @@ var CurrenciesEffects = /** @class */ (function () {
     ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
     return CurrenciesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    CurrenciesEffects.prototype.loadCurrencies$;
+    /** @type {?} */
+    CurrenciesEffects.prototype.activateCurrency$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.siteConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var BaseSiteEffects = /** @class */ (function () {
     function BaseSiteEffects(actions$, siteConnector) {
@@ -26464,10 +36151,24 @@ var BaseSiteEffects = /** @class */ (function () {
     ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
     return BaseSiteEffects;
 }());
+if (false) {
+    /** @type {?} */
+    BaseSiteEffects.prototype.loadBaseSite$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BaseSiteEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BaseSiteEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$7 = [
@@ -26478,7 +36179,7 @@ var effects$7 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$d = {
@@ -26519,7 +36220,7 @@ function reducer$d(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$e = {
@@ -26560,7 +36261,7 @@ function reducer$e(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$f = {
@@ -26587,7 +36288,7 @@ function reducer$f(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -26609,7 +36310,7 @@ var reducerProvider$9 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -26647,7 +36348,7 @@ var SiteContextStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -26661,7 +36362,7 @@ function baseSiteConfigValidator(config) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // @dynamic
 var SiteContextModule = /** @class */ (function () {
@@ -26698,12 +36399,12 @@ var SiteContextModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SmartEditService = /** @class */ (function () {
     function SmartEditService(cmsService, routingService, baseSiteService, zone, winRef) {
@@ -26960,10 +36661,62 @@ var SmartEditService = /** @class */ (function () {
     /** @nocollapse */ SmartEditService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
     return SmartEditService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype._cmsTicketId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.isPreviewPage;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype._currentPageId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.defaultPreviewProductCode;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.defaultPreviewCategoryCode;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.cmsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.baseSiteService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.zone;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var CmsTicketInterceptor = /** @class */ (function () {
     function CmsTicketInterceptor(service) {
@@ -26998,10 +36751,17 @@ var CmsTicketInterceptor = /** @class */ (function () {
     ]; };
     return CmsTicketInterceptor;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsTicketInterceptor.prototype.service;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var interceptors$2 = [
@@ -27014,7 +36774,7 @@ var interceptors$2 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SmartEditModule = /** @class */ (function () {
     function SmartEditModule() {
@@ -27039,12 +36799,12 @@ var SmartEditModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -27057,19 +36817,57 @@ StoreFinderConfig = /** @class */ (function () {
     }
     return StoreFinderConfig;
 }());
+if (false) {
+    /** @type {?} */
+    StoreFinderConfig.prototype.googleMaps;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var STORE_FINDER_FEATURE = 'stores';
 /** @type {?} */
 var STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
+/**
+ * @record
+ */
+function StateWithStoreFinder() { }
+if (false) {
+    /* Skipping unnamed member:
+    [STORE_FINDER_FEATURE]: StoresState;*/
+}
+/**
+ * @record
+ */
+function StoresState() { }
+if (false) {
+    /** @type {?} */
+    StoresState.prototype.findStores;
+    /** @type {?} */
+    StoresState.prototype.viewAllStores;
+}
+/**
+ * @record
+ */
+function FindStoresState() { }
+if (false) {
+    /** @type {?} */
+    FindStoresState.prototype.findStoresEntities;
+}
+/**
+ * @record
+ */
+function ViewAllStoresState() { }
+if (false) {
+    /** @type {?} */
+    ViewAllStoresState.prototype.viewAllStoresEntities;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var FIND_STORES_ON_HOLD = '[StoreFinder] On Hold';
@@ -27094,6 +36892,10 @@ var FindStoresOnHold = /** @class */ (function (_super) {
     }
     return FindStoresOnHold;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    FindStoresOnHold.prototype.type;
+}
 var FindStores = /** @class */ (function (_super) {
     __extends(FindStores, _super);
     function FindStores(payload) {
@@ -27104,6 +36906,12 @@ var FindStores = /** @class */ (function (_super) {
     }
     return FindStores;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    FindStores.prototype.type;
+    /** @type {?} */
+    FindStores.prototype.payload;
+}
 var FindStoresFail = /** @class */ (function (_super) {
     __extends(FindStoresFail, _super);
     function FindStoresFail(payload) {
@@ -27114,6 +36922,12 @@ var FindStoresFail = /** @class */ (function (_super) {
     }
     return FindStoresFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    FindStoresFail.prototype.type;
+    /** @type {?} */
+    FindStoresFail.prototype.payload;
+}
 var FindStoresSuccess = /** @class */ (function (_super) {
     __extends(FindStoresSuccess, _super);
     function FindStoresSuccess(payload) {
@@ -27124,6 +36938,12 @@ var FindStoresSuccess = /** @class */ (function (_super) {
     }
     return FindStoresSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    FindStoresSuccess.prototype.type;
+    /** @type {?} */
+    FindStoresSuccess.prototype.payload;
+}
 var FindStoreById = /** @class */ (function (_super) {
     __extends(FindStoreById, _super);
     function FindStoreById(payload) {
@@ -27134,6 +36954,12 @@ var FindStoreById = /** @class */ (function (_super) {
     }
     return FindStoreById;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    FindStoreById.prototype.type;
+    /** @type {?} */
+    FindStoreById.prototype.payload;
+}
 var FindStoreByIdFail = /** @class */ (function (_super) {
     __extends(FindStoreByIdFail, _super);
     function FindStoreByIdFail(payload) {
@@ -27144,6 +36970,12 @@ var FindStoreByIdFail = /** @class */ (function (_super) {
     }
     return FindStoreByIdFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    FindStoreByIdFail.prototype.type;
+    /** @type {?} */
+    FindStoreByIdFail.prototype.payload;
+}
 var FindStoreByIdSuccess = /** @class */ (function (_super) {
     __extends(FindStoreByIdSuccess, _super);
     function FindStoreByIdSuccess(payload) {
@@ -27154,10 +36986,16 @@ var FindStoreByIdSuccess = /** @class */ (function (_super) {
     }
     return FindStoreByIdSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    FindStoreByIdSuccess.prototype.type;
+    /** @type {?} */
+    FindStoreByIdSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var VIEW_ALL_STORES = '[StoreFinder] View All Stores';
@@ -27174,6 +37012,10 @@ var ViewAllStores = /** @class */ (function (_super) {
     }
     return ViewAllStores;
 }(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    ViewAllStores.prototype.type;
+}
 var ViewAllStoresFail = /** @class */ (function (_super) {
     __extends(ViewAllStoresFail, _super);
     function ViewAllStoresFail(payload) {
@@ -27184,6 +37026,12 @@ var ViewAllStoresFail = /** @class */ (function (_super) {
     }
     return ViewAllStoresFail;
 }(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    ViewAllStoresFail.prototype.type;
+    /** @type {?} */
+    ViewAllStoresFail.prototype.payload;
+}
 var ViewAllStoresSuccess = /** @class */ (function (_super) {
     __extends(ViewAllStoresSuccess, _super);
     function ViewAllStoresSuccess(payload) {
@@ -27194,10 +37042,16 @@ var ViewAllStoresSuccess = /** @class */ (function (_super) {
     }
     return ViewAllStoresSuccess;
 }(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    ViewAllStoresSuccess.prototype.type;
+    /** @type {?} */
+    ViewAllStoresSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
@@ -27225,71 +37079,71 @@ var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$e = /**
+var ɵ0$m = /**
  * @param {?} storesState
  * @return {?}
  */
 function (storesState) { return storesState.findStores; };
 /** @type {?} */
-var getFindStoresState = createSelector(getStoreFinderState, (ɵ0$e));
-var ɵ1$7 = /**
+var getFindStoresState = createSelector(getStoreFinderState, (ɵ0$m));
+var ɵ1$c = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderValueSelector(state); };
 /** @type {?} */
-var getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$7));
-var ɵ2$3 = /**
+var getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$c));
+var ɵ2$6 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderLoadingSelector(state); };
 /** @type {?} */
-var getStoresLoading = createSelector(getFindStoresState, (ɵ2$3));
+var getStoresLoading = createSelector(getFindStoresState, (ɵ2$6));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$f = /**
+var ɵ0$n = /**
  * @param {?} storesState
  * @return {?}
  */
 function (storesState) { return storesState.viewAllStores; };
 /** @type {?} */
-var getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$f));
-var ɵ1$8 = /**
+var getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$n));
+var ɵ1$d = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderValueSelector(state); };
 /** @type {?} */
-var getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$8));
-var ɵ2$4 = /**
+var getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$d));
+var ɵ2$7 = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return loaderLoadingSelector(state); };
 /** @type {?} */
-var getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$4));
+var getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$7));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -27303,12 +37157,12 @@ var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreFinderService = /** @class */ (function () {
     function StoreFinderService(store, winRef, globalMessageService, routingService) {
@@ -27497,10 +37351,37 @@ var StoreFinderService = /** @class */ (function () {
     ]; };
     return StoreFinderService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    StoreFinderService.prototype.geolocationWatchId;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.globalMessageService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreDataService = /** @class */ (function () {
     function StoreDataService() {
@@ -27643,35 +37524,73 @@ var StoreDataService = /** @class */ (function () {
     ];
     return StoreDataService;
 }());
+if (false) {
+    /** @type {?} */
+    StoreDataService.prototype.DECIMAL_BASE;
+    /** @type {?} */
+    StoreDataService.prototype.weekDays;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreEntities() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreEntities.prototype.pointOfServices;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.pageSize;
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.currentPage;
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.sort;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchQuery() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.queryText;
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.longitudeLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.useMyLocation;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ExternalJsFileLoader = /** @class */ (function () {
     function ExternalJsFileLoader(document) {
@@ -27757,10 +37676,17 @@ var ExternalJsFileLoader = /** @class */ (function () {
     ]; };
     return ExternalJsFileLoader;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalJsFileLoader.prototype.document;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var GoogleMapRendererService = /** @class */ (function () {
     function GoogleMapRendererService(config, externalJsFileLoader, storeDataService) {
@@ -27971,15 +37897,42 @@ var GoogleMapRendererService = /** @class */ (function () {
     ]; };
     return GoogleMapRendererService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    GoogleMapRendererService.prototype.googleMap;
+    /**
+     * @type {?}
+     * @private
+     */
+    GoogleMapRendererService.prototype.markers;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.externalJsFileLoader;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.storeDataService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var defaultStoreFinderConfig = {
@@ -27993,7 +37946,7 @@ var defaultStoreFinderConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -28011,10 +37964,12 @@ var reducerProvider$a = {
     provide: reducerToken$a,
     useFactory: getReducers$a,
 };
+/** @type {?} */
+var metaReducers$5 = [];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FindStoresEffect = /** @class */ (function () {
     function FindStoresEffect(actions$, storeFinderConnector) {
@@ -28095,10 +38050,26 @@ var FindStoresEffect = /** @class */ (function () {
     ], FindStoresEffect.prototype, "findStoreById$", void 0);
     return FindStoresEffect;
 }());
+if (false) {
+    /** @type {?} */
+    FindStoresEffect.prototype.findStores$;
+    /** @type {?} */
+    FindStoresEffect.prototype.findStoreById$;
+    /**
+     * @type {?}
+     * @private
+     */
+    FindStoresEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    FindStoresEffect.prototype.storeFinderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ViewAllStoresEffect = /** @class */ (function () {
     function ViewAllStoresEffect(actions$, storeFinderConnector) {
@@ -28147,17 +38118,31 @@ var ViewAllStoresEffect = /** @class */ (function () {
     ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
     return ViewAllStoresEffect;
 }());
+if (false) {
+    /** @type {?} */
+    ViewAllStoresEffect.prototype.viewAllStores$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ViewAllStoresEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ViewAllStoresEffect.prototype.storeFinderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$8 = [FindStoresEffect, ViewAllStoresEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreFinderStoreModule = /** @class */ (function () {
     function StoreFinderStoreModule() {
@@ -28178,7 +38163,7 @@ var StoreFinderStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var StoreFinderCoreModule = /** @class */ (function () {
     function StoreFinderCoreModule() {
@@ -28203,12 +38188,12 @@ var StoreFinderCoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserConnector = /** @class */ (function () {
     function UserConnector(adapter) {
@@ -28335,20 +38320,27 @@ var UserConnector = /** @class */ (function () {
     /** @nocollapse */ UserConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
     return UserConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserConsentConnector = /** @class */ (function () {
     function UserConsentConnector(adapter) {
@@ -28405,15 +38397,22 @@ var UserConsentConnector = /** @class */ (function () {
     /** @nocollapse */ UserConsentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
     return UserConsentConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConsentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserPaymentConnector = /** @class */ (function () {
     function UserPaymentConnector(adapter) {
@@ -28468,15 +38467,22 @@ var UserPaymentConnector = /** @class */ (function () {
     /** @nocollapse */ UserPaymentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
     return UserPaymentConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserPaymentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserOrderConnector = /** @class */ (function () {
     function UserOrderConnector(adapter) {
@@ -28537,43 +38543,50 @@ var UserOrderConnector = /** @class */ (function () {
     /** @nocollapse */ UserOrderConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
     return UserOrderConnector;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserOrderConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var getUserState = createFeatureSelector(USER_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$g = /**
+var ɵ0$o = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.billingCountries; };
 /** @type {?} */
-var getBillingCountriesState = createSelector(getUserState, (ɵ0$g));
-var ɵ1$9 = /**
+var getBillingCountriesState = createSelector(getUserState, (ɵ0$o));
+var ɵ1$e = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entities; };
 /** @type {?} */
-var getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$9));
-var ɵ2$5 = /**
+var getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$e));
+var ɵ2$8 = /**
  * @param {?} entites
  * @return {?}
  */
@@ -28583,46 +38596,46 @@ function (entites) { return Object.keys(entites).map((/**
  */
 function (isocode) { return entites[isocode]; })); };
 /** @type {?} */
-var getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$5));
+var getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$h = /**
+var ɵ0$p = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.consignmentTracking; };
 /** @type {?} */
-var getConsignmentTrackingState = createSelector(getUserState, (ɵ0$h));
-var ɵ1$a = /**
+var getConsignmentTrackingState = createSelector(getUserState, (ɵ0$p));
+var ɵ1$f = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.tracking; };
 /** @type {?} */
-var getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$a));
+var getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$f));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$i = /**
+var ɵ0$q = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.countries; };
 /** @type {?} */
-var getDeliveryCountriesState = createSelector(getUserState, (ɵ0$i));
-var ɵ1$b = /**
+var getDeliveryCountriesState = createSelector(getUserState, (ɵ0$q));
+var ɵ1$g = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entities; };
 /** @type {?} */
-var getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$b));
-var ɵ2$6 = /**
+var getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$g));
+var ɵ2$9 = /**
  * @param {?} entites
  * @return {?}
  */
@@ -28632,7 +38645,7 @@ function (entites) { return Object.keys(entites).map((/**
  */
 function (isocode) { return entites[isocode]; })); };
 /** @type {?} */
-var getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$6));
+var getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$9));
 /** @type {?} */
 var countrySelectorFactory = (/**
  * @param {?} isocode
@@ -28648,35 +38661,35 @@ function (isocode) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$j = /**
+var ɵ0$r = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.order; };
 /** @type {?} */
-var getOrderState = createSelector(getUserState, (ɵ0$j));
-var ɵ1$c = /**
+var getOrderState = createSelector(getUserState, (ɵ0$r));
+var ɵ1$h = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.order; };
 /** @type {?} */
-var getOrderDetails = createSelector(getOrderState, (ɵ1$c));
+var getOrderDetails = createSelector(getOrderState, (ɵ1$h));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$k = /**
+var ɵ0$s = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.payments; };
 /** @type {?} */
-var getPaymentMethodsState = createSelector(getUserState, (ɵ0$k));
-var ɵ1$d = /**
+var getPaymentMethodsState = createSelector(getUserState, (ɵ0$s));
+var ɵ1$i = /**
  * @param {?} state
  * @return {?}
  */
@@ -28684,8 +38697,8 @@ function (state) {
     return loaderValueSelector(state);
 };
 /** @type {?} */
-var getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$d));
-var ɵ2$7 = /**
+var getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$i));
+var ɵ2$a = /**
  * @param {?} state
  * @return {?}
  */
@@ -28693,8 +38706,8 @@ function (state) {
     return loaderLoadingSelector(state);
 };
 /** @type {?} */
-var getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$7));
-var ɵ3$4 = /**
+var getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$a));
+var ɵ3$6 = /**
  * @param {?} state
  * @return {?}
  */
@@ -28703,20 +38716,20 @@ function (state) {
         !loaderLoadingSelector(state);
 };
 /** @type {?} */
-var getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (ɵ3$4));
+var getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (ɵ3$6));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$l = /**
+var ɵ0$t = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.regions; };
 /** @type {?} */
-var getRegionsLoaderState = createSelector(getUserState, (ɵ0$l));
-var ɵ1$e = /**
+var getRegionsLoaderState = createSelector(getUserState, (ɵ0$t));
+var ɵ1$j = /**
  * @param {?} state
  * @return {?}
  */
@@ -28724,8 +38737,8 @@ function (state) {
     return loaderValueSelector(state).entities;
 };
 /** @type {?} */
-var getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$e));
-var ɵ2$8 = /**
+var getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$j));
+var ɵ2$b = /**
  * @param {?} state
  * @return {?}
  */
@@ -28736,8 +38749,8 @@ function (state) { return ({
     country: loaderValueSelector(state).country,
 }); };
 /** @type {?} */
-var getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$8));
-var ɵ3$5 = /**
+var getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$b));
+var ɵ3$7 = /**
  * @param {?} state
  * @return {?}
  */
@@ -28745,7 +38758,7 @@ function (state) {
     return loaderValueSelector(state).country;
 };
 /** @type {?} */
-var getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$5));
+var getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$7));
 var ɵ4$3 = /**
  * @param {?} state
  * @return {?}
@@ -28767,35 +38780,35 @@ var getRegionsLoaded = createSelector(getRegionsLoaderState, (ɵ5$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$m = /**
+var ɵ0$u = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.resetPassword; };
 /** @type {?} */
-var getResetPassword = createSelector(getUserState, (ɵ0$m));
+var getResetPassword = createSelector(getUserState, (ɵ0$u));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$n = /**
+var ɵ0$v = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.titles; };
 /** @type {?} */
-var getTitlesState = createSelector(getUserState, (ɵ0$n));
-var ɵ1$f = /**
+var getTitlesState = createSelector(getUserState, (ɵ0$v));
+var ɵ1$k = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.entities; };
 /** @type {?} */
-var getTitlesEntites = createSelector(getTitlesState, (ɵ1$f));
-var ɵ2$9 = /**
+var getTitlesEntites = createSelector(getTitlesState, (ɵ1$k));
+var ɵ2$c = /**
  * @param {?} entites
  * @return {?}
  */
@@ -28805,7 +38818,7 @@ function (entites) { return Object.keys(entites).map((/**
  */
 function (code) { return entites[code]; })); };
 /** @type {?} */
-var getAllTitles = createSelector(getTitlesEntites, (ɵ2$9));
+var getAllTitles = createSelector(getTitlesEntites, (ɵ2$c));
 /** @type {?} */
 var titleSelectorFactory = (/**
  * @param {?} code
@@ -28821,16 +38834,16 @@ function (code) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$o = /**
+var ɵ0$w = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.addresses; };
 /** @type {?} */
-var getAddressesLoaderState = createSelector(getUserState, (ɵ0$o));
-var ɵ1$g = /**
+var getAddressesLoaderState = createSelector(getUserState, (ɵ0$w));
+var ɵ1$l = /**
  * @param {?} state
  * @return {?}
  */
@@ -28838,8 +38851,8 @@ function (state) {
     return loaderValueSelector(state);
 };
 /** @type {?} */
-var getAddresses = createSelector(getAddressesLoaderState, (ɵ1$g));
-var ɵ2$a = /**
+var getAddresses = createSelector(getAddressesLoaderState, (ɵ1$l));
+var ɵ2$d = /**
  * @param {?} state
  * @return {?}
  */
@@ -28847,8 +38860,8 @@ function (state) {
     return loaderLoadingSelector(state);
 };
 /** @type {?} */
-var getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$a));
-var ɵ3$6 = /**
+var getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$d));
+var ɵ3$8 = /**
  * @param {?} state
  * @return {?}
  */
@@ -28857,19 +38870,19 @@ function (state) {
         !loaderLoadingSelector(state);
 };
 /** @type {?} */
-var getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$6));
+var getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$p = /**
+var ɵ0$x = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.consents; };
 /** @type {?} */
-var getConsentsState = createSelector(getUserState, (ɵ0$p));
+var getConsentsState = createSelector(getUserState, (ɵ0$x));
 /** @type {?} */
 var getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 /** @type {?} */
@@ -28881,35 +38894,35 @@ var getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$q = /**
+var ɵ0$y = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.account; };
 /** @type {?} */
-var getDetailsState = createSelector(getUserState, (ɵ0$q));
-var ɵ1$h = /**
+var getDetailsState = createSelector(getUserState, (ɵ0$y));
+var ɵ1$m = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.details; };
 /** @type {?} */
-var getDetails = createSelector(getDetailsState, (ɵ1$h));
+var getDetails = createSelector(getDetailsState, (ɵ1$m));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var ɵ0$r = /**
+var ɵ0$z = /**
  * @param {?} state
  * @return {?}
  */
 function (state) { return state.orders; };
 /** @type {?} */
-var getOrdersState = createSelector(getUserState, (ɵ0$r));
-var ɵ1$i = /**
+var getOrdersState = createSelector(getUserState, (ɵ0$z));
+var ɵ1$n = /**
  * @param {?} state
  * @return {?}
  */
@@ -28917,8 +38930,8 @@ function (state) {
     return loaderSuccessSelector(state);
 };
 /** @type {?} */
-var getOrdersLoaded = createSelector(getOrdersState, (ɵ1$i));
-var ɵ2$b = /**
+var getOrdersLoaded = createSelector(getOrdersState, (ɵ1$n));
+var ɵ2$e = /**
  * @param {?} state
  * @return {?}
  */
@@ -28926,11 +38939,11 @@ function (state) {
     return loaderValueSelector(state);
 };
 /** @type {?} */
-var getOrders = createSelector(getOrdersState, (ɵ2$b));
+var getOrders = createSelector(getOrdersState, (ɵ2$e));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var usersGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -28979,12 +38992,12 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserService = /** @class */ (function () {
     function UserService(store) {
@@ -29504,10 +39517,17 @@ var UserService = /** @class */ (function () {
     ]; };
     return UserService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserAddressService = /** @class */ (function () {
     function UserAddressService(store) {
@@ -29777,10 +39797,17 @@ var UserAddressService = /** @class */ (function () {
     /** @nocollapse */ UserAddressService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store)); }, token: UserAddressService, providedIn: "root" });
     return UserAddressService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAddressService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserConsentService = /** @class */ (function () {
     function UserConsentService(store) {
@@ -30038,10 +40065,17 @@ var UserConsentService = /** @class */ (function () {
     /** @nocollapse */ UserConsentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store)); }, token: UserConsentService, providedIn: "root" });
     return UserConsentService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConsentService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserPaymentService = /** @class */ (function () {
     function UserPaymentService(store) {
@@ -30181,10 +40215,17 @@ var UserPaymentService = /** @class */ (function () {
     /** @nocollapse */ UserPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store)); }, token: UserPaymentService, providedIn: "root" });
     return UserPaymentService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserPaymentService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserOrderService = /** @class */ (function () {
     function UserOrderService(store) {
@@ -30393,15 +40434,22 @@ var UserOrderService = /** @class */ (function () {
     /** @nocollapse */ UserOrderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store)); }, token: UserOrderService, providedIn: "root" });
     return UserOrderService;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserOrderService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$g = {
@@ -30439,7 +40487,7 @@ function reducer$g(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$h = {};
@@ -30467,7 +40515,7 @@ function reducer$h(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$i = {
@@ -30505,7 +40553,7 @@ function reducer$i(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$j = {
@@ -30533,7 +40581,7 @@ function reducer$j(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$k = [];
@@ -30557,7 +40605,7 @@ function reducer$k(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$l = {
@@ -30589,7 +40637,7 @@ function reducer$l(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$m = false;
@@ -30610,7 +40658,7 @@ function reducer$m(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$n = {
@@ -30648,7 +40696,7 @@ function reducer$n(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$o = [];
@@ -30672,7 +40720,7 @@ function reducer$o(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$p = [];
@@ -30708,7 +40756,7 @@ function reducer$p(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$q = (/** @type {?} */ ({}));
@@ -30734,7 +40782,7 @@ function reducer$q(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var initialState$r = {
@@ -30762,7 +40810,7 @@ function reducer$r(state, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -30810,11 +40858,11 @@ function clearUserState(reducer) {
     });
 }
 /** @type {?} */
-var metaReducers$5 = [clearUserState];
+var metaReducers$6 = [clearUserState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var BillingCountriesEffect = /** @class */ (function () {
     function BillingCountriesEffect(actions$, siteConnector) {
@@ -30852,10 +40900,24 @@ var BillingCountriesEffect = /** @class */ (function () {
     ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
     return BillingCountriesEffect;
 }());
+if (false) {
+    /** @type {?} */
+    BillingCountriesEffect.prototype.loadBillingCountries$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BillingCountriesEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BillingCountriesEffect.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ClearMiscsDataEffect = /** @class */ (function () {
     function ClearMiscsDataEffect(actions$) {
@@ -30880,10 +40942,19 @@ var ClearMiscsDataEffect = /** @class */ (function () {
     ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
     return ClearMiscsDataEffect;
 }());
+if (false) {
+    /** @type {?} */
+    ClearMiscsDataEffect.prototype.clearMiscsData$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClearMiscsDataEffect.prototype.actions$;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ConsignmentTrackingEffects = /** @class */ (function () {
     function ConsignmentTrackingEffects(actions$, userOrderConnector) {
@@ -30930,10 +41001,24 @@ var ConsignmentTrackingEffects = /** @class */ (function () {
     ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
     return ConsignmentTrackingEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ConsignmentTrackingEffects.prototype.loadConsignmentTracking$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConsignmentTrackingEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConsignmentTrackingEffects.prototype.userOrderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var DeliveryCountriesEffects = /** @class */ (function () {
     function DeliveryCountriesEffects(actions$, siteConnector) {
@@ -30971,10 +41056,24 @@ var DeliveryCountriesEffects = /** @class */ (function () {
     ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
     return DeliveryCountriesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    DeliveryCountriesEffects.prototype.loadDeliveryCountries$;
+    /**
+     * @type {?}
+     * @private
+     */
+    DeliveryCountriesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    DeliveryCountriesEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ForgotPasswordEffects = /** @class */ (function () {
     function ForgotPasswordEffects(actions$, userAccountConnector) {
@@ -31026,10 +41125,24 @@ var ForgotPasswordEffects = /** @class */ (function () {
     ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
     return ForgotPasswordEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEffects.prototype.requestForgotPasswordEmail$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ForgotPasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ForgotPasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var OrderDetailsEffect = /** @class */ (function () {
     function OrderDetailsEffect(actions$, orderConnector) {
@@ -31074,10 +41187,24 @@ var OrderDetailsEffect = /** @class */ (function () {
     ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
     return OrderDetailsEffect;
 }());
+if (false) {
+    /** @type {?} */
+    OrderDetailsEffect.prototype.loadOrderDetails$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OrderDetailsEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OrderDetailsEffect.prototype.orderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserPaymentMethodsEffects = /** @class */ (function () {
     function UserPaymentMethodsEffects(actions$, userPaymentMethodConnector) {
@@ -31182,10 +41309,28 @@ var UserPaymentMethodsEffects = /** @class */ (function () {
     ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
     return UserPaymentMethodsEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.loadUserPaymentMethods$;
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.setDefaultUserPaymentMethod$;
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.deleteUserPaymentMethod$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserPaymentMethodsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserPaymentMethodsEffects.prototype.userPaymentMethodConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var RegionsEffects = /** @class */ (function () {
     function RegionsEffects(actions$, siteConnector) {
@@ -31245,10 +41390,26 @@ var RegionsEffects = /** @class */ (function () {
     ], RegionsEffects.prototype, "resetRegions$", void 0);
     return RegionsEffects;
 }());
+if (false) {
+    /** @type {?} */
+    RegionsEffects.prototype.loadRegions$;
+    /** @type {?} */
+    RegionsEffects.prototype.resetRegions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RegionsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RegionsEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ResetPasswordEffects = /** @class */ (function () {
     function ResetPasswordEffects(actions$, userAccountConnector) {
@@ -31297,10 +41458,24 @@ var ResetPasswordEffects = /** @class */ (function () {
     ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
     return ResetPasswordEffects;
 }());
+if (false) {
+    /** @type {?} */
+    ResetPasswordEffects.prototype.resetPassword$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ResetPasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ResetPasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var TitlesEffects = /** @class */ (function () {
     function TitlesEffects(actions$, userAccountConnector) {
@@ -31367,10 +41542,24 @@ var TitlesEffects = /** @class */ (function () {
     ], TitlesEffects.prototype, "loadTitles$", void 0);
     return TitlesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    TitlesEffects.prototype.loadTitles$;
+    /**
+     * @type {?}
+     * @private
+     */
+    TitlesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    TitlesEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UpdateEmailEffects = /** @class */ (function () {
     function UpdateEmailEffects(actions$, userAccountConnector) {
@@ -31414,10 +41603,24 @@ var UpdateEmailEffects = /** @class */ (function () {
     ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
     return UpdateEmailEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UpdateEmailEffects.prototype.updateEmail$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdateEmailEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdateEmailEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UpdatePasswordEffects = /** @class */ (function () {
     function UpdatePasswordEffects(actions$, userAccountConnector) {
@@ -31462,10 +41665,24 @@ var UpdatePasswordEffects = /** @class */ (function () {
     ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
     return UpdatePasswordEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UpdatePasswordEffects.prototype.updatePassword$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdatePasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdatePasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserAddressesEffects = /** @class */ (function () {
     function UserAddressesEffects(actions$, userAddressConnector, userAddressService, messageService) {
@@ -31680,10 +41897,55 @@ var UserAddressesEffects = /** @class */ (function () {
     ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
     return UserAddressesEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UserAddressesEffects.prototype.loadUserAddresses$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.addUserAddress$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.updateUserAddress$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.deleteUserAddress$;
+    /**
+     *  Reload addresses and notify about add success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnAddSuccess$;
+    /**
+     *  Reload addresses and notify about update success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnUpdateSuccess$;
+    /**
+     *  Reload addresses and notify about delete success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnDeleteSuccess$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.userAddressConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.userAddressService;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.messageService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserConsentsEffect = /** @class */ (function () {
     function UserConsentsEffect(actions$, userConsentConnector) {
@@ -31787,10 +42049,30 @@ var UserConsentsEffect = /** @class */ (function () {
     ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
     return UserConsentsEffect;
 }());
+if (false) {
+    /** @type {?} */
+    UserConsentsEffect.prototype.resetConsents$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.getConsents$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.giveConsent$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.withdrawConsent$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserConsentsEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserConsentsEffect.prototype.userConsentConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserDetailsEffects = /** @class */ (function () {
     function UserDetailsEffects(actions$, userConnector) {
@@ -31860,10 +42142,26 @@ var UserDetailsEffects = /** @class */ (function () {
     ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
     return UserDetailsEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UserDetailsEffects.prototype.loadUserDetails$;
+    /** @type {?} */
+    UserDetailsEffects.prototype.updateUserDetails$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserDetailsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserDetailsEffects.prototype.userConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserOrdersEffect = /** @class */ (function () {
     function UserOrdersEffect(actions$, orderConnector) {
@@ -31920,10 +42218,26 @@ var UserOrdersEffect = /** @class */ (function () {
     ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
     return UserOrdersEffect;
 }());
+if (false) {
+    /** @type {?} */
+    UserOrdersEffect.prototype.loadUserOrders$;
+    /** @type {?} */
+    UserOrdersEffect.prototype.resetUserOrders$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserOrdersEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserOrdersEffect.prototype.orderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserRegisterEffects = /** @class */ (function () {
     function UserRegisterEffects(actions$, userConnector) {
@@ -31993,10 +42307,26 @@ var UserRegisterEffects = /** @class */ (function () {
     ], UserRegisterEffects.prototype, "removeUser$", void 0);
     return UserRegisterEffects;
 }());
+if (false) {
+    /** @type {?} */
+    UserRegisterEffects.prototype.registerUser$;
+    /** @type {?} */
+    UserRegisterEffects.prototype.removeUser$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserRegisterEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserRegisterEffects.prototype.userConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 var effects$9 = [
@@ -32021,7 +42351,7 @@ var effects$9 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserStoreModule = /** @class */ (function () {
     function UserStoreModule() {
@@ -32032,7 +42362,7 @@ var UserStoreModule = /** @class */ (function () {
                         CommonModule,
                         ReactiveFormsModule,
                         StateModule,
-                        StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
+                        StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
                         EffectsModule.forFeature(effects$9),
                         RouterModule,
                     ],
@@ -32044,7 +42374,7 @@ var UserStoreModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var UserModule = /** @class */ (function () {
     function UserModule() {
@@ -32071,22 +42401,22 @@ var UserModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FeatureLevelDirective = /** @class */ (function () {
     function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
@@ -32129,10 +42459,32 @@ var FeatureLevelDirective = /** @class */ (function () {
     };
     return FeatureLevelDirective;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureLevelDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.featureConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FeatureDirective = /** @class */ (function () {
     function FeatureDirective(templateRef, viewContainer, featureConfig) {
@@ -32175,10 +42527,32 @@ var FeatureDirective = /** @class */ (function () {
     };
     return FeatureDirective;
 }());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.featureConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FeaturesConfigModule = /** @class */ (function () {
     function FeaturesConfigModule() {
@@ -32218,18 +42592,18 @@ var FeaturesConfigModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$5 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

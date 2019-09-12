@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { RoutingConfig, ConfigurableRoutesService, RoutingConfigService, UrlModule, UrlPipe, SemanticPathService } from './configurable-routes/index';
 export { ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService } from './external-routes/index';

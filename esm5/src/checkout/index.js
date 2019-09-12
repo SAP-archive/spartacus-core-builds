@@ -1,6 +1,6 @@
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 export { CheckoutModule } from './checkout.module';
 export { CheckoutConnector, CheckoutAdapter, ORDER_NORMALIZER, CheckoutDeliveryConnector, CheckoutDeliveryAdapter, DELIVERY_MODE_NORMALIZER, CheckoutPaymentConnector, CheckoutPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, CARD_TYPE_NORMALIZER } from './connectors/index';

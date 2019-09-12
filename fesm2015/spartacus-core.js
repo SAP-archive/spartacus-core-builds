@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ConfigValidatorToken = new InjectionToken('ConfigurationValidator');
@@ -49,7 +49,7 @@ function validateConfig(config, configValidators) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} item
@@ -90,7 +90,7 @@ function deepMerge(target = {}, ...sources) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
@@ -197,37 +197,49 @@ ConfigModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class SiteContextConfig {
 }
+if (false) {
+    /** @type {?} */
+    SiteContextConfig.prototype.context;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class OccConfig extends SiteContextConfig {
 }
+if (false) {
+    /** @type {?} */
+    OccConfig.prototype.backend;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class AuthConfig extends OccConfig {
 }
+if (false) {
+    /** @type {?} */
+    AuthConfig.prototype.authentication;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultAuthConfig = {
@@ -246,7 +258,7 @@ const defaultAuthConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
@@ -256,6 +268,14 @@ const ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
  * @record
  */
 function EntityMeta() { }
+if (false) {
+    /** @type {?} */
+    EntityMeta.prototype.entityType;
+    /** @type {?} */
+    EntityMeta.prototype.entityId;
+    /** @type {?|undefined} */
+    EntityMeta.prototype.entityRemove;
+}
 /**
  * @param {?} type
  * @param {?} id
@@ -294,6 +314,12 @@ function entityRemoveAllMeta(type) {
  * @record
  */
 function EntityAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    EntityAction.prototype.payload;
+    /** @type {?|undefined} */
+    EntityAction.prototype.meta;
+}
 class EntityRemoveAction {
     /**
      * @param {?} entityType
@@ -304,6 +330,12 @@ class EntityRemoveAction {
         this.meta = entityRemoveMeta(entityType, id);
     }
 }
+if (false) {
+    /** @type {?} */
+    EntityRemoveAction.prototype.type;
+    /** @type {?} */
+    EntityRemoveAction.prototype.meta;
+}
 class EntityRemoveAllAction {
     /**
      * @param {?} entityType
@@ -312,6 +344,12 @@ class EntityRemoveAllAction {
         this.type = ENTITY_REMOVE_ALL_ACTION;
         this.meta = entityRemoveAllMeta(entityType);
     }
+}
+if (false) {
+    /** @type {?} */
+    EntityRemoveAllAction.prototype.type;
+    /** @type {?} */
+    EntityRemoveAllAction.prototype.meta;
 }
 
 var entity_action = /*#__PURE__*/Object.freeze({
@@ -328,7 +366,7 @@ var entity_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOADER_LOAD_ACTION = '[LOADER] LOAD';
@@ -342,10 +380,22 @@ const LOADER_RESET_ACTION = '[LOADER] RESET';
  * @record
  */
 function LoaderMeta() { }
+if (false) {
+    /** @type {?} */
+    LoaderMeta.prototype.entityType;
+    /** @type {?} */
+    LoaderMeta.prototype.loader;
+}
 /**
  * @record
  */
 function LoaderAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoaderAction.prototype.payload;
+    /** @type {?|undefined} */
+    LoaderAction.prototype.meta;
+}
 /**
  * @param {?} entityType
  * @return {?}
@@ -402,6 +452,12 @@ class LoaderLoadAction {
         this.meta = loadMeta(entityType);
     }
 }
+if (false) {
+    /** @type {?} */
+    LoaderLoadAction.prototype.type;
+    /** @type {?} */
+    LoaderLoadAction.prototype.meta;
+}
 class LoaderFailAction {
     /**
      * @param {?} entityType
@@ -412,6 +468,12 @@ class LoaderFailAction {
         this.meta = failMeta(entityType, error);
     }
 }
+if (false) {
+    /** @type {?} */
+    LoaderFailAction.prototype.type;
+    /** @type {?} */
+    LoaderFailAction.prototype.meta;
+}
 class LoaderSuccessAction {
     /**
      * @param {?} entityType
@@ -421,6 +483,12 @@ class LoaderSuccessAction {
         this.meta = successMeta(entityType);
     }
 }
+if (false) {
+    /** @type {?} */
+    LoaderSuccessAction.prototype.type;
+    /** @type {?} */
+    LoaderSuccessAction.prototype.meta;
+}
 class LoaderResetAction {
     /**
      * @param {?} entityType
@@ -429,6 +497,12 @@ class LoaderResetAction {
         this.type = LOADER_RESET_ACTION;
         this.meta = resetMeta(entityType);
     }
+}
+if (false) {
+    /** @type {?} */
+    LoaderResetAction.prototype.type;
+    /** @type {?} */
+    LoaderResetAction.prototype.meta;
 }
 
 var loader_action = /*#__PURE__*/Object.freeze({
@@ -450,7 +524,7 @@ var loader_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ENTITY_LOAD_ACTION = '[ENTITY] LOAD';
@@ -468,6 +542,12 @@ function EntityLoaderMeta() { }
  * @record
  */
 function EntityLoaderAction() { }
+if (false) {
+    /** @type {?|undefined} */
+    EntityLoaderAction.prototype.payload;
+    /** @type {?|undefined} */
+    EntityLoaderAction.prototype.meta;
+}
 /**
  * @param {?} entityType
  * @param {?} id
@@ -511,6 +591,12 @@ class EntityLoadAction {
         this.meta = entityLoadMeta(entityType, id);
     }
 }
+if (false) {
+    /** @type {?} */
+    EntityLoadAction.prototype.type;
+    /** @type {?} */
+    EntityLoadAction.prototype.meta;
+}
 class EntityFailAction {
     /**
      * @param {?} entityType
@@ -521,6 +607,12 @@ class EntityFailAction {
         this.type = ENTITY_FAIL_ACTION;
         this.meta = entityFailMeta(entityType, id, error);
     }
+}
+if (false) {
+    /** @type {?} */
+    EntityFailAction.prototype.type;
+    /** @type {?} */
+    EntityFailAction.prototype.meta;
 }
 class EntitySuccessAction {
     /**
@@ -534,6 +626,14 @@ class EntitySuccessAction {
         this.meta = entitySuccessMeta(entityType, id);
     }
 }
+if (false) {
+    /** @type {?} */
+    EntitySuccessAction.prototype.type;
+    /** @type {?} */
+    EntitySuccessAction.prototype.meta;
+    /** @type {?} */
+    EntitySuccessAction.prototype.payload;
+}
 class EntityResetAction {
     /**
      * @param {?} entityType
@@ -543,6 +643,12 @@ class EntityResetAction {
         this.type = ENTITY_RESET_ACTION;
         this.meta = entityResetMeta(entityType, id);
     }
+}
+if (false) {
+    /** @type {?} */
+    EntityResetAction.prototype.type;
+    /** @type {?} */
+    EntityResetAction.prototype.meta;
 }
 
 var entityLoader_action = /*#__PURE__*/Object.freeze({
@@ -564,12 +670,12 @@ var entityLoader_action = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialLoaderState = {
@@ -629,7 +735,7 @@ function loaderReducer(loadActionType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -695,17 +801,17 @@ var entityLoader_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialEntityState = { entities: {} };
@@ -788,7 +894,7 @@ function entityReducer(entityType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Higher order reducer that wraps LoaderReducer and EntityReducer enhancing
@@ -804,17 +910,17 @@ function entityLoaderReducer(entityType, reducer) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -832,22 +938,31 @@ var entity_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ * @template T
+ */
+function EntityState() { }
+if (false) {
+    /** @type {?} */
+    EntityState.prototype.entities;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const OBJECT_SEPARATOR = '.';
@@ -982,12 +1097,12 @@ function filterKeysByType(keys, type) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -1031,17 +1146,32 @@ var loader_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ * @template T
+ */
+function LoaderState() { }
+if (false) {
+    /** @type {?|undefined} */
+    LoaderState.prototype.loading;
+    /** @type {?|undefined} */
+    LoaderState.prototype.error;
+    /** @type {?|undefined} */
+    LoaderState.prototype.success;
+    /** @type {?|undefined} */
+    LoaderState.prototype.value;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} entityType
@@ -1089,26 +1219,52 @@ function ofLoaderSuccess(entityType) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const AUTH_FEATURE = 'auth';
 /** @type {?} */
 const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+/**
+ * @record
+ */
+function StateWithAuth() { }
+if (false) {
+    /* Skipping unnamed member:
+    [AUTH_FEATURE]: AuthState;*/
+}
+/**
+ * @record
+ */
+function AuthState() { }
+if (false) {
+    /** @type {?} */
+    AuthState.prototype.userToken;
+    /** @type {?} */
+    AuthState.prototype.clientToken;
+}
+/**
+ * @record
+ */
+function UserTokenState() { }
+if (false) {
+    /** @type {?} */
+    UserTokenState.prototype.token;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CLIENT_TOKEN = '[Token] Load Client Token';
@@ -1122,6 +1278,10 @@ class LoadClientToken extends LoaderLoadAction {
         this.type = LOAD_CLIENT_TOKEN;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadClientToken.prototype.type;
+}
 class LoadClientTokenFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -1131,6 +1291,12 @@ class LoadClientTokenFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_CLIENT_TOKEN_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadClientTokenFail.prototype.type;
+    /** @type {?} */
+    LoadClientTokenFail.prototype.payload;
 }
 class LoadClientTokenSuccess extends LoaderSuccessAction {
     /**
@@ -1142,10 +1308,16 @@ class LoadClientTokenSuccess extends LoaderSuccessAction {
         this.type = LOAD_CLIENT_TOKEN_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadClientTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadClientTokenSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOGIN = '[Auth] Login';
@@ -1156,15 +1328,23 @@ class Login {
         this.type = LOGIN;
     }
 }
+if (false) {
+    /** @type {?} */
+    Login.prototype.type;
+}
 class Logout {
     constructor() {
         this.type = LOGOUT;
     }
 }
+if (false) {
+    /** @type {?} */
+    Logout.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_TOKEN = '[Auth] Load User Token';
@@ -1187,6 +1367,12 @@ class LoadUserToken {
         this.type = LOAD_USER_TOKEN;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserToken.prototype.type;
+    /** @type {?} */
+    LoadUserToken.prototype.payload;
+}
 class LoadUserTokenFail {
     /**
      * @param {?} payload
@@ -1195,6 +1381,12 @@ class LoadUserTokenFail {
         this.payload = payload;
         this.type = LOAD_USER_TOKEN_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserTokenFail.prototype.type;
+    /** @type {?} */
+    LoadUserTokenFail.prototype.payload;
 }
 class LoadUserTokenSuccess {
     /**
@@ -1205,6 +1397,12 @@ class LoadUserTokenSuccess {
         this.type = LOAD_USER_TOKEN_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserTokenSuccess.prototype.payload;
+}
 class RefreshUserToken {
     /**
      * @param {?} payload
@@ -1213,6 +1411,12 @@ class RefreshUserToken {
         this.payload = payload;
         this.type = REFRESH_USER_TOKEN;
     }
+}
+if (false) {
+    /** @type {?} */
+    RefreshUserToken.prototype.type;
+    /** @type {?} */
+    RefreshUserToken.prototype.payload;
 }
 class RefreshUserTokenSuccess {
     /**
@@ -1223,6 +1427,12 @@ class RefreshUserTokenSuccess {
         this.type = REFRESH_USER_TOKEN_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    RefreshUserTokenSuccess.prototype.type;
+    /** @type {?} */
+    RefreshUserTokenSuccess.prototype.payload;
+}
 class RefreshUserTokenFail {
     /**
      * @param {?} payload
@@ -1232,10 +1442,16 @@ class RefreshUserTokenFail {
         this.type = REFRESH_USER_TOKEN_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    RefreshUserTokenFail.prototype.type;
+    /** @type {?} */
+    RefreshUserTokenFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var authGroup_actions = /*#__PURE__*/Object.freeze({
@@ -1265,19 +1481,19 @@ var authGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getAuthState = createFeatureSelector(AUTH_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 const ɵ0 = /**
  * @param {?} state
@@ -1289,7 +1505,7 @@ const getClientTokenState = createSelector(getAuthState, (ɵ0));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getUserTokenSelector = (/**
@@ -1297,6 +1513,7 @@ const getUserTokenSelector = (/**
  * @return {?}
  */
 (state) => state.token);
+const ɵ0$1 = getUserTokenSelector;
 const ɵ1 = /**
  * @param {?} state
  * @return {?}
@@ -1309,7 +1526,7 @@ const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var authGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -1321,12 +1538,12 @@ var authGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class AuthService {
     /**
@@ -1441,10 +1658,17 @@ AuthService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ AuthService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthService_Factory() { return new AuthService(ɵɵinject(Store)); }, token: AuthService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ClientErrorHandlingService {
     /**
@@ -1489,10 +1713,17 @@ ClientErrorHandlingService.decorators = [
 ClientErrorHandlingService.ctorParameters = () => [
     { type: AuthService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientErrorHandlingService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class WindowRef {
     /**
@@ -1547,10 +1778,14 @@ WindowRef.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
 /** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    WindowRef.prototype.document;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UrlParsingService {
     /**
@@ -1595,10 +1830,17 @@ UrlParsingService.ctorParameters = () => [
     { type: Router }
 ];
 /** @nocollapse */ UrlParsingService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlParsingService_Factory() { return new UrlParsingService(ɵɵinject(Router)); }, token: UrlParsingService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UrlParsingService.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const isParam = (/**
@@ -1612,20 +1854,37 @@ const getParamName = (/**
  * @return {?}
  */
 (segment) => segment.slice(1));
+// it just removes leading ':'
+/** @type {?} */
+const ensureLeadingSlash = (/**
+ * @param {?} path
+ * @return {?}
+ */
+(path) => path.startsWith('/') ? path : '/' + path);
+/** @type {?} */
+const removeLeadingSlash = (/**
+ * @param {?} path
+ * @return {?}
+ */
+(path) => path.startsWith('/') ? path.slice(1) : path);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class RoutingConfig {
 }
+if (false) {
+    /** @type {?} */
+    RoutingConfig.prototype.routing;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class RoutingConfigService {
     /**
@@ -1667,10 +1926,17 @@ RoutingConfigService.ctorParameters = () => [
     { type: RoutingConfig }
 ];
 /** @nocollapse */ RoutingConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function RoutingConfigService_Factory() { return new RoutingConfigService(ɵɵinject(RoutingConfig)); }, token: RoutingConfigService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingConfigService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SemanticPathService {
     /**
@@ -1874,10 +2140,24 @@ SemanticPathService.ctorParameters = () => [
     { type: UrlParsingService }
 ];
 /** @nocollapse */ SemanticPathService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SemanticPathService_Factory() { return new SemanticPathService(ɵɵinject(RoutingConfigService), ɵɵinject(UrlParsingService)); }, token: SemanticPathService, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    SemanticPathService.prototype.ROOT_URL;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SemanticPathService.prototype.routingConfigService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SemanticPathService.prototype.urlParser;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ROUTER_GO = '[Router] Go';
@@ -1896,6 +2176,12 @@ class RouteGoAction {
         this.type = ROUTER_GO;
     }
 }
+if (false) {
+    /** @type {?} */
+    RouteGoAction.prototype.type;
+    /** @type {?} */
+    RouteGoAction.prototype.payload;
+}
 class RouteGoByUrlAction {
     /**
      * @param {?} payload
@@ -1905,20 +2191,34 @@ class RouteGoByUrlAction {
         this.type = ROUTER_GO_BY_URL;
     }
 }
+if (false) {
+    /** @type {?} */
+    RouteGoByUrlAction.prototype.type;
+    /** @type {?} */
+    RouteGoByUrlAction.prototype.payload;
+}
 class RouteBackAction {
     constructor() {
         this.type = ROUTER_BACK;
     }
+}
+if (false) {
+    /** @type {?} */
+    RouteBackAction.prototype.type;
 }
 class RouteForwardAction {
     constructor() {
         this.type = ROUTER_FORWARD;
     }
 }
+if (false) {
+    /** @type {?} */
+    RouteForwardAction.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var routingGroup_actions = /*#__PURE__*/Object.freeze({
@@ -1934,29 +2234,61 @@ var routingGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ROUTING_FEATURE = 'router';
+/**
+ * @record
+ */
+function RouterState() { }
+if (false) {
+    /** @type {?|undefined} */
+    RouterState.prototype.nextState;
+}
+/**
+ * @record
+ */
+function ActivatedRouterStateSnapshot() { }
+if (false) {
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.url;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.queryParams;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.params;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.context;
+    /** @type {?} */
+    ActivatedRouterStateSnapshot.prototype.cmsRequired;
+}
+/**
+ * @record
+ */
+function State() { }
+if (false) {
+    /* Skipping unnamed member:
+    [ROUTING_FEATURE]: RouterState;*/
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$1 = /**
+const ɵ0$2 = /**
  * @param {?} state
  * @return {?}
  */
 state => state.router;
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (ɵ0$1));
+const getRouterState = createSelector(getRouterFeatureState, (ɵ0$2));
 const ɵ1$1 = /**
  * @param {?} routingState
  * @return {?}
@@ -1981,7 +2313,7 @@ const isNavigating = createSelector(getNextPageContext, (ɵ3));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var routingGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -1994,12 +2326,12 @@ var routingGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class RoutingService {
     /**
@@ -2109,10 +2441,27 @@ RoutingService.ctorParameters = () => [
     { type: SemanticPathService }
 ];
 /** @nocollapse */ RoutingService.ngInjectableDef = ɵɵdefineInjectable({ factory: function RoutingService_Factory() { return new RoutingService(ɵɵinject(Store), ɵɵinject(WindowRef), ɵɵinject(SemanticPathService)); }, token: RoutingService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    RoutingService.prototype.semanticPathService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserErrorHandlingService {
     /**
@@ -2196,10 +2545,22 @@ UserErrorHandlingService.ctorParameters = () => [
     { type: AuthService },
     { type: RoutingService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserErrorHandlingService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserErrorHandlingService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const USE_CLIENT_TOKEN = 'cx-use-client-token';
@@ -2246,7 +2607,7 @@ class InterceptorUtil {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
@@ -2348,10 +2709,27 @@ AuthErrorInterceptor.ctorParameters = () => [
     { type: ClientErrorHandlingService },
     { type: AuthService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.userErrorHandlingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.clientErrorHandlingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class DynamicTemplate {
     /**
@@ -2397,7 +2775,7 @@ class DynamicTemplate {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Helper function for safely getting context parameter config
@@ -2424,7 +2802,7 @@ function getContextParameterDefault(config, parameter) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_BASE_SITE = '[Site-context] Load BaseSite';
@@ -2441,6 +2819,10 @@ class LoadBaseSite {
         this.type = LOAD_BASE_SITE;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadBaseSite.prototype.type;
+}
 class LoadBaseSiteFail {
     /**
      * @param {?} payload
@@ -2449,6 +2831,12 @@ class LoadBaseSiteFail {
         this.payload = payload;
         this.type = LOAD_BASE_SITE_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadBaseSiteFail.prototype.type;
+    /** @type {?} */
+    LoadBaseSiteFail.prototype.payload;
 }
 class LoadBaseSiteSuccess {
     /**
@@ -2459,6 +2847,12 @@ class LoadBaseSiteSuccess {
         this.type = LOAD_BASE_SITE_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadBaseSiteSuccess.prototype.type;
+    /** @type {?} */
+    LoadBaseSiteSuccess.prototype.payload;
+}
 class SetActiveBaseSite {
     /**
      * @param {?} payload
@@ -2468,15 +2862,25 @@ class SetActiveBaseSite {
         this.type = SET_ACTIVE_BASE_SITE;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetActiveBaseSite.prototype.type;
+    /** @type {?} */
+    SetActiveBaseSite.prototype.payload;
+}
 class BaseSiteChange {
     constructor() {
         this.type = BASE_SITE_CHANGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    BaseSiteChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CURRENCIES = '[Site-context] Load Currencies';
@@ -2493,6 +2897,10 @@ class LoadCurrencies {
         this.type = LOAD_CURRENCIES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCurrencies.prototype.type;
+}
 class LoadCurrenciesFail {
     /**
      * @param {?} payload
@@ -2501,6 +2909,12 @@ class LoadCurrenciesFail {
         this.payload = payload;
         this.type = LOAD_CURRENCIES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCurrenciesFail.prototype.type;
+    /** @type {?} */
+    LoadCurrenciesFail.prototype.payload;
 }
 class LoadCurrenciesSuccess {
     /**
@@ -2511,6 +2925,12 @@ class LoadCurrenciesSuccess {
         this.type = LOAD_CURRENCIES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCurrenciesSuccess.prototype.type;
+    /** @type {?} */
+    LoadCurrenciesSuccess.prototype.payload;
+}
 class SetActiveCurrency {
     /**
      * @param {?} payload
@@ -2520,15 +2940,25 @@ class SetActiveCurrency {
         this.type = SET_ACTIVE_CURRENCY;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetActiveCurrency.prototype.type;
+    /** @type {?} */
+    SetActiveCurrency.prototype.payload;
+}
 class CurrencyChange {
     constructor() {
         this.type = CURRENCY_CHANGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    CurrencyChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_LANGUAGES = '[Site-context] Load Languages';
@@ -2545,6 +2975,10 @@ class LoadLanguages {
         this.type = LOAD_LANGUAGES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadLanguages.prototype.type;
+}
 class LoadLanguagesFail {
     /**
      * @param {?} payload
@@ -2553,6 +2987,12 @@ class LoadLanguagesFail {
         this.payload = payload;
         this.type = LOAD_LANGUAGES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadLanguagesFail.prototype.type;
+    /** @type {?} */
+    LoadLanguagesFail.prototype.payload;
 }
 class LoadLanguagesSuccess {
     /**
@@ -2563,6 +3003,12 @@ class LoadLanguagesSuccess {
         this.type = LOAD_LANGUAGES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadLanguagesSuccess.prototype.type;
+    /** @type {?} */
+    LoadLanguagesSuccess.prototype.payload;
+}
 class SetActiveLanguage {
     /**
      * @param {?} payload
@@ -2572,15 +3018,25 @@ class SetActiveLanguage {
         this.type = SET_ACTIVE_LANGUAGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetActiveLanguage.prototype.type;
+    /** @type {?} */
+    SetActiveLanguage.prototype.payload;
+}
 class LanguageChange {
     constructor() {
         this.type = LANGUAGE_CHANGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    LanguageChange.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
@@ -2618,34 +3074,92 @@ var siteContextGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const SITE_CONTEXT_FEATURE = 'siteContext';
+/**
+ * @record
+ */
+function StateWithSiteContext() { }
+if (false) {
+    /* Skipping unnamed member:
+    [SITE_CONTEXT_FEATURE]: SiteContextState;*/
+}
+/**
+ * @record
+ */
+function SiteContextState() { }
+if (false) {
+    /** @type {?} */
+    SiteContextState.prototype.languages;
+    /** @type {?} */
+    SiteContextState.prototype.currencies;
+    /** @type {?} */
+    SiteContextState.prototype.baseSite;
+}
+/**
+ * @record
+ */
+function CurrencyEntities() { }
+/**
+ * @record
+ */
+function CurrenciesState() { }
+if (false) {
+    /** @type {?} */
+    CurrenciesState.prototype.entities;
+    /** @type {?} */
+    CurrenciesState.prototype.activeCurrency;
+}
+/**
+ * @record
+ */
+function LanguagesEntities() { }
+/**
+ * @record
+ */
+function LanguagesState() { }
+if (false) {
+    /** @type {?} */
+    LanguagesState.prototype.entities;
+    /** @type {?} */
+    LanguagesState.prototype.activeLanguage;
+}
+/**
+ * @record
+ */
+function BaseSiteState() { }
+if (false) {
+    /** @type {?} */
+    BaseSiteState.prototype.activeSite;
+    /** @type {?} */
+    BaseSiteState.prototype.details;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$2 = /**
+const ɵ0$3 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.activeSite;
 /** @type {?} */
-const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$2));
+const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
 const ɵ1$2 = /**
  * @param {?} state
  * @return {?}
@@ -2656,7 +3170,7 @@ const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const currenciesEntitiesSelector = (/**
@@ -2664,12 +3178,14 @@ const currenciesEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.entities);
+const ɵ0$4 = currenciesEntitiesSelector;
 /** @type {?} */
 const activeCurrencySelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.activeCurrency);
+const ɵ1$3 = activeCurrencySelector;
 const ɵ2$1 = /**
  * @param {?} state
  * @return {?}
@@ -2699,7 +3215,7 @@ const getAllCurrencies = createSelector(getCurrenciesEntities, (ɵ3$1));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const activeLanguageSelector = (/**
@@ -2707,12 +3223,14 @@ const activeLanguageSelector = (/**
  * @return {?}
  */
 (state) => state.activeLanguage);
+const ɵ0$5 = activeLanguageSelector;
 /** @type {?} */
 const languagesEntitiesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities);
+const ɵ1$4 = languagesEntitiesSelector;
 const ɵ2$2 = /**
  * @param {?} state
  * @return {?}
@@ -2742,7 +3260,7 @@ const getAllLanguages = createSelector(getLanguagesEntities, (ɵ3$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -2761,12 +3279,12 @@ var siteContextGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LANGUAGE_CONTEXT_ID = 'language';
@@ -2777,7 +3295,7 @@ const BASE_SITE_CONTEXT_ID = 'baseSite';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class BaseSiteService {
     /**
@@ -2858,10 +3376,22 @@ BaseSiteService.ctorParameters = () => [
     { type: Store },
     { type: SiteContextConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    BaseSiteService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    BaseSiteService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccEndpointsService {
     /**
@@ -2984,10 +3514,27 @@ OccEndpointsService.ctorParameters = () => [
     { type: BaseSiteService, decorators: [{ type: Optional }] }
 ];
 /** @nocollapse */ OccEndpointsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function OccEndpointsService_Factory() { return new OccEndpointsService(ɵɵinject(OccConfig), ɵɵinject(BaseSiteService, 8)); }, token: OccEndpointsService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.activeBaseSite;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccEndpointsService.prototype.baseSiteService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ClientTokenInterceptor {
     /**
@@ -3040,10 +3587,22 @@ ClientTokenInterceptor.ctorParameters = () => [
     { type: AuthService },
     { type: OccEndpointsService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenInterceptor.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenInterceptor.prototype.occEndpoints;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserTokenInterceptor {
     /**
@@ -3094,10 +3653,22 @@ UserTokenInterceptor.ctorParameters = () => [
     { type: AuthService },
     { type: OccEndpointsService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenInterceptor.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenInterceptor.prototype.occEndpoints;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const interceptors = [
@@ -3120,7 +3691,7 @@ const interceptors = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ClientAuthenticationTokenService {
     /**
@@ -3160,10 +3731,27 @@ ClientAuthenticationTokenService.ctorParameters = () => [
     { type: HttpClient },
     { type: OccEndpointsService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ClientAuthenticationTokenService.prototype.occEndpointsService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserAuthenticationTokenService {
     /**
@@ -3238,10 +3826,27 @@ UserAuthenticationTokenService.ctorParameters = () => [
     { type: AuthConfig },
     { type: OccEndpointsService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAuthenticationTokenService.prototype.occEndpointsService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const AuthServices = [
@@ -3253,7 +3858,7 @@ const AuthServices = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {string} */
 const StorageSyncType = {
@@ -3270,10 +3875,14 @@ const StateTransferType = {
  */
 class StateConfig {
 }
+if (false) {
+    /** @type {?} */
+    StateConfig.prototype.state;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
@@ -3293,7 +3902,7 @@ const defaultStateConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -3369,6 +3978,46 @@ function rehydrate(config, winRef) {
     return deepMerge(localStorageValue, sessionStorageValue);
 }
 /**
+ * @param {?} value
+ * @return {?}
+ */
+function exists(value) {
+    if (value != null) {
+        if (typeof value === 'object') {
+            return Object.keys(value).length !== 0;
+        }
+        return value !== '';
+    }
+    return false;
+}
+/**
+ * @param {?} storageType
+ * @param {?} winRef
+ * @return {?}
+ */
+function getStorage(storageType, winRef) {
+    /** @type {?} */
+    let storage;
+    switch (storageType) {
+        case StorageSyncType.LOCAL_STORAGE: {
+            storage = winRef.localStorage;
+            break;
+        }
+        case StorageSyncType.SESSION_STORAGE: {
+            storage = winRef.sessionStorage;
+            break;
+        }
+        case StorageSyncType.NO_STORAGE: {
+            storage = undefined;
+            break;
+        }
+        default: {
+            storage = winRef.sessionStorage;
+        }
+    }
+    return storage;
+}
+/**
  * @param {?} configKey
  * @param {?} value
  * @param {?} storage
@@ -3405,7 +4054,7 @@ function isSsr(storage) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CX_KEY = makeStateKey('cx-state');
@@ -3508,14 +4157,14 @@ function getBrowserTransferStateReducer(transferState, keys) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$3 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
+const ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
 /** @type {?} */
 const stateMetaReducers = [
     {
         provide: META_REDUCERS,
-        useFactory: ɵ0$3,
+        useFactory: ɵ0$6,
         deps: [
             PLATFORM_ID,
             [new Optional(), TransferState],
@@ -3525,7 +4174,7 @@ const stateMetaReducers = [
     },
     {
         provide: META_REDUCERS,
-        useFactory: ɵ1$3,
+        useFactory: ɵ1$5,
         deps: [WindowRef, [new Optional(), Config]],
         multi: true,
     },
@@ -3533,7 +4182,7 @@ const stateMetaReducers = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StateModule {
     /**
@@ -3556,7 +4205,7 @@ StateModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const UNKNOWN_ERROR = {
@@ -3584,6 +4233,7 @@ const circularReplacer = (/**
         return value;
     });
 });
+const ɵ0$7 = circularReplacer;
 /**
  * @param {?} error
  * @return {?}
@@ -3615,7 +4265,7 @@ function makeErrorSerializable(error) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ClientTokenEffect {
     /**
@@ -3657,17 +4307,31 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
+if (false) {
+    /** @type {?} */
+    ClientTokenEffect.prototype.loadClientToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClientTokenEffect.prototype.clientAuthenticationTokenService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const USERID_CURRENT = 'current';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserTokenEffects {
     /**
@@ -3753,17 +4417,35 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
+if (false) {
+    /** @type {?} */
+    UserTokenEffects.prototype.loadUserToken$;
+    /** @type {?} */
+    UserTokenEffects.prototype.login$;
+    /** @type {?} */
+    UserTokenEffects.prototype.refreshUserToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserTokenEffects.prototype.userTokenService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects = [UserTokenEffects, ClientTokenEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState = (/** @type {?} */ ({}));
@@ -3792,7 +4474,7 @@ function reducer(state = initialState, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -3832,7 +4514,7 @@ const metaReducers = [clearAuthState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -3874,7 +4556,7 @@ AuthStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class AuthModule {
     /**
@@ -3904,7 +4586,7 @@ AuthModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class AuthRedirectService {
     /**
@@ -3993,10 +4675,37 @@ AuthRedirectService.ctorParameters = () => [
     { type: Router }
 ];
 /** @nocollapse */ AuthRedirectService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthRedirectService_Factory() { return new AuthRedirectService(ɵɵinject(RoutingService), ɵɵinject(Router)); }, token: AuthRedirectService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.redirectUrl;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.ignoredUrls;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.lastAuthGuardNavigation;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.routing;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthRedirectService.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class AuthGuard {
     /**
@@ -4041,10 +4750,32 @@ AuthGuard.ctorParameters = () => [
     { type: Router }
 ];
 /** @nocollapse */ AuthGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function AuthGuard_Factory() { return new AuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService), ɵɵinject(Router)); }, token: AuthGuard, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.authRedirectService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    AuthGuard.prototype.router;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class NotAuthGuard {
     /**
@@ -4087,25 +4818,76 @@ NotAuthGuard.ctorParameters = () => [
     { type: AuthRedirectService }
 ];
 /** @nocollapse */ NotAuthGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotAuthGuard_Factory() { return new NotAuthGuard(ɵɵinject(RoutingService), ɵɵinject(AuthService), ɵɵinject(AuthRedirectService)); }, token: NotAuthGuard, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    NotAuthGuard.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    NotAuthGuard.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    NotAuthGuard.prototype.authRedirectService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function UserToken() { }
+if (false) {
+    /** @type {?} */
+    UserToken.prototype.access_token;
+    /** @type {?} */
+    UserToken.prototype.token_type;
+    /** @type {?} */
+    UserToken.prototype.refresh_token;
+    /** @type {?} */
+    UserToken.prototype.expires_in;
+    /** @type {?} */
+    UserToken.prototype.scope;
+    /** @type {?} */
+    UserToken.prototype.userId;
+    /** @type {?|undefined} */
+    UserToken.prototype.expiration_time;
+}
+/**
+ * @record
+ */
+function ClientToken() { }
+if (false) {
+    /** @type {?} */
+    ClientToken.prototype.access_token;
+    /** @type {?} */
+    ClientToken.prototype.token_type;
+    /** @type {?} */
+    ClientToken.prototype.expires_in;
+    /** @type {?} */
+    ClientToken.prototype.scope;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -4127,19 +4909,60 @@ class PageMetaResolver {
         return score;
     }
 }
+if (false) {
+    /** @type {?} */
+    PageMetaResolver.prototype.pageType;
+    /** @type {?} */
+    PageMetaResolver.prototype.pageTemplate;
+    /**
+     * @abstract
+     * @return {?}
+     */
+    PageMetaResolver.prototype.resolve = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CART_FEATURE = 'cart';
 /** @type {?} */
 const CART_DATA = '[Cart] Cart Data';
+/**
+ * @record
+ */
+function StateWithCart() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CART_FEATURE]: CartsState;*/
+}
+/**
+ * @record
+ */
+function CartsState() { }
+if (false) {
+    /** @type {?} */
+    CartsState.prototype.active;
+}
+/**
+ * @record
+ */
+function CartState() { }
+if (false) {
+    /** @type {?} */
+    CartState.prototype.content;
+    /** @type {?} */
+    CartState.prototype.entries;
+    /** @type {?} */
+    CartState.prototype.refresh;
+    /** @type {?} */
+    CartState.prototype.cartMergeComplete;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getCartContentSelector = (/**
@@ -4147,24 +4970,28 @@ const getCartContentSelector = (/**
  * @return {?}
  */
 (state) => state.content);
+const ɵ0$8 = getCartContentSelector;
 /** @type {?} */
 const getCartRefreshSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.refresh);
+const ɵ1$6 = getCartRefreshSelector;
 /** @type {?} */
 const getCartEntriesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entries);
+const ɵ2$3 = getCartEntriesSelector;
 /** @type {?} */
 const getCartMergeCompleteSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cartMergeComplete);
+const ɵ3$3 = getCartMergeCompleteSelector;
 /** @type {?} */
 const getCartsState = createFeatureSelector(CART_FEATURE);
 const ɵ4 = /**
@@ -4240,7 +5067,7 @@ const getCartEntries = createSelector(getCartEntriesMap, (ɵ8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cartGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -4259,12 +5086,12 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ANONYMOUS_USERID = 'anonymous';
@@ -4339,10 +5166,32 @@ CartDataService.ctorParameters = () => [
     { type: Store },
     { type: AuthService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartDataService.prototype._userId;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartDataService.prototype._cart;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartDataService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartDataService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CART_ADD_ENTRY = '[Cart-entry] Add Entry';
@@ -4372,6 +5221,12 @@ class CartAddEntry extends LoaderLoadAction {
         this.type = CART_ADD_ENTRY;
     }
 }
+if (false) {
+    /** @type {?} */
+    CartAddEntry.prototype.type;
+    /** @type {?} */
+    CartAddEntry.prototype.payload;
+}
 class CartAddEntrySuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -4381,6 +5236,12 @@ class CartAddEntrySuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = CART_ADD_ENTRY_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    CartAddEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartAddEntrySuccess.prototype.payload;
 }
 class CartAddEntryFail extends LoaderFailAction {
     /**
@@ -4392,6 +5253,12 @@ class CartAddEntryFail extends LoaderFailAction {
         this.type = CART_ADD_ENTRY_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    CartAddEntryFail.prototype.type;
+    /** @type {?} */
+    CartAddEntryFail.prototype.payload;
+}
 class CartRemoveEntry extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -4401,6 +5268,12 @@ class CartRemoveEntry extends LoaderLoadAction {
         this.payload = payload;
         this.type = CART_REMOVE_ENTRY;
     }
+}
+if (false) {
+    /** @type {?} */
+    CartRemoveEntry.prototype.type;
+    /** @type {?} */
+    CartRemoveEntry.prototype.payload;
 }
 class CartRemoveEntrySuccess extends LoaderSuccessAction {
     /**
@@ -4412,6 +5285,12 @@ class CartRemoveEntrySuccess extends LoaderSuccessAction {
         this.type = CART_REMOVE_ENTRY_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    CartRemoveEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartRemoveEntrySuccess.prototype.payload;
+}
 class CartRemoveEntryFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -4421,6 +5300,12 @@ class CartRemoveEntryFail extends LoaderFailAction {
         this.payload = payload;
         this.type = CART_REMOVE_ENTRY_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    CartRemoveEntryFail.prototype.type;
+    /** @type {?} */
+    CartRemoveEntryFail.prototype.payload;
 }
 class CartUpdateEntry extends LoaderLoadAction {
     /**
@@ -4432,6 +5317,12 @@ class CartUpdateEntry extends LoaderLoadAction {
         this.type = CART_UPDATE_ENTRY;
     }
 }
+if (false) {
+    /** @type {?} */
+    CartUpdateEntry.prototype.type;
+    /** @type {?} */
+    CartUpdateEntry.prototype.payload;
+}
 class CartUpdateEntrySuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -4441,6 +5332,12 @@ class CartUpdateEntrySuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = CART_UPDATE_ENTRY_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    CartUpdateEntrySuccess.prototype.type;
+    /** @type {?} */
+    CartUpdateEntrySuccess.prototype.payload;
 }
 class CartUpdateEntryFail extends LoaderFailAction {
     /**
@@ -4452,10 +5349,16 @@ class CartUpdateEntryFail extends LoaderFailAction {
         this.type = CART_UPDATE_ENTRY_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    CartUpdateEntryFail.prototype.type;
+    /** @type {?} */
+    CartUpdateEntryFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CREATE_CART = '[Cart] Create Cart';
@@ -4487,6 +5390,12 @@ class CreateCart extends LoaderLoadAction {
         this.type = CREATE_CART;
     }
 }
+if (false) {
+    /** @type {?} */
+    CreateCart.prototype.type;
+    /** @type {?} */
+    CreateCart.prototype.payload;
+}
 class CreateCartFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -4496,6 +5405,12 @@ class CreateCartFail extends LoaderFailAction {
         this.payload = payload;
         this.type = CREATE_CART_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    CreateCartFail.prototype.type;
+    /** @type {?} */
+    CreateCartFail.prototype.payload;
 }
 class CreateCartSuccess extends LoaderSuccessAction {
     /**
@@ -4507,6 +5422,12 @@ class CreateCartSuccess extends LoaderSuccessAction {
         this.type = CREATE_CART_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    CreateCartSuccess.prototype.type;
+    /** @type {?} */
+    CreateCartSuccess.prototype.payload;
+}
 class LoadCart extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -4516,6 +5437,12 @@ class LoadCart extends LoaderLoadAction {
         this.payload = payload;
         this.type = LOAD_CART;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCart.prototype.type;
+    /** @type {?} */
+    LoadCart.prototype.payload;
 }
 class LoadCartFail extends LoaderFailAction {
     /**
@@ -4527,6 +5454,12 @@ class LoadCartFail extends LoaderFailAction {
         this.type = LOAD_CART_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCartFail.prototype.type;
+    /** @type {?} */
+    LoadCartFail.prototype.payload;
+}
 class LoadCartSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -4537,6 +5470,12 @@ class LoadCartSuccess extends LoaderSuccessAction {
         this.type = LOAD_CART_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCartSuccess.prototype.type;
+    /** @type {?} */
+    LoadCartSuccess.prototype.payload;
+}
 class MergeCart {
     /**
      * @param {?} payload
@@ -4545,6 +5484,12 @@ class MergeCart {
         this.payload = payload;
         this.type = MERGE_CART;
     }
+}
+if (false) {
+    /** @type {?} */
+    MergeCart.prototype.type;
+    /** @type {?} */
+    MergeCart.prototype.payload;
 }
 class MergeCartSuccess {
     /**
@@ -4555,10 +5500,20 @@ class MergeCartSuccess {
         this.type = MERGE_CART_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    MergeCartSuccess.prototype.type;
+    /** @type {?} */
+    MergeCartSuccess.prototype.payload;
+}
 class ResetCartDetails {
     constructor() {
         this.type = RESET_CART_DETAILS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetCartDetails.prototype.type;
 }
 class ClearCart extends LoaderResetAction {
     constructor() {
@@ -4566,10 +5521,14 @@ class ClearCart extends LoaderResetAction {
         this.type = CLEAR_CART;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCart.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cartGroup_actions = /*#__PURE__*/Object.freeze({
@@ -4615,12 +5574,12 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartService {
     /**
@@ -4856,15 +5815,47 @@ CartService.ctorParameters = () => [
     { type: CartDataService },
     { type: AuthService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.previousUserId;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype._activeCart$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.cartData;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.authService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CMS_FEATURE = 'cms';
@@ -4872,10 +5863,44 @@ const CMS_FEATURE = 'cms';
 const NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
 /** @type {?} */
 const COMPONENT_ENTITY = '[Cms[ Component Entity';
+/**
+ * @record
+ */
+function StateWithCms() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CMS_FEATURE]: CmsState;*/
+}
+/**
+ * @record
+ */
+function NavigationNodes() { }
+/**
+ * @record
+ */
+function PageState() { }
+if (false) {
+    /** @type {?} */
+    PageState.prototype.pageData;
+    /** @type {?} */
+    PageState.prototype.index;
+}
+/**
+ * @record
+ */
+function CmsState() { }
+if (false) {
+    /** @type {?} */
+    CmsState.prototype.page;
+    /** @type {?} */
+    CmsState.prototype.component;
+    /** @type {?} */
+    CmsState.prototype.navigation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CMS_COMPONENT = '[Cms] Load Component';
@@ -4895,6 +5920,12 @@ class LoadCmsComponent extends EntityLoadAction {
         this.type = LOAD_CMS_COMPONENT;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsComponent.prototype.type;
+    /** @type {?} */
+    LoadCmsComponent.prototype.payload;
+}
 class LoadCmsComponentFail extends EntityFailAction {
     /**
      * @param {?} uid
@@ -4905,6 +5936,12 @@ class LoadCmsComponentFail extends EntityFailAction {
         this.payload = payload;
         this.type = LOAD_CMS_COMPONENT_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.payload;
 }
 /**
  * @template T
@@ -4919,6 +5956,12 @@ class LoadCmsComponentSuccess extends EntitySuccessAction {
         this.payload = payload;
         this.type = LOAD_CMS_COMPONENT_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.payload;
 }
 /**
  * @template T
@@ -4937,10 +5980,16 @@ class CmsGetComponentFromPage extends EntitySuccessAction {
         this.type = CMS_GET_COMPONENET_FROM_PAGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.type;
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
@@ -4958,6 +6007,12 @@ class LoadCmsNavigationItems extends EntityLoadAction {
         this.type = LOAD_CMS_NAVIGATION_ITEMS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.payload;
+}
 class LoadCmsNavigationItemsFail extends EntityFailAction {
     /**
      * @param {?} nodeId
@@ -4969,6 +6024,12 @@ class LoadCmsNavigationItemsFail extends EntityFailAction {
         this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.payload;
+}
 class LoadCmsNavigationItemsSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
@@ -4979,10 +6040,16 @@ class LoadCmsNavigationItemsSuccess extends EntitySuccessAction {
         this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
@@ -5004,6 +6071,12 @@ class LoadCmsPageData extends EntityLoadAction {
         this.type = LOAD_CMS_PAGE_DATA;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsPageData.prototype.type;
+    /** @type {?} */
+    LoadCmsPageData.prototype.payload;
+}
 class LoadCmsPageDataFail extends EntityFailAction {
     /**
      * @param {?} pageContext
@@ -5013,6 +6086,10 @@ class LoadCmsPageDataFail extends EntityFailAction {
         super(pageContext.type, pageContext.id, error);
         this.type = LOAD_CMS_PAGE_DATA_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataFail.prototype.type;
 }
 class LoadCmsPageDataSuccess extends EntitySuccessAction {
     /**
@@ -5024,6 +6101,10 @@ class LoadCmsPageDataSuccess extends EntitySuccessAction {
         this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataSuccess.prototype.type;
+}
 class CmsSetPageSuccessIndex extends EntitySuccessAction {
     /**
      * @param {?} pageContext
@@ -5033,6 +6114,10 @@ class CmsSetPageSuccessIndex extends EntitySuccessAction {
         super(pageContext.type, pageContext.id, payload);
         this.type = CMS_SET_PAGE_SUCCESS_INDEX;
     }
+}
+if (false) {
+    /** @type {?} */
+    CmsSetPageSuccessIndex.prototype.type;
 }
 class CmsSetPageFailIndex extends EntityFailAction {
     /**
@@ -5045,10 +6130,16 @@ class CmsSetPageFailIndex extends EntityFailAction {
         this.type = CMS_SET_PAGE_FAIL_INDEX;
     }
 }
+if (false) {
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.type;
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cmsGroup_actions = /*#__PURE__*/Object.freeze({
@@ -5080,19 +6171,19 @@ var cmsGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getCmsState = createFeatureSelector(CMS_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getComponentEntitiesSelector = (/**
@@ -5108,13 +6199,14 @@ const getComponentEntitiesSelector = (/**
     acc[cur] = state.entities[cur].value;
     return acc;
 }), {}));
-const ɵ1$4 = /**
+const ɵ0$9 = getComponentEntitiesSelector;
+const ɵ1$7 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.component;
 /** @type {?} */
-const getComponentState = createSelector(getCmsState, (ɵ1$4));
+const getComponentState = createSelector(getCmsState, (ɵ1$7));
 /** @type {?} */
 const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
 /** @type {?} */
@@ -5159,15 +6251,15 @@ const componentSelectorFactory = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$4 = /**
+const ɵ0$a = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.navigation;
 /** @type {?} */
-const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$4));
+const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$a));
 /** @type {?} */
 const getSelectedNavigationEntryItemState = (/**
  * @param {?} nodeId
@@ -5195,8 +6287,24 @@ const getNavigationEntryItems = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function CmsComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsComponent.prototype.modifiedTime;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.name;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.otherProperties;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.typeCode;
+    /** @type {?|undefined} */
+    CmsComponent.prototype.uid;
+}
 /** @enum {string} */
 const PageType = {
     CONTENT_PAGE: 'ContentPage',
@@ -5204,6 +6312,124 @@ const PageType = {
     CATEGORY_PAGE: 'CategoryPage',
     CATALOG_PAGE: 'CatalogPage',
 };
+/**
+ * @record
+ */
+function CmsLinkComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.url;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.external;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.contentPage;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.contentPageLabelOrId;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.linkName;
+    /** @type {?|undefined} */
+    CmsLinkComponent.prototype.target;
+}
+/**
+ * @record
+ */
+function CmsSiteContextSelectorComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsSiteContextSelectorComponent.prototype.context;
+}
+/**
+ * @record
+ */
+function CmsSearchBoxComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.maxSuggestions;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.maxProducts;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displaySuggestions;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displayProducts;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.displayProductImages;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.waitTimeBeforeRequest;
+    /** @type {?|undefined} */
+    CmsSearchBoxComponent.prototype.minCharactersBeforeRequest;
+}
+/**
+ * @record
+ */
+function CmsParagraphComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.content;
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsParagraphComponent.prototype.title;
+}
+/**
+ * @record
+ */
+function CMSTabParagraphContainer() { }
+if (false) {
+    /** @type {?|undefined} */
+    CMSTabParagraphContainer.prototype.container;
+    /** @type {?|undefined} */
+    CMSTabParagraphContainer.prototype.components;
+}
+/**
+ * @record
+ */
+function CmsBannerComponentMedia() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.altText;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.code;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.mime;
+    /** @type {?|undefined} */
+    CmsBannerComponentMedia.prototype.url;
+}
+/**
+ * @record
+ */
+function CmsResponsiveBannerComponentMedia() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.desktop;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.mobile;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.tablet;
+    /** @type {?|undefined} */
+    CmsResponsiveBannerComponentMedia.prototype.widescreen;
+}
+/**
+ * @record
+ */
+function CmsBannerComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.headline;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.content;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.media;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.urlLink;
+    /** @type {?|undefined} */
+    CmsBannerComponent.prototype.external;
+}
 /** @enum {string} */
 const CmsBannerCarouselEffect = {
     FADE: 'FADE',
@@ -5211,10 +6437,136 @@ const CmsBannerCarouselEffect = {
     CURTAIN: 'CURTAINX',
     TURNDOWN: 'TURNDOWN',
 };
+/**
+ * @record
+ */
+function CmsBannerCarouselComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBannerCarouselComponent.prototype.banners;
+    /** @type {?|undefined} */
+    CmsBannerCarouselComponent.prototype.effect;
+}
+/**
+ * @record
+ */
+function CmsProductCarouselComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.productCodes;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.popup;
+    /** @type {?|undefined} */
+    CmsProductCarouselComponent.prototype.scroll;
+}
+/**
+ * @record
+ */
+function CmsProductReferencesComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.displayProductTitles;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.displayProductPrices;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.maximumNumberProducts;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.productReferenceTypes;
+    /** @type {?|undefined} */
+    CmsProductReferencesComponent.prototype.container;
+}
+/**
+ * @record
+ */
+function CmsMiniCartComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.shownProductCount;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.title;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.totalDisplay;
+    /** @type {?|undefined} */
+    CmsMiniCartComponent.prototype.lightboxBannerComponent;
+}
+/**
+ * @record
+ */
+function CmsBreadcrumbsComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsBreadcrumbsComponent.prototype.container;
+}
+/**
+ * @record
+ */
+function CmsNavigationNode() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.uid;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.title;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.children;
+    /** @type {?|undefined} */
+    CmsNavigationNode.prototype.entries;
+}
+/**
+ * @record
+ */
+function CmsNavigationEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemId;
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemSuperType;
+    /** @type {?|undefined} */
+    CmsNavigationEntry.prototype.itemType;
+}
+/**
+ * @record
+ */
+function CmsNavigationComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.styleClass;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.wrapAfter;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.notice;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.showLanguageCurrency;
+    /** @type {?|undefined} */
+    CmsNavigationComponent.prototype.navigationNode;
+}
+/**
+ * @record
+ */
+function CmsProductFacetNavigationComponent() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.container;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.activeFacetValueCode;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.searchResult;
+    /** @type {?|undefined} */
+    CmsProductFacetNavigationComponent.prototype.minPerFacet;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getPageEntitiesSelector = (/**
@@ -5222,6 +6574,7 @@ const getPageEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.pageData.entities);
+const ɵ0$b = getPageEntitiesSelector;
 /** @type {?} */
 const getIndexByType = (/**
  * @param {?} index
@@ -5245,6 +6598,7 @@ const getIndexByType = (/**
     }
     return { entities: {} };
 });
+const ɵ1$8 = getIndexByType;
 /** @type {?} */
 const getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -5262,13 +6616,14 @@ const getPageComponentTypesSelector = (/**
     }
     return Array.from(componentTypes);
 });
-const ɵ3$3 = /**
+const ɵ2$4 = getPageComponentTypesSelector;
+const ɵ3$4 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.page;
 /** @type {?} */
-const getPageState = createSelector(getCmsState, (ɵ3$3));
+const getPageState = createSelector(getCmsState, (ɵ3$4));
 const ɵ4$1 = /**
  * @param {?} page
  * @return {?}
@@ -5349,7 +6704,7 @@ const getCurrentSlotSelectorFactory = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -5374,12 +6729,12 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsService {
     /**
@@ -5612,11 +6967,109 @@ CmsService.ctorParameters = () => [
     { type: RoutingService }
 ];
 /** @nocollapse */ CmsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype._launchInSmartEdit;
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype.components;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Page() { }
+if (false) {
+    /** @type {?|undefined} */
+    Page.prototype.pageId;
+    /** @type {?|undefined} */
+    Page.prototype.name;
+    /** @type {?|undefined} */
+    Page.prototype.type;
+    /** @type {?|undefined} */
+    Page.prototype.title;
+    /** @type {?|undefined} */
+    Page.prototype.template;
+    /** @type {?|undefined} */
+    Page.prototype.loadTime;
+    /** @type {?} */
+    Page.prototype.slots;
+    /** @type {?|undefined} */
+    Page.prototype.properties;
+    /** @type {?|undefined} */
+    Page.prototype.label;
+}
+/**
+ * Represents the cms structure for pages, slots and components.
+ * @record
+ */
+function CmsStructureModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.page;
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.components;
+}
+/**
+ * Represents the page meta data that can be used
+ * to resolve page data and seo related data.
+ * @record
+ */
+function PageMeta() { }
+if (false) {
+    /**
+     * the page title is used for the page title tag which
+     * is visible in the browser navigation as well as in the
+     * Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.title;
+    /**
+     * the page heading is typically used in the UI
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.heading;
+    /**
+     * the page description is used in the Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.description;
+    /**
+     * the robots information drives search engines to index the page and
+     * follow links in the page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.robots;
+    /**
+     * image that can be added to the og:image metatag
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.image;
+    /**
+     * the list of breadcrumbs that can be rendered in the page UI.
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.breadcrumbs;
+}
 /** @enum {string} */
 const PageRobotsMeta = {
     INDEX: 'INDEX',
@@ -5627,7 +7080,7 @@ const PageRobotsMeta = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartPageMetaResolver extends PageMetaResolver {
     /**
@@ -5681,20 +7134,56 @@ CartPageMetaResolver.ctorParameters = () => [
     { type: CmsService }
 ];
 /** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartPageMetaResolver.prototype.cms;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CartAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load all carts
+     *
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    CartAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * Abstract method used to load cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CartAdapter.prototype.load = function (userId, cartId) { };
+    /**
+     * Abstract method used to create cart. If toMergeCartGuid is specified, cart will be merged with existing one
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?=} oldCartId
+     * @param {?=} toMergeCartGuid
+     * @return {?}
+     */
+    CartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartConnector {
     /**
@@ -5738,10 +7227,17 @@ CartConnector.ctorParameters = () => [
     { type: CartAdapter }
 ];
 /** @nocollapse */ CartConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartConnector_Factory() { return new CartConnector(ɵɵinject(CartAdapter)); }, token: CartConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartEffects {
     /**
@@ -5905,20 +7401,81 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+if (false) {
+    /** @type {?} */
+    CartEffects.prototype.loadCart$;
+    /** @type {?} */
+    CartEffects.prototype.createCart$;
+    /** @type {?} */
+    CartEffects.prototype.mergeCart$;
+    /** @type {?} */
+    CartEffects.prototype.refresh$;
+    /** @type {?} */
+    CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CartEntryAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to add entry to cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?=} quantity
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) { };
+    /**
+     * Abstract method used to update entry in cart
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} qty
+     * @param {?=} pickupStore
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) { };
+    /**
+     * Abstract method used to remove entry from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartEntryConnector {
     /**
@@ -5968,10 +7525,17 @@ CartEntryConnector.ctorParameters = () => [
     { type: CartEntryAdapter }
 ];
 /** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartEntryConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartEntryEffects {
     /**
@@ -6068,17 +7632,35 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CartEntryEffects.prototype, "updateEntry$", void 0);
+if (false) {
+    /** @type {?} */
+    CartEntryEffects.prototype.addEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.removeEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.updateEntry$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.cartEntryConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$1 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const VERIFY_ADDRESS = '[Checkout] Verify Address';
@@ -6097,6 +7679,12 @@ class VerifyAddress {
         this.type = VERIFY_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    VerifyAddress.prototype.type;
+    /** @type {?} */
+    VerifyAddress.prototype.payload;
+}
 class VerifyAddressFail {
     /**
      * @param {?} payload
@@ -6105,6 +7693,12 @@ class VerifyAddressFail {
         this.payload = payload;
         this.type = VERIFY_ADDRESS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    VerifyAddressFail.prototype.type;
+    /** @type {?} */
+    VerifyAddressFail.prototype.payload;
 }
 class VerifyAddressSuccess {
     /**
@@ -6115,15 +7709,25 @@ class VerifyAddressSuccess {
         this.type = VERIFY_ADDRESS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    VerifyAddressSuccess.prototype.type;
+    /** @type {?} */
+    VerifyAddressSuccess.prototype.payload;
+}
 class ClearAddressVerificationResults {
     constructor() {
         this.type = CLEAR_ADDRESS_VERIFICATION_RESULTS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearAddressVerificationResults.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CARD_TYPES = '[Checkout] Load Card Types';
@@ -6136,6 +7740,10 @@ class LoadCardTypes {
         this.type = LOAD_CARD_TYPES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCardTypes.prototype.type;
+}
 class LoadCardTypesFail {
     /**
      * @param {?} payload
@@ -6144,6 +7752,12 @@ class LoadCardTypesFail {
         this.payload = payload;
         this.type = LOAD_CARD_TYPES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCardTypesFail.prototype.type;
+    /** @type {?} */
+    LoadCardTypesFail.prototype.payload;
 }
 class LoadCardTypesSuccess {
     /**
@@ -6154,17 +7768,32 @@ class LoadCardTypesSuccess {
         this.type = LOAD_CARD_TYPES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCardTypesSuccess.prototype.type;
+    /** @type {?} */
+    LoadCardTypesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PROCESS_FEATURE = 'process';
+/**
+ * @record
+ * @template T
+ */
+function StateWithProcess() { }
+if (false) {
+    /* Skipping unnamed member:
+    [PROCESS_FEATURE]: EntityLoaderState<T>;*/
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CHECKOUT_FEATURE = 'checkout';
@@ -6178,10 +7807,60 @@ const SET_DELIVERY_MODE_PROCESS_ID = 'setDeliveryMode';
 const SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID = 'setSupportedDeliveryMode';
 /** @type {?} */
 const SET_PAYMENT_DETAILS_PROCESS_ID = 'setPaymentDetails';
+/**
+ * @record
+ */
+function StateWithCheckout() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CHECKOUT_FEATURE]: CheckoutState;*/
+}
+/**
+ * @record
+ */
+function AddressVerificationState() { }
+if (false) {
+    /** @type {?} */
+    AddressVerificationState.prototype.results;
+}
+/**
+ * @record
+ */
+function CardTypesState() { }
+if (false) {
+    /** @type {?} */
+    CardTypesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function CheckoutStepsState() { }
+if (false) {
+    /** @type {?} */
+    CheckoutStepsState.prototype.address;
+    /** @type {?} */
+    CheckoutStepsState.prototype.deliveryMode;
+    /** @type {?} */
+    CheckoutStepsState.prototype.paymentDetails;
+    /** @type {?} */
+    CheckoutStepsState.prototype.orderDetails;
+}
+/**
+ * @record
+ */
+function CheckoutState() { }
+if (false) {
+    /** @type {?} */
+    CheckoutState.prototype.steps;
+    /** @type {?} */
+    CheckoutState.prototype.cardTypes;
+    /** @type {?} */
+    CheckoutState.prototype.addressVerification;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CLEAR_CHECKOUT_DELIVERY_ADDRESS = '[Checkout] Clear Checkout Delivery Address';
@@ -6274,6 +7953,12 @@ class AddDeliveryAddress {
         this.type = ADD_DELIVERY_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddress.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddress.prototype.payload;
+}
 class AddDeliveryAddressFail {
     /**
      * @param {?} payload
@@ -6283,6 +7968,12 @@ class AddDeliveryAddressFail {
         this.type = ADD_DELIVERY_ADDRESS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddressFail.prototype.payload;
+}
 class AddDeliveryAddressSuccess {
     /**
      * @param {?} payload
@@ -6291,6 +7982,12 @@ class AddDeliveryAddressSuccess {
         this.payload = payload;
         this.type = ADD_DELIVERY_ADDRESS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    AddDeliveryAddressSuccess.prototype.type;
+    /** @type {?} */
+    AddDeliveryAddressSuccess.prototype.payload;
 }
 class SetDeliveryAddress extends EntityLoadAction {
     /**
@@ -6302,6 +7999,12 @@ class SetDeliveryAddress extends EntityLoadAction {
         this.type = SET_DELIVERY_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddress.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddress.prototype.payload;
+}
 class SetDeliveryAddressFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -6311,6 +8014,12 @@ class SetDeliveryAddressFail extends EntityFailAction {
         this.payload = payload;
         this.type = SET_DELIVERY_ADDRESS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddressFail.prototype.payload;
 }
 class SetDeliveryAddressSuccess extends EntitySuccessAction {
     /**
@@ -6322,11 +8031,21 @@ class SetDeliveryAddressSuccess extends EntitySuccessAction {
         this.type = SET_DELIVERY_ADDRESS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetDeliveryAddressSuccess.prototype.type;
+    /** @type {?} */
+    SetDeliveryAddressSuccess.prototype.payload;
+}
 class ResetSetDeliveryAddressProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, SET_DELIVERY_ADDRESS_PROCESS_ID);
         this.type = RESET_SET_DELIVERY_ADDRESS_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetSetDeliveryAddressProcess.prototype.type;
 }
 class LoadSupportedDeliveryModes extends EntityLoadAction {
     /**
@@ -6338,6 +8057,12 @@ class LoadSupportedDeliveryModes extends EntityLoadAction {
         this.type = LOAD_SUPPORTED_DELIVERY_MODES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModes.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModes.prototype.payload;
+}
 class LoadSupportedDeliveryModesFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -6347,6 +8072,12 @@ class LoadSupportedDeliveryModesFail extends EntityFailAction {
         this.payload = payload;
         this.type = LOAD_SUPPORTED_DELIVERY_MODES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModesFail.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModesFail.prototype.payload;
 }
 class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
     /**
@@ -6358,11 +8089,21 @@ class LoadSupportedDeliveryModesSuccess extends EntitySuccessAction {
         this.type = LOAD_SUPPORTED_DELIVERY_MODES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadSupportedDeliveryModesSuccess.prototype.type;
+    /** @type {?} */
+    LoadSupportedDeliveryModesSuccess.prototype.payload;
+}
 class ResetLoadSupportedDeliveryModesProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID);
         this.type = RESET_SUPPORTED_SET_DELIVERY_MODES_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetLoadSupportedDeliveryModesProcess.prototype.type;
 }
 class SetDeliveryMode extends EntityLoadAction {
     /**
@@ -6374,6 +8115,12 @@ class SetDeliveryMode extends EntityLoadAction {
         this.type = SET_DELIVERY_MODE;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetDeliveryMode.prototype.type;
+    /** @type {?} */
+    SetDeliveryMode.prototype.payload;
+}
 class SetDeliveryModeFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -6383,6 +8130,12 @@ class SetDeliveryModeFail extends EntityFailAction {
         this.payload = payload;
         this.type = SET_DELIVERY_MODE_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    SetDeliveryModeFail.prototype.type;
+    /** @type {?} */
+    SetDeliveryModeFail.prototype.payload;
 }
 class SetDeliveryModeSuccess extends EntitySuccessAction {
     /**
@@ -6394,11 +8147,21 @@ class SetDeliveryModeSuccess extends EntitySuccessAction {
         this.type = SET_DELIVERY_MODE_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetDeliveryModeSuccess.prototype.type;
+    /** @type {?} */
+    SetDeliveryModeSuccess.prototype.payload;
+}
 class ResetSetDeliveryModeProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, SET_DELIVERY_MODE_PROCESS_ID);
         this.type = RESET_SET_DELIVERY_MODE_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetSetDeliveryModeProcess.prototype.type;
 }
 class CreatePaymentDetails {
     /**
@@ -6409,6 +8172,12 @@ class CreatePaymentDetails {
         this.type = CREATE_PAYMENT_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetails.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetails.prototype.payload;
+}
 class CreatePaymentDetailsFail {
     /**
      * @param {?} payload
@@ -6418,6 +8187,12 @@ class CreatePaymentDetailsFail {
         this.type = CREATE_PAYMENT_DETAILS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetailsFail.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetailsFail.prototype.payload;
+}
 class CreatePaymentDetailsSuccess {
     /**
      * @param {?} payload
@@ -6426,6 +8201,12 @@ class CreatePaymentDetailsSuccess {
         this.payload = payload;
         this.type = CREATE_PAYMENT_DETAILS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    CreatePaymentDetailsSuccess.prototype.type;
+    /** @type {?} */
+    CreatePaymentDetailsSuccess.prototype.payload;
 }
 class SetPaymentDetails extends EntityLoadAction {
     /**
@@ -6437,6 +8218,12 @@ class SetPaymentDetails extends EntityLoadAction {
         this.type = SET_PAYMENT_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetPaymentDetails.prototype.type;
+    /** @type {?} */
+    SetPaymentDetails.prototype.payload;
+}
 class SetPaymentDetailsFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -6446,6 +8233,12 @@ class SetPaymentDetailsFail extends EntityFailAction {
         this.payload = payload;
         this.type = SET_PAYMENT_DETAILS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    SetPaymentDetailsFail.prototype.type;
+    /** @type {?} */
+    SetPaymentDetailsFail.prototype.payload;
 }
 class SetPaymentDetailsSuccess extends EntitySuccessAction {
     /**
@@ -6457,11 +8250,21 @@ class SetPaymentDetailsSuccess extends EntitySuccessAction {
         this.type = SET_PAYMENT_DETAILS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetPaymentDetailsSuccess.prototype.type;
+    /** @type {?} */
+    SetPaymentDetailsSuccess.prototype.payload;
+}
 class ResetSetPaymentDetailsProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
         this.type = RESET_SET_PAYMENT_DETAILS_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetSetPaymentDetailsProcess.prototype.type;
 }
 class PlaceOrder {
     /**
@@ -6472,6 +8275,12 @@ class PlaceOrder {
         this.type = PLACE_ORDER;
     }
 }
+if (false) {
+    /** @type {?} */
+    PlaceOrder.prototype.type;
+    /** @type {?} */
+    PlaceOrder.prototype.payload;
+}
 class PlaceOrderFail {
     /**
      * @param {?} payload
@@ -6480,6 +8289,12 @@ class PlaceOrderFail {
         this.payload = payload;
         this.type = PLACE_ORDER_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    PlaceOrderFail.prototype.type;
+    /** @type {?} */
+    PlaceOrderFail.prototype.payload;
 }
 class PlaceOrderSuccess {
     /**
@@ -6490,10 +8305,20 @@ class PlaceOrderSuccess {
         this.type = PLACE_ORDER_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    PlaceOrderSuccess.prototype.type;
+    /** @type {?} */
+    PlaceOrderSuccess.prototype.payload;
+}
 class ClearSupportedDeliveryModes {
     constructor() {
         this.type = CLEAR_SUPPORTED_DELIVERY_MODES;
     }
+}
+if (false) {
+    /** @type {?} */
+    ClearSupportedDeliveryModes.prototype.type;
 }
 class ClearCheckoutStep {
     /**
@@ -6504,10 +8329,20 @@ class ClearCheckoutStep {
         this.type = CLEAR_CHECKOUT_STEP;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCheckoutStep.prototype.type;
+    /** @type {?} */
+    ClearCheckoutStep.prototype.payload;
+}
 class ClearCheckoutData {
     constructor() {
         this.type = CLEAR_CHECKOUT_DATA;
     }
+}
+if (false) {
+    /** @type {?} */
+    ClearCheckoutData.prototype.type;
 }
 class LoadCheckoutDetails extends LoaderLoadAction {
     /**
@@ -6519,6 +8354,12 @@ class LoadCheckoutDetails extends LoaderLoadAction {
         this.type = LOAD_CHECKOUT_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetails.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetails.prototype.payload;
+}
 class LoadCheckoutDetailsFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -6528,6 +8369,12 @@ class LoadCheckoutDetailsFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_CHECKOUT_DETAILS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetailsFail.prototype.payload;
 }
 class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
     /**
@@ -6539,10 +8386,20 @@ class LoadCheckoutDetailsSuccess extends LoaderSuccessAction {
         this.type = LOAD_CHECKOUT_DETAILS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadCheckoutDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCheckoutDetailsSuccess.prototype.payload;
+}
 class CheckoutClearMiscsData {
     constructor() {
         this.type = CHECKOUT_CLEAR_MISCS_DATA;
     }
+}
+if (false) {
+    /** @type {?} */
+    CheckoutClearMiscsData.prototype.type;
 }
 class ClearCheckoutDeliveryAddress {
     /**
@@ -6553,10 +8410,20 @@ class ClearCheckoutDeliveryAddress {
         this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddress.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryAddress.prototype.payload;
+}
 class ClearCheckoutDeliveryAddressSuccess {
     constructor() {
         this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressSuccess.prototype.type;
 }
 class ClearCheckoutDeliveryAddressFail {
     /**
@@ -6567,6 +8434,12 @@ class ClearCheckoutDeliveryAddressFail {
         this.type = CLEAR_CHECKOUT_DELIVERY_ADDRESS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressFail.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryAddressFail.prototype.payload;
+}
 class ClearCheckoutDeliveryMode {
     /**
      * @param {?} payload
@@ -6576,10 +8449,20 @@ class ClearCheckoutDeliveryMode {
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryMode.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryMode.prototype.payload;
+}
 class ClearCheckoutDeliveryModeSuccess {
     constructor() {
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryModeSuccess.prototype.type;
 }
 class ClearCheckoutDeliveryModeFail {
     /**
@@ -6590,10 +8473,16 @@ class ClearCheckoutDeliveryModeFail {
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearCheckoutDeliveryModeFail.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryModeFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
@@ -6694,12 +8583,12 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$1 = {
@@ -6767,7 +8656,7 @@ function reducer$1(state = initialState$1, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -6807,7 +8696,7 @@ const metaReducers$1 = [clearCartState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -6844,7 +8733,7 @@ CartStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartModule {
     /**
@@ -6873,46 +8762,46 @@ CartModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CART_NORMALIZER = new InjectionToken('CartNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$2 = {
@@ -6948,7 +8837,7 @@ const getAddressVerificationResults = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getDeliveryAddressSelector = (/**
@@ -6956,24 +8845,28 @@ const getDeliveryAddressSelector = (/**
  * @return {?}
  */
 (state) => state.address);
+const ɵ0$c = getDeliveryAddressSelector;
 /** @type {?} */
 const getDeliveryModeSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.deliveryMode);
+const ɵ1$9 = getDeliveryModeSelector;
 /** @type {?} */
 const getPaymentDetailsSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.paymentDetails);
+const ɵ2$5 = getPaymentDetailsSelector;
 /** @type {?} */
 const getOrderDetailsSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.orderDetails);
+const ɵ3$5 = getOrderDetailsSelector;
 /** @type {?} */
 const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
 const ɵ4$2 = /**
@@ -7046,21 +8939,21 @@ const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$5 = /**
+const ɵ0$d = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addressVerification;
 /** @type {?} */
-const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$5));
+const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$d));
 /** @type {?} */
 const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$3 = {
@@ -7102,18 +8995,18 @@ const getCardTypesEntites = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$6 = /**
+const ɵ0$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cardTypes;
 /** @type {?} */
-const getCardTypesState = createSelector(getCheckoutState, (ɵ0$6));
+const getCardTypesState = createSelector(getCheckoutState, (ɵ0$e));
 /** @type {?} */
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$5 = /**
+const ɵ1$a = /**
  * @param {?} entites
  * @return {?}
  */
@@ -7125,11 +9018,11 @@ entites => {
     code => entites[code]));
 };
 /** @type {?} */
-const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$5));
+const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$a));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -7153,12 +9046,12 @@ var checkoutGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutService {
     /**
@@ -7237,20 +9130,52 @@ CheckoutService.ctorParameters = () => [
     { type: Store },
     { type: CartDataService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class TranslationService {
 }
+if (false) {
+    /**
+     * Translates given key with options.
+     * If key is missing, it tries to load the chunk and emits a value when chunk is loaded.
+     * If key is missing after loaded chunk, a fallback value is emitted
+     *
+     * \@param key translation key
+     * \@param options values for interpolation in translation
+     * \@param whitespaceUntilLoaded if true, immediately emits a non-breaking space
+     * @type {?}
+     */
+    TranslationService.prototype.translate;
+    /**
+     * Loads chunks with translations
+     *
+     * \@param chunkNames array of chunk names to be loaded
+     * @type {?}
+     */
+    TranslationService.prototype.loadChunks;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutPageMetaResolver extends PageMetaResolver {
     /**
@@ -7305,10 +9230,22 @@ CheckoutPageMetaResolver.ctorParameters = () => [
     { type: TranslationService }
 ];
 /** @nocollapse */ CheckoutPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPageMetaResolver_Factory() { return new CheckoutPageMetaResolver(ɵɵinject(CartService), ɵɵinject(TranslationService)); }, token: CheckoutPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPageMetaResolver.prototype.cartService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$4 = {
@@ -7410,7 +9347,7 @@ function reducer$4(state = initialState$4, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -7432,17 +9369,54 @@ const reducerProvider$2 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class UserAddressAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.add = function (userId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} addressId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.update = function (userId, addressId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} address
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.verify = function (userId, address) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} addressId
+     * @return {?}
+     */
+    UserAddressAdapter.prototype.delete = function (userId, addressId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserAddressConnector {
     /**
@@ -7502,10 +9476,17 @@ UserAddressConnector.ctorParameters = () => [
     { type: UserAddressAdapter }
 ];
 /** @nocollapse */ UserAddressConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressConnector_Factory() { return new UserAddressConnector(ɵɵinject(UserAddressAdapter)); }, token: UserAddressConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAddressConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class AddressVerificationEffect {
     /**
@@ -7546,20 +9527,62 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
+if (false) {
+    /** @type {?} */
+    AddressVerificationEffect.prototype.verifyAddress$;
+    /**
+     * @type {?}
+     * @private
+     */
+    AddressVerificationEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    AddressVerificationEffect.prototype.userAddressConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CheckoutPaymentAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to create payment details on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} paymentDetails
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.create = function (userId, cartId, paymentDetails) { };
+    /**
+     * Abstract method used to set payment details on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} paymentDetailsId
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.set = function (userId, cartId, paymentDetailsId) { };
+    /**
+     * Abstract method used to get available cart types
+     * @abstract
+     * @return {?}
+     */
+    CheckoutPaymentAdapter.prototype.loadCardTypes = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutPaymentConnector {
     /**
@@ -7603,10 +9626,17 @@ CheckoutPaymentConnector.ctorParameters = () => [
     { type: CheckoutPaymentAdapter }
 ];
 /** @nocollapse */ CheckoutPaymentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPaymentConnector_Factory() { return new CheckoutPaymentConnector(ɵɵinject(CheckoutPaymentAdapter)); }, token: CheckoutPaymentConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CardTypesEffects {
     /**
@@ -7644,10 +9674,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
+if (false) {
+    /** @type {?} */
+    CardTypesEffects.prototype.loadCardTypes$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CardTypesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CardTypesEffects.prototype.checkoutPaymentConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_BILLING_COUNTRIES = '[User] Load Billing Countries';
@@ -7660,6 +9704,10 @@ class LoadBillingCountries {
         this.type = LOAD_BILLING_COUNTRIES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadBillingCountries.prototype.type;
+}
 class LoadBillingCountriesFail {
     /**
      * @param {?} payload
@@ -7668,6 +9716,12 @@ class LoadBillingCountriesFail {
         this.payload = payload;
         this.type = LOAD_BILLING_COUNTRIES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadBillingCountriesFail.prototype.type;
+    /** @type {?} */
+    LoadBillingCountriesFail.prototype.payload;
 }
 class LoadBillingCountriesSuccess {
     /**
@@ -7678,10 +9732,16 @@ class LoadBillingCountriesSuccess {
         this.type = LOAD_BILLING_COUNTRIES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadBillingCountriesSuccess.prototype.type;
+    /** @type {?} */
+    LoadBillingCountriesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_CONSIGNMENT_TRACKING = '[User] Load Consignment Tracking';
@@ -7700,6 +9760,12 @@ class LoadConsignmentTracking {
         this.type = LOAD_CONSIGNMENT_TRACKING;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTracking.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTracking.prototype.payload;
+}
 class LoadConsignmentTrackingFail {
     /**
      * @param {?} payload
@@ -7708,6 +9774,12 @@ class LoadConsignmentTrackingFail {
         this.payload = payload;
         this.type = LOAD_CONSIGNMENT_TRACKING_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTrackingFail.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTrackingFail.prototype.payload;
 }
 class LoadConsignmentTrackingSuccess {
     /**
@@ -7718,15 +9790,25 @@ class LoadConsignmentTrackingSuccess {
         this.type = LOAD_CONSIGNMENT_TRACKING_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadConsignmentTrackingSuccess.prototype.type;
+    /** @type {?} */
+    LoadConsignmentTrackingSuccess.prototype.payload;
+}
 class ClearConsignmentTracking {
     constructor() {
         this.type = CLEAR_CONSIGNMENT_TRACKING;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearConsignmentTracking.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_DELIVERY_COUNTRIES = '[User] Load Delivery Countries';
@@ -7739,6 +9821,10 @@ class LoadDeliveryCountries {
         this.type = LOAD_DELIVERY_COUNTRIES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountries.prototype.type;
+}
 class LoadDeliveryCountriesFail {
     /**
      * @param {?} payload
@@ -7747,6 +9833,12 @@ class LoadDeliveryCountriesFail {
         this.payload = payload;
         this.type = LOAD_DELIVERY_COUNTRIES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountriesFail.prototype.type;
+    /** @type {?} */
+    LoadDeliveryCountriesFail.prototype.payload;
 }
 class LoadDeliveryCountriesSuccess {
     /**
@@ -7757,10 +9849,16 @@ class LoadDeliveryCountriesSuccess {
         this.type = LOAD_DELIVERY_COUNTRIES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadDeliveryCountriesSuccess.prototype.type;
+    /** @type {?} */
+    LoadDeliveryCountriesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const FORGOT_PASSWORD_EMAIL_REQUEST = '[User] Forgot Password Email Request';
@@ -7777,6 +9875,12 @@ class ForgotPasswordEmailRequest {
         this.type = FORGOT_PASSWORD_EMAIL_REQUEST;
     }
 }
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequest.prototype.type;
+    /** @type {?} */
+    ForgotPasswordEmailRequest.prototype.payload;
+}
 class ForgotPasswordEmailRequestFail {
     /**
      * @param {?} payload
@@ -7786,15 +9890,25 @@ class ForgotPasswordEmailRequestFail {
         this.type = FORGOT_PASSWORD_EMAIL_REQUEST_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequestFail.prototype.type;
+    /** @type {?} */
+    ForgotPasswordEmailRequestFail.prototype.payload;
+}
 class ForgotPasswordEmailRequestSuccess {
     constructor() {
         this.type = FORGOT_PASSWORD_EMAIL_REQUEST_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEmailRequestSuccess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_ORDER_DETAILS = '[User] Load Order Details';
@@ -7813,6 +9927,12 @@ class LoadOrderDetails {
         this.type = LOAD_ORDER_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadOrderDetails.prototype.type;
+    /** @type {?} */
+    LoadOrderDetails.prototype.payload;
+}
 class LoadOrderDetailsFail {
     /**
      * @param {?} payload
@@ -7821,6 +9941,12 @@ class LoadOrderDetailsFail {
         this.payload = payload;
         this.type = LOAD_ORDER_DETAILS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadOrderDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadOrderDetailsFail.prototype.payload;
 }
 class LoadOrderDetailsSuccess {
     /**
@@ -7831,15 +9957,25 @@ class LoadOrderDetailsSuccess {
         this.type = LOAD_ORDER_DETAILS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadOrderDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadOrderDetailsSuccess.prototype.payload;
+}
 class ClearOrderDetails {
     constructor() {
         this.type = CLEAR_ORDER_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearOrderDetails.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const USER_FEATURE = 'user';
@@ -7867,10 +10003,118 @@ const USER_ORDERS = '[User] User Orders';
 const USER_ADDRESSES = '[User] User Addresses';
 /** @type {?} */
 const REGIONS = '[User] Regions';
+/**
+ * @record
+ */
+function StateWithUser() { }
+if (false) {
+    /* Skipping unnamed member:
+    [USER_FEATURE]: UserState;*/
+}
+/**
+ * @record
+ */
+function UserState() { }
+if (false) {
+    /** @type {?} */
+    UserState.prototype.account;
+    /** @type {?} */
+    UserState.prototype.addresses;
+    /** @type {?} */
+    UserState.prototype.consents;
+    /** @type {?} */
+    UserState.prototype.billingCountries;
+    /** @type {?} */
+    UserState.prototype.countries;
+    /** @type {?} */
+    UserState.prototype.payments;
+    /** @type {?} */
+    UserState.prototype.orders;
+    /** @type {?} */
+    UserState.prototype.order;
+    /** @type {?} */
+    UserState.prototype.titles;
+    /** @type {?} */
+    UserState.prototype.regions;
+    /** @type {?} */
+    UserState.prototype.resetPassword;
+    /** @type {?} */
+    UserState.prototype.consignmentTracking;
+}
+/**
+ * @record
+ */
+function OrderDetailsState() { }
+if (false) {
+    /** @type {?} */
+    OrderDetailsState.prototype.order;
+}
+/**
+ * @record
+ */
+function RegionsState() { }
+if (false) {
+    /** @type {?} */
+    RegionsState.prototype.entities;
+    /** @type {?} */
+    RegionsState.prototype.country;
+}
+/**
+ * @record
+ */
+function BillingCountryEntities() { }
+/**
+ * @record
+ */
+function BillingCountriesState() { }
+if (false) {
+    /** @type {?} */
+    BillingCountriesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function DeliveryCountryEntities() { }
+/**
+ * @record
+ */
+function DeliveryCountriesState() { }
+if (false) {
+    /** @type {?} */
+    DeliveryCountriesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function TitleEntities() { }
+/**
+ * @record
+ */
+function TitlesState() { }
+if (false) {
+    /** @type {?} */
+    TitlesState.prototype.entities;
+}
+/**
+ * @record
+ */
+function UserDetailsState() { }
+if (false) {
+    /** @type {?} */
+    UserDetailsState.prototype.details;
+}
+/**
+ * @record
+ */
+function ConsignmentTrackingState() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTrackingState.prototype.tracking;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_PAYMENT_METHODS = '[User] Load User Payment Methods';
@@ -7900,6 +10144,12 @@ class LoadUserPaymentMethods extends LoaderLoadAction {
         this.type = LOAD_USER_PAYMENT_METHODS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethods.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethods.prototype.payload;
+}
 class LoadUserPaymentMethodsFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -7909,6 +10159,12 @@ class LoadUserPaymentMethodsFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_USER_PAYMENT_METHODS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethodsFail.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethodsFail.prototype.payload;
 }
 class LoadUserPaymentMethodsSuccess extends LoaderSuccessAction {
     /**
@@ -7920,6 +10176,12 @@ class LoadUserPaymentMethodsSuccess extends LoaderSuccessAction {
         this.type = LOAD_USER_PAYMENT_METHODS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserPaymentMethodsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserPaymentMethodsSuccess.prototype.payload;
+}
 class SetDefaultUserPaymentMethod extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -7929,6 +10191,12 @@ class SetDefaultUserPaymentMethod extends LoaderLoadAction {
         this.payload = payload;
         this.type = SET_DEFAULT_USER_PAYMENT_METHOD;
     }
+}
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethod.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethod.prototype.payload;
 }
 class SetDefaultUserPaymentMethodFail extends LoaderFailAction {
     /**
@@ -7940,6 +10208,12 @@ class SetDefaultUserPaymentMethodFail extends LoaderFailAction {
         this.type = SET_DEFAULT_USER_PAYMENT_METHOD_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethodFail.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethodFail.prototype.payload;
+}
 class SetDefaultUserPaymentMethodSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -7949,6 +10223,12 @@ class SetDefaultUserPaymentMethodSuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = SET_DEFAULT_USER_PAYMENT_METHOD_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    SetDefaultUserPaymentMethodSuccess.prototype.type;
+    /** @type {?} */
+    SetDefaultUserPaymentMethodSuccess.prototype.payload;
 }
 class DeleteUserPaymentMethod extends LoaderLoadAction {
     /**
@@ -7960,6 +10240,12 @@ class DeleteUserPaymentMethod extends LoaderLoadAction {
         this.type = DELETE_USER_PAYMENT_METHOD;
     }
 }
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethod.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethod.prototype.payload;
+}
 class DeleteUserPaymentMethodFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -7969,6 +10255,12 @@ class DeleteUserPaymentMethodFail extends LoaderFailAction {
         this.payload = payload;
         this.type = DELETE_USER_PAYMENT_METHOD_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethodFail.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethodFail.prototype.payload;
 }
 class DeleteUserPaymentMethodSuccess extends LoaderSuccessAction {
     /**
@@ -7980,10 +10272,16 @@ class DeleteUserPaymentMethodSuccess extends LoaderSuccessAction {
         this.type = DELETE_USER_PAYMENT_METHOD_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    DeleteUserPaymentMethodSuccess.prototype.type;
+    /** @type {?} */
+    DeleteUserPaymentMethodSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_REGIONS = '[User] Load Regions';
@@ -8003,6 +10301,12 @@ class LoadRegions extends LoaderLoadAction {
         this.type = LOAD_REGIONS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadRegions.prototype.type;
+    /** @type {?} */
+    LoadRegions.prototype.payload;
+}
 class LoadRegionsFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8012,6 +10316,12 @@ class LoadRegionsFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_REGIONS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadRegionsFail.prototype.type;
+    /** @type {?} */
+    LoadRegionsFail.prototype.payload;
 }
 class LoadRegionsSuccess extends LoaderSuccessAction {
     /**
@@ -8023,15 +10333,25 @@ class LoadRegionsSuccess extends LoaderSuccessAction {
         this.type = LOAD_REGIONS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadRegionsSuccess.prototype.type;
+    /** @type {?} */
+    LoadRegionsSuccess.prototype.payload;
+}
 class ClearRegions {
     constructor() {
         this.type = CLEAR_REGIONS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearRegions.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const RESET_PASSWORD = '[User] Reset Password';
@@ -8048,6 +10368,12 @@ class ResetPassword {
         this.type = RESET_PASSWORD;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetPassword.prototype.type;
+    /** @type {?} */
+    ResetPassword.prototype.payload;
+}
 class ResetPasswordFail {
     /**
      * @param {?} payload
@@ -8057,15 +10383,25 @@ class ResetPasswordFail {
         this.type = RESET_PASSWORD_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetPasswordFail.prototype.type;
+    /** @type {?} */
+    ResetPasswordFail.prototype.payload;
+}
 class ResetPasswordSuccess {
     constructor() {
         this.type = RESET_PASSWORD_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetPasswordSuccess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_TITLES = '[User] Load Tiltes';
@@ -8078,6 +10414,10 @@ class LoadTitles {
         this.type = LOAD_TITLES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadTitles.prototype.type;
+}
 class LoadTitlesFail {
     /**
      * @param {?} payload
@@ -8086,6 +10426,12 @@ class LoadTitlesFail {
         this.payload = payload;
         this.type = LOAD_TITLES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadTitlesFail.prototype.type;
+    /** @type {?} */
+    LoadTitlesFail.prototype.payload;
 }
 class LoadTitlesSuccess {
     /**
@@ -8096,10 +10442,16 @@ class LoadTitlesSuccess {
         this.type = LOAD_TITLES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadTitlesSuccess.prototype.type;
+    /** @type {?} */
+    LoadTitlesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const UPDATE_EMAIL = '[User] Update Email';
@@ -8119,6 +10471,12 @@ class UpdateEmailAction extends EntityLoadAction {
         this.type = UPDATE_EMAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateEmailAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailAction.prototype.payload;
+}
 class UpdateEmailSuccessAction extends EntitySuccessAction {
     /**
      * @param {?} newUid
@@ -8128,6 +10486,12 @@ class UpdateEmailSuccessAction extends EntitySuccessAction {
         this.newUid = newUid;
         this.type = UPDATE_EMAIL_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    UpdateEmailSuccessAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailSuccessAction.prototype.newUid;
 }
 class UpdateEmailErrorAction extends EntityFailAction {
     /**
@@ -8139,16 +10503,26 @@ class UpdateEmailErrorAction extends EntityFailAction {
         this.type = UPDATE_EMAIL_ERROR;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateEmailErrorAction.prototype.type;
+    /** @type {?} */
+    UpdateEmailErrorAction.prototype.payload;
+}
 class ResetUpdateEmailAction extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, UPDATE_EMAIL_PROCESS_ID);
         this.type = RESET_EMAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetUpdateEmailAction.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const UPDATE_PASSWORD = '[User] Update Password';
@@ -8168,6 +10542,12 @@ class UpdatePassword extends EntityLoadAction {
         this.type = UPDATE_PASSWORD;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdatePassword.prototype.type;
+    /** @type {?} */
+    UpdatePassword.prototype.payload;
+}
 class UpdatePasswordFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8178,11 +10558,21 @@ class UpdatePasswordFail extends EntityFailAction {
         this.type = UPDATE_PASSWORD_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdatePasswordFail.prototype.type;
+    /** @type {?} */
+    UpdatePasswordFail.prototype.payload;
+}
 class UpdatePasswordSuccess extends EntitySuccessAction {
     constructor() {
         super(PROCESS_FEATURE, UPDATE_PASSWORD_PROCESS_ID);
         this.type = UPDATE_PASSWORD_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    UpdatePasswordSuccess.prototype.type;
 }
 class UpdatePasswordReset extends EntityResetAction {
     constructor() {
@@ -8190,10 +10580,14 @@ class UpdatePasswordReset extends EntityResetAction {
         this.type = UPDATE_PASSWORD_RESET;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdatePasswordReset.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_ADDRESSES = '[User] Load User Addresses';
@@ -8229,6 +10623,12 @@ class LoadUserAddresses extends LoaderLoadAction {
         this.type = LOAD_USER_ADDRESSES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserAddresses.prototype.type;
+    /** @type {?} */
+    LoadUserAddresses.prototype.payload;
+}
 class LoadUserAddressesFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8239,6 +10639,12 @@ class LoadUserAddressesFail extends LoaderFailAction {
         this.type = LOAD_USER_ADDRESSES_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserAddressesFail.prototype.type;
+    /** @type {?} */
+    LoadUserAddressesFail.prototype.payload;
+}
 class LoadUserAddressesSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -8248,6 +10654,12 @@ class LoadUserAddressesSuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = LOAD_USER_ADDRESSES_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserAddressesSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserAddressesSuccess.prototype.payload;
 }
 // Adding address actions
 class AddUserAddress extends LoaderLoadAction {
@@ -8260,6 +10672,12 @@ class AddUserAddress extends LoaderLoadAction {
         this.type = ADD_USER_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    AddUserAddress.prototype.type;
+    /** @type {?} */
+    AddUserAddress.prototype.payload;
+}
 class AddUserAddressFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8270,6 +10688,12 @@ class AddUserAddressFail extends LoaderFailAction {
         this.type = ADD_USER_ADDRESS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    AddUserAddressFail.prototype.type;
+    /** @type {?} */
+    AddUserAddressFail.prototype.payload;
+}
 class AddUserAddressSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -8279,6 +10703,12 @@ class AddUserAddressSuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = ADD_USER_ADDRESS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    AddUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    AddUserAddressSuccess.prototype.payload;
 }
 // Updating address actions
 class UpdateUserAddress extends LoaderLoadAction {
@@ -8291,6 +10721,12 @@ class UpdateUserAddress extends LoaderLoadAction {
         this.type = UPDATE_USER_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateUserAddress.prototype.type;
+    /** @type {?} */
+    UpdateUserAddress.prototype.payload;
+}
 class UpdateUserAddressFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8301,6 +10737,12 @@ class UpdateUserAddressFail extends LoaderFailAction {
         this.type = UPDATE_USER_ADDRESS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateUserAddressFail.prototype.type;
+    /** @type {?} */
+    UpdateUserAddressFail.prototype.payload;
+}
 class UpdateUserAddressSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -8310,6 +10752,12 @@ class UpdateUserAddressSuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = UPDATE_USER_ADDRESS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    UpdateUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    UpdateUserAddressSuccess.prototype.payload;
 }
 // Deleting address actions
 class DeleteUserAddress extends LoaderLoadAction {
@@ -8322,6 +10770,12 @@ class DeleteUserAddress extends LoaderLoadAction {
         this.type = DELETE_USER_ADDRESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    DeleteUserAddress.prototype.type;
+    /** @type {?} */
+    DeleteUserAddress.prototype.payload;
+}
 class DeleteUserAddressFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8331,6 +10785,12 @@ class DeleteUserAddressFail extends LoaderFailAction {
         this.payload = payload;
         this.type = DELETE_USER_ADDRESS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    DeleteUserAddressFail.prototype.type;
+    /** @type {?} */
+    DeleteUserAddressFail.prototype.payload;
 }
 class DeleteUserAddressSuccess extends LoaderSuccessAction {
     /**
@@ -8342,10 +10802,16 @@ class DeleteUserAddressSuccess extends LoaderSuccessAction {
         this.type = DELETE_USER_ADDRESS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    DeleteUserAddressSuccess.prototype.type;
+    /** @type {?} */
+    DeleteUserAddressSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_CONSENTS = '[User] Load User Consents';
@@ -8381,6 +10847,12 @@ class LoadUserConsents extends LoaderLoadAction {
         this.type = LOAD_USER_CONSENTS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserConsents.prototype.type;
+    /** @type {?} */
+    LoadUserConsents.prototype.payload;
+}
 class LoadUserConsentsFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8390,6 +10862,12 @@ class LoadUserConsentsFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_USER_CONSENTS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserConsentsFail.prototype.type;
+    /** @type {?} */
+    LoadUserConsentsFail.prototype.payload;
 }
 class LoadUserConsentsSuccess extends LoaderSuccessAction {
     /**
@@ -8401,11 +10879,21 @@ class LoadUserConsentsSuccess extends LoaderSuccessAction {
         this.type = LOAD_USER_CONSENTS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserConsentsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserConsentsSuccess.prototype.payload;
+}
 class ResetLoadUserConsents extends LoaderResetAction {
     constructor() {
         super(USER_CONSENTS);
         this.type = RESET_LOAD_USER_CONSENTS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetLoadUserConsents.prototype.type;
 }
 class GiveUserConsent extends EntityLoadAction {
     /**
@@ -8417,6 +10905,12 @@ class GiveUserConsent extends EntityLoadAction {
         this.type = GIVE_USER_CONSENT;
     }
 }
+if (false) {
+    /** @type {?} */
+    GiveUserConsent.prototype.type;
+    /** @type {?} */
+    GiveUserConsent.prototype.payload;
+}
 class GiveUserConsentFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8425,6 +10919,10 @@ class GiveUserConsentFail extends EntityFailAction {
         super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID, payload);
         this.type = GIVE_USER_CONSENT_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    GiveUserConsentFail.prototype.type;
 }
 class GiveUserConsentSuccess extends EntitySuccessAction {
     /**
@@ -8436,11 +10934,21 @@ class GiveUserConsentSuccess extends EntitySuccessAction {
         this.type = GIVE_USER_CONSENT_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    GiveUserConsentSuccess.prototype.type;
+    /** @type {?} */
+    GiveUserConsentSuccess.prototype.consentTemplate;
+}
 class ResetGiveUserConsentProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, GIVE_CONSENT_PROCESS_ID);
         this.type = RESET_GIVE_USER_CONSENT_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetGiveUserConsentProcess.prototype.type;
 }
 class WithdrawUserConsent extends EntityLoadAction {
     /**
@@ -8452,6 +10960,12 @@ class WithdrawUserConsent extends EntityLoadAction {
         this.type = WITHDRAW_USER_CONSENT;
     }
 }
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsent.prototype.type;
+    /** @type {?} */
+    WithdrawUserConsent.prototype.payload;
+}
 class WithdrawUserConsentFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8461,11 +10975,19 @@ class WithdrawUserConsentFail extends EntityFailAction {
         this.type = WITHDRAW_USER_CONSENT_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsentFail.prototype.type;
+}
 class WithdrawUserConsentSuccess extends EntitySuccessAction {
     constructor() {
         super(PROCESS_FEATURE, WITHDRAW_CONSENT_PROCESS_ID);
         this.type = WITHDRAW_USER_CONSENT_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    WithdrawUserConsentSuccess.prototype.type;
 }
 class ResetWithdrawUserConsentProcess extends EntityResetAction {
     constructor() {
@@ -8473,10 +10995,14 @@ class ResetWithdrawUserConsentProcess extends EntityResetAction {
         this.type = RESET_WITHDRAW_USER_CONSENT_PROCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetWithdrawUserConsentProcess.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_DETAILS = '[User] Load User Details';
@@ -8501,6 +11027,12 @@ class LoadUserDetails {
         this.type = LOAD_USER_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserDetails.prototype.type;
+    /** @type {?} */
+    LoadUserDetails.prototype.payload;
+}
 class LoadUserDetailsFail {
     /**
      * @param {?} payload
@@ -8510,6 +11042,12 @@ class LoadUserDetailsFail {
         this.type = LOAD_USER_DETAILS_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserDetailsFail.prototype.type;
+    /** @type {?} */
+    LoadUserDetailsFail.prototype.payload;
+}
 class LoadUserDetailsSuccess {
     /**
      * @param {?} payload
@@ -8518,6 +11056,12 @@ class LoadUserDetailsSuccess {
         this.payload = payload;
         this.type = LOAD_USER_DETAILS_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserDetailsSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserDetailsSuccess.prototype.payload;
 }
 class UpdateUserDetails extends EntityLoadAction {
     /**
@@ -8529,6 +11073,12 @@ class UpdateUserDetails extends EntityLoadAction {
         this.type = UPDATE_USER_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateUserDetails.prototype.type;
+    /** @type {?} */
+    UpdateUserDetails.prototype.payload;
+}
 class UpdateUserDetailsFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8538,6 +11088,12 @@ class UpdateUserDetailsFail extends EntityFailAction {
         this.payload = payload;
         this.type = UPDATE_USER_DETAILS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    UpdateUserDetailsFail.prototype.type;
+    /** @type {?} */
+    UpdateUserDetailsFail.prototype.payload;
 }
 class UpdateUserDetailsSuccess extends EntitySuccessAction {
     /**
@@ -8549,16 +11105,26 @@ class UpdateUserDetailsSuccess extends EntitySuccessAction {
         this.type = UPDATE_USER_DETAILS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    UpdateUserDetailsSuccess.prototype.type;
+    /** @type {?} */
+    UpdateUserDetailsSuccess.prototype.userUpdates;
+}
 class ResetUpdateUserDetails extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, UPDATE_USER_DETAILS_PROCESS_ID);
         this.type = RESET_USER_DETAILS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ResetUpdateUserDetails.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CLEAR_USER_MISCS_DATA = '[User] Clear User Misc Data';
@@ -8567,10 +11133,14 @@ class ClearUserMiscsData {
         this.type = CLEAR_USER_MISCS_DATA;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearUserMiscsData.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_USER_ORDERS = '[User] Load User Orders';
@@ -8590,6 +11160,12 @@ class LoadUserOrders extends LoaderLoadAction {
         this.type = LOAD_USER_ORDERS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserOrders.prototype.type;
+    /** @type {?} */
+    LoadUserOrders.prototype.payload;
+}
 class LoadUserOrdersFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -8599,6 +11175,12 @@ class LoadUserOrdersFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_USER_ORDERS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadUserOrdersFail.prototype.type;
+    /** @type {?} */
+    LoadUserOrdersFail.prototype.payload;
 }
 class LoadUserOrdersSuccess extends LoaderSuccessAction {
     /**
@@ -8610,15 +11192,25 @@ class LoadUserOrdersSuccess extends LoaderSuccessAction {
         this.type = LOAD_USER_ORDERS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadUserOrdersSuccess.prototype.type;
+    /** @type {?} */
+    LoadUserOrdersSuccess.prototype.payload;
+}
 class ClearUserOrders {
     constructor() {
         this.type = CLEAR_USER_ORDERS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearUserOrders.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const REGISTER_USER = '[User] Register User';
@@ -8646,6 +11238,12 @@ class RegisterUser extends EntityLoadAction {
         this.type = REGISTER_USER;
     }
 }
+if (false) {
+    /** @type {?} */
+    RegisterUser.prototype.type;
+    /** @type {?} */
+    RegisterUser.prototype.payload;
+}
 class RegisterUserFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8656,17 +11254,31 @@ class RegisterUserFail extends EntityFailAction {
         this.type = REGISTER_USER_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    RegisterUserFail.prototype.type;
+    /** @type {?} */
+    RegisterUserFail.prototype.payload;
+}
 class RegisterUserSuccess extends EntitySuccessAction {
     constructor() {
         super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
         this.type = REGISTER_USER_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    RegisterUserSuccess.prototype.type;
+}
 class ResetRegisterUserProcess extends EntityResetAction {
     constructor() {
         super(PROCESS_FEATURE, REGISTER_USER_PROCESS_ID);
         this.type = RESET_REGISTER_USER_PROCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    ResetRegisterUserProcess.prototype.type;
 }
 class RemoveUser extends EntityLoadAction {
     /**
@@ -8678,6 +11290,12 @@ class RemoveUser extends EntityLoadAction {
         this.type = REMOVE_USER;
     }
 }
+if (false) {
+    /** @type {?} */
+    RemoveUser.prototype.type;
+    /** @type {?} */
+    RemoveUser.prototype.payload;
+}
 class RemoveUserFail extends EntityFailAction {
     /**
      * @param {?} payload
@@ -8688,11 +11306,21 @@ class RemoveUserFail extends EntityFailAction {
         this.type = REMOVE_USER_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    RemoveUserFail.prototype.type;
+    /** @type {?} */
+    RemoveUserFail.prototype.payload;
+}
 class RemoveUserSuccess extends EntitySuccessAction {
     constructor() {
         super(PROCESS_FEATURE, REMOVE_USER_PROCESS_ID);
         this.type = REMOVE_USER_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    RemoveUserSuccess.prototype.type;
 }
 class RemoveUserReset extends EntityResetAction {
     constructor() {
@@ -8700,10 +11328,14 @@ class RemoveUserReset extends EntityResetAction {
         this.type = REMOVE_USER_RESET;
     }
 }
+if (false) {
+    /** @type {?} */
+    RemoveUserReset.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var userGroup_actions = /*#__PURE__*/Object.freeze({
@@ -8887,22 +11519,60 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CheckoutAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to place an order.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} cartId The `cartId` for cart used for placing order
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.placeOrder = function (userId, cartId) { };
+    /**
+     * Abstract method used to load checkout details
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.loadCheckoutDetails = function (userId, cartId) { };
+    /**
+     * Abstract method used to clear checkout delivery address
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.clearCheckoutDeliveryAddress = function (userId, cartId) { };
+    /**
+     * Abstract method used to clear checkout delivery mode
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutAdapter.prototype.clearCheckoutDeliveryMode = function (userId, cartId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutConnector {
     /**
@@ -8954,20 +11624,77 @@ CheckoutConnector.ctorParameters = () => [
     { type: CheckoutAdapter }
 ];
 /** @nocollapse */ CheckoutConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutConnector_Factory() { return new CheckoutConnector(ɵɵinject(CheckoutAdapter)); }, token: CheckoutConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CheckoutDeliveryAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to create address in cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} address
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.createAddress = function (userId, cartId, address) { };
+    /**
+     * Abstract method used to set adress for delivery
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} addressId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.setAddress = function (userId, cartId, addressId) { };
+    /**
+     * Abstract method used to set delivery mode on cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} deliveryModeId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.setMode = function (userId, cartId, deliveryModeId) { };
+    /**
+     * Abstract method used to get current delivery mode from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.getMode = function (userId, cartId) { };
+    /**
+     * Abstract method used to get supported delivery modes for cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CheckoutDeliveryAdapter.prototype.getSupportedModes = function (userId, cartId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutDeliveryConnector {
     /**
@@ -9030,10 +11757,17 @@ CheckoutDeliveryConnector.ctorParameters = () => [
     { type: CheckoutDeliveryAdapter }
 ];
 /** @nocollapse */ CheckoutDeliveryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutDeliveryConnector_Factory() { return new CheckoutDeliveryConnector(ɵɵinject(CheckoutDeliveryAdapter)); }, token: CheckoutDeliveryConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutEffects {
     /**
@@ -9375,10 +12109,60 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
+if (false) {
+    /** @type {?} */
+    CheckoutEffects.prototype.addDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.loadSupportedDeliveryModes$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutMiscsDataOnLanguageChange$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearDeliveryModesOnCurrencyChange$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDataOnLogout$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setDeliveryMode$;
+    /** @type {?} */
+    CheckoutEffects.prototype.createPaymentDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.setPaymentDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.placeOrder$;
+    /** @type {?} */
+    CheckoutEffects.prototype.loadCheckoutDetails$;
+    /** @type {?} */
+    CheckoutEffects.prototype.reloadDetailsOnMergeCart$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDeliveryAddress$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDeliveryMode$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutDeliveryConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutPaymentConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.checkoutConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$2 = [
@@ -9389,7 +12173,7 @@ const effects$2 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutStoreModule {
 }
@@ -9407,7 +12191,7 @@ CheckoutStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutModule {
     /**
@@ -9435,31 +12219,31 @@ CheckoutModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ORDER_NORMALIZER = new InjectionToken('OrderNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const DELIVERY_MODE_NORMALIZER = new InjectionToken('DeliveryModeNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PAYMENT_DETAILS_NORMALIZER = new InjectionToken('PaymentDetailsNormalizer');
@@ -9470,17 +12254,17 @@ const CARD_TYPE_NORMALIZER = new InjectionToken('CardTypeNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -9492,7 +12276,7 @@ function getProcessState() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -9552,12 +12336,12 @@ var process_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutDeliveryService {
     /**
@@ -9786,10 +12570,22 @@ CheckoutDeliveryService.ctorParameters = () => [
     { type: CartDataService }
 ];
 /** @nocollapse */ CheckoutDeliveryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutDeliveryService_Factory() { return new CheckoutDeliveryService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutDeliveryService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutDeliveryService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutPaymentService {
     /**
@@ -9882,45 +12678,203 @@ CheckoutPaymentService.ctorParameters = () => [
     { type: CartDataService }
 ];
 /** @nocollapse */ CheckoutPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CheckoutPaymentService_Factory() { return new CheckoutPaymentService(ɵɵinject(Store), ɵɵinject(CartDataService)); }, token: CheckoutPaymentService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentService.prototype.checkoutStore;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CheckoutPaymentService.prototype.cartData;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function StandardCmsComponentConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSSiteContextComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSLinkComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SimpleResponsiveBannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SimpleBannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.BannerComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSParagraphComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.BreadcrumbComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.NavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.FooterNavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CategoryNavigationComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductAddToCartComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.MiniCartComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductCarouselComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.SearchBoxComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.ProductReferencesComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.CMSTabParagraphComponent;
+    /** @type {?|undefined} */
+    StandardCmsComponentConfig.prototype.LoginComponent;
+}
+/**
+ * @record
+ */
+function JspIncludeCmsComponentConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.AccountAddressBookComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ForgotPasswordComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ResetPasswordComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductDetailsTabComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductSpecsTabComponent;
+    /** @type {?|undefined} */
+    JspIncludeCmsComponentConfig.prototype.ProductReviewsTabComponent;
+}
 /** @type {?} */
 const JSP_INCLUDE_CMS_COMPONENT_TYPE = 'JspIncludeComponent';
 /** @type {?} */
 const CMS_FLEX_COMPONENT_TYPE = 'CMSFlexComponent';
 /**
+ * @record
+ */
+function CmsComponentMapping() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.component;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.providers;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.childRoutes;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.disableSSR;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.i18nKeys;
+    /** @type {?|undefined} */
+    CmsComponentMapping.prototype.guards;
+}
+/**
+ * @record
+ */
+function CMSComponentConfig() { }
+/**
  * @abstract
  */
 class CmsConfig extends OccConfig {
 }
+if (false) {
+    /** @type {?} */
+    CmsConfig.prototype.authentication;
+    /** @type {?} */
+    CmsConfig.prototype.cmsComponents;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * The `CmsPageConfig` is used to build pages by configuration.
+ * The interfaces are designed to have a clean configuration for
+ * static CMS structure. Ordinary attributes that are not
+ * required for configurable pages have been left out and
+ * will not be serialized in the adapter logic.
+ * @record
+ */
+function CmsPageConfig() { }
+if (false) {
+    /**
+     * When the `ignoreBackend` is set to true, the CMS backend
+     * will not be consumed. This saves network latency and is
+     * useful for commodity commerce pages.
+     *
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.ignoreBackend;
+    /** @type {?|undefined} */
+    CmsPageConfig.prototype.pageId;
+    /** @type {?|undefined} */
+    CmsPageConfig.prototype.type;
+    /**
+     * The page title is typically used to display the page heading
+     * as well as for the page title tag. The latter is used for browser
+     * navigation as well as SEO and social share platforms.
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.title;
+    /**
+     * the template is used to bind to the layout
+     * configuration and css layout class
+     * @type {?|undefined}
+     */
+    CmsPageConfig.prototype.template;
+    /**
+     * The page slots represent various sections on the page that
+     * can contain components.
+     * @type {?}
+     */
+    CmsPageConfig.prototype.slots;
+}
+/**
+ * The `CmsPageSlotsConfig` (plural) holds `CmsPageSlotConfig` objects.
+ * @record
+ */
+function CmsPageSlotsConfig() { }
+/**
+ * The `CmsPageSlotConfig` is a simplified configuration model
+ * that can be used to configure slots in static configuration,
+ * rather than loading from a backend.
+ * @record
+ */
+function CmsPageSlotConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsPageSlotConfig.prototype.componentIds;
+    /** @type {?|undefined} */
+    CmsPageSlotConfig.prototype.properties;
+}
 /**
  * The `CmsStructureConfig` is used to build pages in Spartacus by configuration
  * instead of using a backend CMS system. The configuration can be used to build
@@ -9931,10 +12885,14 @@ class CmsConfig extends OccConfig {
  */
 class CmsStructureConfig extends CmsConfig {
 }
+if (false) {
+    /** @type {?} */
+    CmsStructureConfig.prototype.cmsStructure;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultCmsModuleConfig = {
@@ -9954,7 +12912,7 @@ const defaultCmsModuleConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ContentPageMetaResolver extends PageMetaResolver {
     /**
@@ -9975,7 +12933,7 @@ class ContentPageMetaResolver extends PageMetaResolver {
          * @param {?} page
          * @return {?}
          */
-        page => combineLatest([
+        (page) => combineLatest([
             this.resolveTitle(page),
             this.resolveBreadcrumbLabel().pipe(switchMap((/**
              * @param {?} label
@@ -10023,10 +12981,22 @@ ContentPageMetaResolver.ctorParameters = () => [
     { type: TranslationService }
 ];
 /** @nocollapse */ ContentPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function ContentPageMetaResolver_Factory() { return new ContentPageMetaResolver(ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: ContentPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ContentPageMetaResolver.prototype.cms;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ContentPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsPageTitleModule {
 }
@@ -10044,7 +13014,7 @@ CmsPageTitleModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const QUESTION_MARK = '[^/]';
@@ -10119,6 +13089,50 @@ function globToRegex(glob, literalQuestionMark = false) {
     return regex;
 }
 /**
+ * For given list of glob-like patterns, returns a matcher function.
+ *
+ * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+ * @param {?} patterns
+ * @return {?}
+ */
+function getGlobMatcher(patterns) {
+    /** @type {?} */
+    const processedPatterns = processGlobPatterns(patterns).map((/**
+     * @param {?} __0
+     * @return {?}
+     */
+    ({ positive, regex }) => ({
+        positive,
+        regex: new RegExp(regex),
+    })));
+    /** @type {?} */
+    const includePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    spec => spec.positive));
+    /** @type {?} */
+    const excludePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    spec => !spec.positive));
+    return (/**
+     * @param {?} url
+     * @return {?}
+     */
+    (url) => includePatterns.some((/**
+     * @param {?} pattern
+     * @return {?}
+     */
+    pattern => pattern.regex.test(url))) &&
+        !excludePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        pattern => pattern.regex.test(url))));
+}
+/**
  * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
  * @param {?} urls
  * @return {?}
@@ -10138,7 +13152,7 @@ function processGlobPatterns(urls) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GlobService {
     /**
@@ -10193,7 +13207,7 @@ GlobService.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UrlMatcherFactoryService {
     /**
@@ -10355,10 +13369,17 @@ UrlMatcherFactoryService.ctorParameters = () => [
     { type: GlobService }
 ];
 /** @nocollapse */ UrlMatcherFactoryService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UrlMatcherFactoryService_Factory() { return new UrlMatcherFactoryService(ɵɵinject(GlobService)); }, token: UrlMatcherFactoryService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UrlMatcherFactoryService.prototype.globService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ConfigurableRoutesService {
     /**
@@ -10495,15 +13516,57 @@ ConfigurableRoutesService.ctorParameters = () => [
     { type: UrlMatcherFactoryService }
 ];
 /** @nocollapse */ ConfigurableRoutesService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConfigurableRoutesService_Factory() { return new ConfigurableRoutesService(ɵɵinject(INJECTOR), ɵɵinject(RoutingConfigService), ɵɵinject(UrlMatcherFactoryService)); }, token: ConfigurableRoutesService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.initCalled;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.injector;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.routingConfigService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConfigurableRoutesService.prototype.urlMatcherFactory;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function RoutesConfig() { }
+/**
+ * @record
+ */
+function RouteConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    RouteConfig.prototype.paths;
+    /** @type {?|undefined} */
+    RouteConfig.prototype.paramsMapping;
+    /** @type {?|undefined} */
+    RouteConfig.prototype.disabled;
+}
+/**
+ * @record
+ */
+function ParamsMapping() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UrlPipe {
     /**
@@ -10529,10 +13592,17 @@ UrlPipe.decorators = [
 UrlPipe.ctorParameters = () => [
     { type: SemanticPathService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    UrlPipe.prototype.urlService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UrlModule {
 }
@@ -10546,32 +13616,46 @@ UrlModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function UrlCommandRoute() { }
+if (false) {
+    /** @type {?|undefined} */
+    UrlCommandRoute.prototype.cxRoute;
+    /** @type {?|undefined} */
+    UrlCommandRoute.prototype.params;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class ExternalRoutesConfig {
 }
+if (false) {
+    /** @type {?} */
+    ExternalRoutesConfig.prototype.routing;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ExternalRoutesGuard {
     /**
@@ -10618,10 +13702,22 @@ ExternalRoutesGuard.ctorParameters = () => [
     { type: Object, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
 /** @nocollapse */ ExternalRoutesGuard.ngInjectableDef = ɵɵdefineInjectable({ factory: function ExternalRoutesGuard_Factory() { return new ExternalRoutesGuard(ɵɵinject(WindowRef), ɵɵinject(PLATFORM_ID)); }, token: ExternalRoutesGuard, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesGuard.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesGuard.prototype.platformId;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} service
@@ -10640,7 +13736,7 @@ function addExternalRoutesFactory(service) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Service that helps redirecting to different storefront systems for configured URLs
@@ -10715,10 +13811,27 @@ ExternalRoutesService.ctorParameters = () => [
     { type: UrlMatcherFactoryService },
     { type: Injector }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.matcherFactory;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalRoutesService.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Prepends the external route that redirects to a different storefront system for configured URLs
@@ -10749,17 +13862,43 @@ ExternalRoutesModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function CmsRouteData() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsRouteData.prototype.cxCmsRouteContext;
+    /** @type {?|undefined} */
+    CmsRouteData.prototype.pageLabel;
+}
+/**
+ * @record
+ */
+function CmsRoute() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsRoute.prototype.data;
+}
+/**
+ * @record
+ */
+function CmsActivatedRouteSnapshot() { }
+if (false) {
+    /** @type {?} */
+    CmsActivatedRouteSnapshot.prototype.data;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PageContext {
     /**
@@ -10771,10 +13910,16 @@ class PageContext {
         this.type = type;
     }
 }
+if (false) {
+    /** @type {?} */
+    PageContext.prototype.id;
+    /** @type {?} */
+    PageContext.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class RouterEffects {
     /**
@@ -10862,17 +14007,44 @@ __decorate([
     Effect({ dispatch: false }),
     __metadata("design:type", Observable)
 ], RouterEffects.prototype, "navigateForward$", void 0);
+if (false) {
+    /** @type {?} */
+    RouterEffects.prototype.navigate$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateBuUrl$;
+    /** @type {?} */
+    RouterEffects.prototype.clearCmsRoutes$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateBack$;
+    /** @type {?} */
+    RouterEffects.prototype.navigateForward$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.router;
+    /**
+     * @type {?}
+     * @private
+     */
+    RouterEffects.prototype.location;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$3 = [RouterEffects];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$5 = {
@@ -11014,7 +14186,7 @@ class CustomSerializer {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} service
@@ -11067,17 +14239,17 @@ RoutingModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Abstract class that can be used to implement custom loader logic
@@ -11086,10 +14258,22 @@ RoutingModule.decorators = [
  */
 class CmsPageAdapter {
 }
+if (false) {
+    /**
+     * Abstract method must be used to load the page structure for a given `PageContext`.
+     * The page can be loaded from alternative sources, as long as the structure
+     * converts to the `CmsStructureModel`.
+     *
+     * @abstract
+     * @param {?} pageContext The `PageContext` holding the page Id.
+     * @return {?}
+     */
+    CmsPageAdapter.prototype.load = function (pageContext) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Service that provides access to CMS structure from a static
@@ -11295,10 +14479,17 @@ CmsStructureConfigService.ctorParameters = () => [
     { type: CmsStructureConfig }
 ];
 /** @nocollapse */ CmsStructureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsStructureConfigService_Factory() { return new CmsStructureConfigService(ɵɵinject(CmsStructureConfig)); }, token: CmsStructureConfigService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsStructureConfigService.prototype.cmsDataConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsPageConnector {
     /**
@@ -11373,10 +14564,22 @@ CmsPageConnector.ctorParameters = () => [
     { type: CmsStructureConfigService }
 ];
 /** @nocollapse */ CmsPageConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsPageConnector_Factory() { return new CmsPageConnector(ɵɵinject(CmsPageAdapter), ɵɵinject(CmsStructureConfigService)); }, token: CmsPageConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsPageConnector.prototype.cmsPageAdapter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsPageConnector.prototype.cmsStructureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PageEffects {
     /**
@@ -11466,20 +14669,70 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], PageEffects.prototype, "loadPageData$", void 0);
+if (false) {
+    /** @type {?} */
+    PageEffects.prototype.refreshPage$;
+    /** @type {?} */
+    PageEffects.prototype.loadPageData$;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.cmsPageConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    PageEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class CmsComponentAdapter {
 }
+if (false) {
+    /**
+     * Abstract method must be used to load the component for a given `id` and `PageContext`.
+     * The component can be loaded from alternative backend, as long as the structure
+     * converts to the `CmsStructureModel`.
+     *
+     * @abstract
+     * @template T
+     * @param {?} id
+     * @param {?} pageContext The `PageContext` holding the page Id.
+     * @param {?=} fields
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.load = function (id, pageContext, fields) { };
+    /**
+     * @abstract
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.findComponentsByIds = function (ids, pageContext) { };
+    /**
+     * @abstract
+     * @param {?} ids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    CmsComponentAdapter.prototype.findComponentsByIdsLegacy = function (ids, pageContext) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsComponentConnector {
     /**
@@ -11564,10 +14817,27 @@ CmsComponentConnector.ctorParameters = () => [
     { type: OccConfig }
 ];
 /** @nocollapse */ CmsComponentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsComponentConnector_Factory() { return new CmsComponentConnector(ɵɵinject(CmsStructureConfigService), ɵɵinject(CmsComponentAdapter), ɵɵinject(OccConfig)); }, token: CmsComponentConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.cmsStructureConfigService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.adapter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsComponentConnector.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ComponentEffects {
     /**
@@ -11631,10 +14901,29 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ComponentEffects.prototype, "loadComponent$", void 0);
+if (false) {
+    /** @type {?} */
+    ComponentEffects.prototype.loadComponent$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.cmsComponentLoader;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class NavigationEntryItemEffects {
     /**
@@ -11694,8 +14983,14 @@ class NavigationEntryItemEffects {
                  */
                 error => of(new LoadCmsNavigationItemsFail(data.nodeId, makeErrorSerializable(error)))))))));
             }
-            else if (data.ids.pageIds.length > 0) ;
-            else if (data.ids.mediaIds.length > 0) ;
+            else if (data.ids.pageIds.length > 0) {
+                // TODO: future work
+                // dispatch action to load cms page one by one
+            }
+            else if (data.ids.mediaIds.length > 0) {
+                // TODO: future work
+                // send request to get list of media
+            }
             else {
                 return of(new LoadCmsNavigationItemsFail(data.nodeId, 'navigation nodes are empty'));
             }
@@ -11744,10 +15039,29 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
+if (false) {
+    /** @type {?} */
+    NavigationEntryItemEffects.prototype.loadNavigationItems$;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.cmsComponentConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    NavigationEntryItemEffects.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$4 = [
@@ -11758,7 +15072,7 @@ const effects$4 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$6 = undefined;
@@ -11791,7 +15105,7 @@ function reducer$6(state = initialState$6, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$7 = { entities: {} };
@@ -11813,7 +15127,7 @@ function reducer$7(state = initialState$7, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$8 = undefined;
@@ -11850,7 +15164,7 @@ function reducer$8(entityType) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -11901,7 +15215,7 @@ const metaReducers$2 = [clearCmsState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -11936,7 +15250,7 @@ CmsStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsModule {
     /**
@@ -11962,41 +15276,41 @@ CmsModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CMS_PAGE_NORMALIZER = new InjectionToken('CmsPageNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CMS_COMPONENT_NORMALIZER = new InjectionToken('CmsComponentNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PageMetaService {
     /**
@@ -12065,40 +15379,159 @@ PageMetaService.ctorParameters = () => [
     { type: CmsService }
 ];
 /** @nocollapse */ PageMetaService.ngInjectableDef = ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(ɵɵinject(PageMetaResolver, 8), ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    PageMetaService.prototype.resolvers;
+    /**
+     * @type {?}
+     * @protected
+     */
+    PageMetaService.prototype.cms;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ContentSlotComponentData() { }
+if (false) {
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.uid;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.typeCode;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.flexType;
+    /** @type {?|undefined} */
+    ContentSlotComponentData.prototype.properties;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function ContentSlotData() { }
+if (false) {
+    /** @type {?|undefined} */
+    ContentSlotData.prototype.components;
+    /** @type {?|undefined} */
+    ContentSlotData.prototype.properties;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function NodeItem() { }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Resolves the page heading which is used in the UI.
+ * @record
+ */
+function PageHeadingResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageHeadingResolver.prototype.resolveHeading = function (args) { };
+}
+/**
+ * Resolves the page title which is first and foremost
+ * used for the page title tag, but could also be used for the
+ * page heading in the UI.
+ * @record
+ */
+function PageTitleResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageTitleResolver.prototype.resolveTitle = function (args) { };
+}
+/**
+ * Resolves the page description. The page description is used
+ * in the Search Engine Result Page (SERP).
+ * @record
+ */
+function PageDescriptionResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageDescriptionResolver.prototype.resolveDescription = function (args) { };
+}
+/**
+ * Resolves breadcrumbs for the page, which is used in the `BreadcrumbComponent`/
+ * @record
+ */
+function PageBreadcrumbResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageBreadcrumbResolver.prototype.resolveBreadcrumbs = function (args) { };
+}
+/**
+ * Resolves the main image for the page. This is typically used
+ * for social sharing (using `og:image` metatag)
+ * @record
+ */
+function PageImageResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageImageResolver.prototype.resolveImage = function (args) { };
+}
+/**
+ * Resolves the robot information for the page. This is used by
+ * search engines to understand whether the page and subsequential links
+ * should be indexed.
+ *
+ * @record
+ */
+function PageRobotsResolver() { }
+if (false) {
+    /**
+     * @param {...?} args
+     * @return {?}
+     */
+    PageRobotsResolver.prototype.resolveRobots = function (args) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class DynamicAttributeService {
     /**
@@ -12162,17 +15595,17 @@ DynamicAttributeService.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} cookie
@@ -12189,7 +15622,7 @@ function getCookie(cookie, name) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
@@ -12218,6 +15651,14 @@ function configFromCookieFactory(cookieName, platform, document) {
         return parseConfigJSON(config);
     }
     return {};
+}
+/**
+ * @record
+ */
+function TestConfigModuleOptions() { }
+if (false) {
+    /** @type {?} */
+    TestConfigModuleOptions.prototype.cookie;
 }
 /**
  * Designed/intended to provide dynamic configuration for testing scenarios ONLY (e.g. e2e tests).
@@ -12257,12 +15698,12 @@ TestConfigModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {string} */
 const GlobalMessageType = {
@@ -12270,20 +15711,34 @@ const GlobalMessageType = {
     MSG_TYPE_ERROR: '[GlobalMessage] Error',
     MSG_TYPE_INFO: '[GlobalMessage] Information',
 };
+/**
+ * @record
+ */
+function GlobalMessage() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessage.prototype.text;
+    /** @type {?} */
+    GlobalMessage.prototype.type;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class GlobalMessageConfig {
 }
+if (false) {
+    /** @type {?} */
+    GlobalMessageConfig.prototype.globalMessages;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ADD_MESSAGE = '[Global-message] Add a Message';
@@ -12300,6 +15755,12 @@ class AddMessage {
         this.type = ADD_MESSAGE;
     }
 }
+if (false) {
+    /** @type {?} */
+    AddMessage.prototype.type;
+    /** @type {?} */
+    AddMessage.prototype.payload;
+}
 class RemoveMessage {
     /**
      * @param {?} payload
@@ -12308,6 +15769,12 @@ class RemoveMessage {
         this.payload = payload;
         this.type = REMOVE_MESSAGE;
     }
+}
+if (false) {
+    /** @type {?} */
+    RemoveMessage.prototype.type;
+    /** @type {?} */
+    RemoveMessage.prototype.payload;
 }
 class RemoveMessagesByType {
     /**
@@ -12318,10 +15785,16 @@ class RemoveMessagesByType {
         this.type = REMOVE_MESSAGES_BY_TYPE;
     }
 }
+if (false) {
+    /** @type {?} */
+    RemoveMessagesByType.prototype.type;
+    /** @type {?} */
+    RemoveMessagesByType.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
@@ -12335,34 +15808,54 @@ var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const GLOBAL_MESSAGE_FEATURE = 'global-message';
+/**
+ * @record
+ */
+function StateWithGlobalMessage() { }
+if (false) {
+    /* Skipping unnamed member:
+    [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
+}
+/**
+ * @record
+ */
+function GlobalMessageState() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessageState.prototype.entities;
+}
+/**
+ * @record
+ */
+function GlobalMessageEntities() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$7 = /**
+const ɵ0$f = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$7));
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$f));
 /** @type {?} */
 const getGlobalMessageEntitiesByType = (/**
  * @param {?} type
@@ -12390,7 +15883,7 @@ const getGlobalMessageCountByType = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -12402,12 +15895,12 @@ var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GlobalMessageService {
     /**
@@ -12461,15 +15954,22 @@ GlobalMessageService.decorators = [
 GlobalMessageService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    GlobalMessageService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @enum {number} */
 const HttpResponseStatus = {
@@ -12493,7 +15993,7 @@ HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -12516,10 +16016,32 @@ HttpErrorHandler.ctorParameters = () => [
     { type: GlobalMessageService }
 ];
 /** @nocollapse */ HttpErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+if (false) {
+    /**
+     * The http response status number which is handled by this handler.
+     * Implementations can set the response status number, i.e. 404, so that
+     * the handler can be found by the error interceptor.
+     * @type {?}
+     */
+    HttpErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorHandler.prototype.globalMessageService;
+    /**
+     * Handles the error response for the respose status that is register for the handler
+     * @abstract
+     * @param {?} request
+     * @param {?} errorResponse
+     * @return {?}
+     */
+    HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class BadGatewayHandler extends HttpErrorHandler {
     constructor() {
@@ -12539,10 +16061,14 @@ BadGatewayHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ BadGatewayHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    BadGatewayHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
@@ -12614,10 +16140,14 @@ BadRequestHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ BadRequestHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    BadRequestHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ConflictHandler extends HttpErrorHandler {
     constructor() {
@@ -12637,10 +16167,14 @@ ConflictHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ ConflictHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ConflictHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ForbiddenHandler extends HttpErrorHandler {
     constructor() {
@@ -12660,10 +16194,14 @@ ForbiddenHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ ForbiddenHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ForbiddenHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GatewayTimeoutHandler extends HttpErrorHandler {
     constructor() {
@@ -12683,10 +16221,14 @@ GatewayTimeoutHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    GatewayTimeoutHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class InternalServerErrorHandler extends HttpErrorHandler {
     constructor() {
@@ -12706,10 +16248,14 @@ InternalServerErrorHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    InternalServerErrorHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class NotFoundHandler extends HttpErrorHandler {
     constructor() {
@@ -12728,10 +16274,14 @@ NotFoundHandler.decorators = [
             },] }
 ];
 /** @nocollapse */ NotFoundHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    NotFoundHandler.prototype.responseStatus;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UnknownErrorHandler extends HttpErrorHandler {
     /**
@@ -12761,10 +16311,19 @@ UnknownErrorHandler.ctorParameters = () => [
     { type: GlobalMessageService }
 ];
 /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    UnknownErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UnknownErrorHandler.prototype.globalMessageService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class HttpErrorInterceptor {
     /**
@@ -12839,10 +16398,17 @@ HttpErrorInterceptor.decorators = [
 HttpErrorInterceptor.ctorParameters = () => [
     { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorInterceptor.prototype.handlers;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const errorHandlers = [
@@ -12898,7 +16464,7 @@ const httpErrorInterceptors = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$9 = {
@@ -12948,7 +16514,7 @@ function reducer$9(state = initialState$9, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -12966,7 +16532,7 @@ const reducerProvider$5 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GlobalMessageStoreModule {
 }
@@ -12982,7 +16548,7 @@ GlobalMessageStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} objA
@@ -13092,7 +16658,7 @@ function indexOfFirstOccurrence(obj, arr) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GlobalMessageEffect {
     /**
@@ -13158,10 +16724,31 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
+if (false) {
+    /** @type {?} */
+    GlobalMessageEffect.prototype.removeDuplicated$;
+    /** @type {?} */
+    GlobalMessageEffect.prototype.hideAfterDelay$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.store;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -13184,7 +16771,7 @@ function defaultGlobalMessageConfigFactory() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GlobalMessageModule {
     /**
@@ -13213,27 +16800,47 @@ GlobalMessageModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function TranslationResources() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Translatable() { }
+if (false) {
+    /** @type {?|undefined} */
+    Translatable.prototype.key;
+    /** @type {?|undefined} */
+    Translatable.prototype.params;
+    /** @type {?|undefined} */
+    Translatable.prototype.raw;
+}
+/**
+ * @record
+ */
+function TranslatableParams() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Facade that provides easy access to language state, actions and selectors.
@@ -13324,10 +16931,27 @@ LanguageService.ctorParameters = () => [
     { type: WindowRef },
     { type: SiteContextConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguageService.prototype.sessionStorage;
+    /**
+     * @type {?}
+     * @protected
+     */
+    LanguageService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    LanguageService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // type CxDatePipe, not DatePipe, due to conflict with Angular's DatePipe - problem occurs for the backward compatibility compiler of Ivy
 class CxDatePipe extends DatePipe {
@@ -13398,10 +17022,17 @@ CxDatePipe.decorators = [
 CxDatePipe.ctorParameters = () => [
     { type: LanguageService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CxDatePipe.prototype.language;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class TranslatePipe {
     /**
@@ -13478,20 +17109,56 @@ TranslatePipe.ctorParameters = () => [
     { type: TranslationService },
     { type: ChangeDetectorRef }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.lastKey;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.lastOptions;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.translatedValue;
+    /**
+     * @type {?}
+     * @private
+     */
+    TranslatePipe.prototype.sub;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslatePipe.prototype.service;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslatePipe.prototype.cd;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class I18nConfig {
 }
+if (false) {
+    /** @type {?} */
+    I18nConfig.prototype.i18n;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class TranslationChunkService {
     /**
@@ -13568,10 +17235,32 @@ TranslationChunkService.decorators = [
 TranslationChunkService.ctorParameters = () => [
     { type: I18nConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.duplicates;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.chunks;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.KEY_SEPARATOR;
+    /**
+     * @type {?}
+     * @protected
+     */
+    TranslationChunkService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -13642,14 +17331,14 @@ function syncI18nextWithSiteContext(language) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$8 = i18nextInit;
+const ɵ0$g = i18nextInit;
 /** @type {?} */
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$8,
+        useFactory: ɵ0$g,
         deps: [I18nConfig, LanguageService],
         multi: true,
     },
@@ -13657,7 +17346,7 @@ const i18nextProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultI18nConfig = {
@@ -13669,7 +17358,7 @@ const defaultI18nConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class I18nextTranslationService {
     /**
@@ -13784,10 +17473,32 @@ I18nextTranslationService.ctorParameters = () => [
     { type: I18nConfig },
     { type: TranslationChunkService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    I18nextTranslationService.prototype.NON_BREAKING_SPACE;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.NAMESPACE_SEPARATOR;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    I18nextTranslationService.prototype.translationChunk;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class I18nModule {
     /**
@@ -13815,12 +17526,12 @@ I18nModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} key
@@ -13842,7 +17553,7 @@ function mockTranslate(key, options = {}) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class MockTranslatePipe {
     /**
@@ -13868,7 +17579,7 @@ MockTranslatePipe.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class MockTranslationService {
     /**
@@ -13903,7 +17614,7 @@ MockTranslationService.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class MockDatePipe extends DatePipe {
     /**
@@ -13922,7 +17633,7 @@ MockDatePipe.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class I18nTestingModule {
 }
@@ -13938,36 +17649,56 @@ I18nTestingModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class KymaConfig extends OccConfig {
 }
+if (false) {
+    /** @type {?} */
+    KymaConfig.prototype.authentication;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const KYMA_FEATURE = 'kyma';
 /** @type {?} */
 const OPEN_ID_TOKEN_DATA = '[Kyma Auth] Open ID Token Data';
+/**
+ * @record
+ */
+function StateWithKyma() { }
+if (false) {
+    /* Skipping unnamed member:
+    [KYMA_FEATURE]: KymaState;*/
+}
+/**
+ * @record
+ */
+function KymaState() { }
+if (false) {
+    /** @type {?} */
+    KymaState.prototype.openIdToken;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_OPEN_ID_TOKEN = '[Kyma] Load Open ID Token';
@@ -13985,6 +17716,12 @@ class LoadOpenIdToken extends LoaderLoadAction {
         this.type = LOAD_OPEN_ID_TOKEN;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadOpenIdToken.prototype.type;
+    /** @type {?} */
+    LoadOpenIdToken.prototype.payload;
+}
 class LoadOpenIdTokenFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -13994,6 +17731,12 @@ class LoadOpenIdTokenFail extends LoaderFailAction {
         this.payload = payload;
         this.type = LOAD_OPEN_ID_TOKEN_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadOpenIdTokenFail.prototype.type;
+    /** @type {?} */
+    LoadOpenIdTokenFail.prototype.payload;
 }
 class LoadOpenIdTokenSuccess extends LoaderSuccessAction {
     /**
@@ -14005,10 +17748,16 @@ class LoadOpenIdTokenSuccess extends LoaderSuccessAction {
         this.type = LOAD_OPEN_ID_TOKEN_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadOpenIdTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadOpenIdTokenSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var kymaGroup_actions = /*#__PURE__*/Object.freeze({
@@ -14022,27 +17771,27 @@ var kymaGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getKymaState = createFeatureSelector(KYMA_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$9 = /**
+const ɵ0$h = /**
  * @param {?} state
  * @return {?}
  */
 state => state.openIdToken;
 /** @type {?} */
-const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$9));
+const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$h));
 /** @type {?} */
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 /** @type {?} */
@@ -14054,7 +17803,7 @@ const getOpenIdTokenError = createSelector(getOpenIdTokenState, loaderErrorSelec
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -14068,12 +17817,12 @@ var kymaGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class KymaService {
     /**
@@ -14110,15 +17859,22 @@ KymaService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ KymaService.ngInjectableDef = ɵɵdefineInjectable({ factory: function KymaService_Factory() { return new KymaService(ɵɵinject(Store)); }, token: KymaService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    KymaService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultKymaConfig = {
@@ -14131,7 +17887,7 @@ const defaultKymaConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const OAUTH_ENDPOINT$2 = '/authorizationserver/oauth/token';
@@ -14188,17 +17944,29 @@ OpenIdAuthenticationTokenService.ctorParameters = () => [
     { type: KymaConfig },
     { type: HttpClient }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdAuthenticationTokenService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdAuthenticationTokenService.prototype.http;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const KymaServices = [OpenIdAuthenticationTokenService];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OpenIdTokenEffect {
     /**
@@ -14259,17 +18027,38 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
+if (false) {
+    /** @type {?} */
+    OpenIdTokenEffect.prototype.triggerOpenIdTokenLoading$;
+    /** @type {?} */
+    OpenIdTokenEffect.prototype.loadOpenIdToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.openIdTokenService;
+    /**
+     * @type {?}
+     * @private
+     */
+    OpenIdTokenEffect.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$5 = [OpenIdTokenEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -14308,7 +18097,7 @@ const metaReducers$3 = [clearKymaState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -14345,7 +18134,7 @@ KymaStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class KymaModule {
 }
@@ -14363,99 +18152,1463 @@ KymaModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function OpenIdToken() { }
+if (false) {
+    /** @type {?} */
+    OpenIdToken.prototype.id_token;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
 /**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @record
  */
+function Country() { }
+if (false) {
+    /** @type {?|undefined} */
+    Country.prototype.isocode;
+    /** @type {?|undefined} */
+    Country.prototype.name;
+}
 /** @enum {string} */
 const CountryType = {
     BILLING: 'BILLING',
     SHIPPING: 'SHIPPING',
 };
+/**
+ * @record
+ */
+function Region() { }
+if (false) {
+    /** @type {?|undefined} */
+    Region.prototype.countryIso;
+    /** @type {?|undefined} */
+    Region.prototype.isocode;
+    /** @type {?|undefined} */
+    Region.prototype.isocodeShort;
+    /** @type {?|undefined} */
+    Region.prototype.name;
+}
+/**
+ * @record
+ */
+function Address() { }
+if (false) {
+    /** @type {?|undefined} */
+    Address.prototype.companyName;
+    /** @type {?|undefined} */
+    Address.prototype.country;
+    /** @type {?|undefined} */
+    Address.prototype.defaultAddress;
+    /** @type {?|undefined} */
+    Address.prototype.email;
+    /** @type {?|undefined} */
+    Address.prototype.firstName;
+    /** @type {?|undefined} */
+    Address.prototype.formattedAddress;
+    /** @type {?|undefined} */
+    Address.prototype.id;
+    /** @type {?|undefined} */
+    Address.prototype.lastName;
+    /** @type {?|undefined} */
+    Address.prototype.line1;
+    /** @type {?|undefined} */
+    Address.prototype.line2;
+    /** @type {?|undefined} */
+    Address.prototype.phone;
+    /** @type {?|undefined} */
+    Address.prototype.postalCode;
+    /** @type {?|undefined} */
+    Address.prototype.region;
+    /** @type {?|undefined} */
+    Address.prototype.shippingAddress;
+    /** @type {?|undefined} */
+    Address.prototype.title;
+    /** @type {?|undefined} */
+    Address.prototype.titleCode;
+    /** @type {?|undefined} */
+    Address.prototype.town;
+    /** @type {?|undefined} */
+    Address.prototype.visibleInAddressBook;
+}
+/**
+ * @record
+ */
+function AddressValidation() { }
+if (false) {
+    /** @type {?|undefined} */
+    AddressValidation.prototype.decision;
+    /** @type {?|undefined} */
+    AddressValidation.prototype.errors;
+    /** @type {?|undefined} */
+    AddressValidation.prototype.suggestedAddresses;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function PromotionResult() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionResult.prototype.consumedEntries;
+    /** @type {?|undefined} */
+    PromotionResult.prototype.description;
+    /** @type {?|undefined} */
+    PromotionResult.prototype.promotion;
+}
+/**
+ * @record
+ */
+function Voucher() { }
+if (false) {
+    /** @type {?|undefined} */
+    Voucher.prototype.appliedValue;
+    /** @type {?|undefined} */
+    Voucher.prototype.code;
+    /** @type {?|undefined} */
+    Voucher.prototype.currency;
+    /** @type {?|undefined} */
+    Voucher.prototype.description;
+    /** @type {?|undefined} */
+    Voucher.prototype.freeShipping;
+    /** @type {?|undefined} */
+    Voucher.prototype.name;
+    /** @type {?|undefined} */
+    Voucher.prototype.value;
+    /** @type {?|undefined} */
+    Voucher.prototype.valueFormatted;
+    /** @type {?|undefined} */
+    Voucher.prototype.valueString;
+    /** @type {?|undefined} */
+    Voucher.prototype.voucherCode;
+}
+/**
+ * @record
+ */
+function DeliveryOrderEntryGroup() { }
+if (false) {
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.entries;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.quantity;
+    /** @type {?|undefined} */
+    DeliveryOrderEntryGroup.prototype.totalPriceWithTax;
+}
+/**
+ * @record
+ */
+function Principal() { }
+if (false) {
+    /** @type {?|undefined} */
+    Principal.prototype.name;
+    /** @type {?|undefined} */
+    Principal.prototype.uid;
+}
+/**
+ * @record
+ */
+function CardType() { }
+if (false) {
+    /** @type {?|undefined} */
+    CardType.prototype.code;
+    /** @type {?|undefined} */
+    CardType.prototype.name;
+}
+/**
+ * @record
+ */
+function PaymentDetails() { }
+if (false) {
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.accountHolderName;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.billingAddress;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cardNumber;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cardType;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.cvn;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.defaultPayment;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.expiryMonth;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.expiryYear;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.id;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.issueNumber;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.saved;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.startMonth;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.startYear;
+    /** @type {?|undefined} */
+    PaymentDetails.prototype.subscriptionId;
+}
+/**
+ * @record
+ */
+function Cart() { }
+if (false) {
+    /** @type {?|undefined} */
+    Cart.prototype.appliedOrderPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.appliedProductPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.appliedVouchers;
+    /** @type {?|undefined} */
+    Cart.prototype.calculated;
+    /** @type {?|undefined} */
+    Cart.prototype.code;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryItemsQuantity;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    Cart.prototype.deliveryOrderGroups;
+    /** @type {?|undefined} */
+    Cart.prototype.description;
+    /** @type {?|undefined} */
+    Cart.prototype.entries;
+    /** @type {?|undefined} */
+    Cart.prototype.expirationTime;
+    /** @type {?|undefined} */
+    Cart.prototype.guid;
+    /** @type {?|undefined} */
+    Cart.prototype.name;
+    /** @type {?|undefined} */
+    Cart.prototype.net;
+    /** @type {?|undefined} */
+    Cart.prototype.orderDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.paymentInfo;
+    /** @type {?|undefined} */
+    Cart.prototype.pickupItemsQuantity;
+    /** @type {?|undefined} */
+    Cart.prototype.pickupOrderGroups;
+    /** @type {?|undefined} */
+    Cart.prototype.potentialOrderPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.potentialProductPromotions;
+    /** @type {?|undefined} */
+    Cart.prototype.productDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.saveTime;
+    /** @type {?|undefined} */
+    Cart.prototype.savedBy;
+    /** @type {?|undefined} */
+    Cart.prototype.site;
+    /** @type {?|undefined} */
+    Cart.prototype.store;
+    /** @type {?|undefined} */
+    Cart.prototype.subTotal;
+    /** @type {?|undefined} */
+    Cart.prototype.totalDiscounts;
+    /** @type {?|undefined} */
+    Cart.prototype.totalItems;
+    /** @type {?|undefined} */
+    Cart.prototype.totalPrice;
+    /** @type {?|undefined} */
+    Cart.prototype.totalPriceWithTax;
+    /** @type {?|undefined} */
+    Cart.prototype.totalTax;
+    /** @type {?|undefined} */
+    Cart.prototype.totalUnitCount;
+    /** @type {?|undefined} */
+    Cart.prototype.user;
+}
+/**
+ * @record
+ */
+function CartModification() { }
+if (false) {
+    /** @type {?|undefined} */
+    CartModification.prototype.deliveryModeChanged;
+    /** @type {?|undefined} */
+    CartModification.prototype.entry;
+    /** @type {?|undefined} */
+    CartModification.prototype.quantity;
+    /** @type {?|undefined} */
+    CartModification.prototype.quantityAdded;
+    /** @type {?|undefined} */
+    CartModification.prototype.statusCode;
+    /** @type {?|undefined} */
+    CartModification.prototype.statusMessage;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ConsentTemplate() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.id;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.name;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.description;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.version;
+    /** @type {?|undefined} */
+    ConsentTemplate.prototype.currentConsent;
+}
+/**
+ * @record
+ */
+function Consent() { }
+if (false) {
+    /** @type {?|undefined} */
+    Consent.prototype.code;
+    /** @type {?|undefined} */
+    Consent.prototype.consentGivenDate;
+    /** @type {?|undefined} */
+    Consent.prototype.consentWithdrawnDate;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ConsignmentTrackingEvent() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.eventDate;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.detail;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.location;
+    /** @type {?|undefined} */
+    ConsignmentTrackingEvent.prototype.referenceCode;
+}
+/**
+ * @record
+ */
+function Carrier() { }
+if (false) {
+    /** @type {?|undefined} */
+    Carrier.prototype.code;
+    /** @type {?|undefined} */
+    Carrier.prototype.name;
+}
+/**
+ * @record
+ */
+function ConsignmentTracking() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.carrierDetails;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingID;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingUrl;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.targetArrivalDate;
+    /** @type {?|undefined} */
+    ConsignmentTracking.prototype.trackingEvents;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Images() { }
+/**
+ * @record
+ */
+function Image() { }
+if (false) {
+    /** @type {?|undefined} */
+    Image.prototype.altText;
+    /** @type {?|undefined} */
+    Image.prototype.format;
+    /** @type {?|undefined} */
+    Image.prototype.galleryIndex;
+    /** @type {?|undefined} */
+    Image.prototype.imageType;
+    /** @type {?|undefined} */
+    Image.prototype.url;
+}
 /** @enum {string} */
 const ImageType = {
     PRIMARY: 'PRIMARY',
     GALLERY: 'GALLERY',
 };
+/**
+ * @record
+ */
+function ImageGroup() { }
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function Currency() { }
+if (false) {
+    /** @type {?|undefined} */
+    Currency.prototype.active;
+    /** @type {?|undefined} */
+    Currency.prototype.isocode;
+    /** @type {?|undefined} */
+    Currency.prototype.name;
+    /** @type {?|undefined} */
+    Currency.prototype.symbol;
+}
+/**
+ * @record
+ */
+function Time() { }
+if (false) {
+    /** @type {?|undefined} */
+    Time.prototype.formattedHour;
+    /** @type {?|undefined} */
+    Time.prototype.hour;
+    /** @type {?|undefined} */
+    Time.prototype.minute;
+}
+/**
+ * @record
+ */
+function GeoPoint() { }
+if (false) {
+    /** @type {?|undefined} */
+    GeoPoint.prototype.latitude;
+    /** @type {?|undefined} */
+    GeoPoint.prototype.longitude;
+}
+/**
+ * @record
+ */
+function Language() { }
+if (false) {
+    /** @type {?|undefined} */
+    Language.prototype.active;
+    /** @type {?|undefined} */
+    Language.prototype.isocode;
+    /** @type {?|undefined} */
+    Language.prototype.name;
+    /** @type {?|undefined} */
+    Language.prototype.nativeName;
+}
+/**
+ * @record
+ */
+function User() { }
+if (false) {
+    /** @type {?|undefined} */
+    User.prototype.currency;
+    /** @type {?|undefined} */
+    User.prototype.customerId;
+    /** @type {?|undefined} */
+    User.prototype.deactivationDate;
+    /** @type {?|undefined} */
+    User.prototype.defaultAddress;
+    /** @type {?|undefined} */
+    User.prototype.displayUid;
+    /** @type {?|undefined} */
+    User.prototype.firstName;
+    /** @type {?|undefined} */
+    User.prototype.language;
+    /** @type {?|undefined} */
+    User.prototype.lastName;
+    /** @type {?|undefined} */
+    User.prototype.name;
+    /** @type {?|undefined} */
+    User.prototype.title;
+    /** @type {?|undefined} */
+    User.prototype.titleCode;
+    /** @type {?|undefined} */
+    User.prototype.uid;
+}
+/**
+ * @record
+ */
+function PaginationModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    PaginationModel.prototype.currentPage;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.pageSize;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.sort;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.totalPages;
+    /** @type {?|undefined} */
+    PaginationModel.prototype.totalResults;
+}
+/**
+ * @record
+ */
+function SortModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    SortModel.prototype.code;
+    /** @type {?|undefined} */
+    SortModel.prototype.name;
+    /** @type {?|undefined} */
+    SortModel.prototype.selected;
+}
+/**
+ * @record
+ */
+function Title() { }
+if (false) {
+    /** @type {?|undefined} */
+    Title.prototype.code;
+    /** @type {?|undefined} */
+    Title.prototype.name;
+}
+/**
+ * @record
+ */
+function ErrorModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    ErrorModel.prototype.message;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.reason;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.subject;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.subjectType;
+    /** @type {?|undefined} */
+    ErrorModel.prototype.type;
+}
+/**
+ * @record
+ */
+function HttpErrorModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.message;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.error;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.status;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.statusText;
+    /** @type {?|undefined} */
+    HttpErrorModel.prototype.url;
+}
+/**
+ * @record
+ */
+function BaseSite() { }
+if (false) {
+    /** @type {?|undefined} */
+    BaseSite.prototype.channel;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultLanguage;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewCatalogId;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewCategoryCode;
+    /** @type {?|undefined} */
+    BaseSite.prototype.defaultPreviewProductCode;
+    /** @type {?|undefined} */
+    BaseSite.prototype.locale;
+    /** @type {?|undefined} */
+    BaseSite.prototype.name;
+    /** @type {?|undefined} */
+    BaseSite.prototype.theme;
+    /** @type {?|undefined} */
+    BaseSite.prototype.uid;
+}
+/**
+ * @record
+ */
+function UserSignUp() { }
+if (false) {
+    /** @type {?|undefined} */
+    UserSignUp.prototype.firstName;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.lastName;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.password;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.titleCode;
+    /** @type {?|undefined} */
+    UserSignUp.prototype.uid;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function DeliveryMode() { }
+if (false) {
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.code;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.description;
+    /** @type {?|undefined} */
+    DeliveryMode.prototype.name;
+}
+/**
+ * @record
+ */
+function OrderEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderEntry.prototype.basePrice;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.entryNumber;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.product;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.quantity;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.totalPrice;
+    /** @type {?|undefined} */
+    OrderEntry.prototype.updateable;
+}
+/**
+ * @record
+ */
+function PickupOrderEntryGroup() { }
+if (false) {
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.distance;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.entries;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.quantity;
+    /** @type {?|undefined} */
+    PickupOrderEntryGroup.prototype.totalPriceWithTax;
+}
+/**
+ * @record
+ */
+function PromotionOrderEntryConsumed() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.adjustedUnitPrice;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.code;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.orderEntryNumber;
+    /** @type {?|undefined} */
+    PromotionOrderEntryConsumed.prototype.quantity;
+}
+/**
+ * @record
+ */
+function ConsignmentEntry() { }
+if (false) {
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.orderEntry;
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.quantity;
+    /** @type {?|undefined} */
+    ConsignmentEntry.prototype.shippedQuantity;
+}
+/**
+ * @record
+ */
+function Consignment() { }
+if (false) {
+    /** @type {?|undefined} */
+    Consignment.prototype.code;
+    /** @type {?|undefined} */
+    Consignment.prototype.deliveryPointOfService;
+    /** @type {?|undefined} */
+    Consignment.prototype.entries;
+    /** @type {?|undefined} */
+    Consignment.prototype.shippingAddress;
+    /** @type {?|undefined} */
+    Consignment.prototype.status;
+    /** @type {?|undefined} */
+    Consignment.prototype.statusDate;
+    /** @type {?|undefined} */
+    Consignment.prototype.trackingID;
+}
+/**
+ * @record
+ */
+function OrderHistory() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderHistory.prototype.code;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.guid;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.placed;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.status;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    OrderHistory.prototype.total;
+}
+/**
+ * @record
+ */
+function OrderHistoryList() { }
+if (false) {
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.orders;
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.pagination;
+    /** @type {?|undefined} */
+    OrderHistoryList.prototype.sorts;
+}
+/**
+ * @record
+ */
+function Order() { }
+if (false) {
+    /** @type {?|undefined} */
+    Order.prototype.appliedOrderPromotions;
+    /** @type {?|undefined} */
+    Order.prototype.appliedProductPromotions;
+    /** @type {?|undefined} */
+    Order.prototype.appliedVouchers;
+    /** @type {?|undefined} */
+    Order.prototype.calculated;
+    /** @type {?|undefined} */
+    Order.prototype.code;
+    /** @type {?|undefined} */
+    Order.prototype.consignments;
+    /** @type {?|undefined} */
+    Order.prototype.created;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryAddress;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryCost;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryItemsQuantity;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryMode;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryOrderGroups;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryStatus;
+    /** @type {?|undefined} */
+    Order.prototype.deliveryStatusDisplay;
+    /** @type {?|undefined} */
+    Order.prototype.entries;
+    /** @type {?|undefined} */
+    Order.prototype.guestCustomer;
+    /** @type {?|undefined} */
+    Order.prototype.guid;
+    /** @type {?|undefined} */
+    Order.prototype.net;
+    /** @type {?|undefined} */
+    Order.prototype.orderDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.paymentInfo;
+    /** @type {?|undefined} */
+    Order.prototype.pickupItemsQuantity;
+    /** @type {?|undefined} */
+    Order.prototype.pickupOrderGroups;
+    /** @type {?|undefined} */
+    Order.prototype.productDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.site;
+    /** @type {?|undefined} */
+    Order.prototype.status;
+    /** @type {?|undefined} */
+    Order.prototype.statusDisplay;
+    /** @type {?|undefined} */
+    Order.prototype.store;
+    /** @type {?|undefined} */
+    Order.prototype.subTotal;
+    /** @type {?|undefined} */
+    Order.prototype.totalDiscounts;
+    /** @type {?|undefined} */
+    Order.prototype.totalItems;
+    /** @type {?|undefined} */
+    Order.prototype.totalPrice;
+    /** @type {?|undefined} */
+    Order.prototype.totalPriceWithTax;
+    /** @type {?|undefined} */
+    Order.prototype.totalTax;
+    /** @type {?|undefined} */
+    Order.prototype.unconsignedEntries;
+    /** @type {?|undefined} */
+    Order.prototype.user;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function PointOfService() { }
+if (false) {
+    /** @type {?|undefined} */
+    PointOfService.prototype.address;
+    /** @type {?|undefined} */
+    PointOfService.prototype.description;
+    /** @type {?|undefined} */
+    PointOfService.prototype.displayName;
+    /** @type {?|undefined} */
+    PointOfService.prototype.distanceKm;
+    /** @type {?|undefined} */
+    PointOfService.prototype.features;
+    /** @type {?|undefined} */
+    PointOfService.prototype.formattedDistance;
+    /** @type {?|undefined} */
+    PointOfService.prototype.geoPoint;
+    /** @type {?|undefined} */
+    PointOfService.prototype.mapIcon;
+    /** @type {?|undefined} */
+    PointOfService.prototype.name;
+    /** @type {?|undefined} */
+    PointOfService.prototype.openingHours;
+    /** @type {?|undefined} */
+    PointOfService.prototype.storeContent;
+    /** @type {?|undefined} */
+    PointOfService.prototype.storeImages;
+    /** @type {?|undefined} */
+    PointOfService.prototype.url;
+}
+/**
+ * @record
+ */
+function SpecialOpeningDay() { }
+if (false) {
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.closed;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.closingTime;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.comment;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.date;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.formattedDate;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.name;
+    /** @type {?|undefined} */
+    SpecialOpeningDay.prototype.openingTime;
+}
+/**
+ * @record
+ */
+function WeekdayOpeningDay() { }
+if (false) {
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.closed;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.closingTime;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.openingTime;
+    /** @type {?|undefined} */
+    WeekdayOpeningDay.prototype.weekDay;
+}
+/**
+ * @record
+ */
+function OpeningSchedule() { }
+if (false) {
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.code;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.name;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.specialDayOpeningList;
+    /** @type {?|undefined} */
+    OpeningSchedule.prototype.weekDayOpeningList;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function SearchQuery() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchQuery.prototype.value;
+}
+/**
+ * @record
+ */
+function SearchState() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchState.prototype.query;
+    /** @type {?|undefined} */
+    SearchState.prototype.url;
+}
+/**
+ * @record
+ */
+function FacetValue() { }
+if (false) {
+    /** @type {?|undefined} */
+    FacetValue.prototype.count;
+    /** @type {?|undefined} */
+    FacetValue.prototype.name;
+    /** @type {?|undefined} */
+    FacetValue.prototype.query;
+    /** @type {?|undefined} */
+    FacetValue.prototype.selected;
+}
+/**
+ * @record
+ */
+function Breadcrumb() { }
+if (false) {
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetCode;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetName;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetValueCode;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.facetValueName;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.removeQuery;
+    /** @type {?|undefined} */
+    Breadcrumb.prototype.truncateQuery;
+}
+/**
+ * @record
+ */
+function Facet() { }
+if (false) {
+    /** @type {?|undefined} */
+    Facet.prototype.category;
+    /** @type {?|undefined} */
+    Facet.prototype.multiSelect;
+    /** @type {?|undefined} */
+    Facet.prototype.name;
+    /** @type {?|undefined} */
+    Facet.prototype.priority;
+    /** @type {?|undefined} */
+    Facet.prototype.topValues;
+    /** @type {?|undefined} */
+    Facet.prototype.values;
+    /** @type {?|undefined} */
+    Facet.prototype.visible;
+}
+/**
+ * @record
+ */
+function SpellingSuggestion() { }
+if (false) {
+    /** @type {?|undefined} */
+    SpellingSuggestion.prototype.query;
+    /** @type {?|undefined} */
+    SpellingSuggestion.prototype.suggestion;
+}
+/**
+ * @record
+ */
+function ProductSearchPage() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.breadcrumbs;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.categoryCode;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.currentQuery;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.facets;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.freeTextSearch;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.keywordRedirectUrl;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.pagination;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.products;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.sorts;
+    /** @type {?|undefined} */
+    ProductSearchPage.prototype.spellingSuggestion;
+}
+/**
+ * @record
+ */
+function Suggestion() { }
+if (false) {
+    /** @type {?|undefined} */
+    Suggestion.prototype.value;
+}
+/**
+ * @record
+ */
+function ClearSearch() { }
+if (false) {
+    /** @type {?|undefined} */
+    ClearSearch.prototype.clearPageResults;
+    /** @type {?|undefined} */
+    ClearSearch.prototype.clearSearchboxResults;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function VariantOptionQualifier() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.image;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.name;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.qualifier;
+    /** @type {?|undefined} */
+    VariantOptionQualifier.prototype.value;
+}
+/**
+ * @record
+ */
+function PromotionRestriction() { }
+if (false) {
+    /** @type {?|undefined} */
+    PromotionRestriction.prototype.description;
+    /** @type {?|undefined} */
+    PromotionRestriction.prototype.restrictionType;
+}
+/**
+ * @record
+ */
+function FeatureUnit() { }
+if (false) {
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.name;
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.symbol;
+    /** @type {?|undefined} */
+    FeatureUnit.prototype.unitType;
+}
+/**
+ * @record
+ */
+function FeatureValue() { }
+if (false) {
+    /** @type {?|undefined} */
+    FeatureValue.prototype.value;
+}
+/**
+ * @record
+ */
+function Feature() { }
+if (false) {
+    /** @type {?|undefined} */
+    Feature.prototype.code;
+    /** @type {?|undefined} */
+    Feature.prototype.comparable;
+    /** @type {?|undefined} */
+    Feature.prototype.description;
+    /** @type {?|undefined} */
+    Feature.prototype.featureUnit;
+    /** @type {?|undefined} */
+    Feature.prototype.featureValues;
+    /** @type {?|undefined} */
+    Feature.prototype.name;
+    /** @type {?|undefined} */
+    Feature.prototype.range;
+    /** @type {?|undefined} */
+    Feature.prototype.type;
+}
+/**
+ * @record
+ */
+function VariantCategory() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantCategory.prototype.hasImage;
+    /** @type {?|undefined} */
+    VariantCategory.prototype.name;
+    /** @type {?|undefined} */
+    VariantCategory.prototype.priority;
+}
+/**
+ * @record
+ */
+function VariantValueCategory() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.name;
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.sequence;
+    /** @type {?|undefined} */
+    VariantValueCategory.prototype.superCategories;
+}
 /** @enum {string} */
 const PriceType = {
     BUY: 'BUY',
     FROM: 'FROM',
 };
+/**
+ * @record
+ */
+function Price() { }
+if (false) {
+    /** @type {?|undefined} */
+    Price.prototype.currencyIso;
+    /** @type {?|undefined} */
+    Price.prototype.formattedValue;
+    /** @type {?|undefined} */
+    Price.prototype.maxQuantity;
+    /** @type {?|undefined} */
+    Price.prototype.minQuantity;
+    /** @type {?|undefined} */
+    Price.prototype.priceType;
+    /** @type {?|undefined} */
+    Price.prototype.value;
+}
+/**
+ * @record
+ */
+function Stock() { }
+if (false) {
+    /** @type {?|undefined} */
+    Stock.prototype.stockLevel;
+    /** @type {?|undefined} */
+    Stock.prototype.stockLevelStatus;
+}
+/**
+ * @record
+ */
+function VariantOption() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantOption.prototype.code;
+    /** @type {?|undefined} */
+    VariantOption.prototype.priceData;
+    /** @type {?|undefined} */
+    VariantOption.prototype.stock;
+    /** @type {?|undefined} */
+    VariantOption.prototype.url;
+    /** @type {?|undefined} */
+    VariantOption.prototype.variantOptionQualifiers;
+}
+/**
+ * @record
+ */
+function Promotion() { }
+if (false) {
+    /** @type {?|undefined} */
+    Promotion.prototype.code;
+    /** @type {?|undefined} */
+    Promotion.prototype.couldFireMessages;
+    /** @type {?|undefined} */
+    Promotion.prototype.description;
+    /** @type {?|undefined} */
+    Promotion.prototype.enabled;
+    /** @type {?|undefined} */
+    Promotion.prototype.endDate;
+    /** @type {?|undefined} */
+    Promotion.prototype.firedMessages;
+    /** @type {?|undefined} */
+    Promotion.prototype.priority;
+    /** @type {?|undefined} */
+    Promotion.prototype.productBanner;
+    /** @type {?|undefined} */
+    Promotion.prototype.promotionGroup;
+    /** @type {?|undefined} */
+    Promotion.prototype.promotionType;
+    /** @type {?|undefined} */
+    Promotion.prototype.restrictions;
+    /** @type {?|undefined} */
+    Promotion.prototype.startDate;
+    /** @type {?|undefined} */
+    Promotion.prototype.title;
+}
+/**
+ * @record
+ */
+function Category() { }
+if (false) {
+    /** @type {?|undefined} */
+    Category.prototype.code;
+    /** @type {?|undefined} */
+    Category.prototype.name;
+    /** @type {?|undefined} */
+    Category.prototype.image;
+    /** @type {?|undefined} */
+    Category.prototype.url;
+}
+/**
+ * @record
+ */
+function Classification() { }
+if (false) {
+    /** @type {?|undefined} */
+    Classification.prototype.code;
+    /** @type {?|undefined} */
+    Classification.prototype.features;
+    /** @type {?|undefined} */
+    Classification.prototype.name;
+}
+/**
+ * @record
+ */
+function FutureStock() { }
+if (false) {
+    /** @type {?|undefined} */
+    FutureStock.prototype.date;
+    /** @type {?|undefined} */
+    FutureStock.prototype.formattedDate;
+    /** @type {?|undefined} */
+    FutureStock.prototype.stock;
+}
+/**
+ * @record
+ */
+function PriceRange() { }
+if (false) {
+    /** @type {?|undefined} */
+    PriceRange.prototype.maxPrice;
+    /** @type {?|undefined} */
+    PriceRange.prototype.minPrice;
+}
+/**
+ * @record
+ */
+function ProductReference() { }
+if (false) {
+    /** @type {?|undefined} */
+    ProductReference.prototype.description;
+    /** @type {?|undefined} */
+    ProductReference.prototype.preselected;
+    /** @type {?|undefined} */
+    ProductReference.prototype.quantity;
+    /** @type {?|undefined} */
+    ProductReference.prototype.referenceType;
+    /** @type {?|undefined} */
+    ProductReference.prototype.target;
+}
+/**
+ * @record
+ */
+function Review() { }
+if (false) {
+    /** @type {?|undefined} */
+    Review.prototype.alias;
+    /** @type {?|undefined} */
+    Review.prototype.comment;
+    /** @type {?|undefined} */
+    Review.prototype.date;
+    /** @type {?|undefined} */
+    Review.prototype.headline;
+    /** @type {?|undefined} */
+    Review.prototype.id;
+    /** @type {?|undefined} */
+    Review.prototype.principal;
+    /** @type {?|undefined} */
+    Review.prototype.rating;
+}
+/**
+ * @record
+ */
+function VariantMatrixElement() { }
+if (false) {
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.elements;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.isLeaf;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.parentVariantCategory;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.variantOption;
+    /** @type {?|undefined} */
+    VariantMatrixElement.prototype.variantValueCategory;
+}
+/**
+ * @record
+ */
+function ProductReferences() { }
+/**
+ * @record
+ */
+function BaseOption() { }
+if (false) {
+    /** @type {?|undefined} */
+    BaseOption.prototype.options;
+    /** @type {?|undefined} */
+    BaseOption.prototype.selected;
+    /** @type {?|undefined} */
+    BaseOption.prototype.variantType;
+}
+/**
+ * @record
+ */
+function Product() { }
+if (false) {
+    /** @type {?|undefined} */
+    Product.prototype.availableForPickup;
+    /** @type {?|undefined} */
+    Product.prototype.averageRating;
+    /** @type {?|undefined} */
+    Product.prototype.baseOptions;
+    /** @type {?|undefined} */
+    Product.prototype.baseProduct;
+    /** @type {?|undefined} */
+    Product.prototype.categories;
+    /** @type {?|undefined} */
+    Product.prototype.classifications;
+    /** @type {?|undefined} */
+    Product.prototype.code;
+    /** @type {?|undefined} */
+    Product.prototype.description;
+    /** @type {?|undefined} */
+    Product.prototype.futureStocks;
+    /** @type {?|undefined} */
+    Product.prototype.images;
+    /** @type {?|undefined} */
+    Product.prototype.manufacturer;
+    /** @type {?|undefined} */
+    Product.prototype.multidimensional;
+    /** @type {?|undefined} */
+    Product.prototype.name;
+    /** @type {?|undefined} */
+    Product.prototype.nameHtml;
+    /** @type {?|undefined} */
+    Product.prototype.numberOfReviews;
+    /** @type {?|undefined} */
+    Product.prototype.potentialPromotions;
+    /** @type {?|undefined} */
+    Product.prototype.price;
+    /** @type {?|undefined} */
+    Product.prototype.priceRange;
+    /** @type {?|undefined} */
+    Product.prototype.productReferences;
+    /** @type {?|undefined} */
+    Product.prototype.purchasable;
+    /** @type {?|undefined} */
+    Product.prototype.reviews;
+    /** @type {?|undefined} */
+    Product.prototype.stock;
+    /** @type {?|undefined} */
+    Product.prototype.summary;
+    /** @type {?|undefined} */
+    Product.prototype.url;
+    /** @type {?|undefined} */
+    Product.prototype.variantMatrix;
+    /** @type {?|undefined} */
+    Product.prototype.variantOptions;
+    /** @type {?|undefined} */
+    Product.prototype.variantType;
+    /** @type {?|undefined} */
+    Product.prototype.volumePrices;
+    /** @type {?|undefined} */
+    Product.prototype.volumePricesFlag;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const testestsd = 'sare';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchPage() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundEastLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundNorthLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundSouthLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.boundWestLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.locationText;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.pagination;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sorts;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sourceLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.sourceLongitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchPage.prototype.stores;
+}
+/**
+ * @record
+ */
+function StoreCount() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreCount.prototype.count;
+    /** @type {?|undefined} */
+    StoreCount.prototype.isoCode;
+    /** @type {?|undefined} */
+    StoreCount.prototype.name;
+    /** @type {?|undefined} */
+    StoreCount.prototype.type;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const OCC_BASE_URL_META_TAG_NAME = 'occ-backend-base-url';
@@ -14509,7 +19662,7 @@ function provideConfigFromMetaTags() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccConfig = {
@@ -14523,7 +19676,7 @@ const defaultOccConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -14539,12 +19692,305 @@ function occConfigValidator(config) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function OccEndpoints() { }
+if (false) {
+    /**
+     * Client login (get authorization token)
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.login;
+    /**
+     * Get product details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.product;
+    /**
+     * Get reviews for a product
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productReviews;
+    /**
+     * Get a list of product references
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productReferences;
+    /**
+     * Get a list of products and additional data
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productSearch;
+    /**
+     * Get a list of available suggestions
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.productSuggestions;
+    /**
+     * Get CMS component details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.component;
+    /**
+     * Get a list of CMS component details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.components;
+    /**
+     * Get page data with list of cms content slots
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.pages;
+    /**
+     * Get page data with list of cms content slots
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.page;
+    /**
+     * Get all carts
+     *
+     * \@member {string} [carts]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.carts;
+    /**
+     * Get a cart with a given identifier
+     *
+     * \@member {string} [cart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.cart;
+    /**
+     * Creates or restore a cart for a user
+     *
+     * \@member {string} [createCart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.createCart;
+    /**
+     * Adds a product to the cart
+     *
+     * \@member {string} [addEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addEntries;
+    /**
+     * Update quantity and store the details of a cart entry
+     *
+     * \@member {string} [updateEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.updateEntries;
+    /**
+     * Deletes cart entry
+     *
+     * \@member {string} [removeEntries]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.removeEntries;
+    /**
+     * Get a store location
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.store;
+    /**
+     * Get a list of store locations
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.stores;
+    /**
+     * Gets a store location count per country and regions
+     *
+     * \@member {string} [page]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.storescounts;
+    /**
+     * Get a list of available languages
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.languages;
+    /**
+     * Get a list of available currencies
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.currencies;
+    /**
+     * Get a list of countries
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.countries;
+    /**
+     * Fetch the list of regions for the provided country
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.regions;
+    /**
+     * Titles used for user's personal info.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.titles;
+    /**
+     * Get user details
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.user;
+    /**
+     * Register a new user.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userRegister;
+    /**
+     * Request an email to reset the password
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userForgotPassword;
+    /**
+     * Reset the password once the email is recieved.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userResetPassword;
+    /**
+     * Update the user id with which the user authenticates.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userUpdateLoginId;
+    /**
+     * Update the user's password
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.userUpdatePassword;
+    /**
+     * Payment details root endpoint.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.paymentDetailsAll;
+    /**
+     * Endpoint for a specific payment method.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.paymentDetail;
+    /**
+     * Endpoint for the list of one user's orders
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.orderHistory;
+    /**
+     * Endpoint for the details of one user's order
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.orderDetail;
+    /**
+     * Endpoint for consent templates
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consentTemplates;
+    /**
+     * Endpoint for a user's consents
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consents;
+    /**
+     * Endpoint for a user's specific previously given consent.
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consentDetail;
+    /**
+     * Endpoint for a user's addresses
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addresses;
+    /**
+     * Endpoint for a user's specific address
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addressDetail;
+    /**
+     * Endpoint for address verification
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addressVerification;
+    /**
+     * Endpoint for consignment tracking
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.consignmentTracking;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var Occ;
 (function (Occ) {
@@ -14555,6 +20001,18 @@ var Occ;
      */
     function Country() { }
     Occ.Country = Country;
+    if (false) {
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Country.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Country.prototype.name;
+    }
     /**
      *
      * An interface representing Region.
@@ -14562,6 +20020,28 @@ var Occ;
      */
     function Region() { }
     Occ.Region = Region;
+    if (false) {
+        /**
+         * \@member {string} [countryIso]
+         * @type {?|undefined}
+         */
+        Region.prototype.countryIso;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Region.prototype.isocode;
+        /**
+         * \@member {string} [isocodeShort]
+         * @type {?|undefined}
+         */
+        Region.prototype.isocodeShort;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Region.prototype.name;
+    }
     /**
      *
      * An interface representing RegionList.
@@ -14569,6 +20049,13 @@ var Occ;
      */
     function RegionList() { }
     Occ.RegionList = RegionList;
+    if (false) {
+        /**
+         * \@member {Region[]} [regions]
+         * @type {?|undefined}
+         */
+        RegionList.prototype.regions;
+    }
     /**
      *
      * An interface representing Address.
@@ -14576,6 +20063,98 @@ var Occ;
      */
     function Address() { }
     Occ.Address = Address;
+    if (false) {
+        /**
+         * \@member {string} [companyName]
+         * @type {?|undefined}
+         */
+        Address.prototype.companyName;
+        /**
+         * \@member {Country} [country]
+         * @type {?|undefined}
+         */
+        Address.prototype.country;
+        /**
+         * \@member {boolean} [defaultAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.defaultAddress;
+        /**
+         * \@member {string} [email]
+         * @type {?|undefined}
+         */
+        Address.prototype.email;
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        Address.prototype.firstName;
+        /**
+         * \@member {string} [formattedAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.formattedAddress;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Address.prototype.id;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        Address.prototype.lastName;
+        /**
+         * \@member {string} [line1]
+         * @type {?|undefined}
+         */
+        Address.prototype.line1;
+        /**
+         * \@member {string} [line2]
+         * @type {?|undefined}
+         */
+        Address.prototype.line2;
+        /**
+         * \@member {string} [phone]
+         * @type {?|undefined}
+         */
+        Address.prototype.phone;
+        /**
+         * \@member {string} [postalCode]
+         * @type {?|undefined}
+         */
+        Address.prototype.postalCode;
+        /**
+         * \@member {Region} [region]
+         * @type {?|undefined}
+         */
+        Address.prototype.region;
+        /**
+         * \@member {boolean} [shippingAddress]
+         * @type {?|undefined}
+         */
+        Address.prototype.shippingAddress;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        Address.prototype.title;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        Address.prototype.titleCode;
+        /**
+         * \@member {string} [town]
+         * @type {?|undefined}
+         */
+        Address.prototype.town;
+        /**
+         * \@member {boolean} [visibleInAddressBook]
+         * @type {?|undefined}
+         */
+        Address.prototype.visibleInAddressBook;
+    }
     /**
      *
      * An interface representing AddressList.
@@ -14583,6 +20162,13 @@ var Occ;
      */
     function AddressList() { }
     Occ.AddressList = AddressList;
+    if (false) {
+        /**
+         * \@member {Address[]} [addresses]
+         * @type {?|undefined}
+         */
+        AddressList.prototype.addresses;
+    }
     /**
      *
      * An interface representing ErrorModel.
@@ -14592,6 +20178,35 @@ var Occ;
      */
     function ErrorModel() { }
     Occ.ErrorModel = ErrorModel;
+    if (false) {
+        /**
+         * \@member {string} [message] Descriptive, human readable error message.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.message;
+        /**
+         * \@member {string} [reason] Additional classification specific for each
+         * error type e.g. 'noStock'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.reason;
+        /**
+         * \@member {string} [subject] Identifier of the related object e.g. '1'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.subject;
+        /**
+         * \@member {string} [subjectType] Type of the object related to the error
+         * e.g. 'entry'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.subjectType;
+        /**
+         * \@member {string} [type] Type of the error e.g. 'LowStockError'.
+         * @type {?|undefined}
+         */
+        ErrorModel.prototype.type;
+    }
     /**
      *
      * An interface representing ErrorList.
@@ -14601,6 +20216,13 @@ var Occ;
      */
     function ErrorList() { }
     Occ.ErrorList = ErrorList;
+    if (false) {
+        /**
+         * \@member {ErrorModel[]} [errors]
+         * @type {?|undefined}
+         */
+        ErrorList.prototype.errors;
+    }
     /**
      *
      * An interface representing AddressValidation.
@@ -14608,6 +20230,23 @@ var Occ;
      */
     function AddressValidation() { }
     Occ.AddressValidation = AddressValidation;
+    if (false) {
+        /**
+         * \@member {string} [decision]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.decision;
+        /**
+         * \@member {ErrorList} [errors]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.errors;
+        /**
+         * \@member {Address[]} [suggestedAddresses]
+         * @type {?|undefined}
+         */
+        AddressValidation.prototype.suggestedAddresses;
+    }
     /**
      *
      * An interface representing Price.
@@ -14615,6 +20254,38 @@ var Occ;
      */
     function Price() { }
     Occ.Price = Price;
+    if (false) {
+        /**
+         * \@member {string} [currencyIso]
+         * @type {?|undefined}
+         */
+        Price.prototype.currencyIso;
+        /**
+         * \@member {string} [formattedValue]
+         * @type {?|undefined}
+         */
+        Price.prototype.formattedValue;
+        /**
+         * \@member {number} [maxQuantity]
+         * @type {?|undefined}
+         */
+        Price.prototype.maxQuantity;
+        /**
+         * \@member {number} [minQuantity]
+         * @type {?|undefined}
+         */
+        Price.prototype.minQuantity;
+        /**
+         * \@member {PriceType} [priceType] Possible values include: 'BUY', 'FROM'
+         * @type {?|undefined}
+         */
+        Price.prototype.priceType;
+        /**
+         * \@member {number} [value]
+         * @type {?|undefined}
+         */
+        Price.prototype.value;
+    }
     /**
      *
      * An interface representing Stock.
@@ -14622,6 +20293,18 @@ var Occ;
      */
     function Stock() { }
     Occ.Stock = Stock;
+    if (false) {
+        /**
+         * \@member {number} [stockLevel]
+         * @type {?|undefined}
+         */
+        Stock.prototype.stockLevel;
+        /**
+         * \@member {string} [stockLevelStatus]
+         * @type {?|undefined}
+         */
+        Stock.prototype.stockLevelStatus;
+    }
     /**
      *
      * An interface representing Image.
@@ -14629,6 +20312,34 @@ var Occ;
      */
     function Image() { }
     Occ.Image = Image;
+    if (false) {
+        /**
+         * \@member {string} [altText]
+         * @type {?|undefined}
+         */
+        Image.prototype.altText;
+        /**
+         * \@member {string} [format]
+         * @type {?|undefined}
+         */
+        Image.prototype.format;
+        /**
+         * \@member {number} [galleryIndex]
+         * @type {?|undefined}
+         */
+        Image.prototype.galleryIndex;
+        /**
+         * \@member {ImageType} [imageType] Possible values include: 'PRIMARY',
+         * 'GALLERY'
+         * @type {?|undefined}
+         */
+        Image.prototype.imageType;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Image.prototype.url;
+    }
     /**
      *
      * An interface representing VariantOptionQualifier.
@@ -14636,6 +20347,28 @@ var Occ;
      */
     function VariantOptionQualifier() { }
     Occ.VariantOptionQualifier = VariantOptionQualifier;
+    if (false) {
+        /**
+         * \@member {Image} [image]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.image;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.name;
+        /**
+         * \@member {string} [qualifier]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.qualifier;
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        VariantOptionQualifier.prototype.value;
+    }
     /**
      *
      * An interface representing VariantOption.
@@ -14643,6 +20376,33 @@ var Occ;
      */
     function VariantOption() { }
     Occ.VariantOption = VariantOption;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.code;
+        /**
+         * \@member {Price} [priceData]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.priceData;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.stock;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.url;
+        /**
+         * \@member {VariantOptionQualifier[]} [variantOptionQualifiers]
+         * @type {?|undefined}
+         */
+        VariantOption.prototype.variantOptionQualifiers;
+    }
     /**
      *
      * An interface representing BaseOption.
@@ -14650,6 +20410,23 @@ var Occ;
      */
     function BaseOption() { }
     Occ.BaseOption = BaseOption;
+    if (false) {
+        /**
+         * \@member {VariantOption[]} [options]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.options;
+        /**
+         * \@member {VariantOption} [selected]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.selected;
+        /**
+         * \@member {string} [variantType]
+         * @type {?|undefined}
+         */
+        BaseOption.prototype.variantType;
+    }
     /**
      *
      * An interface representing SearchQuery.
@@ -14657,6 +20434,13 @@ var Occ;
      */
     function SearchQuery() { }
     Occ.SearchQuery = SearchQuery;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        SearchQuery.prototype.value;
+    }
     /**
      *
      * An interface representing SearchState.
@@ -14664,6 +20448,18 @@ var Occ;
      */
     function SearchState() { }
     Occ.SearchState = SearchState;
+    if (false) {
+        /**
+         * \@member {SearchQuery} [query]
+         * @type {?|undefined}
+         */
+        SearchState.prototype.query;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        SearchState.prototype.url;
+    }
     /**
      *
      * An interface representing Breadcrumb.
@@ -14671,6 +20467,38 @@ var Occ;
      */
     function Breadcrumb() { }
     Occ.Breadcrumb = Breadcrumb;
+    if (false) {
+        /**
+         * \@member {string} [facetCode]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetCode;
+        /**
+         * \@member {string} [facetName]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetName;
+        /**
+         * \@member {string} [facetValueCode]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetValueCode;
+        /**
+         * \@member {string} [facetValueName]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.facetValueName;
+        /**
+         * \@member {SearchState} [removeQuery]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.removeQuery;
+        /**
+         * \@member {SearchState} [truncateQuery]
+         * @type {?|undefined}
+         */
+        Breadcrumb.prototype.truncateQuery;
+    }
     /**
      *
      * An interface representing Component.
@@ -14678,6 +20506,33 @@ var Occ;
      */
     function Component() { }
     Occ.Component = Component;
+    if (false) {
+        /**
+         * \@member {Date} [modifiedTime]
+         * @type {?|undefined}
+         */
+        Component.prototype.modifiedTime;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Component.prototype.name;
+        /**
+         * \@member {any} [otherProperties]
+         * @type {?|undefined}
+         */
+        Component.prototype.otherProperties;
+        /**
+         * \@member {string} [typeCode]
+         * @type {?|undefined}
+         */
+        Component.prototype.typeCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        Component.prototype.uid;
+    }
     /**
      *
      * An interface representing ComponentList.
@@ -14685,6 +20540,13 @@ var Occ;
      */
     function ComponentList() { }
     Occ.ComponentList = ComponentList;
+    if (false) {
+        /**
+         * \@member {Component[]} [component]
+         * @type {?|undefined}
+         */
+        ComponentList.prototype.component;
+    }
     /**
      *
      * An interface representing ContentSlot.
@@ -14692,6 +20554,38 @@ var Occ;
      */
     function ContentSlot() { }
     Occ.ContentSlot = ContentSlot;
+    if (false) {
+        /**
+         * \@member {ComponentList} [components]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.components;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.name;
+        /**
+         * \@member {string} [position]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.position;
+        /**
+         * \@member {string} [slotId]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotId;
+        /**
+         * \@member {boolean} [slotShared]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotShared;
+        /**
+         * \@member {string} [slotStatus]
+         * @type {?|undefined}
+         */
+        ContentSlot.prototype.slotStatus;
+    }
     /**
      *
      * An interface representing ContentSlotList.
@@ -14699,6 +20593,13 @@ var Occ;
      */
     function ContentSlotList() { }
     Occ.ContentSlotList = ContentSlotList;
+    if (false) {
+        /**
+         * \@member {ContentSlot[]} [contentSlot]
+         * @type {?|undefined}
+         */
+        ContentSlotList.prototype.contentSlot;
+    }
     /**
      *
      * An interface representing CMSPage.
@@ -14706,6 +20607,43 @@ var Occ;
      */
     function CMSPage() { }
     Occ.CMSPage = CMSPage;
+    if (false) {
+        /**
+         * \@member {ContentSlotList} [contentSlots]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.contentSlots;
+        /**
+         * \@member {boolean} [defaultPage]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.defaultPage;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.name;
+        /**
+         * \@member {string} [template]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.template;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.title;
+        /**
+         * \@member {string} [typeCode]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.typeCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        CMSPage.prototype.uid;
+    }
     /**
      *
      * An interface representing CardType.
@@ -14713,6 +20651,18 @@ var Occ;
      */
     function CardType() { }
     Occ.CardType = CardType;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        CardType.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CardType.prototype.name;
+    }
     /**
      *
      * An interface representing CardTypeList.
@@ -14720,6 +20670,13 @@ var Occ;
      */
     function CardTypeList() { }
     Occ.CardTypeList = CardTypeList;
+    if (false) {
+        /**
+         * \@member {CardType[]} [cardTypes]
+         * @type {?|undefined}
+         */
+        CardTypeList.prototype.cardTypes;
+    }
     /**
      *
      * An interface representing PromotionOrderEntryConsumed.
@@ -14727,6 +20684,28 @@ var Occ;
      */
     function PromotionOrderEntryConsumed() { }
     Occ.PromotionOrderEntryConsumed = PromotionOrderEntryConsumed;
+    if (false) {
+        /**
+         * \@member {number} [adjustedUnitPrice]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.adjustedUnitPrice;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.code;
+        /**
+         * \@member {number} [orderEntryNumber]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.orderEntryNumber;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        PromotionOrderEntryConsumed.prototype.quantity;
+    }
     /**
      *
      * An interface representing PromotionRestriction.
@@ -14734,6 +20713,18 @@ var Occ;
      */
     function PromotionRestriction() { }
     Occ.PromotionRestriction = PromotionRestriction;
+    if (false) {
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PromotionRestriction.prototype.description;
+        /**
+         * \@member {string} [restrictionType]
+         * @type {?|undefined}
+         */
+        PromotionRestriction.prototype.restrictionType;
+    }
     /**
      *
      * An interface representing Promotion.
@@ -14741,6 +20732,73 @@ var Occ;
      */
     function Promotion() { }
     Occ.Promotion = Promotion;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.code;
+        /**
+         * \@member {string[]} [couldFireMessages]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.couldFireMessages;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.description;
+        /**
+         * \@member {boolean} [enabled]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.enabled;
+        /**
+         * \@member {Date} [endDate]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.endDate;
+        /**
+         * \@member {string[]} [firedMessages]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.firedMessages;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.priority;
+        /**
+         * \@member {Image} [productBanner]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.productBanner;
+        /**
+         * \@member {string} [promotionGroup]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.promotionGroup;
+        /**
+         * \@member {string} [promotionType]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.promotionType;
+        /**
+         * \@member {PromotionRestriction[]} [restrictions]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.restrictions;
+        /**
+         * \@member {Date} [startDate]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.startDate;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        Promotion.prototype.title;
+    }
     /**
      *
      * An interface representing PromotionResult.
@@ -14748,6 +20806,23 @@ var Occ;
      */
     function PromotionResult() { }
     Occ.PromotionResult = PromotionResult;
+    if (false) {
+        /**
+         * \@member {PromotionOrderEntryConsumed[]} [consumedEntries]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.consumedEntries;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.description;
+        /**
+         * \@member {Promotion} [promotion]
+         * @type {?|undefined}
+         */
+        PromotionResult.prototype.promotion;
+    }
     /**
      *
      * An interface representing Currency.
@@ -14755,6 +20830,28 @@ var Occ;
      */
     function Currency() { }
     Occ.Currency = Currency;
+    if (false) {
+        /**
+         * \@member {boolean} [active]
+         * @type {?|undefined}
+         */
+        Currency.prototype.active;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Currency.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Currency.prototype.name;
+        /**
+         * \@member {string} [symbol]
+         * @type {?|undefined}
+         */
+        Currency.prototype.symbol;
+    }
     /**
      *
      * An interface representing Voucher.
@@ -14762,6 +20859,58 @@ var Occ;
      */
     function Voucher() { }
     Occ.Voucher = Voucher;
+    if (false) {
+        /**
+         * \@member {Price} [appliedValue]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.appliedValue;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.code;
+        /**
+         * \@member {Currency} [currency]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.currency;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.description;
+        /**
+         * \@member {boolean} [freeShipping]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.freeShipping;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.name;
+        /**
+         * \@member {number} [value]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.value;
+        /**
+         * \@member {string} [valueFormatted]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.valueFormatted;
+        /**
+         * \@member {string} [valueString]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.valueString;
+        /**
+         * \@member {string} [voucherCode]
+         * @type {?|undefined}
+         */
+        Voucher.prototype.voucherCode;
+    }
     /**
      *
      * An interface representing DeliveryMode.
@@ -14769,6 +20918,28 @@ var Occ;
      */
     function DeliveryMode() { }
     Occ.DeliveryMode = DeliveryMode;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.code;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.deliveryCost;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.description;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        DeliveryMode.prototype.name;
+    }
     /**
      *
      * An interface representing GeoPoint.
@@ -14776,6 +20947,18 @@ var Occ;
      */
     function GeoPoint() { }
     Occ.GeoPoint = GeoPoint;
+    if (false) {
+        /**
+         * \@member {number} [latitude]
+         * @type {?|undefined}
+         */
+        GeoPoint.prototype.latitude;
+        /**
+         * \@member {number} [longitude]
+         * @type {?|undefined}
+         */
+        GeoPoint.prototype.longitude;
+    }
     /**
      *
      * An interface representing Time.
@@ -14783,6 +20966,23 @@ var Occ;
      */
     function Time() { }
     Occ.Time = Time;
+    if (false) {
+        /**
+         * \@member {string} [formattedHour]
+         * @type {?|undefined}
+         */
+        Time.prototype.formattedHour;
+        /**
+         * \@member {number} [hour]
+         * @type {?|undefined}
+         */
+        Time.prototype.hour;
+        /**
+         * \@member {number} [minute]
+         * @type {?|undefined}
+         */
+        Time.prototype.minute;
+    }
     /**
      *
      * An interface representing SpecialOpeningDay.
@@ -14790,6 +20990,43 @@ var Occ;
      */
     function SpecialOpeningDay() { }
     Occ.SpecialOpeningDay = SpecialOpeningDay;
+    if (false) {
+        /**
+         * \@member {boolean} [closed]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.closed;
+        /**
+         * \@member {Time} [closingTime]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.closingTime;
+        /**
+         * \@member {string} [comment]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.comment;
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.date;
+        /**
+         * \@member {string} [formattedDate]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.formattedDate;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.name;
+        /**
+         * \@member {Time} [openingTime]
+         * @type {?|undefined}
+         */
+        SpecialOpeningDay.prototype.openingTime;
+    }
     /**
      *
      * An interface representing WeekdayOpeningDay.
@@ -14797,6 +21034,28 @@ var Occ;
      */
     function WeekdayOpeningDay() { }
     Occ.WeekdayOpeningDay = WeekdayOpeningDay;
+    if (false) {
+        /**
+         * \@member {boolean} [closed]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.closed;
+        /**
+         * \@member {Time} [closingTime]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.closingTime;
+        /**
+         * \@member {Time} [openingTime]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.openingTime;
+        /**
+         * \@member {string} [weekDay]
+         * @type {?|undefined}
+         */
+        WeekdayOpeningDay.prototype.weekDay;
+    }
     /**
      *
      * An interface representing OpeningSchedule.
@@ -14804,6 +21063,28 @@ var Occ;
      */
     function OpeningSchedule() { }
     Occ.OpeningSchedule = OpeningSchedule;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.name;
+        /**
+         * \@member {SpecialOpeningDay[]} [specialDayOpeningList]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.specialDayOpeningList;
+        /**
+         * \@member {WeekdayOpeningDay[]} [weekDayOpeningList]
+         * @type {?|undefined}
+         */
+        OpeningSchedule.prototype.weekDayOpeningList;
+    }
     /**
      *
      * An interface representing PointOfService.
@@ -14811,6 +21092,73 @@ var Occ;
      */
     function PointOfService() { }
     Occ.PointOfService = PointOfService;
+    if (false) {
+        /**
+         * \@member {Address} [address]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.address;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.description;
+        /**
+         * \@member {string} [displayName]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.displayName;
+        /**
+         * \@member {number} [distanceKm]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.distanceKm;
+        /**
+         * \@member {{ [propertyName: string]: string }} [features]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.features;
+        /**
+         * \@member {string} [formattedDistance]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.formattedDistance;
+        /**
+         * \@member {GeoPoint} [geoPoint]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.geoPoint;
+        /**
+         * \@member {Image} [mapIcon]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.mapIcon;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.name;
+        /**
+         * \@member {OpeningSchedule} [openingHours]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.openingHours;
+        /**
+         * \@member {string} [storeContent]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.storeContent;
+        /**
+         * \@member {Image[]} [storeImages]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.storeImages;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        PointOfService.prototype.url;
+    }
     /**
      *
      * An interface representing Category.
@@ -14818,6 +21166,28 @@ var Occ;
      */
     function Category() { }
     Occ.Category = Category;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Category.prototype.code;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Category.prototype.name;
+        /**
+         * \@member {Image} [image]
+         * @type {?|undefined}
+         */
+        Category.prototype.image;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Category.prototype.url;
+    }
     /**
      *
      * An interface representing FeatureUnit.
@@ -14825,6 +21195,23 @@ var Occ;
      */
     function FeatureUnit() { }
     Occ.FeatureUnit = FeatureUnit;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.name;
+        /**
+         * \@member {string} [symbol]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.symbol;
+        /**
+         * \@member {string} [unitType]
+         * @type {?|undefined}
+         */
+        FeatureUnit.prototype.unitType;
+    }
     /**
      *
      * An interface representing FeatureValue.
@@ -14832,6 +21219,13 @@ var Occ;
      */
     function FeatureValue() { }
     Occ.FeatureValue = FeatureValue;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        FeatureValue.prototype.value;
+    }
     /**
      *
      * An interface representing Feature.
@@ -14839,6 +21233,48 @@ var Occ;
      */
     function Feature() { }
     Occ.Feature = Feature;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Feature.prototype.code;
+        /**
+         * \@member {boolean} [comparable]
+         * @type {?|undefined}
+         */
+        Feature.prototype.comparable;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Feature.prototype.description;
+        /**
+         * \@member {FeatureUnit} [featureUnit]
+         * @type {?|undefined}
+         */
+        Feature.prototype.featureUnit;
+        /**
+         * \@member {FeatureValue[]} [featureValues]
+         * @type {?|undefined}
+         */
+        Feature.prototype.featureValues;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Feature.prototype.name;
+        /**
+         * \@member {boolean} [range]
+         * @type {?|undefined}
+         */
+        Feature.prototype.range;
+        /**
+         * \@member {string} [type]
+         * @type {?|undefined}
+         */
+        Feature.prototype.type;
+    }
     /**
      *
      * An interface representing Classification.
@@ -14846,6 +21282,23 @@ var Occ;
      */
     function Classification() { }
     Occ.Classification = Classification;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Classification.prototype.code;
+        /**
+         * \@member {Feature[]} [features]
+         * @type {?|undefined}
+         */
+        Classification.prototype.features;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Classification.prototype.name;
+    }
     /**
      *
      * An interface representing FutureStock.
@@ -14853,6 +21306,23 @@ var Occ;
      */
     function FutureStock() { }
     Occ.FutureStock = FutureStock;
+    if (false) {
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.date;
+        /**
+         * \@member {string} [formattedDate]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.formattedDate;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        FutureStock.prototype.stock;
+    }
     /**
      *
      * An interface representing PriceRange.
@@ -14860,6 +21330,18 @@ var Occ;
      */
     function PriceRange() { }
     Occ.PriceRange = PriceRange;
+    if (false) {
+        /**
+         * \@member {Price} [maxPrice]
+         * @type {?|undefined}
+         */
+        PriceRange.prototype.maxPrice;
+        /**
+         * \@member {Price} [minPrice]
+         * @type {?|undefined}
+         */
+        PriceRange.prototype.minPrice;
+    }
     /**
      *
      * An interface representing ProductReference.
@@ -14867,6 +21349,33 @@ var Occ;
      */
     function ProductReference() { }
     Occ.ProductReference = ProductReference;
+    if (false) {
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.description;
+        /**
+         * \@member {boolean} [preselected]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.preselected;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.quantity;
+        /**
+         * \@member {string} [referenceType]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.referenceType;
+        /**
+         * \@member {Product} [target]
+         * @type {?|undefined}
+         */
+        ProductReference.prototype.target;
+    }
     /**
      *
      * An interface representing Language.
@@ -14874,6 +21383,28 @@ var Occ;
      */
     function Language() { }
     Occ.Language = Language;
+    if (false) {
+        /**
+         * \@member {boolean} [active]
+         * @type {?|undefined}
+         */
+        Language.prototype.active;
+        /**
+         * \@member {string} [isocode]
+         * @type {?|undefined}
+         */
+        Language.prototype.isocode;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Language.prototype.name;
+        /**
+         * \@member {string} [nativeName]
+         * @type {?|undefined}
+         */
+        Language.prototype.nativeName;
+    }
     /**
      *
      * An interface representing User.
@@ -14881,6 +21412,68 @@ var Occ;
      */
     function User() { }
     Occ.User = User;
+    if (false) {
+        /**
+         * \@member {Currency} [currency]
+         * @type {?|undefined}
+         */
+        User.prototype.currency;
+        /**
+         * \@member {string} [customerId]
+         * @type {?|undefined}
+         */
+        User.prototype.customerId;
+        /**
+         * \@member {Date} [deactivationDate]
+         * @type {?|undefined}
+         */
+        User.prototype.deactivationDate;
+        /**
+         * \@member {Address} [defaultAddress]
+         * @type {?|undefined}
+         */
+        User.prototype.defaultAddress;
+        /**
+         * \@member {string} [displayUid]
+         * @type {?|undefined}
+         */
+        User.prototype.displayUid;
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        User.prototype.firstName;
+        /**
+         * \@member {Language} [language]
+         * @type {?|undefined}
+         */
+        User.prototype.language;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        User.prototype.lastName;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        User.prototype.name;
+        /**
+         * \@member {string} [title]
+         * @type {?|undefined}
+         */
+        User.prototype.title;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        User.prototype.titleCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        User.prototype.uid;
+    }
     /**
      *
      * An interface representing Review.
@@ -14888,6 +21481,43 @@ var Occ;
      */
     function Review() { }
     Occ.Review = Review;
+    if (false) {
+        /**
+         * \@member {string} [alias]
+         * @type {?|undefined}
+         */
+        Review.prototype.alias;
+        /**
+         * \@member {string} [comment]
+         * @type {?|undefined}
+         */
+        Review.prototype.comment;
+        /**
+         * \@member {Date} [date]
+         * @type {?|undefined}
+         */
+        Review.prototype.date;
+        /**
+         * \@member {string} [headline]
+         * @type {?|undefined}
+         */
+        Review.prototype.headline;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Review.prototype.id;
+        /**
+         * \@member {User} [principal]
+         * @type {?|undefined}
+         */
+        Review.prototype.principal;
+        /**
+         * \@member {number} [rating]
+         * @type {?|undefined}
+         */
+        Review.prototype.rating;
+    }
     /**
      *
      * An interface representing VariantCategory.
@@ -14895,6 +21525,23 @@ var Occ;
      */
     function VariantCategory() { }
     Occ.VariantCategory = VariantCategory;
+    if (false) {
+        /**
+         * \@member {boolean} [hasImage]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.hasImage;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.name;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        VariantCategory.prototype.priority;
+    }
     /**
      *
      * An interface representing VariantValueCategory.
@@ -14902,6 +21549,23 @@ var Occ;
      */
     function VariantValueCategory() { }
     Occ.VariantValueCategory = VariantValueCategory;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.name;
+        /**
+         * \@member {number} [sequence]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.sequence;
+        /**
+         * \@member {VariantCategory[]} [superCategories]
+         * @type {?|undefined}
+         */
+        VariantValueCategory.prototype.superCategories;
+    }
     /**
      *
      * An interface representing VariantMatrixElement.
@@ -14909,6 +21573,33 @@ var Occ;
      */
     function VariantMatrixElement() { }
     Occ.VariantMatrixElement = VariantMatrixElement;
+    if (false) {
+        /**
+         * \@member {VariantMatrixElement[]} [elements]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.elements;
+        /**
+         * \@member {boolean} [isLeaf]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.isLeaf;
+        /**
+         * \@member {VariantCategory} [parentVariantCategory]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.parentVariantCategory;
+        /**
+         * \@member {VariantOption} [variantOption]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.variantOption;
+        /**
+         * \@member {VariantValueCategory} [variantValueCategory]
+         * @type {?|undefined}
+         */
+        VariantMatrixElement.prototype.variantValueCategory;
+    }
     /**
      *
      * An interface representing Product.
@@ -14916,6 +21607,148 @@ var Occ;
      */
     function Product() { }
     Occ.Product = Product;
+    if (false) {
+        /**
+         * \@member {boolean} [availableForPickup]
+         * @type {?|undefined}
+         */
+        Product.prototype.availableForPickup;
+        /**
+         * \@member {number} [averageRating]
+         * @type {?|undefined}
+         */
+        Product.prototype.averageRating;
+        /**
+         * \@member {BaseOption[]} [baseOptions]
+         * @type {?|undefined}
+         */
+        Product.prototype.baseOptions;
+        /**
+         * \@member {string} [baseProduct]
+         * @type {?|undefined}
+         */
+        Product.prototype.baseProduct;
+        /**
+         * \@member {Category[]} [categories]
+         * @type {?|undefined}
+         */
+        Product.prototype.categories;
+        /**
+         * \@member {Classification[]} [classifications]
+         * @type {?|undefined}
+         */
+        Product.prototype.classifications;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Product.prototype.code;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Product.prototype.description;
+        /**
+         * \@member {FutureStock[]} [futureStocks]
+         * @type {?|undefined}
+         */
+        Product.prototype.futureStocks;
+        /**
+         * \@member {Image[]} [images]
+         * @type {?|undefined}
+         */
+        Product.prototype.images;
+        /**
+         * \@member {string} [manufacturer]
+         * @type {?|undefined}
+         */
+        Product.prototype.manufacturer;
+        /**
+         * \@member {boolean} [multidimensional]
+         * @type {?|undefined}
+         */
+        Product.prototype.multidimensional;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Product.prototype.name;
+        /**
+         * \@member {number} [numberOfReviews]
+         * @type {?|undefined}
+         */
+        Product.prototype.numberOfReviews;
+        /**
+         * \@member {Promotion[]} [potentialPromotions]
+         * @type {?|undefined}
+         */
+        Product.prototype.potentialPromotions;
+        /**
+         * \@member {Price} [price]
+         * @type {?|undefined}
+         */
+        Product.prototype.price;
+        /**
+         * \@member {PriceRange} [priceRange]
+         * @type {?|undefined}
+         */
+        Product.prototype.priceRange;
+        /**
+         * \@member {ProductReference[]} [productReferences]
+         * @type {?|undefined}
+         */
+        Product.prototype.productReferences;
+        /**
+         * \@member {boolean} [purchasable]
+         * @type {?|undefined}
+         */
+        Product.prototype.purchasable;
+        /**
+         * \@member {Review[]} [reviews]
+         * @type {?|undefined}
+         */
+        Product.prototype.reviews;
+        /**
+         * \@member {Stock} [stock]
+         * @type {?|undefined}
+         */
+        Product.prototype.stock;
+        /**
+         * \@member {string} [summary]
+         * @type {?|undefined}
+         */
+        Product.prototype.summary;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Product.prototype.url;
+        /**
+         * \@member {VariantMatrixElement[]} [variantMatrix]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantMatrix;
+        /**
+         * \@member {VariantOption[]} [variantOptions]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantOptions;
+        /**
+         * \@member {string} [variantType]
+         * @type {?|undefined}
+         */
+        Product.prototype.variantType;
+        /**
+         * \@member {Price[]} [volumePrices]
+         * @type {?|undefined}
+         */
+        Product.prototype.volumePrices;
+        /**
+         * \@member {boolean} [volumePricesFlag]
+         * @type {?|undefined}
+         */
+        Product.prototype.volumePricesFlag;
+    }
     /**
      *
      * An interface representing OrderEntry.
@@ -14923,6 +21756,48 @@ var Occ;
      */
     function OrderEntry() { }
     Occ.OrderEntry = OrderEntry;
+    if (false) {
+        /**
+         * \@member {Price} [basePrice]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.basePrice;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.deliveryMode;
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.deliveryPointOfService;
+        /**
+         * \@member {number} [entryNumber]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.entryNumber;
+        /**
+         * \@member {Product} [product]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.product;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.quantity;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.totalPrice;
+        /**
+         * \@member {boolean} [updateable]
+         * @type {?|undefined}
+         */
+        OrderEntry.prototype.updateable;
+    }
     /**
      *
      * An interface representing DeliveryOrderEntryGroup.
@@ -14930,6 +21805,28 @@ var Occ;
      */
     function DeliveryOrderEntryGroup() { }
     Occ.DeliveryOrderEntryGroup = DeliveryOrderEntryGroup;
+    if (false) {
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.deliveryAddress;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.entries;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.quantity;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        DeliveryOrderEntryGroup.prototype.totalPriceWithTax;
+    }
     /**
      *
      * An interface representing PaymentDetails.
@@ -14937,6 +21834,78 @@ var Occ;
      */
     function PaymentDetails() { }
     Occ.PaymentDetails = PaymentDetails;
+    if (false) {
+        /**
+         * \@member {string} [accountHolderName]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.accountHolderName;
+        /**
+         * \@member {Address} [billingAddress]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.billingAddress;
+        /**
+         * \@member {string} [cardNumber]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cardNumber;
+        /**
+         * \@member {CardType} [cardType]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cardType;
+        /**
+         * \@member {string} [cvn]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.cvn;
+        /**
+         * \@member {boolean} [defaultPayment]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.defaultPayment;
+        /**
+         * \@member {string} [expiryMonth]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.expiryMonth;
+        /**
+         * \@member {string} [expiryYear]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.expiryYear;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.id;
+        /**
+         * \@member {string} [issueNumber]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.issueNumber;
+        /**
+         * \@member {boolean} [saved]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.saved;
+        /**
+         * \@member {string} [startMonth]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.startMonth;
+        /**
+         * \@member {string} [startYear]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.startYear;
+        /**
+         * \@member {string} [subscriptionId]
+         * @type {?|undefined}
+         */
+        PaymentDetails.prototype.subscriptionId;
+    }
     /**
      *
      * An interface representing PickupOrderEntryGroup.
@@ -14944,6 +21913,33 @@ var Occ;
      */
     function PickupOrderEntryGroup() { }
     Occ.PickupOrderEntryGroup = PickupOrderEntryGroup;
+    if (false) {
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.deliveryPointOfService;
+        /**
+         * \@member {number} [distance]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.distance;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.entries;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.quantity;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        PickupOrderEntryGroup.prototype.totalPriceWithTax;
+    }
     /**
      *
      * An interface representing Principal.
@@ -14951,6 +21947,18 @@ var Occ;
      */
     function Principal() { }
     Occ.Principal = Principal;
+    if (false) {
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Principal.prototype.name;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        Principal.prototype.uid;
+    }
     /**
      *
      * An interface representing Cart.
@@ -14958,6 +21966,183 @@ var Occ;
      */
     function Cart() { }
     Occ.Cart = Cart;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [appliedOrderPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [appliedProductPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedProductPromotions;
+        /**
+         * \@member {Voucher[]} [appliedVouchers]
+         * @type {?|undefined}
+         */
+        Cart.prototype.appliedVouchers;
+        /**
+         * \@member {boolean} [calculated]
+         * @type {?|undefined}
+         */
+        Cart.prototype.calculated;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Cart.prototype.code;
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryAddress;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryCost;
+        /**
+         * \@member {number} [deliveryItemsQuantity]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryItemsQuantity;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryMode;
+        /**
+         * \@member {DeliveryOrderEntryGroup[]} [deliveryOrderGroups]
+         * @type {?|undefined}
+         */
+        Cart.prototype.deliveryOrderGroups;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        Cart.prototype.description;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Cart.prototype.entries;
+        /**
+         * \@member {Date} [expirationTime]
+         * @type {?|undefined}
+         */
+        Cart.prototype.expirationTime;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        Cart.prototype.guid;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Cart.prototype.name;
+        /**
+         * \@member {boolean} [net]
+         * @type {?|undefined}
+         */
+        Cart.prototype.net;
+        /**
+         * \@member {Price} [orderDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.orderDiscounts;
+        /**
+         * \@member {PaymentDetails} [paymentInfo]
+         * @type {?|undefined}
+         */
+        Cart.prototype.paymentInfo;
+        /**
+         * \@member {number} [pickupItemsQuantity]
+         * @type {?|undefined}
+         */
+        Cart.prototype.pickupItemsQuantity;
+        /**
+         * \@member {PickupOrderEntryGroup[]} [pickupOrderGroups]
+         * @type {?|undefined}
+         */
+        Cart.prototype.pickupOrderGroups;
+        /**
+         * \@member {PromotionResult[]} [potentialOrderPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.potentialOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [potentialProductPromotions]
+         * @type {?|undefined}
+         */
+        Cart.prototype.potentialProductPromotions;
+        /**
+         * \@member {Price} [productDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.productDiscounts;
+        /**
+         * \@member {Date} [saveTime]
+         * @type {?|undefined}
+         */
+        Cart.prototype.saveTime;
+        /**
+         * \@member {Principal} [savedBy]
+         * @type {?|undefined}
+         */
+        Cart.prototype.savedBy;
+        /**
+         * \@member {string} [site]
+         * @type {?|undefined}
+         */
+        Cart.prototype.site;
+        /**
+         * \@member {string} [store]
+         * @type {?|undefined}
+         */
+        Cart.prototype.store;
+        /**
+         * \@member {Price} [subTotal]
+         * @type {?|undefined}
+         */
+        Cart.prototype.subTotal;
+        /**
+         * \@member {Price} [totalDiscounts]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalDiscounts;
+        /**
+         * \@member {number} [totalItems]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalItems;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalPrice;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalPriceWithTax;
+        /**
+         * \@member {Price} [totalTax]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalTax;
+        /**
+         * \@member {number} [totalUnitCount]
+         * @type {?|undefined}
+         */
+        Cart.prototype.totalUnitCount;
+        /**
+         * \@member {Principal} [user]
+         * @type {?|undefined}
+         */
+        Cart.prototype.user;
+    }
     /**
      *
      * An interface representing CartList.
@@ -14965,6 +22150,13 @@ var Occ;
      */
     function CartList() { }
     Occ.CartList = CartList;
+    if (false) {
+        /**
+         * \@member {Cart[]} [carts]
+         * @type {?|undefined}
+         */
+        CartList.prototype.carts;
+    }
     /**
      *
      * An interface representing CartModification.
@@ -14972,6 +22164,38 @@ var Occ;
      */
     function CartModification() { }
     Occ.CartModification = CartModification;
+    if (false) {
+        /**
+         * \@member {boolean} [deliveryModeChanged]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.deliveryModeChanged;
+        /**
+         * \@member {OrderEntry} [entry]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.entry;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.quantity;
+        /**
+         * \@member {number} [quantityAdded]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.quantityAdded;
+        /**
+         * \@member {string} [statusCode]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.statusCode;
+        /**
+         * \@member {string} [statusMessage]
+         * @type {?|undefined}
+         */
+        CartModification.prototype.statusMessage;
+    }
     /**
      *
      * An interface representing CategoryHierarchy.
@@ -14979,6 +22203,33 @@ var Occ;
      */
     function CategoryHierarchy() { }
     Occ.CategoryHierarchy = CategoryHierarchy;
+    if (false) {
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.name;
+        /**
+         * \@member {CategoryHierarchy[]} [subcategories]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.subcategories;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        CategoryHierarchy.prototype.url;
+    }
     /**
      *
      * An interface representing CatalogVersion.
@@ -14986,6 +22237,33 @@ var Occ;
      */
     function CatalogVersion() { }
     Occ.CatalogVersion = CatalogVersion;
+    if (false) {
+        /**
+         * \@member {CategoryHierarchy[]} [categories]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.categories;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.name;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        CatalogVersion.prototype.url;
+    }
     /**
      *
      * An interface representing Catalog.
@@ -14993,6 +22271,33 @@ var Occ;
      */
     function Catalog() { }
     Occ.Catalog = Catalog;
+    if (false) {
+        /**
+         * \@member {CatalogVersion[]} [catalogVersions]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.catalogVersions;
+        /**
+         * \@member {string} [id]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.id;
+        /**
+         * \@member {Date} [lastModified]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.lastModified;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.name;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        Catalog.prototype.url;
+    }
     /**
      *
      * An interface representing CatalogList.
@@ -15000,6 +22305,13 @@ var Occ;
      */
     function CatalogList() { }
     Occ.CatalogList = CatalogList;
+    if (false) {
+        /**
+         * \@member {Catalog[]} [catalogs]
+         * @type {?|undefined}
+         */
+        CatalogList.prototype.catalogs;
+    }
     /**
      *
      * An interface representing ComponentIDList.
@@ -15007,6 +22319,13 @@ var Occ;
      */
     function ComponentIDList() { }
     Occ.ComponentIDList = ComponentIDList;
+    if (false) {
+        /**
+         * \@member {string[]} [idList]
+         * @type {?|undefined}
+         */
+        ComponentIDList.prototype.idList;
+    }
     /**
      *
      * An interface representing ConsignmentEntry.
@@ -15014,6 +22333,23 @@ var Occ;
      */
     function ConsignmentEntry() { }
     Occ.ConsignmentEntry = ConsignmentEntry;
+    if (false) {
+        /**
+         * \@member {OrderEntry} [orderEntry]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.orderEntry;
+        /**
+         * \@member {number} [quantity]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.quantity;
+        /**
+         * \@member {number} [shippedQuantity]
+         * @type {?|undefined}
+         */
+        ConsignmentEntry.prototype.shippedQuantity;
+    }
     /**
      *
      * An interface representing Consignment.
@@ -15021,6 +22357,43 @@ var Occ;
      */
     function Consignment() { }
     Occ.Consignment = Consignment;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.code;
+        /**
+         * \@member {PointOfService} [deliveryPointOfService]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.deliveryPointOfService;
+        /**
+         * \@member {ConsignmentEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.entries;
+        /**
+         * \@member {Address} [shippingAddress]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.shippingAddress;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.status;
+        /**
+         * \@member {Date} [statusDate]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.statusDate;
+        /**
+         * \@member {string} [trackingID]
+         * @type {?|undefined}
+         */
+        Consignment.prototype.trackingID;
+    }
     /**
      *
      * An interface representing CountryList.
@@ -15028,6 +22401,13 @@ var Occ;
      */
     function CountryList() { }
     Occ.CountryList = CountryList;
+    if (false) {
+        /**
+         * \@member {Country[]} [countries]
+         * @type {?|undefined}
+         */
+        CountryList.prototype.countries;
+    }
     /**
      *
      * An interface representing CurrencyList.
@@ -15035,6 +22415,13 @@ var Occ;
      */
     function CurrencyList() { }
     Occ.CurrencyList = CurrencyList;
+    if (false) {
+        /**
+         * \@member {Currency[]} [currencies]
+         * @type {?|undefined}
+         */
+        CurrencyList.prototype.currencies;
+    }
     /**
      *
      * An interface representing DeliveryModeList.
@@ -15042,6 +22429,13 @@ var Occ;
      */
     function DeliveryModeList() { }
     Occ.DeliveryModeList = DeliveryModeList;
+    if (false) {
+        /**
+         * \@member {DeliveryMode[]} [deliveryModes]
+         * @type {?|undefined}
+         */
+        DeliveryModeList.prototype.deliveryModes;
+    }
     /**
      *
      * An interface representing FacetValue.
@@ -15049,6 +22443,28 @@ var Occ;
      */
     function FacetValue() { }
     Occ.FacetValue = FacetValue;
+    if (false) {
+        /**
+         * \@member {number} [count]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.count;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.name;
+        /**
+         * \@member {SearchState} [query]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.query;
+        /**
+         * \@member {boolean} [selected]
+         * @type {?|undefined}
+         */
+        FacetValue.prototype.selected;
+    }
     /**
      *
      * An interface representing Facet.
@@ -15056,6 +22472,43 @@ var Occ;
      */
     function Facet() { }
     Occ.Facet = Facet;
+    if (false) {
+        /**
+         * \@member {boolean} [category]
+         * @type {?|undefined}
+         */
+        Facet.prototype.category;
+        /**
+         * \@member {boolean} [multiSelect]
+         * @type {?|undefined}
+         */
+        Facet.prototype.multiSelect;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Facet.prototype.name;
+        /**
+         * \@member {number} [priority]
+         * @type {?|undefined}
+         */
+        Facet.prototype.priority;
+        /**
+         * \@member {FacetValue[]} [topValues]
+         * @type {?|undefined}
+         */
+        Facet.prototype.topValues;
+        /**
+         * \@member {FacetValue[]} [values]
+         * @type {?|undefined}
+         */
+        Facet.prototype.values;
+        /**
+         * \@member {boolean} [visible]
+         * @type {?|undefined}
+         */
+        Facet.prototype.visible;
+    }
     /**
      *
      * An interface representing LanguageList.
@@ -15063,6 +22516,13 @@ var Occ;
      */
     function LanguageList() { }
     Occ.LanguageList = LanguageList;
+    if (false) {
+        /**
+         * \@member {Language[]} [languages]
+         * @type {?|undefined}
+         */
+        LanguageList.prototype.languages;
+    }
     /**
      *
      * An interface representing Pagination.
@@ -15072,6 +22532,28 @@ var Occ;
      */
     function Pagination() { }
     Occ.Pagination = Pagination;
+    if (false) {
+        /**
+         * \@member {number} [count] Number of elements on this page
+         * @type {?|undefined}
+         */
+        Pagination.prototype.count;
+        /**
+         * \@member {number} [page] Current page number
+         * @type {?|undefined}
+         */
+        Pagination.prototype.page;
+        /**
+         * \@member {number} [totalCount] Total number of elements
+         * @type {?|undefined}
+         */
+        Pagination.prototype.totalCount;
+        /**
+         * \@member {number} [totalPages] Total number of pages
+         * @type {?|undefined}
+         */
+        Pagination.prototype.totalPages;
+    }
     /**
      *
      * An interface representing Sort.
@@ -15081,6 +22563,18 @@ var Occ;
      */
     function Sort() { }
     Occ.Sort = Sort;
+    if (false) {
+        /**
+         * \@member {boolean} [asc]
+         * @type {?|undefined}
+         */
+        Sort.prototype.asc;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Sort.prototype.code;
+    }
     /**
      *
      * An interface representing ListAdaptedComponents.
@@ -15088,6 +22582,23 @@ var Occ;
      */
     function ListAdaptedComponents() { }
     Occ.ListAdaptedComponents = ListAdaptedComponents;
+    if (false) {
+        /**
+         * \@member {any[]} [components]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.components;
+        /**
+         * \@member {Pagination} [pagination]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.pagination;
+        /**
+         * \@member {Sort[]} [sorts]
+         * @type {?|undefined}
+         */
+        ListAdaptedComponents.prototype.sorts;
+    }
     /**
      *
      * An interface representing MemberList.
@@ -15095,6 +22606,13 @@ var Occ;
      */
     function MemberList() { }
     Occ.MemberList = MemberList;
+    if (false) {
+        /**
+         * \@member {Principal[]} [members]
+         * @type {?|undefined}
+         */
+        MemberList.prototype.members;
+    }
     /**
      *
      * An interface representing OrderEntryList.
@@ -15102,6 +22620,13 @@ var Occ;
      */
     function OrderEntryList() { }
     Occ.OrderEntryList = OrderEntryList;
+    if (false) {
+        /**
+         * \@member {OrderEntry[]} [orderEntries]
+         * @type {?|undefined}
+         */
+        OrderEntryList.prototype.orderEntries;
+    }
     /**
      *
      * An interface representing OrderHistory.
@@ -15109,6 +22634,38 @@ var Occ;
      */
     function OrderHistory() { }
     Occ.OrderHistory = OrderHistory;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.code;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.guid;
+        /**
+         * \@member {Date} [placed]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.placed;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.status;
+        /**
+         * \@member {string} [statusDisplay]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.statusDisplay;
+        /**
+         * \@member {Price} [total]
+         * @type {?|undefined}
+         */
+        OrderHistory.prototype.total;
+    }
     /**
      *
      * An interface representing PaginationModel.
@@ -15116,6 +22673,33 @@ var Occ;
      */
     function PaginationModel() { }
     Occ.PaginationModel = PaginationModel;
+    if (false) {
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.currentPage;
+        /**
+         * \@member {number} [pageSize]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.pageSize;
+        /**
+         * \@member {string} [sort]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.sort;
+        /**
+         * \@member {number} [totalPages]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.totalPages;
+        /**
+         * \@member {number} [totalResults]
+         * @type {?|undefined}
+         */
+        PaginationModel.prototype.totalResults;
+    }
     /**
      *
      * An interface representing SortModel.
@@ -15123,6 +22707,23 @@ var Occ;
      */
     function SortModel() { }
     Occ.SortModel = SortModel;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.name;
+        /**
+         * \@member {boolean} [selected]
+         * @type {?|undefined}
+         */
+        SortModel.prototype.selected;
+    }
     /**
      *
      * An interface representing OrderHistoryList.
@@ -15130,6 +22731,23 @@ var Occ;
      */
     function OrderHistoryList() { }
     Occ.OrderHistoryList = OrderHistoryList;
+    if (false) {
+        /**
+         * \@member {OrderHistory[]} [orders]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.orders;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.pagination;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        OrderHistoryList.prototype.sorts;
+    }
     /**
      *
      * An interface representing OrderStatusUpdateElement.
@@ -15137,6 +22755,23 @@ var Occ;
      */
     function OrderStatusUpdateElement() { }
     Occ.OrderStatusUpdateElement = OrderStatusUpdateElement;
+    if (false) {
+        /**
+         * \@member {string} [baseSiteId]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.baseSiteId;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.code;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElement.prototype.status;
+    }
     /**
      *
      * An interface representing OrderStatusUpdateElementList.
@@ -15144,6 +22779,13 @@ var Occ;
      */
     function OrderStatusUpdateElementList() { }
     Occ.OrderStatusUpdateElementList = OrderStatusUpdateElementList;
+    if (false) {
+        /**
+         * \@member {OrderStatusUpdateElement[]} [orderStatusUpdateElements]
+         * @type {?|undefined}
+         */
+        OrderStatusUpdateElementList.prototype.orderStatusUpdateElements;
+    }
     /**
      *
      * An interface representing Order.
@@ -15151,6 +22793,183 @@ var Occ;
      */
     function Order() { }
     Occ.Order = Order;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [appliedOrderPromotions]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedOrderPromotions;
+        /**
+         * \@member {PromotionResult[]} [appliedProductPromotions]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedProductPromotions;
+        /**
+         * \@member {Voucher[]} [appliedVouchers]
+         * @type {?|undefined}
+         */
+        Order.prototype.appliedVouchers;
+        /**
+         * \@member {boolean} [calculated]
+         * @type {?|undefined}
+         */
+        Order.prototype.calculated;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Order.prototype.code;
+        /**
+         * \@member {Consignment[]} [consignments]
+         * @type {?|undefined}
+         */
+        Order.prototype.consignments;
+        /**
+         * \@member {Date} [created]
+         * @type {?|undefined}
+         */
+        Order.prototype.created;
+        /**
+         * \@member {Address} [deliveryAddress]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryAddress;
+        /**
+         * \@member {Price} [deliveryCost]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryCost;
+        /**
+         * \@member {number} [deliveryItemsQuantity]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryItemsQuantity;
+        /**
+         * \@member {DeliveryMode} [deliveryMode]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryMode;
+        /**
+         * \@member {DeliveryOrderEntryGroup[]} [deliveryOrderGroups]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryOrderGroups;
+        /**
+         * \@member {string} [deliveryStatus]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryStatus;
+        /**
+         * \@member {string} [deliveryStatusDisplay]
+         * @type {?|undefined}
+         */
+        Order.prototype.deliveryStatusDisplay;
+        /**
+         * \@member {OrderEntry[]} [entries]
+         * @type {?|undefined}
+         */
+        Order.prototype.entries;
+        /**
+         * \@member {boolean} [guestCustomer]
+         * @type {?|undefined}
+         */
+        Order.prototype.guestCustomer;
+        /**
+         * \@member {string} [guid]
+         * @type {?|undefined}
+         */
+        Order.prototype.guid;
+        /**
+         * \@member {boolean} [net]
+         * @type {?|undefined}
+         */
+        Order.prototype.net;
+        /**
+         * \@member {Price} [orderDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.orderDiscounts;
+        /**
+         * \@member {PaymentDetails} [paymentInfo]
+         * @type {?|undefined}
+         */
+        Order.prototype.paymentInfo;
+        /**
+         * \@member {number} [pickupItemsQuantity]
+         * @type {?|undefined}
+         */
+        Order.prototype.pickupItemsQuantity;
+        /**
+         * \@member {PickupOrderEntryGroup[]} [pickupOrderGroups]
+         * @type {?|undefined}
+         */
+        Order.prototype.pickupOrderGroups;
+        /**
+         * \@member {Price} [productDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.productDiscounts;
+        /**
+         * \@member {string} [site]
+         * @type {?|undefined}
+         */
+        Order.prototype.site;
+        /**
+         * \@member {string} [status]
+         * @type {?|undefined}
+         */
+        Order.prototype.status;
+        /**
+         * \@member {string} [statusDisplay]
+         * @type {?|undefined}
+         */
+        Order.prototype.statusDisplay;
+        /**
+         * \@member {string} [store]
+         * @type {?|undefined}
+         */
+        Order.prototype.store;
+        /**
+         * \@member {Price} [subTotal]
+         * @type {?|undefined}
+         */
+        Order.prototype.subTotal;
+        /**
+         * \@member {Price} [totalDiscounts]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalDiscounts;
+        /**
+         * \@member {number} [totalItems]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalItems;
+        /**
+         * \@member {Price} [totalPrice]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalPrice;
+        /**
+         * \@member {Price} [totalPriceWithTax]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalPriceWithTax;
+        /**
+         * \@member {Price} [totalTax]
+         * @type {?|undefined}
+         */
+        Order.prototype.totalTax;
+        /**
+         * \@member {OrderEntry[]} [unconsignedEntries]
+         * @type {?|undefined}
+         */
+        Order.prototype.unconsignedEntries;
+        /**
+         * \@member {Principal} [user]
+         * @type {?|undefined}
+         */
+        Order.prototype.user;
+    }
     /**
      *
      * An interface representing PaymentDetailsList.
@@ -15158,6 +22977,13 @@ var Occ;
      */
     function PaymentDetailsList() { }
     Occ.PaymentDetailsList = PaymentDetailsList;
+    if (false) {
+        /**
+         * \@member {PaymentDetails[]} [payments]
+         * @type {?|undefined}
+         */
+        PaymentDetailsList.prototype.payments;
+    }
     /**
      *
      * An interface representing PointOfServiceStock.
@@ -15165,6 +22991,78 @@ var Occ;
      */
     function PointOfServiceStock() { }
     Occ.PointOfServiceStock = PointOfServiceStock;
+    if (false) {
+        /**
+         * \@member {Address} [address]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.address;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.description;
+        /**
+         * \@member {string} [displayName]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.displayName;
+        /**
+         * \@member {number} [distanceKm]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.distanceKm;
+        /**
+         * \@member {{ [propertyName: string]: string }} [features]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.features;
+        /**
+         * \@member {string} [formattedDistance]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.formattedDistance;
+        /**
+         * \@member {GeoPoint} [geoPoint]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.geoPoint;
+        /**
+         * \@member {Image} [mapIcon]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.mapIcon;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.name;
+        /**
+         * \@member {OpeningSchedule} [openingHours]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.openingHours;
+        /**
+         * \@member {Stock} [stockInfo]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.stockInfo;
+        /**
+         * \@member {string} [storeContent]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.storeContent;
+        /**
+         * \@member {Image[]} [storeImages]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.storeImages;
+        /**
+         * \@member {string} [url]
+         * @type {?|undefined}
+         */
+        PointOfServiceStock.prototype.url;
+    }
     /**
      *
      * An interface representing ProductExpressUpdateElement.
@@ -15172,6 +23070,23 @@ var Occ;
      */
     function ProductExpressUpdateElement() { }
     Occ.ProductExpressUpdateElement = ProductExpressUpdateElement;
+    if (false) {
+        /**
+         * \@member {string} [catalogId]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.catalogId;
+        /**
+         * \@member {string} [catalogVersion]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.catalogVersion;
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElement.prototype.code;
+    }
     /**
      *
      * An interface representing ProductExpressUpdateElementList.
@@ -15179,6 +23094,13 @@ var Occ;
      */
     function ProductExpressUpdateElementList() { }
     Occ.ProductExpressUpdateElementList = ProductExpressUpdateElementList;
+    if (false) {
+        /**
+         * \@member {ProductExpressUpdateElement[]} [productExpressUpdateElements]
+         * @type {?|undefined}
+         */
+        ProductExpressUpdateElementList.prototype.productExpressUpdateElements;
+    }
     /**
      *
      * An interface representing ProductList.
@@ -15186,6 +23108,38 @@ var Occ;
      */
     function ProductList() { }
     Occ.ProductList = ProductList;
+    if (false) {
+        /**
+         * \@member {string} [catalog]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.catalog;
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.currentPage;
+        /**
+         * \@member {Product[]} [products]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.products;
+        /**
+         * \@member {number} [totalPageCount]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.totalPageCount;
+        /**
+         * \@member {number} [totalProductCount]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.totalProductCount;
+        /**
+         * \@member {string} [version]
+         * @type {?|undefined}
+         */
+        ProductList.prototype.version;
+    }
     /**
      *
      * An interface representing ProductReferenceList.
@@ -15193,6 +23147,13 @@ var Occ;
      */
     function ProductReferenceList() { }
     Occ.ProductReferenceList = ProductReferenceList;
+    if (false) {
+        /**
+         * \@member {ProductReference[]} [references]
+         * @type {?|undefined}
+         */
+        ProductReferenceList.prototype.references;
+    }
     /**
      *
      * An interface representing SpellingSuggestion.
@@ -15200,6 +23161,18 @@ var Occ;
      */
     function SpellingSuggestion() { }
     Occ.SpellingSuggestion = SpellingSuggestion;
+    if (false) {
+        /**
+         * \@member {string} [query]
+         * @type {?|undefined}
+         */
+        SpellingSuggestion.prototype.query;
+        /**
+         * \@member {string} [suggestion]
+         * @type {?|undefined}
+         */
+        SpellingSuggestion.prototype.suggestion;
+    }
     /**
      *
      * An interface representing ProductSearchPage.
@@ -15207,6 +23180,58 @@ var Occ;
      */
     function ProductSearchPage() { }
     Occ.ProductSearchPage = ProductSearchPage;
+    if (false) {
+        /**
+         * \@member {Breadcrumb[]} [breadcrumbs]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.breadcrumbs;
+        /**
+         * \@member {string} [categoryCode]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.categoryCode;
+        /**
+         * \@member {SearchState} [currentQuery]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.currentQuery;
+        /**
+         * \@member {Facet[]} [facets]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.facets;
+        /**
+         * \@member {string} [freeTextSearch]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.freeTextSearch;
+        /**
+         * \@member {string} [keywordRedirectUrl]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.keywordRedirectUrl;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.pagination;
+        /**
+         * \@member {Product[]} [products]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.products;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.sorts;
+        /**
+         * \@member {SpellingSuggestion} [spellingSuggestion]
+         * @type {?|undefined}
+         */
+        ProductSearchPage.prototype.spellingSuggestion;
+    }
     /**
      *
      * An interface representing PromotionList.
@@ -15214,6 +23239,13 @@ var Occ;
      */
     function PromotionList() { }
     Occ.PromotionList = PromotionList;
+    if (false) {
+        /**
+         * \@member {Promotion[]} [promotions]
+         * @type {?|undefined}
+         */
+        PromotionList.prototype.promotions;
+    }
     /**
      *
      * An interface representing PromotionResultList.
@@ -15221,6 +23253,13 @@ var Occ;
      */
     function PromotionResultList() { }
     Occ.PromotionResultList = PromotionResultList;
+    if (false) {
+        /**
+         * \@member {PromotionResult[]} [promotions]
+         * @type {?|undefined}
+         */
+        PromotionResultList.prototype.promotions;
+    }
     /**
      *
      * An interface representing ReviewList.
@@ -15228,6 +23267,13 @@ var Occ;
      */
     function ReviewList() { }
     Occ.ReviewList = ReviewList;
+    if (false) {
+        /**
+         * \@member {Review[]} [reviews]
+         * @type {?|undefined}
+         */
+        ReviewList.prototype.reviews;
+    }
     /**
      *
      * An interface representing SaveCartResult.
@@ -15235,6 +23281,13 @@ var Occ;
      */
     function SaveCartResult() { }
     Occ.SaveCartResult = SaveCartResult;
+    if (false) {
+        /**
+         * \@member {Cart} [savedCartData]
+         * @type {?|undefined}
+         */
+        SaveCartResult.prototype.savedCartData;
+    }
     /**
      *
      * An interface representing StoreFinderSearchPage.
@@ -15242,6 +23295,58 @@ var Occ;
      */
     function StoreFinderSearchPage() { }
     Occ.StoreFinderSearchPage = StoreFinderSearchPage;
+    if (false) {
+        /**
+         * \@member {number} [boundEastLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundEastLongitude;
+        /**
+         * \@member {number} [boundNorthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundNorthLatitude;
+        /**
+         * \@member {number} [boundSouthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundSouthLatitude;
+        /**
+         * \@member {number} [boundWestLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.boundWestLongitude;
+        /**
+         * \@member {string} [locationText]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.locationText;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.pagination;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sorts;
+        /**
+         * \@member {number} [sourceLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sourceLatitude;
+        /**
+         * \@member {number} [sourceLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.sourceLongitude;
+        /**
+         * \@member {PointOfService[]} [stores]
+         * @type {?|undefined}
+         */
+        StoreFinderSearchPage.prototype.stores;
+    }
     /**
      *
      * An interface representing StoreFinderStockSearchPage.
@@ -15249,6 +23354,63 @@ var Occ;
      */
     function StoreFinderStockSearchPage() { }
     Occ.StoreFinderStockSearchPage = StoreFinderStockSearchPage;
+    if (false) {
+        /**
+         * \@member {number} [boundEastLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundEastLongitude;
+        /**
+         * \@member {number} [boundNorthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundNorthLatitude;
+        /**
+         * \@member {number} [boundSouthLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundSouthLatitude;
+        /**
+         * \@member {number} [boundWestLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.boundWestLongitude;
+        /**
+         * \@member {string} [locationText]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.locationText;
+        /**
+         * \@member {PaginationModel} [pagination]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.pagination;
+        /**
+         * \@member {Product} [product]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.product;
+        /**
+         * \@member {SortModel[]} [sorts]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sorts;
+        /**
+         * \@member {number} [sourceLatitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sourceLatitude;
+        /**
+         * \@member {number} [sourceLongitude]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.sourceLongitude;
+        /**
+         * \@member {PointOfServiceStock[]} [stores]
+         * @type {?|undefined}
+         */
+        StoreFinderStockSearchPage.prototype.stores;
+    }
     /**
      *
      * An interface representing Suggestion.
@@ -15256,6 +23418,13 @@ var Occ;
      */
     function Suggestion() { }
     Occ.Suggestion = Suggestion;
+    if (false) {
+        /**
+         * \@member {string} [value]
+         * @type {?|undefined}
+         */
+        Suggestion.prototype.value;
+    }
     /**
      *
      * An interface representing SuggestionList.
@@ -15263,6 +23432,13 @@ var Occ;
      */
     function SuggestionList() { }
     Occ.SuggestionList = SuggestionList;
+    if (false) {
+        /**
+         * \@member {Suggestion[]} [suggestions]
+         * @type {?|undefined}
+         */
+        SuggestionList.prototype.suggestions;
+    }
     /**
      *
      * An interface representing Title.
@@ -15270,6 +23446,18 @@ var Occ;
      */
     function Title() { }
     Occ.Title = Title;
+    if (false) {
+        /**
+         * \@member {string} [code]
+         * @type {?|undefined}
+         */
+        Title.prototype.code;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        Title.prototype.name;
+    }
     /**
      *
      * An interface representing TitleList.
@@ -15277,6 +23465,13 @@ var Occ;
      */
     function TitleList() { }
     Occ.TitleList = TitleList;
+    if (false) {
+        /**
+         * \@member {Title[]} [titles]
+         * @type {?|undefined}
+         */
+        TitleList.prototype.titles;
+    }
     /**
      *
      * An interface representing UserGroup.
@@ -15284,6 +23479,33 @@ var Occ;
      */
     function UserGroup() { }
     Occ.UserGroup = UserGroup;
+    if (false) {
+        /**
+         * \@member {Principal[]} [members]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.members;
+        /**
+         * \@member {number} [membersCount]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.membersCount;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.name;
+        /**
+         * \@member {UserGroup[]} [subGroups]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.subGroups;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        UserGroup.prototype.uid;
+    }
     /**
      *
      * An interface representing UserGroupList.
@@ -15291,6 +23513,33 @@ var Occ;
      */
     function UserGroupList() { }
     Occ.UserGroupList = UserGroupList;
+    if (false) {
+        /**
+         * \@member {number} [currentPage]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.currentPage;
+        /**
+         * \@member {number} [numberOfPages]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.numberOfPages;
+        /**
+         * \@member {number} [pageSize]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.pageSize;
+        /**
+         * \@member {number} [totalNumber]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.totalNumber;
+        /**
+         * \@member {UserGroup[]} [userGroups]
+         * @type {?|undefined}
+         */
+        UserGroupList.prototype.userGroups;
+    }
     /**
      *
      * An interface representing UserSignUp.
@@ -15298,16 +23547,57 @@ var Occ;
      */
     function UserSignUp() { }
     Occ.UserSignUp = UserSignUp;
+    if (false) {
+        /**
+         * \@member {string} [firstName]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.firstName;
+        /**
+         * \@member {string} [lastName]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.lastName;
+        /**
+         * \@member {string} [password]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.password;
+        /**
+         * \@member {string} [titleCode]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.titleCode;
+        /**
+         * \@member {string} [uid]
+         * @type {?|undefined}
+         */
+        UserSignUp.prototype.uid;
+    }
     /**
      * @record
      */
     function StoreCount() { }
     Occ.StoreCount = StoreCount;
+    if (false) {
+        /** @type {?|undefined} */
+        StoreCount.prototype.count;
+        /** @type {?|undefined} */
+        StoreCount.prototype.isoCode;
+        /** @type {?|undefined} */
+        StoreCount.prototype.name;
+        /** @type {?|undefined} */
+        StoreCount.prototype.type;
+    }
     /**
      * @record
      */
     function StoreCountList() { }
     Occ.StoreCountList = StoreCountList;
+    if (false) {
+        /** @type {?|undefined} */
+        StoreCountList.prototype.countriesAndRegionsStoreCount;
+    }
     /**
      *
      * An interface representing VoucherList.
@@ -15315,6 +23605,13 @@ var Occ;
      */
     function VoucherList() { }
     Occ.VoucherList = VoucherList;
+    if (false) {
+        /**
+         * \@member {Voucher[]} [vouchers]
+         * @type {?|undefined}
+         */
+        VoucherList.prototype.vouchers;
+    }
     /**
      * Defines values for PriceType.
      * Possible values include: 'BUY', 'FROM'
@@ -16392,34 +24689,80 @@ var Occ;
      */
     function ConsentTemplate() { }
     Occ.ConsentTemplate = ConsentTemplate;
+    if (false) {
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.id;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.name;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.description;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.version;
+        /** @type {?|undefined} */
+        ConsentTemplate.prototype.currentConsent;
+    }
     /**
      * @record
      */
     function Consent() { }
     Occ.Consent = Consent;
+    if (false) {
+        /** @type {?|undefined} */
+        Consent.prototype.code;
+        /** @type {?|undefined} */
+        Consent.prototype.consentGivenDate;
+        /** @type {?|undefined} */
+        Consent.prototype.consentWithdrawnDate;
+    }
     /**
      * @record
      */
     function ConsentTemplateList() { }
     Occ.ConsentTemplateList = ConsentTemplateList;
+    if (false) {
+        /** @type {?|undefined} */
+        ConsentTemplateList.prototype.consentTemplates;
+    }
 })(Occ || (Occ = {}));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Converter is used to convert source data model to target data model.
+ * By convention, we distinguish two flows:
+ *   - *Normalize* is the conversion from backend models to UI models
+ *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
+ *
+ * Converters can be stacked together to to apply decoupled customizations
+ * @record
+ * @template S, T
+ */
+function Converter() { }
+if (false) {
+    /**
+     * Convert converts source model to target model. Can use optional target parameter,
+     * used in case of stacking multiple converters (for example, to implement populator pattern).
+     *
+     * @param {?} source Source data model
+     * @param {?=} target Optional, partially converted target model
+     * @return {?}
+     */
+    Converter.prototype.convert = function (source, target) { };
+}
 class ConverterService {
     /**
      * @param {?} injector
@@ -16562,10 +24905,22 @@ ConverterService.ctorParameters = () => [
     { type: Injector }
 ];
 /** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConverterService.prototype.converters;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ConverterService.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCartNormalizer {
     /**
@@ -16644,10 +24999,17 @@ OccCartNormalizer.decorators = [
 OccCartNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCartNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccCartConfig = {
@@ -16668,17 +25030,21 @@ const defaultOccCartConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class FeaturesConfig {
 }
+if (false) {
+    /** @type {?} */
+    FeaturesConfig.prototype.features;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -16735,7 +25101,7 @@ function isFeatureEnabled(config, feature) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class FeatureConfigService {
     /**
@@ -16769,10 +25135,17 @@ FeatureConfigService.ctorParameters = () => [
     { type: FeaturesConfig }
 ];
 /** @nocollapse */ FeatureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureConfigService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCartEntryAdapter {
     /**
@@ -16968,10 +25341,32 @@ OccCartEntryAdapter.ctorParameters = () => [
     { type: ConverterService },
     { type: FeatureConfigService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.converterService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartEntryAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // TODO: Deprecated, remove Issue: #4125. Use configurable endpoints.
 /** @type {?} */
@@ -17160,10 +25555,32 @@ OccCartAdapter.ctorParameters = () => [
     { type: ConverterService },
     { type: FeatureConfigService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.converterService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CartOccModule {
 }
@@ -17194,7 +25611,7 @@ CartOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // To be changed to a more optimised params after ticket: C3PO-1076
 /** @type {?} */
@@ -17291,10 +25708,27 @@ OccCheckoutAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccOrderNormalizer {
     /**
@@ -17355,10 +25789,17 @@ OccOrderNormalizer.decorators = [
 OccOrderNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccOrderNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ADDRESS_NORMALIZER = new InjectionToken('AddressNormalizer');
@@ -17369,7 +25810,7 @@ const ADDRESS_VALIDATION_NORMALIZER = new InjectionToken('AddressValidationNorma
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCheckoutDeliveryAdapter {
     /**
@@ -17458,10 +25899,27 @@ OccCheckoutDeliveryAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutDeliveryAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CustomEncoder {
     /**
@@ -17496,7 +25954,7 @@ class CustomEncoder {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ENDPOINT_CARD_TYPES = 'cardtypes';
@@ -17752,10 +26210,32 @@ OccCheckoutPaymentAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCheckoutPaymentAdapter.prototype.domparser;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCheckoutPaymentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CheckoutOccModule {
 }
@@ -17782,7 +26262,7 @@ CheckoutOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCmsComponentAdapter {
     /**
@@ -17921,10 +26401,32 @@ OccCmsComponentAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsComponentAdapter.prototype.headers;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsComponentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsComponentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsComponentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCmsPageNormalizer {
     /**
@@ -18031,7 +26533,7 @@ OccCmsPageNormalizer.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccCmsPageAdapter {
     /**
@@ -18110,10 +26612,32 @@ OccCmsPageAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsPageAdapter.prototype.headers;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsPageAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccCmsPageAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCmsPageAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsOccModule {
 }
@@ -18140,44 +26664,92 @@ CmsOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class ProductAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load product's details data.
+     * Product's data can be loaded from alternative sources, as long as the structure
+     * converts to the `Product`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @return {?}
+     */
+    ProductAdapter.prototype.load = function (productCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PRODUCT_REFERENCES_NORMALIZER = new InjectionToken('ProductReferencesListNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class ProductReferencesAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load product references for a given product.
+     * References can be loaded from alternative sources, as long as the structure
+     * converts to the `ProductReference[]`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?=} referenceType Reference type according to enum ProductReferenceTypeEnum
+     * @param {?=} pageSize Maximum number of product refrence to load
+     * @return {?}
+     */
+    ProductReferencesAdapter.prototype.load = function (productCode, referenceType, pageSize) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class ProductReviewsAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load reviews for a given product.
+     * Reviews can be loaded from alternative sources, as long as the structure
+     * converts to the `Review[]`.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?=} maxCount Maximum number of review to load
+     * @return {?}
+     */
+    ProductReviewsAdapter.prototype.load = function (productCode, maxCount) { };
+    /**
+     * Abstract method used to post review for a given product.
+     *
+     * @abstract
+     * @param {?} productCode The `productCode` for given product
+     * @param {?} review Review to post
+     * @return {?}
+     */
+    ProductReviewsAdapter.prototype.post = function (productCode, review) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PRODUCT_SEARCH_PAGE_NORMALIZER = new InjectionToken('ProductSearchPageNormalizer');
@@ -18186,17 +26758,33 @@ const PRODUCT_SUGGESTION_NORMALIZER = new InjectionToken('ProductSuggestionNorma
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class ProductSearchAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} query
+     * @param {?=} searchConfig
+     * @return {?}
+     */
+    ProductSearchAdapter.prototype.search = function (query, searchConfig) { };
+    /**
+     * @abstract
+     * @param {?} term
+     * @param {?=} pageSize
+     * @return {?}
+     */
+    ProductSearchAdapter.prototype.loadSuggestions = function (term, pageSize) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccProductReferencesListNormalizer {
     /**
@@ -18231,10 +26819,17 @@ OccProductReferencesListNormalizer.decorators = [
 OccProductReferencesListNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccProductReferencesListNormalizer.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccProductSearchPageNormalizer {
     /**
@@ -18267,10 +26862,17 @@ OccProductSearchPageNormalizer.decorators = [
 OccProductSearchPageNormalizer.ctorParameters = () => [
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccProductSearchPageNormalizer.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductImageNormalizer {
     /**
@@ -18348,10 +26950,17 @@ ProductImageNormalizer.decorators = [
 ProductImageNormalizer.ctorParameters = () => [
     { type: OccConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductImageNormalizer.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccProductReferencesAdapter {
     /**
@@ -18397,10 +27006,27 @@ OccProductReferencesAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReferencesAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PRODUCT_REVIEW_NORMALIZER = new InjectionToken('ProductReviewNormalizer');
@@ -18409,7 +27035,7 @@ const PRODUCT_REVIEW_SERIALIZER = new InjectionToken('ProductReviewSerializer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccProductReviewsAdapter {
     /**
@@ -18472,10 +27098,27 @@ OccProductReviewsAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductReviewsAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const DEFAULT_SEARCH_CONFIG = {
@@ -18545,10 +27188,27 @@ OccProductSearchAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductSearchAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccProductAdapter {
     /**
@@ -18590,10 +27250,27 @@ OccProductAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccProductAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductNameNormalizer {
     /**
@@ -18633,10 +27310,17 @@ ProductNameNormalizer.decorators = [
 ProductNameNormalizer.ctorParameters = () => [
     { type: OccConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductNameNormalizer.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccProductConfig = {
@@ -18660,7 +27344,7 @@ const defaultOccProductConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductOccModule {
 }
@@ -18714,17 +27398,51 @@ ProductOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class SiteAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load languages.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadLanguages = function () { };
+    /**
+     * Abstract method used to load currencies.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadCurrencies = function () { };
+    /**
+     * Abstract method used to get countries with optional type.
+     * @abstract
+     * @param {?=} type
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadCountries = function (type) { };
+    /**
+     * Abstract method used to get regions for a country.
+     * @abstract
+     * @param {?} countryIsoCode
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadRegions = function (countryIsoCode) { };
+    /**
+     * Abstract method used to get base site data.
+     * @abstract
+     * @return {?}
+     */
+    SiteAdapter.prototype.loadBaseSite = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccSiteContextConfig = {
@@ -18742,7 +27460,7 @@ const defaultOccSiteContextConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LANGUAGE_NORMALIZER = new InjectionToken('LanguageNormalizer');
@@ -18755,7 +27473,7 @@ const REGION_NORMALIZER = new InjectionToken('RegionNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccSiteAdapter {
     /**
@@ -18858,10 +27576,27 @@ OccSiteAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccSiteAdapter.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * Facade that provides easy access to curreny state, actions and selectors.
@@ -18952,10 +27687,27 @@ CurrencyService.ctorParameters = () => [
     { type: WindowRef },
     { type: SiteContextConfig }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrencyService.prototype.sessionStorage;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CurrencyService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CurrencyService.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SiteContextInterceptor {
     /**
@@ -19013,10 +27765,36 @@ SiteContextInterceptor.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: SiteContextConfig }
 ];
+if (false) {
+    /** @type {?} */
+    SiteContextInterceptor.prototype.activeLang;
+    /** @type {?} */
+    SiteContextInterceptor.prototype.activeCurr;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.languageService;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.currencyService;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextInterceptor.prototype.config;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SiteContextOccModule {
 }
@@ -19043,17 +27821,38 @@ SiteContextOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class StoreFinderAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} query
+     * @param {?} searchConfig
+     * @param {?=} longitudeLatitude
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.search = function (query, searchConfig, longitudeLatitude) { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.loadCounts = function () { };
+    /**
+     * @abstract
+     * @param {?} storeId
+     * @return {?}
+     */
+    StoreFinderAdapter.prototype.load = function (storeId) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccStoreFinderConfig = {
@@ -19070,7 +27869,7 @@ const defaultOccStoreFinderConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreFinderConnector {
     /**
@@ -19110,10 +27909,17 @@ StoreFinderConnector.ctorParameters = () => [
     { type: StoreFinderAdapter }
 ];
 /** @nocollapse */ StoreFinderConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function StoreFinderConnector_Factory() { return new StoreFinderConnector(ɵɵinject(StoreFinderAdapter)); }, token: StoreFinderConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const POINT_OF_SERVICE_NORMALIZER = new InjectionToken('PointOfServiceNormalizer');
@@ -19124,12 +27930,12 @@ const STORE_COUNT_NORMALIZER = new InjectionToken('StoreCountNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccStoreFinderAdapter {
     /**
@@ -19211,10 +28017,27 @@ OccStoreFinderAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccStoreFinderAdapter.prototype.converterService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreFinderOccModule {
 }
@@ -19227,47 +28050,183 @@ StoreFinderOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class UserConsentAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.loadConsents = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} consentTemplateId
+     * @param {?} consentTemplateVersion
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.giveConsent = function (userId, consentTemplateId, consentTemplateVersion) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} consentCode
+     * @return {?}
+     */
+    UserConsentAdapter.prototype.withdrawConsent = function (userId, consentCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class UserOrderAdapter {
 }
+if (false) {
+    /**
+     * Abstract method used to load order data.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} orderCode The `orderCode` for given order
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.load = function (userId, orderCode) { };
+    /**
+     * Abstract method used to load order history for an user.
+     *
+     * @abstract
+     * @param {?} userId The `userId` for given user
+     * @param {?} pageSize
+     * @param {?} currentPage
+     * @param {?} sort Sorting method
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.loadHistory = function (userId, pageSize, currentPage, sort) { };
+    /**
+     * Abstract method used to get consignment tracking details
+     * @abstract
+     * @param {?} orderCode an order code
+     * @param {?} consignmentCode a consignment code
+     * @return {?}
+     */
+    UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class UserPaymentAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.loadAll = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.delete = function (userId, paymentMethodID) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} paymentMethodID
+     * @return {?}
+     */
+    UserPaymentAdapter.prototype.setDefault = function (userId, paymentMethodID) { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class UserAdapter {
 }
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAdapter.prototype.load = function (userId) { };
+    /**
+     * @abstract
+     * @param {?} username
+     * @param {?} user
+     * @return {?}
+     */
+    UserAdapter.prototype.update = function (username, user) { };
+    /**
+     * @abstract
+     * @param {?} user
+     * @return {?}
+     */
+    UserAdapter.prototype.register = function (user) { };
+    /**
+     * @abstract
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    UserAdapter.prototype.requestForgotPasswordEmail = function (userEmailAddress) { };
+    /**
+     * @abstract
+     * @param {?} token
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAdapter.prototype.resetPassword = function (token, newPassword) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} currentPassword
+     * @param {?} newUserId
+     * @return {?}
+     */
+    UserAdapter.prototype.updateEmail = function (userId, currentPassword, newUserId) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} oldPassword
+     * @param {?} newPassword
+     * @return {?}
+     */
+    UserAdapter.prototype.updatePassword = function (userId, oldPassword, newPassword) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @return {?}
+     */
+    UserAdapter.prototype.remove = function (userId) { };
+    /**
+     * @abstract
+     * @return {?}
+     */
+    UserAdapter.prototype.loadTitles = function () { };
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultOccUserConfig = {
@@ -19299,7 +28258,7 @@ const defaultOccUserConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccUserAddressAdapter {
     /**
@@ -19431,17 +28390,34 @@ OccUserAddressAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAddressAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const CONSENT_TEMPLATE_NORMALIZER = new InjectionToken('ConsentTemplateNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccUserConsentAdapter {
     /**
@@ -19526,10 +28502,27 @@ OccUserConsentAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserConsentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const ORDER_HISTORY_NORMALIZER = new InjectionToken('OrderHistoryNormalizer');
@@ -19538,7 +28531,7 @@ const CONSIGNMENT_TRACKING_NORMALIZER = new InjectionToken('ConsignmentTrackingN
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccUserOrderAdapter {
     /**
@@ -19691,10 +28684,32 @@ OccUserOrderAdapter.ctorParameters = () => [
     { type: ConverterService },
     { type: FeatureConfigService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.converter;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserOrderAdapter.prototype.featureConfigService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccUserPaymentAdapter {
     /**
@@ -19786,10 +28801,27 @@ OccUserPaymentAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserPaymentAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const USER_NORMALIZER = new InjectionToken('UserNormalizer');
@@ -19802,7 +28834,7 @@ const TITLE_NORMALIZER = new InjectionToken('TitleNormalizer');
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccUserAdapter {
     /**
@@ -19954,10 +28986,27 @@ OccUserAdapter.ctorParameters = () => [
     { type: OccEndpointsService },
     { type: ConverterService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccUserAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserOccModule {
 }
@@ -19983,7 +29032,7 @@ UserOccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OccModule {
     /**
@@ -20016,42 +29065,42 @@ OccModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReferenceNormalizer {
     /**
@@ -20098,52 +29147,56 @@ ProductReferenceNormalizer.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class PersonalizationConfig {
 }
+if (false) {
+    /** @type {?} */
+    PersonalizationConfig.prototype.personalization;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultPersonalizationConfig = {
@@ -20158,7 +29211,7 @@ const defaultPersonalizationConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PERSONALIZATION_ID_KEY = 'personalization-id';
@@ -20233,10 +29286,47 @@ OccPersonalizationIdInterceptor.ctorParameters = () => [
     { type: WindowRef },
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.personalizationId;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.requestHeader;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.enabled;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.winRef;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationIdInterceptor.prototype.platform;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PERSONALIZATION_TIME_KEY = 'personalization-time';
@@ -20311,10 +29401,47 @@ OccPersonalizationTimeInterceptor.ctorParameters = () => [
     { type: WindowRef },
     { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.timestamp;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.requestHeader;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.enabled;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.winRef;
+    /**
+     * @type {?}
+     * @private
+     */
+    OccPersonalizationTimeInterceptor.prototype.platform;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const interceptors$1 = [
@@ -20332,7 +29459,7 @@ const interceptors$1 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PersonalizationModule {
     /**
@@ -20354,12 +29481,12 @@ PersonalizationModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @template T
@@ -20378,7 +29505,7 @@ const reducerProvider$7 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProcessStoreModule {
 }
@@ -20391,7 +29518,7 @@ ProcessStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProcessModule {
     /**
@@ -20412,17 +29539,17 @@ ProcessModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductConnector {
     /**
@@ -20449,15 +29576,22 @@ ProductConnector.ctorParameters = () => [
     { type: ProductAdapter }
 ];
 /** @nocollapse */ ProductConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductConnector_Factory() { return new ProductConnector(ɵɵinject(ProductAdapter)); }, token: ProductConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReferencesConnector {
     /**
@@ -20486,15 +29620,22 @@ ProductReferencesConnector.ctorParameters = () => [
     { type: ProductReferencesAdapter }
 ];
 /** @nocollapse */ ProductReferencesConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductReferencesConnector_Factory() { return new ProductReferencesConnector(ɵɵinject(ProductReferencesAdapter)); }, token: ProductReferencesConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReferencesConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReviewsConnector {
     /**
@@ -20530,15 +29671,22 @@ ProductReviewsConnector.ctorParameters = () => [
     { type: ProductReviewsAdapter }
 ];
 /** @nocollapse */ ProductReviewsConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductReviewsConnector_Factory() { return new ProductReviewsConnector(ɵɵinject(ProductReviewsAdapter)); }, token: ProductReviewsConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReviewsConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductSearchConnector {
     /**
@@ -20574,20 +29722,27 @@ ProductSearchConnector.ctorParameters = () => [
     { type: ProductSearchAdapter }
 ];
 /** @nocollapse */ ProductSearchConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductSearchConnector_Factory() { return new ProductSearchConnector(ɵɵinject(ProductSearchAdapter)); }, token: ProductSearchConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductSearchConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
@@ -20604,6 +29759,12 @@ class LoadProductReferences {
         this.type = LOAD_PRODUCT_REFERENCES;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductReferences.prototype.type;
+    /** @type {?} */
+    LoadProductReferences.prototype.payload;
+}
 class LoadProductReferencesFail {
     /**
      * @param {?} payload
@@ -20612,6 +29773,12 @@ class LoadProductReferencesFail {
         this.payload = payload;
         this.type = LOAD_PRODUCT_REFERENCES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadProductReferencesFail.prototype.type;
+    /** @type {?} */
+    LoadProductReferencesFail.prototype.payload;
 }
 class LoadProductReferencesSuccess {
     /**
@@ -20622,10 +29789,16 @@ class LoadProductReferencesSuccess {
         this.type = LOAD_PRODUCT_REFERENCES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductReferencesSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductReferencesSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_PRODUCT_REVIEWS = '[Product] Load Product Reviews Data';
@@ -20648,6 +29821,12 @@ class LoadProductReviews {
         this.type = LOAD_PRODUCT_REVIEWS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductReviews.prototype.type;
+    /** @type {?} */
+    LoadProductReviews.prototype.payload;
+}
 class LoadProductReviewsFail {
     /**
      * @param {?} payload
@@ -20656,6 +29835,12 @@ class LoadProductReviewsFail {
         this.payload = payload;
         this.type = LOAD_PRODUCT_REVIEWS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    LoadProductReviewsFail.prototype.type;
+    /** @type {?} */
+    LoadProductReviewsFail.prototype.payload;
 }
 class LoadProductReviewsSuccess {
     /**
@@ -20666,6 +29851,12 @@ class LoadProductReviewsSuccess {
         this.type = LOAD_PRODUCT_REVIEWS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductReviewsSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductReviewsSuccess.prototype.payload;
+}
 class PostProductReview {
     /**
      * @param {?} payload
@@ -20674,6 +29865,12 @@ class PostProductReview {
         this.payload = payload;
         this.type = POST_PRODUCT_REVIEW;
     }
+}
+if (false) {
+    /** @type {?} */
+    PostProductReview.prototype.type;
+    /** @type {?} */
+    PostProductReview.prototype.payload;
 }
 class PostProductReviewFail {
     /**
@@ -20684,6 +29881,12 @@ class PostProductReviewFail {
         this.type = POST_PRODUCT_REVIEW_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    PostProductReviewFail.prototype.type;
+    /** @type {?} */
+    PostProductReviewFail.prototype.payload;
+}
 class PostProductReviewSuccess {
     /**
      * @param {?} payload
@@ -20693,10 +29896,16 @@ class PostProductReviewSuccess {
         this.type = POST_PRODUCT_REVIEW_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    PostProductReviewSuccess.prototype.type;
+    /** @type {?} */
+    PostProductReviewSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const SEARCH_PRODUCTS = '[Product] Search Products';
@@ -20723,6 +29932,14 @@ class SearchProducts {
         this.type = SEARCH_PRODUCTS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SearchProducts.prototype.type;
+    /** @type {?} */
+    SearchProducts.prototype.payload;
+    /** @type {?} */
+    SearchProducts.prototype.auxiliary;
+}
 class SearchProductsFail {
     /**
      * @param {?} payload
@@ -20733,6 +29950,14 @@ class SearchProductsFail {
         this.auxiliary = auxiliary;
         this.type = SEARCH_PRODUCTS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    SearchProductsFail.prototype.type;
+    /** @type {?} */
+    SearchProductsFail.prototype.payload;
+    /** @type {?} */
+    SearchProductsFail.prototype.auxiliary;
 }
 class SearchProductsSuccess {
     /**
@@ -20745,6 +29970,14 @@ class SearchProductsSuccess {
         this.type = SEARCH_PRODUCTS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    SearchProductsSuccess.prototype.type;
+    /** @type {?} */
+    SearchProductsSuccess.prototype.payload;
+    /** @type {?} */
+    SearchProductsSuccess.prototype.auxiliary;
+}
 class GetProductSuggestions {
     /**
      * @param {?} payload
@@ -20753,6 +29986,12 @@ class GetProductSuggestions {
         this.payload = payload;
         this.type = GET_PRODUCT_SUGGESTIONS;
     }
+}
+if (false) {
+    /** @type {?} */
+    GetProductSuggestions.prototype.type;
+    /** @type {?} */
+    GetProductSuggestions.prototype.payload;
 }
 class GetProductSuggestionsSuccess {
     /**
@@ -20763,6 +30002,12 @@ class GetProductSuggestionsSuccess {
         this.type = GET_PRODUCT_SUGGESTIONS_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    GetProductSuggestionsSuccess.prototype.type;
+    /** @type {?} */
+    GetProductSuggestionsSuccess.prototype.payload;
+}
 class GetProductSuggestionsFail {
     /**
      * @param {?} payload
@@ -20771,6 +30016,12 @@ class GetProductSuggestionsFail {
         this.payload = payload;
         this.type = GET_PRODUCT_SUGGESTIONS_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    GetProductSuggestionsFail.prototype.type;
+    /** @type {?} */
+    GetProductSuggestionsFail.prototype.payload;
 }
 class ClearProductSearchResult {
     /**
@@ -20784,19 +30035,79 @@ class ClearProductSearchResult {
         this.type = CLEAR_PRODUCT_SEARCH_RESULT;
     }
 }
+if (false) {
+    /** @type {?} */
+    ClearProductSearchResult.prototype.type;
+    /** @type {?} */
+    ClearProductSearchResult.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const PRODUCT_FEATURE = 'product';
 /** @type {?} */
 const PRODUCT_DETAIL_ENTITY = '[Product] Detail Entity';
+/**
+ * @record
+ */
+function StateWithProduct() { }
+if (false) {
+    /* Skipping unnamed member:
+    [PRODUCT_FEATURE]: ProductsState;*/
+}
+/**
+ * @record
+ */
+function ProductsState() { }
+if (false) {
+    /** @type {?} */
+    ProductsState.prototype.details;
+    /** @type {?} */
+    ProductsState.prototype.search;
+    /** @type {?} */
+    ProductsState.prototype.reviews;
+    /** @type {?} */
+    ProductsState.prototype.references;
+}
+/**
+ * @record
+ */
+function ProductsSearchState() { }
+if (false) {
+    /** @type {?} */
+    ProductsSearchState.prototype.results;
+    /** @type {?} */
+    ProductsSearchState.prototype.suggestions;
+    /** @type {?} */
+    ProductsSearchState.prototype.auxResults;
+}
+/**
+ * @record
+ */
+function ProductReviewsState() { }
+if (false) {
+    /** @type {?} */
+    ProductReviewsState.prototype.productCode;
+    /** @type {?} */
+    ProductReviewsState.prototype.list;
+}
+/**
+ * @record
+ */
+function ProductReferencesState() { }
+if (false) {
+    /** @type {?} */
+    ProductReferencesState.prototype.productCode;
+    /** @type {?} */
+    ProductReferencesState.prototype.list;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const LOAD_PRODUCT = '[Product] Load Product Data';
@@ -20814,6 +30125,12 @@ class LoadProduct extends EntityLoadAction {
         this.type = LOAD_PRODUCT;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProduct.prototype.type;
+    /** @type {?} */
+    LoadProduct.prototype.payload;
+}
 class LoadProductFail extends EntityFailAction {
     /**
      * @param {?} productCode
@@ -20825,6 +30142,12 @@ class LoadProductFail extends EntityFailAction {
         this.type = LOAD_PRODUCT_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductFail.prototype.type;
+    /** @type {?} */
+    LoadProductFail.prototype.payload;
+}
 class LoadProductSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
@@ -20835,10 +30158,16 @@ class LoadProductSuccess extends EntitySuccessAction {
         this.type = LOAD_PRODUCT_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    LoadProductSuccess.prototype.type;
+    /** @type {?} */
+    LoadProductSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var productGroup_actions = /*#__PURE__*/Object.freeze({
@@ -20884,27 +30213,27 @@ var productGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$a = /**
+const ɵ0$i = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.references;
 /** @type {?} */
-const getProductReferencesState = createSelector(getProductsState, (ɵ0$a));
+const getProductReferencesState = createSelector(getProductsState, (ɵ0$i));
 /** @type {?} */
 const getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
@@ -20924,15 +30253,15 @@ const getSelectedProductReferencesFactory = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$b = /**
+const ɵ0$j = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.reviews;
 /** @type {?} */
-const getProductReviewsState = createSelector(getProductsState, (ɵ0$b));
+const getProductReviewsState = createSelector(getProductsState, (ɵ0$j));
 /** @type {?} */
 const getSelectedProductReviewsFactory = (/**
  * @param {?} productCode
@@ -20952,7 +30281,7 @@ const getSelectedProductReviewsFactory = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$a = {
@@ -21010,15 +30339,15 @@ const getProductSuggestions = (/**
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$c = /**
+const ɵ0$k = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.search;
 /** @type {?} */
-const getProductsSearchState = createSelector(getProductsState, (ɵ0$c));
+const getProductsSearchState = createSelector(getProductsState, (ɵ0$k));
 /** @type {?} */
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 /** @type {?} */
@@ -21028,15 +30357,15 @@ const getProductSuggestions$1 = createSelector(getProductsSearchState, getProduc
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$d = /**
+const ɵ0$l = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getProductState = createSelector(getProductsState, (ɵ0$d));
+const getProductState = createSelector(getProductsState, (ɵ0$l));
 /** @type {?} */
 const getSelectedProductsFactory = (/**
  * @param {?} codes
@@ -21121,7 +30450,7 @@ const getSelectedProductErrorFactory = (/**
      */
     productState => loaderErrorSelector(productState)));
 });
-const ɵ1$6 = /**
+const ɵ1$b = /**
  * @param {?} details
  * @return {?}
  */
@@ -21129,11 +30458,11 @@ details => {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-const getAllProductCodes = createSelector(getProductState, (ɵ1$6));
+const getAllProductCodes = createSelector(getProductState, (ɵ1$b));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var productGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -21158,12 +30487,12 @@ var productGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReferenceService {
     /**
@@ -21201,10 +30530,17 @@ ProductReferenceService.decorators = [
 ProductReferenceService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReferenceService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReviewService {
     /**
@@ -21247,10 +30583,17 @@ ProductReviewService.decorators = [
 ProductReviewService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductReviewService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductSearchService {
     /**
@@ -21292,10 +30635,17 @@ ProductSearchService.decorators = [
 ProductSearchService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductSearchService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductService {
     /**
@@ -21376,10 +30726,22 @@ ProductService.decorators = [
 ProductService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductService.prototype.products;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SearchboxService extends ProductSearchService {
     /**
@@ -21436,22 +30798,34 @@ SearchboxService.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function SearchConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    SearchConfig.prototype.pageSize;
+    /** @type {?|undefined} */
+    SearchConfig.prototype.currentPage;
+    /** @type {?|undefined} */
+    SearchConfig.prototype.sortCode;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CategoryPageMetaResolver extends PageMetaResolver {
     /**
@@ -21476,7 +30850,7 @@ class CategoryPageMetaResolver extends PageMetaResolver {
          * @param {?} page
          * @return {?}
          */
-        page => {
+        (page) => {
             // only the existence of a plp component tells us if products
             // are rendered or if this is an ordinary content page
             if (this.hasProductListComponent(page)) {
@@ -21580,10 +30954,32 @@ CategoryPageMetaResolver.ctorParameters = () => [
     { type: TranslationService }
 ];
 /** @nocollapse */ CategoryPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CategoryPageMetaResolver_Factory() { return new CategoryPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(CmsService), ɵɵinject(TranslationService)); }, token: CategoryPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.productSearchService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.cms;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CategoryPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductPageMetaResolver extends PageMetaResolver {
     /**
@@ -21606,7 +31002,11 @@ class ProductPageMetaResolver extends PageMetaResolver {
          * @param {?} state
          * @return {?}
          */
-        state => state.state.params['productCode'])), filter(Boolean), switchMap((/**
+        state => state.state.params['productCode'])), filter((/**
+         * @param {?} code
+         * @return {?}
+         */
+        code => !!code)), switchMap((/**
          * @param {?} code
          * @return {?}
          */
@@ -21741,10 +31141,27 @@ ProductPageMetaResolver.ctorParameters = () => [
     { type: TranslationService }
 ];
 /** @nocollapse */ ProductPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function ProductPageMetaResolver_Factory() { return new ProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductService), ɵɵinject(TranslationService)); }, token: ProductPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.productService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ProductPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SearchPageMetaResolver extends PageMetaResolver {
     /**
@@ -21779,7 +31196,11 @@ class SearchPageMetaResolver extends PageMetaResolver {
          * @param {?} state
          * @return {?}
          */
-        state => state.state.params['query'])), filter(Boolean));
+        state => state.state.params['query'])), filter((/**
+         * @param {?} q
+         * @return {?}
+         */
+        q => !!q)));
         return combineLatest([total$, query$]).pipe(switchMap((/**
          * @param {?} __0
          * @return {?}
@@ -21814,10 +31235,27 @@ SearchPageMetaResolver.ctorParameters = () => [
     { type: TranslationService }
 ];
 /** @nocollapse */ SearchPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function SearchPageMetaResolver_Factory() { return new SearchPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService)); }, token: SearchPageMetaResolver, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.productSearchService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SearchPageMetaResolver.prototype.translation;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReferencesEffects {
     /**
@@ -21869,10 +31307,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
+if (false) {
+    /** @type {?} */
+    ProductReferencesEffects.prototype.loadProductReferences$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReferencesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReferencesEffects.prototype.productReferencesConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductReviewsEffects {
     /**
@@ -21949,10 +31401,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+if (false) {
+    /** @type {?} */
+    ProductReviewsEffects.prototype.loadProductReviews$;
+    /** @type {?} */
+    ProductReviewsEffects.prototype.postProductReview;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReviewsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReviewsEffects.prototype.productReviewsConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductsSearchEffects {
     /**
@@ -22033,10 +31501,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
+if (false) {
+    /** @type {?} */
+    ProductsSearchEffects.prototype.searchProducts$;
+    /** @type {?} */
+    ProductsSearchEffects.prototype.getProductSuggestions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductsSearchEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductsSearchEffects.prototype.productSearchConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ProductEffects {
     /**
@@ -22089,10 +31573,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ProductEffects.prototype, "loadProduct$", void 0);
+if (false) {
+    /** @type {?} */
+    ProductEffects.prototype.loadProduct$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductEffects.prototype.productConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$6 = [
@@ -22104,7 +31602,7 @@ const effects$6 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$b = {
@@ -22129,10 +31627,22 @@ function reducer$b(state = initialState$b, action) {
     }
     return state;
 }
+/** @type {?} */
+const getProductReferenceList = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.list);
+/** @type {?} */
+const getProductReferenceProductCode = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.productCode);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$c = {
@@ -22157,10 +31667,22 @@ function reducer$c(state = initialState$c, action) {
     }
     return state;
 }
+/** @type {?} */
+const getReviewList = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.list);
+/** @type {?} */
+const getReviewProductCode = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.productCode);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -22203,7 +31725,7 @@ const metaReducers$4 = [clearProductsState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -22237,7 +31759,7 @@ ProductStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const pageTitleResolvers = [
@@ -22282,17 +31804,17 @@ ProductModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SiteConnector {
     /**
@@ -22344,25 +31866,52 @@ SiteConnector.ctorParameters = () => [
     { type: SiteAdapter }
 ];
 /** @nocollapse */ SiteConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteConnector_Factory() { return new SiteConnector(ɵɵinject(SiteAdapter)); }, token: SiteConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    SiteConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ * @template T
+ */
+function SiteContext() { }
+if (false) {
+    /**
+     * @return {?}
+     */
+    SiteContext.prototype.getAll = function () { };
+    /**
+     * @return {?}
+     */
+    SiteContext.prototype.getActive = function () { };
+    /**
+     * @param {?} isocode
+     * @return {?}
+     */
+    SiteContext.prototype.setActive = function (isocode) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
@@ -22387,7 +31936,7 @@ const contextServiceMapProvider = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} baseSiteService
@@ -22420,7 +31969,7 @@ const contextServiceProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SiteContextParamsService {
     /**
@@ -22518,11 +32067,40 @@ SiteContextParamsService.ctorParameters = () => [
     { type: Injector },
     { type: ContextServiceMap }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.injector;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextParamsService.prototype.serviceMap;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @record
+ */
+function ParamValuesMap() { }
+/**
+ * @record
+ */
+function UrlTreeWithSiteContext() { }
+if (false) {
+    /** @type {?|undefined} */
+    UrlTreeWithSiteContext.prototype.siteContext;
+}
 /** @type {?} */
 const UrlSplit = /(^[^#?]*)(.*)/;
 // used to split url into path and query/fragment parts
@@ -22648,10 +32226,22 @@ SiteContextUrlSerializer.decorators = [
 SiteContextUrlSerializer.ctorParameters = () => [
     { type: SiteContextParamsService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextUrlSerializer.prototype.urlEncodingParameters;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextUrlSerializer.prototype.siteContextParams;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SiteContextRoutesHandler {
     /**
@@ -22771,10 +32361,52 @@ SiteContextRoutesHandler.ctorParameters = () => [
     { type: Injector }
 ];
 /** @nocollapse */ SiteContextRoutesHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function SiteContextRoutesHandler_Factory() { return new SiteContextRoutesHandler(ɵɵinject(SiteContextParamsService), ɵɵinject(SiteContextUrlSerializer), ɵɵinject(INJECTOR)); }, token: SiteContextRoutesHandler, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.subscription;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.contextValues;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.router;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.location;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.isNavigating;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.siteContextParams;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.serializer;
+    /**
+     * @type {?}
+     * @private
+     */
+    SiteContextRoutesHandler.prototype.injector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} siteContextRoutesHandler
@@ -22803,17 +32435,17 @@ const siteContextParamsProviders = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -22868,7 +32500,7 @@ function defaultSiteContextConfigFactory() {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class LanguagesEffects {
     /**
@@ -22925,10 +32557,31 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], LanguagesEffects.prototype, "activateLanguage$", void 0);
+if (false) {
+    /** @type {?} */
+    LanguagesEffects.prototype.loadLanguages$;
+    /** @type {?} */
+    LanguagesEffects.prototype.activateLanguage$;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.siteConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    LanguagesEffects.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CurrenciesEffects {
     /**
@@ -22985,10 +32638,31 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
+if (false) {
+    /** @type {?} */
+    CurrenciesEffects.prototype.loadCurrencies$;
+    /** @type {?} */
+    CurrenciesEffects.prototype.activateCurrency$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.siteConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CurrenciesEffects.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class BaseSiteEffects {
     /**
@@ -23026,10 +32700,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
+if (false) {
+    /** @type {?} */
+    BaseSiteEffects.prototype.loadBaseSite$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BaseSiteEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BaseSiteEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$7 = [
@@ -23040,7 +32728,7 @@ const effects$7 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$d = {
@@ -23079,7 +32767,7 @@ function reducer$d(state = initialState$d, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$e = {
@@ -23118,7 +32806,7 @@ function reducer$e(state = initialState$e, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$f = {
@@ -23144,7 +32832,7 @@ function reducer$f(state = initialState$f, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -23166,7 +32854,7 @@ const reducerProvider$9 = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -23200,7 +32888,7 @@ SiteContextStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @param {?} config
@@ -23214,7 +32902,7 @@ function baseSiteConfigValidator(config) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 // @dynamic
 class SiteContextModule {
@@ -23246,12 +32934,12 @@ SiteContextModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SmartEditService {
     /**
@@ -23469,10 +33157,62 @@ SmartEditService.ctorParameters = () => [
     { type: WindowRef }
 ];
 /** @nocollapse */ SmartEditService.ngInjectableDef = ɵɵdefineInjectable({ factory: function SmartEditService_Factory() { return new SmartEditService(ɵɵinject(CmsService), ɵɵinject(RoutingService), ɵɵinject(BaseSiteService), ɵɵinject(NgZone), ɵɵinject(WindowRef)); }, token: SmartEditService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype._cmsTicketId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.isPreviewPage;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype._currentPageId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.defaultPreviewProductCode;
+    /**
+     * @type {?}
+     * @private
+     */
+    SmartEditService.prototype.defaultPreviewCategoryCode;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.cmsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.baseSiteService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.zone;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SmartEditService.prototype.winRef;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class CmsTicketInterceptor {
     /**
@@ -23504,10 +33244,17 @@ CmsTicketInterceptor.decorators = [
 CmsTicketInterceptor.ctorParameters = () => [
     { type: SmartEditService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsTicketInterceptor.prototype.service;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const interceptors$2 = [
@@ -23520,7 +33267,7 @@ const interceptors$2 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class SmartEditModule {
     /**
@@ -23539,31 +33286,69 @@ SmartEditModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @abstract
  */
 class StoreFinderConfig {
 }
+if (false) {
+    /** @type {?} */
+    StoreFinderConfig.prototype.googleMaps;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const STORE_FINDER_FEATURE = 'stores';
 /** @type {?} */
 const STORE_FINDER_DATA = '[StoreFinder] Store Finder Data';
+/**
+ * @record
+ */
+function StateWithStoreFinder() { }
+if (false) {
+    /* Skipping unnamed member:
+    [STORE_FINDER_FEATURE]: StoresState;*/
+}
+/**
+ * @record
+ */
+function StoresState() { }
+if (false) {
+    /** @type {?} */
+    StoresState.prototype.findStores;
+    /** @type {?} */
+    StoresState.prototype.viewAllStores;
+}
+/**
+ * @record
+ */
+function FindStoresState() { }
+if (false) {
+    /** @type {?} */
+    FindStoresState.prototype.findStoresEntities;
+}
+/**
+ * @record
+ */
+function ViewAllStoresState() { }
+if (false) {
+    /** @type {?} */
+    ViewAllStoresState.prototype.viewAllStoresEntities;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const FIND_STORES_ON_HOLD = '[StoreFinder] On Hold';
@@ -23585,6 +33370,10 @@ class FindStoresOnHold extends LoaderLoadAction {
         this.type = FIND_STORES_ON_HOLD;
     }
 }
+if (false) {
+    /** @type {?} */
+    FindStoresOnHold.prototype.type;
+}
 class FindStores extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -23594,6 +33383,12 @@ class FindStores extends LoaderLoadAction {
         this.payload = payload;
         this.type = FIND_STORES;
     }
+}
+if (false) {
+    /** @type {?} */
+    FindStores.prototype.type;
+    /** @type {?} */
+    FindStores.prototype.payload;
 }
 class FindStoresFail extends LoaderFailAction {
     /**
@@ -23605,6 +33400,12 @@ class FindStoresFail extends LoaderFailAction {
         this.type = FIND_STORES_FAIL;
     }
 }
+if (false) {
+    /** @type {?} */
+    FindStoresFail.prototype.type;
+    /** @type {?} */
+    FindStoresFail.prototype.payload;
+}
 class FindStoresSuccess extends LoaderSuccessAction {
     /**
      * @param {?} payload
@@ -23614,6 +33415,12 @@ class FindStoresSuccess extends LoaderSuccessAction {
         this.payload = payload;
         this.type = FIND_STORES_SUCCESS;
     }
+}
+if (false) {
+    /** @type {?} */
+    FindStoresSuccess.prototype.type;
+    /** @type {?} */
+    FindStoresSuccess.prototype.payload;
 }
 class FindStoreById extends LoaderLoadAction {
     /**
@@ -23625,6 +33432,12 @@ class FindStoreById extends LoaderLoadAction {
         this.type = FIND_STORE_BY_ID;
     }
 }
+if (false) {
+    /** @type {?} */
+    FindStoreById.prototype.type;
+    /** @type {?} */
+    FindStoreById.prototype.payload;
+}
 class FindStoreByIdFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -23634,6 +33447,12 @@ class FindStoreByIdFail extends LoaderFailAction {
         this.payload = payload;
         this.type = FIND_STORE_BY_ID_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    FindStoreByIdFail.prototype.type;
+    /** @type {?} */
+    FindStoreByIdFail.prototype.payload;
 }
 class FindStoreByIdSuccess extends LoaderSuccessAction {
     /**
@@ -23645,10 +33464,16 @@ class FindStoreByIdSuccess extends LoaderSuccessAction {
         this.type = FIND_STORE_BY_ID_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    FindStoreByIdSuccess.prototype.type;
+    /** @type {?} */
+    FindStoreByIdSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const VIEW_ALL_STORES = '[StoreFinder] View All Stores';
@@ -23662,6 +33487,10 @@ class ViewAllStores extends LoaderLoadAction {
         this.type = VIEW_ALL_STORES;
     }
 }
+if (false) {
+    /** @type {?} */
+    ViewAllStores.prototype.type;
+}
 class ViewAllStoresFail extends LoaderFailAction {
     /**
      * @param {?} payload
@@ -23671,6 +33500,12 @@ class ViewAllStoresFail extends LoaderFailAction {
         this.payload = payload;
         this.type = VIEW_ALL_STORES_FAIL;
     }
+}
+if (false) {
+    /** @type {?} */
+    ViewAllStoresFail.prototype.type;
+    /** @type {?} */
+    ViewAllStoresFail.prototype.payload;
 }
 class ViewAllStoresSuccess extends LoaderSuccessAction {
     /**
@@ -23682,10 +33517,16 @@ class ViewAllStoresSuccess extends LoaderSuccessAction {
         this.type = VIEW_ALL_STORES_SUCCESS;
     }
 }
+if (false) {
+    /** @type {?} */
+    ViewAllStoresSuccess.prototype.type;
+    /** @type {?} */
+    ViewAllStoresSuccess.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
@@ -23713,71 +33554,71 @@ var storeFinderGroup_actions = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$e = /**
+const ɵ0$m = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.findStores;
 /** @type {?} */
-const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$e));
-const ɵ1$7 = /**
+const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$m));
+const ɵ1$c = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$7));
-const ɵ2$3 = /**
+const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$c));
+const ɵ2$6 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getStoresLoading = createSelector(getFindStoresState, (ɵ2$3));
+const getStoresLoading = createSelector(getFindStoresState, (ɵ2$6));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$f = /**
+const ɵ0$n = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.viewAllStores;
 /** @type {?} */
-const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$f));
-const ɵ1$8 = /**
+const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$n));
+const ɵ1$d = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$8));
-const ɵ2$4 = /**
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$d));
+const ɵ2$7 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$4));
+const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$7));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -23791,12 +33632,12 @@ var storeFinderGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreFinderService {
     /**
@@ -23923,10 +33764,37 @@ StoreFinderService.ctorParameters = () => [
     { type: GlobalMessageService },
     { type: RoutingService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    StoreFinderService.prototype.geolocationWatchId;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.winRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.globalMessageService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    StoreFinderService.prototype.routingService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreDataService {
     constructor() {
@@ -24013,35 +33881,73 @@ class StoreDataService {
 StoreDataService.decorators = [
     { type: Injectable }
 ];
+if (false) {
+    /** @type {?} */
+    StoreDataService.prototype.DECIMAL_BASE;
+    /** @type {?} */
+    StoreDataService.prototype.weekDays;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreEntities() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreEntities.prototype.pointOfServices;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchConfig() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.pageSize;
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.currentPage;
+    /** @type {?|undefined} */
+    StoreFinderSearchConfig.prototype.sort;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function StoreFinderSearchQuery() { }
+if (false) {
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.queryText;
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.longitudeLatitude;
+    /** @type {?|undefined} */
+    StoreFinderSearchQuery.prototype.useMyLocation;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ExternalJsFileLoader {
     /**
@@ -24106,10 +34012,17 @@ ExternalJsFileLoader.decorators = [
 ExternalJsFileLoader.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    ExternalJsFileLoader.prototype.document;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class GoogleMapRendererService {
     /**
@@ -24248,15 +34161,42 @@ GoogleMapRendererService.ctorParameters = () => [
     { type: ExternalJsFileLoader },
     { type: StoreDataService }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    GoogleMapRendererService.prototype.googleMap;
+    /**
+     * @type {?}
+     * @private
+     */
+    GoogleMapRendererService.prototype.markers;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.externalJsFileLoader;
+    /**
+     * @type {?}
+     * @protected
+     */
+    GoogleMapRendererService.prototype.storeDataService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const defaultStoreFinderConfig = {
@@ -24270,7 +34210,7 @@ const defaultStoreFinderConfig = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -24288,10 +34228,12 @@ const reducerProvider$a = {
     provide: reducerToken$a,
     useFactory: getReducers$a,
 };
+/** @type {?} */
+const metaReducers$5 = [];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class FindStoresEffect {
     /**
@@ -24364,10 +34306,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], FindStoresEffect.prototype, "findStoreById$", void 0);
+if (false) {
+    /** @type {?} */
+    FindStoresEffect.prototype.findStores$;
+    /** @type {?} */
+    FindStoresEffect.prototype.findStoreById$;
+    /**
+     * @type {?}
+     * @private
+     */
+    FindStoresEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    FindStoresEffect.prototype.storeFinderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ViewAllStoresEffect {
     /**
@@ -24414,17 +34372,31 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
+if (false) {
+    /** @type {?} */
+    ViewAllStoresEffect.prototype.viewAllStores$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ViewAllStoresEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ViewAllStoresEffect.prototype.storeFinderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$8 = [FindStoresEffect, ViewAllStoresEffect];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreFinderStoreModule {
 }
@@ -24442,7 +34414,7 @@ StoreFinderStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class StoreFinderCoreModule {
 }
@@ -24464,12 +34436,12 @@ StoreFinderCoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserConnector {
     /**
@@ -24557,20 +34529,27 @@ UserConnector.ctorParameters = () => [
     { type: UserAdapter }
 ];
 /** @nocollapse */ UserConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConnector_Factory() { return new UserConnector(ɵɵinject(UserAdapter)); }, token: UserConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserConsentConnector {
     /**
@@ -24614,15 +34593,22 @@ UserConsentConnector.ctorParameters = () => [
     { type: UserConsentAdapter }
 ];
 /** @nocollapse */ UserConsentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentConnector_Factory() { return new UserConsentConnector(ɵɵinject(UserConsentAdapter)); }, token: UserConsentConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConsentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserPaymentConnector {
     /**
@@ -24665,15 +34651,22 @@ UserPaymentConnector.ctorParameters = () => [
     { type: UserPaymentAdapter }
 ];
 /** @nocollapse */ UserPaymentConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentConnector_Factory() { return new UserPaymentConnector(ɵɵinject(UserPaymentAdapter)); }, token: UserPaymentConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserPaymentConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserOrderConnector {
     /**
@@ -24719,43 +34712,50 @@ UserOrderConnector.ctorParameters = () => [
     { type: UserOrderAdapter }
 ];
 /** @nocollapse */ UserOrderConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderConnector_Factory() { return new UserOrderConnector(ɵɵinject(UserOrderAdapter)); }, token: UserOrderConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserOrderConnector.prototype.adapter;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const getUserState = createFeatureSelector(USER_FEATURE);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$g = /**
+const ɵ0$o = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.billingCountries;
 /** @type {?} */
-const getBillingCountriesState = createSelector(getUserState, (ɵ0$g));
-const ɵ1$9 = /**
+const getBillingCountriesState = createSelector(getUserState, (ɵ0$o));
+const ɵ1$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$9));
-const ɵ2$5 = /**
+const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$e));
+const ɵ2$8 = /**
  * @param {?} entites
  * @return {?}
  */
@@ -24765,46 +34765,46 @@ entites => Object.keys(entites).map((/**
  */
 isocode => entites[isocode]));
 /** @type {?} */
-const getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$5));
+const getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$h = /**
+const ɵ0$p = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.consignmentTracking;
 /** @type {?} */
-const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$h));
-const ɵ1$a = /**
+const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$p));
+const ɵ1$f = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.tracking;
 /** @type {?} */
-const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$a));
+const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$f));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$i = /**
+const ɵ0$q = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.countries;
 /** @type {?} */
-const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$i));
-const ɵ1$b = /**
+const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$q));
+const ɵ1$g = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$b));
-const ɵ2$6 = /**
+const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$g));
+const ɵ2$9 = /**
  * @param {?} entites
  * @return {?}
  */
@@ -24814,7 +34814,7 @@ entites => Object.keys(entites).map((/**
  */
 isocode => entites[isocode]));
 /** @type {?} */
-const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$6));
+const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$9));
 /** @type {?} */
 const countrySelectorFactory = (/**
  * @param {?} isocode
@@ -24828,69 +34828,69 @@ entities => (Object.keys(entities).length !== 0 ? entities[isocode] : null))));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$j = /**
+const ɵ0$r = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderState = createSelector(getUserState, (ɵ0$j));
-const ɵ1$c = /**
+const getOrderState = createSelector(getUserState, (ɵ0$r));
+const ɵ1$h = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderDetails = createSelector(getOrderState, (ɵ1$c));
+const getOrderDetails = createSelector(getOrderState, (ɵ1$h));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$k = /**
+const ɵ0$s = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.payments;
 /** @type {?} */
-const getPaymentMethodsState = createSelector(getUserState, (ɵ0$k));
-const ɵ1$d = /**
+const getPaymentMethodsState = createSelector(getUserState, (ɵ0$s));
+const ɵ1$i = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$d));
-const ɵ2$7 = /**
+const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$i));
+const ɵ2$a = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$7));
-const ɵ3$4 = /**
+const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$a));
+const ɵ3$6 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 /** @type {?} */
-const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (ɵ3$4));
+const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (ɵ3$6));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$l = /**
+const ɵ0$t = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.regions;
 /** @type {?} */
-const getRegionsLoaderState = createSelector(getUserState, (ɵ0$l));
-const ɵ1$e = /**
+const getRegionsLoaderState = createSelector(getUserState, (ɵ0$t));
+const ɵ1$j = /**
  * @param {?} state
  * @return {?}
  */
@@ -24898,8 +34898,8 @@ const ɵ1$e = /**
     return loaderValueSelector(state).entities;
 };
 /** @type {?} */
-const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$e));
-const ɵ2$8 = /**
+const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$j));
+const ɵ2$b = /**
  * @param {?} state
  * @return {?}
  */
@@ -24910,14 +34910,14 @@ const ɵ2$8 = /**
     country: loaderValueSelector(state).country,
 });
 /** @type {?} */
-const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$8));
-const ɵ3$5 = /**
+const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$b));
+const ɵ3$7 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state).country;
 /** @type {?} */
-const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$5));
+const getRegionsCountry = createSelector(getRegionsLoaderState, (ɵ3$7));
 const ɵ4$3 = /**
  * @param {?} state
  * @return {?}
@@ -24935,35 +34935,35 @@ const getRegionsLoaded = createSelector(getRegionsLoaderState, (ɵ5$2));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$m = /**
+const ɵ0$u = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.resetPassword;
 /** @type {?} */
-const getResetPassword = createSelector(getUserState, (ɵ0$m));
+const getResetPassword = createSelector(getUserState, (ɵ0$u));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$n = /**
+const ɵ0$v = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.titles;
 /** @type {?} */
-const getTitlesState = createSelector(getUserState, (ɵ0$n));
-const ɵ1$f = /**
+const getTitlesState = createSelector(getUserState, (ɵ0$v));
+const ɵ1$k = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getTitlesEntites = createSelector(getTitlesState, (ɵ1$f));
-const ɵ2$9 = /**
+const getTitlesEntites = createSelector(getTitlesState, (ɵ1$k));
+const ɵ2$c = /**
  * @param {?} entites
  * @return {?}
  */
@@ -24973,7 +34973,7 @@ entites => Object.keys(entites).map((/**
  */
 code => entites[code]));
 /** @type {?} */
-const getAllTitles = createSelector(getTitlesEntites, (ɵ2$9));
+const getAllTitles = createSelector(getTitlesEntites, (ɵ2$c));
 /** @type {?} */
 const titleSelectorFactory = (/**
  * @param {?} code
@@ -24987,49 +34987,49 @@ entities => (Object.keys(entities).length !== 0 ? entities[code] : null))));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$o = /**
+const ɵ0$w = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addresses;
 /** @type {?} */
-const getAddressesLoaderState = createSelector(getUserState, (ɵ0$o));
-const ɵ1$g = /**
+const getAddressesLoaderState = createSelector(getUserState, (ɵ0$w));
+const ɵ1$l = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$g));
-const ɵ2$a = /**
+const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$l));
+const ɵ2$d = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$a));
-const ɵ3$6 = /**
+const getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$d));
+const ɵ3$8 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 /** @type {?} */
-const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$6));
+const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$8));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$p = /**
+const ɵ0$x = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.consents;
 /** @type {?} */
-const getConsentsState = createSelector(getUserState, (ɵ0$p));
+const getConsentsState = createSelector(getUserState, (ɵ0$x));
 /** @type {?} */
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 /** @type {?} */
@@ -25041,52 +35041,52 @@ const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$q = /**
+const ɵ0$y = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.account;
 /** @type {?} */
-const getDetailsState = createSelector(getUserState, (ɵ0$q));
-const ɵ1$h = /**
+const getDetailsState = createSelector(getUserState, (ɵ0$y));
+const ɵ1$m = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getDetails = createSelector(getDetailsState, (ɵ1$h));
+const getDetails = createSelector(getDetailsState, (ɵ1$m));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$r = /**
+const ɵ0$z = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.orders;
 /** @type {?} */
-const getOrdersState = createSelector(getUserState, (ɵ0$r));
-const ɵ1$i = /**
+const getOrdersState = createSelector(getUserState, (ɵ0$z));
+const ɵ1$n = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderSuccessSelector(state);
 /** @type {?} */
-const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$i));
-const ɵ2$b = /**
+const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$n));
+const ɵ2$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getOrders = createSelector(getOrdersState, (ɵ2$b));
+const getOrders = createSelector(getOrdersState, (ɵ2$e));
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 var usersGroup_selectors = /*#__PURE__*/Object.freeze({
@@ -25135,12 +35135,12 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserService {
     /**
@@ -25414,10 +35414,17 @@ UserService.decorators = [
 UserService.ctorParameters = () => [
     { type: Store }
 ];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserAddressService {
     /**
@@ -25578,10 +35585,17 @@ UserAddressService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ UserAddressService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store)); }, token: UserAddressService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAddressService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserConsentService {
     /**
@@ -25723,10 +35737,17 @@ UserConsentService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ UserConsentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store)); }, token: UserConsentService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConsentService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserPaymentService {
     /**
@@ -25810,10 +35831,17 @@ UserPaymentService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ UserPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store)); }, token: UserPaymentService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserPaymentService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserOrderService {
     /**
@@ -25938,15 +35966,22 @@ UserOrderService.ctorParameters = () => [
     { type: Store }
 ];
 /** @nocollapse */ UserOrderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store)); }, token: UserOrderService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserOrderService.prototype.store;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$g = {
@@ -25982,7 +36017,7 @@ function reducer$g(state = initialState$g, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$h = {};
@@ -26009,7 +36044,7 @@ function reducer$h(state = initialState$h, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$i = {
@@ -26045,7 +36080,7 @@ function reducer$i(state = initialState$i, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$j = {
@@ -26072,7 +36107,7 @@ function reducer$j(state = initialState$j, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$k = [];
@@ -26095,7 +36130,7 @@ function reducer$k(state = initialState$k, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$l = {
@@ -26126,7 +36161,7 @@ function reducer$l(state = initialState$l, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$m = false;
@@ -26146,7 +36181,7 @@ function reducer$m(state = initialState$m, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$n = {
@@ -26182,7 +36217,7 @@ function reducer$n(state = initialState$n, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$o = [];
@@ -26205,7 +36240,7 @@ function reducer$o(state = initialState$o, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$p = [];
@@ -26238,7 +36273,7 @@ function reducer$p(state = initialState$p, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$q = (/** @type {?} */ ({}));
@@ -26263,7 +36298,7 @@ function reducer$q(state = initialState$q, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const initialState$r = {
@@ -26290,7 +36325,7 @@ function reducer$r(state = initialState$r, action) {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
  * @return {?}
@@ -26338,11 +36373,11 @@ function clearUserState(reducer) {
     });
 }
 /** @type {?} */
-const metaReducers$5 = [clearUserState];
+const metaReducers$6 = [clearUserState];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class BillingCountriesEffect {
     /**
@@ -26380,10 +36415,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
+if (false) {
+    /** @type {?} */
+    BillingCountriesEffect.prototype.loadBillingCountries$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BillingCountriesEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    BillingCountriesEffect.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ClearMiscsDataEffect {
     /**
@@ -26410,10 +36459,19 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
+if (false) {
+    /** @type {?} */
+    ClearMiscsDataEffect.prototype.clearMiscsData$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ClearMiscsDataEffect.prototype.actions$;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ConsignmentTrackingEffects {
     /**
@@ -26458,10 +36516,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
+if (false) {
+    /** @type {?} */
+    ConsignmentTrackingEffects.prototype.loadConsignmentTracking$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConsignmentTrackingEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ConsignmentTrackingEffects.prototype.userOrderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class DeliveryCountriesEffects {
     /**
@@ -26499,10 +36571,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
+if (false) {
+    /** @type {?} */
+    DeliveryCountriesEffects.prototype.loadDeliveryCountries$;
+    /**
+     * @type {?}
+     * @private
+     */
+    DeliveryCountriesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    DeliveryCountriesEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ForgotPasswordEffects {
     /**
@@ -26554,10 +36640,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
+if (false) {
+    /** @type {?} */
+    ForgotPasswordEffects.prototype.requestForgotPasswordEmail$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ForgotPasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ForgotPasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class OrderDetailsEffect {
     /**
@@ -26602,10 +36702,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
+if (false) {
+    /** @type {?} */
+    OrderDetailsEffect.prototype.loadOrderDetails$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OrderDetailsEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    OrderDetailsEffect.prototype.orderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserPaymentMethodsEffects {
     /**
@@ -26706,10 +36820,28 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
+if (false) {
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.loadUserPaymentMethods$;
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.setDefaultUserPaymentMethod$;
+    /** @type {?} */
+    UserPaymentMethodsEffects.prototype.deleteUserPaymentMethod$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserPaymentMethodsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserPaymentMethodsEffects.prototype.userPaymentMethodConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class RegionsEffects {
     /**
@@ -26767,10 +36899,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], RegionsEffects.prototype, "resetRegions$", void 0);
+if (false) {
+    /** @type {?} */
+    RegionsEffects.prototype.loadRegions$;
+    /** @type {?} */
+    RegionsEffects.prototype.resetRegions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RegionsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    RegionsEffects.prototype.siteConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ResetPasswordEffects {
     /**
@@ -26818,10 +36966,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
+if (false) {
+    /** @type {?} */
+    ResetPasswordEffects.prototype.resetPassword$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ResetPasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ResetPasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class TitlesEffects {
     /**
@@ -26883,10 +37045,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], TitlesEffects.prototype, "loadTitles$", void 0);
+if (false) {
+    /** @type {?} */
+    TitlesEffects.prototype.loadTitles$;
+    /**
+     * @type {?}
+     * @private
+     */
+    TitlesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    TitlesEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UpdateEmailEffects {
     /**
@@ -26928,10 +37104,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
+if (false) {
+    /** @type {?} */
+    UpdateEmailEffects.prototype.updateEmail$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdateEmailEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdateEmailEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UpdatePasswordEffects {
     /**
@@ -26974,10 +37164,24 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
+if (false) {
+    /** @type {?} */
+    UpdatePasswordEffects.prototype.updatePassword$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdatePasswordEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UpdatePasswordEffects.prototype.userAccountConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserAddressesEffects {
     /**
@@ -27175,10 +37379,55 @@ __decorate([
     Effect({ dispatch: false }),
     __metadata("design:type", Object)
 ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
+if (false) {
+    /** @type {?} */
+    UserAddressesEffects.prototype.loadUserAddresses$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.addUserAddress$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.updateUserAddress$;
+    /** @type {?} */
+    UserAddressesEffects.prototype.deleteUserAddress$;
+    /**
+     *  Reload addresses and notify about add success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnAddSuccess$;
+    /**
+     *  Reload addresses and notify about update success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnUpdateSuccess$;
+    /**
+     *  Reload addresses and notify about delete success
+     * @type {?}
+     */
+    UserAddressesEffects.prototype.showGlobalMessageOnDeleteSuccess$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.userAddressConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.userAddressService;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserAddressesEffects.prototype.messageService;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserConsentsEffect {
     /**
@@ -27270,10 +37519,30 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
+if (false) {
+    /** @type {?} */
+    UserConsentsEffect.prototype.resetConsents$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.getConsents$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.giveConsent$;
+    /** @type {?} */
+    UserConsentsEffect.prototype.withdrawConsent$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserConsentsEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserConsentsEffect.prototype.userConsentConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserDetailsEffects {
     /**
@@ -27339,10 +37608,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
+if (false) {
+    /** @type {?} */
+    UserDetailsEffects.prototype.loadUserDetails$;
+    /** @type {?} */
+    UserDetailsEffects.prototype.updateUserDetails$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserDetailsEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserDetailsEffects.prototype.userConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserOrdersEffect {
     /**
@@ -27399,10 +37684,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
+if (false) {
+    /** @type {?} */
+    UserOrdersEffect.prototype.loadUserOrders$;
+    /** @type {?} */
+    UserOrdersEffect.prototype.resetUserOrders$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserOrdersEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserOrdersEffect.prototype.orderConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserRegisterEffects {
     /**
@@ -27468,10 +37769,26 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], UserRegisterEffects.prototype, "removeUser$", void 0);
+if (false) {
+    /** @type {?} */
+    UserRegisterEffects.prototype.registerUser$;
+    /** @type {?} */
+    UserRegisterEffects.prototype.removeUser$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserRegisterEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    UserRegisterEffects.prototype.userConnector;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
 const effects$9 = [
@@ -27496,7 +37813,7 @@ const effects$9 = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserStoreModule {
 }
@@ -27506,7 +37823,7 @@ UserStoreModule.decorators = [
                     CommonModule,
                     ReactiveFormsModule,
                     StateModule,
-                    StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$5 }),
+                    StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
                     EffectsModule.forFeature(effects$9),
                     RouterModule,
                 ],
@@ -27516,7 +37833,7 @@ UserStoreModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class UserModule {
     /**
@@ -27537,22 +37854,22 @@ UserModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class FeatureLevelDirective {
     /**
@@ -27595,10 +37912,32 @@ FeatureLevelDirective.ctorParameters = () => [
 FeatureLevelDirective.propDecorators = {
     cxFeatureLevel: [{ type: Input }]
 };
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureLevelDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.featureConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class FeatureDirective {
     /**
@@ -27641,10 +37980,32 @@ FeatureDirective.ctorParameters = () => [
 FeatureDirective.propDecorators = {
     cxFeature: [{ type: Input }]
 };
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.featureConfig;
+}
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class FeaturesConfigModule {
     /**
@@ -27677,18 +38038,18 @@ FeaturesConfigModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$5 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

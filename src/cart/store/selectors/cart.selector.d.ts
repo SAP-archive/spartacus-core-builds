@@ -14,5 +14,5 @@ export declare const getCartMergeComplete: MemoizedSelector<StateWithCart, boole
 export declare const getCartEntriesMap: MemoizedSelector<StateWithCart, {
     [code: string]: OrderEntry;
 }>;
-export declare const getCartEntrySelectorFactory: (productCode: string) => MemoizedSelector<StateWithCart, OrderEntry, import("@ngrx/store/src/selector").DefaultProjectorFn<OrderEntry>>;
+export declare const getCartEntrySelectorFactory: (productCode: string) => MemoizedSelector<StateWithCart, OrderEntry, import("@ngrx/store").DefaultProjectorFn<OrderEntry>>;
 export declare const getCartEntries: MemoizedSelector<StateWithCart, OrderEntry[]>;

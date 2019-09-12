@@ -3,12 +3,12 @@ import { ConfigValidator } from './utils/config-validator';
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
  */
-export declare const Config: InjectionToken<{}>;
+export declare const Config: InjectionToken<unknown>;
 /**
  * Config chunk token, can be used to provide configuration chunk and contribute to the global configuration object.
  * Should not be used directly, use `provideConfig` or import `ConfigModule.withConfig` instead.
  */
-export declare const ConfigChunk: InjectionToken<{}>;
+export declare const ConfigChunk: InjectionToken<unknown>;
 /**
  * Helper function to provide configuration chunk using ConfigChunk token
  *
