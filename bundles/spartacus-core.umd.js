@@ -5886,7 +5886,7 @@
              * @return {?}
              */
             function () {
-                return !!this._cart;
+                return !!this._cart && Object.keys(this._cart).length > 0;
             },
             enumerable: true,
             configurable: true

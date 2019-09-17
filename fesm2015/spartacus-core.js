@@ -5135,7 +5135,7 @@ class CartDataService {
      * @return {?}
      */
     get hasCart() {
-        return !!this._cart;
+        return !!this._cart && Object.keys(this._cart).length > 0;
     }
     /**
      * @return {?}
