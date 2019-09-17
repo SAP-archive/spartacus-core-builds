@@ -5043,7 +5043,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USERID_CURRENT = 'current';
+    var OCC_USER_ID_CURRENT = 'current';
+    /** @type {?} */
+    var OCC_USER_ID_ANONYMOUS = 'anonymous';
 
     /**
      * @fileoverview added by tsickle
@@ -5073,7 +5075,7 @@
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
                     token.expiration_time = date.toJSON();
-                    token.userId = USERID_CURRENT;
+                    token.userId = OCC_USER_ID_CURRENT;
                     return new LoadUserTokenSuccess(token);
                 })), operators.catchError((/**
                  * @param {?} error
@@ -5106,7 +5108,7 @@
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
                     token.expiration_time = date.toJSON();
-                    token.userId = USERID_CURRENT;
+                    token.userId = OCC_USER_ID_CURRENT;
                     return new RefreshUserTokenSuccess(token);
                 }), operators.catchError((/**
                  * @param {?} error
@@ -5846,14 +5848,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ANONYMOUS_USERID = 'anonymous';
     var CartDataService = /** @class */ (function () {
         function CartDataService(store$1, authService) {
             var _this = this;
             this.store = store$1;
             this.authService = authService;
-            this._userId = ANONYMOUS_USERID;
+            this._userId = OCC_USER_ID_ANONYMOUS;
             this.authService
                 .getUserToken()
                 .pipe(operators.filter((/**
@@ -5870,7 +5870,7 @@
                     _this._userId = userToken.userId;
                 }
                 else {
-                    _this._userId = ANONYMOUS_USERID;
+                    _this._userId = OCC_USER_ID_ANONYMOUS;
                 }
             }));
             this.store.pipe(store.select(getCartContent)).subscribe((/**
@@ -5917,7 +5917,9 @@
              */
             function () {
                 if (this.hasCart) {
-                    return this.userId === ANONYMOUS_USERID ? this.cart.guid : this.cart.code;
+                    return this.userId === OCC_USER_ID_ANONYMOUS
+                        ? this.cart.guid
+                        : this.cart.code;
                 }
             },
             enumerable: true,
@@ -6475,7 +6477,7 @@
          * @return {?}
          */
         function () {
-            if (this.cartData.userId !== ANONYMOUS_USERID) {
+            if (this.cartData.userId !== OCC_USER_ID_ANONYMOUS) {
                 this.store.dispatch(new LoadCart({
                     userId: this.cartData.userId,
                     cartId: this.cartData.cartId ? this.cartData.cartId : 'current',
@@ -10268,7 +10270,7 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== ANONYMOUS_USERID;
+            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
         };
         CheckoutService.decorators = [
             { type: core.Injectable }
@@ -14039,7 +14041,7 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== ANONYMOUS_USERID;
+            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
         };
         CheckoutDeliveryService.decorators = [
             { type: core.Injectable, args: [{
@@ -14201,7 +14203,7 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== ANONYMOUS_USERID;
+            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
         };
         CheckoutPaymentService.decorators = [
             { type: core.Injectable, args: [{
@@ -32480,6 +32482,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @deprecated since 1.2.0
+     * Use OCC_USER_ID_ANONYMOUS instead
+     * @type {?}
+     */
+    var ANONYMOUS_USERID = OCC_USER_ID_ANONYMOUS;
 
     /**
      * @fileoverview added by tsickle
@@ -39229,7 +39237,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserDetails(USERID_CURRENT));
+            this.store.dispatch(new LoadUserDetails(OCC_USER_ID_CURRENT));
         };
         /**
          * Register a new user
@@ -39319,7 +39327,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new RemoveUser(USERID_CURRENT));
+            this.store.dispatch(new RemoveUser(OCC_USER_ID_CURRENT));
         };
         /**
          * Returns the remove user loading flag
@@ -39438,7 +39446,7 @@
          */
         function (userDetails) {
             this.store.dispatch(new UpdateUserDetails({
-                username: USERID_CURRENT,
+                username: OCC_USER_ID_CURRENT,
                 userDetails: userDetails,
             }));
         };
@@ -39555,7 +39563,7 @@
          */
         function (password, newUid) {
             this.store.dispatch(new UpdateEmailAction({
-                uid: USERID_CURRENT,
+                uid: OCC_USER_ID_CURRENT,
                 password: password,
                 newUid: newUid,
             }));
@@ -39635,7 +39643,7 @@
          */
         function (oldPassword, newPassword) {
             this.store.dispatch(new UpdatePassword({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 oldPassword: oldPassword,
                 newPassword: newPassword,
             }));
@@ -39736,7 +39744,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserAddresses(USERID_CURRENT));
+            this.store.dispatch(new LoadUserAddresses(OCC_USER_ID_CURRENT));
         };
         /**
          * Adds user address
@@ -39754,7 +39762,7 @@
          */
         function (address) {
             this.store.dispatch(new AddUserAddress({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 address: address,
             }));
         };
@@ -39774,7 +39782,7 @@
          */
         function (addressId) {
             this.store.dispatch(new UpdateUserAddress({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 addressId: addressId,
                 address: { defaultAddress: true },
             }));
@@ -39798,7 +39806,7 @@
          */
         function (addressId, address) {
             this.store.dispatch(new UpdateUserAddress({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 addressId: addressId,
                 address: address,
             }));
@@ -39819,7 +39827,7 @@
          */
         function (addressId) {
             this.store.dispatch(new DeleteUserAddress({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 addressId: addressId,
             }));
         };
@@ -40016,7 +40024,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserConsents(USERID_CURRENT));
+            this.store.dispatch(new LoadUserConsents(OCC_USER_ID_CURRENT));
         };
         /**
          * Returns all consents
@@ -40107,7 +40115,7 @@
          */
         function (consentTemplateId, consentTemplateVersion) {
             this.store.dispatch(new GiveUserConsent({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 consentTemplateId: consentTemplateId,
                 consentTemplateVersion: consentTemplateVersion,
             }));
@@ -40184,7 +40192,7 @@
          */
         function (consentCode) {
             this.store.dispatch(new WithdrawUserConsent({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 consentCode: consentCode,
             }));
         };
@@ -40284,7 +40292,7 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserPaymentMethods(USERID_CURRENT));
+            this.store.dispatch(new LoadUserPaymentMethods(OCC_USER_ID_CURRENT));
         };
         /**
          * Returns all user's payment methods
@@ -40339,7 +40347,7 @@
          */
         function (paymentMethodId) {
             this.store.dispatch(new SetDefaultUserPaymentMethod({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 paymentMethodId: paymentMethodId,
             }));
         };
@@ -40362,7 +40370,7 @@
          */
         function (paymentMethodId) {
             this.store.dispatch(new DeleteUserPaymentMethod({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 paymentMethodId: paymentMethodId,
             }));
         };
@@ -40455,7 +40463,7 @@
          */
         function (orderCode) {
             this.store.dispatch(new LoadOrderDetails({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 orderCode: orderCode,
             }));
         };
@@ -40542,7 +40550,7 @@
          */
         function (pageSize, currentPage, sort) {
             this.store.dispatch(new LoadUserOrders({
-                userId: USERID_CURRENT,
+                userId: OCC_USER_ID_CURRENT,
                 pageSize: pageSize,
                 currentPage: currentPage,
                 sort: sort,
@@ -41950,7 +41958,7 @@
                     if (payload.address &&
                         Object.keys(payload.address).length === 1 &&
                         payload.address.defaultAddress) {
-                        return new LoadUserAddresses(USERID_CURRENT);
+                        return new LoadUserAddresses(OCC_USER_ID_CURRENT);
                     }
                     else {
                         return new UpdateUserAddressSuccess(data);
@@ -42921,6 +42929,8 @@
     exports.NotFoundHandler = NotFoundHandler;
     exports.OCC_BASE_URL_META_TAG_NAME = OCC_BASE_URL_META_TAG_NAME;
     exports.OCC_BASE_URL_META_TAG_PLACEHOLDER = OCC_BASE_URL_META_TAG_PLACEHOLDER;
+    exports.OCC_USER_ID_ANONYMOUS = OCC_USER_ID_ANONYMOUS;
+    exports.OCC_USER_ID_CURRENT = OCC_USER_ID_CURRENT;
     exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
