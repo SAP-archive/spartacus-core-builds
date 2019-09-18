@@ -12,6 +12,7 @@ export declare class OccUserAdapter implements UserAdapter {
     load(userId: string): Observable<User>;
     update(userId: string, user: User): Observable<{}>;
     register(user: UserSignUp): Observable<User>;
+    registerGuest(guid: string, password: string): Observable<User>;
     requestForgotPasswordEmail(userEmailAddress: string): Observable<{}>;
     resetPassword(token: string, newPassword: string): Observable<{}>;
     updateEmail(userId: string, currentPassword: string, newUserId: string): Observable<{}>;

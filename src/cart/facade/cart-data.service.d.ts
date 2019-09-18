@@ -12,4 +12,6 @@ export declare class CartDataService {
     readonly userId: string;
     readonly cart: Cart;
     readonly cartId: string;
+    readonly isGuestCart: boolean;
+    private isEmail;
 }

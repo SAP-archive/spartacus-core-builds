@@ -3,9 +3,9 @@ import { Observable } from 'rxjs';
 import { CartDataService } from '../../cart/facade/cart-data.service';
 import { Address, AddressValidation } from '../../model/address.model';
 import { DeliveryMode } from '../../model/order.model';
-import { StateWithCheckout } from '../store/checkout-state';
 import { StateWithProcess } from '../../process/store/process-state';
 import { LoaderState } from '../../state/utils/loader/loader-state';
+import { StateWithCheckout } from '../store/checkout-state';
 export declare class CheckoutDeliveryService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected cartData: CartDataService;

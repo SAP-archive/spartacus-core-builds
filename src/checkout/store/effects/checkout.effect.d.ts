@@ -18,6 +18,7 @@ export declare class CheckoutEffects {
     clearCheckoutMiscsDataOnLanguageChange$: Observable<CheckoutActions.CheckoutClearMiscsData>;
     clearDeliveryModesOnCurrencyChange$: Observable<CheckoutActions.ClearSupportedDeliveryModes>;
     clearCheckoutDataOnLogout$: Observable<CheckoutActions.ClearCheckoutData>;
+    clearCheckoutDataOnLogin$: Observable<CheckoutActions.ClearCheckoutData>;
     setDeliveryMode$: Observable<CheckoutActions.SetDeliveryModeSuccess | CheckoutActions.SetDeliveryModeFail | CartActions.LoadCart>;
     createPaymentDetails$: Observable<UserActions.LoadUserPaymentMethods | CheckoutActions.CreatePaymentDetailsSuccess | CheckoutActions.CreatePaymentDetailsFail>;
     setPaymentDetails$: Observable<CheckoutActions.SetPaymentDetailsSuccess | CheckoutActions.SetPaymentDetailsFail>;

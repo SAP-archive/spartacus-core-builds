@@ -12,6 +12,8 @@ export declare class CartEffects {
     mergeCart$: Observable<CartActions.CreateCart>;
     refresh$: Observable<CartActions.LoadCart>;
     resetCartDetailsOnSiteContextChange$: Observable<CartActions.ResetCartDetails>;
+    addEmail$: Observable<CartActions.AddEmailToCartSuccess | CartActions.AddEmailToCartFail>;
+    deleteCart$: Observable<any>;
     constructor(actions$: Actions, cartConnector: CartConnector, cartData: CartDataService);
     private isMissingData;
 }

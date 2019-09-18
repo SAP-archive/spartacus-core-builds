@@ -20,6 +20,7 @@ export declare class OccCartAdapter implements CartAdapter {
     loadAll(userId: string): Observable<Cart[]>;
     load(userId: string, cartId: string): Observable<Cart>;
     create(userId: string, oldCartId?: string, toMergeCartGuid?: string): Observable<Cart>;
+    delete(userId: string, cartId: string): Observable<{}>;
     /**
      * @deprecated Since 1.1
      * Use configurable endpoints.
@@ -38,4 +39,5 @@ export declare class OccCartAdapter implements CartAdapter {
      * Remove issue: #4125
      */
     private legacyCreate;
+    addEmail(userId: string, cartId: string, email: string): Observable<{}>;
 }

@@ -2,9 +2,9 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { CartDataService } from '../../cart/facade/cart-data.service';
 import { CardType, PaymentDetails } from '../../model/cart.model';
-import { StateWithCheckout } from '../store/checkout-state';
 import { StateWithProcess } from '../../process/store/process-state';
 import { LoaderState } from '../../state/utils/loader/loader-state';
+import { StateWithCheckout } from '../store/checkout-state';
 export declare class CheckoutPaymentService {
     protected checkoutStore: Store<StateWithCheckout | StateWithProcess<void>>;
     protected cartData: CartDataService;

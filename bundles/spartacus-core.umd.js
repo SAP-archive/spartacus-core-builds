@@ -5046,6 +5046,8 @@
     var OCC_USER_ID_CURRENT = 'current';
     /** @type {?} */
     var OCC_USER_ID_ANONYMOUS = 'anonymous';
+    /** @type {?} */
+    var OCC_USER_ID_GUEST = 'guest';
 
     /**
      * @fileoverview added by tsickle
@@ -5676,6 +5678,481 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Converter is used to convert source data model to target data model.
+     * By convention, we distinguish two flows:
+     *   - *Normalize* is the conversion from backend models to UI models
+     *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
+     *
+     * Converters can be stacked together to to apply decoupled customizations
+     * @record
+     * @template S, T
+     */
+    function Converter() { }
+    if (false) {
+        /**
+         * Convert converts source model to target model. Can use optional target parameter,
+         * used in case of stacking multiple converters (for example, to implement populator pattern).
+         *
+         * @param {?} source Source data model
+         * @param {?=} target Optional, partially converted target model
+         * @return {?}
+         */
+        Converter.prototype.convert = function (source, target) { };
+    }
+    var ConverterService = /** @class */ (function () {
+        function ConverterService(injector) {
+            this.injector = injector;
+            this.converters = new Map();
+        }
+        /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.getConverters = /**
+         * @private
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (injectionToken) {
+            if (!this.converters.has(injectionToken)) {
+                /** @type {?} */
+                var converters = this.injector.get(injectionToken, []);
+                if (!Array.isArray(converters)) {
+                    console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+                }
+                this.converters.set(injectionToken, converters);
+            }
+            return this.converters.get(injectionToken);
+        };
+        /**
+         * Will return true if converters for specified token were provided
+         */
+        /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.hasConverters = /**
+         * Will return true if converters for specified token were provided
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (injectionToken) {
+            /** @type {?} */
+            var converters = this.getConverters(injectionToken);
+            return Array.isArray(converters) && converters.length > 0;
+        };
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         */
+        /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.pipeable = /**
+         * Pipeable operator to apply converter logic in a observable stream
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (injectionToken) {
+            var _this = this;
+            if (this.hasConverters(injectionToken)) {
+                return operators.map((/**
+                 * @param {?} model
+                 * @return {?}
+                 */
+                function (model) { return _this.convertSource(model, injectionToken); }));
+            }
+            else {
+                return (/**
+                 * @param {?} observable
+                 * @return {?}
+                 */
+                function (observable) { return (/** @type {?} */ (observable)); });
+            }
+        };
+        /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         */
+        /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.pipeableMany = /**
+         * Pipeable operator to apply converter logic in a observable stream to collection of items
+         * @template S, T
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (injectionToken) {
+            var _this = this;
+            if (this.hasConverters(injectionToken)) {
+                return operators.map((/**
+                 * @param {?} model
+                 * @return {?}
+                 */
+                function (model) { return _this.convertMany(model, injectionToken); }));
+            }
+            else {
+                return (/**
+                 * @param {?} observable
+                 * @return {?}
+                 */
+                function (observable) { return (/** @type {?} */ (observable)); });
+            }
+        };
+        /**
+         * Apply converter logic specified by injection token to source data
+         */
+        /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convert = /**
+         * Apply converter logic specified by injection token to source data
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (source, injectionToken) {
+            if (this.hasConverters(injectionToken)) {
+                return this.convertSource(source, injectionToken);
+            }
+            else {
+                return (/** @type {?} */ (source));
+            }
+        };
+        /**
+         * Apply converter logic specified by injection token to a collection
+         */
+        /**
+         * Apply converter logic specified by injection token to a collection
+         * @template S, T
+         * @param {?} sources
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convertMany = /**
+         * Apply converter logic specified by injection token to a collection
+         * @template S, T
+         * @param {?} sources
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (sources, injectionToken) {
+            var _this = this;
+            if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
+                return sources.map((/**
+                 * @param {?} source
+                 * @return {?}
+                 */
+                function (source) { return _this.convertSource(source, injectionToken); }));
+            }
+            else {
+                return (/** @type {?} */ (sources));
+            }
+        };
+        /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        ConverterService.prototype.convertSource = /**
+         * @private
+         * @template S, T
+         * @param {?} source
+         * @param {?} injectionToken
+         * @return {?}
+         */
+        function (source, injectionToken) {
+            return this.getConverters(injectionToken).reduce((/**
+             * @param {?} target
+             * @param {?} converter
+             * @return {?}
+             */
+            function (target, converter) {
+                return converter.convert(source, target);
+            }), (/** @type {?} */ (undefined)));
+        };
+        ConverterService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ConverterService.ctorParameters = function () { return [
+            { type: core.Injector }
+        ]; };
+        /** @nocollapse */ ConverterService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(core.ɵɵinject(core.INJECTOR)); }, token: ConverterService, providedIn: "root" });
+        return ConverterService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ConverterService.prototype.converters;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ConverterService.prototype.injector;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var QUESTION_MARK = '[^/]';
+    /** @type {?} */
+    var WILD_SINGLE = '[^/]*';
+    /** @type {?} */
+    var WILD_OPEN = '(?:.+\\/)?';
+    /** @type {?} */
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    /** @type {?} */
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    /** @type {?} */
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param {?} glob glob-like pattern
+     * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+     * @return {?}
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        /** @type {?} */
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        /** @type {?} */
+        var segments = glob.split('/').reverse();
+        /** @type {?} */
+        var regex = '';
+        while (segments.length > 0) {
+            /** @type {?} */
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                /** @type {?} */
+                var processed = toEscape.reduce((/**
+                 * @param {?} seg
+                 * @param {?} escape
+                 * @return {?}
+                 */
+                function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    function getGlobMatcher(patterns) {
+        /** @type {?} */
+        var processedPatterns = processGlobPatterns(patterns).map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        }));
+        /** @type {?} */
+        var includePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return spec.positive; }));
+        /** @type {?} */
+        var excludePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return !spec.positive; }));
+        return (/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            return includePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            function (pattern) { return pattern.regex.test(url); })) &&
+                !excludePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); }));
+        });
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     * @param {?} urls
+     * @return {?}
+     */
+    function processGlobPatterns(urls) {
+        return urls.map((/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            /** @type {?} */
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        }));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        GlobService.prototype.getValidator = /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        function (patterns) {
+            /** @type {?} */
+            var processedPatterns = processGlobPatterns(patterns).map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            }));
+            /** @type {?} */
+            var includePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return spec.positive; }));
+            /** @type {?} */
+            var excludePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return !spec.positive; }));
+            return (/**
+             * @param {?} url
+             * @return {?}
+             */
+            function (url) {
+                return includePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); })) &&
+                    !excludePatterns.some((/**
+                     * @param {?} pattern
+                     * @return {?}
+                     */
+                    function (pattern) { return pattern.regex.test(url); }));
+            });
+        };
+        GlobService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */ GlobService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+        return GlobService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    // Email Standard RFC 5322:
+    /** @type {?} */
+    var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // tslint:disable-line
+    /** @type {?} */
+    var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var CART_FEATURE = 'cart';
     /** @type {?} */
@@ -5819,6 +6296,13 @@
     };
     /** @type {?} */
     var getCartEntries = store.createSelector(getCartEntriesMap, (ɵ8));
+    var ɵ9 = /**
+     * @param {?} content
+     * @return {?}
+     */
+    function (content) { return content.user; };
+    /** @type {?} */
+    var getCartUser = store.createSelector(getCartContent, (ɵ9));
 
     /**
      * @fileoverview added by tsickle
@@ -5836,7 +6320,8 @@
         getCartMergeComplete: getCartMergeComplete,
         getCartEntriesMap: getCartEntriesMap,
         getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-        getCartEntries: getCartEntries
+        getCartEntries: getCartEntries,
+        getCartUser: getCartUser
     });
 
     /**
@@ -5925,6 +6410,37 @@
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(CartDataService.prototype, "isGuestCart", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return (this.cart.user &&
+                    (this.cart.user.name === OCC_USER_ID_GUEST ||
+                        this.isEmail(this.cart.user.uid
+                            .split('|')
+                            .slice(1)
+                            .join('|'))));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         * @param {?} str
+         * @return {?}
+         */
+        CartDataService.prototype.isEmail = /**
+         * @private
+         * @param {?} str
+         * @return {?}
+         */
+        function (str) {
+            if (str) {
+                return str.match(EMAIL_PATTERN) ? true : false;
+            }
+            return false;
+        };
         CartDataService.decorators = [
             { type: core.Injectable }
         ];
@@ -6142,6 +6658,12 @@
     /** @type {?} */
     var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
     /** @type {?} */
+    var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+    /** @type {?} */
+    var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+    /** @type {?} */
+    var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+    /** @type {?} */
     var MERGE_CART = '[Cart] Merge Cart';
     /** @type {?} */
     var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
@@ -6149,6 +6671,10 @@
     var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
     /** @type {?} */
     var CLEAR_CART = '[Cart] Clear Cart';
+    /** @type {?} */
+    var DELETE_CART = '[Cart] Delete Cart';
+    /** @type {?} */
+    var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
     var CreateCart = /** @class */ (function (_super) {
         __extends(CreateCart, _super);
         function CreateCart(payload) {
@@ -6196,6 +6722,54 @@
         CreateCartSuccess.prototype.type;
         /** @type {?} */
         CreateCartSuccess.prototype.payload;
+    }
+    var AddEmailToCart = /** @class */ (function (_super) {
+        __extends(AddEmailToCart, _super);
+        function AddEmailToCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART;
+            return _this;
+        }
+        return AddEmailToCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCart.prototype.type;
+        /** @type {?} */
+        AddEmailToCart.prototype.payload;
+    }
+    var AddEmailToCartFail = /** @class */ (function (_super) {
+        __extends(AddEmailToCartFail, _super);
+        function AddEmailToCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_FAIL;
+            return _this;
+        }
+        return AddEmailToCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCartFail.prototype.type;
+        /** @type {?} */
+        AddEmailToCartFail.prototype.payload;
+    }
+    var AddEmailToCartSuccess = /** @class */ (function (_super) {
+        __extends(AddEmailToCartSuccess, _super);
+        function AddEmailToCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+            return _this;
+        }
+        return AddEmailToCartSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCartSuccess.prototype.type;
+        /** @type {?} */
+        AddEmailToCartSuccess.prototype.payload;
     }
     var LoadCart = /** @class */ (function (_super) {
         __extends(LoadCart, _super);
@@ -6294,6 +6868,38 @@
         /** @type {?} */
         ClearCart.prototype.type;
     }
+    var DeleteCart = /** @class */ (function (_super) {
+        __extends(DeleteCart, _super);
+        function DeleteCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = DELETE_CART;
+            return _this;
+        }
+        return DeleteCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        DeleteCart.prototype.type;
+        /** @type {?} */
+        DeleteCart.prototype.payload;
+    }
+    var DeleteCartFail = /** @class */ (function (_super) {
+        __extends(DeleteCartFail, _super);
+        function DeleteCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = DELETE_CART_FAIL;
+            return _this;
+        }
+        return DeleteCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        DeleteCartFail.prototype.type;
+        /** @type {?} */
+        DeleteCartFail.prototype.payload;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -6325,20 +6931,30 @@
         LOAD_CART: LOAD_CART,
         LOAD_CART_FAIL: LOAD_CART_FAIL,
         LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+        ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
+        ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
+        ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
         MERGE_CART: MERGE_CART,
         MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
         RESET_CART_DETAILS: RESET_CART_DETAILS,
         CLEAR_CART: CLEAR_CART,
+        DELETE_CART: DELETE_CART,
+        DELETE_CART_FAIL: DELETE_CART_FAIL,
         CreateCart: CreateCart,
         CreateCartFail: CreateCartFail,
         CreateCartSuccess: CreateCartSuccess,
+        AddEmailToCart: AddEmailToCart,
+        AddEmailToCartFail: AddEmailToCartFail,
+        AddEmailToCartSuccess: AddEmailToCartSuccess,
         LoadCart: LoadCart,
         LoadCartFail: LoadCartFail,
         LoadCartSuccess: LoadCartSuccess,
         MergeCart: MergeCart,
         MergeCartSuccess: MergeCartSuccess,
         ResetCartDetails: ResetCartDetails,
-        ClearCart: ClearCart
+        ClearCart: ClearCart,
+        DeleteCart: DeleteCart,
+        DeleteCartFail: DeleteCartFail
     });
 
     /**
@@ -6460,6 +7076,9 @@
                     userId: this.cartData.userId,
                     cartId: 'current',
                 }));
+            }
+            else if (this.isGuestCart()) {
+                this.guestCartMerge();
             }
             else {
                 this.store.dispatch(new MergeCart({
@@ -6583,6 +7202,82 @@
             return this.store.pipe(store.select(getCartEntrySelectorFactory(productCode)));
         };
         /**
+         * @param {?} email
+         * @return {?}
+         */
+        CartService.prototype.addEmail = /**
+         * @param {?} email
+         * @return {?}
+         */
+        function (email) {
+            this.store.dispatch(new AddEmailToCart({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                email: email,
+            }));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.getAssignedUser = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCartUser));
+        };
+        /**
+         * @return {?}
+         */
+        CartService.prototype.isGuestCart = /**
+         * @return {?}
+         */
+        function () {
+            return this.cartData.isGuestCart;
+        };
+        /**
+         * Add multiple entries to a cart
+         * Requires a created cart
+         * @param cartEntries : list of entries to add (OrderEntry[])
+         */
+        /**
+         * Add multiple entries to a cart
+         * Requires a created cart
+         * @param {?} cartEntries : list of entries to add (OrderEntry[])
+         * @return {?}
+         */
+        CartService.prototype.addEntries = /**
+         * Add multiple entries to a cart
+         * Requires a created cart
+         * @param {?} cartEntries : list of entries to add (OrderEntry[])
+         * @return {?}
+         */
+        function (cartEntries) {
+            var _this = this;
+            /** @type {?} */
+            var newEntries = 0;
+            this.getEntries()
+                .pipe(operators.tap((/**
+             * @return {?}
+             */
+            function () {
+                // Keep adding entries until the user cart contains the same number of entries
+                // as the guest cart did
+                if (newEntries < cartEntries.length) {
+                    _this.store.dispatch(new CartAddEntry({
+                        userId: _this.cartData.userId,
+                        cartId: _this.cartData.cartId,
+                        productCode: cartEntries[newEntries].product.code,
+                        quantity: cartEntries[newEntries].quantity,
+                    }));
+                    newEntries++;
+                }
+            })), operators.filter((/**
+             * @return {?}
+             */
+            function () { return newEntries === cartEntries.length; })), operators.take(1))
+                .subscribe();
+        };
+        /**
          * @private
          * @param {?} cart
          * @return {?}
@@ -6596,25 +7291,25 @@
             return cart && typeof cart.guid !== 'undefined';
         };
         /**
-         * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+         * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
          * To get cart content, we need to load cart from backend.
          */
         /**
-         * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+         * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
          * To get cart content, we need to load cart from backend.
          * @private
          * @param {?} cart
          * @return {?}
          */
         CartService.prototype.isIncomplete = /**
-         * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+         * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
          * To get cart content, we need to load cart from backend.
          * @private
          * @param {?} cart
          * @return {?}
          */
         function (cart) {
-            return cart && Object.keys(cart).length <= 2;
+            return cart && Object.keys(cart).length <= 3;
         };
         /**
          * @private
@@ -6644,6 +7339,70 @@
          */
         function (userId) {
             return typeof userId !== 'undefined';
+        };
+        // TODO: Remove once backend is updated
+        /**
+         * Temporary method to merge guest cart with user cart because of beackend limitation
+         * This is for an edge case
+         */
+        // TODO: Remove once backend is updated
+        /**
+         * Temporary method to merge guest cart with user cart because of beackend limitation
+         * This is for an edge case
+         * @private
+         * @return {?}
+         */
+        CartService.prototype.guestCartMerge = 
+        // TODO: Remove once backend is updated
+        /**
+         * Temporary method to merge guest cart with user cart because of beackend limitation
+         * This is for an edge case
+         * @private
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            /** @type {?} */
+            var cartEntries;
+            this.getEntries()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} entries
+             * @return {?}
+             */
+            function (entries) {
+                cartEntries = entries;
+            }));
+            this.store.dispatch(new DeleteCart({
+                userId: OCC_USER_ID_ANONYMOUS,
+                cartId: this.cartData.cart.guid,
+            }));
+            this.store
+                .pipe(store.select(getActiveCartState), operators.filter((/**
+             * @param {?} cartState
+             * @return {?}
+             */
+            function (cartState) { return !cartState.loading; })), operators.tap((/**
+             * @param {?} cartState
+             * @return {?}
+             */
+            function (cartState) {
+                // If the cart is not created it needs to be created
+                // This step should happen before adding entries to avoid conflicts in the requests
+                if (!_this.isCreated(cartState.value.content)) {
+                    _this.store.dispatch(new CreateCart({ userId: _this.cartData.userId }));
+                }
+            })), operators.filter((/**
+             * @param {?} cartState
+             * @return {?}
+             */
+            function (cartState) { return _this.isCreated(cartState.value.content); })), operators.take(1))
+                .subscribe((/**
+             * @return {?}
+             */
+            function () {
+                _this.addEntries(cartEntries);
+            }));
         };
         CartService.decorators = [
             { type: core.Injectable }
@@ -8224,6 +8983,24 @@
          * @return {?}
          */
         CartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) { };
+        /**
+         * Abstract method used to delete cart
+         *
+         * @abstract
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartAdapter.prototype.delete = function (userId, cartId) { };
+        /**
+         * Abstract method to assign an email to the cart. This step is required to make a guest checkout
+         * @abstract
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} email
+         * @return {?}
+         */
+        CartAdapter.prototype.addEmail = function (userId, cartId, email) { };
     }
 
     /**
@@ -8272,6 +9049,34 @@
          */
         function (userId, oldCartId, toMergeCartGuid) {
             return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartConnector.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            return this.adapter.delete(userId, cartId);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} email
+         * @return {?}
+         */
+        CartConnector.prototype.addEmail = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} email
+         * @return {?}
+         */
+        function (userId, cartId, email) {
+            return this.adapter.addEmail(userId, cartId, email);
         };
         CartConnector.decorators = [
             { type: core.Injectable, args: [{
@@ -8402,7 +9207,7 @@
                     });
                 })));
             })));
-            this.refresh$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS), operators.map((/**
+            this.refresh$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -8420,6 +9225,55 @@
              * @return {?}
              */
             function () { return new ResetCartDetails(); })));
+            this.addEmail$ = this.actions$.pipe(effects$a.ofType(ADD_EMAIL_TO_CART), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartConnector
+                    .addEmail(payload.userId, payload.cartId, payload.email)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    return new AddEmailToCartSuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new AddEmailToCartFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.deleteCart$ = this.actions$.pipe(effects$a.ofType(DELETE_CART), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.exhaustMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    return new ClearCart();
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new DeleteCartFail(makeErrorSerializable(error)));
+                })));
+            })));
         }
         /**
          * @private
@@ -8463,6 +9317,14 @@
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartEffects.prototype, "addEmail$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartEffects.prototype, "deleteCart$", void 0);
         return CartEffects;
     }());
     if (false) {
@@ -8476,6 +9338,10 @@
         CartEffects.prototype.refresh$;
         /** @type {?} */
         CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+        /** @type {?} */
+        CartEffects.prototype.addEmail$;
+        /** @type {?} */
+        CartEffects.prototype.deleteCart$;
         /**
          * @type {?}
          * @private
@@ -9717,7 +10583,8 @@
             }
             case CART_REMOVE_ENTRY_SUCCESS:
             case CART_UPDATE_ENTRY_SUCCESS:
-            case CART_ADD_ENTRY_SUCCESS: {
+            case CART_ADD_ENTRY_SUCCESS:
+            case ADD_EMAIL_TO_CART_SUCCESS: {
                 return __assign({}, state, { refresh: true });
             }
             case RESET_CART_DETAILS: {
@@ -9725,6 +10592,7 @@
                     content: {
                         guid: state.content.guid,
                         code: state.content.code,
+                        user: state.content.user,
                     },
                     entries: {},
                     refresh: false,
@@ -9794,6 +10662,7 @@
                     keys: (_a = {},
                         _a[CART_FEATURE + ".active.value.content.guid"] = StorageSyncType.LOCAL_STORAGE,
                         _a[CART_FEATURE + ".active.value.content.code"] = StorageSyncType.LOCAL_STORAGE,
+                        _a[CART_FEATURE + ".active.value.content.user"] = StorageSyncType.LOCAL_STORAGE,
                         _a),
                 },
             },
@@ -10029,7 +10898,7 @@
     var getPaymentDetails = store.createSelector(getCheckoutSteps, getPaymentDetailsSelector);
     /** @type {?} */
     var getCheckoutOrderDetails = store.createSelector(getCheckoutSteps, getOrderDetailsSelector);
-    var ɵ9 = /**
+    var ɵ9$1 = /**
      * @param {?} state
      * @return {?}
      */
@@ -10038,7 +10907,7 @@
             !loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, (ɵ9));
+    var getCheckoutDetailsLoaded = store.createSelector(getCheckoutStepsState, (ɵ9$1));
 
     /**
      * @fileoverview added by tsickle
@@ -10270,7 +11139,8 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+            return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+                this.cartData.isGuestCart);
         };
         CheckoutService.decorators = [
             { type: core.Injectable }
@@ -12448,6 +13318,12 @@
     /** @type {?} */
     var RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
     /** @type {?} */
+    var REGISTER_GUEST = '[User] Register Guest';
+    /** @type {?} */
+    var REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
+    /** @type {?} */
+    var REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
+    /** @type {?} */
     var REMOVE_USER = '[User] Remove User';
     /** @type {?} */
     var REMOVE_USER_FAIL = '[User] Remove User Fail';
@@ -12512,6 +13388,42 @@
     if (false) {
         /** @type {?} */
         ResetRegisterUserProcess.prototype.type;
+    }
+    var RegisterGuest = /** @class */ (function () {
+        function RegisterGuest(payload) {
+            this.payload = payload;
+            this.type = REGISTER_GUEST;
+        }
+        return RegisterGuest;
+    }());
+    if (false) {
+        /** @type {?} */
+        RegisterGuest.prototype.type;
+        /** @type {?} */
+        RegisterGuest.prototype.payload;
+    }
+    var RegisterGuestFail = /** @class */ (function () {
+        function RegisterGuestFail(payload) {
+            this.payload = payload;
+            this.type = REGISTER_GUEST_FAIL;
+        }
+        return RegisterGuestFail;
+    }());
+    if (false) {
+        /** @type {?} */
+        RegisterGuestFail.prototype.type;
+        /** @type {?} */
+        RegisterGuestFail.prototype.payload;
+    }
+    var RegisterGuestSuccess = /** @class */ (function () {
+        function RegisterGuestSuccess() {
+            this.type = REGISTER_GUEST_SUCCESS;
+        }
+        return RegisterGuestSuccess;
+    }());
+    if (false) {
+        /** @type {?} */
+        RegisterGuestSuccess.prototype.type;
     }
     var RemoveUser = /** @class */ (function (_super) {
         __extends(RemoveUser, _super);
@@ -12742,6 +13654,9 @@
         REGISTER_USER_FAIL: REGISTER_USER_FAIL,
         REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
         RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
+        REGISTER_GUEST: REGISTER_GUEST,
+        REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
+        REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
         REMOVE_USER: REMOVE_USER,
         REMOVE_USER_FAIL: REMOVE_USER_FAIL,
         REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
@@ -12750,6 +13665,9 @@
         RegisterUserFail: RegisterUserFail,
         RegisterUserSuccess: RegisterUserSuccess,
         ResetRegisterUserProcess: ResetRegisterUserProcess,
+        RegisterGuest: RegisterGuest,
+        RegisterGuestFail: RegisterGuestFail,
+        RegisterGuestSuccess: RegisterGuestSuccess,
         RemoveUser: RemoveUser,
         RemoveUserFail: RemoveUserFail,
         RemoveUserSuccess: RemoveUserSuccess,
@@ -13088,14 +14006,30 @@
                  */
                 function (address) {
                     address['titleCode'] = payload.address.titleCode;
-                    return [
-                        new LoadUserAddresses(payload.userId),
-                        new SetDeliveryAddress({
-                            userId: payload.userId,
-                            cartId: payload.cartId,
-                            address: address,
-                        }),
-                    ];
+                    if (payload.address.region && payload.address.region.isocodeShort) {
+                        Object.assign(address.region, {
+                            isocodeShort: payload.address.region.isocodeShort,
+                        });
+                    }
+                    if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                        return [
+                            new SetDeliveryAddress({
+                                userId: payload.userId,
+                                cartId: payload.cartId,
+                                address: address,
+                            }),
+                        ];
+                    }
+                    else {
+                        return [
+                            new LoadUserAddresses(payload.userId),
+                            new SetDeliveryAddress({
+                                userId: payload.userId,
+                                cartId: payload.cartId,
+                                address: address,
+                            }),
+                        ];
+                    }
                 })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
@@ -13170,6 +14104,10 @@
              * @return {?}
              */
             function () { return new ClearCheckoutData(); })));
+            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$a.ofType(LOGIN), operators.map((/**
+             * @return {?}
+             */
+            function () { return new ClearCheckoutData(); })));
             this.setDeliveryMode$ = this.actions$.pipe(effects$a.ofType(SET_DELIVERY_MODE), operators.map((/**
              * @param {?} action
              * @return {?}
@@ -13216,10 +14154,17 @@
                  * @param {?} details
                  * @return {?}
                  */
-                function (details) { return [
-                    new LoadUserPaymentMethods(payload.userId),
-                    new CreatePaymentDetailsSuccess(details),
-                ]; })), operators.catchError((/**
+                function (details) {
+                    if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                        return [new CreatePaymentDetailsSuccess(details)];
+                    }
+                    else {
+                        return [
+                            new LoadUserPaymentMethods(payload.userId),
+                            new CreatePaymentDetailsSuccess(details),
+                        ];
+                    }
+                })), operators.catchError((/**
                  * @param {?} error
                  * @return {?}
                  */
@@ -13395,6 +14340,10 @@
         __decorate([
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
+        ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
         __decorate([
             effects$a.Effect(),
@@ -13439,6 +14388,8 @@
         CheckoutEffects.prototype.clearDeliveryModesOnCurrencyChange$;
         /** @type {?} */
         CheckoutEffects.prototype.clearCheckoutDataOnLogout$;
+        /** @type {?} */
+        CheckoutEffects.prototype.clearCheckoutDataOnLogin$;
         /** @type {?} */
         CheckoutEffects.prototype.setDeliveryMode$;
         /** @type {?} */
@@ -14041,7 +14992,8 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+            return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+                this.cartData.isGuestCart);
         };
         CheckoutDeliveryService.decorators = [
             { type: core.Injectable, args: [{
@@ -14203,7 +15155,8 @@
          * @return {?}
          */
         function () {
-            return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+            return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+                this.cartData.isGuestCart);
         };
         CheckoutPaymentService.decorators = [
             { type: core.Injectable, args: [{
@@ -14594,223 +15547,6 @@
                     },] }
         ];
         return CmsPageTitleModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var QUESTION_MARK = '[^/]';
-    /** @type {?} */
-    var WILD_SINGLE = '[^/]*';
-    /** @type {?} */
-    var WILD_OPEN = '(?:.+\\/)?';
-    /** @type {?} */
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    /** @type {?} */
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    /** @type {?} */
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param {?} glob glob-like pattern
-     * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
-     * @return {?}
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        /** @type {?} */
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        /** @type {?} */
-        var segments = glob.split('/').reverse();
-        /** @type {?} */
-        var regex = '';
-        while (segments.length > 0) {
-            /** @type {?} */
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                /** @type {?} */
-                var processed = toEscape.reduce((/**
-                 * @param {?} seg
-                 * @param {?} escape
-                 * @return {?}
-                 */
-                function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     * @param {?} patterns
-     * @return {?}
-     */
-    function getGlobMatcher(patterns) {
-        /** @type {?} */
-        var processedPatterns = processGlobPatterns(patterns).map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        }));
-        /** @type {?} */
-        var includePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return spec.positive; }));
-        /** @type {?} */
-        var excludePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return !spec.positive; }));
-        return (/**
-         * @param {?} url
-         * @return {?}
-         */
-        function (url) {
-            return includePatterns.some((/**
-             * @param {?} pattern
-             * @return {?}
-             */
-            function (pattern) { return pattern.regex.test(url); })) &&
-                !excludePatterns.some((/**
-                 * @param {?} pattern
-                 * @return {?}
-                 */
-                function (pattern) { return pattern.regex.test(url); }));
-        });
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     * @param {?} urls
-     * @return {?}
-     */
-    function processGlobPatterns(urls) {
-        return urls.map((/**
-         * @param {?} url
-         * @return {?}
-         */
-        function (url) {
-            /** @type {?} */
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        }));
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         * @param {?} patterns
-         * @return {?}
-         */
-        GlobService.prototype.getValidator = /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         * @param {?} patterns
-         * @return {?}
-         */
-        function (patterns) {
-            /** @type {?} */
-            var processedPatterns = processGlobPatterns(patterns).map((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            }));
-            /** @type {?} */
-            var includePatterns = processedPatterns.filter((/**
-             * @param {?} spec
-             * @return {?}
-             */
-            function (spec) { return spec.positive; }));
-            /** @type {?} */
-            var excludePatterns = processedPatterns.filter((/**
-             * @param {?} spec
-             * @return {?}
-             */
-            function (spec) { return !spec.positive; }));
-            return (/**
-             * @param {?} url
-             * @return {?}
-             */
-            function (url) {
-                return includePatterns.some((/**
-                 * @param {?} pattern
-                 * @return {?}
-                 */
-                function (pattern) { return pattern.regex.test(url); })) &&
-                    !excludePatterns.some((/**
-                     * @param {?} pattern
-                     * @return {?}
-                     */
-                    function (pattern) { return pattern.regex.test(url); }));
-            });
-        };
-        GlobService.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root' },] }
-        ];
-        /** @nocollapse */ GlobService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-        return GlobService;
     }());
 
     /**
@@ -22143,6 +22879,13 @@
          */
         OccEndpoints.prototype.createCart;
         /**
+         * Deletes a cart with a given cart id
+         *
+         * \@member {string} [deleteCart]
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.deleteCart;
+        /**
          * Adds a product to the cart
          *
          * \@member {string} [addEntries]
@@ -22163,6 +22906,13 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.removeEntries;
+        /**
+         * Assign email to cart
+         *
+         * \@member {string} [addEmail]
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.addEmail;
         /**
          * Get a store location
          *
@@ -27093,248 +27843,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * Converter is used to convert source data model to target data model.
-     * By convention, we distinguish two flows:
-     *   - *Normalize* is the conversion from backend models to UI models
-     *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
-     *
-     * Converters can be stacked together to to apply decoupled customizations
-     * @record
-     * @template S, T
-     */
-    function Converter() { }
-    if (false) {
-        /**
-         * Convert converts source model to target model. Can use optional target parameter,
-         * used in case of stacking multiple converters (for example, to implement populator pattern).
-         *
-         * @param {?} source Source data model
-         * @param {?=} target Optional, partially converted target model
-         * @return {?}
-         */
-        Converter.prototype.convert = function (source, target) { };
-    }
-    var ConverterService = /** @class */ (function () {
-        function ConverterService(injector) {
-            this.injector = injector;
-            this.converters = new Map();
-        }
-        /**
-         * @private
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.getConverters = /**
-         * @private
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (injectionToken) {
-            if (!this.converters.has(injectionToken)) {
-                /** @type {?} */
-                var converters = this.injector.get(injectionToken, []);
-                if (!Array.isArray(converters)) {
-                    console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
-                }
-                this.converters.set(injectionToken, converters);
-            }
-            return this.converters.get(injectionToken);
-        };
-        /**
-         * Will return true if converters for specified token were provided
-         */
-        /**
-         * Will return true if converters for specified token were provided
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.hasConverters = /**
-         * Will return true if converters for specified token were provided
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (injectionToken) {
-            /** @type {?} */
-            var converters = this.getConverters(injectionToken);
-            return Array.isArray(converters) && converters.length > 0;
-        };
-        /**
-         * Pipeable operator to apply converter logic in a observable stream
-         */
-        /**
-         * Pipeable operator to apply converter logic in a observable stream
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.pipeable = /**
-         * Pipeable operator to apply converter logic in a observable stream
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (injectionToken) {
-            var _this = this;
-            if (this.hasConverters(injectionToken)) {
-                return operators.map((/**
-                 * @param {?} model
-                 * @return {?}
-                 */
-                function (model) { return _this.convertSource(model, injectionToken); }));
-            }
-            else {
-                return (/**
-                 * @param {?} observable
-                 * @return {?}
-                 */
-                function (observable) { return (/** @type {?} */ (observable)); });
-            }
-        };
-        /**
-         * Pipeable operator to apply converter logic in a observable stream to collection of items
-         */
-        /**
-         * Pipeable operator to apply converter logic in a observable stream to collection of items
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.pipeableMany = /**
-         * Pipeable operator to apply converter logic in a observable stream to collection of items
-         * @template S, T
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (injectionToken) {
-            var _this = this;
-            if (this.hasConverters(injectionToken)) {
-                return operators.map((/**
-                 * @param {?} model
-                 * @return {?}
-                 */
-                function (model) { return _this.convertMany(model, injectionToken); }));
-            }
-            else {
-                return (/**
-                 * @param {?} observable
-                 * @return {?}
-                 */
-                function (observable) { return (/** @type {?} */ (observable)); });
-            }
-        };
-        /**
-         * Apply converter logic specified by injection token to source data
-         */
-        /**
-         * Apply converter logic specified by injection token to source data
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.convert = /**
-         * Apply converter logic specified by injection token to source data
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (source, injectionToken) {
-            if (this.hasConverters(injectionToken)) {
-                return this.convertSource(source, injectionToken);
-            }
-            else {
-                return (/** @type {?} */ (source));
-            }
-        };
-        /**
-         * Apply converter logic specified by injection token to a collection
-         */
-        /**
-         * Apply converter logic specified by injection token to a collection
-         * @template S, T
-         * @param {?} sources
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.convertMany = /**
-         * Apply converter logic specified by injection token to a collection
-         * @template S, T
-         * @param {?} sources
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (sources, injectionToken) {
-            var _this = this;
-            if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-                return sources.map((/**
-                 * @param {?} source
-                 * @return {?}
-                 */
-                function (source) { return _this.convertSource(source, injectionToken); }));
-            }
-            else {
-                return (/** @type {?} */ (sources));
-            }
-        };
-        /**
-         * @private
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        ConverterService.prototype.convertSource = /**
-         * @private
-         * @template S, T
-         * @param {?} source
-         * @param {?} injectionToken
-         * @return {?}
-         */
-        function (source, injectionToken) {
-            return this.getConverters(injectionToken).reduce((/**
-             * @param {?} target
-             * @param {?} converter
-             * @return {?}
-             */
-            function (target, converter) {
-                return converter.convert(source, target);
-            }), (/** @type {?} */ (undefined)));
-        };
-        ConverterService.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        ConverterService.ctorParameters = function () { return [
-            { type: core.Injector }
-        ]; };
-        /** @nocollapse */ ConverterService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(core.ɵɵinject(core.INJECTOR)); }, token: ConverterService, providedIn: "root" });
-        return ConverterService;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        ConverterService.prototype.converters;
-        /**
-         * @type {?}
-         * @protected
-         */
-        ConverterService.prototype.injector;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var OccCartNormalizer = /** @class */ (function () {
         function OccCartNormalizer(converter) {
             this.converter = converter;
@@ -27449,12 +27957,14 @@
             occ: {
                 endpoints: {
                     // tslint:disable:max-line-length
-                    carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
-                    cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
-                    createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
+                    carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime,user)',
+                    cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
+                    createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
                     addEntries: 'users/${userId}/carts/${cartId}/entries',
                     updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                     removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
+                    addEmail: 'users/${userId}/carts/${cartId}/email',
+                    deleteCart: 'users/${userId}/carts/${cartId}',
                 },
             },
         },
@@ -27897,7 +28407,7 @@
         'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
         'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
         'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-        'appliedVouchers,productDiscounts(formattedValue)';
+        'appliedVouchers,productDiscounts(formattedValue),user';
     var OccCartAdapter = /** @class */ (function () {
         function OccCartAdapter(http, occEndpointsService, converterService, featureConfigService) {
             this.http = http;
@@ -28023,6 +28533,24 @@
                 .pipe(this.converterService.pipeable(CART_NORMALIZER));
         };
         /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartAdapter.prototype.delete = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            /** @type {?} */
+            var headers = new http.HttpHeaders();
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
+            return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId: userId, cartId: cartId }), { headers: headers });
+        };
+        /**
          * @deprecated Since 1.1
          * Use configurable endpoints.
          * Remove issue: #4125
@@ -28131,6 +28659,33 @@
             return this.http
                 .post(url, toAdd, { params: params })
                 .pipe(this.converterService.pipeable(CART_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} email
+         * @return {?}
+         */
+        OccCartAdapter.prototype.addEmail = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} email
+         * @return {?}
+         */
+        function (userId, cartId, email) {
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            /** @type {?} */
+            var httpParams = new http.HttpParams().set('email', email);
+            /** @type {?} */
+            var url = this.occEndpointsService.getUrl('addEmail', {
+                userId: userId,
+                cartId: cartId,
+            });
+            return this.http.put(url, httpParams, { headers: headers });
         };
         OccCartAdapter.decorators = [
             { type: core.Injectable }
@@ -28258,6 +28813,9 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/x-www-form-urlencoded',
             });
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
             return this.http
                 .post(url, {}, { headers: headers, params: params })
                 .pipe(this.converter.pipeable(ORDER_NORMALIZER));
@@ -31308,6 +31866,13 @@
         UserAdapter.prototype.register = function (user) { };
         /**
          * @abstract
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        UserAdapter.prototype.registerGuest = function (guid, password) { };
+        /**
+         * @abstract
          * @param {?} userEmailAddress
          * @return {?}
          */
@@ -31489,6 +32054,9 @@
             var headers = new http.HttpHeaders({
                 'Content-Type': 'application/json',
             });
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
             address = this.converter.convert(address, ADDRESS_SERIALIZER);
             return this.http.post(url, address, { headers: headers }).pipe(operators.catchError((/**
              * @param {?} error
@@ -31742,8 +32310,13 @@
                 userId: userId,
                 orderId: orderCode,
             });
+            /** @type {?} */
+            var headers = new http.HttpHeaders();
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
             return this.http
-                .get(url)
+                .get(url, { headers: headers })
                 .pipe(this.converter.pipeable(ORDER_NORMALIZER));
         };
         /**
@@ -32113,6 +32686,32 @@
             user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
             return this.http
                 .post(url, user, { headers: headers })
+                .pipe(this.converter.pipeable(USER_NORMALIZER));
+        };
+        /**
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        OccUserAdapter.prototype.registerGuest = /**
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        function (guid, password) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('userRegister');
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            /** @type {?} */
+            var httpParams = new http.HttpParams()
+                .set('guid', guid)
+                .set('password', password);
+            return this.http
+                .post(url, httpParams, { headers: headers })
                 .pipe(this.converter.pipeable(USER_NORMALIZER));
         };
         /**
@@ -38434,6 +39033,19 @@
             return this.adapter.register(user);
         };
         /**
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        UserConnector.prototype.registerGuest = /**
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        function (guid, password) {
+            return this.adapter.registerGuest(guid, password);
+        };
+        /**
          * @param {?} userEmailAddress
          * @return {?}
          */
@@ -39258,6 +39870,29 @@
          */
         function (userRegisterFormData) {
             this.store.dispatch(new RegisterUser(userRegisterFormData));
+        };
+        /**
+         * Register a new user from guest
+         *
+         * @param guid
+         * @param password
+         */
+        /**
+         * Register a new user from guest
+         *
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        UserService.prototype.registerGuest = /**
+         * Register a new user from guest
+         *
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        function (guid, password) {
+            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
         };
         /**
          * Returns the register user process loading flag
@@ -40453,17 +41088,22 @@
          * Retrieves order's details
          *
          * @param {?} orderCode an order code
+         * @param {?=} userId
          * @return {?}
          */
         UserOrderService.prototype.loadOrderDetails = /**
          * Retrieves order's details
          *
          * @param {?} orderCode an order code
+         * @param {?=} userId
          * @return {?}
          */
-        function (orderCode) {
+        function (orderCode, userId) {
+            if (userId === undefined) {
+                userId = OCC_USER_ID_CURRENT;
+            }
             this.store.dispatch(new LoadOrderDetails({
-                userId: OCC_USER_ID_CURRENT,
+                userId: userId,
                 orderCode: orderCode,
             }));
         };
@@ -42463,6 +43103,34 @@
                     return rxjs.of(new RegisterUserFail(makeErrorSerializable(error)));
                 })));
             })));
+            this.registerGuest$ = this.actions$.pipe(effects$a.ofType(REGISTER_GUEST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var guid = _a.guid, password = _a.password;
+                return _this.userConnector.registerGuest(guid, password).pipe(operators.switchMap((/**
+                 * @param {?} user
+                 * @return {?}
+                 */
+                function (user) { return [
+                    new LoadUserToken({
+                        userId: user.uid,
+                        password: password,
+                    }),
+                    new RegisterGuestSuccess(),
+                ]; })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error)));
+                })));
+            })));
             this.removeUser$ = this.actions$.pipe(effects$a.ofType(REMOVE_USER), operators.map((/**
              * @param {?} action
              * @return {?}
@@ -42503,12 +43171,18 @@
         __decorate([
             effects$a.Effect(),
             __metadata("design:type", rxjs.Observable)
+        ], UserRegisterEffects.prototype, "registerGuest$", void 0);
+        __decorate([
+            effects$a.Effect(),
+            __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "removeUser$", void 0);
         return UserRegisterEffects;
     }());
     if (false) {
         /** @type {?} */
         UserRegisterEffects.prototype.registerUser$;
+        /** @type {?} */
+        UserRegisterEffects.prototype.registerGuest$;
         /** @type {?} */
         UserRegisterEffects.prototype.removeUser$;
         /**
@@ -42597,11 +43271,6 @@
         ];
         return UserModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -42880,6 +43549,7 @@
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
     exports.DynamicAttributeService = DynamicAttributeService;
+    exports.EMAIL_PATTERN = EMAIL_PATTERN;
     exports.ExternalJsFileLoader = ExternalJsFileLoader;
     exports.ExternalRoutesConfig = ExternalRoutesConfig;
     exports.ExternalRoutesGuard = ExternalRoutesGuard;
@@ -42931,6 +43601,7 @@
     exports.OCC_BASE_URL_META_TAG_PLACEHOLDER = OCC_BASE_URL_META_TAG_PLACEHOLDER;
     exports.OCC_USER_ID_ANONYMOUS = OCC_USER_ID_ANONYMOUS;
     exports.OCC_USER_ID_CURRENT = OCC_USER_ID_CURRENT;
+    exports.OCC_USER_ID_GUEST = OCC_USER_ID_GUEST;
     exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
@@ -42960,6 +43631,7 @@
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
+    exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
     exports.POINT_OF_SERVICE_NORMALIZER = POINT_OF_SERVICE_NORMALIZER;

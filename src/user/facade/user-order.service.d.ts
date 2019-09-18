@@ -16,7 +16,7 @@ export declare class UserOrderService {
      *
      * @param orderCode an order code
      */
-    loadOrderDetails(orderCode: string): void;
+    loadOrderDetails(orderCode: string, userId?: string): void;
     /**
      * Clears order's details
      */

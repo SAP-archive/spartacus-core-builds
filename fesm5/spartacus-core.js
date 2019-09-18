@@ -4855,6 +4855,8 @@ if (false) {
 var OCC_USER_ID_CURRENT = 'current';
 /** @type {?} */
 var OCC_USER_ID_ANONYMOUS = 'anonymous';
+/** @type {?} */
+var OCC_USER_ID_GUEST = 'guest';
 
 /**
  * @fileoverview added by tsickle
@@ -5485,6 +5487,481 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Converter is used to convert source data model to target data model.
+ * By convention, we distinguish two flows:
+ *   - *Normalize* is the conversion from backend models to UI models
+ *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
+ *
+ * Converters can be stacked together to to apply decoupled customizations
+ * @record
+ * @template S, T
+ */
+function Converter() { }
+if (false) {
+    /**
+     * Convert converts source model to target model. Can use optional target parameter,
+     * used in case of stacking multiple converters (for example, to implement populator pattern).
+     *
+     * @param {?} source Source data model
+     * @param {?=} target Optional, partially converted target model
+     * @return {?}
+     */
+    Converter.prototype.convert = function (source, target) { };
+}
+var ConverterService = /** @class */ (function () {
+    function ConverterService(injector) {
+        this.injector = injector;
+        this.converters = new Map();
+    }
+    /**
+     * @private
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.getConverters = /**
+     * @private
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        if (!this.converters.has(injectionToken)) {
+            /** @type {?} */
+            var converters = this.injector.get(injectionToken, []);
+            if (!Array.isArray(converters)) {
+                console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+            }
+            this.converters.set(injectionToken, converters);
+        }
+        return this.converters.get(injectionToken);
+    };
+    /**
+     * Will return true if converters for specified token were provided
+     */
+    /**
+     * Will return true if converters for specified token were provided
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.hasConverters = /**
+     * Will return true if converters for specified token were provided
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        /** @type {?} */
+        var converters = this.getConverters(injectionToken);
+        return Array.isArray(converters) && converters.length > 0;
+    };
+    /**
+     * Pipeable operator to apply converter logic in a observable stream
+     */
+    /**
+     * Pipeable operator to apply converter logic in a observable stream
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.pipeable = /**
+     * Pipeable operator to apply converter logic in a observable stream
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        var _this = this;
+        if (this.hasConverters(injectionToken)) {
+            return map((/**
+             * @param {?} model
+             * @return {?}
+             */
+            function (model) { return _this.convertSource(model, injectionToken); }));
+        }
+        else {
+            return (/**
+             * @param {?} observable
+             * @return {?}
+             */
+            function (observable) { return (/** @type {?} */ (observable)); });
+        }
+    };
+    /**
+     * Pipeable operator to apply converter logic in a observable stream to collection of items
+     */
+    /**
+     * Pipeable operator to apply converter logic in a observable stream to collection of items
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.pipeableMany = /**
+     * Pipeable operator to apply converter logic in a observable stream to collection of items
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (injectionToken) {
+        var _this = this;
+        if (this.hasConverters(injectionToken)) {
+            return map((/**
+             * @param {?} model
+             * @return {?}
+             */
+            function (model) { return _this.convertMany(model, injectionToken); }));
+        }
+        else {
+            return (/**
+             * @param {?} observable
+             * @return {?}
+             */
+            function (observable) { return (/** @type {?} */ (observable)); });
+        }
+    };
+    /**
+     * Apply converter logic specified by injection token to source data
+     */
+    /**
+     * Apply converter logic specified by injection token to source data
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.convert = /**
+     * Apply converter logic specified by injection token to source data
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (source, injectionToken) {
+        if (this.hasConverters(injectionToken)) {
+            return this.convertSource(source, injectionToken);
+        }
+        else {
+            return (/** @type {?} */ (source));
+        }
+    };
+    /**
+     * Apply converter logic specified by injection token to a collection
+     */
+    /**
+     * Apply converter logic specified by injection token to a collection
+     * @template S, T
+     * @param {?} sources
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.convertMany = /**
+     * Apply converter logic specified by injection token to a collection
+     * @template S, T
+     * @param {?} sources
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (sources, injectionToken) {
+        var _this = this;
+        if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
+            return sources.map((/**
+             * @param {?} source
+             * @return {?}
+             */
+            function (source) { return _this.convertSource(source, injectionToken); }));
+        }
+        else {
+            return (/** @type {?} */ (sources));
+        }
+    };
+    /**
+     * @private
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    ConverterService.prototype.convertSource = /**
+     * @private
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    function (source, injectionToken) {
+        return this.getConverters(injectionToken).reduce((/**
+         * @param {?} target
+         * @param {?} converter
+         * @return {?}
+         */
+        function (target, converter) {
+            return converter.convert(source, target);
+        }), (/** @type {?} */ (undefined)));
+    };
+    ConverterService.decorators = [
+        { type: Injectable, args: [{
+                    providedIn: 'root',
+                },] }
+    ];
+    /** @nocollapse */
+    ConverterService.ctorParameters = function () { return [
+        { type: Injector }
+    ]; };
+    /** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
+    return ConverterService;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConverterService.prototype.converters;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ConverterService.prototype.injector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var QUESTION_MARK = '[^/]';
+/** @type {?} */
+var WILD_SINGLE = '[^/]*';
+/** @type {?} */
+var WILD_OPEN = '(?:.+\\/)?';
+/** @type {?} */
+var TO_ESCAPE_BASE = [
+    { replace: /\./g, with: '\\.' },
+    { replace: /\+/g, with: '\\+' },
+    { replace: /\*/g, with: WILD_SINGLE },
+];
+/** @type {?} */
+var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+    { replace: /\?/g, with: QUESTION_MARK },
+]);
+/** @type {?} */
+var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+    { replace: /\?/g, with: '\\?' },
+]);
+/**
+ * Converts the glob-like pattern into regex string.
+ * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+ *
+ * Patterns use a limited glob format:
+ * `**` matches 0 or more path segments
+ * `*` matches 0 or more characters excluding `/`
+ * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+ * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+ *
+ * @param {?} glob glob-like pattern
+ * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+ * @return {?}
+ */
+function globToRegex(glob, literalQuestionMark) {
+    if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+    /** @type {?} */
+    var toEscape = literalQuestionMark
+        ? TO_ESCAPE_LITERAL_QM
+        : TO_ESCAPE_WILDCARD_QM;
+    /** @type {?} */
+    var segments = glob.split('/').reverse();
+    /** @type {?} */
+    var regex = '';
+    while (segments.length > 0) {
+        /** @type {?} */
+        var segment = segments.pop();
+        if (segment === '**') {
+            if (segments.length > 0) {
+                regex += WILD_OPEN;
+            }
+            else {
+                regex += '.*';
+            }
+        }
+        else {
+            /** @type {?} */
+            var processed = toEscape.reduce((/**
+             * @param {?} seg
+             * @param {?} escape
+             * @return {?}
+             */
+            function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
+            regex += processed;
+            if (segments.length > 0) {
+                regex += '\\/';
+            }
+        }
+    }
+    return regex;
+}
+/**
+ * For given list of glob-like patterns, returns a matcher function.
+ *
+ * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+ * @param {?} patterns
+ * @return {?}
+ */
+function getGlobMatcher(patterns) {
+    /** @type {?} */
+    var processedPatterns = processGlobPatterns(patterns).map((/**
+     * @param {?} __0
+     * @return {?}
+     */
+    function (_a) {
+        var positive = _a.positive, regex = _a.regex;
+        return ({
+            positive: positive,
+            regex: new RegExp(regex),
+        });
+    }));
+    /** @type {?} */
+    var includePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    function (spec) { return spec.positive; }));
+    /** @type {?} */
+    var excludePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    function (spec) { return !spec.positive; }));
+    return (/**
+     * @param {?} url
+     * @return {?}
+     */
+    function (url) {
+        return includePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        function (pattern) { return pattern.regex.test(url); })) &&
+            !excludePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            function (pattern) { return pattern.regex.test(url); }));
+    });
+}
+/**
+ * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+ * @param {?} urls
+ * @return {?}
+ */
+function processGlobPatterns(urls) {
+    return urls.map((/**
+     * @param {?} url
+     * @return {?}
+     */
+    function (url) {
+        /** @type {?} */
+        var positive = !url.startsWith('!');
+        url = positive ? url : url.substr(1);
+        return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+    }));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var GlobService = /** @class */ (function () {
+    function GlobService() {
+    }
+    /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     */
+    /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    GlobService.prototype.getValidator = /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    function (patterns) {
+        /** @type {?} */
+        var processedPatterns = processGlobPatterns(patterns).map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        }));
+        /** @type {?} */
+        var includePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return spec.positive; }));
+        /** @type {?} */
+        var excludePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return !spec.positive; }));
+        return (/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            return includePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            function (pattern) { return pattern.regex.test(url); })) &&
+                !excludePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); }));
+        });
+    };
+    GlobService.decorators = [
+        { type: Injectable, args: [{ providedIn: 'root' },] }
+    ];
+    /** @nocollapse */ GlobService.ngInjectableDef = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+    return GlobService;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Email Standard RFC 5322:
+/** @type {?} */
+var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// tslint:disable-line
+/** @type {?} */
+var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 var CART_FEATURE = 'cart';
 /** @type {?} */
@@ -5628,6 +6105,13 @@ function (entities) {
 };
 /** @type {?} */
 var getCartEntries = createSelector(getCartEntriesMap, (ɵ8));
+var ɵ9 = /**
+ * @param {?} content
+ * @return {?}
+ */
+function (content) { return content.user; };
+/** @type {?} */
+var getCartUser = createSelector(getCartContent, (ɵ9));
 
 /**
  * @fileoverview added by tsickle
@@ -5645,7 +6129,8 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
     getCartMergeComplete: getCartMergeComplete,
     getCartEntriesMap: getCartEntriesMap,
     getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-    getCartEntries: getCartEntries
+    getCartEntries: getCartEntries,
+    getCartUser: getCartUser
 });
 
 /**
@@ -5734,6 +6219,37 @@ var CartDataService = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(CartDataService.prototype, "isGuestCart", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return (this.cart.user &&
+                (this.cart.user.name === OCC_USER_ID_GUEST ||
+                    this.isEmail(this.cart.user.uid
+                        .split('|')
+                        .slice(1)
+                        .join('|'))));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @private
+     * @param {?} str
+     * @return {?}
+     */
+    CartDataService.prototype.isEmail = /**
+     * @private
+     * @param {?} str
+     * @return {?}
+     */
+    function (str) {
+        if (str) {
+            return str.match(EMAIL_PATTERN) ? true : false;
+        }
+        return false;
+    };
     CartDataService.decorators = [
         { type: Injectable }
     ];
@@ -5951,6 +6467,12 @@ var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
 /** @type {?} */
 var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
 /** @type {?} */
+var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+/** @type {?} */
+var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+/** @type {?} */
+var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+/** @type {?} */
 var MERGE_CART = '[Cart] Merge Cart';
 /** @type {?} */
 var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
@@ -5958,6 +6480,10 @@ var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
 /** @type {?} */
 var CLEAR_CART = '[Cart] Clear Cart';
+/** @type {?} */
+var DELETE_CART = '[Cart] Delete Cart';
+/** @type {?} */
+var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
 var CreateCart = /** @class */ (function (_super) {
     __extends(CreateCart, _super);
     function CreateCart(payload) {
@@ -6005,6 +6531,54 @@ if (false) {
     CreateCartSuccess.prototype.type;
     /** @type {?} */
     CreateCartSuccess.prototype.payload;
+}
+var AddEmailToCart = /** @class */ (function (_super) {
+    __extends(AddEmailToCart, _super);
+    function AddEmailToCart(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART;
+        return _this;
+    }
+    return AddEmailToCart;
+}(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToCart.prototype.type;
+    /** @type {?} */
+    AddEmailToCart.prototype.payload;
+}
+var AddEmailToCartFail = /** @class */ (function (_super) {
+    __extends(AddEmailToCartFail, _super);
+    function AddEmailToCartFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART_FAIL;
+        return _this;
+    }
+    return AddEmailToCartFail;
+}(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToCartFail.prototype.type;
+    /** @type {?} */
+    AddEmailToCartFail.prototype.payload;
+}
+var AddEmailToCartSuccess = /** @class */ (function (_super) {
+    __extends(AddEmailToCartSuccess, _super);
+    function AddEmailToCartSuccess(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+        return _this;
+    }
+    return AddEmailToCartSuccess;
+}(LoaderSuccessAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.type;
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.payload;
 }
 var LoadCart = /** @class */ (function (_super) {
     __extends(LoadCart, _super);
@@ -6103,6 +6677,38 @@ if (false) {
     /** @type {?} */
     ClearCart.prototype.type;
 }
+var DeleteCart = /** @class */ (function (_super) {
+    __extends(DeleteCart, _super);
+    function DeleteCart(payload) {
+        var _this = _super.call(this, CART_DATA) || this;
+        _this.payload = payload;
+        _this.type = DELETE_CART;
+        return _this;
+    }
+    return DeleteCart;
+}(LoaderLoadAction));
+if (false) {
+    /** @type {?} */
+    DeleteCart.prototype.type;
+    /** @type {?} */
+    DeleteCart.prototype.payload;
+}
+var DeleteCartFail = /** @class */ (function (_super) {
+    __extends(DeleteCartFail, _super);
+    function DeleteCartFail(payload) {
+        var _this = _super.call(this, CART_DATA, payload) || this;
+        _this.payload = payload;
+        _this.type = DELETE_CART_FAIL;
+        return _this;
+    }
+    return DeleteCartFail;
+}(LoaderFailAction));
+if (false) {
+    /** @type {?} */
+    DeleteCartFail.prototype.type;
+    /** @type {?} */
+    DeleteCartFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -6134,20 +6740,30 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CART: LOAD_CART,
     LOAD_CART_FAIL: LOAD_CART_FAIL,
     LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+    ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
+    ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
+    ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
     CLEAR_CART: CLEAR_CART,
+    DELETE_CART: DELETE_CART,
+    DELETE_CART_FAIL: DELETE_CART_FAIL,
     CreateCart: CreateCart,
     CreateCartFail: CreateCartFail,
     CreateCartSuccess: CreateCartSuccess,
+    AddEmailToCart: AddEmailToCart,
+    AddEmailToCartFail: AddEmailToCartFail,
+    AddEmailToCartSuccess: AddEmailToCartSuccess,
     LoadCart: LoadCart,
     LoadCartFail: LoadCartFail,
     LoadCartSuccess: LoadCartSuccess,
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
-    ClearCart: ClearCart
+    ClearCart: ClearCart,
+    DeleteCart: DeleteCart,
+    DeleteCartFail: DeleteCartFail
 });
 
 /**
@@ -6269,6 +6885,9 @@ var CartService = /** @class */ (function () {
                 userId: this.cartData.userId,
                 cartId: 'current',
             }));
+        }
+        else if (this.isGuestCart()) {
+            this.guestCartMerge();
         }
         else {
             this.store.dispatch(new MergeCart({
@@ -6392,6 +7011,82 @@ var CartService = /** @class */ (function () {
         return this.store.pipe(select(getCartEntrySelectorFactory(productCode)));
     };
     /**
+     * @param {?} email
+     * @return {?}
+     */
+    CartService.prototype.addEmail = /**
+     * @param {?} email
+     * @return {?}
+     */
+    function (email) {
+        this.store.dispatch(new AddEmailToCart({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            email: email,
+        }));
+    };
+    /**
+     * @return {?}
+     */
+    CartService.prototype.getAssignedUser = /**
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getCartUser));
+    };
+    /**
+     * @return {?}
+     */
+    CartService.prototype.isGuestCart = /**
+     * @return {?}
+     */
+    function () {
+        return this.cartData.isGuestCart;
+    };
+    /**
+     * Add multiple entries to a cart
+     * Requires a created cart
+     * @param cartEntries : list of entries to add (OrderEntry[])
+     */
+    /**
+     * Add multiple entries to a cart
+     * Requires a created cart
+     * @param {?} cartEntries : list of entries to add (OrderEntry[])
+     * @return {?}
+     */
+    CartService.prototype.addEntries = /**
+     * Add multiple entries to a cart
+     * Requires a created cart
+     * @param {?} cartEntries : list of entries to add (OrderEntry[])
+     * @return {?}
+     */
+    function (cartEntries) {
+        var _this = this;
+        /** @type {?} */
+        var newEntries = 0;
+        this.getEntries()
+            .pipe(tap((/**
+         * @return {?}
+         */
+        function () {
+            // Keep adding entries until the user cart contains the same number of entries
+            // as the guest cart did
+            if (newEntries < cartEntries.length) {
+                _this.store.dispatch(new CartAddEntry({
+                    userId: _this.cartData.userId,
+                    cartId: _this.cartData.cartId,
+                    productCode: cartEntries[newEntries].product.code,
+                    quantity: cartEntries[newEntries].quantity,
+                }));
+                newEntries++;
+            }
+        })), filter((/**
+         * @return {?}
+         */
+        function () { return newEntries === cartEntries.length; })), take(1))
+            .subscribe();
+    };
+    /**
      * @private
      * @param {?} cart
      * @return {?}
@@ -6405,25 +7100,25 @@ var CartService = /** @class */ (function () {
         return cart && typeof cart.guid !== 'undefined';
     };
     /**
-     * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
      * To get cart content, we need to load cart from backend.
      */
     /**
-     * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
      * To get cart content, we need to load cart from backend.
      * @private
      * @param {?} cart
      * @return {?}
      */
     CartService.prototype.isIncomplete = /**
-     * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
      * To get cart content, we need to load cart from backend.
      * @private
      * @param {?} cart
      * @return {?}
      */
     function (cart) {
-        return cart && Object.keys(cart).length <= 2;
+        return cart && Object.keys(cart).length <= 3;
     };
     /**
      * @private
@@ -6453,6 +7148,70 @@ var CartService = /** @class */ (function () {
      */
     function (userId) {
         return typeof userId !== 'undefined';
+    };
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of beackend limitation
+     * This is for an edge case
+     */
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of beackend limitation
+     * This is for an edge case
+     * @private
+     * @return {?}
+     */
+    CartService.prototype.guestCartMerge = 
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of beackend limitation
+     * This is for an edge case
+     * @private
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        /** @type {?} */
+        var cartEntries;
+        this.getEntries()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} entries
+         * @return {?}
+         */
+        function (entries) {
+            cartEntries = entries;
+        }));
+        this.store.dispatch(new DeleteCart({
+            userId: OCC_USER_ID_ANONYMOUS,
+            cartId: this.cartData.cart.guid,
+        }));
+        this.store
+            .pipe(select(getActiveCartState), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) { return !cartState.loading; })), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) {
+            // If the cart is not created it needs to be created
+            // This step should happen before adding entries to avoid conflicts in the requests
+            if (!_this.isCreated(cartState.value.content)) {
+                _this.store.dispatch(new CreateCart({ userId: _this.cartData.userId }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) { return _this.isCreated(cartState.value.content); })), take(1))
+            .subscribe((/**
+         * @return {?}
+         */
+        function () {
+            _this.addEntries(cartEntries);
+        }));
     };
     CartService.decorators = [
         { type: Injectable }
@@ -8033,6 +8792,24 @@ if (false) {
      * @return {?}
      */
     CartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) { };
+    /**
+     * Abstract method used to delete cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CartAdapter.prototype.delete = function (userId, cartId) { };
+    /**
+     * Abstract method to assign an email to the cart. This step is required to make a guest checkout
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    CartAdapter.prototype.addEmail = function (userId, cartId, email) { };
 }
 
 /**
@@ -8081,6 +8858,34 @@ var CartConnector = /** @class */ (function () {
      */
     function (userId, oldCartId, toMergeCartGuid) {
         return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CartConnector.prototype.delete = /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (userId, cartId) {
+        return this.adapter.delete(userId, cartId);
+    };
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    CartConnector.prototype.addEmail = /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    function (userId, cartId, email) {
+        return this.adapter.addEmail(userId, cartId, email);
     };
     CartConnector.decorators = [
         { type: Injectable, args: [{
@@ -8211,7 +9016,7 @@ var CartEffects = /** @class */ (function () {
                 });
             })));
         })));
-        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS), map((/**
+        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS), map((/**
          * @param {?} action
          * @return {?}
          */
@@ -8229,6 +9034,55 @@ var CartEffects = /** @class */ (function () {
          * @return {?}
          */
         function () { return new ResetCartDetails(); })));
+        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return action.payload; })), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        function (payload) {
+            return _this.cartConnector
+                .addEmail(payload.userId, payload.cartId, payload.email)
+                .pipe(map((/**
+             * @return {?}
+             */
+            function () {
+                return new AddEmailToCartSuccess({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new AddEmailToCartFail(makeErrorSerializable(error)));
+            })));
+        })));
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return action.payload; })), exhaustMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        function (payload) {
+            return _this.cartConnector.delete(payload.userId, payload.cartId).pipe(map((/**
+             * @return {?}
+             */
+            function () {
+                return new ClearCart();
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new DeleteCartFail(makeErrorSerializable(error)));
+            })));
+        })));
     }
     /**
      * @private
@@ -8272,6 +9126,14 @@ var CartEffects = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], CartEffects.prototype, "addEmail$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], CartEffects.prototype, "deleteCart$", void 0);
     return CartEffects;
 }());
 if (false) {
@@ -8285,6 +9147,10 @@ if (false) {
     CartEffects.prototype.refresh$;
     /** @type {?} */
     CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+    /** @type {?} */
+    CartEffects.prototype.addEmail$;
+    /** @type {?} */
+    CartEffects.prototype.deleteCart$;
     /**
      * @type {?}
      * @private
@@ -9526,7 +10392,8 @@ function reducer$1(state, action) {
         }
         case CART_REMOVE_ENTRY_SUCCESS:
         case CART_UPDATE_ENTRY_SUCCESS:
-        case CART_ADD_ENTRY_SUCCESS: {
+        case CART_ADD_ENTRY_SUCCESS:
+        case ADD_EMAIL_TO_CART_SUCCESS: {
             return __assign({}, state, { refresh: true });
         }
         case RESET_CART_DETAILS: {
@@ -9534,6 +10401,7 @@ function reducer$1(state, action) {
                 content: {
                     guid: state.content.guid,
                     code: state.content.code,
+                    user: state.content.user,
                 },
                 entries: {},
                 refresh: false,
@@ -9603,6 +10471,7 @@ function cartStoreConfigFactory() {
                 keys: (_a = {},
                     _a[CART_FEATURE + ".active.value.content.guid"] = StorageSyncType.LOCAL_STORAGE,
                     _a[CART_FEATURE + ".active.value.content.code"] = StorageSyncType.LOCAL_STORAGE,
+                    _a[CART_FEATURE + ".active.value.content.user"] = StorageSyncType.LOCAL_STORAGE,
                     _a),
             },
         },
@@ -9838,7 +10707,7 @@ var getSelectedDeliveryMode = createSelector(getDeliveryMode, (ɵ8$1));
 var getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
 /** @type {?} */
 var getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
-var ɵ9 = /**
+var ɵ9$1 = /**
  * @param {?} state
  * @return {?}
  */
@@ -9847,7 +10716,7 @@ function (state) {
         !loaderLoadingSelector(state);
 };
 /** @type {?} */
-var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9));
+var getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9$1));
 
 /**
  * @fileoverview added by tsickle
@@ -10079,7 +10948,8 @@ var CheckoutService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     };
     CheckoutService.decorators = [
         { type: Injectable }
@@ -12257,6 +13127,12 @@ var REGISTER_USER_SUCCESS = '[User] Register User Success';
 /** @type {?} */
 var RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
 /** @type {?} */
+var REGISTER_GUEST = '[User] Register Guest';
+/** @type {?} */
+var REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
+/** @type {?} */
+var REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
+/** @type {?} */
 var REMOVE_USER = '[User] Remove User';
 /** @type {?} */
 var REMOVE_USER_FAIL = '[User] Remove User Fail';
@@ -12321,6 +13197,42 @@ var ResetRegisterUserProcess = /** @class */ (function (_super) {
 if (false) {
     /** @type {?} */
     ResetRegisterUserProcess.prototype.type;
+}
+var RegisterGuest = /** @class */ (function () {
+    function RegisterGuest(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST;
+    }
+    return RegisterGuest;
+}());
+if (false) {
+    /** @type {?} */
+    RegisterGuest.prototype.type;
+    /** @type {?} */
+    RegisterGuest.prototype.payload;
+}
+var RegisterGuestFail = /** @class */ (function () {
+    function RegisterGuestFail(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST_FAIL;
+    }
+    return RegisterGuestFail;
+}());
+if (false) {
+    /** @type {?} */
+    RegisterGuestFail.prototype.type;
+    /** @type {?} */
+    RegisterGuestFail.prototype.payload;
+}
+var RegisterGuestSuccess = /** @class */ (function () {
+    function RegisterGuestSuccess() {
+        this.type = REGISTER_GUEST_SUCCESS;
+    }
+    return RegisterGuestSuccess;
+}());
+if (false) {
+    /** @type {?} */
+    RegisterGuestSuccess.prototype.type;
 }
 var RemoveUser = /** @class */ (function (_super) {
     __extends(RemoveUser, _super);
@@ -12551,6 +13463,9 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
     REGISTER_USER_FAIL: REGISTER_USER_FAIL,
     REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
     RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
+    REGISTER_GUEST: REGISTER_GUEST,
+    REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
+    REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
     REMOVE_USER: REMOVE_USER,
     REMOVE_USER_FAIL: REMOVE_USER_FAIL,
     REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
@@ -12559,6 +13474,9 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
     RegisterUserFail: RegisterUserFail,
     RegisterUserSuccess: RegisterUserSuccess,
     ResetRegisterUserProcess: ResetRegisterUserProcess,
+    RegisterGuest: RegisterGuest,
+    RegisterGuestFail: RegisterGuestFail,
+    RegisterGuestSuccess: RegisterGuestSuccess,
     RemoveUser: RemoveUser,
     RemoveUserFail: RemoveUserFail,
     RemoveUserSuccess: RemoveUserSuccess,
@@ -12897,14 +13815,30 @@ var CheckoutEffects = /** @class */ (function () {
              */
             function (address) {
                 address['titleCode'] = payload.address.titleCode;
-                return [
-                    new LoadUserAddresses(payload.userId),
-                    new SetDeliveryAddress({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                        address: address,
-                    }),
-                ];
+                if (payload.address.region && payload.address.region.isocodeShort) {
+                    Object.assign(address.region, {
+                        isocodeShort: payload.address.region.isocodeShort,
+                    });
+                }
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
+                else {
+                    return [
+                        new LoadUserAddresses(payload.userId),
+                        new SetDeliveryAddress({
+                            userId: payload.userId,
+                            cartId: payload.cartId,
+                            address: address,
+                        }),
+                    ];
+                }
             })), catchError((/**
              * @param {?} error
              * @return {?}
@@ -12979,6 +13913,10 @@ var CheckoutEffects = /** @class */ (function () {
          * @return {?}
          */
         function () { return new ClearCheckoutData(); })));
+        this.clearCheckoutDataOnLogin$ = this.actions$.pipe(ofType(LOGIN), map((/**
+         * @return {?}
+         */
+        function () { return new ClearCheckoutData(); })));
         this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((/**
          * @param {?} action
          * @return {?}
@@ -13025,10 +13963,17 @@ var CheckoutEffects = /** @class */ (function () {
              * @param {?} details
              * @return {?}
              */
-            function (details) { return [
-                new LoadUserPaymentMethods(payload.userId),
-                new CreatePaymentDetailsSuccess(details),
-            ]; })), catchError((/**
+            function (details) {
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [new CreatePaymentDetailsSuccess(details)];
+                }
+                else {
+                    return [
+                        new LoadUserPaymentMethods(payload.userId),
+                        new CreatePaymentDetailsSuccess(details),
+                    ];
+                }
+            })), catchError((/**
              * @param {?} error
              * @return {?}
              */
@@ -13204,6 +14149,10 @@ var CheckoutEffects = /** @class */ (function () {
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
+    ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
     ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
     __decorate([
         Effect(),
@@ -13248,6 +14197,8 @@ if (false) {
     CheckoutEffects.prototype.clearDeliveryModesOnCurrencyChange$;
     /** @type {?} */
     CheckoutEffects.prototype.clearCheckoutDataOnLogout$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDataOnLogin$;
     /** @type {?} */
     CheckoutEffects.prototype.setDeliveryMode$;
     /** @type {?} */
@@ -13850,7 +14801,8 @@ var CheckoutDeliveryService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     };
     CheckoutDeliveryService.decorators = [
         { type: Injectable, args: [{
@@ -14012,7 +14964,8 @@ var CheckoutPaymentService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     };
     CheckoutPaymentService.decorators = [
         { type: Injectable, args: [{
@@ -14403,223 +15356,6 @@ var CmsPageTitleModule = /** @class */ (function () {
                 },] }
     ];
     return CmsPageTitleModule;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var QUESTION_MARK = '[^/]';
-/** @type {?} */
-var WILD_SINGLE = '[^/]*';
-/** @type {?} */
-var WILD_OPEN = '(?:.+\\/)?';
-/** @type {?} */
-var TO_ESCAPE_BASE = [
-    { replace: /\./g, with: '\\.' },
-    { replace: /\+/g, with: '\\+' },
-    { replace: /\*/g, with: WILD_SINGLE },
-];
-/** @type {?} */
-var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-    { replace: /\?/g, with: QUESTION_MARK },
-]);
-/** @type {?} */
-var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-    { replace: /\?/g, with: '\\?' },
-]);
-/**
- * Converts the glob-like pattern into regex string.
- * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
- *
- * Patterns use a limited glob format:
- * `**` matches 0 or more path segments
- * `*` matches 0 or more characters excluding `/`
- * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
- * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
- *
- * @param {?} glob glob-like pattern
- * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
- * @return {?}
- */
-function globToRegex(glob, literalQuestionMark) {
-    if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-    /** @type {?} */
-    var toEscape = literalQuestionMark
-        ? TO_ESCAPE_LITERAL_QM
-        : TO_ESCAPE_WILDCARD_QM;
-    /** @type {?} */
-    var segments = glob.split('/').reverse();
-    /** @type {?} */
-    var regex = '';
-    while (segments.length > 0) {
-        /** @type {?} */
-        var segment = segments.pop();
-        if (segment === '**') {
-            if (segments.length > 0) {
-                regex += WILD_OPEN;
-            }
-            else {
-                regex += '.*';
-            }
-        }
-        else {
-            /** @type {?} */
-            var processed = toEscape.reduce((/**
-             * @param {?} seg
-             * @param {?} escape
-             * @return {?}
-             */
-            function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
-            regex += processed;
-            if (segments.length > 0) {
-                regex += '\\/';
-            }
-        }
-    }
-    return regex;
-}
-/**
- * For given list of glob-like patterns, returns a matcher function.
- *
- * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
- * @param {?} patterns
- * @return {?}
- */
-function getGlobMatcher(patterns) {
-    /** @type {?} */
-    var processedPatterns = processGlobPatterns(patterns).map((/**
-     * @param {?} __0
-     * @return {?}
-     */
-    function (_a) {
-        var positive = _a.positive, regex = _a.regex;
-        return ({
-            positive: positive,
-            regex: new RegExp(regex),
-        });
-    }));
-    /** @type {?} */
-    var includePatterns = processedPatterns.filter((/**
-     * @param {?} spec
-     * @return {?}
-     */
-    function (spec) { return spec.positive; }));
-    /** @type {?} */
-    var excludePatterns = processedPatterns.filter((/**
-     * @param {?} spec
-     * @return {?}
-     */
-    function (spec) { return !spec.positive; }));
-    return (/**
-     * @param {?} url
-     * @return {?}
-     */
-    function (url) {
-        return includePatterns.some((/**
-         * @param {?} pattern
-         * @return {?}
-         */
-        function (pattern) { return pattern.regex.test(url); })) &&
-            !excludePatterns.some((/**
-             * @param {?} pattern
-             * @return {?}
-             */
-            function (pattern) { return pattern.regex.test(url); }));
-    });
-}
-/**
- * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
- * @param {?} urls
- * @return {?}
- */
-function processGlobPatterns(urls) {
-    return urls.map((/**
-     * @param {?} url
-     * @return {?}
-     */
-    function (url) {
-        /** @type {?} */
-        var positive = !url.startsWith('!');
-        url = positive ? url : url.substr(1);
-        return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-    }));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-var GlobService = /** @class */ (function () {
-    function GlobService() {
-    }
-    /**
-     * For given list of glob-like patterns, returns a validator function.
-     *
-     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     */
-    /**
-     * For given list of glob-like patterns, returns a validator function.
-     *
-     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     * @param {?} patterns
-     * @return {?}
-     */
-    GlobService.prototype.getValidator = /**
-     * For given list of glob-like patterns, returns a validator function.
-     *
-     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     * @param {?} patterns
-     * @return {?}
-     */
-    function (patterns) {
-        /** @type {?} */
-        var processedPatterns = processGlobPatterns(patterns).map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        }));
-        /** @type {?} */
-        var includePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return spec.positive; }));
-        /** @type {?} */
-        var excludePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return !spec.positive; }));
-        return (/**
-         * @param {?} url
-         * @return {?}
-         */
-        function (url) {
-            return includePatterns.some((/**
-             * @param {?} pattern
-             * @return {?}
-             */
-            function (pattern) { return pattern.regex.test(url); })) &&
-                !excludePatterns.some((/**
-                 * @param {?} pattern
-                 * @return {?}
-                 */
-                function (pattern) { return pattern.regex.test(url); }));
-        });
-    };
-    GlobService.decorators = [
-        { type: Injectable, args: [{ providedIn: 'root' },] }
-    ];
-    /** @nocollapse */ GlobService.ngInjectableDef = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-    return GlobService;
 }());
 
 /**
@@ -21952,6 +22688,13 @@ if (false) {
      */
     OccEndpoints.prototype.createCart;
     /**
+     * Deletes a cart with a given cart id
+     *
+     * \@member {string} [deleteCart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.deleteCart;
+    /**
      * Adds a product to the cart
      *
      * \@member {string} [addEntries]
@@ -21972,6 +22715,13 @@ if (false) {
      * @type {?|undefined}
      */
     OccEndpoints.prototype.removeEntries;
+    /**
+     * Assign email to cart
+     *
+     * \@member {string} [addEmail]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addEmail;
     /**
      * Get a store location
      *
@@ -26902,248 +27652,6 @@ var PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * Converter is used to convert source data model to target data model.
- * By convention, we distinguish two flows:
- *   - *Normalize* is the conversion from backend models to UI models
- *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
- *
- * Converters can be stacked together to to apply decoupled customizations
- * @record
- * @template S, T
- */
-function Converter() { }
-if (false) {
-    /**
-     * Convert converts source model to target model. Can use optional target parameter,
-     * used in case of stacking multiple converters (for example, to implement populator pattern).
-     *
-     * @param {?} source Source data model
-     * @param {?=} target Optional, partially converted target model
-     * @return {?}
-     */
-    Converter.prototype.convert = function (source, target) { };
-}
-var ConverterService = /** @class */ (function () {
-    function ConverterService(injector) {
-        this.injector = injector;
-        this.converters = new Map();
-    }
-    /**
-     * @private
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.getConverters = /**
-     * @private
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (injectionToken) {
-        if (!this.converters.has(injectionToken)) {
-            /** @type {?} */
-            var converters = this.injector.get(injectionToken, []);
-            if (!Array.isArray(converters)) {
-                console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
-            }
-            this.converters.set(injectionToken, converters);
-        }
-        return this.converters.get(injectionToken);
-    };
-    /**
-     * Will return true if converters for specified token were provided
-     */
-    /**
-     * Will return true if converters for specified token were provided
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.hasConverters = /**
-     * Will return true if converters for specified token were provided
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (injectionToken) {
-        /** @type {?} */
-        var converters = this.getConverters(injectionToken);
-        return Array.isArray(converters) && converters.length > 0;
-    };
-    /**
-     * Pipeable operator to apply converter logic in a observable stream
-     */
-    /**
-     * Pipeable operator to apply converter logic in a observable stream
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.pipeable = /**
-     * Pipeable operator to apply converter logic in a observable stream
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (injectionToken) {
-        var _this = this;
-        if (this.hasConverters(injectionToken)) {
-            return map((/**
-             * @param {?} model
-             * @return {?}
-             */
-            function (model) { return _this.convertSource(model, injectionToken); }));
-        }
-        else {
-            return (/**
-             * @param {?} observable
-             * @return {?}
-             */
-            function (observable) { return (/** @type {?} */ (observable)); });
-        }
-    };
-    /**
-     * Pipeable operator to apply converter logic in a observable stream to collection of items
-     */
-    /**
-     * Pipeable operator to apply converter logic in a observable stream to collection of items
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.pipeableMany = /**
-     * Pipeable operator to apply converter logic in a observable stream to collection of items
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (injectionToken) {
-        var _this = this;
-        if (this.hasConverters(injectionToken)) {
-            return map((/**
-             * @param {?} model
-             * @return {?}
-             */
-            function (model) { return _this.convertMany(model, injectionToken); }));
-        }
-        else {
-            return (/**
-             * @param {?} observable
-             * @return {?}
-             */
-            function (observable) { return (/** @type {?} */ (observable)); });
-        }
-    };
-    /**
-     * Apply converter logic specified by injection token to source data
-     */
-    /**
-     * Apply converter logic specified by injection token to source data
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.convert = /**
-     * Apply converter logic specified by injection token to source data
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (source, injectionToken) {
-        if (this.hasConverters(injectionToken)) {
-            return this.convertSource(source, injectionToken);
-        }
-        else {
-            return (/** @type {?} */ (source));
-        }
-    };
-    /**
-     * Apply converter logic specified by injection token to a collection
-     */
-    /**
-     * Apply converter logic specified by injection token to a collection
-     * @template S, T
-     * @param {?} sources
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.convertMany = /**
-     * Apply converter logic specified by injection token to a collection
-     * @template S, T
-     * @param {?} sources
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (sources, injectionToken) {
-        var _this = this;
-        if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-            return sources.map((/**
-             * @param {?} source
-             * @return {?}
-             */
-            function (source) { return _this.convertSource(source, injectionToken); }));
-        }
-        else {
-            return (/** @type {?} */ (sources));
-        }
-    };
-    /**
-     * @private
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    ConverterService.prototype.convertSource = /**
-     * @private
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    function (source, injectionToken) {
-        return this.getConverters(injectionToken).reduce((/**
-         * @param {?} target
-         * @param {?} converter
-         * @return {?}
-         */
-        function (target, converter) {
-            return converter.convert(source, target);
-        }), (/** @type {?} */ (undefined)));
-    };
-    ConverterService.decorators = [
-        { type: Injectable, args: [{
-                    providedIn: 'root',
-                },] }
-    ];
-    /** @nocollapse */
-    ConverterService.ctorParameters = function () { return [
-        { type: Injector }
-    ]; };
-    /** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
-    return ConverterService;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ConverterService.prototype.converters;
-    /**
-     * @type {?}
-     * @protected
-     */
-    ConverterService.prototype.injector;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var OccCartNormalizer = /** @class */ (function () {
     function OccCartNormalizer(converter) {
         this.converter = converter;
@@ -27258,12 +27766,14 @@ var defaultOccCartConfig = {
         occ: {
             endpoints: {
                 // tslint:disable:max-line-length
-                carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
-                cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
-                createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
+                carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime,user)',
+                cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
+                createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
                 addEntries: 'users/${userId}/carts/${cartId}/entries',
                 updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                 removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
+                addEmail: 'users/${userId}/carts/${cartId}/email',
+                deleteCart: 'users/${userId}/carts/${cartId}',
             },
         },
     },
@@ -27706,7 +28216,7 @@ var DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromotion
     'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
     'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
     'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-    'appliedVouchers,productDiscounts(formattedValue)';
+    'appliedVouchers,productDiscounts(formattedValue),user';
 var OccCartAdapter = /** @class */ (function () {
     function OccCartAdapter(http, occEndpointsService, converterService, featureConfigService) {
         this.http = http;
@@ -27832,6 +28342,24 @@ var OccCartAdapter = /** @class */ (function () {
             .pipe(this.converterService.pipeable(CART_NORMALIZER));
     };
     /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    OccCartAdapter.prototype.delete = /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (userId, cartId) {
+        /** @type {?} */
+        var headers = new HttpHeaders();
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
+        return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId: userId, cartId: cartId }), { headers: headers });
+    };
+    /**
      * @deprecated Since 1.1
      * Use configurable endpoints.
      * Remove issue: #4125
@@ -27940,6 +28468,33 @@ var OccCartAdapter = /** @class */ (function () {
         return this.http
             .post(url, toAdd, { params: params })
             .pipe(this.converterService.pipeable(CART_NORMALIZER));
+    };
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    OccCartAdapter.prototype.addEmail = /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    function (userId, cartId, email) {
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        /** @type {?} */
+        var httpParams = new HttpParams().set('email', email);
+        /** @type {?} */
+        var url = this.occEndpointsService.getUrl('addEmail', {
+            userId: userId,
+            cartId: cartId,
+        });
+        return this.http.put(url, httpParams, { headers: headers });
     };
     OccCartAdapter.decorators = [
         { type: Injectable }
@@ -28067,6 +28622,9 @@ var OccCheckoutAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         return this.http
             .post(url, {}, { headers: headers, params: params })
             .pipe(this.converter.pipeable(ORDER_NORMALIZER));
@@ -31117,6 +31675,13 @@ if (false) {
     UserAdapter.prototype.register = function (user) { };
     /**
      * @abstract
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    UserAdapter.prototype.registerGuest = function (guid, password) { };
+    /**
+     * @abstract
      * @param {?} userEmailAddress
      * @return {?}
      */
@@ -31298,6 +31863,9 @@ var OccUserAddressAdapter = /** @class */ (function () {
         var headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         address = this.converter.convert(address, ADDRESS_SERIALIZER);
         return this.http.post(url, address, { headers: headers }).pipe(catchError((/**
          * @param {?} error
@@ -31551,8 +32119,13 @@ var OccUserOrderAdapter = /** @class */ (function () {
             userId: userId,
             orderId: orderCode,
         });
+        /** @type {?} */
+        var headers = new HttpHeaders();
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         return this.http
-            .get(url)
+            .get(url, { headers: headers })
             .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     };
     /**
@@ -31922,6 +32495,32 @@ var OccUserAdapter = /** @class */ (function () {
         user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
         return this.http
             .post(url, user, { headers: headers })
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
+    };
+    /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    OccUserAdapter.prototype.registerGuest = /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    function (guid, password) {
+        /** @type {?} */
+        var url = this.occEndpoints.getUrl('userRegister');
+        /** @type {?} */
+        var headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        /** @type {?} */
+        var httpParams = new HttpParams()
+            .set('guid', guid)
+            .set('password', password);
+        return this.http
+            .post(url, httpParams, { headers: headers })
             .pipe(this.converter.pipeable(USER_NORMALIZER));
     };
     /**
@@ -38243,6 +38842,19 @@ var UserConnector = /** @class */ (function () {
         return this.adapter.register(user);
     };
     /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    UserConnector.prototype.registerGuest = /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    function (guid, password) {
+        return this.adapter.registerGuest(guid, password);
+    };
+    /**
      * @param {?} userEmailAddress
      * @return {?}
      */
@@ -39067,6 +39679,29 @@ var UserService = /** @class */ (function () {
      */
     function (userRegisterFormData) {
         this.store.dispatch(new RegisterUser(userRegisterFormData));
+    };
+    /**
+     * Register a new user from guest
+     *
+     * @param guid
+     * @param password
+     */
+    /**
+     * Register a new user from guest
+     *
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    UserService.prototype.registerGuest = /**
+     * Register a new user from guest
+     *
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    function (guid, password) {
+        this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
     };
     /**
      * Returns the register user process loading flag
@@ -40262,17 +40897,22 @@ var UserOrderService = /** @class */ (function () {
      * Retrieves order's details
      *
      * @param {?} orderCode an order code
+     * @param {?=} userId
      * @return {?}
      */
     UserOrderService.prototype.loadOrderDetails = /**
      * Retrieves order's details
      *
      * @param {?} orderCode an order code
+     * @param {?=} userId
      * @return {?}
      */
-    function (orderCode) {
+    function (orderCode, userId) {
+        if (userId === undefined) {
+            userId = OCC_USER_ID_CURRENT;
+        }
         this.store.dispatch(new LoadOrderDetails({
-            userId: OCC_USER_ID_CURRENT,
+            userId: userId,
             orderCode: orderCode,
         }));
     };
@@ -42272,6 +42912,34 @@ var UserRegisterEffects = /** @class */ (function () {
                 return of(new RegisterUserFail(makeErrorSerializable(error)));
             })));
         })));
+        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        function (action) { return action.payload; })), mergeMap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var guid = _a.guid, password = _a.password;
+            return _this.userConnector.registerGuest(guid, password).pipe(switchMap((/**
+             * @param {?} user
+             * @return {?}
+             */
+            function (user) { return [
+                new LoadUserToken({
+                    userId: user.uid,
+                    password: password,
+                }),
+                new RegisterGuestSuccess(),
+            ]; })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return of(new RegisterGuestFail(makeErrorSerializable(error)));
+            })));
+        })));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((/**
          * @param {?} action
          * @return {?}
@@ -42312,12 +42980,18 @@ var UserRegisterEffects = /** @class */ (function () {
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
+    ], UserRegisterEffects.prototype, "registerGuest$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
     ], UserRegisterEffects.prototype, "removeUser$", void 0);
     return UserRegisterEffects;
 }());
 if (false) {
     /** @type {?} */
     UserRegisterEffects.prototype.registerUser$;
+    /** @type {?} */
+    UserRegisterEffects.prototype.registerGuest$;
     /** @type {?} */
     UserRegisterEffects.prototype.removeUser$;
     /**
@@ -42406,11 +43080,6 @@ var UserModule = /** @class */ (function () {
     ];
     return UserModule;
 }());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -42613,5 +43282,5 @@ var FeaturesConfigModule = /** @class */ (function () {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

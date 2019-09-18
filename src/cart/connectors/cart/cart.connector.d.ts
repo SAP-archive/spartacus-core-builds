@@ -7,4 +7,6 @@ export declare class CartConnector {
     loadAll(userId: string): Observable<Cart[]>;
     load(userId: string, cartId: string): Observable<Cart>;
     create(userId: string, oldCartId?: string, toMergeCartGuid?: string): Observable<Cart>;
+    delete(userId: string, cartId: string): Observable<{}>;
+    addEmail(userId: string, cartId: string, email: string): Observable<{}>;
 }

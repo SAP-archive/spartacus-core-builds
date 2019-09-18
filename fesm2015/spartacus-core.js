@@ -4330,6 +4330,8 @@ if (false) {
 const OCC_USER_ID_CURRENT = 'current';
 /** @type {?} */
 const OCC_USER_ID_ANONYMOUS = 'anonymous';
+/** @type {?} */
+const OCC_USER_ID_GUEST = 'guest';
 
 /**
  * @fileoverview added by tsickle
@@ -4927,6 +4929,396 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Converter is used to convert source data model to target data model.
+ * By convention, we distinguish two flows:
+ *   - *Normalize* is the conversion from backend models to UI models
+ *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
+ *
+ * Converters can be stacked together to to apply decoupled customizations
+ * @record
+ * @template S, T
+ */
+function Converter() { }
+if (false) {
+    /**
+     * Convert converts source model to target model. Can use optional target parameter,
+     * used in case of stacking multiple converters (for example, to implement populator pattern).
+     *
+     * @param {?} source Source data model
+     * @param {?=} target Optional, partially converted target model
+     * @return {?}
+     */
+    Converter.prototype.convert = function (source, target) { };
+}
+class ConverterService {
+    /**
+     * @param {?} injector
+     */
+    constructor(injector) {
+        this.injector = injector;
+        this.converters = new Map();
+    }
+    /**
+     * @private
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    getConverters(injectionToken) {
+        if (!this.converters.has(injectionToken)) {
+            /** @type {?} */
+            const converters = this.injector.get(injectionToken, []);
+            if (!Array.isArray(converters)) {
+                console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
+            }
+            this.converters.set(injectionToken, converters);
+        }
+        return this.converters.get(injectionToken);
+    }
+    /**
+     * Will return true if converters for specified token were provided
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    hasConverters(injectionToken) {
+        /** @type {?} */
+        const converters = this.getConverters(injectionToken);
+        return Array.isArray(converters) && converters.length > 0;
+    }
+    /**
+     * Pipeable operator to apply converter logic in a observable stream
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    pipeable(injectionToken) {
+        if (this.hasConverters(injectionToken)) {
+            return map((/**
+             * @param {?} model
+             * @return {?}
+             */
+            (model) => this.convertSource(model, injectionToken)));
+        }
+        else {
+            return (/**
+             * @param {?} observable
+             * @return {?}
+             */
+            (observable) => (/** @type {?} */ (observable)));
+        }
+    }
+    /**
+     * Pipeable operator to apply converter logic in a observable stream to collection of items
+     * @template S, T
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    pipeableMany(injectionToken) {
+        if (this.hasConverters(injectionToken)) {
+            return map((/**
+             * @param {?} model
+             * @return {?}
+             */
+            (model) => this.convertMany(model, injectionToken)));
+        }
+        else {
+            return (/**
+             * @param {?} observable
+             * @return {?}
+             */
+            (observable) => (/** @type {?} */ (observable)));
+        }
+    }
+    /**
+     * Apply converter logic specified by injection token to source data
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    convert(source, injectionToken) {
+        if (this.hasConverters(injectionToken)) {
+            return this.convertSource(source, injectionToken);
+        }
+        else {
+            return (/** @type {?} */ (source));
+        }
+    }
+    /**
+     * Apply converter logic specified by injection token to a collection
+     * @template S, T
+     * @param {?} sources
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    convertMany(sources, injectionToken) {
+        if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
+            return sources.map((/**
+             * @param {?} source
+             * @return {?}
+             */
+            source => this.convertSource(source, injectionToken)));
+        }
+        else {
+            return (/** @type {?} */ (sources));
+        }
+    }
+    /**
+     * @private
+     * @template S, T
+     * @param {?} source
+     * @param {?} injectionToken
+     * @return {?}
+     */
+    convertSource(source, injectionToken) {
+        return this.getConverters(injectionToken).reduce((/**
+         * @param {?} target
+         * @param {?} converter
+         * @return {?}
+         */
+        (target, converter) => {
+            return converter.convert(source, target);
+        }), (/** @type {?} */ (undefined)));
+    }
+}
+ConverterService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+ConverterService.ctorParameters = () => [
+    { type: Injector }
+];
+/** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ConverterService.prototype.converters;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ConverterService.prototype.injector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const QUESTION_MARK = '[^/]';
+/** @type {?} */
+const WILD_SINGLE = '[^/]*';
+/** @type {?} */
+const WILD_OPEN = '(?:.+\\/)?';
+/** @type {?} */
+const TO_ESCAPE_BASE = [
+    { replace: /\./g, with: '\\.' },
+    { replace: /\+/g, with: '\\+' },
+    { replace: /\*/g, with: WILD_SINGLE },
+];
+/** @type {?} */
+const TO_ESCAPE_WILDCARD_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: QUESTION_MARK },
+];
+/** @type {?} */
+const TO_ESCAPE_LITERAL_QM = [
+    ...TO_ESCAPE_BASE,
+    { replace: /\?/g, with: '\\?' },
+];
+/**
+ * Converts the glob-like pattern into regex string.
+ * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+ *
+ * Patterns use a limited glob format:
+ * `**` matches 0 or more path segments
+ * `*` matches 0 or more characters excluding `/`
+ * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+ * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+ *
+ * @param {?} glob glob-like pattern
+ * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+ * @return {?}
+ */
+function globToRegex(glob, literalQuestionMark = false) {
+    /** @type {?} */
+    const toEscape = literalQuestionMark
+        ? TO_ESCAPE_LITERAL_QM
+        : TO_ESCAPE_WILDCARD_QM;
+    /** @type {?} */
+    const segments = glob.split('/').reverse();
+    /** @type {?} */
+    let regex = '';
+    while (segments.length > 0) {
+        /** @type {?} */
+        const segment = segments.pop();
+        if (segment === '**') {
+            if (segments.length > 0) {
+                regex += WILD_OPEN;
+            }
+            else {
+                regex += '.*';
+            }
+        }
+        else {
+            /** @type {?} */
+            const processed = toEscape.reduce((/**
+             * @param {?} seg
+             * @param {?} escape
+             * @return {?}
+             */
+            (seg, escape) => seg.replace(escape.replace, escape.with)), segment);
+            regex += processed;
+            if (segments.length > 0) {
+                regex += '\\/';
+            }
+        }
+    }
+    return regex;
+}
+/**
+ * For given list of glob-like patterns, returns a matcher function.
+ *
+ * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+ * @param {?} patterns
+ * @return {?}
+ */
+function getGlobMatcher(patterns) {
+    /** @type {?} */
+    const processedPatterns = processGlobPatterns(patterns).map((/**
+     * @param {?} __0
+     * @return {?}
+     */
+    ({ positive, regex }) => ({
+        positive,
+        regex: new RegExp(regex),
+    })));
+    /** @type {?} */
+    const includePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    spec => spec.positive));
+    /** @type {?} */
+    const excludePatterns = processedPatterns.filter((/**
+     * @param {?} spec
+     * @return {?}
+     */
+    spec => !spec.positive));
+    return (/**
+     * @param {?} url
+     * @return {?}
+     */
+    (url) => includePatterns.some((/**
+     * @param {?} pattern
+     * @return {?}
+     */
+    pattern => pattern.regex.test(url))) &&
+        !excludePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        pattern => pattern.regex.test(url))));
+}
+/**
+ * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+ * @param {?} urls
+ * @return {?}
+ */
+function processGlobPatterns(urls) {
+    return urls.map((/**
+     * @param {?} url
+     * @return {?}
+     */
+    url => {
+        /** @type {?} */
+        const positive = !url.startsWith('!');
+        url = positive ? url : url.substr(1);
+        return { positive, regex: `^${globToRegex(url)}$` };
+    }));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobService {
+    /**
+     * For given list of glob-like patterns, returns a validator function.
+     *
+     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    getValidator(patterns) {
+        /** @type {?} */
+        const processedPatterns = processGlobPatterns(patterns).map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ positive, regex }) => ({
+            positive,
+            regex: new RegExp(regex),
+        })));
+        /** @type {?} */
+        const includePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        spec => spec.positive));
+        /** @type {?} */
+        const excludePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        spec => !spec.positive));
+        return (/**
+         * @param {?} url
+         * @return {?}
+         */
+        (url) => includePatterns.some((/**
+         * @param {?} pattern
+         * @return {?}
+         */
+        pattern => pattern.regex.test(url))) &&
+            !excludePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            pattern => pattern.regex.test(url))));
+    }
+}
+GlobService.decorators = [
+    { type: Injectable, args: [{ providedIn: 'root' },] }
+];
+/** @nocollapse */ GlobService.ngInjectableDef = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Email Standard RFC 5322:
+/** @type {?} */
+const EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+// tslint:disable-line
+/** @type {?} */
+const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 const CART_FEATURE = 'cart';
 /** @type {?} */
@@ -5066,6 +5458,13 @@ entities => {
 };
 /** @type {?} */
 const getCartEntries = createSelector(getCartEntriesMap, (ɵ8));
+const ɵ9 = /**
+ * @param {?} content
+ * @return {?}
+ */
+content => content.user;
+/** @type {?} */
+const getCartUser = createSelector(getCartContent, (ɵ9));
 
 /**
  * @fileoverview added by tsickle
@@ -5083,7 +5482,8 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
     getCartMergeComplete: getCartMergeComplete,
     getCartEntriesMap: getCartEntriesMap,
     getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-    getCartEntries: getCartEntries
+    getCartEntries: getCartEntries,
+    getCartUser: getCartUser
 });
 
 /**
@@ -5158,6 +5558,28 @@ class CartDataService {
                 ? this.cart.guid
                 : this.cart.code;
         }
+    }
+    /**
+     * @return {?}
+     */
+    get isGuestCart() {
+        return (this.cart.user &&
+            (this.cart.user.name === OCC_USER_ID_GUEST ||
+                this.isEmail(this.cart.user.uid
+                    .split('|')
+                    .slice(1)
+                    .join('|'))));
+    }
+    /**
+     * @private
+     * @param {?} str
+     * @return {?}
+     */
+    isEmail(str) {
+        if (str) {
+            return str.match(EMAIL_PATTERN) ? true : false;
+        }
+        return false;
     }
 }
 CartDataService.decorators = [
@@ -5375,6 +5797,12 @@ const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
 /** @type {?} */
 const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
 /** @type {?} */
+const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+/** @type {?} */
+const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+/** @type {?} */
+const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+/** @type {?} */
 const MERGE_CART = '[Cart] Merge Cart';
 /** @type {?} */
 const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
@@ -5382,6 +5810,10 @@ const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
 /** @type {?} */
 const CLEAR_CART = '[Cart] Clear Cart';
+/** @type {?} */
+const DELETE_CART = '[Cart] Delete Cart';
+/** @type {?} */
+const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
 class CreateCart extends LoaderLoadAction {
     /**
      * @param {?} payload
@@ -5429,6 +5861,54 @@ if (false) {
     CreateCartSuccess.prototype.type;
     /** @type {?} */
     CreateCartSuccess.prototype.payload;
+}
+class AddEmailToCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCart.prototype.type;
+    /** @type {?} */
+    AddEmailToCart.prototype.payload;
+}
+class AddEmailToCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCartFail.prototype.type;
+    /** @type {?} */
+    AddEmailToCartFail.prototype.payload;
+}
+class AddEmailToCartSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.type;
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.payload;
 }
 class LoadCart extends LoaderLoadAction {
     /**
@@ -5527,6 +6007,38 @@ if (false) {
     /** @type {?} */
     ClearCart.prototype.type;
 }
+class DeleteCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = DELETE_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    DeleteCart.prototype.type;
+    /** @type {?} */
+    DeleteCart.prototype.payload;
+}
+class DeleteCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = DELETE_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    DeleteCartFail.prototype.type;
+    /** @type {?} */
+    DeleteCartFail.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -5558,20 +6070,30 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CART: LOAD_CART,
     LOAD_CART_FAIL: LOAD_CART_FAIL,
     LOAD_CART_SUCCESS: LOAD_CART_SUCCESS,
+    ADD_EMAIL_TO_CART: ADD_EMAIL_TO_CART,
+    ADD_EMAIL_TO_CART_FAIL: ADD_EMAIL_TO_CART_FAIL,
+    ADD_EMAIL_TO_CART_SUCCESS: ADD_EMAIL_TO_CART_SUCCESS,
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
     CLEAR_CART: CLEAR_CART,
+    DELETE_CART: DELETE_CART,
+    DELETE_CART_FAIL: DELETE_CART_FAIL,
     CreateCart: CreateCart,
     CreateCartFail: CreateCartFail,
     CreateCartSuccess: CreateCartSuccess,
+    AddEmailToCart: AddEmailToCart,
+    AddEmailToCartFail: AddEmailToCartFail,
+    AddEmailToCartSuccess: AddEmailToCartSuccess,
     LoadCart: LoadCart,
     LoadCartFail: LoadCartFail,
     LoadCartSuccess: LoadCartSuccess,
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
-    ClearCart: ClearCart
+    ClearCart: ClearCart,
+    DeleteCart: DeleteCart,
+    DeleteCartFail: DeleteCartFail
 });
 
 /**
@@ -5672,6 +6194,9 @@ class CartService {
                 cartId: 'current',
             }));
         }
+        else if (this.isGuestCart()) {
+            this.guestCartMerge();
+        }
         else {
             this.store.dispatch(new MergeCart({
                 userId: this.cartData.userId,
@@ -5771,6 +6296,60 @@ class CartService {
         return this.store.pipe(select(getCartEntrySelectorFactory(productCode)));
     }
     /**
+     * @param {?} email
+     * @return {?}
+     */
+    addEmail(email) {
+        this.store.dispatch(new AddEmailToCart({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            email: email,
+        }));
+    }
+    /**
+     * @return {?}
+     */
+    getAssignedUser() {
+        return this.store.pipe(select(getCartUser));
+    }
+    /**
+     * @return {?}
+     */
+    isGuestCart() {
+        return this.cartData.isGuestCart;
+    }
+    /**
+     * Add multiple entries to a cart
+     * Requires a created cart
+     * @param {?} cartEntries : list of entries to add (OrderEntry[])
+     * @return {?}
+     */
+    addEntries(cartEntries) {
+        /** @type {?} */
+        let newEntries = 0;
+        this.getEntries()
+            .pipe(tap((/**
+         * @return {?}
+         */
+        () => {
+            // Keep adding entries until the user cart contains the same number of entries
+            // as the guest cart did
+            if (newEntries < cartEntries.length) {
+                this.store.dispatch(new CartAddEntry({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    productCode: cartEntries[newEntries].product.code,
+                    quantity: cartEntries[newEntries].quantity,
+                }));
+                newEntries++;
+            }
+        })), filter((/**
+         * @return {?}
+         */
+        () => newEntries === cartEntries.length)), take(1))
+            .subscribe();
+    }
+    /**
      * @private
      * @param {?} cart
      * @return {?}
@@ -5779,14 +6358,14 @@ class CartService {
         return cart && typeof cart.guid !== 'undefined';
     }
     /**
-     * Cart is incomplete if it contains only `guid` and `code` properties, which come from local storage.
+     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
      * To get cart content, we need to load cart from backend.
      * @private
      * @param {?} cart
      * @return {?}
      */
     isIncomplete(cart) {
-        return cart && Object.keys(cart).length <= 2;
+        return cart && Object.keys(cart).length <= 3;
     }
     /**
      * @private
@@ -5806,6 +6385,56 @@ class CartService {
      */
     isLoggedIn(userId) {
         return typeof userId !== 'undefined';
+    }
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of beackend limitation
+     * This is for an edge case
+     * @private
+     * @return {?}
+     */
+    guestCartMerge() {
+        /** @type {?} */
+        let cartEntries;
+        this.getEntries()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} entries
+         * @return {?}
+         */
+        entries => {
+            cartEntries = entries;
+        }));
+        this.store.dispatch(new DeleteCart({
+            userId: OCC_USER_ID_ANONYMOUS,
+            cartId: this.cartData.cart.guid,
+        }));
+        this.store
+            .pipe(select(getActiveCartState), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !cartState.loading)), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            // If the cart is not created it needs to be created
+            // This step should happen before adding entries to avoid conflicts in the requests
+            if (!this.isCreated(cartState.value.content)) {
+                this.store.dispatch(new CreateCart({ userId: this.cartData.userId }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => this.isCreated(cartState.value.content))), take(1))
+            .subscribe((/**
+         * @return {?}
+         */
+        () => {
+            this.addEntries(cartEntries);
+        }));
     }
 }
 CartService.decorators = [
@@ -7181,6 +7810,24 @@ if (false) {
      * @return {?}
      */
     CartAdapter.prototype.create = function (userId, oldCartId, toMergeCartGuid) { };
+    /**
+     * Abstract method used to delete cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    CartAdapter.prototype.delete = function (userId, cartId) { };
+    /**
+     * Abstract method to assign an email to the cart. This step is required to make a guest checkout
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    CartAdapter.prototype.addEmail = function (userId, cartId, email) { };
 }
 
 /**
@@ -7217,6 +7864,23 @@ class CartConnector {
      */
     create(userId, oldCartId, toMergeCartGuid) {
         return this.adapter.create(userId, oldCartId, toMergeCartGuid);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    delete(userId, cartId) {
+        return this.adapter.delete(userId, cartId);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    addEmail(userId, cartId, email) {
+        return this.adapter.addEmail(userId, cartId, email);
     }
 }
 CartConnector.decorators = [
@@ -7348,7 +8012,7 @@ class CartEffects {
                 });
             })));
         })));
-        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS), map((/**
+        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS), map((/**
          * @param {?} action
          * @return {?}
          */
@@ -7364,6 +8028,47 @@ class CartEffects {
          * @return {?}
          */
         () => new ResetCartDetails())));
+        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartConnector
+            .addEmail(payload.userId, payload.cartId, payload.email)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new AddEmailToCartSuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new AddEmailToCartFail(makeErrorSerializable(error)))))))));
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), exhaustMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new ClearCart();
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new DeleteCartFail(makeErrorSerializable(error)))))))));
     }
     /**
      * @private
@@ -7403,6 +8108,14 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "addEmail$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "deleteCart$", void 0);
 if (false) {
     /** @type {?} */
     CartEffects.prototype.loadCart$;
@@ -7414,6 +8127,10 @@ if (false) {
     CartEffects.prototype.refresh$;
     /** @type {?} */
     CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+    /** @type {?} */
+    CartEffects.prototype.addEmail$;
+    /** @type {?} */
+    CartEffects.prototype.deleteCart$;
     /**
      * @type {?}
      * @private
@@ -8635,7 +9352,8 @@ function reducer$1(state = initialState$1, action) {
         }
         case CART_REMOVE_ENTRY_SUCCESS:
         case CART_UPDATE_ENTRY_SUCCESS:
-        case CART_ADD_ENTRY_SUCCESS: {
+        case CART_ADD_ENTRY_SUCCESS:
+        case ADD_EMAIL_TO_CART_SUCCESS: {
             return Object.assign({}, state, { refresh: true });
         }
         case RESET_CART_DETAILS: {
@@ -8643,6 +9361,7 @@ function reducer$1(state = initialState$1, action) {
                 content: {
                     guid: state.content.guid,
                     code: state.content.code,
+                    user: state.content.user,
                 },
                 entries: {},
                 refresh: false,
@@ -8711,6 +9430,7 @@ function cartStoreConfigFactory() {
                 keys: {
                     [`${CART_FEATURE}.active.value.content.guid`]: StorageSyncType.LOCAL_STORAGE,
                     [`${CART_FEATURE}.active.value.content.code`]: StorageSyncType.LOCAL_STORAGE,
+                    [`${CART_FEATURE}.active.value.content.user`]: StorageSyncType.LOCAL_STORAGE,
                 },
             },
         },
@@ -8930,14 +9650,14 @@ const getSelectedDeliveryMode = createSelector(getDeliveryMode, (ɵ8$1));
 const getPaymentDetails = createSelector(getCheckoutSteps, getPaymentDetailsSelector);
 /** @type {?} */
 const getCheckoutOrderDetails = createSelector(getCheckoutSteps, getOrderDetailsSelector);
-const ɵ9 = /**
+const ɵ9$1 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderSuccessSelector(state) &&
     !loaderLoadingSelector(state);
 /** @type {?} */
-const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9));
+const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9$1));
 
 /**
  * @fileoverview added by tsickle
@@ -9121,7 +9841,8 @@ class CheckoutService {
      * @return {?}
      */
     actionAllowed() {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     }
 }
 CheckoutService.decorators = [
@@ -11223,6 +11944,12 @@ const REGISTER_USER_SUCCESS = '[User] Register User Success';
 /** @type {?} */
 const RESET_REGISTER_USER_PROCESS = '[User] Reset Register User Process';
 /** @type {?} */
+const REGISTER_GUEST = '[User] Register Guest';
+/** @type {?} */
+const REGISTER_GUEST_FAIL = '[User] Register Guest Fail';
+/** @type {?} */
+const REGISTER_GUEST_SUCCESS = '[User] Register Guest Success';
+/** @type {?} */
 const REMOVE_USER = '[User] Remove User';
 /** @type {?} */
 const REMOVE_USER_FAIL = '[User] Remove User Fail';
@@ -11281,6 +12008,45 @@ class ResetRegisterUserProcess extends EntityResetAction {
 if (false) {
     /** @type {?} */
     ResetRegisterUserProcess.prototype.type;
+}
+class RegisterGuest {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST;
+    }
+}
+if (false) {
+    /** @type {?} */
+    RegisterGuest.prototype.type;
+    /** @type {?} */
+    RegisterGuest.prototype.payload;
+}
+class RegisterGuestFail {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REGISTER_GUEST_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    RegisterGuestFail.prototype.type;
+    /** @type {?} */
+    RegisterGuestFail.prototype.payload;
+}
+class RegisterGuestSuccess {
+    constructor() {
+        this.type = REGISTER_GUEST_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    RegisterGuestSuccess.prototype.type;
 }
 class RemoveUser extends EntityLoadAction {
     /**
@@ -11505,6 +12271,9 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
     REGISTER_USER_FAIL: REGISTER_USER_FAIL,
     REGISTER_USER_SUCCESS: REGISTER_USER_SUCCESS,
     RESET_REGISTER_USER_PROCESS: RESET_REGISTER_USER_PROCESS,
+    REGISTER_GUEST: REGISTER_GUEST,
+    REGISTER_GUEST_FAIL: REGISTER_GUEST_FAIL,
+    REGISTER_GUEST_SUCCESS: REGISTER_GUEST_SUCCESS,
     REMOVE_USER: REMOVE_USER,
     REMOVE_USER_FAIL: REMOVE_USER_FAIL,
     REMOVE_USER_SUCCESS: REMOVE_USER_SUCCESS,
@@ -11513,6 +12282,9 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
     RegisterUserFail: RegisterUserFail,
     RegisterUserSuccess: RegisterUserSuccess,
     ResetRegisterUserProcess: ResetRegisterUserProcess,
+    RegisterGuest: RegisterGuest,
+    RegisterGuestFail: RegisterGuestFail,
+    RegisterGuestSuccess: RegisterGuestSuccess,
     RemoveUser: RemoveUser,
     RemoveUserFail: RemoveUserFail,
     RemoveUserSuccess: RemoveUserSuccess,
@@ -11799,14 +12571,30 @@ class CheckoutEffects {
          */
         address => {
             address['titleCode'] = payload.address.titleCode;
-            return [
-                new LoadUserAddresses(payload.userId),
-                new SetDeliveryAddress({
-                    userId: payload.userId,
-                    cartId: payload.cartId,
-                    address: address,
-                }),
-            ];
+            if (payload.address.region && payload.address.region.isocodeShort) {
+                Object.assign(address.region, {
+                    isocodeShort: payload.address.region.isocodeShort,
+                });
+            }
+            if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                return [
+                    new SetDeliveryAddress({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                        address: address,
+                    }),
+                ];
+            }
+            else {
+                return [
+                    new LoadUserAddresses(payload.userId),
+                    new SetDeliveryAddress({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                        address: address,
+                    }),
+                ];
+            }
         })), catchError((/**
          * @param {?} error
          * @return {?}
@@ -11874,6 +12662,10 @@ class CheckoutEffects {
          * @return {?}
          */
         () => new ClearCheckoutData())));
+        this.clearCheckoutDataOnLogin$ = this.actions$.pipe(ofType(LOGIN), map((/**
+         * @return {?}
+         */
+        () => new ClearCheckoutData())));
         this.setDeliveryMode$ = this.actions$.pipe(ofType(SET_DELIVERY_MODE), map((/**
          * @param {?} action
          * @return {?}
@@ -11918,10 +12710,17 @@ class CheckoutEffects {
              * @param {?} details
              * @return {?}
              */
-            details => [
-                new LoadUserPaymentMethods(payload.userId),
-                new CreatePaymentDetailsSuccess(details),
-            ])), catchError((/**
+            details => {
+                if (payload.userId === OCC_USER_ID_ANONYMOUS) {
+                    return [new CreatePaymentDetailsSuccess(details)];
+                }
+                else {
+                    return [
+                        new LoadUserPaymentMethods(payload.userId),
+                        new CreatePaymentDetailsSuccess(details),
+                    ];
+                }
+            })), catchError((/**
              * @param {?} error
              * @return {?}
              */
@@ -12082,6 +12881,10 @@ __decorate([
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
+], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
 ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
 __decorate([
     Effect(),
@@ -12124,6 +12927,8 @@ if (false) {
     CheckoutEffects.prototype.clearDeliveryModesOnCurrencyChange$;
     /** @type {?} */
     CheckoutEffects.prototype.clearCheckoutDataOnLogout$;
+    /** @type {?} */
+    CheckoutEffects.prototype.clearCheckoutDataOnLogin$;
     /** @type {?} */
     CheckoutEffects.prototype.setDeliveryMode$;
     /** @type {?} */
@@ -12558,7 +13363,8 @@ class CheckoutDeliveryService {
      * @return {?}
      */
     actionAllowed() {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     }
 }
 CheckoutDeliveryService.decorators = [
@@ -12666,7 +13472,8 @@ class CheckoutPaymentService {
      * @return {?}
      */
     actionAllowed() {
-        return this.cartData.userId !== OCC_USER_ID_ANONYMOUS;
+        return (this.cartData.userId !== OCC_USER_ID_ANONYMOUS ||
+            this.cartData.isGuestCart);
     }
 }
 CheckoutPaymentService.decorators = [
@@ -13013,199 +13820,6 @@ CmsPageTitleModule.decorators = [
                 ],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const QUESTION_MARK = '[^/]';
-/** @type {?} */
-const WILD_SINGLE = '[^/]*';
-/** @type {?} */
-const WILD_OPEN = '(?:.+\\/)?';
-/** @type {?} */
-const TO_ESCAPE_BASE = [
-    { replace: /\./g, with: '\\.' },
-    { replace: /\+/g, with: '\\+' },
-    { replace: /\*/g, with: WILD_SINGLE },
-];
-/** @type {?} */
-const TO_ESCAPE_WILDCARD_QM = [
-    ...TO_ESCAPE_BASE,
-    { replace: /\?/g, with: QUESTION_MARK },
-];
-/** @type {?} */
-const TO_ESCAPE_LITERAL_QM = [
-    ...TO_ESCAPE_BASE,
-    { replace: /\?/g, with: '\\?' },
-];
-/**
- * Converts the glob-like pattern into regex string.
- * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
- *
- * Patterns use a limited glob format:
- * `**` matches 0 or more path segments
- * `*` matches 0 or more characters excluding `/`
- * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
- * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
- *
- * @param {?} glob glob-like pattern
- * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
- * @return {?}
- */
-function globToRegex(glob, literalQuestionMark = false) {
-    /** @type {?} */
-    const toEscape = literalQuestionMark
-        ? TO_ESCAPE_LITERAL_QM
-        : TO_ESCAPE_WILDCARD_QM;
-    /** @type {?} */
-    const segments = glob.split('/').reverse();
-    /** @type {?} */
-    let regex = '';
-    while (segments.length > 0) {
-        /** @type {?} */
-        const segment = segments.pop();
-        if (segment === '**') {
-            if (segments.length > 0) {
-                regex += WILD_OPEN;
-            }
-            else {
-                regex += '.*';
-            }
-        }
-        else {
-            /** @type {?} */
-            const processed = toEscape.reduce((/**
-             * @param {?} seg
-             * @param {?} escape
-             * @return {?}
-             */
-            (seg, escape) => seg.replace(escape.replace, escape.with)), segment);
-            regex += processed;
-            if (segments.length > 0) {
-                regex += '\\/';
-            }
-        }
-    }
-    return regex;
-}
-/**
- * For given list of glob-like patterns, returns a matcher function.
- *
- * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
- * @param {?} patterns
- * @return {?}
- */
-function getGlobMatcher(patterns) {
-    /** @type {?} */
-    const processedPatterns = processGlobPatterns(patterns).map((/**
-     * @param {?} __0
-     * @return {?}
-     */
-    ({ positive, regex }) => ({
-        positive,
-        regex: new RegExp(regex),
-    })));
-    /** @type {?} */
-    const includePatterns = processedPatterns.filter((/**
-     * @param {?} spec
-     * @return {?}
-     */
-    spec => spec.positive));
-    /** @type {?} */
-    const excludePatterns = processedPatterns.filter((/**
-     * @param {?} spec
-     * @return {?}
-     */
-    spec => !spec.positive));
-    return (/**
-     * @param {?} url
-     * @return {?}
-     */
-    (url) => includePatterns.some((/**
-     * @param {?} pattern
-     * @return {?}
-     */
-    pattern => pattern.regex.test(url))) &&
-        !excludePatterns.some((/**
-         * @param {?} pattern
-         * @return {?}
-         */
-        pattern => pattern.regex.test(url))));
-}
-/**
- * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
- * @param {?} urls
- * @return {?}
- */
-function processGlobPatterns(urls) {
-    return urls.map((/**
-     * @param {?} url
-     * @return {?}
-     */
-    url => {
-        /** @type {?} */
-        const positive = !url.startsWith('!');
-        url = positive ? url : url.substr(1);
-        return { positive, regex: `^${globToRegex(url)}$` };
-    }));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobService {
-    /**
-     * For given list of glob-like patterns, returns a validator function.
-     *
-     * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     * @param {?} patterns
-     * @return {?}
-     */
-    getValidator(patterns) {
-        /** @type {?} */
-        const processedPatterns = processGlobPatterns(patterns).map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ positive, regex }) => ({
-            positive,
-            regex: new RegExp(regex),
-        })));
-        /** @type {?} */
-        const includePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        spec => spec.positive));
-        /** @type {?} */
-        const excludePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        spec => !spec.positive));
-        return (/**
-         * @param {?} url
-         * @return {?}
-         */
-        (url) => includePatterns.some((/**
-         * @param {?} pattern
-         * @return {?}
-         */
-        pattern => pattern.regex.test(url))) &&
-            !excludePatterns.some((/**
-             * @param {?} pattern
-             * @return {?}
-             */
-            pattern => pattern.regex.test(url))));
-    }
-}
-GlobService.decorators = [
-    { type: Injectable, args: [{ providedIn: 'root' },] }
-];
-/** @nocollapse */ GlobService.ngInjectableDef = ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
 
 /**
  * @fileoverview added by tsickle
@@ -19793,6 +20407,13 @@ if (false) {
      */
     OccEndpoints.prototype.createCart;
     /**
+     * Deletes a cart with a given cart id
+     *
+     * \@member {string} [deleteCart]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.deleteCart;
+    /**
      * Adds a product to the cart
      *
      * \@member {string} [addEntries]
@@ -19813,6 +20434,13 @@ if (false) {
      * @type {?|undefined}
      */
     OccEndpoints.prototype.removeEntries;
+    /**
+     * Assign email to cart
+     *
+     * \@member {string} [addEmail]
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.addEmail;
     /**
      * Get a store location
      *
@@ -24743,187 +25371,6 @@ const PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * Converter is used to convert source data model to target data model.
- * By convention, we distinguish two flows:
- *   - *Normalize* is the conversion from backend models to UI models
- *   - *Serialize* is the conversion of UI models to backend models (in case of submitting data to the backend).
- *
- * Converters can be stacked together to to apply decoupled customizations
- * @record
- * @template S, T
- */
-function Converter() { }
-if (false) {
-    /**
-     * Convert converts source model to target model. Can use optional target parameter,
-     * used in case of stacking multiple converters (for example, to implement populator pattern).
-     *
-     * @param {?} source Source data model
-     * @param {?=} target Optional, partially converted target model
-     * @return {?}
-     */
-    Converter.prototype.convert = function (source, target) { };
-}
-class ConverterService {
-    /**
-     * @param {?} injector
-     */
-    constructor(injector) {
-        this.injector = injector;
-        this.converters = new Map();
-    }
-    /**
-     * @private
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    getConverters(injectionToken) {
-        if (!this.converters.has(injectionToken)) {
-            /** @type {?} */
-            const converters = this.injector.get(injectionToken, []);
-            if (!Array.isArray(converters)) {
-                console.warn('Converter must be multi-provided, please use "multi: true" for', injectionToken.toString());
-            }
-            this.converters.set(injectionToken, converters);
-        }
-        return this.converters.get(injectionToken);
-    }
-    /**
-     * Will return true if converters for specified token were provided
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    hasConverters(injectionToken) {
-        /** @type {?} */
-        const converters = this.getConverters(injectionToken);
-        return Array.isArray(converters) && converters.length > 0;
-    }
-    /**
-     * Pipeable operator to apply converter logic in a observable stream
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    pipeable(injectionToken) {
-        if (this.hasConverters(injectionToken)) {
-            return map((/**
-             * @param {?} model
-             * @return {?}
-             */
-            (model) => this.convertSource(model, injectionToken)));
-        }
-        else {
-            return (/**
-             * @param {?} observable
-             * @return {?}
-             */
-            (observable) => (/** @type {?} */ (observable)));
-        }
-    }
-    /**
-     * Pipeable operator to apply converter logic in a observable stream to collection of items
-     * @template S, T
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    pipeableMany(injectionToken) {
-        if (this.hasConverters(injectionToken)) {
-            return map((/**
-             * @param {?} model
-             * @return {?}
-             */
-            (model) => this.convertMany(model, injectionToken)));
-        }
-        else {
-            return (/**
-             * @param {?} observable
-             * @return {?}
-             */
-            (observable) => (/** @type {?} */ (observable)));
-        }
-    }
-    /**
-     * Apply converter logic specified by injection token to source data
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    convert(source, injectionToken) {
-        if (this.hasConverters(injectionToken)) {
-            return this.convertSource(source, injectionToken);
-        }
-        else {
-            return (/** @type {?} */ (source));
-        }
-    }
-    /**
-     * Apply converter logic specified by injection token to a collection
-     * @template S, T
-     * @param {?} sources
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    convertMany(sources, injectionToken) {
-        if (this.hasConverters(injectionToken) && Array.isArray(sources)) {
-            return sources.map((/**
-             * @param {?} source
-             * @return {?}
-             */
-            source => this.convertSource(source, injectionToken)));
-        }
-        else {
-            return (/** @type {?} */ (sources));
-        }
-    }
-    /**
-     * @private
-     * @template S, T
-     * @param {?} source
-     * @param {?} injectionToken
-     * @return {?}
-     */
-    convertSource(source, injectionToken) {
-        return this.getConverters(injectionToken).reduce((/**
-         * @param {?} target
-         * @param {?} converter
-         * @return {?}
-         */
-        (target, converter) => {
-            return converter.convert(source, target);
-        }), (/** @type {?} */ (undefined)));
-    }
-}
-ConverterService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-ConverterService.ctorParameters = () => [
-    { type: Injector }
-];
-/** @nocollapse */ ConverterService.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConverterService_Factory() { return new ConverterService(ɵɵinject(INJECTOR)); }, token: ConverterService, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ConverterService.prototype.converters;
-    /**
-     * @type {?}
-     * @protected
-     */
-    ConverterService.prototype.injector;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 class OccCartNormalizer {
     /**
      * @param {?} converter
@@ -25019,12 +25466,14 @@ const defaultOccCartConfig = {
         occ: {
             endpoints: {
                 // tslint:disable:max-line-length
-                carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime)',
-                cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
-                createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue)',
+                carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime,user)',
+                cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
+                createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
                 addEntries: 'users/${userId}/carts/${cartId}/entries',
                 updateEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                 removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
+                addEmail: 'users/${userId}/carts/${cartId}/email',
+                deleteCart: 'users/${userId}/carts/${cartId}',
             },
         },
     },
@@ -25376,7 +25825,7 @@ const DETAILS_PARAMS = 'DEFAULT,potentialProductPromotions,appliedProductPromoti
     'entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),' +
     'totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),' +
     'deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,' +
-    'appliedVouchers,productDiscounts(formattedValue)';
+    'appliedVouchers,productDiscounts(formattedValue),user';
 class OccCartAdapter {
     /**
      * @param {?} http
@@ -25480,6 +25929,19 @@ class OccCartAdapter {
             .pipe(this.converterService.pipeable(CART_NORMALIZER));
     }
     /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    delete(userId, cartId) {
+        /** @type {?} */
+        let headers = new HttpHeaders();
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
+        return this.http.delete(this.occEndpointsService.getUrl('deleteCart', { userId, cartId }), { headers });
+    }
+    /**
      * @deprecated Since 1.1
      * Use configurable endpoints.
      * Remove issue: #4125
@@ -25545,6 +26007,27 @@ class OccCartAdapter {
         return this.http
             .post(url, toAdd, { params })
             .pipe(this.converterService.pipeable(CART_NORMALIZER));
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} email
+     * @return {?}
+     */
+    addEmail(userId, cartId, email) {
+        /** @type {?} */
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        /** @type {?} */
+        const httpParams = new HttpParams().set('email', email);
+        /** @type {?} */
+        const url = this.occEndpointsService.getUrl('addEmail', {
+            userId,
+            cartId,
+        });
+        return this.http.put(url, httpParams, { headers });
     }
 }
 OccCartAdapter.decorators = [
@@ -25659,9 +26142,12 @@ class OccCheckoutAdapter {
             fromString: 'cartId=' + cartId + '&' + FULL_PARAMS,
         });
         /** @type {?} */
-        const headers = new HttpHeaders({
+        let headers = new HttpHeaders({
             'Content-Type': 'application/x-www-form-urlencoded',
         });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         return this.http
             .post(url, {}, { headers, params })
             .pipe(this.converter.pipeable(ORDER_NORMALIZER));
@@ -28186,6 +28672,13 @@ if (false) {
     UserAdapter.prototype.register = function (user) { };
     /**
      * @abstract
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    UserAdapter.prototype.registerGuest = function (guid, password) { };
+    /**
+     * @abstract
      * @param {?} userEmailAddress
      * @return {?}
      */
@@ -28349,9 +28842,12 @@ class OccUserAddressAdapter {
         /** @type {?} */
         const url = this.occEndpoints.getUrl('addressVerification', { userId });
         /** @type {?} */
-        const headers = new HttpHeaders({
+        let headers = new HttpHeaders({
             'Content-Type': 'application/json',
         });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         address = this.converter.convert(address, ADDRESS_SERIALIZER);
         return this.http.post(url, address, { headers }).pipe(catchError((/**
          * @param {?} error
@@ -28576,8 +29072,13 @@ class OccUserOrderAdapter {
             userId,
             orderId: orderCode,
         });
+        /** @type {?} */
+        let headers = new HttpHeaders();
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
         return this.http
-            .get(url)
+            .get(url, { headers })
             .pipe(this.converter.pipeable(ORDER_NORMALIZER));
     }
     /**
@@ -28886,6 +29387,27 @@ class OccUserAdapter {
         user = this.converter.convert(user, USER_SIGN_UP_SERIALIZER);
         return this.http
             .post(url, user, { headers })
+            .pipe(this.converter.pipeable(USER_NORMALIZER));
+    }
+    /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    registerGuest(guid, password) {
+        /** @type {?} */
+        const url = this.occEndpoints.getUrl('userRegister');
+        /** @type {?} */
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/x-www-form-urlencoded',
+        });
+        headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        /** @type {?} */
+        const httpParams = new HttpParams()
+            .set('guid', guid)
+            .set('password', password);
+        return this.http
+            .post(url, httpParams, { headers })
             .pipe(this.converter.pipeable(USER_NORMALIZER));
     }
     /**
@@ -34481,6 +35003,14 @@ class UserConnector {
         return this.adapter.register(user);
     }
     /**
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    registerGuest(guid, password) {
+        return this.adapter.registerGuest(guid, password);
+    }
+    /**
      * @param {?} userEmailAddress
      * @return {?}
      */
@@ -35189,6 +35719,16 @@ class UserService {
         this.store.dispatch(new RegisterUser(userRegisterFormData));
     }
     /**
+     * Register a new user from guest
+     *
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    registerGuest(guid, password) {
+        this.store.dispatch(new RegisterGuest({ guid, password }));
+    }
+    /**
      * Returns the register user process loading flag
      * @return {?}
      */
@@ -35869,11 +36409,15 @@ class UserOrderService {
      * Retrieves order's details
      *
      * @param {?} orderCode an order code
+     * @param {?=} userId
      * @return {?}
      */
-    loadOrderDetails(orderCode) {
+    loadOrderDetails(orderCode, userId) {
+        if (userId === undefined) {
+            userId = OCC_USER_ID_CURRENT;
+        }
         this.store.dispatch(new LoadOrderDetails({
-            userId: OCC_USER_ID_CURRENT,
+            userId: userId,
             orderCode: orderCode,
         }));
     }
@@ -37737,6 +38281,29 @@ class UserRegisterEffects {
          * @return {?}
          */
         error => of(new RegisterUserFail(makeErrorSerializable(error)))))))));
+        this.registerGuest$ = this.actions$.pipe(ofType(REGISTER_GUEST), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ guid, password }) => this.userConnector.registerGuest(guid, password).pipe(switchMap((/**
+         * @param {?} user
+         * @return {?}
+         */
+        user => [
+            new LoadUserToken({
+                userId: user.uid,
+                password: password,
+            }),
+            new RegisterGuestSuccess(),
+        ])), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new RegisterGuestFail(makeErrorSerializable(error)))))))));
         this.removeUser$ = this.actions$.pipe(ofType(REMOVE_USER), map((/**
          * @param {?} action
          * @return {?}
@@ -37776,10 +38343,16 @@ __decorate([
 __decorate([
     Effect(),
     __metadata("design:type", Observable)
+], UserRegisterEffects.prototype, "registerGuest$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
 ], UserRegisterEffects.prototype, "removeUser$", void 0);
 if (false) {
     /** @type {?} */
     UserRegisterEffects.prototype.registerUser$;
+    /** @type {?} */
+    UserRegisterEffects.prototype.registerGuest$;
     /** @type {?} */
     UserRegisterEffects.prototype.removeUser$;
     /**
@@ -37859,11 +38432,6 @@ UserModule.decorators = [
                 imports: [UserStoreModule],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -38059,5 +38627,5 @@ FeaturesConfigModule.decorators = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

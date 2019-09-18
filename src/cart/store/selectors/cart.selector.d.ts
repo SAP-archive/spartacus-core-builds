@@ -3,6 +3,7 @@ import { Cart } from '../../../model/cart.model';
 import { OrderEntry } from '../../../model/order.model';
 import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { CartsState, CartState, StateWithCart } from '../cart-state';
+import { User } from '../../../model/misc.model';
 export declare const getCartsState: MemoizedSelector<StateWithCart, CartsState>;
 export declare const getActiveCartState: MemoizedSelector<StateWithCart, LoaderState<CartState>>;
 export declare const getCartState: MemoizedSelector<StateWithCart, CartState>;
@@ -16,3 +17,4 @@ export declare const getCartEntriesMap: MemoizedSelector<StateWithCart, {
 }>;
 export declare const getCartEntrySelectorFactory: (productCode: string) => MemoizedSelector<StateWithCart, OrderEntry, import("@ngrx/store").DefaultProjectorFn<OrderEntry>>;
 export declare const getCartEntries: MemoizedSelector<StateWithCart, OrderEntry[]>;
+export declare const getCartUser: MemoizedSelector<StateWithCart, User>;

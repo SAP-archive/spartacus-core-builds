@@ -21,6 +21,13 @@ export declare class UserService {
      */
     register(userRegisterFormData: UserSignUp): void;
     /**
+     * Register a new user from guest
+     *
+     * @param guid
+     * @param password
+     */
+    registerGuest(guid: string, password: string): void;
+    /**
      * Returns the register user process loading flag
      */
     getRegisterUserResultLoading(): Observable<boolean>;
