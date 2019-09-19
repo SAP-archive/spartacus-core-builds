@@ -1,5 +1,5 @@
-import { RoutingService } from '../../routing/facade/routing.service';
 import { Router } from '@angular/router';
+import { RoutingService } from '../../routing/facade/routing.service';
 export declare class AuthRedirectService {
     private routing;
     private router;

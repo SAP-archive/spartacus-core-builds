@@ -5472,8 +5472,8 @@
              */
             function (token) {
                 if (!token.access_token) {
-                    _this.routingService.go({ cxRoute: 'login' });
                     _this.authRedirectService.reportAuthGuard();
+                    _this.routingService.go({ cxRoute: 'login' });
                 }
                 return !!token.access_token;
             })));
@@ -15980,12 +15980,27 @@
      */
     function RouteConfig() { }
     if (false) {
-        /** @type {?|undefined} */
+        /**
+         * List of path aliases to match with URL. Also used to build the semantic links.
+         * @type {?|undefined}
+         */
         RouteConfig.prototype.paths;
-        /** @type {?|undefined} */
+        /**
+         * Maps names of route params with params used to build the semantic link.
+         * @type {?|undefined}
+         */
         RouteConfig.prototype.paramsMapping;
-        /** @type {?|undefined} */
+        /**
+         * Disables the url matcher for the route. But still allows for generation of semantic links.
+         * @type {?|undefined}
+         */
         RouteConfig.prototype.disabled;
+        /**
+         * When false, the route is public for unauthorized users even when the global flag `routing.protected` is true.
+         * Other values (true, undefined) are ignored.
+         * @type {?|undefined}
+         */
+        RouteConfig.prototype.protected;
     }
     /**
      * @record
@@ -16397,6 +16412,260 @@
         /** @type {?} */
         PageContext.prototype.type;
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProtectedRoutesService = /** @class */ (function () {
+        function ProtectedRoutesService(config) {
+            var _this = this;
+            this.config = config;
+            this.nonProtectedPaths = []; // arrays of paths' segments list
+            if (this.shouldProtect) {
+                // pre-process config for performance:
+                this.nonProtectedPaths = this.getNonProtectedPaths().map((/**
+                 * @param {?} path
+                 * @return {?}
+                 */
+                function (path) {
+                    return _this.getSegments(path);
+                }));
+            }
+        }
+        Object.defineProperty(ProtectedRoutesService.prototype, "routingConfig", {
+            get: 
+            // arrays of paths' segments list
+            /**
+             * @protected
+             * @return {?}
+             */
+            function () {
+                return this.config && this.config.routing;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ProtectedRoutesService.prototype, "shouldProtect", {
+            get: /**
+             * @protected
+             * @return {?}
+             */
+            function () {
+                return this.routingConfig.protected;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Tells if the url is protected
+         */
+        /**
+         * Tells if the url is protected
+         * @param {?} urlSegments
+         * @return {?}
+         */
+        ProtectedRoutesService.prototype.isUrlProtected = /**
+         * Tells if the url is protected
+         * @param {?} urlSegments
+         * @return {?}
+         */
+        function (urlSegments) {
+            return (this.shouldProtect &&
+                !this.matchAnyPath(urlSegments, this.nonProtectedPaths));
+        };
+        /**
+         * Tells whether the url matches at least one of the paths
+         */
+        /**
+         * Tells whether the url matches at least one of the paths
+         * @protected
+         * @param {?} urlSegments
+         * @param {?} pathsSegments
+         * @return {?}
+         */
+        ProtectedRoutesService.prototype.matchAnyPath = /**
+         * Tells whether the url matches at least one of the paths
+         * @protected
+         * @param {?} urlSegments
+         * @param {?} pathsSegments
+         * @return {?}
+         */
+        function (urlSegments, pathsSegments) {
+            var _this = this;
+            return pathsSegments.some((/**
+             * @param {?} pathSegments
+             * @return {?}
+             */
+            function (pathSegments) {
+                return _this.matchPath(urlSegments, pathSegments);
+            }));
+        };
+        /**
+         * Tells whether the url matches the path
+         */
+        /**
+         * Tells whether the url matches the path
+         * @protected
+         * @param {?} urlSegments
+         * @param {?} pathSegments
+         * @return {?}
+         */
+        ProtectedRoutesService.prototype.matchPath = /**
+         * Tells whether the url matches the path
+         * @protected
+         * @param {?} urlSegments
+         * @param {?} pathSegments
+         * @return {?}
+         */
+        function (urlSegments, pathSegments) {
+            if (urlSegments.length !== pathSegments.length) {
+                return false;
+            }
+            for (var i = 0; i < pathSegments.length; i++) {
+                /** @type {?} */
+                var pathSeg = pathSegments[i];
+                /** @type {?} */
+                var urlSeg = urlSegments[i];
+                // compare only static segments:
+                if (!pathSeg.startsWith(':') && pathSeg !== urlSeg) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        /**
+         * Returns a list of paths that are not protected
+         */
+        /**
+         * Returns a list of paths that are not protected
+         * @protected
+         * @return {?}
+         */
+        ProtectedRoutesService.prototype.getNonProtectedPaths = /**
+         * Returns a list of paths that are not protected
+         * @protected
+         * @return {?}
+         */
+        function () {
+            return Object.values(this.routingConfig.routes).reduce((/**
+             * @param {?} acc
+             * @param {?} routeConfig
+             * @return {?}
+             */
+            function (acc, routeConfig) {
+                return routeConfig.protected === false && // must be explicitly false, ignore undefined
+                    routeConfig.paths &&
+                    routeConfig.paths.length
+                    ? acc.concat(routeConfig.paths)
+                    : acc;
+            }), []);
+        };
+        /**
+         * Splits the url by slashes
+         */
+        /**
+         * Splits the url by slashes
+         * @protected
+         * @param {?} url
+         * @return {?}
+         */
+        ProtectedRoutesService.prototype.getSegments = /**
+         * Splits the url by slashes
+         * @protected
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            return (url || '').split('/');
+        };
+        ProtectedRoutesService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        ProtectedRoutesService.ctorParameters = function () { return [
+            { type: RoutingConfig }
+        ]; };
+        /** @nocollapse */ ProtectedRoutesService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesService_Factory() { return new ProtectedRoutesService(core.ɵɵinject(RoutingConfig)); }, token: ProtectedRoutesService, providedIn: "root" });
+        return ProtectedRoutesService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ProtectedRoutesService.prototype.nonProtectedPaths;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProtectedRoutesService.prototype.config;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProtectedRoutesGuard = /** @class */ (function () {
+        function ProtectedRoutesGuard(service, authGuard) {
+            this.service = service;
+            this.authGuard = authGuard;
+        }
+        /**
+         * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
+         */
+        /**
+         * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
+         * @param {?} route
+         * @return {?}
+         */
+        ProtectedRoutesGuard.prototype.canActivate = /**
+         * When the anticipated url is protected, it switches to the AuthGuard. Otherwise emits true.
+         * @param {?} route
+         * @return {?}
+         */
+        function (route) {
+            /** @type {?} */
+            var urlSegments = route.url.map((/**
+             * @param {?} seg
+             * @return {?}
+             */
+            function (seg) { return seg.path; }));
+            // For the root path `/` ActivatedRoute contains an empty array of segments:
+            urlSegments = urlSegments.length ? urlSegments : [''];
+            if (this.service.isUrlProtected(urlSegments)) {
+                return this.authGuard.canActivate();
+            }
+            return rxjs.of(true);
+        };
+        ProtectedRoutesGuard.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        ProtectedRoutesGuard.ctorParameters = function () { return [
+            { type: ProtectedRoutesService },
+            { type: AuthGuard }
+        ]; };
+        /** @nocollapse */ ProtectedRoutesGuard.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProtectedRoutesGuard_Factory() { return new ProtectedRoutesGuard(core.ɵɵinject(ProtectedRoutesService), core.ɵɵinject(AuthGuard)); }, token: ProtectedRoutesGuard, providedIn: "root" });
+        return ProtectedRoutesGuard;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProtectedRoutesGuard.prototype.service;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProtectedRoutesGuard.prototype.authGuard;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -43674,6 +43943,8 @@
     exports.ProductSearchService = ProductSearchService;
     exports.ProductSelectors = productGroup_selectors;
     exports.ProductService = ProductService;
+    exports.ProtectedRoutesGuard = ProtectedRoutesGuard;
+    exports.ProtectedRoutesService = ProtectedRoutesService;
     exports.REGIONS = REGIONS;
     exports.REGION_NORMALIZER = REGION_NORMALIZER;
     exports.REGISTER_USER_PROCESS_ID = REGISTER_USER_PROCESS_ID;
