@@ -13,6 +13,17 @@ export declare class AuthService {
      */
     authorize(userId: string, password: string): void;
     /**
+     * This function provides the userId the OCC calls should use, depending
+     * on wether there is an active storefront session or not.
+     *
+     * It returns the userId of the current storefront user or 'anonymous'
+     * in the case there are no signed in user in the storefront.
+     *
+     * The user id of a regular customer session is 'current'.  In the case of an
+     * asm customer emulation session, the userId will be the customerId.
+     */
+    getOccUserId(): Observable<string>;
+    /**
      * Returns the user's token
      */
     getUserToken(): Observable<UserToken>;

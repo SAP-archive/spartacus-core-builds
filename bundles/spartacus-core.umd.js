@@ -531,6 +531,17 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var OCC_USER_ID_CURRENT = 'current';
+    /** @type {?} */
+    var OCC_USER_ID_ANONYMOUS = 'anonymous';
+    /** @type {?} */
+    var OCC_USER_ID_GUEST = 'guest';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
     /** @type {?} */
     var ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
@@ -1848,6 +1859,52 @@
                 userId: userId,
                 password: password,
             }));
+        };
+        /**
+         * This function provides the userId the OCC calls should use, depending
+         * on wether there is an active storefront session or not.
+         *
+         * It returns the userId of the current storefront user or 'anonymous'
+         * in the case there are no signed in user in the storefront.
+         *
+         * The user id of a regular customer session is 'current'.  In the case of an
+         * asm customer emulation session, the userId will be the customerId.
+         */
+        /**
+         * This function provides the userId the OCC calls should use, depending
+         * on wether there is an active storefront session or not.
+         *
+         * It returns the userId of the current storefront user or 'anonymous'
+         * in the case there are no signed in user in the storefront.
+         *
+         * The user id of a regular customer session is 'current'.  In the case of an
+         * asm customer emulation session, the userId will be the customerId.
+         * @return {?}
+         */
+        AuthService.prototype.getOccUserId = /**
+         * This function provides the userId the OCC calls should use, depending
+         * on wether there is an active storefront session or not.
+         *
+         * It returns the userId of the current storefront user or 'anonymous'
+         * in the case there are no signed in user in the storefront.
+         *
+         * The user id of a regular customer session is 'current'.  In the case of an
+         * asm customer emulation session, the userId will be the customerId.
+         * @return {?}
+         */
+        function () {
+            return this.getUserToken().pipe(operators.map((/**
+             * @param {?} userToken
+             * @return {?}
+             */
+            function (userToken) {
+                if (!!userToken && !!userToken.userId) {
+                    return userToken.userId;
+                }
+                else {
+                    return OCC_USER_ID_ANONYMOUS;
+                }
+            })));
         };
         /**
          * Returns the user's token
@@ -5037,17 +5094,6 @@
          */
         ClientTokenEffect.prototype.clientAuthenticationTokenService;
     }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var OCC_USER_ID_CURRENT = 'current';
-    /** @type {?} */
-    var OCC_USER_ID_ANONYMOUS = 'anonymous';
-    /** @type {?} */
-    var OCC_USER_ID_GUEST = 'guest';
 
     /**
      * @fileoverview added by tsickle
@@ -41331,8 +41377,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserOrderService = /** @class */ (function () {
-        function UserOrderService(store) {
+        function UserOrderService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
          * Returns an order's detail
@@ -41357,24 +41404,30 @@
          * Retrieves order's details
          *
          * @param {?} orderCode an order code
-         * @param {?=} userId
          * @return {?}
          */
         UserOrderService.prototype.loadOrderDetails = /**
          * Retrieves order's details
          *
          * @param {?} orderCode an order code
-         * @param {?=} userId
          * @return {?}
          */
-        function (orderCode, userId) {
-            if (userId === undefined) {
-                userId = OCC_USER_ID_CURRENT;
-            }
-            this.store.dispatch(new LoadOrderDetails({
-                userId: userId,
-                orderCode: orderCode,
-            }));
+        function (orderCode) {
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadOrderDetails({
+                    userId: occUserId,
+                    orderCode: orderCode,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Clears order's details
@@ -41537,9 +41590,10 @@
         ];
         /** @nocollapse */
         UserOrderService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: AuthService }
         ]; };
-        /** @nocollapse */ UserOrderService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(core.ɵɵinject(store.Store)); }, token: UserOrderService, providedIn: "root" });
+        /** @nocollapse */ UserOrderService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
         return UserOrderService;
     }());
     if (false) {
@@ -41548,6 +41602,11 @@
          * @protected
          */
         UserOrderService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserOrderService.prototype.authService;
     }
 
     /**

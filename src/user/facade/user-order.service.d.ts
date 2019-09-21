@@ -1,11 +1,19 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/facade/auth.service';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { Order, OrderHistoryList } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class UserOrderService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
+    protected authService?: AuthService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    /**
+     * @deprecated since version 1.2
+     *  Use constructor(store: Store<StateWithUser | StateWithProcess<void>>,
+     *  authService: AuthService) instead
+     */
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
      * Returns an order's detail
@@ -16,7 +24,7 @@ export declare class UserOrderService {
      *
      * @param orderCode an order code
      */
-    loadOrderDetails(orderCode: string, userId?: string): void;
+    loadOrderDetails(orderCode: string): void;
     /**
      * Clears order's details
      */

@@ -261,6 +261,17 @@ const defaultAuthConfig = {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+const OCC_USER_ID_CURRENT = 'current';
+/** @type {?} */
+const OCC_USER_ID_ANONYMOUS = 'anonymous';
+/** @type {?} */
+const OCC_USER_ID_GUEST = 'guest';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 const ENTITY_REMOVE_ACTION = '[ENTITY] REMOVE';
 /** @type {?} */
 const ENTITY_REMOVE_ALL_ACTION = '[ENTITY] REMOVE ALL';
@@ -1563,6 +1574,31 @@ class AuthService {
             userId: userId,
             password: password,
         }));
+    }
+    /**
+     * This function provides the userId the OCC calls should use, depending
+     * on wether there is an active storefront session or not.
+     *
+     * It returns the userId of the current storefront user or 'anonymous'
+     * in the case there are no signed in user in the storefront.
+     *
+     * The user id of a regular customer session is 'current'.  In the case of an
+     * asm customer emulation session, the userId will be the customerId.
+     * @return {?}
+     */
+    getOccUserId() {
+        return this.getUserToken().pipe(map((/**
+         * @param {?} userToken
+         * @return {?}
+         */
+        userToken => {
+            if (!!userToken && !!userToken.userId) {
+                return userToken.userId;
+            }
+            else {
+                return OCC_USER_ID_ANONYMOUS;
+            }
+        })));
     }
     /**
      * Returns the user's token
@@ -4321,17 +4357,6 @@ if (false) {
      */
     ClientTokenEffect.prototype.clientAuthenticationTokenService;
 }
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const OCC_USER_ID_CURRENT = 'current';
-/** @type {?} */
-const OCC_USER_ID_ANONYMOUS = 'anonymous';
-/** @type {?} */
-const OCC_USER_ID_GUEST = 'guest';
 
 /**
  * @fileoverview added by tsickle
@@ -36598,9 +36623,11 @@ if (false) {
 class UserOrderService {
     /**
      * @param {?} store
+     * @param {?=} authService
      */
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Returns an order's detail
@@ -36613,17 +36640,21 @@ class UserOrderService {
      * Retrieves order's details
      *
      * @param {?} orderCode an order code
-     * @param {?=} userId
      * @return {?}
      */
-    loadOrderDetails(orderCode, userId) {
-        if (userId === undefined) {
-            userId = OCC_USER_ID_CURRENT;
-        }
-        this.store.dispatch(new LoadOrderDetails({
-            userId: userId,
+    loadOrderDetails(orderCode) {
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadOrderDetails({
+            userId: occUserId,
             orderCode: orderCode,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Clears order's details
@@ -36719,15 +36750,21 @@ UserOrderService.decorators = [
 ];
 /** @nocollapse */
 UserOrderService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-/** @nocollapse */ UserOrderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store)); }, token: UserOrderService, providedIn: "root" });
+/** @nocollapse */ UserOrderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserOrderService_Factory() { return new UserOrderService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserOrderService, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @protected
      */
     UserOrderService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserOrderService.prototype.authService;
 }
 
 /**
