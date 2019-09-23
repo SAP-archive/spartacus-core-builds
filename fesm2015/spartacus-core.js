@@ -7930,482 +7930,6 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class CartEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} cartConnector
-     * @param {?} cartData
-     */
-    constructor(actions$, cartConnector, cartData) {
-        this.actions$ = actions$;
-        this.cartConnector = cartConnector;
-        this.cartData = cartData;
-        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            /** @type {?} */
-            const loadCartParams = {
-                userId: (payload && payload.userId) || this.cartData.userId,
-                cartId: (payload && payload.cartId) || this.cartData.cartId,
-            };
-            if (this.isMissingData(loadCartParams)) {
-                return of(new LoadCartFail({}));
-            }
-            return this.cartConnector
-                .load(loadCartParams.userId, loadCartParams.cartId)
-                .pipe(map((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            (cart) => {
-                return new LoadCartSuccess(cart);
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => {
-                if (error && error.error && error.error.errors) {
-                    /** @type {?} */
-                    const cartNotFoundErrors = error.error.errors.filter((/**
-                     * @param {?} err
-                     * @return {?}
-                     */
-                    err => err.reason === 'notFound' || 'UnknownResourceError'));
-                    if (cartNotFoundErrors.length > 0) {
-                        return of(new ClearCart());
-                    }
-                }
-                return of(new LoadCartFail(makeErrorSerializable(error)));
-            })));
-        })));
-        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            return this.cartConnector
-                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
-                .pipe(switchMap((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            (cart) => {
-                if (payload.oldCartId) {
-                    return [
-                        new CreateCartSuccess(cart),
-                        new MergeCartSuccess({
-                            userId: payload.userId,
-                            cartId: cart.code,
-                        }),
-                    ];
-                }
-                return [new CreateCartSuccess(cart)];
-            })), catchError((/**
-             * @param {?} error
-             * @return {?}
-             */
-            error => of(new CreateCartFail(makeErrorSerializable(error))))));
-        })));
-        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => {
-            return this.cartConnector.load(payload.userId, 'current').pipe(map((/**
-             * @param {?} currentCart
-             * @return {?}
-             */
-            currentCart => {
-                return new CreateCart({
-                    userId: payload.userId,
-                    oldCartId: payload.cartId,
-                    toMergeCartGuid: currentCart ? currentCart.guid : undefined,
-                });
-            })));
-        })));
-        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), map((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => new LoadCart({
-            userId: payload.userId,
-            cartId: payload.cartId,
-        }))));
-        this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), map((/**
-         * @return {?}
-         */
-        () => new ResetCartDetails())));
-        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartConnector
-            .addEmail(payload.userId, payload.cartId, payload.email)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new AddEmailToCartSuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new AddEmailToCartFail(makeErrorSerializable(error)))))))));
-        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), exhaustMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new ClearCart();
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new DeleteCartFail(makeErrorSerializable(error)))))))));
-    }
-    /**
-     * @private
-     * @param {?} payload
-     * @return {?}
-     */
-    isMissingData(payload) {
-        return payload.userId === undefined || payload.cartId === undefined;
-    }
-}
-CartEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartConnector },
-    { type: CartDataService }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "loadCart$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "createCart$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "mergeCart$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "refresh$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "addEmail$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEffects.prototype, "deleteCart$", void 0);
-if (false) {
-    /** @type {?} */
-    CartEffects.prototype.loadCart$;
-    /** @type {?} */
-    CartEffects.prototype.createCart$;
-    /** @type {?} */
-    CartEffects.prototype.mergeCart$;
-    /** @type {?} */
-    CartEffects.prototype.refresh$;
-    /** @type {?} */
-    CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
-    /** @type {?} */
-    CartEffects.prototype.addEmail$;
-    /** @type {?} */
-    CartEffects.prototype.deleteCart$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEffects.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEffects.prototype.cartConnector;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEffects.prototype.cartData;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class CartEntryAdapter {
-}
-if (false) {
-    /**
-     * Abstract method used to add entry to cart
-     *
-     * @abstract
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} productCode
-     * @param {?=} quantity
-     * @return {?}
-     */
-    CartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) { };
-    /**
-     * Abstract method used to update entry in cart
-     * @abstract
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @param {?} qty
-     * @param {?=} pickupStore
-     * @return {?}
-     */
-    CartEntryAdapter.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) { };
-    /**
-     * Abstract method used to remove entry from cart
-     *
-     * @abstract
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @return {?}
-     */
-    CartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) { };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CartEntryConnector {
-    /**
-     * @param {?} adapter
-     */
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} productCode
-     * @param {?=} quantity
-     * @return {?}
-     */
-    add(userId, cartId, productCode, quantity) {
-        return this.adapter.add(userId, cartId, productCode, quantity);
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @param {?} qty
-     * @param {?=} pickupStore
-     * @return {?}
-     */
-    update(userId, cartId, entryNumber, qty, pickupStore) {
-        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @return {?}
-     */
-    remove(userId, cartId, entryNumber) {
-        return this.adapter.remove(userId, cartId, entryNumber);
-    }
-}
-CartEntryConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CartEntryConnector.ctorParameters = () => [
-    { type: CartEntryAdapter }
-];
-/** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartEntryConnector.prototype.adapter;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CartEntryEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} cartEntryConnector
-     */
-    constructor(actions$, cartEntryConnector) {
-        this.actions$ = actions$;
-        this.cartEntryConnector = cartEntryConnector;
-        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-            .pipe(map((/**
-         * @param {?} entry
-         * @return {?}
-         */
-        (entry) => new CartAddEntrySuccess(Object.assign({}, entry, { userId: payload.userId, cartId: payload.cartId })))), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartAddEntryFail(makeErrorSerializable(error)))))))));
-        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .remove(payload.userId, payload.cartId, payload.entry)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new CartRemoveEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartRemoveEntryFail(makeErrorSerializable(error)))))))));
-        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new CartUpdateEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartUpdateEntryFail(makeErrorSerializable(error)))))))));
-    }
-}
-CartEntryEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartEntryEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartEntryConnector }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "addEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "removeEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "updateEntry$", void 0);
-if (false) {
-    /** @type {?} */
-    CartEntryEffects.prototype.addEntry$;
-    /** @type {?} */
-    CartEntryEffects.prototype.removeEntry$;
-    /** @type {?} */
-    CartEntryEffects.prototype.updateEntry$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEntryEffects.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEntryEffects.prototype.cartEntryConnector;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const effects$1 = [CartEffects, CartEntryEffects];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
 const VERIFY_ADDRESS = '[Checkout] Verify Address';
 /** @type {?} */
@@ -9200,13 +8724,19 @@ if (false) {
     ClearCheckoutDeliveryMode.prototype.payload;
 }
 class ClearCheckoutDeliveryModeSuccess {
-    constructor() {
+    /**
+     * @param {?=} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
         this.type = CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS;
     }
 }
 if (false) {
     /** @type {?} */
     ClearCheckoutDeliveryModeSuccess.prototype.type;
+    /** @type {?} */
+    ClearCheckoutDeliveryModeSuccess.prototype.payload;
 }
 class ClearCheckoutDeliveryModeFail {
     /**
@@ -9329,6 +8859,483 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartConnector
+     * @param {?} cartData
+     */
+    constructor(actions$, cartConnector, cartData) {
+        this.actions$ = actions$;
+        this.cartConnector = cartConnector;
+        this.cartData = cartData;
+        this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            /** @type {?} */
+            const loadCartParams = {
+                userId: (payload && payload.userId) || this.cartData.userId,
+                cartId: (payload && payload.cartId) || this.cartData.cartId,
+            };
+            if (this.isMissingData(loadCartParams)) {
+                return of(new LoadCartFail({}));
+            }
+            return this.cartConnector
+                .load(loadCartParams.userId, loadCartParams.cartId)
+                .pipe(map((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            (cart) => {
+                return new LoadCartSuccess(cart);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => {
+                if (error && error.error && error.error.errors) {
+                    /** @type {?} */
+                    const cartNotFoundErrors = error.error.errors.filter((/**
+                     * @param {?} err
+                     * @return {?}
+                     */
+                    err => err.reason === 'notFound' || 'UnknownResourceError'));
+                    if (cartNotFoundErrors.length > 0) {
+                        return of(new ClearCart());
+                    }
+                }
+                return of(new LoadCartFail(makeErrorSerializable(error)));
+            })));
+        })));
+        this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartConnector
+                .create(payload.userId, payload.oldCartId, payload.toMergeCartGuid)
+                .pipe(switchMap((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            (cart) => {
+                if (payload.oldCartId) {
+                    return [
+                        new CreateCartSuccess(cart),
+                        new MergeCartSuccess({
+                            userId: payload.userId,
+                            cartId: cart.code,
+                        }),
+                    ];
+                }
+                return [new CreateCartSuccess(cart)];
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new CreateCartFail(makeErrorSerializable(error))))));
+        })));
+        this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartConnector.load(payload.userId, 'current').pipe(map((/**
+             * @param {?} currentCart
+             * @return {?}
+             */
+            currentCart => {
+                return new CreateCart({
+                    userId: payload.userId,
+                    oldCartId: payload.cartId,
+                    toMergeCartGuid: currentCart ? currentCart.guid : undefined,
+                });
+            })));
+        })));
+        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), map((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => payload &&
+            new LoadCart({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            }))));
+        this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), map((/**
+         * @return {?}
+         */
+        () => new ResetCartDetails())));
+        this.addEmail$ = this.actions$.pipe(ofType(ADD_EMAIL_TO_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartConnector
+            .addEmail(payload.userId, payload.cartId, payload.email)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new AddEmailToCartSuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new AddEmailToCartFail(makeErrorSerializable(error)))))))));
+        this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), exhaustMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartConnector.delete(payload.userId, payload.cartId).pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new ClearCart();
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new DeleteCartFail(makeErrorSerializable(error)))))))));
+    }
+    /**
+     * @private
+     * @param {?} payload
+     * @return {?}
+     */
+    isMissingData(payload) {
+        return payload.userId === undefined || payload.cartId === undefined;
+    }
+}
+CartEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartConnector },
+    { type: CartDataService }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "loadCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "createCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "mergeCart$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "refresh$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "addEmail$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEffects.prototype, "deleteCart$", void 0);
+if (false) {
+    /** @type {?} */
+    CartEffects.prototype.loadCart$;
+    /** @type {?} */
+    CartEffects.prototype.createCart$;
+    /** @type {?} */
+    CartEffects.prototype.mergeCart$;
+    /** @type {?} */
+    CartEffects.prototype.refresh$;
+    /** @type {?} */
+    CartEffects.prototype.resetCartDetailsOnSiteContextChange$;
+    /** @type {?} */
+    CartEffects.prototype.addEmail$;
+    /** @type {?} */
+    CartEffects.prototype.deleteCart$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.cartData;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class CartEntryAdapter {
+}
+if (false) {
+    /**
+     * Abstract method used to add entry to cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?=} quantity
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.add = function (userId, cartId, productCode, quantity) { };
+    /**
+     * Abstract method used to update entry in cart
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} qty
+     * @param {?=} pickupStore
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.update = function (userId, cartId, entryNumber, qty, pickupStore) { };
+    /**
+     * Abstract method used to remove entry from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    CartEntryAdapter.prototype.remove = function (userId, cartId, entryNumber) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEntryConnector {
+    /**
+     * @param {?} adapter
+     */
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?=} quantity
+     * @return {?}
+     */
+    add(userId, cartId, productCode, quantity) {
+        return this.adapter.add(userId, cartId, productCode, quantity);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} qty
+     * @param {?=} pickupStore
+     * @return {?}
+     */
+    update(userId, cartId, entryNumber, qty, pickupStore) {
+        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    remove(userId, cartId, entryNumber) {
+        return this.adapter.remove(userId, cartId, entryNumber);
+    }
+}
+CartEntryConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CartEntryConnector.ctorParameters = () => [
+    { type: CartEntryAdapter }
+];
+/** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartEntryConnector.prototype.adapter;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEntryEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartEntryConnector
+     */
+    constructor(actions$, cartEntryConnector) {
+        this.actions$ = actions$;
+        this.cartEntryConnector = cartEntryConnector;
+        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+            .pipe(map((/**
+         * @param {?} entry
+         * @return {?}
+         */
+        (entry) => new CartAddEntrySuccess(Object.assign({}, entry, { userId: payload.userId, cartId: payload.cartId })))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartAddEntryFail(makeErrorSerializable(error)))))))));
+        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .remove(payload.userId, payload.cartId, payload.entry)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new CartRemoveEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartRemoveEntryFail(makeErrorSerializable(error)))))))));
+        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new CartUpdateEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartUpdateEntryFail(makeErrorSerializable(error)))))))));
+    }
+}
+CartEntryEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartEntryEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartEntryConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "addEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "removeEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "updateEntry$", void 0);
+if (false) {
+    /** @type {?} */
+    CartEntryEffects.prototype.addEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.removeEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.updateEntry$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.cartEntryConnector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const effects$1 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
@@ -12641,6 +12648,11 @@ class CheckoutEffects {
              */
             () => [
                 new SetDeliveryAddressSuccess(payload.address),
+                new ClearCheckoutDeliveryMode({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                }),
+                new ClearSupportedDeliveryModes(),
                 new ResetLoadSupportedDeliveryModesProcess(),
                 new LoadSupportedDeliveryModes({
                     userId: payload.userId,
@@ -12861,7 +12873,10 @@ class CheckoutEffects {
                 .pipe(map((/**
              * @return {?}
              */
-            () => new ClearCheckoutDeliveryModeSuccess())), catchError((/**
+            () => new ClearCheckoutDeliveryModeSuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            }))), catchError((/**
              * @param {?} error
              * @return {?}
              */

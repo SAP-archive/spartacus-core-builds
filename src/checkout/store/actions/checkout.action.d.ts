@@ -285,7 +285,21 @@ export declare class ClearCheckoutDeliveryMode implements Action {
     });
 }
 export declare class ClearCheckoutDeliveryModeSuccess implements Action {
+    payload?: {
+        userId: string;
+        cartId: string;
+    };
     readonly type = "[Checkout] Clear Checkout Delivery Mode Success";
+    constructor(payload: {
+        userId: string;
+        cartId: string;
+    });
+    /**
+     * @deprecated since version 1.2
+     * Use constructor(public payload: { userId: string; cartId: string }) instead
+     *
+     * TODO(issue:#4309) Deprecated since 1.2
+     */
     constructor();
 }
 export declare class ClearCheckoutDeliveryModeFail implements Action {
