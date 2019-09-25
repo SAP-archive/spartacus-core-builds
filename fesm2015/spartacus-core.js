@@ -17345,8 +17345,8 @@ function reducer$9(state = initialState$9, action) {
             }
             else {
                 /** @type {?} */
-                const messages = state.entities[message.type];
-                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...messages, message.text] }) });
+                const currentMessages = state.entities[message.type];
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...currentMessages, message.text] }) });
             }
         }
         case REMOVE_MESSAGE: {

@@ -19681,8 +19681,8 @@
                 }
                 else {
                     /** @type {?} */
-                    var messages = state.entities[message.type];
-                    return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(messages, [message.text]), _b)) });
+                    var currentMessages = state.entities[message.type];
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(currentMessages, [message.text]), _b)) });
                 }
             }
             case REMOVE_MESSAGE: {
