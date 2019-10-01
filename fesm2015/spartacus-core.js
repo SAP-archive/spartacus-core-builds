@@ -12843,7 +12843,11 @@ class CheckoutEffects {
          * @param {?} action
          * @return {?}
          */
-        (action) => action.payload)), switchMap((/**
+        (action) => action.payload)), filter((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => Boolean(payload.cartId))), switchMap((/**
          * @param {?} payload
          * @return {?}
          */
@@ -12863,7 +12867,11 @@ class CheckoutEffects {
          * @param {?} action
          * @return {?}
          */
-        (action) => action.payload)), switchMap((/**
+        (action) => action.payload)), filter((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => Boolean(payload.cartId))), switchMap((/**
          * @param {?} payload
          * @return {?}
          */

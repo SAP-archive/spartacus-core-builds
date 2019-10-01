@@ -14317,7 +14317,11 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) { return action.payload; })), operators.switchMap((/**
+            function (action) { return action.payload; })), operators.filter((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) { return Boolean(payload.cartId); })), operators.switchMap((/**
              * @param {?} payload
              * @return {?}
              */
@@ -14339,7 +14343,11 @@
              * @param {?} action
              * @return {?}
              */
-            function (action) { return action.payload; })), operators.switchMap((/**
+            function (action) { return action.payload; })), operators.filter((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) { return Boolean(payload.cartId); })), operators.switchMap((/**
              * @param {?} payload
              * @return {?}
              */

@@ -14126,7 +14126,11 @@ var CheckoutEffects = /** @class */ (function () {
          * @param {?} action
          * @return {?}
          */
-        function (action) { return action.payload; })), switchMap((/**
+        function (action) { return action.payload; })), filter((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        function (payload) { return Boolean(payload.cartId); })), switchMap((/**
          * @param {?} payload
          * @return {?}
          */
@@ -14148,7 +14152,11 @@ var CheckoutEffects = /** @class */ (function () {
          * @param {?} action
          * @return {?}
          */
-        function (action) { return action.payload; })), switchMap((/**
+        function (action) { return action.payload; })), filter((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        function (payload) { return Boolean(payload.cartId); })), switchMap((/**
          * @param {?} payload
          * @return {?}
          */
