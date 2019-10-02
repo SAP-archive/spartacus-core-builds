@@ -31974,15 +31974,13 @@ class SearchPageMetaResolver extends PageMetaResolver {
          */
         results => results.pagination.totalResults)));
         /** @type {?} */
-        const query$ = this.routingService.getRouterState().pipe(map((/**
+        const query$ = this.routingService
+            .getRouterState()
+            .pipe(map((/**
          * @param {?} state
          * @return {?}
          */
-        state => state.state.params['query'])), filter((/**
-         * @param {?} q
-         * @return {?}
-         */
-        q => !!q)));
+        state => state.state.params['query'])));
         return combineLatest([total$, query$]).pipe(switchMap((/**
          * @param {?} __0
          * @return {?}

@@ -35646,15 +35646,13 @@
              */
             function (results) { return results.pagination.totalResults; })));
             /** @type {?} */
-            var query$ = this.routingService.getRouterState().pipe(operators.map((/**
+            var query$ = this.routingService
+                .getRouterState()
+                .pipe(operators.map((/**
              * @param {?} state
              * @return {?}
              */
-            function (state) { return state.state.params['query']; })), operators.filter((/**
-             * @param {?} q
-             * @return {?}
-             */
-            function (q) { return !!q; })));
+            function (state) { return state.state.params['query']; })));
             return rxjs.combineLatest([total$, query$]).pipe(operators.switchMap((/**
              * @param {?} __0
              * @return {?}

@@ -35455,15 +35455,13 @@ var SearchPageMetaResolver = /** @class */ (function (_super) {
          */
         function (results) { return results.pagination.totalResults; })));
         /** @type {?} */
-        var query$ = this.routingService.getRouterState().pipe(map((/**
+        var query$ = this.routingService
+            .getRouterState()
+            .pipe(map((/**
          * @param {?} state
          * @return {?}
          */
-        function (state) { return state.state.params['query']; })), filter((/**
-         * @param {?} q
-         * @return {?}
-         */
-        function (q) { return !!q; })));
+        function (state) { return state.state.params['query']; })));
         return combineLatest([total$, query$]).pipe(switchMap((/**
          * @param {?} __0
          * @return {?}
