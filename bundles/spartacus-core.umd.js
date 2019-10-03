@@ -4206,6 +4206,13 @@
                 endpoint = this.config.backend.occ.endpoints[endpoint];
             }
             if (urlParams) {
+                Object.keys(urlParams).forEach((/**
+                 * @param {?} key
+                 * @return {?}
+                 */
+                function (key) {
+                    urlParams[key] = encodeURIComponent(urlParams[key]);
+                }));
                 endpoint = DynamicTemplate.resolve(endpoint, urlParams);
             }
             if (queryParams) {
