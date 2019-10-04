@@ -1,0 +1,15 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { createSelector } from '@ngrx/store';
+import { getAsmState } from './feature.selector';
+const ɵ0 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.asmUi;
+/** @type {?} */
+export const getAsmUi = createSelector(getAsmState, (ɵ0));
+export { ɵ0 };
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYXNtLXVpLnNlbGVjdG9ycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BzcGFydGFjdXMvY29yZS8iLCJzb3VyY2VzIjpbInNyYy9hc20vc3RvcmUvc2VsZWN0b3JzL2FzbS11aS5zZWxlY3RvcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxjQUFjLEVBQW9CLE1BQU0sYUFBYSxDQUFDO0FBRy9ELE9BQU8sRUFBRSxXQUFXLEVBQUUsTUFBTSxvQkFBb0IsQ0FBQzs7Ozs7QUFJL0MsQ0FBQyxLQUFlLEVBQUUsRUFBRSxDQUFDLEtBQUssQ0FBQyxLQUFLOztBQUZsQyxNQUFNLE9BQU8sUUFBUSxHQUEwQyxjQUFjLENBQzNFLFdBQVcsT0FFWiIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZVNlbGVjdG9yLCBNZW1vaXplZFNlbGVjdG9yIH0gZnJvbSAnQG5ncngvc3RvcmUnO1xuaW1wb3J0IHsgQXNtVWkgfSBmcm9tICcuLi8uLi9tb2RlbHMvYXNtLm1vZGVscyc7XG5pbXBvcnQgeyBBc21TdGF0ZSwgU3RhdGVXaXRoQXNtIH0gZnJvbSAnLi4vYXNtLXN0YXRlJztcbmltcG9ydCB7IGdldEFzbVN0YXRlIH0gZnJvbSAnLi9mZWF0dXJlLnNlbGVjdG9yJztcblxuZXhwb3J0IGNvbnN0IGdldEFzbVVpOiBNZW1vaXplZFNlbGVjdG9yPFN0YXRlV2l0aEFzbSwgQXNtVWk+ID0gY3JlYXRlU2VsZWN0b3IoXG4gIGdldEFzbVN0YXRlLFxuICAoc3RhdGU6IEFzbVN0YXRlKSA9PiBzdGF0ZS5hc21VaVxuKTtcbiJdfQ==

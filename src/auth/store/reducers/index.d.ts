@@ -5,4 +5,5 @@ export declare function getReducers(): ActionReducerMap<AuthState>;
 export declare const reducerToken: InjectionToken<ActionReducerMap<AuthState>>;
 export declare const reducerProvider: Provider;
 export declare function clearAuthState(reducer: ActionReducer<AuthState, Action>): ActionReducer<AuthState, Action>;
+export declare function clearCustomerSupportAgentAuthState(reducer: ActionReducer<AuthState, Action>): ActionReducer<AuthState, Action>;
 export declare const metaReducers: MetaReducer<any>[];

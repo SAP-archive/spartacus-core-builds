@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend'), require('@angular/forms')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend', '@angular/forms'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.rxjs, global.rxjs.operators, global.store, global.ng.router, global.effects, global.ng.platformBrowser, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend, global.ng.forms));
-}(this, function (exports, common, http, core, rxjs, operators, store, router, effects$a, platformBrowser, routerStore, i18next, i18nextXhrBackend, forms) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/common'), require('@angular/common/http'), require('@angular/core'), require('@ngrx/effects'), require('@ngrx/store'), require('@angular/platform-browser'), require('rxjs'), require('rxjs/operators'), require('@angular/router'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend'), require('@angular/forms')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/common', '@angular/common/http', '@angular/core', '@ngrx/effects', '@ngrx/store', '@angular/platform-browser', 'rxjs', 'rxjs/operators', '@angular/router', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend', '@angular/forms'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.common, global.ng.common.http, global.ng.core, global.effects, global.store, global.ng.platformBrowser, global.rxjs, global.rxjs.operators, global.ng.router, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend, global.ng.forms));
+}(this, function (exports, common, http, core, effects$b, store, platformBrowser, rxjs, operators, router, routerStore, i18next, i18nextXhrBackend, forms) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -495,16 +495,49 @@
     var   /**
      * @abstract
      */
-    AuthConfig = /** @class */ (function (_super) {
-        __extends(AuthConfig, _super);
-        function AuthConfig() {
+    AsmConfig = /** @class */ (function (_super) {
+        __extends(AsmConfig, _super);
+        function AsmConfig() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        return AuthConfig;
+        return AsmConfig;
     }(OccConfig));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultAsmConfig = {};
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {string} */
+    var StorageSyncType = {
+        NO_STORAGE: 'NO_STORAGE',
+        LOCAL_STORAGE: 'LOCAL_STORAGE',
+        SESSION_STORAGE: 'SESSION_STORAGE',
+    };
+    /** @enum {string} */
+    var StateTransferType = {
+        TRANSFER_STATE: 'SSR',
+    };
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    StateConfig = /** @class */ (function () {
+        function StateConfig() {
+        }
+        return StateConfig;
+    }());
     if (false) {
         /** @type {?} */
-        AuthConfig.prototype.authentication;
+        StateConfig.prototype.state;
     }
 
     /**
@@ -512,16 +545,17 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var defaultAuthConfig = {
-        authentication: {
-            client_id: 'mobile_android',
-            client_secret: 'secret',
-        },
-        backend: {
-            occ: {
-                endpoints: {
-                    login: '/authorizationserver/oauth/token',
-                },
+    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+    /** @type {?} */
+    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+    /** @type {?} */
+    var defaultStateConfig = {
+        state: {
+            storageSync: {
+                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+                keys: {},
+                excludeKeys: {},
             },
         },
     };
@@ -530,12 +564,770 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var WindowRef = /** @class */ (function () {
+        function WindowRef(document) {
+            // it's a workaround to have document property properly typed
+            // see: https://github.com/angular/angular/issues/15640
+            this.document = document;
+        }
+        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return typeof window !== 'undefined' ? window : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "localStorage", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WindowRef.prototype, "resize$", {
+            /**
+             * Returns an observable for the window resize event and emits an event
+             * every 300ms in case of resizing. An event is simulated initially.
+             *
+             * If there's no window object availale (i.e. in SSR), a null value is emitted.
+             */
+            get: /**
+             * Returns an observable for the window resize event and emits an event
+             * every 300ms in case of resizing. An event is simulated initially.
+             *
+             * If there's no window object availale (i.e. in SSR), a null value is emitted.
+             * @return {?}
+             */
+            function () {
+                if (!this.nativeWindow) {
+                    return rxjs.of(null);
+                }
+                else {
+                    return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        WindowRef.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        WindowRef.ctorParameters = function () { return [
+            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
+        ]; };
+        /** @nocollapse */ WindowRef.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+        return WindowRef;
+    }());
+    if (false) {
+        /** @type {?} */
+        WindowRef.prototype.document;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
-    var OCC_USER_ID_CURRENT = 'current';
+    var OBJECT_SEPARATOR = '.';
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSliceValue(keys, state) {
+        return keys
+            .split(OBJECT_SEPARATOR)
+            .reduce((/**
+         * @param {?} previous
+         * @param {?} current
+         * @return {?}
+         */
+        function (previous, current) { return (previous ? previous[current] : undefined); }), state);
+    }
+    /**
+     * @template T, E
+     * @param {?} key
+     * @param {?} excludeKeys
+     * @param {?} value
+     * @return {?}
+     */
+    function createShellObject(key, excludeKeys, value) {
+        if (!key || !value || Object.keys(value).length === 0) {
+            return (/** @type {?} */ ({}));
+        }
+        /** @type {?} */
+        var shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
+         * @param {?} acc
+         * @param {?} previous
+         * @return {?}
+         */
+        function (acc, previous) {
+            var _a;
+            return (/** @type {?} */ (((/** @type {?} */ (_a = {}, _a[previous] = acc, _a)))));
+        }), value);
+        return handleExclusions(key, excludeKeys, shell);
+    }
+    /**
+     * @template T, E
+     * @param {?} keys
+     * @param {?} excludeKeys
+     * @param {?} state
+     * @return {?}
+     */
+    function getStateSlice(keys, excludeKeys, state) {
+        var e_1, _a;
+        if (keys && keys.length === 0) {
+            return (/** @type {?} */ ({}));
+        }
+        /** @type {?} */
+        var stateSlices = {};
+        try {
+            for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
+                var currentKey = keys_1_1.value;
+                /** @type {?} */
+                var stateValue = getStateSliceValue(currentKey, state);
+                /** @type {?} */
+                var shell = createShellObject(currentKey, excludeKeys, stateValue);
+                stateSlices = deepMerge(stateSlices, shell);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) _a.call(keys_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return (/** @type {?} */ (stateSlices));
+    }
+    /**
+     * @param {?} key
+     * @param {?} excludeKeys
+     * @param {?} value
+     * @return {?}
+     */
+    function handleExclusions(key, excludeKeys, value) {
+        var e_2, _a;
+        /** @type {?} */
+        var exclusionKeys = getExclusionKeys(key, excludeKeys);
+        if (exclusionKeys.length === 0) {
+            return value;
+        }
+        /** @type {?} */
+        var finalValue = deepMerge({}, value);
+        try {
+            for (var exclusionKeys_1 = __values(exclusionKeys), exclusionKeys_1_1 = exclusionKeys_1.next(); !exclusionKeys_1_1.done; exclusionKeys_1_1 = exclusionKeys_1.next()) {
+                var currentExclusionKey = exclusionKeys_1_1.value;
+                /** @type {?} */
+                var exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
+                /** @type {?} */
+                var nestedTemp = finalValue;
+                for (var i = 0; i < exclusionChunksSplit.length; i++) {
+                    /** @type {?} */
+                    var currentChunk = exclusionChunksSplit[i];
+                    // last iteration
+                    if (i === exclusionChunksSplit.length - 1) {
+                        if (nestedTemp && nestedTemp[currentChunk]) {
+                            delete nestedTemp[currentChunk];
+                        }
+                    }
+                    else {
+                        nestedTemp = nestedTemp[currentChunk];
+                    }
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (exclusionKeys_1_1 && !exclusionKeys_1_1.done && (_a = exclusionKeys_1.return)) _a.call(exclusionKeys_1);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return finalValue;
+    }
+    /**
+     * @param {?} key
+     * @param {?} excludeKeys
+     * @return {?}
+     */
+    function getExclusionKeys(key, excludeKeys) {
+        var e_3, _a;
+        if (!key || !excludeKeys) {
+            return [];
+        }
+        /** @type {?} */
+        var exclusionKeys = [];
+        try {
+            for (var excludeKeys_1 = __values(excludeKeys), excludeKeys_1_1 = excludeKeys_1.next(); !excludeKeys_1_1.done; excludeKeys_1_1 = excludeKeys_1.next()) {
+                var exclusionKey = excludeKeys_1_1.value;
+                if (exclusionKey.includes(key)) {
+                    exclusionKeys.push(exclusionKey);
+                }
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (excludeKeys_1_1 && !excludeKeys_1_1.done && (_a = excludeKeys_1.return)) _a.call(excludeKeys_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return exclusionKeys;
+    }
+    /**
+     * @param {?} keys
+     * @param {?} type
+     * @return {?}
+     */
+    function filterKeysByType(keys, type) {
+        if (!keys) {
+            return [];
+        }
+        return Object.keys(keys).filter((/**
+         * @param {?} key
+         * @return {?}
+         */
+        function (key) { return keys[key] === type; }));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?} winRef
+     * @param {?=} config
+     * @return {?}
+     */
+    function getStorageSyncReducer(winRef, config) {
+        if (!winRef.nativeWindow ||
+            !config ||
+            !config.state ||
+            !config.state.storageSync ||
+            !config.state.storageSync.keys) {
+            return (/**
+             * @param {?} reducer
+             * @return {?}
+             */
+            function (reducer) { return reducer; });
+        }
+        /** @type {?} */
+        var storageSyncConfig = config.state.storageSync;
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                /** @type {?} */
+                var newState = reducer(state, action);
+                if (action.type === store.INIT || action.type === store.UPDATE) {
+                    /** @type {?} */
+                    var rehydratedState = rehydrate(config, winRef);
+                    return deepMerge({}, newState, rehydratedState);
+                }
+                if (action.type !== store.INIT) {
+                    // handle local storage
+                    /** @type {?} */
+                    var localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                    /** @type {?} */
+                    var localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
+                    /** @type {?} */
+                    var localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
+                    persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                    // handle session storage
+                    /** @type {?} */
+                    var sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                    /** @type {?} */
+                    var sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
+                    /** @type {?} */
+                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
+                    persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+                }
+                return newState;
+            });
+        });
+    }
+    /**
+     * @template T
+     * @param {?} config
+     * @param {?} winRef
+     * @return {?}
+     */
+    function rehydrate(config, winRef) {
+        /** @type {?} */
+        var localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+        /** @type {?} */
+        var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+        return deepMerge(localStorageValue, sessionStorageValue);
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    function exists(value) {
+        if (value != null) {
+            if (typeof value === 'object') {
+                return Object.keys(value).length !== 0;
+            }
+            return value !== '';
+        }
+        return false;
+    }
+    /**
+     * @param {?} storageType
+     * @param {?} winRef
+     * @return {?}
+     */
+    function getStorage(storageType, winRef) {
+        /** @type {?} */
+        var storage;
+        switch (storageType) {
+            case StorageSyncType.LOCAL_STORAGE: {
+                storage = winRef.localStorage;
+                break;
+            }
+            case StorageSyncType.SESSION_STORAGE: {
+                storage = winRef.sessionStorage;
+                break;
+            }
+            case StorageSyncType.NO_STORAGE: {
+                storage = undefined;
+                break;
+            }
+            default: {
+                storage = winRef.sessionStorage;
+            }
+        }
+        return storage;
+    }
+    /**
+     * @param {?} configKey
+     * @param {?} value
+     * @param {?} storage
+     * @return {?}
+     */
+    function persistToStorage(configKey, value, storage) {
+        if (!isSsr(storage) && value) {
+            storage.setItem(configKey, JSON.stringify(value));
+        }
+    }
+    /**
+     * @param {?} storage
+     * @param {?} key
+     * @return {?}
+     */
+    function readFromStorage(storage, key) {
+        if (isSsr(storage)) {
+            return;
+        }
+        /** @type {?} */
+        var storageValue = storage.getItem(key);
+        if (!storageValue) {
+            return;
+        }
+        return JSON.parse(storageValue);
+    }
+    /**
+     * @param {?} storage
+     * @return {?}
+     */
+    function isSsr(storage) {
+        return !Boolean(storage);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
-    var OCC_USER_ID_ANONYMOUS = 'anonymous';
+    var AUTH_FEATURE = 'auth';
     /** @type {?} */
-    var OCC_USER_ID_GUEST = 'guest';
+    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+    /** @type {?} */
+    var CSAGENT_TOKEN_DATA = '[Auth] Customer Support Agent Token Data';
+    /**
+     * @record
+     */
+    function StateWithAuth() { }
+    if (false) {
+        /* Skipping unnamed member:
+        [AUTH_FEATURE]: AuthState;*/
+    }
+    /**
+     * @record
+     */
+    function AuthState() { }
+    if (false) {
+        /** @type {?} */
+        AuthState.prototype.userToken;
+        /** @type {?} */
+        AuthState.prototype.clientToken;
+        /** @type {?} */
+        AuthState.prototype.csagentToken;
+    }
+    /**
+     * @record
+     */
+    function UserTokenState() { }
+    if (false) {
+        /** @type {?} */
+        UserTokenState.prototype.token;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CX_KEY = platformBrowser.makeStateKey('cx-state');
+    /**
+     * @param {?} platformId
+     * @param {?=} transferState
+     * @param {?=} config
+     * @return {?}
+     */
+    function getTransferStateReducer(platformId, transferState, config) {
+        if (transferState &&
+            config &&
+            config.state &&
+            config.state.ssrTransfer &&
+            config.state.ssrTransfer.keys) {
+            if (common.isPlatformBrowser(platformId)) {
+                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+            else if (common.isPlatformServer(platformId)) {
+                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+            }
+        }
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) { return reducer; });
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getServerTransferStateReducer(transferState, keys) {
+        /** @type {?} */
+        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                /** @type {?} */
+                var newState = reducer(state, action);
+                if (newState) {
+                    /** @type {?} */
+                    var stateSlice = getStateSlice(transferStateKeys, [], newState);
+                    transferState.set(CX_KEY, stateSlice);
+                }
+                return newState;
+            });
+        });
+    }
+    /**
+     * @param {?} transferState
+     * @param {?} keys
+     * @return {?}
+     */
+    function getBrowserTransferStateReducer(transferState, keys) {
+        /** @type {?} */
+        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        function (reducer) {
+            return (/**
+             * @param {?} state
+             * @param {?} action
+             * @return {?}
+             */
+            function (state, action) {
+                if (action.type === store.INIT) {
+                    if (!state) {
+                        state = reducer(state, action);
+                    }
+                    // we should not utilize transfer state if user is logged in
+                    /** @type {?} */
+                    var authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
+                    /** @type {?} */
+                    var isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                    if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                        /** @type {?} */
+                        var cxKey = transferState.get(CX_KEY, {});
+                        /** @type {?} */
+                        var transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
+                        state = deepMerge({}, state, transferredStateSlice);
+                    }
+                    return state;
+                }
+                return reducer(state, action);
+            });
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0 = getTransferStateReducer, ɵ1 = getStorageSyncReducer;
+    /** @type {?} */
+    var stateMetaReducers = [
+        {
+            provide: store.META_REDUCERS,
+            useFactory: ɵ0,
+            deps: [
+                core.PLATFORM_ID,
+                [new core.Optional(), platformBrowser.TransferState],
+                [new core.Optional(), Config],
+            ],
+            multi: true,
+        },
+        {
+            provide: store.META_REDUCERS,
+            useFactory: ɵ1,
+            deps: [WindowRef, [new core.Optional(), Config]],
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var StateModule = /** @class */ (function () {
+        function StateModule() {
+        }
+        /**
+         * @return {?}
+         */
+        StateModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: StateModule,
+                providers: __spread(stateMetaReducers, [
+                    provideConfig(defaultStateConfig),
+                    { provide: StateConfig, useExisting: Config },
+                ]),
+            };
+        };
+        StateModule.decorators = [
+            { type: core.NgModule, args: [{},] }
+        ];
+        return StateModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ASM_FEATURE = 'asm';
+    /** @type {?} */
+    var CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
+    /**
+     * @record
+     */
+    function StateWithAsm() { }
+    if (false) {
+        /* Skipping unnamed member:
+        [ASM_FEATURE]: AsmState;*/
+    }
+    /**
+     * @record
+     */
+    function AsmState() { }
+    if (false) {
+        /** @type {?} */
+        AsmState.prototype.customerSearchResult;
+        /** @type {?} */
+        AsmState.prototype.asmUi;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var UNKNOWN_ERROR = {
+        error: 'unknown error',
+    };
+    /** @type {?} */
+    var circularReplacer = (/**
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var seen = new WeakSet();
+        return (/**
+         * @param {?} _key
+         * @param {?} value
+         * @return {?}
+         */
+        function (_key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+            }
+            return value;
+        });
+    });
+    var ɵ0$1 = circularReplacer;
+    /**
+     * @param {?} error
+     * @return {?}
+     */
+    function makeErrorSerializable(error) {
+        if (error instanceof Error) {
+            return (/** @type {?} */ ({
+                message: error.message,
+                type: error.name,
+                reason: error.stack,
+            }));
+        }
+        if (error instanceof http.HttpErrorResponse) {
+            /** @type {?} */
+            var serializableError = error.error;
+            if (isObject(error.error)) {
+                serializableError = JSON.stringify(error.error, circularReplacer());
+            }
+            return (/** @type {?} */ ({
+                message: error.message,
+                error: serializableError,
+                status: error.status,
+                statusText: error.statusText,
+                url: error.url,
+            }));
+        }
+        return isObject(error) ? UNKNOWN_ERROR : error;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    AsmAdapter = /** @class */ (function () {
+        function AsmAdapter() {
+        }
+        return AsmAdapter;
+    }());
+    if (false) {
+        /**
+         * Abstract function used to search for customers.
+         * @abstract
+         * @param {?} options
+         * @return {?}
+         */
+        AsmAdapter.prototype.customerSearch = function (options) { };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AsmConnector = /** @class */ (function () {
+        function AsmConnector(asmAdapter) {
+            this.asmAdapter = asmAdapter;
+        }
+        /**
+         * @param {?} options
+         * @return {?}
+         */
+        AsmConnector.prototype.customerSearch = /**
+         * @param {?} options
+         * @return {?}
+         */
+        function (options) {
+            return this.asmAdapter.customerSearch(options);
+        };
+        AsmConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        AsmConnector.ctorParameters = function () { return [
+            { type: AsmAdapter }
+        ]; };
+        /** @nocollapse */ AsmConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(core.ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+        return AsmConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        AsmConnector.prototype.asmAdapter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ASM_UI_UPDATE = '[Asm] UI Update';
+    var AsmUiUpdate = /** @class */ (function () {
+        function AsmUiUpdate(payload) {
+            this.payload = payload;
+            this.type = ASM_UI_UPDATE;
+        }
+        return AsmUiUpdate;
+    }());
+    if (false) {
+        /** @type {?} */
+        AsmUiUpdate.prototype.type;
+        /** @type {?} */
+        AsmUiUpdate.prototype.payload;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -1219,175 +2011,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var OBJECT_SEPARATOR = '.';
-    /**
-     * @template T, E
-     * @param {?} keys
-     * @param {?} state
-     * @return {?}
-     */
-    function getStateSliceValue(keys, state) {
-        return keys
-            .split(OBJECT_SEPARATOR)
-            .reduce((/**
-         * @param {?} previous
-         * @param {?} current
-         * @return {?}
-         */
-        function (previous, current) { return (previous ? previous[current] : undefined); }), state);
-    }
-    /**
-     * @template T, E
-     * @param {?} key
-     * @param {?} excludeKeys
-     * @param {?} value
-     * @return {?}
-     */
-    function createShellObject(key, excludeKeys, value) {
-        if (!key || !value || Object.keys(value).length === 0) {
-            return (/** @type {?} */ ({}));
-        }
-        /** @type {?} */
-        var shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
-         * @param {?} acc
-         * @param {?} previous
-         * @return {?}
-         */
-        function (acc, previous) {
-            var _a;
-            return (/** @type {?} */ (((/** @type {?} */ (_a = {}, _a[previous] = acc, _a)))));
-        }), value);
-        return handleExclusions(key, excludeKeys, shell);
-    }
-    /**
-     * @template T, E
-     * @param {?} keys
-     * @param {?} excludeKeys
-     * @param {?} state
-     * @return {?}
-     */
-    function getStateSlice(keys, excludeKeys, state) {
-        var e_1, _a;
-        if (keys && keys.length === 0) {
-            return (/** @type {?} */ ({}));
-        }
-        /** @type {?} */
-        var stateSlices = {};
-        try {
-            for (var keys_1 = __values(keys), keys_1_1 = keys_1.next(); !keys_1_1.done; keys_1_1 = keys_1.next()) {
-                var currentKey = keys_1_1.value;
-                /** @type {?} */
-                var stateValue = getStateSliceValue(currentKey, state);
-                /** @type {?} */
-                var shell = createShellObject(currentKey, excludeKeys, stateValue);
-                stateSlices = deepMerge(stateSlices, shell);
-            }
-        }
-        catch (e_1_1) { e_1 = { error: e_1_1 }; }
-        finally {
-            try {
-                if (keys_1_1 && !keys_1_1.done && (_a = keys_1.return)) _a.call(keys_1);
-            }
-            finally { if (e_1) throw e_1.error; }
-        }
-        return (/** @type {?} */ (stateSlices));
-    }
-    /**
-     * @param {?} key
-     * @param {?} excludeKeys
-     * @param {?} value
-     * @return {?}
-     */
-    function handleExclusions(key, excludeKeys, value) {
-        var e_2, _a;
-        /** @type {?} */
-        var exclusionKeys = getExclusionKeys(key, excludeKeys);
-        if (exclusionKeys.length === 0) {
-            return value;
-        }
-        /** @type {?} */
-        var finalValue = deepMerge({}, value);
-        try {
-            for (var exclusionKeys_1 = __values(exclusionKeys), exclusionKeys_1_1 = exclusionKeys_1.next(); !exclusionKeys_1_1.done; exclusionKeys_1_1 = exclusionKeys_1.next()) {
-                var currentExclusionKey = exclusionKeys_1_1.value;
-                /** @type {?} */
-                var exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
-                /** @type {?} */
-                var nestedTemp = finalValue;
-                for (var i = 0; i < exclusionChunksSplit.length; i++) {
-                    /** @type {?} */
-                    var currentChunk = exclusionChunksSplit[i];
-                    // last iteration
-                    if (i === exclusionChunksSplit.length - 1) {
-                        if (nestedTemp && nestedTemp[currentChunk]) {
-                            delete nestedTemp[currentChunk];
-                        }
-                    }
-                    else {
-                        nestedTemp = nestedTemp[currentChunk];
-                    }
-                }
-            }
-        }
-        catch (e_2_1) { e_2 = { error: e_2_1 }; }
-        finally {
-            try {
-                if (exclusionKeys_1_1 && !exclusionKeys_1_1.done && (_a = exclusionKeys_1.return)) _a.call(exclusionKeys_1);
-            }
-            finally { if (e_2) throw e_2.error; }
-        }
-        return finalValue;
-    }
-    /**
-     * @param {?} key
-     * @param {?} excludeKeys
-     * @return {?}
-     */
-    function getExclusionKeys(key, excludeKeys) {
-        var e_3, _a;
-        if (!key || !excludeKeys) {
-            return [];
-        }
-        /** @type {?} */
-        var exclusionKeys = [];
-        try {
-            for (var excludeKeys_1 = __values(excludeKeys), excludeKeys_1_1 = excludeKeys_1.next(); !excludeKeys_1_1.done; excludeKeys_1_1 = excludeKeys_1.next()) {
-                var exclusionKey = excludeKeys_1_1.value;
-                if (exclusionKey.includes(key)) {
-                    exclusionKeys.push(exclusionKey);
-                }
-            }
-        }
-        catch (e_3_1) { e_3 = { error: e_3_1 }; }
-        finally {
-            try {
-                if (excludeKeys_1_1 && !excludeKeys_1_1.done && (_a = excludeKeys_1.return)) _a.call(excludeKeys_1);
-            }
-            finally { if (e_3) throw e_3.error; }
-        }
-        return exclusionKeys;
-    }
-    /**
-     * @param {?} keys
-     * @param {?} type
-     * @return {?}
-     */
-    function filterKeysByType(keys, type) {
-        if (!keys) {
-            return [];
-        }
-        return Object.keys(keys).filter((/**
-         * @param {?} key
-         * @return {?}
-         */
-        function (key) { return keys[key] === type; }));
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -1527,35 +2150,638 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var AUTH_FEATURE = 'auth';
+    var CUSTOMER_SEARCH = '[Asm] Customer Search';
     /** @type {?} */
-    var CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+    var CUSTOMER_SEARCH_FAIL = '[Asm] Customer Search Fail';
+    /** @type {?} */
+    var CUSTOMER_SEARCH_SUCCESS = '[Asm] Customer Search Success';
+    /** @type {?} */
+    var CUSTOMER_SEARCH_RESET = '[Asm] Customer Search Reset';
+    var CustomerSearch = /** @class */ (function (_super) {
+        __extends(CustomerSearch, _super);
+        function CustomerSearch(payload) {
+            var _this = _super.call(this, CUSTOMER_SEARCH_DATA) || this;
+            _this.payload = payload;
+            _this.type = CUSTOMER_SEARCH;
+            return _this;
+        }
+        return CustomerSearch;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CustomerSearch.prototype.type;
+        /** @type {?} */
+        CustomerSearch.prototype.payload;
+    }
+    var CustomerSearchFail = /** @class */ (function (_super) {
+        __extends(CustomerSearchFail, _super);
+        function CustomerSearchFail(payload) {
+            var _this = _super.call(this, CUSTOMER_SEARCH_DATA) || this;
+            _this.payload = payload;
+            _this.type = CUSTOMER_SEARCH_FAIL;
+            return _this;
+        }
+        return CustomerSearchFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CustomerSearchFail.prototype.type;
+        /** @type {?} */
+        CustomerSearchFail.prototype.payload;
+    }
+    var CustomerSearchSuccess = /** @class */ (function (_super) {
+        __extends(CustomerSearchSuccess, _super);
+        function CustomerSearchSuccess(payload) {
+            var _this = _super.call(this, CUSTOMER_SEARCH_DATA) || this;
+            _this.payload = payload;
+            _this.type = CUSTOMER_SEARCH_SUCCESS;
+            return _this;
+        }
+        return CustomerSearchSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CustomerSearchSuccess.prototype.type;
+        /** @type {?} */
+        CustomerSearchSuccess.prototype.payload;
+    }
+    var CustomerSearchReset = /** @class */ (function (_super) {
+        __extends(CustomerSearchReset, _super);
+        function CustomerSearchReset() {
+            var _this = _super.call(this, CUSTOMER_SEARCH_DATA) || this;
+            _this.type = CUSTOMER_SEARCH_RESET;
+            return _this;
+        }
+        return CustomerSearchReset;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        CustomerSearchReset.prototype.type;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var customerGroup_actions = /*#__PURE__*/Object.freeze({
+        ASM_UI_UPDATE: ASM_UI_UPDATE,
+        AsmUiUpdate: AsmUiUpdate,
+        CUSTOMER_SEARCH: CUSTOMER_SEARCH,
+        CUSTOMER_SEARCH_FAIL: CUSTOMER_SEARCH_FAIL,
+        CUSTOMER_SEARCH_SUCCESS: CUSTOMER_SEARCH_SUCCESS,
+        CUSTOMER_SEARCH_RESET: CUSTOMER_SEARCH_RESET,
+        CustomerSearch: CustomerSearch,
+        CustomerSearchFail: CustomerSearchFail,
+        CustomerSearchSuccess: CustomerSearchSuccess,
+        CustomerSearchReset: CustomerSearchReset
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CustomerEffects = /** @class */ (function () {
+        function CustomerEffects(actions$, asmConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.asmConnector = asmConnector;
+            this.customerSearch$ = this.actions$.pipe(effects$b.ofType(CUSTOMER_SEARCH), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} options
+             * @return {?}
+             */
+            function (options) {
+                return _this.asmConnector.customerSearch(options).pipe(operators.map((/**
+                 * @param {?} customerSearchResults
+                 * @return {?}
+                 */
+                function (customerSearchResults) {
+                    return new CustomerSearchSuccess(customerSearchResults);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CustomerSearchFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        CustomerEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CustomerEffects.ctorParameters = function () { return [
+            { type: effects$b.Actions },
+            { type: AsmConnector }
+        ]; };
+        __decorate([
+            effects$b.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerEffects.prototype, "customerSearch$", void 0);
+        return CustomerEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        CustomerEffects.prototype.customerSearch$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerEffects.prototype.asmConnector;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var effects = [CustomerEffects];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState = (/** @type {?} */ ({ visible: false }));
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer(state, action) {
+        if (state === void 0) { state = initialState; }
+        switch (action.type) {
+            case ASM_UI_UPDATE: {
+                return __assign({}, state, action.payload);
+            }
+            default: {
+                return state;
+            }
+        }
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers() {
+        return {
+            customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
+            asmUi: reducer,
+        };
+    }
+    /** @type {?} */
+    var reducerToken = new core.InjectionToken('AsmReducers');
+    /** @type {?} */
+    var reducerProvider = {
+        provide: reducerToken,
+        useFactory: getReducers,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function asmStoreConfigFactory() {
+        /** @type {?} */
+        var config = {
+            state: {
+                storageSync: {
+                    keys: {
+                        'asm.asmUi': StorageSyncType.LOCAL_STORAGE,
+                    },
+                },
+            },
+        };
+        return config;
+    }
+    var AsmStoreModule = /** @class */ (function () {
+        function AsmStoreModule() {
+        }
+        AsmStoreModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            StateModule,
+                            store.StoreModule.forFeature(ASM_FEATURE, reducerToken),
+                            effects$b.EffectsModule.forFeature(effects),
+                            ConfigModule.withConfigFactory(asmStoreConfigFactory),
+                        ],
+                        providers: [reducerProvider],
+                    },] }
+        ];
+        return AsmStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AsmModule = /** @class */ (function () {
+        function AsmModule() {
+        }
+        /**
+         * @return {?}
+         */
+        AsmModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: AsmModule,
+                providers: [{ provide: AsmConfig, useExisting: Config }],
+            };
+        };
+        AsmModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            AsmStoreModule,
+                            ConfigModule.withConfig(defaultAsmConfig),
+                        ],
+                    },] }
+        ];
+        return AsmModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CUSTOMER_SEARCH_PAGE_NORMALIZER = new core.InjectionToken('CustomerSearchPageNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getAsmState = store.createFeatureSelector(ASM_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$2 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.asmUi; };
+    /** @type {?} */
+    var getAsmUi = store.createSelector(getAsmState, (ɵ0$2));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$3 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.customerSearchResult; };
+    /** @type {?} */
+    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$3));
+    var ɵ1$1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$1));
+    var ɵ2 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ2));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var asmGroup_selectors = /*#__PURE__*/Object.freeze({
+        getAsmUi: getAsmUi,
+        getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
+        getCustomerSearchResults: getCustomerSearchResults,
+        getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
+        getAsmState: getAsmState
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AsmService = /** @class */ (function () {
+        function AsmService(store) {
+            this.store = store;
+        }
+        /**
+         * Search for customers
+         * @param options
+         */
+        /**
+         * Search for customers
+         * @param {?} options
+         * @return {?}
+         */
+        AsmService.prototype.customerSearch = /**
+         * Search for customers
+         * @param {?} options
+         * @return {?}
+         */
+        function (options) {
+            this.store.dispatch(new CustomerSearch(options));
+        };
+        /**
+         * Reset the customer search result data to the initial state.
+         */
+        /**
+         * Reset the customer search result data to the initial state.
+         * @return {?}
+         */
+        AsmService.prototype.customerSearchReset = /**
+         * Reset the customer search result data to the initial state.
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new CustomerSearchReset());
+        };
+        /**
+         * Returns the customer search result data.
+         */
+        /**
+         * Returns the customer search result data.
+         * @return {?}
+         */
+        AsmService.prototype.getCustomerSearchResults = /**
+         * Returns the customer search result data.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerSearchResults));
+        };
+        /**
+         * Returns the customer search result loading status.
+         */
+        /**
+         * Returns the customer search result loading status.
+         * @return {?}
+         */
+        AsmService.prototype.getCustomerSearchResultsLoading = /**
+         * Returns the customer search result loading status.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerSearchResultsLoading));
+        };
+        /**
+         * Updates the state of the ASM UI
+         */
+        /**
+         * Updates the state of the ASM UI
+         * @param {?} asmUi
+         * @return {?}
+         */
+        AsmService.prototype.updateAsmUiState = /**
+         * Updates the state of the ASM UI
+         * @param {?} asmUi
+         * @return {?}
+         */
+        function (asmUi) {
+            this.store.dispatch(new AsmUiUpdate(asmUi));
+        };
+        /**
+         * Get the state of the ASM UI
+         */
+        /**
+         * Get the state of the ASM UI
+         * @return {?}
+         */
+        AsmService.prototype.getAsmUiState = /**
+         * Get the state of the ASM UI
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAsmUi));
+        };
+        AsmService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        AsmService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ AsmService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(core.ɵɵinject(store.Store)); }, token: AsmService, providedIn: "root" });
+        return AsmService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        AsmService.prototype.store;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @record
      */
-    function StateWithAuth() { }
+    function CustomerSearchPage() { }
     if (false) {
-        /* Skipping unnamed member:
-        [AUTH_FEATURE]: AuthState;*/
+        /** @type {?} */
+        CustomerSearchPage.prototype.entries;
+        /** @type {?|undefined} */
+        CustomerSearchPage.prototype.pagination;
+        /** @type {?|undefined} */
+        CustomerSearchPage.prototype.sorts;
     }
     /**
      * @record
      */
-    function AuthState() { }
+    function CustomerSearchOptions() { }
     if (false) {
-        /** @type {?} */
-        AuthState.prototype.userToken;
-        /** @type {?} */
-        AuthState.prototype.clientToken;
+        /** @type {?|undefined} */
+        CustomerSearchOptions.prototype.query;
     }
     /**
      * @record
      */
-    function UserTokenState() { }
+    function AsmUi() { }
+    if (false) {
+        /** @type {?|undefined} */
+        AsmUi.prototype.visible;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    AuthConfig = /** @class */ (function (_super) {
+        __extends(AuthConfig, _super);
+        function AuthConfig() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        return AuthConfig;
+    }(OccConfig));
     if (false) {
         /** @type {?} */
-        UserTokenState.prototype.token;
+        AuthConfig.prototype.authentication;
     }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var defaultAuthConfig = {
+        authentication: {
+            client_id: 'mobile_android',
+            client_secret: 'secret',
+        },
+        backend: {
+            occ: {
+                endpoints: {
+                    login: '/authorizationserver/oauth/token',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var USE_CLIENT_TOKEN = 'cx-use-client-token';
+    /** @type {?} */
+    var USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
+    var InterceptorUtil = /** @class */ (function () {
+        function InterceptorUtil() {
+        }
+        /**
+         * @template T
+         * @param {?} headerName
+         * @param {?} interceptorParam
+         * @param {?=} headers
+         * @return {?}
+         */
+        InterceptorUtil.createHeader = /**
+         * @template T
+         * @param {?} headerName
+         * @param {?} interceptorParam
+         * @param {?=} headers
+         * @return {?}
+         */
+        function (headerName, interceptorParam, headers) {
+            if (headers) {
+                return headers.append(headerName, JSON.stringify(interceptorParam));
+            }
+            headers = new http.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+            return headers;
+        };
+        /**
+         * @param {?} headerName
+         * @param {?} request
+         * @return {?}
+         */
+        InterceptorUtil.removeHeader = /**
+         * @param {?} headerName
+         * @param {?} request
+         * @return {?}
+         */
+        function (headerName, request) {
+            /** @type {?} */
+            var updatedHeaders = request.headers.delete(headerName);
+            return request.clone({ headers: updatedHeaders });
+        };
+        /**
+         * @template T
+         * @param {?} headerName
+         * @param {?} headers
+         * @return {?}
+         */
+        InterceptorUtil.getInterceptorParam = /**
+         * @template T
+         * @param {?} headerName
+         * @param {?} headers
+         * @return {?}
+         */
+        function (headerName, headers) {
+            /** @type {?} */
+            var rawValue = headers.get(headerName);
+            if (rawValue) {
+                return JSON.parse(rawValue);
+            }
+            return undefined;
+        };
+        return InterceptorUtil;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var OCC_USER_ID_CURRENT = 'current';
+    /** @type {?} */
+    var OCC_USER_ID_ANONYMOUS = 'anonymous';
+    /** @type {?} */
+    var OCC_USER_ID_GUEST = 'guest';
 
     /**
      * @fileoverview added by tsickle
@@ -1618,9 +2844,70 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN = '[Auth] Load Customer Service Agent Token';
+    /** @type {?} */
+    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL = '[Auth] Load Customer Service Agent Token Fail';
+    /** @type {?} */
+    var LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS = '[Auth] Load Customer Service Agent Token Success';
+    var LoadCustomerSupportAgentToken = /** @class */ (function (_super) {
+        __extends(LoadCustomerSupportAgentToken, _super);
+        function LoadCustomerSupportAgentToken(payload) {
+            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN;
+            return _this;
+        }
+        return LoadCustomerSupportAgentToken;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerSupportAgentToken.prototype.type;
+        /** @type {?} */
+        LoadCustomerSupportAgentToken.prototype.payload;
+    }
+    var LoadCustomerSupportAgentTokenFail = /** @class */ (function (_super) {
+        __extends(LoadCustomerSupportAgentTokenFail, _super);
+        function LoadCustomerSupportAgentTokenFail(payload) {
+            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL;
+            return _this;
+        }
+        return LoadCustomerSupportAgentTokenFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerSupportAgentTokenFail.prototype.type;
+        /** @type {?} */
+        LoadCustomerSupportAgentTokenFail.prototype.payload;
+    }
+    var LoadCustomerSupportAgentTokenSuccess = /** @class */ (function (_super) {
+        __extends(LoadCustomerSupportAgentTokenSuccess, _super);
+        function LoadCustomerSupportAgentTokenSuccess(payload) {
+            var _this = _super.call(this, CSAGENT_TOKEN_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS;
+            return _this;
+        }
+        return LoadCustomerSupportAgentTokenSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerSupportAgentTokenSuccess.prototype.type;
+        /** @type {?} */
+        LoadCustomerSupportAgentTokenSuccess.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var LOGIN = '[Auth] Login';
     /** @type {?} */
     var LOGOUT = '[Auth] Logout';
+    /** @type {?} */
+    var LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
     var Login = /** @class */ (function () {
         function Login() {
             this.type = LOGIN;
@@ -1640,6 +2927,16 @@
     if (false) {
         /** @type {?} */
         Logout.prototype.type;
+    }
+    var LogoutCustomerSupportAgent = /** @class */ (function () {
+        function LogoutCustomerSupportAgent() {
+            this.type = LOGOUT_CUSTOMER_SUPPORT_AGENT;
+        }
+        return LogoutCustomerSupportAgent;
+    }());
+    if (false) {
+        /** @type {?} */
+        LogoutCustomerSupportAgent.prototype.type;
     }
 
     /**
@@ -1749,10 +3046,18 @@
         LoadClientToken: LoadClientToken,
         LoadClientTokenFail: LoadClientTokenFail,
         LoadClientTokenSuccess: LoadClientTokenSuccess,
+        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN,
+        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL,
+        LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS,
+        LoadCustomerSupportAgentToken: LoadCustomerSupportAgentToken,
+        LoadCustomerSupportAgentTokenFail: LoadCustomerSupportAgentTokenFail,
+        LoadCustomerSupportAgentTokenSuccess: LoadCustomerSupportAgentTokenSuccess,
         LOGIN: LOGIN,
         LOGOUT: LOGOUT,
+        LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
         Login: Login,
         Logout: Logout,
+        LogoutCustomerSupportAgent: LogoutCustomerSupportAgent,
         LOAD_USER_TOKEN: LOAD_USER_TOKEN,
         LOAD_USER_TOKEN_FAIL: LOAD_USER_TOKEN_FAIL,
         LOAD_USER_TOKEN_SUCCESS: LOAD_USER_TOKEN_SUCCESS,
@@ -1783,13 +3088,39 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0 = /**
+    var ɵ0$4 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.clientToken; };
     /** @type {?} */
-    var getClientTokenState = store.createSelector(getAuthState, (ɵ0));
+    var getClientTokenState = store.createSelector(getAuthState, (ɵ0$4));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$5 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.csagentToken; };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenState = store.createSelector(getAuthState, (ɵ0$5));
+    var ɵ1$2 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$2));
+    var ɵ2$1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, (ɵ2$1));
 
     /**
      * @fileoverview added by tsickle
@@ -1801,14 +3132,14 @@
      * @return {?}
      */
     function (state) { return state.token; });
-    var ɵ0$1 = getUserTokenSelector;
-    var ɵ1 = /**
+    var ɵ0$6 = getUserTokenSelector;
+    var ɵ1$3 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.userToken; };
     /** @type {?} */
-    var getUserTokenState = store.createSelector(getAuthState, (ɵ1));
+    var getUserTokenState = store.createSelector(getAuthState, (ɵ1$3));
     /** @type {?} */
     var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -1819,6 +3150,9 @@
 
     var authGroup_selectors = /*#__PURE__*/Object.freeze({
         getClientTokenState: getClientTokenState,
+        getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
+        getCustomerSupportAgentToken: getCustomerSupportAgentToken,
+        getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading,
         getAuthState: getAuthState,
         getUserTokenState: getUserTokenState,
         getUserToken: getUserToken
@@ -1859,6 +3193,52 @@
                 userId: userId,
                 password: password,
             }));
+        };
+        /**
+         * Loads a user token for a customer support agent
+         * @param userId
+         * @param password
+         */
+        /**
+         * Loads a user token for a customer support agent
+         * @param {?} userId
+         * @param {?} password
+         * @return {?}
+         */
+        AuthService.prototype.authorizeCustomerSupporAgent = /**
+         * Loads a user token for a customer support agent
+         * @param {?} userId
+         * @param {?} password
+         * @return {?}
+         */
+        function (userId, password) {
+            this.store.dispatch(new LoadCustomerSupportAgentToken({
+                userId: userId,
+                password: password,
+            }));
+        };
+        /**
+         * Starts an ASM customer emulation session.
+         * A customer emulation session is stoped by calling logout().
+         * @param customerSupportAgentToken
+         * @param customerId
+         */
+        /**
+         * Starts an ASM customer emulation session.
+         * A customer emulation session is stoped by calling logout().
+         * @param {?} customerSupportAgentToken
+         * @param {?} customerId
+         * @return {?}
+         */
+        AuthService.prototype.startCustomerEmulationSession = /**
+         * Starts an ASM customer emulation session.
+         * A customer emulation session is stoped by calling logout().
+         * @param {?} customerSupportAgentToken
+         * @param {?} customerId
+         * @return {?}
+         */
+        function (customerSupportAgentToken, customerId) {
+            this.authorizeWithToken(__assign({}, customerSupportAgentToken, { userId: customerId }));
         };
         /**
          * This function provides the userId the OCC calls should use, depending
@@ -1907,6 +3287,23 @@
             })));
         };
         /**
+         * Utility function to determine if a given token is a customer emulation session token.
+         * @param userToken
+         */
+        /**
+         * Utility function to determine if a given token is a customer emulation session token.
+         * @param {?} userToken
+         * @return {?}
+         */
+        AuthService.prototype.isCustomerEmulationToken = /**
+         * Utility function to determine if a given token is a customer emulation session token.
+         * @param {?} userToken
+         * @return {?}
+         */
+        function (userToken) {
+            return !!userToken.userId && userToken.userId !== OCC_USER_ID_CURRENT;
+        };
+        /**
          * Returns the user's token
          */
         /**
@@ -1919,6 +3316,34 @@
          */
         function () {
             return this.store.pipe(store.select(getUserToken));
+        };
+        /**
+         * Returns the customer support agent's token
+         */
+        /**
+         * Returns the customer support agent's token
+         * @return {?}
+         */
+        AuthService.prototype.getCustomerSupportAgentToken = /**
+         * Returns the customer support agent's token
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerSupportAgentToken));
+        };
+        /**
+         * Returns the customer support agent's token loading status
+         */
+        /**
+         * Returns the customer support agent's token loading status
+         * @return {?}
+         */
+        AuthService.prototype.getCustomerSupportAgentTokenLoading = /**
+         * Returns the customer support agent's token loading status
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerSupportAgentTokenLoading));
         };
         /**
          * Refreshes the user token
@@ -1956,18 +3381,32 @@
             this.store.dispatch(new LoadUserTokenSuccess(token));
         };
         /**
-         * Logout
+         * Logout a storefront customer
          */
         /**
-         * Logout
+         * Logout a storefront customer
          * @return {?}
          */
         AuthService.prototype.logout = /**
-         * Logout
+         * Logout a storefront customer
          * @return {?}
          */
         function () {
             this.store.dispatch(new Logout());
+        };
+        /**
+         * Logout a customer support agent
+         */
+        /**
+         * Logout a customer support agent
+         * @return {?}
+         */
+        AuthService.prototype.logoutCustomerSupportAgent = /**
+         * Logout a customer support agent
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LogoutCustomerSupportAgent());
         };
         /**
          * Returns a client token.  The client token from the store is returned if there is one.
@@ -2136,82 +3575,1270 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var WindowRef = /** @class */ (function () {
-        function WindowRef(document) {
-            // it's a workaround to have document property properly typed
-            // see: https://github.com/angular/angular/issues/15640
-            this.document = document;
+    /** @enum {string} */
+    var GlobalMessageType = {
+        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
+        MSG_TYPE_ERROR: '[GlobalMessage] Error',
+        MSG_TYPE_INFO: '[GlobalMessage] Information',
+    };
+    /**
+     * @record
+     */
+    function GlobalMessage() { }
+    if (false) {
+        /** @type {?} */
+        GlobalMessage.prototype.text;
+        /** @type {?} */
+        GlobalMessage.prototype.type;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    GlobalMessageConfig = /** @class */ (function () {
+        function GlobalMessageConfig() {
         }
-        Object.defineProperty(WindowRef.prototype, "nativeWindow", {
-            get: /**
+        return GlobalMessageConfig;
+    }());
+    if (false) {
+        /** @type {?} */
+        GlobalMessageConfig.prototype.globalMessages;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var ADD_MESSAGE = '[Global-message] Add a Message';
+    /** @type {?} */
+    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
+    /** @type {?} */
+    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+    var AddMessage = /** @class */ (function () {
+        function AddMessage(payload) {
+            this.payload = payload;
+            this.type = ADD_MESSAGE;
+        }
+        return AddMessage;
+    }());
+    if (false) {
+        /** @type {?} */
+        AddMessage.prototype.type;
+        /** @type {?} */
+        AddMessage.prototype.payload;
+    }
+    var RemoveMessage = /** @class */ (function () {
+        function RemoveMessage(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGE;
+        }
+        return RemoveMessage;
+    }());
+    if (false) {
+        /** @type {?} */
+        RemoveMessage.prototype.type;
+        /** @type {?} */
+        RemoveMessage.prototype.payload;
+    }
+    var RemoveMessagesByType = /** @class */ (function () {
+        function RemoveMessagesByType(payload) {
+            this.payload = payload;
+            this.type = REMOVE_MESSAGES_BY_TYPE;
+        }
+        return RemoveMessagesByType;
+    }());
+    if (false) {
+        /** @type {?} */
+        RemoveMessagesByType.prototype.type;
+        /** @type {?} */
+        RemoveMessagesByType.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
+        ADD_MESSAGE: ADD_MESSAGE,
+        REMOVE_MESSAGE: REMOVE_MESSAGE,
+        REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
+        AddMessage: AddMessage,
+        RemoveMessage: RemoveMessage,
+        RemoveMessagesByType: RemoveMessagesByType
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var GLOBAL_MESSAGE_FEATURE = 'global-message';
+    /**
+     * @record
+     */
+    function StateWithGlobalMessage() { }
+    if (false) {
+        /* Skipping unnamed member:
+        [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
+    }
+    /**
+     * @record
+     */
+    function GlobalMessageState() { }
+    if (false) {
+        /** @type {?} */
+        GlobalMessageState.prototype.entities;
+    }
+    /**
+     * @record
+     */
+    function GlobalMessageEntities() { }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getGlobalMessageState = store.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$7 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.entities; };
+    /** @type {?} */
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$7));
+    /** @type {?} */
+    var getGlobalMessageEntitiesByType = (/**
+     * @param {?} type
+     * @return {?}
+     */
+    function (type) {
+        return store.createSelector(getGlobalMessageEntities, (/**
+         * @param {?} entities
+         * @return {?}
+         */
+        function (entities) { return entities && entities[type]; }));
+    });
+    /** @type {?} */
+    var getGlobalMessageCountByType = (/**
+     * @param {?} type
+     * @return {?}
+     */
+    function (type) {
+        return store.createSelector(getGlobalMessageEntitiesByType(type), (/**
+         * @param {?} entities
+         * @return {?}
+         */
+        function (entities) { return entities && entities.length; }));
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
+        getGlobalMessageState: getGlobalMessageState,
+        getGlobalMessageEntities: getGlobalMessageEntities,
+        getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
+        getGlobalMessageCountByType: getGlobalMessageCountByType
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageService = /** @class */ (function () {
+        function GlobalMessageService(store) {
+            this.store = store;
+        }
+        /**
+         * Get all global messages
+         */
+        /**
+         * Get all global messages
+         * @return {?}
+         */
+        GlobalMessageService.prototype.get = /**
+         * Get all global messages
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getGlobalMessageEntities), operators.filter((/**
+             * @param {?} data
              * @return {?}
              */
-            function () {
-                return typeof window !== 'undefined' ? window : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "sessionStorage", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "localStorage", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(WindowRef.prototype, "resize$", {
-            /**
-             * Returns an observable for the window resize event and emits an event
-             * every 300ms in case of resizing. An event is simulated initially.
-             *
-             * If there's no window object availale (i.e. in SSR), a null value is emitted.
-             */
-            get: /**
-             * Returns an observable for the window resize event and emits an event
-             * every 300ms in case of resizing. An event is simulated initially.
-             *
-             * If there's no window object availale (i.e. in SSR), a null value is emitted.
-             * @return {?}
-             */
-            function () {
-                if (!this.nativeWindow) {
-                    return rxjs.of(null);
-                }
-                else {
-                    return rxjs.fromEvent(this.nativeWindow, 'resize').pipe(operators.debounceTime(300), operators.startWith({ target: this.nativeWindow }), operators.distinctUntilChanged());
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        WindowRef.decorators = [
+            function (data) { return data !== undefined; })));
+        };
+        /**
+         * Add one message into store
+         * @param text: string | Translatable
+         * @param type: GlobalMessageType object
+         */
+        /**
+         * Add one message into store
+         * @param {?} text
+         * @param {?} type
+         * @return {?}
+         */
+        GlobalMessageService.prototype.add = /**
+         * Add one message into store
+         * @param {?} text
+         * @param {?} type
+         * @return {?}
+         */
+        function (text, type) {
+            this.store.dispatch(new AddMessage({
+                text: typeof text === 'string' ? { raw: text } : text,
+                type: type,
+            }));
+        };
+        /**
+         * Remove message(s) from store
+         * @param type: GlobalMessageType
+         * @param index:optional. Without it, messages will be removed by type; otherwise,
+         * message will be removed from list by index.
+         */
+        /**
+         * Remove message(s) from store
+         * @param {?} type
+         * @param {?=} index
+         * @return {?}
+         */
+        GlobalMessageService.prototype.remove = /**
+         * Remove message(s) from store
+         * @param {?} type
+         * @param {?=} index
+         * @return {?}
+         */
+        function (type, index) {
+            this.store.dispatch(index !== undefined
+                ? new RemoveMessage({
+                    type: type,
+                    index: index,
+                })
+                : new RemoveMessagesByType(type));
+        };
+        GlobalMessageService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        GlobalMessageService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        return GlobalMessageService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        GlobalMessageService.prototype.store;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @enum {number} */
+    var HttpResponseStatus = {
+        UNKNOWN: -1,
+        BAD_REQUEST: 400,
+        FORBIDDEN: 403,
+        NOT_FOUND: 404,
+        CONFLICT: 409,
+        BAD_GATEWAY: 502,
+        GATEWAY_TIMEOUT: 504,
+        INTERNAL_SERVER_ERROR: 500,
+    };
+    HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
+    HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
+    HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
+    HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
+    HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
+    HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
+    HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
+    HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var HttpErrorHandler = /** @class */ (function () {
+        function HttpErrorHandler(globalMessageService) {
+            this.globalMessageService = globalMessageService;
+        }
+        HttpErrorHandler.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
                     },] }
         ];
         /** @nocollapse */
-        WindowRef.ctorParameters = function () { return [
-            { type: undefined, decorators: [{ type: core.Inject, args: [common.DOCUMENT,] }] }
+        HttpErrorHandler.ctorParameters = function () { return [
+            { type: GlobalMessageService }
         ]; };
-        /** @nocollapse */ WindowRef.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(core.ɵɵinject(common.DOCUMENT)); }, token: WindowRef, providedIn: "root" });
-        return WindowRef;
+        /** @nocollapse */ HttpErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+        return HttpErrorHandler;
+    }());
+    if (false) {
+        /**
+         * The http response status number which is handled by this handler.
+         * Implementations can set the response status number, i.e. 404, so that
+         * the handler can be found by the error interceptor.
+         * @type {?}
+         */
+        HttpErrorHandler.prototype.responseStatus;
+        /**
+         * @type {?}
+         * @protected
+         */
+        HttpErrorHandler.prototype.globalMessageService;
+        /**
+         * Handles the error response for the respose status that is register for the handler
+         * @abstract
+         * @param {?} request
+         * @param {?} errorResponse
+         * @return {?}
+         */
+        HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var BadGatewayHandler = /** @class */ (function (_super) {
+        __extends(BadGatewayHandler, _super);
+        function BadGatewayHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        BadGatewayHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        BadGatewayHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ BadGatewayHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
+        return BadGatewayHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        BadGatewayHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
+    var BadRequestHandler = /** @class */ (function (_super) {
+        __extends(BadRequestHandler, _super);
+        function BadRequestHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+            return _this;
+        }
+        /**
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        BadRequestHandler.prototype.handleError = /**
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        function (request, response) {
+            var _this = this;
+            if (response.url.includes(OAUTH_ENDPOINT) &&
+                response.error &&
+                response.error.error === 'invalid_grant' &&
+                request.body.get('grant_type') === 'password') {
+                this.globalMessageService.add({
+                    key: 'httpHandlers.badRequestPleaseLoginAgain',
+                    params: {
+                        errorMessage: response.error.error_description || response.message || '',
+                    },
+                }, GlobalMessageType.MSG_TYPE_ERROR);
+                this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
+            }
+            else {
+                if (response.error &&
+                    response.error.errors &&
+                    response.error.errors instanceof Array) {
+                    response.error.errors.forEach((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        /** @type {?} */
+                        var errorMessage;
+                        if (error.type === 'PasswordMismatchError') {
+                            // uses en translation error message instead of backend exception error
+                            // @todo: this condition could be removed if backend gives better message
+                            errorMessage = {
+                                key: 'httpHandlers.badRequestOldPasswordIncorrect',
+                            };
+                        }
+                        else if (error.subjectType === 'cart' &&
+                            error.reason === 'notFound') {
+                            errorMessage = { key: 'httpHandlers.cartNotFound' };
+                        }
+                        else if (error.type === 'ValidationError') {
+                            // build translation key in case of backend field validation error
+                            errorMessage = {
+                                key: "httpHandlers.validationErrors." + error.reason + "." + error.subject,
+                            };
+                        }
+                        else {
+                            // this is currently showing up in case we have a page not found. It should be a 404.
+                            // see https://jira.hybris.com/browse/CMSX-8516
+                            errorMessage = { raw: error.message || '' };
+                        }
+                        _this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
+                    }));
+                }
+            }
+        };
+        BadRequestHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ BadRequestHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+        return BadRequestHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        BadRequestHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ConflictHandler = /** @class */ (function (_super) {
+        __extends(ConflictHandler, _super);
+        function ConflictHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.CONFLICT;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        ConflictHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        ConflictHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ ConflictHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core.ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+        return ConflictHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        ConflictHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ForbiddenHandler = /** @class */ (function (_super) {
+        __extends(ForbiddenHandler, _super);
+        function ForbiddenHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        ForbiddenHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        ForbiddenHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ ForbiddenHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+        return ForbiddenHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        ForbiddenHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GatewayTimeoutHandler = /** @class */ (function (_super) {
+        __extends(GatewayTimeoutHandler, _super);
+        function GatewayTimeoutHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        GatewayTimeoutHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        GatewayTimeoutHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core.ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+        return GatewayTimeoutHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        GatewayTimeoutHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var InternalServerErrorHandler = /** @class */ (function (_super) {
+        __extends(InternalServerErrorHandler, _super);
+        function InternalServerErrorHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        InternalServerErrorHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        InternalServerErrorHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+        return InternalServerErrorHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        InternalServerErrorHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var NotFoundHandler = /** @class */ (function (_super) {
+        __extends(NotFoundHandler, _super);
+        function NotFoundHandler() {
+            var _this = _super !== null && _super.apply(this, arguments) || this;
+            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
+            return _this;
+        }
+        // empty error handler to avoid we fallabck to the unknown error handler
+        // empty error handler to avoid we fallabck to the unknown error handler
+        /**
+         * @return {?}
+         */
+        NotFoundHandler.prototype.handleError = 
+        // empty error handler to avoid we fallabck to the unknown error handler
+        /**
+         * @return {?}
+         */
+        function () { };
+        NotFoundHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */ NotFoundHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+        return NotFoundHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        NotFoundHandler.prototype.responseStatus;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var UnknownErrorHandler = /** @class */ (function (_super) {
+        __extends(UnknownErrorHandler, _super);
+        function UnknownErrorHandler(globalMessageService) {
+            var _this = _super.call(this, globalMessageService) || this;
+            _this.globalMessageService = globalMessageService;
+            _this.responseStatus = HttpResponseStatus.UNKNOWN;
+            return _this;
+        }
+        /**
+         * @return {?}
+         */
+        UnknownErrorHandler.prototype.handleError = /**
+         * @return {?}
+         */
+        function () {
+            if (core.isDevMode()) {
+                console.warn("Unknown http response error: " + this.responseStatus);
+            }
+        };
+        UnknownErrorHandler.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        UnknownErrorHandler.ctorParameters = function () { return [
+            { type: GlobalMessageService }
+        ]; };
+        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+        return UnknownErrorHandler;
+    }(HttpErrorHandler));
+    if (false) {
+        /** @type {?} */
+        UnknownErrorHandler.prototype.responseStatus;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UnknownErrorHandler.prototype.globalMessageService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var HttpErrorInterceptor = /** @class */ (function () {
+        function HttpErrorInterceptor(handlers) {
+            this.handlers = handlers;
+            // We reverse the handlers to allow for custom handlers
+            // that replace standard handlers
+            this.handlers.reverse();
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        function (request, next) {
+            var _this = this;
+            return next.handle(request).pipe(operators.catchError((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                if (response instanceof http.HttpErrorResponse) {
+                    _this.handleErrorResponse(request, response);
+                    return rxjs.throwError(response);
+                }
+            })));
+        };
+        /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.handleErrorResponse = /**
+         * @protected
+         * @param {?} request
+         * @param {?} response
+         * @return {?}
+         */
+        function (request, response) {
+            /** @type {?} */
+            var handler = this.getResponseHandler(response);
+            if (handler) {
+                handler.handleError(request, response);
+            }
+        };
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         */
+        /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+        HttpErrorInterceptor.prototype.getResponseHandler = /**
+         * return the error handler that matches the `HttpResponseStatus` code.
+         * If no handler is available, the UNKNOWN handler is returned.
+         * @protected
+         * @param {?} response
+         * @return {?}
+         */
+        function (response) {
+            /** @type {?} */
+            var status = response.status;
+            /** @type {?} */
+            var handler = this.handlers.find((/**
+             * @param {?} h
+             * @return {?}
+             */
+            function (h) { return h.responseStatus === status; }));
+            if (!handler) {
+                handler = this.handlers.find((/**
+                 * @param {?} h
+                 * @return {?}
+                 */
+                function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; }));
+            }
+            return handler;
+        };
+        HttpErrorInterceptor.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        HttpErrorInterceptor.ctorParameters = function () { return [
+            { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
+        ]; };
+        return HttpErrorInterceptor;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        HttpErrorInterceptor.prototype.handlers;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var errorHandlers = [
+        {
+            provide: HttpErrorHandler,
+            useExisting: UnknownErrorHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: BadGatewayHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: BadRequestHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: ConflictHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: ForbiddenHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: GatewayTimeoutHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: InternalServerErrorHandler,
+            multi: true,
+        },
+        {
+            provide: HttpErrorHandler,
+            useExisting: NotFoundHandler,
+            multi: true,
+        },
+    ];
+    /** @type {?} */
+    var httpErrorInterceptors = [
+        {
+            provide: http.HTTP_INTERCEPTORS,
+            useClass: HttpErrorInterceptor,
+            multi: true,
+        },
+    ];
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$1 = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$1(state, action) {
+        var _a, _b, _c, _d;
+        if (state === void 0) { state = initialState$1; }
+        switch (action.type) {
+            case ADD_MESSAGE: {
+                /** @type {?} */
+                var message = action.payload;
+                if (state.entities[message.type] === undefined) {
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message.type] = [message.text], _a)) });
+                }
+                else {
+                    /** @type {?} */
+                    var currentMessages = state.entities[message.type];
+                    return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(currentMessages, [message.text]), _b)) });
+                }
+            }
+            case REMOVE_MESSAGE: {
+                /** @type {?} */
+                var msgType = action.payload.type;
+                /** @type {?} */
+                var msgIndex = action.payload.index;
+                if (Object.keys(state.entities).length === 0 ||
+                    !state.entities[msgType]) {
+                    return state;
+                }
+                /** @type {?} */
+                var messages = __spread(state.entities[msgType]);
+                messages.splice(msgIndex, 1);
+                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
+            }
+            case REMOVE_MESSAGES_BY_TYPE: {
+                /** @type {?} */
+                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
+                return __assign({}, state, { entities: entities });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function getReducers$1() {
+        return reducer$1;
+    }
+    /** @type {?} */
+    var reducerToken$1 = new core.InjectionToken('GlobalMessageReducers');
+    /** @type {?} */
+    var reducerProvider$1 = {
+        provide: reducerToken$1,
+        useFactory: getReducers$1,
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageStoreModule = /** @class */ (function () {
+        function GlobalMessageStoreModule() {
+        }
+        GlobalMessageStoreModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            StateModule,
+                            store.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$1),
+                        ],
+                        providers: [reducerProvider$1],
+                    },] }
+        ];
+        return GlobalMessageStoreModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function shallowEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true;
+        }
+        if (!objA || !objB) {
+            return false;
+        }
+        /** @type {?} */
+        var aKeys = Object.keys(objA);
+        /** @type {?} */
+        var bKeys = Object.keys(objB);
+        /** @type {?} */
+        var aKeysLen = aKeys.length;
+        /** @type {?} */
+        var bKeysLen = bKeys.length;
+        if (aKeysLen !== bKeysLen) {
+            return false;
+        }
+        for (var i = 0; i < aKeysLen; i++) {
+            /** @type {?} */
+            var key = aKeys[i];
+            if (objA[key] !== objB[key]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * @param {?} objA
+     * @param {?} objB
+     * @return {?}
+     */
+    function deepEqualObjects(objA, objB) {
+        if (objA === objB) {
+            return true; // if both objA and objB are null or undefined and exactly the same
+        }
+        else if (!(objA instanceof Object) || !(objB instanceof Object)) {
+            return false; // if they are not strictly equal, they both need to be Objects
+        }
+        else if (objA.constructor !== objB.constructor) {
+            // they must have the exact same prototype chain, the closest we can do is
+            // test their constructor.
+            return false;
+        }
+        else {
+            for (var key in objA) {
+                if (!objA.hasOwnProperty(key)) {
+                    continue; // other properties were tested using objA.constructor === y.constructor
+                }
+                if (!objB.hasOwnProperty(key)) {
+                    return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
+                }
+                if (objA[key] === objB[key]) {
+                    continue; // if they have the same strict value or identity then they are equal
+                }
+                if (typeof objA[key] !== 'object') {
+                    return false; // Numbers, Strings, Functions, Booleans must be strictly equal
+                }
+                if (!deepEqualObjects(objA[key], objB[key])) {
+                    return false;
+                }
+            }
+            for (var key in objB) {
+                if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    /**
+     * @param {?} obj
+     * @param {?} arr
+     * @return {?}
+     */
+    function countOfDeepEqualObjects(obj, arr) {
+        return arr.reduce((/**
+         * @param {?} acc
+         * @param {?} curr
+         * @return {?}
+         */
+        function (acc, curr) {
+            if (deepEqualObjects(obj, curr)) {
+                acc++;
+            }
+            return acc;
+        }), 0);
+    }
+    /**
+     * @param {?} obj
+     * @param {?} arr
+     * @return {?}
+     */
+    function indexOfFirstOccurrence(obj, arr) {
+        for (var index = 0; index < arr.length; index++) {
+            if (deepEqualObjects(arr[index], obj)) {
+                return index;
+            }
+        }
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageEffect = /** @class */ (function () {
+        function GlobalMessageEffect(actions$, store$1, config) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.store = store$1;
+            this.config = config;
+            this.removeDuplicated$ = this.actions$.pipe(effects$b.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
+             * @param {?} message
+             * @return {?}
+             */
+            function (message) {
+                return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                    return countOfDeepEqualObjects(text, messages) > 1;
+                })), operators.map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
+                    return new RemoveMessage({
+                        type: message.type,
+                        index: indexOfFirstOccurrence(text, messages),
+                    });
+                })));
+            })));
+            this.hideAfterDelay$ = this.actions$.pipe(effects$b.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
+             * @param {?} type
+             * @return {?}
+             */
+            function (type) {
+                /** @type {?} */
+                var config = _this.config.globalMessages[type];
+                return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.filter((/**
+                 * @param {?} count
+                 * @return {?}
+                 */
+                function (count) {
+                    return config && config.timeout !== undefined && count && count > 0;
+                })), operators.switchMap((/**
+                 * @return {?}
+                 */
+                function () {
+                    return rxjs.of(new RemoveMessage({
+                        type: type,
+                        index: 0,
+                    })).pipe(operators.delay(config.timeout));
+                })));
+            })));
+        }
+        GlobalMessageEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        GlobalMessageEffect.ctorParameters = function () { return [
+            { type: effects$b.Actions },
+            { type: store.Store },
+            { type: GlobalMessageConfig }
+        ]; };
+        __decorate([
+            effects$b.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
+        __decorate([
+            effects$b.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
+        return GlobalMessageEffect;
     }());
     if (false) {
         /** @type {?} */
-        WindowRef.prototype.document;
+        GlobalMessageEffect.prototype.removeDuplicated$;
+        /** @type {?} */
+        GlobalMessageEffect.prototype.hideAfterDelay$;
+        /**
+         * @type {?}
+         * @private
+         */
+        GlobalMessageEffect.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        GlobalMessageEffect.prototype.store;
+        /**
+         * @type {?}
+         * @private
+         */
+        GlobalMessageEffect.prototype.config;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @return {?}
+     */
+    function defaultGlobalMessageConfigFactory() {
+        var _a;
+        return {
+            globalMessages: (_a = {},
+                _a[GlobalMessageType.MSG_TYPE_CONFIRMATION] = {
+                    timeout: 3000,
+                },
+                _a[GlobalMessageType.MSG_TYPE_INFO] = {
+                    timeout: 3000,
+                },
+                _a[GlobalMessageType.MSG_TYPE_ERROR] = {
+                    timeout: 7000,
+                },
+                _a),
+        };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobalMessageModule = /** @class */ (function () {
+        function GlobalMessageModule() {
+        }
+        /**
+         * @return {?}
+         */
+        GlobalMessageModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: GlobalMessageModule,
+                providers: __spread(errorHandlers, httpErrorInterceptors),
+            };
+        };
+        GlobalMessageModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            GlobalMessageStoreModule,
+                            effects$b.EffectsModule.forFeature([GlobalMessageEffect]),
+                            ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
+                        ],
+                        providers: [
+                            GlobalMessageService,
+                            { provide: GlobalMessageConfig, useExisting: Config },
+                        ],
+                    },] }
+        ];
+        return GlobalMessageModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CustomerSupportAgentErrorHandlingService = /** @class */ (function () {
+        function CustomerSupportAgentErrorHandlingService(authService, globalMessageService) {
+            this.authService = authService;
+            this.globalMessageService = globalMessageService;
+        }
+        /**
+         * @return {?}
+         */
+        CustomerSupportAgentErrorHandlingService.prototype.terminateCustomerSupportAgentExpiredSession = /**
+         * @return {?}
+         */
+        function () {
+            this.authService.logoutCustomerSupportAgent();
+            this.globalMessageService.add({
+                key: 'asm.csagentTokenExpired',
+            }, GlobalMessageType.MSG_TYPE_ERROR);
+        };
+        CustomerSupportAgentErrorHandlingService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CustomerSupportAgentErrorHandlingService.ctorParameters = function () { return [
+            { type: AuthService },
+            { type: GlobalMessageService }
+        ]; };
+        return CustomerSupportAgentErrorHandlingService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CustomerSupportAgentErrorHandlingService.prototype.authService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CustomerSupportAgentErrorHandlingService.prototype.globalMessageService;
     }
 
     /**
@@ -2830,14 +5457,14 @@
      */
     /** @type {?} */
     var getRouterFeatureState = store.createFeatureSelector(ROUTING_FEATURE);
-    var ɵ0$2 = /**
+    var ɵ0$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.router; };
     /** @type {?} */
-    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$2));
-    var ɵ1$1 = /**
+    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$8));
+    var ɵ1$4 = /**
      * @param {?} routingState
      * @return {?}
      */
@@ -2845,8 +5472,8 @@
         return (routingState.state && routingState.state.context) || { id: '' };
     };
     /** @type {?} */
-    var getPageContext = store.createSelector(getRouterState, (ɵ1$1));
-    var ɵ2 = /**
+    var getPageContext = store.createSelector(getRouterState, (ɵ1$4));
+    var ɵ2$2 = /**
      * @param {?} routingState
      * @return {?}
      */
@@ -2854,7 +5481,7 @@
         return routingState.nextState && routingState.nextState.context;
     };
     /** @type {?} */
-    var getNextPageContext = store.createSelector(getRouterState, (ɵ2));
+    var getNextPageContext = store.createSelector(getRouterState, (ɵ2$2));
     var ɵ3 = /**
      * @param {?} context
      * @return {?}
@@ -3206,80 +5833,13 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var USE_CLIENT_TOKEN = 'cx-use-client-token';
-    var InterceptorUtil = /** @class */ (function () {
-        function InterceptorUtil() {
-        }
-        /**
-         * @template T
-         * @param {?} headerName
-         * @param {?} interceptorParam
-         * @param {?=} headers
-         * @return {?}
-         */
-        InterceptorUtil.createHeader = /**
-         * @template T
-         * @param {?} headerName
-         * @param {?} interceptorParam
-         * @param {?=} headers
-         * @return {?}
-         */
-        function (headerName, interceptorParam, headers) {
-            if (headers) {
-                return headers.append(headerName, JSON.stringify(interceptorParam));
-            }
-            headers = new http.HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
-            return headers;
-        };
-        /**
-         * @param {?} headerName
-         * @param {?} request
-         * @return {?}
-         */
-        InterceptorUtil.removeHeader = /**
-         * @param {?} headerName
-         * @param {?} request
-         * @return {?}
-         */
-        function (headerName, request) {
-            /** @type {?} */
-            var updatedHeaders = request.headers.delete(headerName);
-            return request.clone({ headers: updatedHeaders });
-        };
-        /**
-         * @template T
-         * @param {?} headerName
-         * @param {?} headers
-         * @return {?}
-         */
-        InterceptorUtil.getInterceptorParam = /**
-         * @template T
-         * @param {?} headerName
-         * @param {?} headers
-         * @return {?}
-         */
-        function (headerName, headers) {
-            /** @type {?} */
-            var rawValue = headers.get(headerName);
-            if (rawValue) {
-                return JSON.parse(rawValue);
-            }
-            return undefined;
-        };
-        return InterceptorUtil;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
+    var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
     var AuthErrorInterceptor = /** @class */ (function () {
-        function AuthErrorInterceptor(userErrorHandlingService, clientErrorHandlingService, authService) {
+        function AuthErrorInterceptor(userErrorHandlingService, clientErrorHandlingService, authService, csagentErrorHandlingService) {
             this.userErrorHandlingService = userErrorHandlingService;
             this.clientErrorHandlingService = clientErrorHandlingService;
             this.authService = authService;
+            this.csagentErrorHandlingService = csagentErrorHandlingService;
         }
         /**
          * @param {?} request
@@ -3298,6 +5858,11 @@
             if (isClientTokenRequest) {
                 request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
             }
+            /** @type {?} */
+            var isCustomerSupportAgentRequest = this.isCustomerSupportAgentRequest(request);
+            if (isCustomerSupportAgentRequest) {
+                request = InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request);
+            }
             return next.handle(request).pipe(operators.catchError((/**
              * @param {?} errResponse
              * @return {?}
@@ -3312,6 +5877,10 @@
                                 }
                                 // user token request
                             }
+                            else if (isCustomerSupportAgentRequest) {
+                                _this.csagentErrorHandlingService.terminateCustomerSupportAgentExpiredSession();
+                                return rxjs.of();
+                            }
                             else {
                                 if (_this.isExpiredToken(errResponse)) {
                                     return _this.userErrorHandlingService.handleExpiredUserToken(request, next);
@@ -3319,7 +5888,7 @@
                                 else if (
                                 // Refresh expired token
                                 // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                                errResponse.url.includes(OAUTH_ENDPOINT) &&
+                                errResponse.url.includes(OAUTH_ENDPOINT$1) &&
                                     errResponse.error.error === 'invalid_token') {
                                     _this.userErrorHandlingService.handleExpiredRefreshToken();
                                     return rxjs.of();
@@ -3327,7 +5896,7 @@
                             }
                             break;
                         case 400: // Bad Request
-                            if (errResponse.url.includes(OAUTH_ENDPOINT) &&
+                            if (errResponse.url.includes(OAUTH_ENDPOINT$1) &&
                                 errResponse.error.error === 'invalid_grant') {
                                 if (request.body.get('grant_type') === 'refresh_token') {
                                     // refresh token fail, force user logout
@@ -3357,6 +5926,21 @@
         };
         /**
          * @private
+         * @param {?} request
+         * @return {?}
+         */
+        AuthErrorInterceptor.prototype.isCustomerSupportAgentRequest = /**
+         * @private
+         * @param {?} request
+         * @return {?}
+         */
+        function (request) {
+            /** @type {?} */
+            var isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
+            return Boolean(isRequestMapping);
+        };
+        /**
+         * @private
          * @param {?} resp
          * @return {?}
          */
@@ -3381,7 +5965,8 @@
         AuthErrorInterceptor.ctorParameters = function () { return [
             { type: UserErrorHandlingService },
             { type: ClientErrorHandlingService },
-            { type: AuthService }
+            { type: AuthService },
+            { type: CustomerSupportAgentErrorHandlingService }
         ]; };
         return AuthErrorInterceptor;
     }());
@@ -3401,6 +5986,11 @@
          * @private
          */
         AuthErrorInterceptor.prototype.authService;
+        /**
+         * @type {?}
+         * @private
+         */
+        AuthErrorInterceptor.prototype.csagentErrorHandlingService;
     }
 
     /**
@@ -3825,7 +6415,7 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$3 = /**
+    var ɵ0$9 = /**
      * @param {?} state
      * @return {?}
      */
@@ -3833,14 +6423,14 @@
         return state && state.baseSite && state.baseSite.activeSite;
     };
     /** @type {?} */
-    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$3));
-    var ɵ1$2 = /**
+    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$9));
+    var ɵ1$5 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state && state.baseSite && state.baseSite.details; };
     /** @type {?} */
-    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$2));
+    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$5));
 
     /**
      * @fileoverview added by tsickle
@@ -3852,21 +6442,21 @@
      * @return {?}
      */
     function (state) { return state.entities; });
-    var ɵ0$4 = currenciesEntitiesSelector;
+    var ɵ0$a = currenciesEntitiesSelector;
     /** @type {?} */
     var activeCurrencySelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.activeCurrency; });
-    var ɵ1$3 = activeCurrencySelector;
-    var ɵ2$1 = /**
+    var ɵ1$6 = activeCurrencySelector;
+    var ɵ2$3 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.currencies; };
     /** @type {?} */
-    var getCurrenciesState = store.createSelector(getSiteContextState, (ɵ2$1));
+    var getCurrenciesState = store.createSelector(getSiteContextState, (ɵ2$3));
     /** @type {?} */
     var getCurrenciesEntities = store.createSelector(getCurrenciesState, currenciesEntitiesSelector);
     /** @type {?} */
@@ -3897,21 +6487,21 @@
      * @return {?}
      */
     function (state) { return state.activeLanguage; });
-    var ɵ0$5 = activeLanguageSelector;
+    var ɵ0$b = activeLanguageSelector;
     /** @type {?} */
     var languagesEntitiesSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; });
-    var ɵ1$4 = languagesEntitiesSelector;
-    var ɵ2$2 = /**
+    var ɵ1$7 = languagesEntitiesSelector;
+    var ɵ2$4 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.languages; };
     /** @type {?} */
-    var getLanguagesState = store.createSelector(getSiteContextState, (ɵ2$2));
+    var getLanguagesState = store.createSelector(getSiteContextState, (ɵ2$4));
     /** @type {?} */
     var getLanguagesEntities = store.createSelector(getLanguagesState, languagesEntitiesSelector);
     /** @type {?} */
@@ -4361,6 +6951,73 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CustomerSupportAgentTokenInterceptor = /** @class */ (function () {
+        function CustomerSupportAgentTokenInterceptor(authService) {
+            this.authService = authService;
+        }
+        /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        CustomerSupportAgentTokenInterceptor.prototype.intercept = /**
+         * @param {?} request
+         * @param {?} next
+         * @return {?}
+         */
+        function (request, next) {
+            return this.getCustomerSupportAgentToken(request).pipe(operators.take(1), operators.switchMap((/**
+             * @param {?} token
+             * @return {?}
+             */
+            function (token) {
+                if (token) {
+                    request = request.clone({
+                        setHeaders: {
+                            Authorization: token.token_type + " " + token.access_token,
+                        },
+                    });
+                }
+                return next.handle(request);
+            })));
+        };
+        /**
+         * @private
+         * @param {?} request
+         * @return {?}
+         */
+        CustomerSupportAgentTokenInterceptor.prototype.getCustomerSupportAgentToken = /**
+         * @private
+         * @param {?} request
+         * @return {?}
+         */
+        function (request) {
+            if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
+                return this.authService.getCustomerSupportAgentToken();
+            }
+            return rxjs.of(null);
+        };
+        CustomerSupportAgentTokenInterceptor.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CustomerSupportAgentTokenInterceptor.ctorParameters = function () { return [
+            { type: AuthService }
+        ]; };
+        return CustomerSupportAgentTokenInterceptor;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerSupportAgentTokenInterceptor.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserTokenInterceptor = /** @class */ (function () {
         function UserTokenInterceptor(authService, occEndpoints) {
             this.authService = authService;
@@ -4437,6 +7094,11 @@
      */
     /** @type {?} */
     var interceptors = [
+        {
+            provide: http.HTTP_INTERCEPTORS,
+            useClass: CustomerSupportAgentTokenInterceptor,
+            multi: true,
+        },
         {
             provide: http.HTTP_INTERCEPTORS,
             useClass: ClientTokenInterceptor,
@@ -4623,425 +7285,8 @@
         ClientErrorHandlingService,
         UserAuthenticationTokenService,
         UserErrorHandlingService,
+        CustomerSupportAgentErrorHandlingService,
     ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {string} */
-    var StorageSyncType = {
-        NO_STORAGE: 'NO_STORAGE',
-        LOCAL_STORAGE: 'LOCAL_STORAGE',
-        SESSION_STORAGE: 'SESSION_STORAGE',
-    };
-    /** @enum {string} */
-    var StateTransferType = {
-        TRANSFER_STATE: 'SSR',
-    };
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    StateConfig = /** @class */ (function () {
-        function StateConfig() {
-        }
-        return StateConfig;
-    }());
-    if (false) {
-        /** @type {?} */
-        StateConfig.prototype.state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-    /** @type {?} */
-    var DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-    /** @type {?} */
-    var defaultStateConfig = {
-        state: {
-            storageSync: {
-                localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-                sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-                keys: {},
-                excludeKeys: {},
-            },
-        },
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?} winRef
-     * @param {?=} config
-     * @return {?}
-     */
-    function getStorageSyncReducer(winRef, config) {
-        if (!winRef.nativeWindow ||
-            !config ||
-            !config.state ||
-            !config.state.storageSync ||
-            !config.state.storageSync.keys) {
-            return (/**
-             * @param {?} reducer
-             * @return {?}
-             */
-            function (reducer) { return reducer; });
-        }
-        /** @type {?} */
-        var storageSyncConfig = config.state.storageSync;
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                /** @type {?} */
-                var newState = reducer(state, action);
-                if (action.type === store.INIT || action.type === store.UPDATE) {
-                    /** @type {?} */
-                    var rehydratedState = rehydrate(config, winRef);
-                    return deepMerge({}, newState, rehydratedState);
-                }
-                if (action.type !== store.INIT) {
-                    // handle local storage
-                    /** @type {?} */
-                    var localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                    /** @type {?} */
-                    var localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
-                    /** @type {?} */
-                    var localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
-                    persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
-                    // handle session storage
-                    /** @type {?} */
-                    var sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
-                    /** @type {?} */
-                    var sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
-                    /** @type {?} */
-                    var sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
-                    persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
-                }
-                return newState;
-            });
-        });
-    }
-    /**
-     * @template T
-     * @param {?} config
-     * @param {?} winRef
-     * @return {?}
-     */
-    function rehydrate(config, winRef) {
-        /** @type {?} */
-        var localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
-        /** @type {?} */
-        var sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
-        return deepMerge(localStorageValue, sessionStorageValue);
-    }
-    /**
-     * @param {?} value
-     * @return {?}
-     */
-    function exists(value) {
-        if (value != null) {
-            if (typeof value === 'object') {
-                return Object.keys(value).length !== 0;
-            }
-            return value !== '';
-        }
-        return false;
-    }
-    /**
-     * @param {?} storageType
-     * @param {?} winRef
-     * @return {?}
-     */
-    function getStorage(storageType, winRef) {
-        /** @type {?} */
-        var storage;
-        switch (storageType) {
-            case StorageSyncType.LOCAL_STORAGE: {
-                storage = winRef.localStorage;
-                break;
-            }
-            case StorageSyncType.SESSION_STORAGE: {
-                storage = winRef.sessionStorage;
-                break;
-            }
-            case StorageSyncType.NO_STORAGE: {
-                storage = undefined;
-                break;
-            }
-            default: {
-                storage = winRef.sessionStorage;
-            }
-        }
-        return storage;
-    }
-    /**
-     * @param {?} configKey
-     * @param {?} value
-     * @param {?} storage
-     * @return {?}
-     */
-    function persistToStorage(configKey, value, storage) {
-        if (!isSsr(storage) && value) {
-            storage.setItem(configKey, JSON.stringify(value));
-        }
-    }
-    /**
-     * @param {?} storage
-     * @param {?} key
-     * @return {?}
-     */
-    function readFromStorage(storage, key) {
-        if (isSsr(storage)) {
-            return;
-        }
-        /** @type {?} */
-        var storageValue = storage.getItem(key);
-        if (!storageValue) {
-            return;
-        }
-        return JSON.parse(storageValue);
-    }
-    /**
-     * @param {?} storage
-     * @return {?}
-     */
-    function isSsr(storage) {
-        return !Boolean(storage);
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CX_KEY = platformBrowser.makeStateKey('cx-state');
-    /**
-     * @param {?} platformId
-     * @param {?=} transferState
-     * @param {?=} config
-     * @return {?}
-     */
-    function getTransferStateReducer(platformId, transferState, config) {
-        if (transferState &&
-            config &&
-            config.state &&
-            config.state.ssrTransfer &&
-            config.state.ssrTransfer.keys) {
-            if (common.isPlatformBrowser(platformId)) {
-                return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-            else if (common.isPlatformServer(platformId)) {
-                return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-            }
-        }
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) { return reducer; });
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getServerTransferStateReducer(transferState, keys) {
-        /** @type {?} */
-        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                /** @type {?} */
-                var newState = reducer(state, action);
-                if (newState) {
-                    /** @type {?} */
-                    var stateSlice = getStateSlice(transferStateKeys, [], newState);
-                    transferState.set(CX_KEY, stateSlice);
-                }
-                return newState;
-            });
-        });
-    }
-    /**
-     * @param {?} transferState
-     * @param {?} keys
-     * @return {?}
-     */
-    function getBrowserTransferStateReducer(transferState, keys) {
-        /** @type {?} */
-        var transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        function (reducer) {
-            return (/**
-             * @param {?} state
-             * @param {?} action
-             * @return {?}
-             */
-            function (state, action) {
-                if (action.type === store.INIT) {
-                    if (!state) {
-                        state = reducer(state, action);
-                    }
-                    // we should not utilize transfer state if user is logged in
-                    /** @type {?} */
-                    var authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
-                    /** @type {?} */
-                    var isLoggedIn = authState && authState.userToken && authState.userToken.token;
-                    if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
-                        /** @type {?} */
-                        var cxKey = transferState.get(CX_KEY, {});
-                        /** @type {?} */
-                        var transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
-                        state = deepMerge({}, state, transferredStateSlice);
-                    }
-                    return state;
-                }
-                return reducer(state, action);
-            });
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
-    /** @type {?} */
-    var stateMetaReducers = [
-        {
-            provide: store.META_REDUCERS,
-            useFactory: ɵ0$6,
-            deps: [
-                core.PLATFORM_ID,
-                [new core.Optional(), platformBrowser.TransferState],
-                [new core.Optional(), Config],
-            ],
-            multi: true,
-        },
-        {
-            provide: store.META_REDUCERS,
-            useFactory: ɵ1$5,
-            deps: [WindowRef, [new core.Optional(), Config]],
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var StateModule = /** @class */ (function () {
-        function StateModule() {
-        }
-        /**
-         * @return {?}
-         */
-        StateModule.forRoot = /**
-         * @return {?}
-         */
-        function () {
-            return {
-                ngModule: StateModule,
-                providers: __spread(stateMetaReducers, [
-                    provideConfig(defaultStateConfig),
-                    { provide: StateConfig, useExisting: Config },
-                ]),
-            };
-        };
-        StateModule.decorators = [
-            { type: core.NgModule, args: [{},] }
-        ];
-        return StateModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var UNKNOWN_ERROR = {
-        error: 'unknown error',
-    };
-    /** @type {?} */
-    var circularReplacer = (/**
-     * @return {?}
-     */
-    function () {
-        /** @type {?} */
-        var seen = new WeakSet();
-        return (/**
-         * @param {?} _key
-         * @param {?} value
-         * @return {?}
-         */
-        function (_key, value) {
-            if (typeof value === 'object' && value !== null) {
-                if (seen.has(value)) {
-                    return;
-                }
-                seen.add(value);
-            }
-            return value;
-        });
-    });
-    var ɵ0$7 = circularReplacer;
-    /**
-     * @param {?} error
-     * @return {?}
-     */
-    function makeErrorSerializable(error) {
-        if (error instanceof Error) {
-            return (/** @type {?} */ ({
-                message: error.message,
-                type: error.name,
-                reason: error.stack,
-            }));
-        }
-        if (error instanceof http.HttpErrorResponse) {
-            /** @type {?} */
-            var serializableError = error.error;
-            if (isObject(error.error)) {
-                serializableError = JSON.stringify(error.error, circularReplacer());
-            }
-            return (/** @type {?} */ ({
-                message: error.message,
-                error: serializableError,
-                status: error.status,
-                statusText: error.statusText,
-                url: error.url,
-            }));
-        }
-        return isObject(error) ? UNKNOWN_ERROR : error;
-    }
 
     /**
      * @fileoverview added by tsickle
@@ -5052,7 +7297,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.clientAuthenticationTokenService = clientAuthenticationTokenService;
-            this.loadClientToken$ = this.actions$.pipe(effects$a.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap((/**
+            this.loadClientToken$ = this.actions$.pipe(effects$b.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -5078,11 +7323,11 @@
         ];
         /** @nocollapse */
         ClientTokenEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: ClientAuthenticationTokenService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
         return ClientTokenEffect;
@@ -5106,12 +7351,79 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CustomerSupportAgentTokenEffects = /** @class */ (function () {
+        function CustomerSupportAgentTokenEffects(actions$, userTokenService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.userTokenService = userTokenService;
+            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(effects$b.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var userId = _a.userId, password = _a.password;
+                return _this.userTokenService.loadToken(userId, password).pipe(operators.map((/**
+                 * @param {?} token
+                 * @return {?}
+                 */
+                function (token) {
+                    /** @type {?} */
+                    var date = new Date();
+                    date.setSeconds(date.getSeconds() + token.expires_in);
+                    token.expiration_time = date.toJSON();
+                    return new LoadCustomerSupportAgentTokenSuccess(token);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        CustomerSupportAgentTokenEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CustomerSupportAgentTokenEffects.ctorParameters = function () { return [
+            { type: effects$b.Actions },
+            { type: UserAuthenticationTokenService }
+        ]; };
+        __decorate([
+            effects$b.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
+        return CustomerSupportAgentTokenEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        CustomerSupportAgentTokenEffects.prototype.loadCustomerSupportAgentToken$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerSupportAgentTokenEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerSupportAgentTokenEffects.prototype.userTokenService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserTokenEffects = /** @class */ (function () {
         function UserTokenEffects(actions$, userTokenService) {
             var _this = this;
             this.actions$ = actions$;
             this.userTokenService = userTokenService;
-            this.loadUserToken$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN), operators.map((/**
+            this.loadUserToken$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -5140,15 +7452,15 @@
                     return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.login$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
+            this.login$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
              * @return {?}
              */
             function () { return new Login(); })));
-            this.refreshUserToken$ = this.actions$.pipe(effects$a.ofType(REFRESH_USER_TOKEN), operators.map((/**
+            this.refreshUserToken$ = this.actions$.pipe(effects$b.ofType(REFRESH_USER_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
-            function (action) { return action.payload; })), operators.switchMap((/**
+            function (action) { return action.payload; })), operators.exhaustMap((/**
              * @param {?} __0
              * @return {?}
              */
@@ -5163,7 +7475,6 @@
                     var date = new Date();
                     date.setSeconds(date.getSeconds() + token.expires_in);
                     token.expiration_time = date.toJSON();
-                    token.userId = OCC_USER_ID_CURRENT;
                     return new RefreshUserTokenSuccess(token);
                 }), operators.catchError((/**
                  * @param {?} error
@@ -5177,19 +7488,19 @@
         ];
         /** @nocollapse */
         UserTokenEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserAuthenticationTokenService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "loadUserToken$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "login$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
         return UserTokenEffects;
@@ -5218,21 +7529,25 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects = [UserTokenEffects, ClientTokenEffect];
+    var effects$1 = [
+        UserTokenEffects,
+        ClientTokenEffect,
+        CustomerSupportAgentTokenEffects,
+    ];
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState = (/** @type {?} */ ({}));
+    var initialState$2 = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer(state, action) {
-        if (state === void 0) { state = initialState; }
+    function reducer$2(state, action) {
+        if (state === void 0) { state = initialState$2; }
         switch (action.type) {
             case LOAD_USER_TOKEN:
             case REFRESH_USER_TOKEN: {
@@ -5257,18 +7572,19 @@
     /**
      * @return {?}
      */
-    function getReducers() {
+    function getReducers$2() {
         return {
-            userToken: store.combineReducers({ token: reducer }),
+            userToken: store.combineReducers({ token: reducer$2 }),
             clientToken: loaderReducer(CLIENT_TOKEN_DATA),
+            csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken = new core.InjectionToken('AuthReducers');
+    var reducerToken$2 = new core.InjectionToken('AuthReducers');
     /** @type {?} */
-    var reducerProvider = {
-        provide: reducerToken,
-        useFactory: getReducers,
+    var reducerProvider$2 = {
+        provide: reducerToken$2,
+        useFactory: getReducers$2,
     };
     /**
      * @param {?} reducer
@@ -5287,8 +7603,28 @@
             return reducer(state, action);
         });
     }
+    /**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function clearCustomerSupportAgentAuthState(reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
+                state = __assign({}, state, { csagentToken: undefined });
+            }
+            return reducer(state, action);
+        });
+    }
     /** @type {?} */
-    var metaReducers = [clearAuthState];
+    var metaReducers = [
+        clearAuthState,
+        clearCustomerSupportAgentAuthState,
+    ];
 
     /**
      * @fileoverview added by tsickle
@@ -5310,6 +7646,12 @@
                         'auth.userToken.token.expiration_time': StorageSyncType.LOCAL_STORAGE,
                         'auth.userToken.token.scope': StorageSyncType.LOCAL_STORAGE,
                         'auth.userToken.token.userId': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.access_token': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.token_type': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.expires_in': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.expiration_time': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.scope': StorageSyncType.LOCAL_STORAGE,
+                        'auth.csagentToken.value.userId': StorageSyncType.LOCAL_STORAGE,
                     },
                 },
             },
@@ -5325,11 +7667,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
-                            effects$a.EffectsModule.forFeature(effects),
+                            store.StoreModule.forFeature(AUTH_FEATURE, reducerToken$2, { metaReducers: metaReducers }),
+                            effects$b.EffectsModule.forFeature(effects$1),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
-                        providers: [reducerProvider],
+                        providers: [reducerProvider$2],
                     },] }
         ];
         return AuthStoreModule;
@@ -6251,21 +8593,21 @@
      * @return {?}
      */
     function (state) { return state.content; });
-    var ɵ0$8 = getCartContentSelector;
+    var ɵ0$c = getCartContentSelector;
     /** @type {?} */
     var getCartRefreshSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.refresh; });
-    var ɵ1$6 = getCartRefreshSelector;
+    var ɵ1$8 = getCartRefreshSelector;
     /** @type {?} */
     var getCartEntriesSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entries; });
-    var ɵ2$3 = getCartEntriesSelector;
+    var ɵ2$5 = getCartEntriesSelector;
     /** @type {?} */
     var getCartMergeCompleteSelector = (/**
      * @param {?} state
@@ -7853,14 +10195,14 @@
             return acc;
         }), {});
     });
-    var ɵ0$9 = getComponentEntitiesSelector;
-    var ɵ1$7 = /**
+    var ɵ0$d = getComponentEntitiesSelector;
+    var ɵ1$9 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
     /** @type {?} */
-    var getComponentState = store.createSelector(getCmsState, (ɵ1$7));
+    var getComponentState = store.createSelector(getCmsState, (ɵ1$9));
     /** @type {?} */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
@@ -7907,13 +10249,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$a = /**
+    var ɵ0$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.navigation; };
     /** @type {?} */
-    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$a));
+    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$e));
     /** @type {?} */
     var getSelectedNavigationEntryItemState = (/**
      * @param {?} nodeId
@@ -8228,7 +10570,7 @@
      * @return {?}
      */
     function (state) { return state.pageData.entities; });
-    var ɵ0$b = getPageEntitiesSelector;
+    var ɵ0$f = getPageEntitiesSelector;
     /** @type {?} */
     var getIndexByType = (/**
      * @param {?} index
@@ -8252,7 +10594,7 @@
         }
         return { entities: {} };
     });
-    var ɵ1$8 = getIndexByType;
+    var ɵ1$a = getIndexByType;
     /** @type {?} */
     var getPageComponentTypesSelector = (/**
      * @param {?} page
@@ -8291,7 +10633,7 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$4 = getPageComponentTypesSelector;
+    var ɵ2$6 = getPageComponentTypesSelector;
     var ɵ3$4 = /**
      * @param {?} state
      * @return {?}
@@ -10073,7 +12415,7 @@
             this.actions$ = actions$;
             this.cartConnector = cartConnector;
             this.cartData = cartData;
-            this.loadCart$ = this.actions$.pipe(effects$a.ofType(LOAD_CART), operators.map((/**
+            this.loadCart$ = this.actions$.pipe(effects$b.ofType(LOAD_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10117,7 +12459,7 @@
                     return rxjs.of(new LoadCartFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.createCart$ = this.actions$.pipe(effects$a.ofType(CREATE_CART), operators.map((/**
+            this.createCart$ = this.actions$.pipe(effects$b.ofType(CREATE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10151,7 +12493,7 @@
                     return rxjs.of(new CreateCartFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.mergeCart$ = this.actions$.pipe(effects$a.ofType(MERGE_CART), operators.map((/**
+            this.mergeCart$ = this.actions$.pipe(effects$b.ofType(MERGE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10172,7 +12514,7 @@
                     });
                 })));
             })));
-            this.refresh$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), operators.map((/**
+            this.refresh$ = this.actions$.pipe(effects$b.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10187,11 +12529,11 @@
                         cartId: payload.cartId,
                     });
             })));
-            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
+            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new ResetCartDetails(); })));
-            this.addEmail$ = this.actions$.pipe(effects$a.ofType(ADD_EMAIL_TO_CART), operators.map((/**
+            this.addEmail$ = this.actions$.pipe(effects$b.ofType(ADD_EMAIL_TO_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10218,7 +12560,7 @@
                     return rxjs.of(new AddEmailToCartFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.deleteCart$ = this.actions$.pipe(effects$a.ofType(DELETE_CART), operators.map((/**
+            this.deleteCart$ = this.actions$.pipe(effects$b.ofType(DELETE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10259,36 +12601,36 @@
         ];
         /** @nocollapse */
         CartEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CartConnector },
             { type: CartDataService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "loadCart$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "createCart$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "mergeCart$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "refresh$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "addEmail$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "deleteCart$", void 0);
         return CartEffects;
@@ -10463,7 +12805,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.cartEntryConnector = cartEntryConnector;
-            this.addEntry$ = this.actions$.pipe(effects$a.ofType(CART_ADD_ENTRY), operators.map((/**
+            this.addEntry$ = this.actions$.pipe(effects$b.ofType(CART_ADD_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10488,7 +12830,7 @@
                     return rxjs.of(new CartAddEntryFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.removeEntry$ = this.actions$.pipe(effects$a.ofType(CART_REMOVE_ENTRY), operators.map((/**
+            this.removeEntry$ = this.actions$.pipe(effects$b.ofType(CART_REMOVE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10515,7 +12857,7 @@
                     return rxjs.of(new CartRemoveEntryFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateEntry$ = this.actions$.pipe(effects$a.ofType(CART_UPDATE_ENTRY), operators.map((/**
+            this.updateEntry$ = this.actions$.pipe(effects$b.ofType(CART_UPDATE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -10548,19 +12890,19 @@
         ];
         /** @nocollapse */
         CartEntryEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CartEntryConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "addEntry$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "removeEntry$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "updateEntry$", void 0);
         return CartEntryEffects;
@@ -10589,14 +12931,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$1 = [CartEffects, CartEntryEffects];
+    var effects$2 = [CartEffects, CartEntryEffects];
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$1 = {
+    var initialState$3 = {
         content: {},
         entries: {},
         refresh: false,
@@ -10607,8 +12949,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$1(state, action) {
-        if (state === void 0) { state = initialState$1; }
+    function reducer$3(state, action) {
+        if (state === void 0) { state = initialState$3; }
         switch (action.type) {
             case MERGE_CART: {
                 return __assign({}, state, { cartMergeComplete: false });
@@ -10657,7 +12999,7 @@
                 };
             }
             case CLEAR_CART: {
-                return initialState$1;
+                return initialState$3;
             }
         }
         return state;
@@ -10670,17 +13012,17 @@
     /**
      * @return {?}
      */
-    function getReducers$1() {
+    function getReducers$3() {
         return {
-            active: loaderReducer(CART_DATA, reducer$1),
+            active: loaderReducer(CART_DATA, reducer$3),
         };
     }
     /** @type {?} */
-    var reducerToken$1 = new core.InjectionToken('CartReducers');
+    var reducerToken$3 = new core.InjectionToken('CartReducers');
     /** @type {?} */
-    var reducerProvider$1 = {
-        provide: reducerToken$1,
-        useFactory: getReducers$1,
+    var reducerProvider$3 = {
+        provide: reducerToken$3,
+        useFactory: getReducers$3,
     };
     /**
      * @param {?} reducer
@@ -10735,11 +13077,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$1, { metaReducers: metaReducers$1 }),
-                            effects$a.EffectsModule.forFeature(effects$1),
+                            store.StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
+                            effects$b.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(cartStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$1],
+                        providers: [reducerProvider$3],
                     },] }
         ];
         return CartStoreModule;
@@ -10824,7 +13166,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$2 = {
+    var initialState$4 = {
         results: {},
     };
     /**
@@ -10832,8 +13174,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$2(state, action) {
-        if (state === void 0) { state = initialState$2; }
+    function reducer$4(state, action) {
+        if (state === void 0) { state = initialState$4; }
         switch (action.type) {
             case VERIFY_ADDRESS_SUCCESS: {
                 /** @type {?} */
@@ -10866,7 +13208,7 @@
      * @return {?}
      */
     function (state) { return state.address; });
-    var ɵ0$c = getDeliveryAddressSelector;
+    var ɵ0$g = getDeliveryAddressSelector;
     /** @type {?} */
     var getDeliveryModeSelector = (/**
      * @param {?} state
@@ -10875,7 +13217,7 @@
     function (state) {
         return state.deliveryMode;
     });
-    var ɵ1$9 = getDeliveryModeSelector;
+    var ɵ1$b = getDeliveryModeSelector;
     /** @type {?} */
     var getPaymentDetailsSelector = (/**
      * @param {?} state
@@ -10884,7 +13226,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$5 = getPaymentDetailsSelector;
+    var ɵ2$7 = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -10970,13 +13312,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$d = /**
+    var ɵ0$h = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addressVerification; };
     /** @type {?} */
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$d));
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$h));
     /** @type {?} */
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -10985,7 +13327,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$3 = {
+    var initialState$5 = {
         entities: {},
     };
     /**
@@ -10993,8 +13335,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$3(state, action) {
-        if (state === void 0) { state = initialState$3; }
+    function reducer$5(state, action) {
+        if (state === void 0) { state = initialState$5; }
         switch (action.type) {
             case LOAD_CARD_TYPES_SUCCESS: {
                 /** @type {?} */
@@ -11012,7 +13354,7 @@
                 return __assign({}, state, { entities: entities });
             }
             case CHECKOUT_CLEAR_MISCS_DATA: {
-                return initialState$3;
+                return initialState$5;
             }
         }
         return state;
@@ -11028,16 +13370,16 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$e = /**
+    var ɵ0$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.cardTypes; };
     /** @type {?} */
-    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$e));
+    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$i));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$a = /**
+    var ɵ1$c = /**
      * @param {?} entites
      * @return {?}
      */
@@ -11049,7 +13391,7 @@
         function (code) { return entites[code]; }));
     };
     /** @type {?} */
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$a));
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$c));
 
     /**
      * @fileoverview added by tsickle
@@ -11348,7 +13690,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$4 = {
+    var initialState$6 = {
         address: {},
         deliveryMode: {
             supported: {},
@@ -11362,8 +13704,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$4(state, action) {
-        if (state === void 0) { state = initialState$4; }
+    function reducer$6(state, action) {
+        if (state === void 0) { state = initialState$6; }
         switch (action.type) {
             case ADD_DELIVERY_ADDRESS_SUCCESS:
             case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -11412,7 +13754,7 @@
                 return __assign({}, state, { orderDetails: orderDetails });
             }
             case CLEAR_CHECKOUT_DATA: {
-                return initialState$4;
+                return initialState$6;
             }
             case CLEAR_CHECKOUT_STEP: {
                 /** @type {?} */
@@ -11454,19 +13796,19 @@
     /**
      * @return {?}
      */
-    function getReducers$2() {
+    function getReducers$4() {
         return {
-            steps: loaderReducer(CHECKOUT_DETAILS, reducer$4),
-            cardTypes: reducer$3,
-            addressVerification: reducer$2,
+            steps: loaderReducer(CHECKOUT_DETAILS, reducer$6),
+            cardTypes: reducer$5,
+            addressVerification: reducer$4,
         };
     }
     /** @type {?} */
-    var reducerToken$2 = new core.InjectionToken('CheckoutReducers');
+    var reducerToken$4 = new core.InjectionToken('CheckoutReducers');
     /** @type {?} */
-    var reducerProvider$2 = {
-        provide: reducerToken$2,
-        useFactory: getReducers$2,
+    var reducerProvider$4 = {
+        provide: reducerToken$4,
+        useFactory: getReducers$4,
     };
 
     /**
@@ -11624,7 +13966,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(effects$a.ofType(VERIFY_ADDRESS), operators.map((/**
+            this.verifyAddress$ = this.actions$.pipe(effects$b.ofType(VERIFY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -11651,11 +13993,11 @@
         ];
         /** @nocollapse */
         AddressVerificationEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserAddressConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
         return AddressVerificationEffect;
@@ -11795,7 +14137,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.loadCardTypes$ = this.actions$.pipe(effects$a.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
+            this.loadCardTypes$ = this.actions$.pipe(effects$b.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -11817,11 +14159,11 @@
         ];
         /** @nocollapse */
         CardTypesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CheckoutPaymentConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
         return CardTypesEffects;
@@ -14046,7 +16388,7 @@
             this.checkoutDeliveryConnector = checkoutDeliveryConnector;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.checkoutConnector = checkoutConnector;
-            this.addDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(ADD_DELIVERY_ADDRESS), operators.map((/**
+            this.addDeliveryAddress$ = this.actions$.pipe(effects$b.ofType(ADD_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14095,7 +16437,7 @@
                     return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.setDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(SET_DELIVERY_ADDRESS), operators.map((/**
+            this.setDeliveryAddress$ = this.actions$.pipe(effects$b.ofType(SET_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14129,7 +16471,7 @@
                     return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$a.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map((/**
+            this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$b.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14154,23 +16496,23 @@
                     return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new CheckoutClearMiscsData(); })));
-            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$a.ofType(CURRENCY_CHANGE), operators.map((/**
+            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$b.ofType(CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new ClearSupportedDeliveryModes(); })));
-            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(effects$a.ofType(LOGOUT), operators.map((/**
+            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(effects$b.ofType(LOGOUT), operators.map((/**
              * @return {?}
              */
             function () { return new ClearCheckoutData(); })));
-            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$a.ofType(LOGIN), operators.map((/**
+            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$b.ofType(LOGIN), operators.map((/**
              * @return {?}
              */
             function () { return new ClearCheckoutData(); })));
-            this.setDeliveryMode$ = this.actions$.pipe(effects$a.ofType(SET_DELIVERY_MODE), operators.map((/**
+            this.setDeliveryMode$ = this.actions$.pipe(effects$b.ofType(SET_DELIVERY_MODE), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14200,7 +16542,7 @@
                     return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.createPaymentDetails$ = this.actions$.pipe(effects$a.ofType(CREATE_PAYMENT_DETAILS), operators.map((/**
+            this.createPaymentDetails$ = this.actions$.pipe(effects$b.ofType(CREATE_PAYMENT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14234,7 +16576,7 @@
                     return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.setPaymentDetails$ = this.actions$.pipe(effects$a.ofType(SET_PAYMENT_DETAILS), operators.map((/**
+            this.setPaymentDetails$ = this.actions$.pipe(effects$b.ofType(SET_PAYMENT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14258,7 +16600,7 @@
                     return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.placeOrder$ = this.actions$.pipe(effects$a.ofType(PLACE_ORDER), operators.map((/**
+            this.placeOrder$ = this.actions$.pipe(effects$b.ofType(PLACE_ORDER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14281,7 +16623,7 @@
                     return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.loadCheckoutDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_CHECKOUT_DETAILS), operators.map((/**
+            this.loadCheckoutDetails$ = this.actions$.pipe(effects$b.ofType(LOAD_CHECKOUT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14306,7 +16648,7 @@
                     return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$a.ofType(MERGE_CART_SUCCESS), operators.map((/**
+            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$b.ofType(MERGE_CART_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14320,7 +16662,7 @@
                     cartId: payload.cartId ? payload.cartId : 'current',
                 });
             })));
-            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$a.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map((/**
+            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$b.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14346,7 +16688,7 @@
                     return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$a.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map((/**
+            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$b.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -14383,69 +16725,69 @@
         ];
         /** @nocollapse */
         CheckoutEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CheckoutDeliveryConnector },
             { type: CheckoutPaymentConnector },
             { type: CheckoutConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "placeOrder$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
         return CheckoutEffects;
@@ -14508,7 +16850,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$2 = [
+    var effects$3 = [
         CheckoutEffects,
         AddressVerificationEffect,
         CardTypesEffects,
@@ -14526,10 +16868,10 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$2),
-                            effects$a.EffectsModule.forFeature(effects$2),
+                            store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4),
+                            effects$b.EffectsModule.forFeature(effects$3),
                         ],
-                        providers: [reducerProvider$2],
+                        providers: [reducerProvider$4],
                     },] }
         ];
         return CheckoutStoreModule;
@@ -16752,7 +19094,7 @@
             this.actions$ = actions$;
             this.router = router;
             this.location = location;
-            this.navigate$ = this.actions$.pipe(effects$a.ofType(ROUTER_GO), operators.map((/**
+            this.navigate$ = this.actions$.pipe(effects$b.ofType(ROUTER_GO), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -16764,7 +19106,7 @@
                 var path = _a.path, queryParams = _a.query, extras = _a.extras;
                 _this.router.navigate(path, __assign({ queryParams: queryParams }, extras));
             })));
-            this.navigateBuUrl$ = this.actions$.pipe(effects$a.ofType(ROUTER_GO_BY_URL), operators.map((/**
+            this.navigateBuUrl$ = this.actions$.pipe(effects$b.ofType(ROUTER_GO_BY_URL), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -16775,7 +19117,7 @@
             function (url) {
                 _this.router.navigateByUrl(url);
             })));
-            this.clearCmsRoutes$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
+            this.clearCmsRoutes$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
              * @param {?} _
              * @return {?}
              */
@@ -16790,11 +19132,11 @@
                     _this.router.resetConfig(filteredConfig);
                 }
             })));
-            this.navigateBack$ = this.actions$.pipe(effects$a.ofType(ROUTER_BACK), operators.tap((/**
+            this.navigateBack$ = this.actions$.pipe(effects$b.ofType(ROUTER_BACK), operators.tap((/**
              * @return {?}
              */
             function () { return _this.location.back(); })));
-            this.navigateForward$ = this.actions$.pipe(effects$a.ofType(ROUTER_FORWARD), operators.tap((/**
+            this.navigateForward$ = this.actions$.pipe(effects$b.ofType(ROUTER_FORWARD), operators.tap((/**
              * @return {?}
              */
             function () { return _this.location.forward(); })));
@@ -16804,28 +19146,28 @@
         ];
         /** @nocollapse */
         RouterEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: router.Router },
             { type: common.Location }
         ]; };
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigate$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateBuUrl$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateBack$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateForward$", void 0);
         return RouterEffects;
@@ -16863,14 +19205,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$3 = [RouterEffects];
+    var effects$4 = [RouterEffects];
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = {
+    var initialState$7 = {
         navigationId: 0,
         state: {
             url: '',
@@ -16886,9 +19228,9 @@
     /**
      * @return {?}
      */
-    function getReducers$3() {
+    function getReducers$5() {
         return {
-            router: reducer$5,
+            router: reducer$7,
         };
     }
     /**
@@ -16896,8 +19238,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$5(state, action) {
-        if (state === void 0) { state = initialState$5; }
+    function reducer$7(state, action) {
+        if (state === void 0) { state = initialState$7; }
         switch (action.type) {
             case routerStore.ROUTER_NAVIGATION: {
                 return __assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -16919,11 +19261,11 @@
         }
     }
     /** @type {?} */
-    var reducerToken$3 = new core.InjectionToken('RouterReducers');
+    var reducerToken$5 = new core.InjectionToken('RouterReducers');
     /** @type {?} */
-    var reducerProvider$3 = {
-        provide: reducerToken$3,
-        useFactory: getReducers$3,
+    var reducerProvider$5 = {
+        provide: reducerToken$5,
+        useFactory: getReducers$5,
     };
     /* The serializer is there to parse the RouterStateSnapshot,
     and to reduce the amount of properties to be passed to the reducer.
@@ -17047,7 +19389,7 @@
             return {
                 ngModule: RoutingModule,
                 providers: [
-                    reducerProvider$3,
+                    reducerProvider$5,
                     {
                         provide: routerStore.RouterStateSerializer,
                         useClass: CustomSerializer,
@@ -17065,8 +19407,8 @@
         RoutingModule.decorators = [
             { type: core.NgModule, args: [{
                         imports: [
-                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$3),
-                            effects$a.EffectsModule.forFeature(effects$3),
+                            store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$5),
+                            effects$b.EffectsModule.forFeature(effects$4),
                             routerStore.StoreRouterConnectingModule.forRoot({
                                 routerState: 1 /* Minimal */,
                                 stateKey: ROUTING_FEATURE,
@@ -17595,7 +19937,7 @@
             this.actions$ = actions$;
             this.cmsPageConnector = cmsPageConnector;
             this.routingService = routingService;
-            this.refreshPage$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap((/**
+            this.refreshPage$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap((/**
              * @param {?} _
              * @return {?}
              */
@@ -17619,7 +19961,7 @@
                  */
                 function (context) { return rxjs.of(new LoadCmsPageData(context)); })));
             })));
-            this.loadPageData$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_PAGE_DATA), operators.map((/**
+            this.loadPageData$ = this.actions$.pipe(effects$b.ofType(LOAD_CMS_PAGE_DATA), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -17670,16 +20012,16 @@
         ];
         /** @nocollapse */
         PageEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CmsPageConnector },
             { type: RoutingService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], PageEffects.prototype, "refreshPage$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], PageEffects.prototype, "loadPageData$", void 0);
         return PageEffects;
@@ -17874,7 +20216,7 @@
             this.actions$ = actions$;
             this.cmsComponentLoader = cmsComponentLoader;
             this.routingService = routingService;
-            this.loadComponent$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_COMPONENT), operators.map((/**
+            this.loadComponent$ = this.actions$.pipe(effects$b.ofType(LOAD_CMS_COMPONENT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -17925,12 +20267,12 @@
         ];
         /** @nocollapse */
         ComponentEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CmsComponentConnector },
             { type: RoutingService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ComponentEffects.prototype, "loadComponent$", void 0);
         return ComponentEffects;
@@ -17965,7 +20307,7 @@
             this.actions$ = actions$;
             this.cmsComponentConnector = cmsComponentConnector;
             this.routingService = routingService;
-            this.loadNavigationItems$ = this.actions$.pipe(effects$a.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
+            this.loadNavigationItems$ = this.actions$.pipe(effects$b.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -18072,12 +20414,12 @@
         ];
         /** @nocollapse */
         NavigationEntryItemEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: CmsComponentConnector },
             { type: RoutingService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
         return NavigationEntryItemEffects;
@@ -18107,7 +20449,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$4 = [
+    var effects$5 = [
         PageEffects,
         ComponentEffects,
         NavigationEntryItemEffects,
@@ -18118,14 +20460,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$6 = undefined;
+    var initialState$8 = undefined;
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$6(state, action) {
-        if (state === void 0) { state = initialState$6; }
+    function reducer$8(state, action) {
+        if (state === void 0) { state = initialState$8; }
         switch (action.type) {
             case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -18153,15 +20495,15 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$7 = { entities: {} };
+    var initialState$9 = { entities: {} };
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$7(state, action) {
+    function reducer$9(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$7; }
+        if (state === void 0) { state = initialState$9; }
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 /** @type {?} */
@@ -18177,26 +20519,26 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$8 = undefined;
+    var initialState$a = undefined;
     /**
      * @param {?} entityType
      * @return {?}
      */
-    function reducer$8(entityType) {
+    function reducer$a(entityType) {
         return (/**
          * @param {?=} state
          * @param {?=} action
          * @return {?}
          */
         function (state, action) {
-            if (state === void 0) { state = initialState$8; }
+            if (state === void 0) { state = initialState$a; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_CMS_PAGE_DATA_FAIL: {
-                        return initialState$8;
+                        return initialState$a;
                     }
                     case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -18217,27 +20559,27 @@
     /**
      * @return {?}
      */
-    function getReducers$4() {
+    function getReducers$6() {
         return {
             page: store.combineReducers({
-                pageData: reducer$7,
+                pageData: reducer$9,
                 index: store.combineReducers({
-                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$8(PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$8(PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$8(PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$8(PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$a(PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$a(PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$a(PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$a(PageType.CATALOG_PAGE)),
                 }),
             }),
             component: entityLoaderReducer(COMPONENT_ENTITY),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$6),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$8),
         };
     }
     /** @type {?} */
-    var reducerToken$4 = new core.InjectionToken('CmsReducers');
+    var reducerToken$6 = new core.InjectionToken('CmsReducers');
     /** @type {?} */
-    var reducerProvider$4 = {
-        provide: reducerToken$4,
-        useFactory: getReducers$4,
+    var reducerProvider$6 = {
+        provide: reducerToken$6,
+        useFactory: getReducers$6,
     };
     /**
      * @param {?} reducer
@@ -18290,11 +20632,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                            effects$a.EffectsModule.forFeature(effects$4),
+                            store.StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$2 }),
+                            effects$b.EffectsModule.forFeature(effects$5),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$4],
+                        providers: [reducerProvider$6],
                     },] }
         ];
         return CmsStoreModule;
@@ -18816,1057 +21158,76 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @enum {string} */
-    var GlobalMessageType = {
-        MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
-        MSG_TYPE_ERROR: '[GlobalMessage] Error',
-        MSG_TYPE_INFO: '[GlobalMessage] Information',
-    };
-    /**
-     * @record
-     */
-    function GlobalMessage() { }
-    if (false) {
-        /** @type {?} */
-        GlobalMessage.prototype.text;
-        /** @type {?} */
-        GlobalMessage.prototype.type;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @abstract
      */
     var   /**
      * @abstract
      */
-    GlobalMessageConfig = /** @class */ (function () {
-        function GlobalMessageConfig() {
+    FeaturesConfig = /** @class */ (function () {
+        function FeaturesConfig() {
         }
-        return GlobalMessageConfig;
+        return FeaturesConfig;
     }());
     if (false) {
         /** @type {?} */
-        GlobalMessageConfig.prototype.globalMessages;
+        FeaturesConfig.prototype.features;
     }
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var ADD_MESSAGE = '[Global-message] Add a Message';
-    /** @type {?} */
-    var REMOVE_MESSAGE = '[Global-message] Remove a Message';
-    /** @type {?} */
-    var REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-    var AddMessage = /** @class */ (function () {
-        function AddMessage(payload) {
-            this.payload = payload;
-            this.type = ADD_MESSAGE;
-        }
-        return AddMessage;
-    }());
-    if (false) {
-        /** @type {?} */
-        AddMessage.prototype.type;
-        /** @type {?} */
-        AddMessage.prototype.payload;
-    }
-    var RemoveMessage = /** @class */ (function () {
-        function RemoveMessage(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGE;
-        }
-        return RemoveMessage;
-    }());
-    if (false) {
-        /** @type {?} */
-        RemoveMessage.prototype.type;
-        /** @type {?} */
-        RemoveMessage.prototype.payload;
-    }
-    var RemoveMessagesByType = /** @class */ (function () {
-        function RemoveMessagesByType(payload) {
-            this.payload = payload;
-            this.type = REMOVE_MESSAGES_BY_TYPE;
-        }
-        return RemoveMessagesByType;
-    }());
-    if (false) {
-        /** @type {?} */
-        RemoveMessagesByType.prototype.type;
-        /** @type {?} */
-        RemoveMessagesByType.prototype.payload;
-    }
-
     /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
-        ADD_MESSAGE: ADD_MESSAGE,
-        REMOVE_MESSAGE: REMOVE_MESSAGE,
-        REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
-        AddMessage: AddMessage,
-        RemoveMessage: RemoveMessage,
-        RemoveMessagesByType: RemoveMessagesByType
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var GLOBAL_MESSAGE_FEATURE = 'global-message';
-    /**
-     * @record
-     */
-    function StateWithGlobalMessage() { }
-    if (false) {
-        /* Skipping unnamed member:
-        [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
-    }
-    /**
-     * @record
-     */
-    function GlobalMessageState() { }
-    if (false) {
-        /** @type {?} */
-        GlobalMessageState.prototype.entities;
-    }
-    /**
-     * @record
-     */
-    function GlobalMessageEntities() { }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getGlobalMessageState = store.createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$f = /**
-     * @param {?} state
+     * @param {?} config
      * @return {?}
      */
-    function (state) { return state.entities; };
-    /** @type {?} */
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$f));
-    /** @type {?} */
-    var getGlobalMessageEntitiesByType = (/**
-     * @param {?} type
+    function isFeatureConfig(config) {
+        return typeof config === 'object' && config.features;
+    }
+    /**
+     * @param {?} level
+     * @param {?} version
      * @return {?}
      */
-    function (type) {
-        return store.createSelector(getGlobalMessageEntities, (/**
-         * @param {?} entities
-         * @return {?}
-         */
-        function (entities) { return entities && entities[type]; }));
-    });
-    /** @type {?} */
-    var getGlobalMessageCountByType = (/**
-     * @param {?} type
-     * @return {?}
-     */
-    function (type) {
-        return store.createSelector(getGlobalMessageEntitiesByType(type), (/**
-         * @param {?} entities
-         * @return {?}
-         */
-        function (entities) { return entities && entities.length; }));
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
-        getGlobalMessageState: getGlobalMessageState,
-        getGlobalMessageEntities: getGlobalMessageEntities,
-        getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
-        getGlobalMessageCountByType: getGlobalMessageCountByType
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageService = /** @class */ (function () {
-        function GlobalMessageService(store) {
-            this.store = store;
-        }
-        /**
-         * Get all global messages
-         */
-        /**
-         * Get all global messages
-         * @return {?}
-         */
-        GlobalMessageService.prototype.get = /**
-         * Get all global messages
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getGlobalMessageEntities), operators.filter((/**
-             * @param {?} data
-             * @return {?}
-             */
-            function (data) { return data !== undefined; })));
-        };
-        /**
-         * Add one message into store
-         * @param text: string | Translatable
-         * @param type: GlobalMessageType object
-         */
-        /**
-         * Add one message into store
-         * @param {?} text
-         * @param {?} type
-         * @return {?}
-         */
-        GlobalMessageService.prototype.add = /**
-         * Add one message into store
-         * @param {?} text
-         * @param {?} type
-         * @return {?}
-         */
-        function (text, type) {
-            this.store.dispatch(new AddMessage({
-                text: typeof text === 'string' ? { raw: text } : text,
-                type: type,
-            }));
-        };
-        /**
-         * Remove message(s) from store
-         * @param type: GlobalMessageType
-         * @param index:optional. Without it, messages will be removed by type; otherwise,
-         * message will be removed from list by index.
-         */
-        /**
-         * Remove message(s) from store
-         * @param {?} type
-         * @param {?=} index
-         * @return {?}
-         */
-        GlobalMessageService.prototype.remove = /**
-         * Remove message(s) from store
-         * @param {?} type
-         * @param {?=} index
-         * @return {?}
-         */
-        function (type, index) {
-            this.store.dispatch(index !== undefined
-                ? new RemoveMessage({
-                    type: type,
-                    index: index,
-                })
-                : new RemoveMessagesByType(type));
-        };
-        GlobalMessageService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        GlobalMessageService.ctorParameters = function () { return [
-            { type: store.Store }
-        ]; };
-        return GlobalMessageService;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        GlobalMessageService.prototype.store;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @enum {number} */
-    var HttpResponseStatus = {
-        UNKNOWN: -1,
-        BAD_REQUEST: 400,
-        FORBIDDEN: 403,
-        NOT_FOUND: 404,
-        CONFLICT: 409,
-        BAD_GATEWAY: 502,
-        GATEWAY_TIMEOUT: 504,
-        INTERNAL_SERVER_ERROR: 500,
-    };
-    HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
-    HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
-    HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
-    HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
-    HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-    HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
-    HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
-    HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var HttpErrorHandler = /** @class */ (function () {
-        function HttpErrorHandler(globalMessageService) {
-            this.globalMessageService = globalMessageService;
-        }
-        HttpErrorHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        HttpErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
-        /** @nocollapse */ HttpErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-        return HttpErrorHandler;
-    }());
-    if (false) {
-        /**
-         * The http response status number which is handled by this handler.
-         * Implementations can set the response status number, i.e. 404, so that
-         * the handler can be found by the error interceptor.
-         * @type {?}
-         */
-        HttpErrorHandler.prototype.responseStatus;
-        /**
-         * @type {?}
-         * @protected
-         */
-        HttpErrorHandler.prototype.globalMessageService;
-        /**
-         * Handles the error response for the respose status that is register for the handler
-         * @abstract
-         * @param {?} request
-         * @param {?} errorResponse
-         * @return {?}
-         */
-        HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var BadGatewayHandler = /** @class */ (function (_super) {
-        __extends(BadGatewayHandler, _super);
-        function BadGatewayHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        BadGatewayHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
-        };
-        BadGatewayHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ BadGatewayHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-        return BadGatewayHandler;
-    }(HttpErrorHandler));
-    if (false) {
+    function isInLevel(level, version) {
         /** @type {?} */
-        BadGatewayHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
-    var BadRequestHandler = /** @class */ (function (_super) {
-        __extends(BadRequestHandler, _super);
-        function BadRequestHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.BAD_REQUEST;
-            return _this;
-        }
-        /**
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        BadRequestHandler.prototype.handleError = /**
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        function (request, response) {
-            var _this = this;
-            if (response.url.includes(OAUTH_ENDPOINT$1) &&
-                response.error &&
-                response.error.error === 'invalid_grant' &&
-                request.body.get('grant_type') === 'password') {
-                this.globalMessageService.add({
-                    key: 'httpHandlers.badRequestPleaseLoginAgain',
-                    params: {
-                        errorMessage: response.error.error_description || response.message || '',
-                    },
-                }, GlobalMessageType.MSG_TYPE_ERROR);
-                this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-            }
-            else {
-                if (response.error &&
-                    response.error.errors &&
-                    response.error.errors instanceof Array) {
-                    response.error.errors.forEach((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        /** @type {?} */
-                        var errorMessage;
-                        if (error.type === 'PasswordMismatchError') {
-                            // uses en translation error message instead of backend exception error
-                            // @todo: this condition could be removed if backend gives better message
-                            errorMessage = {
-                                key: 'httpHandlers.badRequestOldPasswordIncorrect',
-                            };
-                        }
-                        else if (error.subjectType === 'cart' &&
-                            error.reason === 'notFound') {
-                            errorMessage = { key: 'httpHandlers.cartNotFound' };
-                        }
-                        else if (error.type === 'ValidationError') {
-                            // build translation key in case of backend field validation error
-                            errorMessage = {
-                                key: "httpHandlers.validationErrors." + error.reason + "." + error.subject,
-                            };
-                        }
-                        else {
-                            // this is currently showing up in case we have a page not found. It should be a 404.
-                            // see https://jira.hybris.com/browse/CMSX-8516
-                            errorMessage = { raw: error.message || '' };
-                        }
-                        _this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
-                    }));
-                }
-            }
-        };
-        BadRequestHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ BadRequestHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(core.ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-        return BadRequestHandler;
-    }(HttpErrorHandler));
-    if (false) {
+        var levelParts = level.split('.');
         /** @type {?} */
-        BadRequestHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ConflictHandler = /** @class */ (function (_super) {
-        __extends(ConflictHandler, _super);
-        function ConflictHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.CONFLICT;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        ConflictHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
-        };
-        ConflictHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ ConflictHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(core.ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-        return ConflictHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        ConflictHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ForbiddenHandler = /** @class */ (function (_super) {
-        __extends(ForbiddenHandler, _super);
-        function ForbiddenHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.FORBIDDEN;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        ForbiddenHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
-        };
-        ForbiddenHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ ForbiddenHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(core.ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-        return ForbiddenHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        ForbiddenHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GatewayTimeoutHandler = /** @class */ (function (_super) {
-        __extends(GatewayTimeoutHandler, _super);
-        function GatewayTimeoutHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        GatewayTimeoutHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
-        };
-        GatewayTimeoutHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(core.ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-        return GatewayTimeoutHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        GatewayTimeoutHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var InternalServerErrorHandler = /** @class */ (function (_super) {
-        __extends(InternalServerErrorHandler, _super);
-        function InternalServerErrorHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        InternalServerErrorHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, GlobalMessageType.MSG_TYPE_ERROR);
-        };
-        InternalServerErrorHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
-        return InternalServerErrorHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        InternalServerErrorHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var NotFoundHandler = /** @class */ (function (_super) {
-        __extends(NotFoundHandler, _super);
-        function NotFoundHandler() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.responseStatus = HttpResponseStatus.NOT_FOUND;
-            return _this;
-        }
-        // empty error handler to avoid we fallabck to the unknown error handler
-        // empty error handler to avoid we fallabck to the unknown error handler
-        /**
-         * @return {?}
-         */
-        NotFoundHandler.prototype.handleError = 
-        // empty error handler to avoid we fallabck to the unknown error handler
-        /**
-         * @return {?}
-         */
-        function () { };
-        NotFoundHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */ NotFoundHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(core.ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-        return NotFoundHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        NotFoundHandler.prototype.responseStatus;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var UnknownErrorHandler = /** @class */ (function (_super) {
-        __extends(UnknownErrorHandler, _super);
-        function UnknownErrorHandler(globalMessageService) {
-            var _this = _super.call(this, globalMessageService) || this;
-            _this.globalMessageService = globalMessageService;
-            _this.responseStatus = HttpResponseStatus.UNKNOWN;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        UnknownErrorHandler.prototype.handleError = /**
-         * @return {?}
-         */
-        function () {
-            if (core.isDevMode()) {
-                console.warn("Unknown http response error: " + this.responseStatus);
-            }
-        };
-        UnknownErrorHandler.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        UnknownErrorHandler.ctorParameters = function () { return [
-            { type: GlobalMessageService }
-        ]; };
-        /** @nocollapse */ UnknownErrorHandler.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(core.ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-        return UnknownErrorHandler;
-    }(HttpErrorHandler));
-    if (false) {
-        /** @type {?} */
-        UnknownErrorHandler.prototype.responseStatus;
-        /**
-         * @type {?}
-         * @protected
-         */
-        UnknownErrorHandler.prototype.globalMessageService;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var HttpErrorInterceptor = /** @class */ (function () {
-        function HttpErrorInterceptor(handlers) {
-            this.handlers = handlers;
-            // We reverse the handlers to allow for custom handlers
-            // that replace standard handlers
-            this.handlers.reverse();
-        }
-        /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.intercept = /**
-         * @param {?} request
-         * @param {?} next
-         * @return {?}
-         */
-        function (request, next) {
-            var _this = this;
-            return next.handle(request).pipe(operators.catchError((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                if (response instanceof http.HttpErrorResponse) {
-                    _this.handleErrorResponse(request, response);
-                    return rxjs.throwError(response);
-                }
-            })));
-        };
-        /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.handleErrorResponse = /**
-         * @protected
-         * @param {?} request
-         * @param {?} response
-         * @return {?}
-         */
-        function (request, response) {
+        var versionParts = version.split('.');
+        for (var i = 0; i < versionParts.length; i++) {
             /** @type {?} */
-            var handler = this.getResponseHandler(response);
-            if (handler) {
-                handler.handleError(request, response);
-            }
-        };
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         */
-        /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-        HttpErrorInterceptor.prototype.getResponseHandler = /**
-         * return the error handler that matches the `HttpResponseStatus` code.
-         * If no handler is available, the UNKNOWN handler is returned.
-         * @protected
-         * @param {?} response
-         * @return {?}
-         */
-        function (response) {
+            var versionNumberPart = Number(versionParts[i]);
             /** @type {?} */
-            var status = response.status;
-            /** @type {?} */
-            var handler = this.handlers.find((/**
-             * @param {?} h
-             * @return {?}
-             */
-            function (h) { return h.responseStatus === status; }));
-            if (!handler) {
-                handler = this.handlers.find((/**
-                 * @param {?} h
-                 * @return {?}
-                 */
-                function (h) { return h.responseStatus === HttpResponseStatus.UNKNOWN; }));
-            }
-            return handler;
-        };
-        HttpErrorInterceptor.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        HttpErrorInterceptor.ctorParameters = function () { return [
-            { type: Array, decorators: [{ type: core.Inject, args: [HttpErrorHandler,] }] }
-        ]; };
-        return HttpErrorInterceptor;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        HttpErrorInterceptor.prototype.handlers;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var errorHandlers = [
-        {
-            provide: HttpErrorHandler,
-            useExisting: UnknownErrorHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: BadGatewayHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: BadRequestHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: ConflictHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: ForbiddenHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: GatewayTimeoutHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: InternalServerErrorHandler,
-            multi: true,
-        },
-        {
-            provide: HttpErrorHandler,
-            useExisting: NotFoundHandler,
-            multi: true,
-        },
-    ];
-    /** @type {?} */
-    var httpErrorInterceptors = [
-        {
-            provide: http.HTTP_INTERCEPTORS,
-            useClass: HttpErrorInterceptor,
-            multi: true,
-        },
-    ];
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$9 = {
-        entities: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$9(state, action) {
-        var _a, _b, _c, _d;
-        if (state === void 0) { state = initialState$9; }
-        switch (action.type) {
-            case ADD_MESSAGE: {
-                /** @type {?} */
-                var message = action.payload;
-                if (state.entities[message.type] === undefined) {
-                    return __assign({}, state, { entities: __assign({}, state.entities, (_a = {}, _a[message.type] = [message.text], _a)) });
-                }
-                else {
-                    /** @type {?} */
-                    var currentMessages = state.entities[message.type];
-                    return __assign({}, state, { entities: __assign({}, state.entities, (_b = {}, _b[message.type] = __spread(currentMessages, [message.text]), _b)) });
-                }
-            }
-            case REMOVE_MESSAGE: {
-                /** @type {?} */
-                var msgType = action.payload.type;
-                /** @type {?} */
-                var msgIndex = action.payload.index;
-                if (Object.keys(state.entities).length === 0 ||
-                    !state.entities[msgType]) {
-                    return state;
-                }
-                /** @type {?} */
-                var messages = __spread(state.entities[msgType]);
-                messages.splice(msgIndex, 1);
-                return __assign({}, state, { entities: __assign({}, state.entities, (_c = {}, _c[msgType] = messages, _c)) });
-            }
-            case REMOVE_MESSAGES_BY_TYPE: {
-                /** @type {?} */
-                var entities = __assign({}, state.entities, (_d = {}, _d[action.payload] = [], _d));
-                return __assign({}, state, { entities: entities });
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function getReducers$5() {
-        return reducer$9;
-    }
-    /** @type {?} */
-    var reducerToken$5 = new core.InjectionToken('GlobalMessageReducers');
-    /** @type {?} */
-    var reducerProvider$5 = {
-        provide: reducerToken$5,
-        useFactory: getReducers$5,
-    };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageStoreModule = /** @class */ (function () {
-        function GlobalMessageStoreModule() {
-        }
-        GlobalMessageStoreModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            StateModule,
-                            store.StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
-                        ],
-                        providers: [reducerProvider$5],
-                    },] }
-        ];
-        return GlobalMessageStoreModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} objA
-     * @param {?} objB
-     * @return {?}
-     */
-    function shallowEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true;
-        }
-        if (!objA || !objB) {
-            return false;
-        }
-        /** @type {?} */
-        var aKeys = Object.keys(objA);
-        /** @type {?} */
-        var bKeys = Object.keys(objB);
-        /** @type {?} */
-        var aKeysLen = aKeys.length;
-        /** @type {?} */
-        var bKeysLen = bKeys.length;
-        if (aKeysLen !== bKeysLen) {
-            return false;
-        }
-        for (var i = 0; i < aKeysLen; i++) {
-            /** @type {?} */
-            var key = aKeys[i];
-            if (objA[key] !== objB[key]) {
-                return false;
+            var levelNumberPart = Number(levelParts[i]) || 0;
+            if (versionNumberPart !== levelNumberPart) {
+                return levelNumberPart > versionNumberPart;
             }
         }
         return true;
     }
     /**
-     * @param {?} objA
-     * @param {?} objB
+     * @param {?} config
+     * @param {?} level
      * @return {?}
      */
-    function deepEqualObjects(objA, objB) {
-        if (objA === objB) {
-            return true; // if both objA and objB are null or undefined and exactly the same
-        }
-        else if (!(objA instanceof Object) || !(objB instanceof Object)) {
-            return false; // if they are not strictly equal, they both need to be Objects
-        }
-        else if (objA.constructor !== objB.constructor) {
-            // they must have the exact same prototype chain, the closest we can do is
-            // test their constructor.
-            return false;
-        }
-        else {
-            for (var key in objA) {
-                if (!objA.hasOwnProperty(key)) {
-                    continue; // other properties were tested using objA.constructor === y.constructor
-                }
-                if (!objB.hasOwnProperty(key)) {
-                    return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
-                }
-                if (objA[key] === objB[key]) {
-                    continue; // if they have the same strict value or identity then they are equal
-                }
-                if (typeof objA[key] !== 'object') {
-                    return false; // Numbers, Strings, Functions, Booleans must be strictly equal
-                }
-                if (!deepEqualObjects(objA[key], objB[key])) {
-                    return false;
-                }
-            }
-            for (var key in objB) {
-                if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
-                    return false;
-                }
-            }
-            return true;
+    function isFeatureLevel(config, level) {
+        if (isFeatureConfig(config)) {
+            return isInLevel(config.features.level, level);
         }
     }
     /**
-     * @param {?} obj
-     * @param {?} arr
+     * @param {?} config
+     * @param {?} feature
      * @return {?}
      */
-    function countOfDeepEqualObjects(obj, arr) {
-        return arr.reduce((/**
-         * @param {?} acc
-         * @param {?} curr
-         * @return {?}
-         */
-        function (acc, curr) {
-            if (deepEqualObjects(obj, curr)) {
-                acc++;
-            }
-            return acc;
-        }), 0);
-    }
-    /**
-     * @param {?} obj
-     * @param {?} arr
-     * @return {?}
-     */
-    function indexOfFirstOccurrence(obj, arr) {
-        for (var index = 0; index < arr.length; index++) {
-            if (deepEqualObjects(arr[index], obj)) {
-                return index;
-            }
+    function isFeatureEnabled(config, feature) {
+        if (isFeatureConfig(config)) {
+            /** @type {?} */
+            var featureConfig = config.features[feature];
+            return typeof featureConfig === 'string'
+                ? isFeatureLevel(config, featureConfig)
+                : featureConfig;
         }
     }
 
@@ -19874,164 +21235,227 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var GlobalMessageEffect = /** @class */ (function () {
-        function GlobalMessageEffect(actions$, store$1, config) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.store = store$1;
+    var FeatureConfigService = /** @class */ (function () {
+        function FeatureConfigService(config) {
             this.config = config;
-            this.removeDuplicated$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
-             * @param {?} message
-             * @return {?}
-             */
-            function (message) {
-                return rxjs.of(message.text).pipe(operators.withLatestFrom(_this.store.pipe(store.select(getGlobalMessageEntitiesByType(message.type)))), operators.filter((/**
-                 * @param {?} __0
-                 * @return {?}
-                 */
-                function (_a) {
-                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
-                    return countOfDeepEqualObjects(text, messages) > 1;
-                })), operators.map((/**
-                 * @param {?} __0
-                 * @return {?}
-                 */
-                function (_a) {
-                    var _b = __read(_a, 2), text = _b[0], messages = _b[1];
-                    return new RemoveMessage({
-                        type: message.type,
-                        index: indexOfFirstOccurrence(text, messages),
-                    });
-                })));
-            })));
-            this.hideAfterDelay$ = this.actions$.pipe(effects$a.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
-             * @param {?} type
-             * @return {?}
-             */
-            function (type) {
-                /** @type {?} */
-                var config = _this.config.globalMessages[type];
-                return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.filter((/**
-                 * @param {?} count
-                 * @return {?}
-                 */
-                function (count) {
-                    return config && config.timeout !== undefined && count && count > 0;
-                })), operators.switchMap((/**
-                 * @return {?}
-                 */
-                function () {
-                    return rxjs.of(new RemoveMessage({
-                        type: type,
-                        index: 0,
-                    })).pipe(operators.delay(config.timeout));
-                })));
-            })));
-        }
-        GlobalMessageEffect.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        GlobalMessageEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
-            { type: store.Store },
-            { type: GlobalMessageConfig }
-        ]; };
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
-        __decorate([
-            effects$a.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
-        return GlobalMessageEffect;
-    }());
-    if (false) {
-        /** @type {?} */
-        GlobalMessageEffect.prototype.removeDuplicated$;
-        /** @type {?} */
-        GlobalMessageEffect.prototype.hideAfterDelay$;
-        /**
-         * @type {?}
-         * @private
-         */
-        GlobalMessageEffect.prototype.actions$;
-        /**
-         * @type {?}
-         * @private
-         */
-        GlobalMessageEffect.prototype.store;
-        /**
-         * @type {?}
-         * @private
-         */
-        GlobalMessageEffect.prototype.config;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @return {?}
-     */
-    function defaultGlobalMessageConfigFactory() {
-        var _a;
-        return {
-            globalMessages: (_a = {},
-                _a[GlobalMessageType.MSG_TYPE_CONFIRMATION] = {
-                    timeout: 3000,
-                },
-                _a[GlobalMessageType.MSG_TYPE_INFO] = {
-                    timeout: 3000,
-                },
-                _a[GlobalMessageType.MSG_TYPE_ERROR] = {
-                    timeout: 7000,
-                },
-                _a),
-        };
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobalMessageModule = /** @class */ (function () {
-        function GlobalMessageModule() {
         }
         /**
+         * @param {?} version
          * @return {?}
          */
-        GlobalMessageModule.forRoot = /**
+        FeatureConfigService.prototype.isLevel = /**
+         * @param {?} version
          * @return {?}
          */
-        function () {
-            return {
-                ngModule: GlobalMessageModule,
-                providers: __spread(errorHandlers, httpErrorInterceptors),
-            };
+        function (version) {
+            return isFeatureLevel(this.config, version);
         };
-        GlobalMessageModule.decorators = [
-            { type: core.NgModule, args: [{
-                        imports: [
-                            GlobalMessageStoreModule,
-                            effects$a.EffectsModule.forFeature([GlobalMessageEffect]),
-                            ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
-                        ],
-                        providers: [
-                            GlobalMessageService,
-                            { provide: GlobalMessageConfig, useExisting: Config },
-                        ],
+        /**
+         * @param {?} feature
+         * @return {?}
+         */
+        FeatureConfigService.prototype.isEnabled = /**
+         * @param {?} feature
+         * @return {?}
+         */
+        function (feature) {
+            return isFeatureEnabled(this.config, feature);
+        };
+        FeatureConfigService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
                     },] }
         ];
-        return GlobalMessageModule;
+        /** @nocollapse */
+        FeatureConfigService.ctorParameters = function () { return [
+            { type: FeaturesConfig }
+        ]; };
+        /** @nocollapse */ FeatureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+        return FeatureConfigService;
     }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureConfigService.prototype.config;
+    }
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var FeatureLevelDirective = /** @class */ (function () {
+        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
+            set: /**
+             * @param {?} level
+             * @return {?}
+             */
+            function (level) {
+                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureLevelDirective.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cxFeatureLevel]',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureLevelDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        FeatureLevelDirective.propDecorators = {
+            cxFeatureLevel: [{ type: core.Input }]
+        };
+        return FeatureLevelDirective;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        FeatureLevelDirective.prototype.hasView;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureLevelDirective.prototype.templateRef;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureLevelDirective.prototype.viewContainer;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureLevelDirective.prototype.featureConfig;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeatureDirective = /** @class */ (function () {
+        function FeatureDirective(templateRef, viewContainer, featureConfig) {
+            this.templateRef = templateRef;
+            this.viewContainer = viewContainer;
+            this.featureConfig = featureConfig;
+            this.hasView = false;
+        }
+        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
+            set: /**
+             * @param {?} feature
+             * @return {?}
+             */
+            function (feature) {
+                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                    this.hasView = true;
+                }
+                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
+                    this.viewContainer.clear();
+                    this.hasView = false;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        FeatureDirective.decorators = [
+            { type: core.Directive, args: [{
+                        selector: '[cxFeature]',
+                    },] }
+        ];
+        /** @nocollapse */
+        FeatureDirective.ctorParameters = function () { return [
+            { type: core.TemplateRef },
+            { type: core.ViewContainerRef },
+            { type: FeatureConfigService }
+        ]; };
+        FeatureDirective.propDecorators = {
+            cxFeature: [{ type: core.Input }]
+        };
+        return FeatureDirective;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        FeatureDirective.prototype.hasView;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureDirective.prototype.templateRef;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureDirective.prototype.viewContainer;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FeatureDirective.prototype.featureConfig;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var FeaturesConfigModule = /** @class */ (function () {
+        function FeaturesConfigModule() {
+        }
+        /**
+         * @param {?=} defaultLevel
+         * @return {?}
+         */
+        FeaturesConfigModule.forRoot = /**
+         * @param {?=} defaultLevel
+         * @return {?}
+         */
+        function (defaultLevel) {
+            return {
+                ngModule: FeaturesConfigModule,
+                providers: [
+                    provideConfig((/** @type {?} */ ({
+                        features: {
+                            level: defaultLevel || '999',
+                        },
+                    }))),
+                    {
+                        provide: FeaturesConfig,
+                        useExisting: Config,
+                    },
+                ],
+            };
+        };
+        FeaturesConfigModule.decorators = [
+            { type: core.NgModule, args: [{
+                        declarations: [FeatureLevelDirective, FeatureDirective],
+                        exports: [FeatureLevelDirective, FeatureDirective],
+                    },] }
+        ];
+        return FeaturesConfigModule;
+    }());
 
     /**
      * @fileoverview added by tsickle
@@ -20647,12 +22071,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$g = i18nextInit;
+    var ɵ0$j = i18nextInit;
     /** @type {?} */
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$g,
+            useFactory: ɵ0$j,
             deps: [I18nConfig, LanguageService],
             multi: true,
         },
@@ -21183,13 +22607,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$h = /**
+    var ɵ0$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.openIdToken; };
     /** @type {?} */
-    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$h));
+    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$k));
     /** @type {?} */
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     /** @type {?} */
@@ -21399,7 +22823,7 @@
             this.triggerOpenIdTokenLoading$ = rxjs.iif((/**
              * @return {?}
              */
-            function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }), this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$a.ofType(LOAD_USER_TOKEN))), operators.map((/**
+            function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }), this.actions$.pipe(effects$b.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$b.ofType(LOAD_USER_TOKEN))), operators.map((/**
              * @param {?} __0
              * @return {?}
              */
@@ -21410,7 +22834,7 @@
                     password: loginAction.payload.password,
                 });
             }))));
-            this.loadOpenIdToken$ = this.actions$.pipe(effects$a.ofType(LOAD_OPEN_ID_TOKEN), operators.map((/**
+            this.loadOpenIdToken$ = this.actions$.pipe(effects$b.ofType(LOAD_OPEN_ID_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -21439,16 +22863,16 @@
         ];
         /** @nocollapse */
         OpenIdTokenEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: OpenIdAuthenticationTokenService },
             { type: KymaConfig }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
         return OpenIdTokenEffect;
@@ -21480,7 +22904,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$5 = [OpenIdTokenEffect];
+    var effects$6 = [OpenIdTokenEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -21489,17 +22913,17 @@
     /**
      * @return {?}
      */
-    function getReducers$6() {
+    function getReducers$7() {
         return {
             openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken$6 = new core.InjectionToken('KymaReducers');
+    var reducerToken$7 = new core.InjectionToken('KymaReducers');
     /** @type {?} */
-    var reducerProvider$6 = {
-        provide: reducerToken$6,
-        useFactory: getReducers$6,
+    var reducerProvider$7 = {
+        provide: reducerToken$7,
+        useFactory: getReducers$7,
     };
     /**
      * @param {?} reducer
@@ -21551,11 +22975,11 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             StateModule,
-                            store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
-                            effects$a.EffectsModule.forFeature(effects$5),
+                            store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                            effects$b.EffectsModule.forFeature(effects$6),
                             ConfigModule.withConfigFactory(kymaStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$6],
+                        providers: [reducerProvider$7],
                     },] }
         ];
         return KymaStoreModule;
@@ -23432,6 +24856,13 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.consignmentTracking;
+        /**
+         * Endpoint for asm customer search
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.asmCustomerSearch;
     }
 
     /**
@@ -28181,6 +29612,133 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var defaultOccAsmConfig = {
+        backend: {
+            occ: {
+                endpoints: {
+                    asmCustomerSearch: '/assistedservicewebservices/customers/search',
+                },
+            },
+        },
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccAsmAdapter = /** @class */ (function () {
+        function OccAsmAdapter(http, occEndpointsService, converterService, config, baseSiteService) {
+            var _this = this;
+            this.http = http;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
+            this.config = config;
+            this.baseSiteService = baseSiteService;
+            this.baseSiteService
+                .getActive()
+                .subscribe((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) { return (_this.activeBaseSite = value); }));
+        }
+        /**
+         * @param {?} options
+         * @return {?}
+         */
+        OccAsmAdapter.prototype.customerSearch = /**
+         * @param {?} options
+         * @return {?}
+         */
+        function (options) {
+            /** @type {?} */
+            var headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new http.HttpHeaders());
+            /** @type {?} */
+            var params = new http.HttpParams()
+                .set('baseSite', this.activeBaseSite)
+                .set('query', options.query);
+            /** @type {?} */
+            var url = this.occEndpointsService.getRawEndpoint('asmCustomerSearch');
+            return this.http
+                .get(url, { headers: headers, params: params })
+                .pipe(this.converterService.pipeable(CUSTOMER_SEARCH_PAGE_NORMALIZER));
+        };
+        OccAsmAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccAsmAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService },
+            { type: AsmConfig },
+            { type: BaseSiteService }
+        ]; };
+        return OccAsmAdapter;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        OccAsmAdapter.prototype.activeBaseSite;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccAsmAdapter.prototype.http;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccAsmAdapter.prototype.occEndpointsService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccAsmAdapter.prototype.converterService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccAsmAdapter.prototype.config;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccAsmAdapter.prototype.baseSiteService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var AsmOccModule = /** @class */ (function () {
+        function AsmOccModule() {
+        }
+        AsmOccModule.decorators = [
+            { type: core.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            http.HttpClientModule,
+                            ConfigModule.withConfig(defaultOccAsmConfig),
+                        ],
+                        providers: [
+                            {
+                                provide: AsmAdapter,
+                                useClass: OccAsmAdapter,
+                            },
+                        ],
+                    },] }
+        ];
+        return AsmOccModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var PRODUCT_NORMALIZER = new core.InjectionToken('ProductNormalizer');
 
     /**
@@ -28313,133 +29871,6 @@
             },
         },
     };
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @abstract
-     */
-    var   /**
-     * @abstract
-     */
-    FeaturesConfig = /** @class */ (function () {
-        function FeaturesConfig() {
-        }
-        return FeaturesConfig;
-    }());
-    if (false) {
-        /** @type {?} */
-        FeaturesConfig.prototype.features;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @param {?} config
-     * @return {?}
-     */
-    function isFeatureConfig(config) {
-        return typeof config === 'object' && config.features;
-    }
-    /**
-     * @param {?} level
-     * @param {?} version
-     * @return {?}
-     */
-    function isInLevel(level, version) {
-        /** @type {?} */
-        var levelParts = level.split('.');
-        /** @type {?} */
-        var versionParts = version.split('.');
-        for (var i = 0; i < versionParts.length; i++) {
-            /** @type {?} */
-            var versionNumberPart = Number(versionParts[i]);
-            /** @type {?} */
-            var levelNumberPart = Number(levelParts[i]) || 0;
-            if (versionNumberPart !== levelNumberPart) {
-                return levelNumberPart > versionNumberPart;
-            }
-        }
-        return true;
-    }
-    /**
-     * @param {?} config
-     * @param {?} level
-     * @return {?}
-     */
-    function isFeatureLevel(config, level) {
-        if (isFeatureConfig(config)) {
-            return isInLevel(config.features.level, level);
-        }
-    }
-    /**
-     * @param {?} config
-     * @param {?} feature
-     * @return {?}
-     */
-    function isFeatureEnabled(config, feature) {
-        if (isFeatureConfig(config)) {
-            /** @type {?} */
-            var featureConfig = config.features[feature];
-            return typeof featureConfig === 'string'
-                ? isFeatureLevel(config, featureConfig)
-                : featureConfig;
-        }
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FeatureConfigService = /** @class */ (function () {
-        function FeatureConfigService(config) {
-            this.config = config;
-        }
-        /**
-         * @param {?} version
-         * @return {?}
-         */
-        FeatureConfigService.prototype.isLevel = /**
-         * @param {?} version
-         * @return {?}
-         */
-        function (version) {
-            return isFeatureLevel(this.config, version);
-        };
-        /**
-         * @param {?} feature
-         * @return {?}
-         */
-        FeatureConfigService.prototype.isEnabled = /**
-         * @param {?} feature
-         * @return {?}
-         */
-        function (feature) {
-            return isFeatureEnabled(this.config, feature);
-        };
-        FeatureConfigService.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        FeatureConfigService.ctorParameters = function () { return [
-            { type: FeaturesConfig }
-        ]; };
-        /** @nocollapse */ FeatureConfigService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(core.ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-        return FeatureConfigService;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureConfigService.prototype.config;
-    }
 
     /**
      * @fileoverview added by tsickle
@@ -33260,6 +34691,7 @@
         OccModule.decorators = [
             { type: core.NgModule, args: [{
                         imports: [
+                            AsmOccModule,
                             CmsOccModule,
                             CartOccModule,
                             CheckoutOccModule,
@@ -33272,6 +34704,11 @@
         ];
         return OccModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -33760,15 +35197,15 @@
      * @template T
      * @return {?}
      */
-    function getReducers$7() {
+    function getReducers$8() {
         return entityLoaderReducer(PROCESS_FEATURE);
     }
     /** @type {?} */
-    var reducerToken$7 = new core.InjectionToken('ProcessReducers');
+    var reducerToken$8 = new core.InjectionToken('ProcessReducers');
     /** @type {?} */
-    var reducerProvider$7 = {
-        provide: reducerToken$7,
-        useFactory: getReducers$7,
+    var reducerProvider$8 = {
+        provide: reducerToken$8,
+        useFactory: getReducers$8,
     };
 
     /**
@@ -33780,8 +35217,8 @@
         }
         ProcessStoreModule.decorators = [
             { type: core.NgModule, args: [{
-                        imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$7)],
-                        providers: [reducerProvider$7],
+                        imports: [StateModule, store.StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                        providers: [reducerProvider$8],
                     },] }
         ];
         return ProcessStoreModule;
@@ -34491,13 +35928,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$i = /**
+    var ɵ0$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.references; };
     /** @type {?} */
-    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$i));
+    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$l));
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
@@ -34519,13 +35956,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$j = /**
+    var ɵ0$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.reviews; };
     /** @type {?} */
-    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$j));
+    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$m));
     /** @type {?} */
     var getSelectedProductReviewsFactory = (/**
      * @param {?} productCode
@@ -34548,7 +35985,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$a = {
+    var initialState$b = {
         results: {},
         suggestions: [],
         auxResults: {},
@@ -34558,8 +35995,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$a(state, action) {
-        if (state === void 0) { state = initialState$a; }
+    function reducer$b(state, action) {
+        if (state === void 0) { state = initialState$b; }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
                 /** @type {?} */
@@ -34606,13 +36043,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$k = /**
+    var ɵ0$n = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.search; };
     /** @type {?} */
-    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$k));
+    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$n));
     /** @type {?} */
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
@@ -34624,13 +36061,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$l = /**
+    var ɵ0$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getProductState = store.createSelector(getProductsState, (ɵ0$l));
+    var getProductState = store.createSelector(getProductsState, (ɵ0$o));
     /** @type {?} */
     var getSelectedProductsFactory = (/**
      * @param {?} codes
@@ -34717,7 +36154,7 @@
          */
         function (productState) { return loaderErrorSelector(productState); }));
     });
-    var ɵ1$b = /**
+    var ɵ1$d = /**
      * @param {?} details
      * @return {?}
      */
@@ -34725,7 +36162,7 @@
         return Object.keys(details.entities);
     };
     /** @type {?} */
-    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$b));
+    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$d));
 
     /**
      * @fileoverview added by tsickle
@@ -35730,7 +37167,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productReferencesConnector = productReferencesConnector;
-            this.loadProductReferences$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
+            this.loadProductReferences$ = this.actions$.pipe(effects$b.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -35766,11 +37203,11 @@
         ];
         /** @nocollapse */
         ProductReferencesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: ProductReferencesConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
         return ProductReferencesEffects;
@@ -35799,7 +37236,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productReviewsConnector = productReviewsConnector;
-            this.loadProductReviews$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
+            this.loadProductReviews$ = this.actions$.pipe(effects$b.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -35827,7 +37264,7 @@
                     }))));
                 })));
             })));
-            this.postProductReview = this.actions$.pipe(effects$a.ofType(POST_PRODUCT_REVIEW), operators.map((/**
+            this.postProductReview = this.actions$.pipe(effects$b.ofType(POST_PRODUCT_REVIEW), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -35858,15 +37295,15 @@
         ];
         /** @nocollapse */
         ProductReviewsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: ProductReviewsConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReviewsEffects.prototype, "postProductReview", void 0);
         return ProductReviewsEffects;
@@ -35897,7 +37334,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(effects$a.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
+            this.searchProducts$ = this.actions$.pipe(effects$b.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
              * @param {?} action
              * @return {?}
              */
@@ -35928,7 +37365,7 @@
                     })));
                 })));
             })));
-            this.getProductSuggestions$ = this.actions$.pipe(effects$a.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
+            this.getProductSuggestions$ = this.actions$.pipe(effects$b.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -35962,15 +37399,15 @@
         ];
         /** @nocollapse */
         ProductsSearchEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: ProductSearchConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
         return ProductsSearchEffects;
@@ -36001,7 +37438,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productConnector = productConnector;
-            this.loadProduct$ = this.actions$.pipe(effects$a.ofType(LOAD_PRODUCT), operators.map((/**
+            this.loadProduct$ = this.actions$.pipe(effects$b.ofType(LOAD_PRODUCT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -36040,11 +37477,11 @@
         ];
         /** @nocollapse */
         ProductEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: ProductConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductEffects.prototype, "loadProduct$", void 0);
         return ProductEffects;
@@ -36069,7 +37506,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$6 = [
+    var effects$7 = [
         ProductsSearchEffects,
         ProductEffects,
         ProductReviewsEffects,
@@ -36081,7 +37518,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$b = {
+    var initialState$c = {
         productCode: '',
         list: [],
     };
@@ -36090,8 +37527,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$b(state, action) {
-        if (state === void 0) { state = initialState$b; }
+    function reducer$c(state, action) {
+        if (state === void 0) { state = initialState$c; }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 /** @type {?} */
@@ -36122,7 +37559,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$c = {
+    var initialState$d = {
         productCode: '',
         list: [],
     };
@@ -36131,8 +37568,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$c(state, action) {
-        if (state === void 0) { state = initialState$c; }
+    function reducer$d(state, action) {
+        if (state === void 0) { state = initialState$d; }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 /** @type {?} */
@@ -36169,20 +37606,20 @@
     /**
      * @return {?}
      */
-    function getReducers$8() {
+    function getReducers$9() {
         return {
-            search: reducer$a,
+            search: reducer$b,
             details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$c,
-            references: reducer$b,
+            reviews: reducer$d,
+            references: reducer$c,
         };
     }
     /** @type {?} */
-    var reducerToken$8 = new core.InjectionToken('ProductReducers');
+    var reducerToken$9 = new core.InjectionToken('ProductReducers');
     /** @type {?} */
-    var reducerProvider$8 = {
-        provide: reducerToken$8,
-        useFactory: getReducers$8,
+    var reducerProvider$9 = {
+        provide: reducerToken$9,
+        useFactory: getReducers$9,
     };
     /**
      * @param {?} reducer
@@ -36233,11 +37670,11 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                            effects$a.EffectsModule.forFeature(effects$6),
+                            store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$4 }),
+                            effects$b.EffectsModule.forFeature(effects$7),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$8],
+                        providers: [reducerProvider$9],
                     },] }
         ];
         return ProductStoreModule;
@@ -37101,7 +38538,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
-            this.loadLanguages$ = this.actions$.pipe(effects$a.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
+            this.loadLanguages$ = this.actions$.pipe(effects$b.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -37117,7 +38554,7 @@
                     return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.activateLanguage$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
+            this.activateLanguage$ = this.actions$.pipe(effects$b.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
              * @param {?} action
              * @return {?}
              */
@@ -37135,16 +38572,16 @@
         ];
         /** @nocollapse */
         LanguagesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector },
             { type: WindowRef }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], LanguagesEffects.prototype, "loadLanguages$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], LanguagesEffects.prototype, "activateLanguage$", void 0);
         return LanguagesEffects;
@@ -37181,7 +38618,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
-            this.loadCurrencies$ = this.actions$.pipe(effects$a.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
+            this.loadCurrencies$ = this.actions$.pipe(effects$b.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -37197,7 +38634,7 @@
                     return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.activateCurrency$ = this.actions$.pipe(effects$a.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
+            this.activateCurrency$ = this.actions$.pipe(effects$b.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
              * @param {?} action
              * @return {?}
              */
@@ -37215,16 +38652,16 @@
         ];
         /** @nocollapse */
         CurrenciesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector },
             { type: WindowRef }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
         return CurrenciesEffects;
@@ -37260,7 +38697,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBaseSite$ = this.actions$.pipe(effects$a.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
+            this.loadBaseSite$ = this.actions$.pipe(effects$b.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -37282,11 +38719,11 @@
         ];
         /** @nocollapse */
         BaseSiteEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
         return BaseSiteEffects;
@@ -37311,7 +38748,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$7 = [
+    var effects$8 = [
         LanguagesEffects,
         CurrenciesEffects,
         BaseSiteEffects,
@@ -37322,7 +38759,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$d = {
+    var initialState$e = {
         entities: null,
         activeLanguage: null,
     };
@@ -37331,8 +38768,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$d(state, action) {
-        if (state === void 0) { state = initialState$d; }
+    function reducer$e(state, action) {
+        if (state === void 0) { state = initialState$e; }
         switch (action.type) {
             case LOAD_LANGUAGES_SUCCESS: {
                 /** @type {?} */
@@ -37363,7 +38800,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$e = {
+    var initialState$f = {
         entities: null,
         activeCurrency: null,
     };
@@ -37372,8 +38809,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$e(state, action) {
-        if (state === void 0) { state = initialState$e; }
+    function reducer$f(state, action) {
+        if (state === void 0) { state = initialState$f; }
         switch (action.type) {
             case LOAD_CURRENCIES_SUCCESS: {
                 /** @type {?} */
@@ -37404,7 +38841,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$f = {
+    var initialState$g = {
         details: {},
         activeSite: '',
     };
@@ -37413,8 +38850,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$f(state, action) {
-        if (state === void 0) { state = initialState$f; }
+    function reducer$g(state, action) {
+        if (state === void 0) { state = initialState$g; }
         switch (action.type) {
             case LOAD_BASE_SITE_SUCCESS: {
                 return __assign({}, state, { details: action.payload });
@@ -37433,19 +38870,19 @@
     /**
      * @return {?}
      */
-    function getReducers$9() {
+    function getReducers$a() {
         return {
-            languages: reducer$d,
-            currencies: reducer$e,
-            baseSite: reducer$f,
+            languages: reducer$e,
+            currencies: reducer$f,
+            baseSite: reducer$g,
         };
     }
     /** @type {?} */
-    var reducerToken$9 = new core.InjectionToken('SiteContextReducers');
+    var reducerToken$a = new core.InjectionToken('SiteContextReducers');
     /** @type {?} */
-    var reducerProvider$9 = {
-        provide: reducerToken$9,
-        useFactory: getReducers$9,
+    var reducerProvider$a = {
+        provide: reducerToken$a,
+        useFactory: getReducers$a,
     };
 
     /**
@@ -37476,11 +38913,11 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$9),
-                            effects$a.EffectsModule.forFeature(effects$7),
+                            store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$a),
+                            effects$b.EffectsModule.forFeature(effects$8),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
-                        providers: [reducerProvider$9],
+                        providers: [reducerProvider$a],
                     },] }
         ];
         return SiteContextStoreModule;
@@ -38233,53 +39670,53 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$m = /**
+    var ɵ0$p = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
-    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$m));
-    var ɵ1$c = /**
+    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$p));
+    var ɵ1$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$c));
-    var ɵ2$6 = /**
+    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$e));
+    var ɵ2$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$6));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$8));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$n = /**
+    var ɵ0$q = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.viewAllStores; };
     /** @type {?} */
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$n));
-    var ɵ1$d = /**
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$q));
+    var ɵ1$f = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$d));
-    var ɵ2$7 = /**
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$f));
+    var ɵ2$9 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$7));
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$9));
 
     /**
      * @fileoverview added by tsickle
@@ -39091,18 +40528,18 @@
     /**
      * @return {?}
      */
-    function getReducers$a() {
+    function getReducers$b() {
         return {
             findStores: loaderReducer(STORE_FINDER_DATA),
             viewAllStores: loaderReducer(STORE_FINDER_DATA),
         };
     }
     /** @type {?} */
-    var reducerToken$a = new core.InjectionToken('StoreFinderReducers');
+    var reducerToken$b = new core.InjectionToken('StoreFinderReducers');
     /** @type {?} */
-    var reducerProvider$a = {
-        provide: reducerToken$a,
-        useFactory: getReducers$a,
+    var reducerProvider$b = {
+        provide: reducerToken$b,
+        useFactory: getReducers$b,
     };
     /** @type {?} */
     var metaReducers$5 = [];
@@ -39116,7 +40553,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.findStores$ = this.actions$.pipe(effects$a.ofType(FIND_STORES), operators.map((/**
+            this.findStores$ = this.actions$.pipe(effects$b.ofType(FIND_STORES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -39150,7 +40587,7 @@
                     return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.findStoreById$ = this.actions$.pipe(effects$a.ofType(FIND_STORE_BY_ID), operators.map((/**
+            this.findStoreById$ = this.actions$.pipe(effects$b.ofType(FIND_STORE_BY_ID), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -39177,15 +40614,15 @@
         ];
         /** @nocollapse */
         FindStoresEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: StoreFinderConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], FindStoresEffect.prototype, "findStores$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], FindStoresEffect.prototype, "findStoreById$", void 0);
         return FindStoresEffect;
@@ -39216,7 +40653,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.viewAllStores$ = this.actions$.pipe(effects$a.ofType(VIEW_ALL_STORES), operators.switchMap((/**
+            this.viewAllStores$ = this.actions$.pipe(effects$b.ofType(VIEW_ALL_STORES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -39249,11 +40686,11 @@
         ];
         /** @nocollapse */
         ViewAllStoresEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: StoreFinderConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
         return ViewAllStoresEffect;
@@ -39278,7 +40715,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$8 = [FindStoresEffect, ViewAllStoresEffect];
+    var effects$9 = [FindStoresEffect, ViewAllStoresEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -39292,10 +40729,10 @@
                         imports: [
                             common.CommonModule,
                             http.HttpClientModule,
-                            store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
-                            effects$a.EffectsModule.forFeature(effects$8),
+                            store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
+                            effects$b.EffectsModule.forFeature(effects$9),
                         ],
-                        providers: [reducerProvider$a],
+                        providers: [reducerProvider$b],
                     },] }
         ];
         return StoreFinderStoreModule;
@@ -39725,70 +41162,21 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$o = /**
+    var ɵ0$r = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.billingCountries; };
     /** @type {?} */
-    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$o));
-    var ɵ1$e = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.entities; };
-    /** @type {?} */
-    var getBillingCountriesEntites = store.createSelector(getBillingCountriesState, (ɵ1$e));
-    var ɵ2$8 = /**
-     * @param {?} entites
-     * @return {?}
-     */
-    function (entites) { return Object.keys(entites).map((/**
-     * @param {?} isocode
-     * @return {?}
-     */
-    function (isocode) { return entites[isocode]; })); };
-    /** @type {?} */
-    var getAllBillingCountries = store.createSelector(getBillingCountriesEntites, (ɵ2$8));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$p = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.consignmentTracking; };
-    /** @type {?} */
-    var getConsignmentTrackingState = store.createSelector(getUserState, (ɵ0$p));
-    var ɵ1$f = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.tracking; };
-    /** @type {?} */
-    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, (ɵ1$f));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$q = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.countries; };
-    /** @type {?} */
-    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$q));
+    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$r));
     var ɵ1$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$g));
-    var ɵ2$9 = /**
+    var getBillingCountriesEntites = store.createSelector(getBillingCountriesState, (ɵ1$g));
+    var ɵ2$a = /**
      * @param {?} entites
      * @return {?}
      */
@@ -39798,7 +41186,56 @@
      */
     function (isocode) { return entites[isocode]; })); };
     /** @type {?} */
-    var getAllDeliveryCountries = store.createSelector(getDeliveryCountriesEntites, (ɵ2$9));
+    var getAllBillingCountries = store.createSelector(getBillingCountriesEntites, (ɵ2$a));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$s = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.consignmentTracking; };
+    /** @type {?} */
+    var getConsignmentTrackingState = store.createSelector(getUserState, (ɵ0$s));
+    var ɵ1$h = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.tracking; };
+    /** @type {?} */
+    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, (ɵ1$h));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$t = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.countries; };
+    /** @type {?} */
+    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$t));
+    var ɵ1$i = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.entities; };
+    /** @type {?} */
+    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$i));
+    var ɵ2$b = /**
+     * @param {?} entites
+     * @return {?}
+     */
+    function (entites) { return Object.keys(entites).map((/**
+     * @param {?} isocode
+     * @return {?}
+     */
+    function (isocode) { return entites[isocode]; })); };
+    /** @type {?} */
+    var getAllDeliveryCountries = store.createSelector(getDeliveryCountriesEntites, (ɵ2$b));
     /** @type {?} */
     var countrySelectorFactory = (/**
      * @param {?} isocode
@@ -39816,33 +41253,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$r = /**
+    var ɵ0$u = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderState = store.createSelector(getUserState, (ɵ0$r));
-    var ɵ1$h = /**
+    var getOrderState = store.createSelector(getUserState, (ɵ0$u));
+    var ɵ1$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$h));
+    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$j));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$s = /**
+    var ɵ0$v = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.payments; };
     /** @type {?} */
-    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$s));
-    var ɵ1$i = /**
+    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$v));
+    var ɵ1$k = /**
      * @param {?} state
      * @return {?}
      */
@@ -39850,8 +41287,8 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$i));
-    var ɵ2$a = /**
+    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$k));
+    var ɵ2$c = /**
      * @param {?} state
      * @return {?}
      */
@@ -39859,7 +41296,7 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$a));
+    var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$c));
     var ɵ3$6 = /**
      * @param {?} state
      * @return {?}
@@ -39875,14 +41312,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$t = /**
+    var ɵ0$w = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.regions; };
     /** @type {?} */
-    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$t));
-    var ɵ1$j = /**
+    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$w));
+    var ɵ1$l = /**
      * @param {?} state
      * @return {?}
      */
@@ -39890,8 +41327,8 @@
         return loaderValueSelector(state).entities;
     };
     /** @type {?} */
-    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$j));
-    var ɵ2$b = /**
+    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$l));
+    var ɵ2$d = /**
      * @param {?} state
      * @return {?}
      */
@@ -39902,7 +41339,7 @@
         country: loaderValueSelector(state).country,
     }); };
     /** @type {?} */
-    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$b));
+    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$d));
     var ɵ3$7 = /**
      * @param {?} state
      * @return {?}
@@ -39935,33 +41372,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$u = /**
+    var ɵ0$x = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.resetPassword; };
     /** @type {?} */
-    var getResetPassword = store.createSelector(getUserState, (ɵ0$u));
+    var getResetPassword = store.createSelector(getUserState, (ɵ0$x));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$v = /**
+    var ɵ0$y = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.titles; };
     /** @type {?} */
-    var getTitlesState = store.createSelector(getUserState, (ɵ0$v));
-    var ɵ1$k = /**
+    var getTitlesState = store.createSelector(getUserState, (ɵ0$y));
+    var ɵ1$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$k));
-    var ɵ2$c = /**
+    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$m));
+    var ɵ2$e = /**
      * @param {?} entites
      * @return {?}
      */
@@ -39971,7 +41408,7 @@
      */
     function (code) { return entites[code]; })); };
     /** @type {?} */
-    var getAllTitles = store.createSelector(getTitlesEntites, (ɵ2$c));
+    var getAllTitles = store.createSelector(getTitlesEntites, (ɵ2$e));
     /** @type {?} */
     var titleSelectorFactory = (/**
      * @param {?} code
@@ -39989,14 +41426,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$w = /**
+    var ɵ0$z = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addresses; };
     /** @type {?} */
-    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$w));
-    var ɵ1$l = /**
+    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$z));
+    var ɵ1$n = /**
      * @param {?} state
      * @return {?}
      */
@@ -40004,8 +41441,8 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$l));
-    var ɵ2$d = /**
+    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$n));
+    var ɵ2$f = /**
      * @param {?} state
      * @return {?}
      */
@@ -40013,7 +41450,7 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$d));
+    var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$f));
     var ɵ3$8 = /**
      * @param {?} state
      * @return {?}
@@ -40029,13 +41466,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$x = /**
+    var ɵ0$A = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getConsentsState = store.createSelector(getUserState, (ɵ0$x));
+    var getConsentsState = store.createSelector(getUserState, (ɵ0$A));
     /** @type {?} */
     var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
@@ -40049,33 +41486,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$y = /**
+    var ɵ0$B = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.account; };
     /** @type {?} */
-    var getDetailsState = store.createSelector(getUserState, (ɵ0$y));
-    var ɵ1$m = /**
+    var getDetailsState = store.createSelector(getUserState, (ɵ0$B));
+    var ɵ1$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getDetails = store.createSelector(getDetailsState, (ɵ1$m));
+    var getDetails = store.createSelector(getDetailsState, (ɵ1$o));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$z = /**
+    var ɵ0$C = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.orders; };
     /** @type {?} */
-    var getOrdersState = store.createSelector(getUserState, (ɵ0$z));
-    var ɵ1$n = /**
+    var getOrdersState = store.createSelector(getUserState, (ɵ0$C));
+    var ɵ1$p = /**
      * @param {?} state
      * @return {?}
      */
@@ -40083,8 +41520,8 @@
         return loaderSuccessSelector(state);
     };
     /** @type {?} */
-    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$n));
-    var ɵ2$e = /**
+    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$p));
+    var ɵ2$g = /**
      * @param {?} state
      * @return {?}
      */
@@ -40092,7 +41529,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getOrders = store.createSelector(getOrdersState, (ɵ2$e));
+    var getOrders = store.createSelector(getOrdersState, (ɵ2$g));
 
     /**
      * @fileoverview added by tsickle
@@ -40153,8 +41590,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserService = /** @class */ (function () {
-        function UserService(store) {
+        function UserService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
          * Returns a user
@@ -40191,7 +41629,18 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserDetails(OCC_USER_ID_CURRENT));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadUserDetails(occUserId));
+            }))
+                .unsubscribe();
         };
         /**
          * Register a new user
@@ -40304,7 +41753,18 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new RemoveUser(OCC_USER_ID_CURRENT));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new RemoveUser(occUserId));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the remove user loading flag
@@ -40422,10 +41882,21 @@
          * @return {?}
          */
         function (userDetails) {
-            this.store.dispatch(new UpdateUserDetails({
-                username: OCC_USER_ID_CURRENT,
-                userDetails: userDetails,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new UpdateUserDetails({
+                    username: occUserId,
+                    userDetails: userDetails,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the update user's personal details loading flag
@@ -40539,11 +42010,22 @@
          * @return {?}
          */
         function (password, newUid) {
-            this.store.dispatch(new UpdateEmailAction({
-                uid: OCC_USER_ID_CURRENT,
-                password: password,
-                newUid: newUid,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new UpdateEmailAction({
+                    uid: occUserId,
+                    password: password,
+                    newUid: newUid,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the update user's email success flag
@@ -40619,11 +42101,22 @@
          * @return {?}
          */
         function (oldPassword, newPassword) {
-            this.store.dispatch(new UpdatePassword({
-                userId: OCC_USER_ID_CURRENT,
-                oldPassword: oldPassword,
-                newPassword: newPassword,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new UpdatePassword({
+                    userId: occUserId,
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the update password loading flag
@@ -40689,7 +42182,8 @@
         ];
         /** @nocollapse */
         UserService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: AuthService }
         ]; };
         return UserService;
     }());
@@ -40699,6 +42193,11 @@
          * @protected
          */
         UserService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserService.prototype.authService;
     }
 
     /**
@@ -40706,8 +42205,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserAddressService = /** @class */ (function () {
-        function UserAddressService(store) {
+        function UserAddressService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
          * Retrieves user's addresses
@@ -40721,7 +42221,18 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserAddresses(OCC_USER_ID_CURRENT));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadUserAddresses(occUserId));
+            }))
+                .unsubscribe();
         };
         /**
          * Adds user address
@@ -40738,10 +42249,21 @@
          * @return {?}
          */
         function (address) {
-            this.store.dispatch(new AddUserAddress({
-                userId: OCC_USER_ID_CURRENT,
-                address: address,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new AddUserAddress({
+                    userId: occUserId,
+                    address: address,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Sets user address as default
@@ -40758,11 +42280,22 @@
          * @return {?}
          */
         function (addressId) {
-            this.store.dispatch(new UpdateUserAddress({
-                userId: OCC_USER_ID_CURRENT,
-                addressId: addressId,
-                address: { defaultAddress: true },
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new UpdateUserAddress({
+                    userId: occUserId,
+                    addressId: addressId,
+                    address: { defaultAddress: true },
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Updates existing user address
@@ -40782,11 +42315,22 @@
          * @return {?}
          */
         function (addressId, address) {
-            this.store.dispatch(new UpdateUserAddress({
-                userId: OCC_USER_ID_CURRENT,
-                addressId: addressId,
-                address: address,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new UpdateUserAddress({
+                    userId: occUserId,
+                    addressId: addressId,
+                    address: address,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Deletes existing user address
@@ -40803,10 +42347,21 @@
          * @return {?}
          */
         function (addressId) {
-            this.store.dispatch(new DeleteUserAddress({
-                userId: OCC_USER_ID_CURRENT,
-                addressId: addressId,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new DeleteUserAddress({
+                    userId: occUserId,
+                    addressId: addressId,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns addresses
@@ -40968,9 +42523,10 @@
         ];
         /** @nocollapse */
         UserAddressService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: AuthService }
         ]; };
-        /** @nocollapse */ UserAddressService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(core.ɵɵinject(store.Store)); }, token: UserAddressService, providedIn: "root" });
+        /** @nocollapse */ UserAddressService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
         return UserAddressService;
     }());
     if (false) {
@@ -40979,6 +42535,11 @@
          * @protected
          */
         UserAddressService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserAddressService.prototype.authService;
     }
 
     /**
@@ -40986,8 +42547,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserConsentService = /** @class */ (function () {
-        function UserConsentService(store) {
+        function UserConsentService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
          * Retrieves all consents.
@@ -41001,7 +42563,18 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserConsents(OCC_USER_ID_CURRENT));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadUserConsents(occUserId));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns all consents
@@ -41091,11 +42664,22 @@
          * @return {?}
          */
         function (consentTemplateId, consentTemplateVersion) {
-            this.store.dispatch(new GiveUserConsent({
-                userId: OCC_USER_ID_CURRENT,
-                consentTemplateId: consentTemplateId,
-                consentTemplateVersion: consentTemplateVersion,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new GiveUserConsent({
+                    userId: occUserId,
+                    consentTemplateId: consentTemplateId,
+                    consentTemplateVersion: consentTemplateVersion,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the give consent process loading flag
@@ -41168,10 +42752,21 @@
          * @return {?}
          */
         function (consentCode) {
-            this.store.dispatch(new WithdrawUserConsent({
-                userId: OCC_USER_ID_CURRENT,
-                consentCode: consentCode,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new WithdrawUserConsent({
+                    userId: occUserId,
+                    consentCode: consentCode,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns the withdraw consent process loading flag
@@ -41236,9 +42831,10 @@
         ];
         /** @nocollapse */
         UserConsentService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: AuthService }
         ]; };
-        /** @nocollapse */ UserConsentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(core.ɵɵinject(store.Store)); }, token: UserConsentService, providedIn: "root" });
+        /** @nocollapse */ UserConsentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
         return UserConsentService;
     }());
     if (false) {
@@ -41247,6 +42843,11 @@
          * @protected
          */
         UserConsentService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserConsentService.prototype.authService;
     }
 
     /**
@@ -41254,8 +42855,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var UserPaymentService = /** @class */ (function () {
-        function UserPaymentService(store) {
+        function UserPaymentService(store, authService) {
             this.store = store;
+            this.authService = authService;
         }
         /**
          * Loads all user's payment methods.
@@ -41269,7 +42871,18 @@
          * @return {?}
          */
         function () {
-            this.store.dispatch(new LoadUserPaymentMethods(OCC_USER_ID_CURRENT));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadUserPaymentMethods(occUserId));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns all user's payment methods
@@ -41323,10 +42936,21 @@
          * @return {?}
          */
         function (paymentMethodId) {
-            this.store.dispatch(new SetDefaultUserPaymentMethod({
-                userId: OCC_USER_ID_CURRENT,
-                paymentMethodId: paymentMethodId,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new SetDefaultUserPaymentMethod({
+                    userId: occUserId,
+                    paymentMethodId: paymentMethodId,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Deletes the payment method
@@ -41346,10 +42970,21 @@
          * @return {?}
          */
         function (paymentMethodId) {
-            this.store.dispatch(new DeleteUserPaymentMethod({
-                userId: OCC_USER_ID_CURRENT,
-                paymentMethodId: paymentMethodId,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new DeleteUserPaymentMethod({
+                    userId: occUserId,
+                    paymentMethodId: paymentMethodId,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Returns all billing countries
@@ -41386,9 +43021,10 @@
         ];
         /** @nocollapse */
         UserPaymentService.ctorParameters = function () { return [
-            { type: store.Store }
+            { type: store.Store },
+            { type: AuthService }
         ]; };
-        /** @nocollapse */ UserPaymentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core.ɵɵinject(store.Store)); }, token: UserPaymentService, providedIn: "root" });
+        /** @nocollapse */ UserPaymentService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
         return UserPaymentService;
     }());
     if (false) {
@@ -41397,6 +43033,11 @@
          * @protected
          */
         UserPaymentService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserPaymentService.prototype.authService;
     }
 
     /**
@@ -41538,12 +43179,23 @@
          * @return {?}
          */
         function (pageSize, currentPage, sort) {
-            this.store.dispatch(new LoadUserOrders({
-                userId: OCC_USER_ID_CURRENT,
-                pageSize: pageSize,
-                currentPage: currentPage,
-                sort: sort,
-            }));
+            var _this = this;
+            this.authService
+                .getOccUserId()
+                .pipe(operators.take(1))
+                .subscribe((/**
+             * @param {?} occUserId
+             * @return {?}
+             */
+            function (occUserId) {
+                return _this.store.dispatch(new LoadUserOrders({
+                    userId: occUserId,
+                    pageSize: pageSize,
+                    currentPage: currentPage,
+                    sort: sort,
+                }));
+            }))
+                .unsubscribe();
         };
         /**
          * Cleaning order list
@@ -41646,7 +43298,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$g = {
+    var initialState$h = {
         entities: {},
     };
     /**
@@ -41654,8 +43306,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$g(state, action) {
-        if (state === void 0) { state = initialState$g; }
+    function reducer$h(state, action) {
+        if (state === void 0) { state = initialState$h; }
         switch (action.type) {
             case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 /** @type {?} */
@@ -41673,34 +43325,6 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$g;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$h = {};
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$h(state, action) {
-        if (state === void 0) { state = initialState$h; }
-        switch (action.type) {
-            case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
-                /** @type {?} */
-                var tracking = action.payload;
-                return {
-                    tracking: tracking,
-                };
-            }
-            case CLEAR_CONSIGNMENT_TRACKING: {
                 return initialState$h;
             }
         }
@@ -41712,9 +43336,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$i = {
-        entities: {},
-    };
+    var initialState$i = {};
     /**
      * @param {?=} state
      * @param {?=} action
@@ -41722,6 +43344,36 @@
      */
     function reducer$i(state, action) {
         if (state === void 0) { state = initialState$i; }
+        switch (action.type) {
+            case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
+                /** @type {?} */
+                var tracking = action.payload;
+                return {
+                    tracking: tracking,
+                };
+            }
+            case CLEAR_CONSIGNMENT_TRACKING: {
+                return initialState$i;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$j = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
         switch (action.type) {
             case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 /** @type {?} */
@@ -41739,34 +43391,6 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$i;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$j = {
-        order: {},
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
-        switch (action.type) {
-            case LOAD_ORDER_DETAILS_SUCCESS: {
-                /** @type {?} */
-                var order = action.payload;
-                return __assign({}, state, { order: order });
-            }
-            case CLEAR_ORDER_DETAILS: {
                 return initialState$j;
             }
         }
@@ -41778,7 +43402,9 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$k = [];
+    var initialState$k = {
+        order: {},
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -41787,10 +43413,12 @@
     function reducer$k(state, action) {
         if (state === void 0) { state = initialState$k; }
         switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$k;
+            case LOAD_ORDER_DETAILS_SUCCESS: {
+                /** @type {?} */
+                var order = action.payload;
+                return __assign({}, state, { order: order });
             }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
+            case CLEAR_ORDER_DETAILS: {
                 return initialState$k;
             }
         }
@@ -41802,10 +43430,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$l = {
-        entities: [],
-        country: null,
-    };
+    var initialState$l = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -41814,15 +43439,10 @@
     function reducer$l(state, action) {
         if (state === void 0) { state = initialState$l; }
         switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload.entities;
-                /** @type {?} */
-                var country = action.payload.country;
-                if (entities || country) {
-                    return __assign({}, state, { entities: entities,
-                        country: country });
-                }
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$l;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
                 return initialState$l;
             }
         }
@@ -41834,7 +43454,10 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$m = false;
+    var initialState$m = {
+        entities: [],
+        country: null,
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -41842,6 +43465,35 @@
      */
     function reducer$m(state, action) {
         if (state === void 0) { state = initialState$m; }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload.entities;
+                /** @type {?} */
+                var country = action.payload.country;
+                if (entities || country) {
+                    return __assign({}, state, { entities: entities,
+                        country: country });
+                }
+                return initialState$m;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$n = false;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
                 return true;
@@ -41855,7 +43507,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$n = {
+    var initialState$o = {
         entities: {},
     };
     /**
@@ -41863,8 +43515,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
+    function reducer$o(state, action) {
+        if (state === void 0) { state = initialState$o; }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
                 /** @type {?} */
@@ -41882,31 +43534,7 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$n;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$o = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$o(state, action) {
-        if (state === void 0) { state = initialState$o; }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$o;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$o;
             }
         }
         return state;
@@ -41926,10 +43554,34 @@
     function reducer$p(state, action) {
         if (state === void 0) { state = initialState$p; }
         switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$p;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$p;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$q = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$q(state, action) {
+        if (state === void 0) { state = initialState$q; }
+        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 /** @type {?} */
                 var consents = action.payload;
-                return consents ? consents : initialState$p;
+                return consents ? consents : initialState$q;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 /** @type {?} */
@@ -41953,14 +43605,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$q = (/** @type {?} */ ({}));
+    var initialState$r = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$q(state, action) {
-        if (state === void 0) { state = initialState$q; }
+    function reducer$r(state, action) {
+        if (state === void 0) { state = initialState$r; }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
                 return action.payload;
@@ -41979,7 +43631,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$r = {
+    var initialState$s = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -41989,14 +43641,14 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$r(state, action) {
-        if (state === void 0) { state = initialState$r; }
+    function reducer$s(state, action) {
+        if (state === void 0) { state = initialState$s; }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$r;
+                return action.payload ? action.payload : initialState$s;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$r;
+                return initialState$s;
             }
         }
         return state;
@@ -42009,30 +43661,30 @@
     /**
      * @return {?}
      */
-    function getReducers$b() {
+    function getReducers$c() {
         return {
             account: store.combineReducers({
-                details: reducer$q,
+                details: reducer$r,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$o),
-            billingCountries: reducer$g,
-            consents: loaderReducer(USER_CONSENTS, reducer$p),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$k),
-            orders: loaderReducer(USER_ORDERS, reducer$r),
-            order: reducer$j,
-            countries: reducer$i,
-            titles: reducer$n,
-            regions: loaderReducer(REGIONS, reducer$l),
-            resetPassword: reducer$m,
-            consignmentTracking: reducer$h,
+            addresses: loaderReducer(USER_ADDRESSES, reducer$p),
+            billingCountries: reducer$h,
+            consents: loaderReducer(USER_CONSENTS, reducer$q),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$l),
+            orders: loaderReducer(USER_ORDERS, reducer$s),
+            order: reducer$k,
+            countries: reducer$j,
+            titles: reducer$o,
+            regions: loaderReducer(REGIONS, reducer$m),
+            resetPassword: reducer$n,
+            consignmentTracking: reducer$i,
         };
     }
     /** @type {?} */
-    var reducerToken$b = new core.InjectionToken('UserReducers');
+    var reducerToken$c = new core.InjectionToken('UserReducers');
     /** @type {?} */
-    var reducerProvider$b = {
-        provide: reducerToken$b,
-        useFactory: getReducers$b,
+    var reducerProvider$c = {
+        provide: reducerToken$c,
+        useFactory: getReducers$c,
     };
     /**
      * @param {?} reducer
@@ -42063,7 +43715,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBillingCountries$ = this.actions$.pipe(effects$a.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap((/**
+            this.loadBillingCountries$ = this.actions$.pipe(effects$b.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -42085,11 +43737,11 @@
         ];
         /** @nocollapse */
         BillingCountriesEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
         return BillingCountriesEffect;
@@ -42116,7 +43768,7 @@
     var ClearMiscsDataEffect = /** @class */ (function () {
         function ClearMiscsDataEffect(actions$) {
             this.actions$ = actions$;
-            this.clearMiscsData$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
+            this.clearMiscsData$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */
             function () {
@@ -42128,10 +43780,10 @@
         ];
         /** @nocollapse */
         ClearMiscsDataEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions }
+            { type: effects$b.Actions }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
         return ClearMiscsDataEffect;
@@ -42155,7 +43807,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userOrderConnector = userOrderConnector;
-            this.loadConsignmentTracking$ = this.actions$.pipe(effects$a.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map((/**
+            this.loadConsignmentTracking$ = this.actions$.pipe(effects$b.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42186,11 +43838,11 @@
         ];
         /** @nocollapse */
         ConsignmentTrackingEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
         return ConsignmentTrackingEffects;
@@ -42219,7 +43871,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadDeliveryCountries$ = this.actions$.pipe(effects$a.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap((/**
+            this.loadDeliveryCountries$ = this.actions$.pipe(effects$b.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -42241,11 +43893,11 @@
         ];
         /** @nocollapse */
         DeliveryCountriesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
         return DeliveryCountriesEffects;
@@ -42274,7 +43926,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$a.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
+            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$b.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42310,11 +43962,11 @@
         ];
         /** @nocollapse */
         ForgotPasswordEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
         return ForgotPasswordEffects;
@@ -42343,7 +43995,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.loadOrderDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_ORDER_DETAILS), operators.map((/**
+            this.loadOrderDetails$ = this.actions$.pipe(effects$b.ofType(LOAD_ORDER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42372,11 +44024,11 @@
         ];
         /** @nocollapse */
         OrderDetailsEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
         return OrderDetailsEffect;
@@ -42405,7 +44057,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userPaymentMethodConnector = userPaymentMethodConnector;
-            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
+            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42428,7 +44080,7 @@
                     return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
+            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$b.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42454,7 +44106,7 @@
                     return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
+            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$b.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42486,19 +44138,19 @@
         ];
         /** @nocollapse */
         UserPaymentMethodsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserPaymentConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
         return UserPaymentMethodsEffects;
@@ -42531,7 +44183,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadRegions$ = this.actions$.pipe(effects$a.ofType(LOAD_REGIONS), operators.map((/**
+            this.loadRegions$ = this.actions$.pipe(effects$b.ofType(LOAD_REGIONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42559,7 +44211,7 @@
                     return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetRegions$ = this.actions$.pipe(effects$a.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
+            this.resetRegions$ = this.actions$.pipe(effects$b.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
              * @return {?}
              */
             function () {
@@ -42571,15 +44223,15 @@
         ];
         /** @nocollapse */
         RegionsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], RegionsEffects.prototype, "loadRegions$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], RegionsEffects.prototype, "resetRegions$", void 0);
         return RegionsEffects;
@@ -42610,7 +44262,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.resetPassword$ = this.actions$.pipe(effects$a.ofType(RESET_PASSWORD), operators.map((/**
+            this.resetPassword$ = this.actions$.pipe(effects$b.ofType(RESET_PASSWORD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42643,11 +44295,11 @@
         ];
         /** @nocollapse */
         ResetPasswordEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
         return ResetPasswordEffects;
@@ -42676,7 +44328,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.loadTitles$ = this.actions$.pipe(effects$a.ofType(LOAD_TITLES), operators.switchMap((/**
+            this.loadTitles$ = this.actions$.pipe(effects$b.ofType(LOAD_TITLES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -42727,11 +44379,11 @@
         ];
         /** @nocollapse */
         TitlesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], TitlesEffects.prototype, "loadTitles$", void 0);
         return TitlesEffects;
@@ -42760,7 +44412,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updateEmail$ = this.actions$.pipe(effects$a.ofType(UPDATE_EMAIL), operators.map((/**
+            this.updateEmail$ = this.actions$.pipe(effects$b.ofType(UPDATE_EMAIL), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42788,11 +44440,11 @@
         ];
         /** @nocollapse */
         UpdateEmailEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
         return UpdateEmailEffects;
@@ -42821,7 +44473,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updatePassword$ = this.actions$.pipe(effects$a.ofType(UPDATE_PASSWORD), operators.map((/**
+            this.updatePassword$ = this.actions$.pipe(effects$b.ofType(UPDATE_PASSWORD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42850,11 +44502,11 @@
         ];
         /** @nocollapse */
         UpdatePasswordEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
         return UpdatePasswordEffects;
@@ -42885,7 +44537,7 @@
             this.userAddressConnector = userAddressConnector;
             this.userAddressService = userAddressService;
             this.messageService = messageService;
-            this.loadUserAddresses$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_ADDRESSES), operators.map((/**
+            this.loadUserAddresses$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_ADDRESSES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42908,7 +44560,7 @@
                     return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.addUserAddress$ = this.actions$.pipe(effects$a.ofType(ADD_USER_ADDRESS), operators.map((/**
+            this.addUserAddress$ = this.actions$.pipe(effects$b.ofType(ADD_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42933,7 +44585,7 @@
                     return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateUserAddress$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_ADDRESS), operators.map((/**
+            this.updateUserAddress$ = this.actions$.pipe(effects$b.ofType(UPDATE_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42953,7 +44605,7 @@
                     if (payload.address &&
                         Object.keys(payload.address).length === 1 &&
                         payload.address.defaultAddress) {
-                        return new LoadUserAddresses(OCC_USER_ID_CURRENT);
+                        return new LoadUserAddresses(payload.userId);
                     }
                     else {
                         return new UpdateUserAddressSuccess(data);
@@ -42966,7 +44618,7 @@
                     return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.deleteUserAddress$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_ADDRESS), operators.map((/**
+            this.deleteUserAddress$ = this.actions$.pipe(effects$b.ofType(DELETE_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42994,7 +44646,7 @@
             /**
              *  Reload addresses and notify about add success
              */
-            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(effects$a.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(effects$b.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -43004,7 +44656,7 @@
             /**
              *  Reload addresses and notify about update success
              */
-            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(effects$b.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -43014,7 +44666,7 @@
             /**
              *  Reload addresses and notify about delete success
              */
-            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(effects$a.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(effects$b.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -43056,37 +44708,37 @@
         ];
         /** @nocollapse */
         UserAddressesEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserAddressConnector },
             { type: UserAddressService },
             { type: GlobalMessageService }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "loadUserAddresses$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "addUserAddress$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "updateUserAddress$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "deleteUserAddress$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnAddSuccess$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnUpdateSuccess$", void 0);
         __decorate([
-            effects$a.Effect({ dispatch: false }),
+            effects$b.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
         return UserAddressesEffects;
@@ -43146,11 +44798,11 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConsentConnector = userConsentConnector;
-            this.resetConsents$ = this.actions$.pipe(effects$a.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.resetConsents$ = this.actions$.pipe(effects$b.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new ResetLoadUserConsents(); })));
-            this.getConsents$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_CONSENTS), operators.map((/**
+            this.getConsents$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_CONSENTS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43171,7 +44823,7 @@
                     return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.giveConsent$ = this.actions$.pipe(effects$a.ofType(GIVE_USER_CONSENT), operators.map((/**
+            this.giveConsent$ = this.actions$.pipe(effects$b.ofType(GIVE_USER_CONSENT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43195,7 +44847,7 @@
                     return rxjs.of(new GiveUserConsentFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.withdrawConsent$ = this.actions$.pipe(effects$a.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
+            this.withdrawConsent$ = this.actions$.pipe(effects$b.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43222,23 +44874,23 @@
         ];
         /** @nocollapse */
         UserConsentsEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConsentConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "resetConsents$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "getConsents$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "giveConsent$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
         return UserConsentsEffect;
@@ -43273,7 +44925,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.loadUserDetails$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_DETAILS), operators.map((/**
+            this.loadUserDetails$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43296,7 +44948,7 @@
                     return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateUserDetails$ = this.actions$.pipe(effects$a.ofType(UPDATE_USER_DETAILS), operators.map((/**
+            this.updateUserDetails$ = this.actions$.pipe(effects$b.ofType(UPDATE_USER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43323,15 +44975,15 @@
         ];
         /** @nocollapse */
         UserDetailsEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserDetailsEffects.prototype, "loadUserDetails$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
         return UserDetailsEffects;
@@ -43362,7 +45014,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.loadUserOrders$ = this.actions$.pipe(effects$a.ofType(LOAD_USER_ORDERS), operators.map((/**
+            this.loadUserOrders$ = this.actions$.pipe(effects$b.ofType(LOAD_USER_ORDERS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43387,7 +45039,7 @@
                     return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetUserOrders$ = this.actions$.pipe(effects$a.ofType(CLEAR_USER_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
+            this.resetUserOrders$ = this.actions$.pipe(effects$b.ofType(CLEAR_USER_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
              * @return {?}
              */
             function () {
@@ -43399,15 +45051,15 @@
         ];
         /** @nocollapse */
         UserOrdersEffect.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
         return UserOrdersEffect;
@@ -43438,7 +45090,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.registerUser$ = this.actions$.pipe(effects$a.ofType(REGISTER_USER), operators.map((/**
+            this.registerUser$ = this.actions$.pipe(effects$b.ofType(REGISTER_USER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43458,7 +45110,7 @@
                     return rxjs.of(new RegisterUserFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.registerGuest$ = this.actions$.pipe(effects$a.ofType(REGISTER_GUEST), operators.map((/**
+            this.registerGuest$ = this.actions$.pipe(effects$b.ofType(REGISTER_GUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43486,7 +45138,7 @@
                     return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.removeUser$ = this.actions$.pipe(effects$a.ofType(REMOVE_USER), operators.map((/**
+            this.removeUser$ = this.actions$.pipe(effects$b.ofType(REMOVE_USER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43516,19 +45168,19 @@
         ];
         /** @nocollapse */
         UserRegisterEffects.ctorParameters = function () { return [
-            { type: effects$a.Actions },
+            { type: effects$b.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "registerUser$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "registerGuest$", void 0);
         __decorate([
-            effects$a.Effect(),
+            effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "removeUser$", void 0);
         return UserRegisterEffects;
@@ -43557,7 +45209,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$9 = [
+    var effects$a = [
         ClearMiscsDataEffect,
         DeliveryCountriesEffects,
         RegionsEffects,
@@ -43590,11 +45242,11 @@
                             common.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            store.StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
-                            effects$a.EffectsModule.forFeature(effects$9),
+                            store.StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$6 }),
+                            effects$b.EffectsModule.forFeature(effects$a),
                             router.RouterModule,
                         ],
-                        providers: [reducerProvider$b],
+                        providers: [reducerProvider$c],
                     },] }
         ];
         return UserStoreModule;
@@ -43627,197 +45279,19 @@
         return UserModule;
     }());
 
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FeatureLevelDirective = /** @class */ (function () {
-        function FeatureLevelDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureLevelDirective.prototype, "cxFeatureLevel", {
-            set: /**
-             * @param {?} level
-             * @return {?}
-             */
-            function (level) {
-                if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureLevelDirective.decorators = [
-            { type: core.Directive, args: [{
-                        selector: '[cxFeatureLevel]',
-                    },] }
-        ];
-        /** @nocollapse */
-        FeatureLevelDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        FeatureLevelDirective.propDecorators = {
-            cxFeatureLevel: [{ type: core.Input }]
-        };
-        return FeatureLevelDirective;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        FeatureLevelDirective.prototype.hasView;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureLevelDirective.prototype.templateRef;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureLevelDirective.prototype.viewContainer;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureLevelDirective.prototype.featureConfig;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FeatureDirective = /** @class */ (function () {
-        function FeatureDirective(templateRef, viewContainer, featureConfig) {
-            this.templateRef = templateRef;
-            this.viewContainer = viewContainer;
-            this.featureConfig = featureConfig;
-            this.hasView = false;
-        }
-        Object.defineProperty(FeatureDirective.prototype, "cxFeature", {
-            set: /**
-             * @param {?} feature
-             * @return {?}
-             */
-            function (feature) {
-                if (this.featureConfig.isEnabled(feature) && !this.hasView) {
-                    this.viewContainer.createEmbeddedView(this.templateRef);
-                    this.hasView = true;
-                }
-                else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
-                    this.viewContainer.clear();
-                    this.hasView = false;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        FeatureDirective.decorators = [
-            { type: core.Directive, args: [{
-                        selector: '[cxFeature]',
-                    },] }
-        ];
-        /** @nocollapse */
-        FeatureDirective.ctorParameters = function () { return [
-            { type: core.TemplateRef },
-            { type: core.ViewContainerRef },
-            { type: FeatureConfigService }
-        ]; };
-        FeatureDirective.propDecorators = {
-            cxFeature: [{ type: core.Input }]
-        };
-        return FeatureDirective;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        FeatureDirective.prototype.hasView;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureDirective.prototype.templateRef;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureDirective.prototype.viewContainer;
-        /**
-         * @type {?}
-         * @protected
-         */
-        FeatureDirective.prototype.featureConfig;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var FeaturesConfigModule = /** @class */ (function () {
-        function FeaturesConfigModule() {
-        }
-        /**
-         * @param {?=} defaultLevel
-         * @return {?}
-         */
-        FeaturesConfigModule.forRoot = /**
-         * @param {?=} defaultLevel
-         * @return {?}
-         */
-        function (defaultLevel) {
-            return {
-                ngModule: FeaturesConfigModule,
-                providers: [
-                    provideConfig((/** @type {?} */ ({
-                        features: {
-                            level: defaultLevel || '999',
-                        },
-                    }))),
-                    {
-                        provide: FeaturesConfig,
-                        useExisting: Config,
-                    },
-                ],
-            };
-        };
-        FeaturesConfigModule.decorators = [
-            { type: core.NgModule, args: [{
-                        declarations: [FeatureLevelDirective, FeatureDirective],
-                        exports: [FeatureLevelDirective, FeatureDirective],
-                    },] }
-        ];
-        return FeaturesConfigModule;
-    }());
-
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
+    exports.ASM_FEATURE = ASM_FEATURE;
     exports.AUTH_FEATURE = AUTH_FEATURE;
+    exports.AsmActions = customerGroup_actions;
+    exports.AsmAdapter = AsmAdapter;
+    exports.AsmConnector = AsmConnector;
+    exports.AsmModule = AsmModule;
+    exports.AsmOccModule = AsmOccModule;
+    exports.AsmSelectors = asmGroup_selectors;
+    exports.AsmService = AsmService;
     exports.AuthActions = authGroup_actions;
     exports.AuthConfig = AuthConfig;
     exports.AuthGuard = AuthGuard;
@@ -43845,8 +45319,11 @@
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.CONSIGNMENT_TRACKING_NORMALIZER = CONSIGNMENT_TRACKING_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
+    exports.CSAGENT_TOKEN_DATA = CSAGENT_TOKEN_DATA;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
+    exports.CUSTOMER_SEARCH_DATA = CUSTOMER_SEARCH_DATA;
+    exports.CUSTOMER_SEARCH_PAGE_NORMALIZER = CUSTOMER_SEARCH_PAGE_NORMALIZER;
     exports.CartActions = cartGroup_actions;
     exports.CartAdapter = CartAdapter;
     exports.CartConnector = CartConnector;
@@ -43960,6 +45437,7 @@
     exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
+    exports.OccAsmAdapter = OccAsmAdapter;
     exports.OccCartAdapter = OccCartAdapter;
     exports.OccCartEntryAdapter = OccCartEntryAdapter;
     exports.OccCartNormalizer = OccCartNormalizer;
@@ -44100,6 +45578,7 @@
     exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
+    exports.USE_CUSTOMER_SUPPORT_AGENT_TOKEN = USE_CUSTOMER_SUPPORT_AGENT_TOKEN;
     exports.UnknownErrorHandler = UnknownErrorHandler;
     exports.UrlMatcherFactoryService = UrlMatcherFactoryService;
     exports.UrlModule = UrlModule;
@@ -44132,11 +45611,11 @@
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
-    exports.effects = effects$1;
+    exports.effects = effects$2;
     exports.entityLoaderReducer = entityLoaderReducer;
     exports.entityReducer = entityReducer;
     exports.errorHandlers = errorHandlers;
-    exports.getReducers = getReducers$1;
+    exports.getReducers = getReducers$3;
     exports.getStateSlice = getStateSlice;
     exports.httpErrorInterceptors = httpErrorInterceptors;
     exports.initConfigurableRoutes = initConfigurableRoutes;
@@ -44158,192 +45637,207 @@
     exports.provideConfigFactory = provideConfigFactory;
     exports.provideConfigFromMetaTags = provideConfigFromMetaTags;
     exports.provideConfigValidator = provideConfigValidator;
-    exports.reducerProvider = reducerProvider$1;
-    exports.reducerToken = reducerToken$1;
+    exports.reducerProvider = reducerProvider$3;
+    exports.reducerToken = reducerToken$3;
     exports.serviceMapFactory = serviceMapFactory;
     exports.siteContextParamsProviders = siteContextParamsProviders;
     exports.testestsd = testestsd;
     exports.validateConfig = validateConfig;
     exports.ɵa = TEST_CONFIG_COOKIE_NAME;
     exports.ɵb = configFromCookieFactory;
-    exports.ɵba = AuthServices;
-    exports.ɵbb = cartStoreConfigFactory;
-    exports.ɵbc = CartStoreModule;
-    exports.ɵbd = reducer$1;
-    exports.ɵbe = CartPageMetaResolver;
-    exports.ɵbf = CheckoutStoreModule;
-    exports.ɵbg = getReducers$2;
-    exports.ɵbh = reducerToken$2;
-    exports.ɵbi = reducerProvider$2;
-    exports.ɵbj = effects$2;
-    exports.ɵbk = AddressVerificationEffect;
-    exports.ɵbl = CardTypesEffects;
-    exports.ɵbm = CheckoutEffects;
-    exports.ɵbn = reducer$4;
-    exports.ɵbo = reducer$3;
-    exports.ɵbp = reducer$2;
-    exports.ɵbq = cmsStoreConfigFactory;
-    exports.ɵbr = CmsStoreModule;
-    exports.ɵbs = getReducers$4;
-    exports.ɵbt = reducerToken$4;
-    exports.ɵbu = reducerProvider$4;
-    exports.ɵbv = clearCmsState;
-    exports.ɵbw = metaReducers$2;
-    exports.ɵbx = effects$4;
-    exports.ɵby = PageEffects;
-    exports.ɵbz = ComponentEffects;
-    exports.ɵc = authStoreConfigFactory;
-    exports.ɵca = NavigationEntryItemEffects;
-    exports.ɵcb = reducer$7;
-    exports.ɵcc = reducer$8;
-    exports.ɵcd = reducer$6;
-    exports.ɵce = GlobalMessageStoreModule;
-    exports.ɵcf = getReducers$5;
-    exports.ɵcg = reducerToken$5;
-    exports.ɵch = reducerProvider$5;
-    exports.ɵci = reducer$9;
-    exports.ɵcj = GlobalMessageEffect;
-    exports.ɵck = defaultGlobalMessageConfigFactory;
-    exports.ɵcl = InternalServerErrorHandler;
-    exports.ɵcm = HttpErrorInterceptor;
-    exports.ɵcn = defaultI18nConfig;
-    exports.ɵco = i18nextProviders;
-    exports.ɵcp = i18nextInit;
-    exports.ɵcq = MockTranslationService;
-    exports.ɵcr = kymaStoreConfigFactory;
-    exports.ɵcs = KymaStoreModule;
-    exports.ɵct = getReducers$6;
-    exports.ɵcu = reducerToken$6;
-    exports.ɵcv = reducerProvider$6;
-    exports.ɵcw = clearKymaState;
-    exports.ɵcx = metaReducers$3;
-    exports.ɵcy = effects$5;
-    exports.ɵcz = OpenIdTokenEffect;
-    exports.ɵd = AuthStoreModule;
-    exports.ɵda = OpenIdAuthenticationTokenService;
-    exports.ɵdb = defaultKymaConfig;
-    exports.ɵdc = defaultOccCartConfig;
-    exports.ɵdd = defaultOccProductConfig;
-    exports.ɵde = defaultOccSiteContextConfig;
-    exports.ɵdf = defaultOccStoreFinderConfig;
-    exports.ɵdg = defaultOccUserConfig;
-    exports.ɵdh = defaultPersonalizationConfig;
-    exports.ɵdi = interceptors$1;
-    exports.ɵdj = OccPersonalizationIdInterceptor;
-    exports.ɵdk = OccPersonalizationTimeInterceptor;
-    exports.ɵdl = ProcessStoreModule;
-    exports.ɵdm = getReducers$7;
-    exports.ɵdn = reducerToken$7;
-    exports.ɵdo = reducerProvider$7;
-    exports.ɵdp = productStoreConfigFactory;
-    exports.ɵdq = ProductStoreModule;
-    exports.ɵdr = getReducers$8;
-    exports.ɵds = reducerToken$8;
-    exports.ɵdt = reducerProvider$8;
-    exports.ɵdu = clearProductsState;
-    exports.ɵdv = metaReducers$4;
-    exports.ɵdw = effects$6;
-    exports.ɵdx = ProductReferencesEffects;
-    exports.ɵdy = ProductReviewsEffects;
-    exports.ɵdz = ProductsSearchEffects;
+    exports.ɵba = UserTokenEffects;
+    exports.ɵbb = UserAuthenticationTokenService;
+    exports.ɵbc = ClientAuthenticationTokenService;
+    exports.ɵbd = reducer$2;
+    exports.ɵbe = defaultAuthConfig;
+    exports.ɵbf = interceptors;
+    exports.ɵbg = CustomerSupportAgentTokenInterceptor;
+    exports.ɵbh = ClientTokenInterceptor;
+    exports.ɵbi = UserTokenInterceptor;
+    exports.ɵbj = AuthErrorInterceptor;
+    exports.ɵbk = UserErrorHandlingService;
+    exports.ɵbl = UrlParsingService;
+    exports.ɵbm = ClientErrorHandlingService;
+    exports.ɵbn = CustomerSupportAgentErrorHandlingService;
+    exports.ɵbo = AuthServices;
+    exports.ɵbp = cartStoreConfigFactory;
+    exports.ɵbq = CartStoreModule;
+    exports.ɵbr = reducer$3;
+    exports.ɵbs = CartPageMetaResolver;
+    exports.ɵbt = CheckoutStoreModule;
+    exports.ɵbu = getReducers$4;
+    exports.ɵbv = reducerToken$4;
+    exports.ɵbw = reducerProvider$4;
+    exports.ɵbx = effects$3;
+    exports.ɵby = AddressVerificationEffect;
+    exports.ɵbz = CardTypesEffects;
+    exports.ɵc = asmStoreConfigFactory;
+    exports.ɵca = CheckoutEffects;
+    exports.ɵcb = reducer$6;
+    exports.ɵcc = reducer$5;
+    exports.ɵcd = reducer$4;
+    exports.ɵce = cmsStoreConfigFactory;
+    exports.ɵcf = CmsStoreModule;
+    exports.ɵcg = getReducers$6;
+    exports.ɵch = reducerToken$6;
+    exports.ɵci = reducerProvider$6;
+    exports.ɵcj = clearCmsState;
+    exports.ɵck = metaReducers$2;
+    exports.ɵcl = effects$5;
+    exports.ɵcm = PageEffects;
+    exports.ɵcn = ComponentEffects;
+    exports.ɵco = NavigationEntryItemEffects;
+    exports.ɵcp = reducer$9;
+    exports.ɵcq = reducer$a;
+    exports.ɵcr = reducer$8;
+    exports.ɵcs = GlobalMessageStoreModule;
+    exports.ɵct = getReducers$1;
+    exports.ɵcu = reducerToken$1;
+    exports.ɵcv = reducerProvider$1;
+    exports.ɵcw = reducer$1;
+    exports.ɵcx = GlobalMessageEffect;
+    exports.ɵcy = defaultGlobalMessageConfigFactory;
+    exports.ɵcz = InternalServerErrorHandler;
+    exports.ɵd = AsmStoreModule;
+    exports.ɵda = HttpErrorInterceptor;
+    exports.ɵdb = defaultI18nConfig;
+    exports.ɵdc = i18nextProviders;
+    exports.ɵdd = i18nextInit;
+    exports.ɵde = MockTranslationService;
+    exports.ɵdf = kymaStoreConfigFactory;
+    exports.ɵdg = KymaStoreModule;
+    exports.ɵdh = getReducers$7;
+    exports.ɵdi = reducerToken$7;
+    exports.ɵdj = reducerProvider$7;
+    exports.ɵdk = clearKymaState;
+    exports.ɵdl = metaReducers$3;
+    exports.ɵdm = effects$6;
+    exports.ɵdn = OpenIdTokenEffect;
+    exports.ɵdo = OpenIdAuthenticationTokenService;
+    exports.ɵdp = defaultKymaConfig;
+    exports.ɵdq = defaultOccAsmConfig;
+    exports.ɵdr = defaultOccCartConfig;
+    exports.ɵds = defaultOccProductConfig;
+    exports.ɵdt = defaultOccSiteContextConfig;
+    exports.ɵdu = defaultOccStoreFinderConfig;
+    exports.ɵdv = defaultOccUserConfig;
+    exports.ɵdw = defaultPersonalizationConfig;
+    exports.ɵdx = interceptors$1;
+    exports.ɵdy = OccPersonalizationIdInterceptor;
+    exports.ɵdz = OccPersonalizationTimeInterceptor;
     exports.ɵe = stateMetaReducers;
-    exports.ɵea = ProductEffects;
-    exports.ɵeb = reducer$a;
-    exports.ɵec = reducer$c;
-    exports.ɵed = reducer$b;
-    exports.ɵee = PageMetaResolver;
-    exports.ɵef = addExternalRoutesFactory;
-    exports.ɵeg = getReducers$3;
-    exports.ɵeh = reducer$5;
-    exports.ɵei = reducerToken$3;
-    exports.ɵej = reducerProvider$3;
-    exports.ɵek = CustomSerializer;
-    exports.ɵel = effects$3;
-    exports.ɵem = RouterEffects;
-    exports.ɵen = SiteContextParamsService;
-    exports.ɵeo = SiteContextUrlSerializer;
-    exports.ɵep = SiteContextRoutesHandler;
-    exports.ɵeq = defaultSiteContextConfigFactory;
-    exports.ɵer = siteContextStoreConfigFactory;
-    exports.ɵes = SiteContextStoreModule;
-    exports.ɵet = getReducers$9;
-    exports.ɵeu = reducerToken$9;
-    exports.ɵev = reducerProvider$9;
-    exports.ɵew = effects$7;
-    exports.ɵex = LanguagesEffects;
-    exports.ɵey = CurrenciesEffects;
-    exports.ɵez = BaseSiteEffects;
+    exports.ɵea = ProcessStoreModule;
+    exports.ɵeb = getReducers$8;
+    exports.ɵec = reducerToken$8;
+    exports.ɵed = reducerProvider$8;
+    exports.ɵee = productStoreConfigFactory;
+    exports.ɵef = ProductStoreModule;
+    exports.ɵeg = getReducers$9;
+    exports.ɵeh = reducerToken$9;
+    exports.ɵei = reducerProvider$9;
+    exports.ɵej = clearProductsState;
+    exports.ɵek = metaReducers$4;
+    exports.ɵel = effects$7;
+    exports.ɵem = ProductReferencesEffects;
+    exports.ɵen = ProductReviewsEffects;
+    exports.ɵeo = ProductsSearchEffects;
+    exports.ɵep = ProductEffects;
+    exports.ɵeq = reducer$b;
+    exports.ɵer = reducer$d;
+    exports.ɵes = reducer$c;
+    exports.ɵet = PageMetaResolver;
+    exports.ɵeu = addExternalRoutesFactory;
+    exports.ɵev = getReducers$5;
+    exports.ɵew = reducer$7;
+    exports.ɵex = reducerToken$5;
+    exports.ɵey = reducerProvider$5;
+    exports.ɵez = CustomSerializer;
     exports.ɵf = getStorageSyncReducer;
-    exports.ɵfa = reducer$d;
-    exports.ɵfb = reducer$e;
-    exports.ɵfc = reducer$f;
-    exports.ɵfd = baseSiteConfigValidator;
-    exports.ɵfe = interceptors$2;
-    exports.ɵff = CmsTicketInterceptor;
-    exports.ɵfg = defaultStoreFinderConfig;
-    exports.ɵfh = StoreFinderStoreModule;
+    exports.ɵfa = effects$4;
+    exports.ɵfb = RouterEffects;
+    exports.ɵfc = SiteContextParamsService;
+    exports.ɵfd = SiteContextUrlSerializer;
+    exports.ɵfe = SiteContextRoutesHandler;
+    exports.ɵff = defaultSiteContextConfigFactory;
+    exports.ɵfg = siteContextStoreConfigFactory;
+    exports.ɵfh = SiteContextStoreModule;
     exports.ɵfi = getReducers$a;
     exports.ɵfj = reducerToken$a;
     exports.ɵfk = reducerProvider$a;
     exports.ɵfl = effects$8;
-    exports.ɵfm = FindStoresEffect;
-    exports.ɵfn = ViewAllStoresEffect;
-    exports.ɵfo = UserStoreModule;
-    exports.ɵfp = getReducers$b;
-    exports.ɵfq = reducerToken$b;
-    exports.ɵfr = reducerProvider$b;
-    exports.ɵfs = clearUserState;
-    exports.ɵft = metaReducers$6;
-    exports.ɵfu = effects$9;
-    exports.ɵfv = BillingCountriesEffect;
-    exports.ɵfw = ClearMiscsDataEffect;
-    exports.ɵfx = ConsignmentTrackingEffects;
-    exports.ɵfy = DeliveryCountriesEffects;
-    exports.ɵfz = OrderDetailsEffect;
+    exports.ɵfm = LanguagesEffects;
+    exports.ɵfn = CurrenciesEffects;
+    exports.ɵfo = BaseSiteEffects;
+    exports.ɵfp = reducer$e;
+    exports.ɵfq = reducer$f;
+    exports.ɵfr = reducer$g;
+    exports.ɵfs = baseSiteConfigValidator;
+    exports.ɵft = interceptors$2;
+    exports.ɵfu = CmsTicketInterceptor;
+    exports.ɵfv = defaultStoreFinderConfig;
+    exports.ɵfw = StoreFinderStoreModule;
+    exports.ɵfx = getReducers$b;
+    exports.ɵfy = reducerToken$b;
+    exports.ɵfz = reducerProvider$b;
     exports.ɵg = getTransferStateReducer;
-    exports.ɵga = UserPaymentMethodsEffects;
-    exports.ɵgb = RegionsEffects;
-    exports.ɵgc = ResetPasswordEffects;
-    exports.ɵgd = TitlesEffects;
-    exports.ɵge = UserAddressesEffects;
-    exports.ɵgf = UserConsentsEffect;
-    exports.ɵgg = UserDetailsEffects;
-    exports.ɵgh = UserOrdersEffect;
-    exports.ɵgi = UserRegisterEffects;
-    exports.ɵgj = ForgotPasswordEffects;
-    exports.ɵgk = UpdateEmailEffects;
-    exports.ɵgl = UpdatePasswordEffects;
-    exports.ɵgm = reducer$q;
-    exports.ɵgn = reducer$o;
-    exports.ɵgo = reducer$g;
-    exports.ɵgp = reducer$p;
-    exports.ɵgq = reducer$k;
-    exports.ɵgr = reducer$r;
-    exports.ɵgs = reducer$j;
-    exports.ɵgt = reducer$i;
-    exports.ɵgu = reducer$n;
-    exports.ɵgv = reducer$l;
-    exports.ɵgw = reducer$m;
-    exports.ɵgx = reducer$h;
+    exports.ɵga = effects$9;
+    exports.ɵgb = FindStoresEffect;
+    exports.ɵgc = ViewAllStoresEffect;
+    exports.ɵgd = UserStoreModule;
+    exports.ɵge = getReducers$c;
+    exports.ɵgf = reducerToken$c;
+    exports.ɵgg = reducerProvider$c;
+    exports.ɵgh = clearUserState;
+    exports.ɵgi = metaReducers$6;
+    exports.ɵgj = effects$a;
+    exports.ɵgk = BillingCountriesEffect;
+    exports.ɵgl = ClearMiscsDataEffect;
+    exports.ɵgm = ConsignmentTrackingEffects;
+    exports.ɵgn = DeliveryCountriesEffects;
+    exports.ɵgo = OrderDetailsEffect;
+    exports.ɵgp = UserPaymentMethodsEffects;
+    exports.ɵgq = RegionsEffects;
+    exports.ɵgr = ResetPasswordEffects;
+    exports.ɵgs = TitlesEffects;
+    exports.ɵgt = UserAddressesEffects;
+    exports.ɵgu = UserConsentsEffect;
+    exports.ɵgv = UserDetailsEffects;
+    exports.ɵgw = UserOrdersEffect;
+    exports.ɵgx = UserRegisterEffects;
+    exports.ɵgy = ForgotPasswordEffects;
+    exports.ɵgz = UpdateEmailEffects;
     exports.ɵh = getReducers;
+    exports.ɵha = UpdatePasswordEffects;
+    exports.ɵhb = reducer$r;
+    exports.ɵhc = reducer$p;
+    exports.ɵhd = reducer$h;
+    exports.ɵhe = reducer$q;
+    exports.ɵhf = reducer$l;
+    exports.ɵhg = reducer$s;
+    exports.ɵhh = reducer$k;
+    exports.ɵhi = reducer$j;
+    exports.ɵhj = reducer$o;
+    exports.ɵhk = reducer$m;
+    exports.ɵhl = reducer$n;
+    exports.ɵhm = reducer$i;
     exports.ɵi = reducerToken;
     exports.ɵj = reducerProvider;
-    exports.ɵk = clearAuthState;
-    exports.ɵl = metaReducers;
-    exports.ɵm = effects;
-    exports.ɵn = ClientTokenEffect;
-    exports.ɵo = UserTokenEffects;
-    exports.ɵp = UserAuthenticationTokenService;
-    exports.ɵq = ClientAuthenticationTokenService;
-    exports.ɵr = reducer;
-    exports.ɵs = defaultAuthConfig;
-    exports.ɵt = interceptors;
-    exports.ɵu = ClientTokenInterceptor;
-    exports.ɵv = UserTokenInterceptor;
-    exports.ɵw = AuthErrorInterceptor;
-    exports.ɵx = UserErrorHandlingService;
-    exports.ɵy = UrlParsingService;
-    exports.ɵz = ClientErrorHandlingService;
+    exports.ɵk = effects;
+    exports.ɵl = CustomerEffects;
+    exports.ɵm = reducer;
+    exports.ɵn = defaultAsmConfig;
+    exports.ɵo = AsmConfig;
+    exports.ɵp = authStoreConfigFactory;
+    exports.ɵq = AuthStoreModule;
+    exports.ɵr = getReducers$2;
+    exports.ɵs = reducerToken$2;
+    exports.ɵt = reducerProvider$2;
+    exports.ɵu = clearAuthState;
+    exports.ɵv = clearCustomerSupportAgentAuthState;
+    exports.ɵw = metaReducers;
+    exports.ɵx = effects$1;
+    exports.ɵy = ClientTokenEffect;
+    exports.ɵz = CustomerSupportAgentTokenEffects;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

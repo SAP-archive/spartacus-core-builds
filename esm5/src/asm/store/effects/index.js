@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { CustomerEffects } from './customer.effect';
+/** @type {?} */
+export var effects = [CustomerEffects];
+export { CustomerEffects } from './customer.effect';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvYXNtL3N0b3JlL2VmZmVjdHMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxlQUFlLEVBQUUsTUFBTSxtQkFBbUIsQ0FBQzs7QUFFcEQsTUFBTSxLQUFPLE9BQU8sR0FBVSxDQUFDLGVBQWUsQ0FBQztBQUUvQyxnQ0FBYyxtQkFBbUIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEN1c3RvbWVyRWZmZWN0cyB9IGZyb20gJy4vY3VzdG9tZXIuZWZmZWN0JztcblxuZXhwb3J0IGNvbnN0IGVmZmVjdHM6IGFueVtdID0gW0N1c3RvbWVyRWZmZWN0c107XG5cbmV4cG9ydCAqIGZyb20gJy4vY3VzdG9tZXIuZWZmZWN0JztcbiJdfQ==

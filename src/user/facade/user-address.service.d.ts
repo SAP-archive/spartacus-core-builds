@@ -1,10 +1,18 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/facade/auth.service';
 import { Address, Country, Region } from '../../model/address.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class UserAddressService {
     protected store: Store<StateWithUser | StateWithProcess<void>>;
+    protected authService?: AuthService;
+    constructor(store: Store<StateWithUser | StateWithProcess<void>>, authService: AuthService);
+    /**
+     * @deprecated since version 1.3
+     *  Use constructor(store: Store<StateWithUser | StateWithProcess<void>>,
+     *  authService: AuthService) instead
+     */
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
      * Retrieves user's addresses

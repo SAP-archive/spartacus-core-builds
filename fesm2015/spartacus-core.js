@@ -1,13 +1,13 @@
 import { CommonModule, DOCUMENT, isPlatformBrowser, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
-import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { InjectionToken, isDevMode, Optional, NgModule, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, PLATFORM_ID, Injector, INJECTOR, Pipe, APP_INITIALIZER, ChangeDetectorRef, NgZone, Directive, TemplateRef, ViewContainerRef, Input } from '@angular/core';
-import { of, fromEvent, throwError, Observable, combineLatest, iif, Subscription } from 'rxjs';
-import { filter, map, take, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, shareReplay, pluck, withLatestFrom, groupBy, concatMap, delay, takeWhile } from 'rxjs/operators';
-import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
-import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
+import { HttpErrorResponse, HttpClientModule, HttpHeaders, HTTP_INTERCEPTORS, HttpParams, HttpClient, HttpResponse } from '@angular/common/http';
+import { InjectionToken, isDevMode, Optional, NgModule, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, PLATFORM_ID, Injector, INJECTOR, Pipe, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, ChangeDetectorRef, NgZone } from '@angular/core';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
+import { INIT, UPDATE, META_REDUCERS, StoreModule, createFeatureSelector, createSelector, select, Store, combineReducers } from '@ngrx/store';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
+import { of, fromEvent, Observable, throwError, combineLatest, iif, Subscription } from 'rxjs';
+import { debounceTime, startWith, distinctUntilChanged, filter, map, mergeMap, catchError, take, switchMap, pluck, withLatestFrom, concatMap, delay, tap, exhaustMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
 import { __decorate, __metadata } from 'tslib';
+import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
 import { ROUTER_NAVIGATION, ROUTER_ERROR, ROUTER_CANCEL, ROUTER_NAVIGATED, RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import i18next from 'i18next';
 import i18nextXhrBackend from 'i18next-xhr-backend';
@@ -230,11 +230,7 @@ if (false) {
 /**
  * @abstract
  */
-class AuthConfig extends OccConfig {
-}
-if (false) {
-    /** @type {?} */
-    AuthConfig.prototype.authentication;
+class AsmConfig extends OccConfig {
 }
 
 /**
@@ -242,16 +238,48 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const defaultAuthConfig = {
-    authentication: {
-        client_id: 'mobile_android',
-        client_secret: 'secret',
-    },
-    backend: {
-        occ: {
-            endpoints: {
-                login: '/authorizationserver/oauth/token',
-            },
+const defaultAsmConfig = {};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {string} */
+const StorageSyncType = {
+    NO_STORAGE: 'NO_STORAGE',
+    LOCAL_STORAGE: 'LOCAL_STORAGE',
+    SESSION_STORAGE: 'SESSION_STORAGE',
+};
+/** @enum {string} */
+const StateTransferType = {
+    TRANSFER_STATE: 'SSR',
+};
+/**
+ * @abstract
+ */
+class StateConfig {
+}
+if (false) {
+    /** @type {?} */
+    StateConfig.prototype.state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
+/** @type {?} */
+const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
+/** @type {?} */
+const defaultStateConfig = {
+    state: {
+        storageSync: {
+            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
+            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
+            keys: {},
+            excludeKeys: {},
         },
     },
 };
@@ -260,12 +288,705 @@ const defaultAuthConfig = {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class WindowRef {
+    /**
+     * @param {?} document
+     */
+    constructor(document) {
+        // it's a workaround to have document property properly typed
+        // see: https://github.com/angular/angular/issues/15640
+        this.document = document;
+    }
+    /**
+     * @return {?}
+     */
+    get nativeWindow() {
+        return typeof window !== 'undefined' ? window : undefined;
+    }
+    /**
+     * @return {?}
+     */
+    get sessionStorage() {
+        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
+    }
+    /**
+     * @return {?}
+     */
+    get localStorage() {
+        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
+    }
+    /**
+     * Returns an observable for the window resize event and emits an event
+     * every 300ms in case of resizing. An event is simulated initially.
+     *
+     * If there's no window object availale (i.e. in SSR), a null value is emitted.
+     * @return {?}
+     */
+    get resize$() {
+        if (!this.nativeWindow) {
+            return of(null);
+        }
+        else {
+            return fromEvent(this.nativeWindow, 'resize').pipe(debounceTime(300), startWith({ target: this.nativeWindow }), distinctUntilChanged());
+        }
+    }
+}
+WindowRef.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+WindowRef.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+];
+/** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    WindowRef.prototype.document;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
-const OCC_USER_ID_CURRENT = 'current';
+const OBJECT_SEPARATOR = '.';
+/**
+ * @template T, E
+ * @param {?} keys
+ * @param {?} state
+ * @return {?}
+ */
+function getStateSliceValue(keys, state) {
+    return keys
+        .split(OBJECT_SEPARATOR)
+        .reduce((/**
+     * @param {?} previous
+     * @param {?} current
+     * @return {?}
+     */
+    (previous, current) => (previous ? previous[current] : undefined)), state);
+}
+/**
+ * @template T, E
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @param {?} value
+ * @return {?}
+ */
+function createShellObject(key, excludeKeys, value) {
+    if (!key || !value || Object.keys(value).length === 0) {
+        return (/** @type {?} */ ({}));
+    }
+    /** @type {?} */
+    const shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
+     * @param {?} acc
+     * @param {?} previous
+     * @return {?}
+     */
+    (acc, previous) => {
+        return (/** @type {?} */ (((/** @type {?} */ ({ [previous]: acc })))));
+    }), value);
+    return handleExclusions(key, excludeKeys, shell);
+}
+/**
+ * @template T, E
+ * @param {?} keys
+ * @param {?} excludeKeys
+ * @param {?} state
+ * @return {?}
+ */
+function getStateSlice(keys, excludeKeys, state) {
+    if (keys && keys.length === 0) {
+        return (/** @type {?} */ ({}));
+    }
+    /** @type {?} */
+    let stateSlices = {};
+    for (const currentKey of keys) {
+        /** @type {?} */
+        const stateValue = getStateSliceValue(currentKey, state);
+        /** @type {?} */
+        const shell = createShellObject(currentKey, excludeKeys, stateValue);
+        stateSlices = deepMerge(stateSlices, shell);
+    }
+    return (/** @type {?} */ (stateSlices));
+}
+/**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @param {?} value
+ * @return {?}
+ */
+function handleExclusions(key, excludeKeys, value) {
+    /** @type {?} */
+    const exclusionKeys = getExclusionKeys(key, excludeKeys);
+    if (exclusionKeys.length === 0) {
+        return value;
+    }
+    /** @type {?} */
+    const finalValue = deepMerge({}, value);
+    for (const currentExclusionKey of exclusionKeys) {
+        /** @type {?} */
+        const exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
+        /** @type {?} */
+        let nestedTemp = finalValue;
+        for (let i = 0; i < exclusionChunksSplit.length; i++) {
+            /** @type {?} */
+            const currentChunk = exclusionChunksSplit[i];
+            // last iteration
+            if (i === exclusionChunksSplit.length - 1) {
+                if (nestedTemp && nestedTemp[currentChunk]) {
+                    delete nestedTemp[currentChunk];
+                }
+            }
+            else {
+                nestedTemp = nestedTemp[currentChunk];
+            }
+        }
+    }
+    return finalValue;
+}
+/**
+ * @param {?} key
+ * @param {?} excludeKeys
+ * @return {?}
+ */
+function getExclusionKeys(key, excludeKeys) {
+    if (!key || !excludeKeys) {
+        return [];
+    }
+    /** @type {?} */
+    const exclusionKeys = [];
+    for (const exclusionKey of excludeKeys) {
+        if (exclusionKey.includes(key)) {
+            exclusionKeys.push(exclusionKey);
+        }
+    }
+    return exclusionKeys;
+}
+/**
+ * @param {?} keys
+ * @param {?} type
+ * @return {?}
+ */
+function filterKeysByType(keys, type) {
+    if (!keys) {
+        return [];
+    }
+    return Object.keys(keys).filter((/**
+     * @param {?} key
+     * @return {?}
+     */
+    key => keys[key] === type));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @param {?} winRef
+ * @param {?=} config
+ * @return {?}
+ */
+function getStorageSyncReducer(winRef, config) {
+    if (!winRef.nativeWindow ||
+        !config ||
+        !config.state ||
+        !config.state.storageSync ||
+        !config.state.storageSync.keys) {
+        return (/**
+         * @param {?} reducer
+         * @return {?}
+         */
+        reducer => reducer);
+    }
+    /** @type {?} */
+    const storageSyncConfig = config.state.storageSync;
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    (reducer) => {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        (state, action) => {
+            /** @type {?} */
+            const newState = reducer(state, action);
+            if (action.type === INIT || action.type === UPDATE) {
+                /** @type {?} */
+                const rehydratedState = rehydrate(config, winRef);
+                return deepMerge({}, newState, rehydratedState);
+            }
+            if (action.type !== INIT) {
+                // handle local storage
+                /** @type {?} */
+                const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                const localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
+                /** @type {?} */
+                const localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
+                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
+                // handle session storage
+                /** @type {?} */
+                const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                const sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
+                /** @type {?} */
+                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
+                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
+            }
+            return newState;
+        });
+    });
+}
+/**
+ * @template T
+ * @param {?} config
+ * @param {?} winRef
+ * @return {?}
+ */
+function rehydrate(config, winRef) {
+    /** @type {?} */
+    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
+    /** @type {?} */
+    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
+    return deepMerge(localStorageValue, sessionStorageValue);
+}
+/**
+ * @param {?} value
+ * @return {?}
+ */
+function exists(value) {
+    if (value != null) {
+        if (typeof value === 'object') {
+            return Object.keys(value).length !== 0;
+        }
+        return value !== '';
+    }
+    return false;
+}
+/**
+ * @param {?} storageType
+ * @param {?} winRef
+ * @return {?}
+ */
+function getStorage(storageType, winRef) {
+    /** @type {?} */
+    let storage;
+    switch (storageType) {
+        case StorageSyncType.LOCAL_STORAGE: {
+            storage = winRef.localStorage;
+            break;
+        }
+        case StorageSyncType.SESSION_STORAGE: {
+            storage = winRef.sessionStorage;
+            break;
+        }
+        case StorageSyncType.NO_STORAGE: {
+            storage = undefined;
+            break;
+        }
+        default: {
+            storage = winRef.sessionStorage;
+        }
+    }
+    return storage;
+}
+/**
+ * @param {?} configKey
+ * @param {?} value
+ * @param {?} storage
+ * @return {?}
+ */
+function persistToStorage(configKey, value, storage) {
+    if (!isSsr(storage) && value) {
+        storage.setItem(configKey, JSON.stringify(value));
+    }
+}
+/**
+ * @param {?} storage
+ * @param {?} key
+ * @return {?}
+ */
+function readFromStorage(storage, key) {
+    if (isSsr(storage)) {
+        return;
+    }
+    /** @type {?} */
+    const storageValue = storage.getItem(key);
+    if (!storageValue) {
+        return;
+    }
+    return JSON.parse(storageValue);
+}
+/**
+ * @param {?} storage
+ * @return {?}
+ */
+function isSsr(storage) {
+    return !Boolean(storage);
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
-const OCC_USER_ID_ANONYMOUS = 'anonymous';
+const AUTH_FEATURE = 'auth';
 /** @type {?} */
-const OCC_USER_ID_GUEST = 'guest';
+const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+/** @type {?} */
+const CSAGENT_TOKEN_DATA = '[Auth] Customer Support Agent Token Data';
+/**
+ * @record
+ */
+function StateWithAuth() { }
+if (false) {
+    /* Skipping unnamed member:
+    [AUTH_FEATURE]: AuthState;*/
+}
+/**
+ * @record
+ */
+function AuthState() { }
+if (false) {
+    /** @type {?} */
+    AuthState.prototype.userToken;
+    /** @type {?} */
+    AuthState.prototype.clientToken;
+    /** @type {?} */
+    AuthState.prototype.csagentToken;
+}
+/**
+ * @record
+ */
+function UserTokenState() { }
+if (false) {
+    /** @type {?} */
+    UserTokenState.prototype.token;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CX_KEY = makeStateKey('cx-state');
+/**
+ * @param {?} platformId
+ * @param {?=} transferState
+ * @param {?=} config
+ * @return {?}
+ */
+function getTransferStateReducer(platformId, transferState, config) {
+    if (transferState &&
+        config &&
+        config.state &&
+        config.state.ssrTransfer &&
+        config.state.ssrTransfer.keys) {
+        if (isPlatformBrowser(platformId)) {
+            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+        }
+        else if (isPlatformServer(platformId)) {
+            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
+        }
+    }
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    reducer => reducer);
+}
+/**
+ * @param {?} transferState
+ * @param {?} keys
+ * @return {?}
+ */
+function getServerTransferStateReducer(transferState, keys) {
+    /** @type {?} */
+    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function (reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            /** @type {?} */
+            const newState = reducer(state, action);
+            if (newState) {
+                /** @type {?} */
+                const stateSlice = getStateSlice(transferStateKeys, [], newState);
+                transferState.set(CX_KEY, stateSlice);
+            }
+            return newState;
+        });
+    });
+}
+/**
+ * @param {?} transferState
+ * @param {?} keys
+ * @return {?}
+ */
+function getBrowserTransferStateReducer(transferState, keys) {
+    /** @type {?} */
+    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
+    return (/**
+     * @param {?} reducer
+     * @return {?}
+     */
+    function (reducer) {
+        return (/**
+         * @param {?} state
+         * @param {?} action
+         * @return {?}
+         */
+        function (state, action) {
+            if (action.type === INIT) {
+                if (!state) {
+                    state = reducer(state, action);
+                }
+                // we should not utilize transfer state if user is logged in
+                /** @type {?} */
+                const authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
+                /** @type {?} */
+                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
+                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
+                    /** @type {?} */
+                    const cxKey = transferState.get(CX_KEY, {});
+                    /** @type {?} */
+                    const transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
+                    state = deepMerge({}, state, transferredStateSlice);
+                }
+                return state;
+            }
+            return reducer(state, action);
+        });
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0 = getTransferStateReducer, ɵ1 = getStorageSyncReducer;
+/** @type {?} */
+const stateMetaReducers = [
+    {
+        provide: META_REDUCERS,
+        useFactory: ɵ0,
+        deps: [
+            PLATFORM_ID,
+            [new Optional(), TransferState],
+            [new Optional(), Config],
+        ],
+        multi: true,
+    },
+    {
+        provide: META_REDUCERS,
+        useFactory: ɵ1,
+        deps: [WindowRef, [new Optional(), Config]],
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class StateModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: StateModule,
+            providers: [
+                ...stateMetaReducers,
+                provideConfig(defaultStateConfig),
+                { provide: StateConfig, useExisting: Config },
+            ],
+        };
+    }
+}
+StateModule.decorators = [
+    { type: NgModule, args: [{},] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ASM_FEATURE = 'asm';
+/** @type {?} */
+const CUSTOMER_SEARCH_DATA = '[asm] Customer search data';
+/**
+ * @record
+ */
+function StateWithAsm() { }
+if (false) {
+    /* Skipping unnamed member:
+    [ASM_FEATURE]: AsmState;*/
+}
+/**
+ * @record
+ */
+function AsmState() { }
+if (false) {
+    /** @type {?} */
+    AsmState.prototype.customerSearchResult;
+    /** @type {?} */
+    AsmState.prototype.asmUi;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const UNKNOWN_ERROR = {
+    error: 'unknown error',
+};
+/** @type {?} */
+const circularReplacer = (/**
+ * @return {?}
+ */
+() => {
+    /** @type {?} */
+    const seen = new WeakSet();
+    return (/**
+     * @param {?} _key
+     * @param {?} value
+     * @return {?}
+     */
+    (_key, value) => {
+        if (typeof value === 'object' && value !== null) {
+            if (seen.has(value)) {
+                return;
+            }
+            seen.add(value);
+        }
+        return value;
+    });
+});
+const ɵ0$1 = circularReplacer;
+/**
+ * @param {?} error
+ * @return {?}
+ */
+function makeErrorSerializable(error) {
+    if (error instanceof Error) {
+        return (/** @type {?} */ ({
+            message: error.message,
+            type: error.name,
+            reason: error.stack,
+        }));
+    }
+    if (error instanceof HttpErrorResponse) {
+        /** @type {?} */
+        let serializableError = error.error;
+        if (isObject(error.error)) {
+            serializableError = JSON.stringify(error.error, circularReplacer());
+        }
+        return (/** @type {?} */ ({
+            message: error.message,
+            error: serializableError,
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+        }));
+    }
+    return isObject(error) ? UNKNOWN_ERROR : error;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class AsmAdapter {
+}
+if (false) {
+    /**
+     * Abstract function used to search for customers.
+     * @abstract
+     * @param {?} options
+     * @return {?}
+     */
+    AsmAdapter.prototype.customerSearch = function (options) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AsmConnector {
+    /**
+     * @param {?} asmAdapter
+     */
+    constructor(asmAdapter) {
+        this.asmAdapter = asmAdapter;
+    }
+    /**
+     * @param {?} options
+     * @return {?}
+     */
+    customerSearch(options) {
+        return this.asmAdapter.customerSearch(options);
+    }
+}
+AsmConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+AsmConnector.ctorParameters = () => [
+    { type: AsmAdapter }
+];
+/** @nocollapse */ AsmConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function AsmConnector_Factory() { return new AsmConnector(ɵɵinject(AsmAdapter)); }, token: AsmConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AsmConnector.prototype.asmAdapter;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ASM_UI_UPDATE = '[Asm] UI Update';
+class AsmUiUpdate {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ASM_UI_UPDATE;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AsmUiUpdate.prototype.type;
+    /** @type {?} */
+    AsmUiUpdate.prototype.payload;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -975,141 +1696,6 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const OBJECT_SEPARATOR = '.';
-/**
- * @template T, E
- * @param {?} keys
- * @param {?} state
- * @return {?}
- */
-function getStateSliceValue(keys, state) {
-    return keys
-        .split(OBJECT_SEPARATOR)
-        .reduce((/**
-     * @param {?} previous
-     * @param {?} current
-     * @return {?}
-     */
-    (previous, current) => (previous ? previous[current] : undefined)), state);
-}
-/**
- * @template T, E
- * @param {?} key
- * @param {?} excludeKeys
- * @param {?} value
- * @return {?}
- */
-function createShellObject(key, excludeKeys, value) {
-    if (!key || !value || Object.keys(value).length === 0) {
-        return (/** @type {?} */ ({}));
-    }
-    /** @type {?} */
-    const shell = key.split(OBJECT_SEPARATOR).reduceRight((/**
-     * @param {?} acc
-     * @param {?} previous
-     * @return {?}
-     */
-    (acc, previous) => {
-        return (/** @type {?} */ (((/** @type {?} */ ({ [previous]: acc })))));
-    }), value);
-    return handleExclusions(key, excludeKeys, shell);
-}
-/**
- * @template T, E
- * @param {?} keys
- * @param {?} excludeKeys
- * @param {?} state
- * @return {?}
- */
-function getStateSlice(keys, excludeKeys, state) {
-    if (keys && keys.length === 0) {
-        return (/** @type {?} */ ({}));
-    }
-    /** @type {?} */
-    let stateSlices = {};
-    for (const currentKey of keys) {
-        /** @type {?} */
-        const stateValue = getStateSliceValue(currentKey, state);
-        /** @type {?} */
-        const shell = createShellObject(currentKey, excludeKeys, stateValue);
-        stateSlices = deepMerge(stateSlices, shell);
-    }
-    return (/** @type {?} */ (stateSlices));
-}
-/**
- * @param {?} key
- * @param {?} excludeKeys
- * @param {?} value
- * @return {?}
- */
-function handleExclusions(key, excludeKeys, value) {
-    /** @type {?} */
-    const exclusionKeys = getExclusionKeys(key, excludeKeys);
-    if (exclusionKeys.length === 0) {
-        return value;
-    }
-    /** @type {?} */
-    const finalValue = deepMerge({}, value);
-    for (const currentExclusionKey of exclusionKeys) {
-        /** @type {?} */
-        const exclusionChunksSplit = currentExclusionKey.split(OBJECT_SEPARATOR);
-        /** @type {?} */
-        let nestedTemp = finalValue;
-        for (let i = 0; i < exclusionChunksSplit.length; i++) {
-            /** @type {?} */
-            const currentChunk = exclusionChunksSplit[i];
-            // last iteration
-            if (i === exclusionChunksSplit.length - 1) {
-                if (nestedTemp && nestedTemp[currentChunk]) {
-                    delete nestedTemp[currentChunk];
-                }
-            }
-            else {
-                nestedTemp = nestedTemp[currentChunk];
-            }
-        }
-    }
-    return finalValue;
-}
-/**
- * @param {?} key
- * @param {?} excludeKeys
- * @return {?}
- */
-function getExclusionKeys(key, excludeKeys) {
-    if (!key || !excludeKeys) {
-        return [];
-    }
-    /** @type {?} */
-    const exclusionKeys = [];
-    for (const exclusionKey of excludeKeys) {
-        if (exclusionKey.includes(key)) {
-            exclusionKeys.push(exclusionKey);
-        }
-    }
-    return exclusionKeys;
-}
-/**
- * @param {?} keys
- * @param {?} type
- * @return {?}
- */
-function filterKeysByType(keys, type) {
-    if (!keys) {
-        return [];
-    }
-    return Object.keys(keys).filter((/**
-     * @param {?} key
-     * @return {?}
-     */
-    key => keys[key] === type));
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -1243,35 +1829,551 @@ function ofLoaderSuccess(entityType) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const AUTH_FEATURE = 'auth';
+const CUSTOMER_SEARCH = '[Asm] Customer Search';
 /** @type {?} */
-const CLIENT_TOKEN_DATA = '[Auth] Client Token Data';
+const CUSTOMER_SEARCH_FAIL = '[Asm] Customer Search Fail';
+/** @type {?} */
+const CUSTOMER_SEARCH_SUCCESS = '[Asm] Customer Search Success';
+/** @type {?} */
+const CUSTOMER_SEARCH_RESET = '[Asm] Customer Search Reset';
+class CustomerSearch extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_SEARCH_DATA);
+        this.payload = payload;
+        this.type = CUSTOMER_SEARCH;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CustomerSearch.prototype.type;
+    /** @type {?} */
+    CustomerSearch.prototype.payload;
+}
+class CustomerSearchFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_SEARCH_DATA);
+        this.payload = payload;
+        this.type = CUSTOMER_SEARCH_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CustomerSearchFail.prototype.type;
+    /** @type {?} */
+    CustomerSearchFail.prototype.payload;
+}
+class CustomerSearchSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_SEARCH_DATA);
+        this.payload = payload;
+        this.type = CUSTOMER_SEARCH_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CustomerSearchSuccess.prototype.type;
+    /** @type {?} */
+    CustomerSearchSuccess.prototype.payload;
+}
+class CustomerSearchReset extends LoaderResetAction {
+    constructor() {
+        super(CUSTOMER_SEARCH_DATA);
+        this.type = CUSTOMER_SEARCH_RESET;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CustomerSearchReset.prototype.type;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var customerGroup_actions = /*#__PURE__*/Object.freeze({
+    ASM_UI_UPDATE: ASM_UI_UPDATE,
+    AsmUiUpdate: AsmUiUpdate,
+    CUSTOMER_SEARCH: CUSTOMER_SEARCH,
+    CUSTOMER_SEARCH_FAIL: CUSTOMER_SEARCH_FAIL,
+    CUSTOMER_SEARCH_SUCCESS: CUSTOMER_SEARCH_SUCCESS,
+    CUSTOMER_SEARCH_RESET: CUSTOMER_SEARCH_RESET,
+    CustomerSearch: CustomerSearch,
+    CustomerSearchFail: CustomerSearchFail,
+    CustomerSearchSuccess: CustomerSearchSuccess,
+    CustomerSearchReset: CustomerSearchReset
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CustomerEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} asmConnector
+     */
+    constructor(actions$, asmConnector) {
+        this.actions$ = actions$;
+        this.asmConnector = asmConnector;
+        this.customerSearch$ = this.actions$.pipe(ofType(CUSTOMER_SEARCH), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} options
+         * @return {?}
+         */
+        options => this.asmConnector.customerSearch(options).pipe(map((/**
+         * @param {?} customerSearchResults
+         * @return {?}
+         */
+        (customerSearchResults) => {
+            return new CustomerSearchSuccess(customerSearchResults);
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CustomerSearchFail(makeErrorSerializable(error)))))))));
+    }
+}
+CustomerEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomerEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: AsmConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerEffects.prototype, "customerSearch$", void 0);
+if (false) {
+    /** @type {?} */
+    CustomerEffects.prototype.customerSearch$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerEffects.prototype.asmConnector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const effects = [CustomerEffects];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState = (/** @type {?} */ ({ visible: false }));
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer(state = initialState, action) {
+    switch (action.type) {
+        case ASM_UI_UPDATE: {
+            return Object.assign({}, state, action.payload);
+        }
+        default: {
+            return state;
+        }
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers() {
+    return {
+        customerSearchResult: loaderReducer(CUSTOMER_SEARCH_DATA),
+        asmUi: reducer,
+    };
+}
+/** @type {?} */
+const reducerToken = new InjectionToken('AsmReducers');
+/** @type {?} */
+const reducerProvider = {
+    provide: reducerToken,
+    useFactory: getReducers,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function asmStoreConfigFactory() {
+    /** @type {?} */
+    const config = {
+        state: {
+            storageSync: {
+                keys: {
+                    'asm.asmUi': StorageSyncType.LOCAL_STORAGE,
+                },
+            },
+        },
+    };
+    return config;
+}
+class AsmStoreModule {
+}
+AsmStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    StateModule,
+                    StoreModule.forFeature(ASM_FEATURE, reducerToken),
+                    EffectsModule.forFeature(effects),
+                    ConfigModule.withConfigFactory(asmStoreConfigFactory),
+                ],
+                providers: [reducerProvider],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AsmModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: AsmModule,
+            providers: [{ provide: AsmConfig, useExisting: Config }],
+        };
+    }
+}
+AsmModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    AsmStoreModule,
+                    ConfigModule.withConfig(defaultAsmConfig),
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CUSTOMER_SEARCH_PAGE_NORMALIZER = new InjectionToken('CustomerSearchPageNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getAsmState = createFeatureSelector(ASM_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$2 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.asmUi;
+/** @type {?} */
+const getAsmUi = createSelector(getAsmState, (ɵ0$2));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$3 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.customerSearchResult;
+/** @type {?} */
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, (ɵ0$3));
+const ɵ1$1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderValueSelector(state);
+/** @type {?} */
+const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, (ɵ1$1));
+const ɵ2 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderLoadingSelector(state);
+/** @type {?} */
+const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, (ɵ2));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var asmGroup_selectors = /*#__PURE__*/Object.freeze({
+    getAsmUi: getAsmUi,
+    getCustomerSearchResultsLoaderState: getCustomerSearchResultsLoaderState,
+    getCustomerSearchResults: getCustomerSearchResults,
+    getCustomerSearchResultsLoading: getCustomerSearchResultsLoading,
+    getAsmState: getAsmState
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AsmService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Search for customers
+     * @param {?} options
+     * @return {?}
+     */
+    customerSearch(options) {
+        this.store.dispatch(new CustomerSearch(options));
+    }
+    /**
+     * Reset the customer search result data to the initial state.
+     * @return {?}
+     */
+    customerSearchReset() {
+        this.store.dispatch(new CustomerSearchReset());
+    }
+    /**
+     * Returns the customer search result data.
+     * @return {?}
+     */
+    getCustomerSearchResults() {
+        return this.store.pipe(select(getCustomerSearchResults));
+    }
+    /**
+     * Returns the customer search result loading status.
+     * @return {?}
+     */
+    getCustomerSearchResultsLoading() {
+        return this.store.pipe(select(getCustomerSearchResultsLoading));
+    }
+    /**
+     * Updates the state of the ASM UI
+     * @param {?} asmUi
+     * @return {?}
+     */
+    updateAsmUiState(asmUi) {
+        this.store.dispatch(new AsmUiUpdate(asmUi));
+    }
+    /**
+     * Get the state of the ASM UI
+     * @return {?}
+     */
+    getAsmUiState() {
+        return this.store.pipe(select(getAsmUi));
+    }
+}
+AsmService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+AsmService.ctorParameters = () => [
+    { type: Store }
+];
+/** @nocollapse */ AsmService.ngInjectableDef = ɵɵdefineInjectable({ factory: function AsmService_Factory() { return new AsmService(ɵɵinject(Store)); }, token: AsmService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    AsmService.prototype.store;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /**
  * @record
  */
-function StateWithAuth() { }
+function CustomerSearchPage() { }
 if (false) {
-    /* Skipping unnamed member:
-    [AUTH_FEATURE]: AuthState;*/
+    /** @type {?} */
+    CustomerSearchPage.prototype.entries;
+    /** @type {?|undefined} */
+    CustomerSearchPage.prototype.pagination;
+    /** @type {?|undefined} */
+    CustomerSearchPage.prototype.sorts;
 }
 /**
  * @record
  */
-function AuthState() { }
+function CustomerSearchOptions() { }
 if (false) {
-    /** @type {?} */
-    AuthState.prototype.userToken;
-    /** @type {?} */
-    AuthState.prototype.clientToken;
+    /** @type {?|undefined} */
+    CustomerSearchOptions.prototype.query;
 }
 /**
  * @record
  */
-function UserTokenState() { }
+function AsmUi() { }
+if (false) {
+    /** @type {?|undefined} */
+    AsmUi.prototype.visible;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class AuthConfig extends OccConfig {
+}
 if (false) {
     /** @type {?} */
-    UserTokenState.prototype.token;
+    AuthConfig.prototype.authentication;
 }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const defaultAuthConfig = {
+    authentication: {
+        client_id: 'mobile_android',
+        client_secret: 'secret',
+    },
+    backend: {
+        occ: {
+            endpoints: {
+                login: '/authorizationserver/oauth/token',
+            },
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const USE_CLIENT_TOKEN = 'cx-use-client-token';
+/** @type {?} */
+const USE_CUSTOMER_SUPPORT_AGENT_TOKEN = 'cx-use-csagent-token';
+class InterceptorUtil {
+    /**
+     * @template T
+     * @param {?} headerName
+     * @param {?} interceptorParam
+     * @param {?=} headers
+     * @return {?}
+     */
+    static createHeader(headerName, interceptorParam, headers) {
+        if (headers) {
+            return headers.append(headerName, JSON.stringify(interceptorParam));
+        }
+        headers = new HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
+        return headers;
+    }
+    /**
+     * @param {?} headerName
+     * @param {?} request
+     * @return {?}
+     */
+    static removeHeader(headerName, request) {
+        /** @type {?} */
+        const updatedHeaders = request.headers.delete(headerName);
+        return request.clone({ headers: updatedHeaders });
+    }
+    /**
+     * @template T
+     * @param {?} headerName
+     * @param {?} headers
+     * @return {?}
+     */
+    static getInterceptorParam(headerName, headers) {
+        /** @type {?} */
+        const rawValue = headers.get(headerName);
+        if (rawValue) {
+            return JSON.parse(rawValue);
+        }
+        return undefined;
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const OCC_USER_ID_CURRENT = 'current';
+/** @type {?} */
+const OCC_USER_ID_ANONYMOUS = 'anonymous';
+/** @type {?} */
+const OCC_USER_ID_GUEST = 'guest';
 
 /**
  * @fileoverview added by tsickle
@@ -1331,9 +2433,70 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN = '[Auth] Load Customer Service Agent Token';
+/** @type {?} */
+const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL = '[Auth] Load Customer Service Agent Token Fail';
+/** @type {?} */
+const LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS = '[Auth] Load Customer Service Agent Token Success';
+class LoadCustomerSupportAgentToken extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CSAGENT_TOKEN_DATA);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerSupportAgentToken.prototype.type;
+    /** @type {?} */
+    LoadCustomerSupportAgentToken.prototype.payload;
+}
+class LoadCustomerSupportAgentTokenFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CSAGENT_TOKEN_DATA);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerSupportAgentTokenFail.prototype.type;
+    /** @type {?} */
+    LoadCustomerSupportAgentTokenFail.prototype.payload;
+}
+class LoadCustomerSupportAgentTokenSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CSAGENT_TOKEN_DATA);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerSupportAgentTokenSuccess.prototype.type;
+    /** @type {?} */
+    LoadCustomerSupportAgentTokenSuccess.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 const LOGIN = '[Auth] Login';
 /** @type {?} */
 const LOGOUT = '[Auth] Logout';
+/** @type {?} */
+const LOGOUT_CUSTOMER_SUPPORT_AGENT = '[Auth] Logout Customer Support Agent';
 class Login {
     constructor() {
         this.type = LOGIN;
@@ -1351,6 +2514,15 @@ class Logout {
 if (false) {
     /** @type {?} */
     Logout.prototype.type;
+}
+class LogoutCustomerSupportAgent {
+    constructor() {
+        this.type = LOGOUT_CUSTOMER_SUPPORT_AGENT;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LogoutCustomerSupportAgent.prototype.type;
 }
 
 /**
@@ -1472,10 +2644,18 @@ var authGroup_actions = /*#__PURE__*/Object.freeze({
     LoadClientToken: LoadClientToken,
     LoadClientTokenFail: LoadClientTokenFail,
     LoadClientTokenSuccess: LoadClientTokenSuccess,
+    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN,
+    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_FAIL,
+    LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS: LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN_SUCCESS,
+    LoadCustomerSupportAgentToken: LoadCustomerSupportAgentToken,
+    LoadCustomerSupportAgentTokenFail: LoadCustomerSupportAgentTokenFail,
+    LoadCustomerSupportAgentTokenSuccess: LoadCustomerSupportAgentTokenSuccess,
     LOGIN: LOGIN,
     LOGOUT: LOGOUT,
+    LOGOUT_CUSTOMER_SUPPORT_AGENT: LOGOUT_CUSTOMER_SUPPORT_AGENT,
     Login: Login,
     Logout: Logout,
+    LogoutCustomerSupportAgent: LogoutCustomerSupportAgent,
     LOAD_USER_TOKEN: LOAD_USER_TOKEN,
     LOAD_USER_TOKEN_FAIL: LOAD_USER_TOKEN_FAIL,
     LOAD_USER_TOKEN_SUCCESS: LOAD_USER_TOKEN_SUCCESS,
@@ -1506,13 +2686,39 @@ const getAuthState = createFeatureSelector(AUTH_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0 = /**
+const ɵ0$4 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.clientToken;
 /** @type {?} */
-const getClientTokenState = createSelector(getAuthState, (ɵ0));
+const getClientTokenState = createSelector(getAuthState, (ɵ0$4));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$5 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.csagentToken;
+/** @type {?} */
+const getCustomerSupportAgentTokenState = createSelector(getAuthState, (ɵ0$5));
+const ɵ1$2 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderValueSelector(state);
+/** @type {?} */
+const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, (ɵ1$2));
+const ɵ2$1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderLoadingSelector(state);
+/** @type {?} */
+const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, (ɵ2$1));
 
 /**
  * @fileoverview added by tsickle
@@ -1524,14 +2730,14 @@ const getUserTokenSelector = (/**
  * @return {?}
  */
 (state) => state.token);
-const ɵ0$1 = getUserTokenSelector;
-const ɵ1 = /**
+const ɵ0$6 = getUserTokenSelector;
+const ɵ1$3 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.userToken;
 /** @type {?} */
-const getUserTokenState = createSelector(getAuthState, (ɵ1));
+const getUserTokenState = createSelector(getAuthState, (ɵ1$3));
 /** @type {?} */
 const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -1542,6 +2748,9 @@ const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
 var authGroup_selectors = /*#__PURE__*/Object.freeze({
     getClientTokenState: getClientTokenState,
+    getCustomerSupportAgentTokenState: getCustomerSupportAgentTokenState,
+    getCustomerSupportAgentToken: getCustomerSupportAgentToken,
+    getCustomerSupportAgentTokenLoading: getCustomerSupportAgentTokenLoading,
     getAuthState: getAuthState,
     getUserTokenState: getUserTokenState,
     getUserToken: getUserToken
@@ -1576,6 +2785,28 @@ class AuthService {
         }));
     }
     /**
+     * Loads a user token for a customer support agent
+     * @param {?} userId
+     * @param {?} password
+     * @return {?}
+     */
+    authorizeCustomerSupporAgent(userId, password) {
+        this.store.dispatch(new LoadCustomerSupportAgentToken({
+            userId: userId,
+            password: password,
+        }));
+    }
+    /**
+     * Starts an ASM customer emulation session.
+     * A customer emulation session is stoped by calling logout().
+     * @param {?} customerSupportAgentToken
+     * @param {?} customerId
+     * @return {?}
+     */
+    startCustomerEmulationSession(customerSupportAgentToken, customerId) {
+        this.authorizeWithToken(Object.assign({}, customerSupportAgentToken, { userId: customerId }));
+    }
+    /**
      * This function provides the userId the OCC calls should use, depending
      * on wether there is an active storefront session or not.
      *
@@ -1601,11 +2832,33 @@ class AuthService {
         })));
     }
     /**
+     * Utility function to determine if a given token is a customer emulation session token.
+     * @param {?} userToken
+     * @return {?}
+     */
+    isCustomerEmulationToken(userToken) {
+        return !!userToken.userId && userToken.userId !== OCC_USER_ID_CURRENT;
+    }
+    /**
      * Returns the user's token
      * @return {?}
      */
     getUserToken() {
         return this.store.pipe(select(getUserToken));
+    }
+    /**
+     * Returns the customer support agent's token
+     * @return {?}
+     */
+    getCustomerSupportAgentToken() {
+        return this.store.pipe(select(getCustomerSupportAgentToken));
+    }
+    /**
+     * Returns the customer support agent's token loading status
+     * @return {?}
+     */
+    getCustomerSupportAgentTokenLoading() {
+        return this.store.pipe(select(getCustomerSupportAgentTokenLoading));
     }
     /**
      * Refreshes the user token
@@ -1626,11 +2879,18 @@ class AuthService {
         this.store.dispatch(new LoadUserTokenSuccess(token));
     }
     /**
-     * Logout
+     * Logout a storefront customer
      * @return {?}
      */
     logout() {
         this.store.dispatch(new Logout());
+    }
+    /**
+     * Logout a customer support agent
+     * @return {?}
+     */
+    logoutCustomerSupportAgent() {
+        this.store.dispatch(new LogoutCustomerSupportAgent());
     }
     /**
      * Returns a client token.  The client token from the store is returned if there is one.
@@ -1761,62 +3021,1151 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class WindowRef {
+/** @enum {string} */
+const GlobalMessageType = {
+    MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
+    MSG_TYPE_ERROR: '[GlobalMessage] Error',
+    MSG_TYPE_INFO: '[GlobalMessage] Information',
+};
+/**
+ * @record
+ */
+function GlobalMessage() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessage.prototype.text;
+    /** @type {?} */
+    GlobalMessage.prototype.type;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class GlobalMessageConfig {
+}
+if (false) {
+    /** @type {?} */
+    GlobalMessageConfig.prototype.globalMessages;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const ADD_MESSAGE = '[Global-message] Add a Message';
+/** @type {?} */
+const REMOVE_MESSAGE = '[Global-message] Remove a Message';
+/** @type {?} */
+const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
+class AddMessage {
     /**
-     * @param {?} document
+     * @param {?} payload
      */
-    constructor(document) {
-        // it's a workaround to have document property properly typed
-        // see: https://github.com/angular/angular/issues/15640
-        this.document = document;
-    }
-    /**
-     * @return {?}
-     */
-    get nativeWindow() {
-        return typeof window !== 'undefined' ? window : undefined;
-    }
-    /**
-     * @return {?}
-     */
-    get sessionStorage() {
-        return this.nativeWindow ? this.nativeWindow.sessionStorage : undefined;
-    }
-    /**
-     * @return {?}
-     */
-    get localStorage() {
-        return this.nativeWindow ? this.nativeWindow.localStorage : undefined;
-    }
-    /**
-     * Returns an observable for the window resize event and emits an event
-     * every 300ms in case of resizing. An event is simulated initially.
-     *
-     * If there's no window object availale (i.e. in SSR), a null value is emitted.
-     * @return {?}
-     */
-    get resize$() {
-        if (!this.nativeWindow) {
-            return of(null);
-        }
-        else {
-            return fromEvent(this.nativeWindow, 'resize').pipe(debounceTime(300), startWith({ target: this.nativeWindow }), distinctUntilChanged());
-        }
+    constructor(payload) {
+        this.payload = payload;
+        this.type = ADD_MESSAGE;
     }
 }
-WindowRef.decorators = [
+if (false) {
+    /** @type {?} */
+    AddMessage.prototype.type;
+    /** @type {?} */
+    AddMessage.prototype.payload;
+}
+class RemoveMessage {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGE;
+    }
+}
+if (false) {
+    /** @type {?} */
+    RemoveMessage.prototype.type;
+    /** @type {?} */
+    RemoveMessage.prototype.payload;
+}
+class RemoveMessagesByType {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = REMOVE_MESSAGES_BY_TYPE;
+    }
+}
+if (false) {
+    /** @type {?} */
+    RemoveMessagesByType.prototype.type;
+    /** @type {?} */
+    RemoveMessagesByType.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
+    ADD_MESSAGE: ADD_MESSAGE,
+    REMOVE_MESSAGE: REMOVE_MESSAGE,
+    REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
+    AddMessage: AddMessage,
+    RemoveMessage: RemoveMessage,
+    RemoveMessagesByType: RemoveMessagesByType
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const GLOBAL_MESSAGE_FEATURE = 'global-message';
+/**
+ * @record
+ */
+function StateWithGlobalMessage() { }
+if (false) {
+    /* Skipping unnamed member:
+    [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
+}
+/**
+ * @record
+ */
+function GlobalMessageState() { }
+if (false) {
+    /** @type {?} */
+    GlobalMessageState.prototype.entities;
+}
+/**
+ * @record
+ */
+function GlobalMessageEntities() { }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$7 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.entities;
+/** @type {?} */
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$7));
+/** @type {?} */
+const getGlobalMessageEntitiesByType = (/**
+ * @param {?} type
+ * @return {?}
+ */
+(type) => {
+    return createSelector(getGlobalMessageEntities, (/**
+     * @param {?} entities
+     * @return {?}
+     */
+    entities => entities && entities[type]));
+});
+/** @type {?} */
+const getGlobalMessageCountByType = (/**
+ * @param {?} type
+ * @return {?}
+ */
+(type) => {
+    return createSelector(getGlobalMessageEntitiesByType(type), (/**
+     * @param {?} entities
+     * @return {?}
+     */
+    entities => entities && entities.length));
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
+    getGlobalMessageState: getGlobalMessageState,
+    getGlobalMessageEntities: getGlobalMessageEntities,
+    getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
+    getGlobalMessageCountByType: getGlobalMessageCountByType
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Get all global messages
+     * @return {?}
+     */
+    get() {
+        return this.store.pipe(select(getGlobalMessageEntities), filter((/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => data !== undefined)));
+    }
+    /**
+     * Add one message into store
+     * @param {?} text
+     * @param {?} type
+     * @return {?}
+     */
+    add(text, type) {
+        this.store.dispatch(new AddMessage({
+            text: typeof text === 'string' ? { raw: text } : text,
+            type,
+        }));
+    }
+    /**
+     * Remove message(s) from store
+     * @param {?} type
+     * @param {?=} index
+     * @return {?}
+     */
+    remove(type, index) {
+        this.store.dispatch(index !== undefined
+            ? new RemoveMessage({
+                type: type,
+                index: index,
+            })
+            : new RemoveMessagesByType(type));
+    }
+}
+GlobalMessageService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+GlobalMessageService.ctorParameters = () => [
+    { type: Store }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    GlobalMessageService.prototype.store;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @enum {number} */
+const HttpResponseStatus = {
+    UNKNOWN: -1,
+    BAD_REQUEST: 400,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    BAD_GATEWAY: 502,
+    GATEWAY_TIMEOUT: 504,
+    INTERNAL_SERVER_ERROR: 500,
+};
+HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
+HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
+HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
+HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
+HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
+HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
+HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
+HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class HttpErrorHandler {
+    /**
+     * @param {?} globalMessageService
+     */
+    constructor(globalMessageService) {
+        this.globalMessageService = globalMessageService;
+    }
+}
+HttpErrorHandler.decorators = [
     { type: Injectable, args: [{
                 providedIn: 'root',
             },] }
 ];
 /** @nocollapse */
-WindowRef.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Inject, args: [DOCUMENT,] }] }
+HttpErrorHandler.ctorParameters = () => [
+    { type: GlobalMessageService }
 ];
-/** @nocollapse */ WindowRef.ngInjectableDef = ɵɵdefineInjectable({ factory: function WindowRef_Factory() { return new WindowRef(ɵɵinject(DOCUMENT)); }, token: WindowRef, providedIn: "root" });
+/** @nocollapse */ HttpErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
+if (false) {
+    /**
+     * The http response status number which is handled by this handler.
+     * Implementations can set the response status number, i.e. 404, so that
+     * the handler can be found by the error interceptor.
+     * @type {?}
+     */
+    HttpErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorHandler.prototype.globalMessageService;
+    /**
+     * Handles the error response for the respose status that is register for the handler
+     * @abstract
+     * @param {?} request
+     * @param {?} errorResponse
+     * @return {?}
+     */
+    HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class BadGatewayHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+BadGatewayHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ BadGatewayHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
 if (false) {
     /** @type {?} */
-    WindowRef.prototype.document;
+    BadGatewayHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
+class BadRequestHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.BAD_REQUEST;
+    }
+    /**
+     * @param {?} request
+     * @param {?} response
+     * @return {?}
+     */
+    handleError(request, response) {
+        if (response.url.includes(OAUTH_ENDPOINT) &&
+            response.error &&
+            response.error.error === 'invalid_grant' &&
+            request.body.get('grant_type') === 'password') {
+            this.globalMessageService.add({
+                key: 'httpHandlers.badRequestPleaseLoginAgain',
+                params: {
+                    errorMessage: response.error.error_description || response.message || '',
+                },
+            }, GlobalMessageType.MSG_TYPE_ERROR);
+            this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
+        }
+        else {
+            if (response.error &&
+                response.error.errors &&
+                response.error.errors instanceof Array) {
+                response.error.errors.forEach((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                (error) => {
+                    /** @type {?} */
+                    let errorMessage;
+                    if (error.type === 'PasswordMismatchError') {
+                        // uses en translation error message instead of backend exception error
+                        // @todo: this condition could be removed if backend gives better message
+                        errorMessage = {
+                            key: 'httpHandlers.badRequestOldPasswordIncorrect',
+                        };
+                    }
+                    else if (error.subjectType === 'cart' &&
+                        error.reason === 'notFound') {
+                        errorMessage = { key: 'httpHandlers.cartNotFound' };
+                    }
+                    else if (error.type === 'ValidationError') {
+                        // build translation key in case of backend field validation error
+                        errorMessage = {
+                            key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
+                        };
+                    }
+                    else {
+                        // this is currently showing up in case we have a page not found. It should be a 404.
+                        // see https://jira.hybris.com/browse/CMSX-8516
+                        errorMessage = { raw: error.message || '' };
+                    }
+                    this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
+                }));
+            }
+        }
+    }
+}
+BadRequestHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ BadRequestHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    BadRequestHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ConflictHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.CONFLICT;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+ConflictHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ ConflictHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ConflictHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ForbiddenHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.FORBIDDEN;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+ForbiddenHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ ForbiddenHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    ForbiddenHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GatewayTimeoutHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+GatewayTimeoutHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    GatewayTimeoutHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class InternalServerErrorHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+InternalServerErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    InternalServerErrorHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class NotFoundHandler extends HttpErrorHandler {
+    constructor() {
+        super(...arguments);
+        this.responseStatus = HttpResponseStatus.NOT_FOUND;
+    }
+    // empty error handler to avoid we fallabck to the unknown error handler
+    /**
+     * @return {?}
+     */
+    handleError() { }
+}
+NotFoundHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */ NotFoundHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    NotFoundHandler.prototype.responseStatus;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class UnknownErrorHandler extends HttpErrorHandler {
+    /**
+     * @param {?} globalMessageService
+     */
+    constructor(globalMessageService) {
+        super(globalMessageService);
+        this.globalMessageService = globalMessageService;
+        this.responseStatus = HttpResponseStatus.UNKNOWN;
+    }
+    /**
+     * @return {?}
+     */
+    handleError() {
+        if (isDevMode()) {
+            console.warn(`Unknown http response error: ${this.responseStatus}`);
+        }
+    }
+}
+UnknownErrorHandler.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+UnknownErrorHandler.ctorParameters = () => [
+    { type: GlobalMessageService }
+];
+/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    UnknownErrorHandler.prototype.responseStatus;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UnknownErrorHandler.prototype.globalMessageService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class HttpErrorInterceptor {
+    /**
+     * @param {?} handlers
+     */
+    constructor(handlers) {
+        this.handlers = handlers;
+        // We reverse the handlers to allow for custom handlers
+        // that replace standard handlers
+        this.handlers.reverse();
+    }
+    /**
+     * @param {?} request
+     * @param {?} next
+     * @return {?}
+     */
+    intercept(request, next) {
+        return next.handle(request).pipe(catchError((/**
+         * @param {?} response
+         * @return {?}
+         */
+        (response) => {
+            if (response instanceof HttpErrorResponse) {
+                this.handleErrorResponse(request, response);
+                return throwError(response);
+            }
+        })));
+    }
+    /**
+     * @protected
+     * @param {?} request
+     * @param {?} response
+     * @return {?}
+     */
+    handleErrorResponse(request, response) {
+        /** @type {?} */
+        const handler = this.getResponseHandler(response);
+        if (handler) {
+            handler.handleError(request, response);
+        }
+    }
+    /**
+     * return the error handler that matches the `HttpResponseStatus` code.
+     * If no handler is available, the UNKNOWN handler is returned.
+     * @protected
+     * @param {?} response
+     * @return {?}
+     */
+    getResponseHandler(response) {
+        /** @type {?} */
+        const status = response.status;
+        /** @type {?} */
+        let handler = this.handlers.find((/**
+         * @param {?} h
+         * @return {?}
+         */
+        h => h.responseStatus === status));
+        if (!handler) {
+            handler = this.handlers.find((/**
+             * @param {?} h
+             * @return {?}
+             */
+            h => h.responseStatus === HttpResponseStatus.UNKNOWN));
+        }
+        return handler;
+    }
+}
+HttpErrorInterceptor.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+HttpErrorInterceptor.ctorParameters = () => [
+    { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    HttpErrorInterceptor.prototype.handlers;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const errorHandlers = [
+    {
+        provide: HttpErrorHandler,
+        useExisting: UnknownErrorHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: BadGatewayHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: BadRequestHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: ConflictHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: ForbiddenHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: GatewayTimeoutHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: InternalServerErrorHandler,
+        multi: true,
+    },
+    {
+        provide: HttpErrorHandler,
+        useExisting: NotFoundHandler,
+        multi: true,
+    },
+];
+/** @type {?} */
+const httpErrorInterceptors = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: HttpErrorInterceptor,
+        multi: true,
+    },
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$1 = {
+    entities: {},
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$1(state = initialState$1, action) {
+    switch (action.type) {
+        case ADD_MESSAGE: {
+            /** @type {?} */
+            const message = action.payload;
+            if (state.entities[message.type] === undefined) {
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
+            }
+            else {
+                /** @type {?} */
+                const currentMessages = state.entities[message.type];
+                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...currentMessages, message.text] }) });
+            }
+        }
+        case REMOVE_MESSAGE: {
+            /** @type {?} */
+            const msgType = action.payload.type;
+            /** @type {?} */
+            const msgIndex = action.payload.index;
+            if (Object.keys(state.entities).length === 0 ||
+                !state.entities[msgType]) {
+                return state;
+            }
+            /** @type {?} */
+            const messages = [...state.entities[msgType]];
+            messages.splice(msgIndex, 1);
+            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
+        }
+        case REMOVE_MESSAGES_BY_TYPE: {
+            /** @type {?} */
+            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
+            return Object.assign({}, state, { entities });
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function getReducers$1() {
+    return reducer$1;
+}
+/** @type {?} */
+const reducerToken$1 = new InjectionToken('GlobalMessageReducers');
+/** @type {?} */
+const reducerProvider$1 = {
+    provide: reducerToken$1,
+    useFactory: getReducers$1,
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageStoreModule {
+}
+GlobalMessageStoreModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    StateModule,
+                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$1),
+                ],
+                providers: [reducerProvider$1],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} objA
+ * @param {?} objB
+ * @return {?}
+ */
+function shallowEqualObjects(objA, objB) {
+    if (objA === objB) {
+        return true;
+    }
+    if (!objA || !objB) {
+        return false;
+    }
+    /** @type {?} */
+    const aKeys = Object.keys(objA);
+    /** @type {?} */
+    const bKeys = Object.keys(objB);
+    /** @type {?} */
+    const aKeysLen = aKeys.length;
+    /** @type {?} */
+    const bKeysLen = bKeys.length;
+    if (aKeysLen !== bKeysLen) {
+        return false;
+    }
+    for (let i = 0; i < aKeysLen; i++) {
+        /** @type {?} */
+        const key = aKeys[i];
+        if (objA[key] !== objB[key]) {
+            return false;
+        }
+    }
+    return true;
+}
+/**
+ * @param {?} objA
+ * @param {?} objB
+ * @return {?}
+ */
+function deepEqualObjects(objA, objB) {
+    if (objA === objB) {
+        return true; // if both objA and objB are null or undefined and exactly the same
+    }
+    else if (!(objA instanceof Object) || !(objB instanceof Object)) {
+        return false; // if they are not strictly equal, they both need to be Objects
+    }
+    else if (objA.constructor !== objB.constructor) {
+        // they must have the exact same prototype chain, the closest we can do is
+        // test their constructor.
+        return false;
+    }
+    else {
+        for (const key in objA) {
+            if (!objA.hasOwnProperty(key)) {
+                continue; // other properties were tested using objA.constructor === y.constructor
+            }
+            if (!objB.hasOwnProperty(key)) {
+                return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
+            }
+            if (objA[key] === objB[key]) {
+                continue; // if they have the same strict value or identity then they are equal
+            }
+            if (typeof objA[key] !== 'object') {
+                return false; // Numbers, Strings, Functions, Booleans must be strictly equal
+            }
+            if (!deepEqualObjects(objA[key], objB[key])) {
+                return false;
+            }
+        }
+        for (const key in objB) {
+            if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+/**
+ * @param {?} obj
+ * @param {?} arr
+ * @return {?}
+ */
+function countOfDeepEqualObjects(obj, arr) {
+    return arr.reduce((/**
+     * @param {?} acc
+     * @param {?} curr
+     * @return {?}
+     */
+    (acc, curr) => {
+        if (deepEqualObjects(obj, curr)) {
+            acc++;
+        }
+        return acc;
+    }), 0);
+}
+/**
+ * @param {?} obj
+ * @param {?} arr
+ * @return {?}
+ */
+function indexOfFirstOccurrence(obj, arr) {
+    for (let index = 0; index < arr.length; index++) {
+        if (deepEqualObjects(arr[index], obj)) {
+            return index;
+        }
+    }
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageEffect {
+    /**
+     * @param {?} actions$
+     * @param {?} store
+     * @param {?} config
+     */
+    constructor(actions$, store, config) {
+        this.actions$ = actions$;
+        this.store = store;
+        this.config = config;
+        this.removeDuplicated$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), switchMap((/**
+         * @param {?} message
+         * @return {?}
+         */
+        (message) => of(message.text).pipe(withLatestFrom(this.store.pipe(select(getGlobalMessageEntitiesByType(message.type)))), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([text, messages]) => countOfDeepEqualObjects(text, messages) > 1)), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([text, messages]) => new RemoveMessage({
+            type: message.type,
+            index: indexOfFirstOccurrence(text, messages),
+        })))))));
+        this.hideAfterDelay$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((/**
+         * @param {?} type
+         * @return {?}
+         */
+        (type) => {
+            /** @type {?} */
+            const config = this.config.globalMessages[type];
+            return this.store.pipe(select(getGlobalMessageCountByType(type)), filter((/**
+             * @param {?} count
+             * @return {?}
+             */
+            (count) => config && config.timeout !== undefined && count && count > 0)), switchMap((/**
+             * @return {?}
+             */
+            () => of(new RemoveMessage({
+                type,
+                index: 0,
+            })).pipe(delay(config.timeout)))));
+        })));
+    }
+}
+GlobalMessageEffect.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+GlobalMessageEffect.ctorParameters = () => [
+    { type: Actions },
+    { type: Store },
+    { type: GlobalMessageConfig }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
+if (false) {
+    /** @type {?} */
+    GlobalMessageEffect.prototype.removeDuplicated$;
+    /** @type {?} */
+    GlobalMessageEffect.prototype.hideAfterDelay$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.store;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.config;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @return {?}
+ */
+function defaultGlobalMessageConfigFactory() {
+    return {
+        globalMessages: {
+            [GlobalMessageType.MSG_TYPE_CONFIRMATION]: {
+                timeout: 3000,
+            },
+            [GlobalMessageType.MSG_TYPE_INFO]: {
+                timeout: 3000,
+            },
+            [GlobalMessageType.MSG_TYPE_ERROR]: {
+                timeout: 7000,
+            },
+        },
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class GlobalMessageModule {
+    /**
+     * @return {?}
+     */
+    static forRoot() {
+        return {
+            ngModule: GlobalMessageModule,
+            providers: [...errorHandlers, ...httpErrorInterceptors],
+        };
+    }
+}
+GlobalMessageModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    GlobalMessageStoreModule,
+                    EffectsModule.forFeature([GlobalMessageEffect]),
+                    ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
+                ],
+                providers: [
+                    GlobalMessageService,
+                    { provide: GlobalMessageConfig, useExisting: Config },
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CustomerSupportAgentErrorHandlingService {
+    /**
+     * @param {?} authService
+     * @param {?} globalMessageService
+     */
+    constructor(authService, globalMessageService) {
+        this.authService = authService;
+        this.globalMessageService = globalMessageService;
+    }
+    /**
+     * @return {?}
+     */
+    terminateCustomerSupportAgentExpiredSession() {
+        this.authService.logoutCustomerSupportAgent();
+        this.globalMessageService.add({
+            key: 'asm.csagentTokenExpired',
+        }, GlobalMessageType.MSG_TYPE_ERROR);
+    }
+}
+CustomerSupportAgentErrorHandlingService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomerSupportAgentErrorHandlingService.ctorParameters = () => [
+    { type: AuthService },
+    { type: GlobalMessageService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CustomerSupportAgentErrorHandlingService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CustomerSupportAgentErrorHandlingService.prototype.globalMessageService;
 }
 
 /**
@@ -2318,27 +4667,27 @@ if (false) {
  */
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$2 = /**
+const ɵ0$8 = /**
  * @param {?} state
  * @return {?}
  */
 state => state.router;
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (ɵ0$2));
-const ɵ1$1 = /**
+const getRouterState = createSelector(getRouterFeatureState, (ɵ0$8));
+const ɵ1$4 = /**
  * @param {?} routingState
  * @return {?}
  */
 (routingState) => (routingState.state && routingState.state.context) || { id: '' };
 /** @type {?} */
-const getPageContext = createSelector(getRouterState, (ɵ1$1));
-const ɵ2 = /**
+const getPageContext = createSelector(getRouterState, (ɵ1$4));
+const ɵ2$2 = /**
  * @param {?} routingState
  * @return {?}
  */
 (routingState) => routingState.nextState && routingState.nextState.context;
 /** @type {?} */
-const getNextPageContext = createSelector(getRouterState, (ɵ2));
+const getNextPageContext = createSelector(getRouterState, (ɵ2$2));
 const ɵ3 = /**
  * @param {?} context
  * @return {?}
@@ -2599,64 +4948,19 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const USE_CLIENT_TOKEN = 'cx-use-client-token';
-class InterceptorUtil {
-    /**
-     * @template T
-     * @param {?} headerName
-     * @param {?} interceptorParam
-     * @param {?=} headers
-     * @return {?}
-     */
-    static createHeader(headerName, interceptorParam, headers) {
-        if (headers) {
-            return headers.append(headerName, JSON.stringify(interceptorParam));
-        }
-        headers = new HttpHeaders().set(headerName, JSON.stringify(interceptorParam));
-        return headers;
-    }
-    /**
-     * @param {?} headerName
-     * @param {?} request
-     * @return {?}
-     */
-    static removeHeader(headerName, request) {
-        /** @type {?} */
-        const updatedHeaders = request.headers.delete(headerName);
-        return request.clone({ headers: updatedHeaders });
-    }
-    /**
-     * @template T
-     * @param {?} headerName
-     * @param {?} headers
-     * @return {?}
-     */
-    static getInterceptorParam(headerName, headers) {
-        /** @type {?} */
-        const rawValue = headers.get(headerName);
-        if (rawValue) {
-            return JSON.parse(rawValue);
-        }
-        return undefined;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const OAUTH_ENDPOINT = '/authorizationserver/oauth/token';
+const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
 class AuthErrorInterceptor {
     /**
      * @param {?} userErrorHandlingService
      * @param {?} clientErrorHandlingService
      * @param {?} authService
+     * @param {?=} csagentErrorHandlingService
      */
-    constructor(userErrorHandlingService, clientErrorHandlingService, authService) {
+    constructor(userErrorHandlingService, clientErrorHandlingService, authService, csagentErrorHandlingService) {
         this.userErrorHandlingService = userErrorHandlingService;
         this.clientErrorHandlingService = clientErrorHandlingService;
         this.authService = authService;
+        this.csagentErrorHandlingService = csagentErrorHandlingService;
     }
     /**
      * @param {?} request
@@ -2668,6 +4972,11 @@ class AuthErrorInterceptor {
         const isClientTokenRequest = this.isClientTokenRequest(request);
         if (isClientTokenRequest) {
             request = InterceptorUtil.removeHeader(USE_CLIENT_TOKEN, request);
+        }
+        /** @type {?} */
+        const isCustomerSupportAgentRequest = this.isCustomerSupportAgentRequest(request);
+        if (isCustomerSupportAgentRequest) {
+            request = InterceptorUtil.removeHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request);
         }
         return next.handle(request).pipe(catchError((/**
          * @param {?} errResponse
@@ -2683,6 +4992,10 @@ class AuthErrorInterceptor {
                             }
                             // user token request
                         }
+                        else if (isCustomerSupportAgentRequest) {
+                            this.csagentErrorHandlingService.terminateCustomerSupportAgentExpiredSession();
+                            return of();
+                        }
                         else {
                             if (this.isExpiredToken(errResponse)) {
                                 return this.userErrorHandlingService.handleExpiredUserToken(request, next);
@@ -2690,7 +5003,7 @@ class AuthErrorInterceptor {
                             else if (
                             // Refresh expired token
                             // Check that the OAUTH endpoint was called and the error is for refresh token is expired
-                            errResponse.url.includes(OAUTH_ENDPOINT) &&
+                            errResponse.url.includes(OAUTH_ENDPOINT$1) &&
                                 errResponse.error.error === 'invalid_token') {
                                 this.userErrorHandlingService.handleExpiredRefreshToken();
                                 return of();
@@ -2698,7 +5011,7 @@ class AuthErrorInterceptor {
                         }
                         break;
                     case 400: // Bad Request
-                        if (errResponse.url.includes(OAUTH_ENDPOINT) &&
+                        if (errResponse.url.includes(OAUTH_ENDPOINT$1) &&
                             errResponse.error.error === 'invalid_grant') {
                             if (request.body.get('grant_type') === 'refresh_token') {
                                 // refresh token fail, force user logout
@@ -2723,6 +5036,16 @@ class AuthErrorInterceptor {
     }
     /**
      * @private
+     * @param {?} request
+     * @return {?}
+     */
+    isCustomerSupportAgentRequest(request) {
+        /** @type {?} */
+        const isRequestMapping = InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers);
+        return Boolean(isRequestMapping);
+    }
+    /**
+     * @private
      * @param {?} resp
      * @return {?}
      */
@@ -2743,7 +5066,8 @@ AuthErrorInterceptor.decorators = [
 AuthErrorInterceptor.ctorParameters = () => [
     { type: UserErrorHandlingService },
     { type: ClientErrorHandlingService },
-    { type: AuthService }
+    { type: AuthService },
+    { type: CustomerSupportAgentErrorHandlingService }
 ];
 if (false) {
     /**
@@ -2761,6 +5085,11 @@ if (false) {
      * @private
      */
     AuthErrorInterceptor.prototype.authService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AuthErrorInterceptor.prototype.csagentErrorHandlingService;
 }
 
 /**
@@ -3189,20 +5518,20 @@ const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$3 = /**
+const ɵ0$9 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.activeSite;
 /** @type {?} */
-const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$3));
-const ɵ1$2 = /**
+const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$9));
+const ɵ1$5 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.details;
 /** @type {?} */
-const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$2));
+const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$5));
 
 /**
  * @fileoverview added by tsickle
@@ -3214,21 +5543,21 @@ const currenciesEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.entities);
-const ɵ0$4 = currenciesEntitiesSelector;
+const ɵ0$a = currenciesEntitiesSelector;
 /** @type {?} */
 const activeCurrencySelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.activeCurrency);
-const ɵ1$3 = activeCurrencySelector;
-const ɵ2$1 = /**
+const ɵ1$6 = activeCurrencySelector;
+const ɵ2$3 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.currencies;
 /** @type {?} */
-const getCurrenciesState = createSelector(getSiteContextState, (ɵ2$1));
+const getCurrenciesState = createSelector(getSiteContextState, (ɵ2$3));
 /** @type {?} */
 const getCurrenciesEntities = createSelector(getCurrenciesState, currenciesEntitiesSelector);
 /** @type {?} */
@@ -3259,21 +5588,21 @@ const activeLanguageSelector = (/**
  * @return {?}
  */
 (state) => state.activeLanguage);
-const ɵ0$5 = activeLanguageSelector;
+const ɵ0$b = activeLanguageSelector;
 /** @type {?} */
 const languagesEntitiesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities);
-const ɵ1$4 = languagesEntitiesSelector;
-const ɵ2$2 = /**
+const ɵ1$7 = languagesEntitiesSelector;
+const ɵ2$4 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.languages;
 /** @type {?} */
-const getLanguagesState = createSelector(getSiteContextState, (ɵ2$2));
+const getLanguagesState = createSelector(getSiteContextState, (ɵ2$4));
 /** @type {?} */
 const getLanguagesEntities = createSelector(getLanguagesState, languagesEntitiesSelector);
 /** @type {?} */
@@ -3647,6 +5976,65 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class CustomerSupportAgentTokenInterceptor {
+    /**
+     * @param {?} authService
+     */
+    constructor(authService) {
+        this.authService = authService;
+    }
+    /**
+     * @param {?} request
+     * @param {?} next
+     * @return {?}
+     */
+    intercept(request, next) {
+        return this.getCustomerSupportAgentToken(request).pipe(take(1), switchMap((/**
+         * @param {?} token
+         * @return {?}
+         */
+        (token) => {
+            if (token) {
+                request = request.clone({
+                    setHeaders: {
+                        Authorization: `${token.token_type} ${token.access_token}`,
+                    },
+                });
+            }
+            return next.handle(request);
+        })));
+    }
+    /**
+     * @private
+     * @param {?} request
+     * @return {?}
+     */
+    getCustomerSupportAgentToken(request) {
+        if (InterceptorUtil.getInterceptorParam(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, request.headers)) {
+            return this.authService.getCustomerSupportAgentToken();
+        }
+        return of(null);
+    }
+}
+CustomerSupportAgentTokenInterceptor.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomerSupportAgentTokenInterceptor.ctorParameters = () => [
+    { type: AuthService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerSupportAgentTokenInterceptor.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UserTokenInterceptor {
     /**
      * @param {?} authService
@@ -3715,6 +6103,11 @@ if (false) {
  */
 /** @type {?} */
 const interceptors = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useClass: CustomerSupportAgentTokenInterceptor,
+        multi: true,
+    },
     {
         provide: HTTP_INTERCEPTORS,
         useClass: ClientTokenInterceptor,
@@ -3897,414 +6290,8 @@ const AuthServices = [
     ClientErrorHandlingService,
     UserAuthenticationTokenService,
     UserErrorHandlingService,
+    CustomerSupportAgentErrorHandlingService,
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {string} */
-const StorageSyncType = {
-    NO_STORAGE: 'NO_STORAGE',
-    LOCAL_STORAGE: 'LOCAL_STORAGE',
-    SESSION_STORAGE: 'SESSION_STORAGE',
-};
-/** @enum {string} */
-const StateTransferType = {
-    TRANSFER_STATE: 'SSR',
-};
-/**
- * @abstract
- */
-class StateConfig {
-}
-if (false) {
-    /** @type {?} */
-    StateConfig.prototype.state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const DEFAULT_LOCAL_STORAGE_KEY = 'spartacus-local-data';
-/** @type {?} */
-const DEFAULT_SESSION_STORAGE_KEY = 'spartacus-session-data';
-/** @type {?} */
-const defaultStateConfig = {
-    state: {
-        storageSync: {
-            localStorageKeyName: DEFAULT_LOCAL_STORAGE_KEY,
-            sessionStorageKeyName: DEFAULT_SESSION_STORAGE_KEY,
-            keys: {},
-            excludeKeys: {},
-        },
-    },
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?} winRef
- * @param {?=} config
- * @return {?}
- */
-function getStorageSyncReducer(winRef, config) {
-    if (!winRef.nativeWindow ||
-        !config ||
-        !config.state ||
-        !config.state.storageSync ||
-        !config.state.storageSync.keys) {
-        return (/**
-         * @param {?} reducer
-         * @return {?}
-         */
-        reducer => reducer);
-    }
-    /** @type {?} */
-    const storageSyncConfig = config.state.storageSync;
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    (reducer) => {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        (state, action) => {
-            /** @type {?} */
-            const newState = reducer(state, action);
-            if (action.type === INIT || action.type === UPDATE) {
-                /** @type {?} */
-                const rehydratedState = rehydrate(config, winRef);
-                return deepMerge({}, newState, rehydratedState);
-            }
-            if (action.type !== INIT) {
-                // handle local storage
-                /** @type {?} */
-                const localStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.LOCAL_STORAGE);
-                /** @type {?} */
-                const localStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.LOCAL_STORAGE);
-                /** @type {?} */
-                const localStorageStateSlices = getStateSlice(localStorageKeys, localStorageExclusionKeys, newState);
-                persistToStorage(config.state.storageSync.localStorageKeyName, localStorageStateSlices, winRef.localStorage);
-                // handle session storage
-                /** @type {?} */
-                const sessionStorageKeys = filterKeysByType(storageSyncConfig.keys, StorageSyncType.SESSION_STORAGE);
-                /** @type {?} */
-                const sessionStorageExclusionKeys = filterKeysByType(storageSyncConfig.excludeKeys, StorageSyncType.SESSION_STORAGE);
-                /** @type {?} */
-                const sessionStorageStateSlices = getStateSlice(sessionStorageKeys, sessionStorageExclusionKeys, newState);
-                persistToStorage(config.state.storageSync.sessionStorageKeyName, sessionStorageStateSlices, winRef.sessionStorage);
-            }
-            return newState;
-        });
-    });
-}
-/**
- * @template T
- * @param {?} config
- * @param {?} winRef
- * @return {?}
- */
-function rehydrate(config, winRef) {
-    /** @type {?} */
-    const localStorageValue = readFromStorage(winRef.localStorage, config.state.storageSync.localStorageKeyName);
-    /** @type {?} */
-    const sessionStorageValue = readFromStorage(winRef.sessionStorage, config.state.storageSync.sessionStorageKeyName);
-    return deepMerge(localStorageValue, sessionStorageValue);
-}
-/**
- * @param {?} value
- * @return {?}
- */
-function exists(value) {
-    if (value != null) {
-        if (typeof value === 'object') {
-            return Object.keys(value).length !== 0;
-        }
-        return value !== '';
-    }
-    return false;
-}
-/**
- * @param {?} storageType
- * @param {?} winRef
- * @return {?}
- */
-function getStorage(storageType, winRef) {
-    /** @type {?} */
-    let storage;
-    switch (storageType) {
-        case StorageSyncType.LOCAL_STORAGE: {
-            storage = winRef.localStorage;
-            break;
-        }
-        case StorageSyncType.SESSION_STORAGE: {
-            storage = winRef.sessionStorage;
-            break;
-        }
-        case StorageSyncType.NO_STORAGE: {
-            storage = undefined;
-            break;
-        }
-        default: {
-            storage = winRef.sessionStorage;
-        }
-    }
-    return storage;
-}
-/**
- * @param {?} configKey
- * @param {?} value
- * @param {?} storage
- * @return {?}
- */
-function persistToStorage(configKey, value, storage) {
-    if (!isSsr(storage) && value) {
-        storage.setItem(configKey, JSON.stringify(value));
-    }
-}
-/**
- * @param {?} storage
- * @param {?} key
- * @return {?}
- */
-function readFromStorage(storage, key) {
-    if (isSsr(storage)) {
-        return;
-    }
-    /** @type {?} */
-    const storageValue = storage.getItem(key);
-    if (!storageValue) {
-        return;
-    }
-    return JSON.parse(storageValue);
-}
-/**
- * @param {?} storage
- * @return {?}
- */
-function isSsr(storage) {
-    return !Boolean(storage);
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const CX_KEY = makeStateKey('cx-state');
-/**
- * @param {?} platformId
- * @param {?=} transferState
- * @param {?=} config
- * @return {?}
- */
-function getTransferStateReducer(platformId, transferState, config) {
-    if (transferState &&
-        config &&
-        config.state &&
-        config.state.ssrTransfer &&
-        config.state.ssrTransfer.keys) {
-        if (isPlatformBrowser(platformId)) {
-            return getBrowserTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-        else if (isPlatformServer(platformId)) {
-            return getServerTransferStateReducer(transferState, config.state.ssrTransfer.keys);
-        }
-    }
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    reducer => reducer);
-}
-/**
- * @param {?} transferState
- * @param {?} keys
- * @return {?}
- */
-function getServerTransferStateReducer(transferState, keys) {
-    /** @type {?} */
-    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function (reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            /** @type {?} */
-            const newState = reducer(state, action);
-            if (newState) {
-                /** @type {?} */
-                const stateSlice = getStateSlice(transferStateKeys, [], newState);
-                transferState.set(CX_KEY, stateSlice);
-            }
-            return newState;
-        });
-    });
-}
-/**
- * @param {?} transferState
- * @param {?} keys
- * @return {?}
- */
-function getBrowserTransferStateReducer(transferState, keys) {
-    /** @type {?} */
-    const transferStateKeys = filterKeysByType(keys, StateTransferType.TRANSFER_STATE);
-    return (/**
-     * @param {?} reducer
-     * @return {?}
-     */
-    function (reducer) {
-        return (/**
-         * @param {?} state
-         * @param {?} action
-         * @return {?}
-         */
-        function (state, action) {
-            if (action.type === INIT) {
-                if (!state) {
-                    state = reducer(state, action);
-                }
-                // we should not utilize transfer state if user is logged in
-                /** @type {?} */
-                const authState = ((/** @type {?} */ (state)))[AUTH_FEATURE];
-                /** @type {?} */
-                const isLoggedIn = authState && authState.userToken && authState.userToken.token;
-                if (!isLoggedIn && transferState.hasKey(CX_KEY)) {
-                    /** @type {?} */
-                    const cxKey = transferState.get(CX_KEY, {});
-                    /** @type {?} */
-                    const transferredStateSlice = getStateSlice(transferStateKeys, [], cxKey);
-                    state = deepMerge({}, state, transferredStateSlice);
-                }
-                return state;
-            }
-            return reducer(state, action);
-        });
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$6 = getTransferStateReducer, ɵ1$5 = getStorageSyncReducer;
-/** @type {?} */
-const stateMetaReducers = [
-    {
-        provide: META_REDUCERS,
-        useFactory: ɵ0$6,
-        deps: [
-            PLATFORM_ID,
-            [new Optional(), TransferState],
-            [new Optional(), Config],
-        ],
-        multi: true,
-    },
-    {
-        provide: META_REDUCERS,
-        useFactory: ɵ1$5,
-        deps: [WindowRef, [new Optional(), Config]],
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class StateModule {
-    /**
-     * @return {?}
-     */
-    static forRoot() {
-        return {
-            ngModule: StateModule,
-            providers: [
-                ...stateMetaReducers,
-                provideConfig(defaultStateConfig),
-                { provide: StateConfig, useExisting: Config },
-            ],
-        };
-    }
-}
-StateModule.decorators = [
-    { type: NgModule, args: [{},] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const UNKNOWN_ERROR = {
-    error: 'unknown error',
-};
-/** @type {?} */
-const circularReplacer = (/**
- * @return {?}
- */
-() => {
-    /** @type {?} */
-    const seen = new WeakSet();
-    return (/**
-     * @param {?} _key
-     * @param {?} value
-     * @return {?}
-     */
-    (_key, value) => {
-        if (typeof value === 'object' && value !== null) {
-            if (seen.has(value)) {
-                return;
-            }
-            seen.add(value);
-        }
-        return value;
-    });
-});
-const ɵ0$7 = circularReplacer;
-/**
- * @param {?} error
- * @return {?}
- */
-function makeErrorSerializable(error) {
-    if (error instanceof Error) {
-        return (/** @type {?} */ ({
-            message: error.message,
-            type: error.name,
-            reason: error.stack,
-        }));
-    }
-    if (error instanceof HttpErrorResponse) {
-        /** @type {?} */
-        let serializableError = error.error;
-        if (isObject(error.error)) {
-            serializableError = JSON.stringify(error.error, circularReplacer());
-        }
-        return (/** @type {?} */ ({
-            message: error.message,
-            error: serializableError,
-            status: error.status,
-            statusText: error.statusText,
-            url: error.url,
-        }));
-    }
-    return isObject(error) ? UNKNOWN_ERROR : error;
-}
 
 /**
  * @fileoverview added by tsickle
@@ -4369,6 +6356,70 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class CustomerSupportAgentTokenEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} userTokenService
+     */
+    constructor(actions$, userTokenService) {
+        this.actions$ = actions$;
+        this.userTokenService = userTokenService;
+        this.loadCustomerSupportAgentToken$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), switchMap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ userId, password }) => this.userTokenService.loadToken(userId, password).pipe(map((/**
+         * @param {?} token
+         * @return {?}
+         */
+        (token) => {
+            /** @type {?} */
+            const date = new Date();
+            date.setSeconds(date.getSeconds() + token.expires_in);
+            token.expiration_time = date.toJSON();
+            return new LoadCustomerSupportAgentTokenSuccess(token);
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new LoadCustomerSupportAgentTokenFail(makeErrorSerializable(error)))))))));
+    }
+}
+CustomerSupportAgentTokenEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomerSupportAgentTokenEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: UserAuthenticationTokenService }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
+if (false) {
+    /** @type {?} */
+    CustomerSupportAgentTokenEffects.prototype.loadCustomerSupportAgentToken$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerSupportAgentTokenEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerSupportAgentTokenEffects.prototype.userTokenService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UserTokenEffects {
     /**
      * @param {?} actions$
@@ -4409,7 +6460,7 @@ class UserTokenEffects {
          * @param {?} action
          * @return {?}
          */
-        (action) => action.payload)), switchMap((/**
+        (action) => action.payload)), exhaustMap((/**
          * @param {?} __0
          * @return {?}
          */
@@ -4423,7 +6474,6 @@ class UserTokenEffects {
                 const date = new Date();
                 date.setSeconds(date.getSeconds() + token.expires_in);
                 token.expiration_time = date.toJSON();
-                token.userId = OCC_USER_ID_CURRENT;
                 return new RefreshUserTokenSuccess(token);
             }), catchError((/**
              * @param {?} error
@@ -4477,20 +6527,24 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects = [UserTokenEffects, ClientTokenEffect];
+const effects$1 = [
+    UserTokenEffects,
+    ClientTokenEffect,
+    CustomerSupportAgentTokenEffects,
+];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState = (/** @type {?} */ ({}));
+const initialState$2 = (/** @type {?} */ ({}));
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer(state = initialState, action) {
+function reducer$2(state = initialState$2, action) {
     switch (action.type) {
         case LOAD_USER_TOKEN:
         case REFRESH_USER_TOKEN: {
@@ -4515,18 +6569,19 @@ function reducer(state = initialState, action) {
 /**
  * @return {?}
  */
-function getReducers() {
+function getReducers$2() {
     return {
-        userToken: combineReducers({ token: reducer }),
+        userToken: combineReducers({ token: reducer$2 }),
         clientToken: loaderReducer(CLIENT_TOKEN_DATA),
+        csagentToken: loaderReducer(CSAGENT_TOKEN_DATA),
     };
 }
 /** @type {?} */
-const reducerToken = new InjectionToken('AuthReducers');
+const reducerToken$2 = new InjectionToken('AuthReducers');
 /** @type {?} */
-const reducerProvider = {
-    provide: reducerToken,
-    useFactory: getReducers,
+const reducerProvider$2 = {
+    provide: reducerToken$2,
+    useFactory: getReducers$2,
 };
 /**
  * @param {?} reducer
@@ -4545,8 +6600,28 @@ function clearAuthState(reducer) {
         return reducer(state, action);
     });
 }
+/**
+ * @param {?} reducer
+ * @return {?}
+ */
+function clearCustomerSupportAgentAuthState(reducer) {
+    return (/**
+     * @param {?} state
+     * @param {?} action
+     * @return {?}
+     */
+    function (state, action) {
+        if (action.type === LOGOUT_CUSTOMER_SUPPORT_AGENT) {
+            state = Object.assign({}, state, { csagentToken: undefined });
+        }
+        return reducer(state, action);
+    });
+}
 /** @type {?} */
-const metaReducers = [clearAuthState];
+const metaReducers = [
+    clearAuthState,
+    clearCustomerSupportAgentAuthState,
+];
 
 /**
  * @fileoverview added by tsickle
@@ -4568,6 +6643,12 @@ function authStoreConfigFactory() {
                     'auth.userToken.token.expiration_time': StorageSyncType.LOCAL_STORAGE,
                     'auth.userToken.token.scope': StorageSyncType.LOCAL_STORAGE,
                     'auth.userToken.token.userId': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.access_token': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.token_type': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.expires_in': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.expiration_time': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.scope': StorageSyncType.LOCAL_STORAGE,
+                    'auth.csagentToken.value.userId': StorageSyncType.LOCAL_STORAGE,
                 },
             },
         },
@@ -4582,11 +6663,11 @@ AuthStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers }),
-                    EffectsModule.forFeature(effects),
+                    StoreModule.forFeature(AUTH_FEATURE, reducerToken$2, { metaReducers }),
+                    EffectsModule.forFeature(effects$1),
                     ConfigModule.withConfigFactory(authStoreConfigFactory),
                 ],
-                providers: [reducerProvider],
+                providers: [reducerProvider$2],
             },] }
 ];
 
@@ -5396,21 +7477,21 @@ const getCartContentSelector = (/**
  * @return {?}
  */
 (state) => state.content);
-const ɵ0$8 = getCartContentSelector;
+const ɵ0$c = getCartContentSelector;
 /** @type {?} */
 const getCartRefreshSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.refresh);
-const ɵ1$6 = getCartRefreshSelector;
+const ɵ1$8 = getCartRefreshSelector;
 /** @type {?} */
 const getCartEntriesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entries);
-const ɵ2$3 = getCartEntriesSelector;
+const ɵ2$5 = getCartEntriesSelector;
 /** @type {?} */
 const getCartMergeCompleteSelector = (/**
  * @param {?} state
@@ -6862,14 +8943,14 @@ const getComponentEntitiesSelector = (/**
     acc[cur] = state.entities[cur].value;
     return acc;
 }), {}));
-const ɵ0$9 = getComponentEntitiesSelector;
-const ɵ1$7 = /**
+const ɵ0$d = getComponentEntitiesSelector;
+const ɵ1$9 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.component;
 /** @type {?} */
-const getComponentState = createSelector(getCmsState, (ɵ1$7));
+const getComponentState = createSelector(getCmsState, (ɵ1$9));
 /** @type {?} */
 const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
 /** @type {?} */
@@ -6916,13 +8997,13 @@ const componentSelectorFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$a = /**
+const ɵ0$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.navigation;
 /** @type {?} */
-const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$a));
+const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$e));
 /** @type {?} */
 const getSelectedNavigationEntryItemState = (/**
  * @param {?} nodeId
@@ -7237,7 +9318,7 @@ const getPageEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.pageData.entities);
-const ɵ0$b = getPageEntitiesSelector;
+const ɵ0$f = getPageEntitiesSelector;
 /** @type {?} */
 const getIndexByType = (/**
  * @param {?} index
@@ -7261,7 +9342,7 @@ const getIndexByType = (/**
     }
     return { entities: {} };
 });
-const ɵ1$8 = getIndexByType;
+const ɵ1$a = getIndexByType;
 /** @type {?} */
 const getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -7279,7 +9360,7 @@ const getPageComponentTypesSelector = (/**
     }
     return Array.from(componentTypes);
 });
-const ɵ2$4 = getPageComponentTypesSelector;
+const ɵ2$6 = getPageComponentTypesSelector;
 const ɵ3$4 = /**
  * @param {?} state
  * @return {?}
@@ -9342,14 +11423,14 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$1 = [CartEffects, CartEntryEffects];
+const effects$2 = [CartEffects, CartEntryEffects];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$1 = {
+const initialState$3 = {
     content: {},
     entries: {},
     refresh: false,
@@ -9360,7 +11441,7 @@ const initialState$1 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$1(state = initialState$1, action) {
+function reducer$3(state = initialState$3, action) {
     switch (action.type) {
         case MERGE_CART: {
             return Object.assign({}, state, { cartMergeComplete: false });
@@ -9408,7 +11489,7 @@ function reducer$1(state = initialState$1, action) {
             };
         }
         case CLEAR_CART: {
-            return initialState$1;
+            return initialState$3;
         }
     }
     return state;
@@ -9421,17 +11502,17 @@ function reducer$1(state = initialState$1, action) {
 /**
  * @return {?}
  */
-function getReducers$1() {
+function getReducers$3() {
     return {
-        active: loaderReducer(CART_DATA, reducer$1),
+        active: loaderReducer(CART_DATA, reducer$3),
     };
 }
 /** @type {?} */
-const reducerToken$1 = new InjectionToken('CartReducers');
+const reducerToken$3 = new InjectionToken('CartReducers');
 /** @type {?} */
-const reducerProvider$1 = {
-    provide: reducerToken$1,
-    useFactory: getReducers$1,
+const reducerProvider$3 = {
+    provide: reducerToken$3,
+    useFactory: getReducers$3,
 };
 /**
  * @param {?} reducer
@@ -9484,11 +11565,11 @@ CartStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(CART_FEATURE, reducerToken$1, { metaReducers: metaReducers$1 }),
-                    EffectsModule.forFeature(effects$1),
+                    StoreModule.forFeature(CART_FEATURE, reducerToken$3, { metaReducers: metaReducers$1 }),
+                    EffectsModule.forFeature(effects$2),
                     ConfigModule.withConfigFactory(cartStoreConfigFactory),
                 ],
-                providers: [reducerProvider$1],
+                providers: [reducerProvider$3],
             },] }
 ];
 
@@ -9565,7 +11646,7 @@ const CART_MODIFICATION_NORMALIZER = new InjectionToken('CartModificationNormali
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$2 = {
+const initialState$4 = {
     results: {},
 };
 /**
@@ -9573,7 +11654,7 @@ const initialState$2 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$2(state = initialState$2, action) {
+function reducer$4(state = initialState$4, action) {
     switch (action.type) {
         case VERIFY_ADDRESS_SUCCESS: {
             /** @type {?} */
@@ -9606,21 +11687,21 @@ const getDeliveryAddressSelector = (/**
  * @return {?}
  */
 (state) => state.address);
-const ɵ0$c = getDeliveryAddressSelector;
+const ɵ0$g = getDeliveryAddressSelector;
 /** @type {?} */
 const getDeliveryModeSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.deliveryMode);
-const ɵ1$9 = getDeliveryModeSelector;
+const ɵ1$b = getDeliveryModeSelector;
 /** @type {?} */
 const getPaymentDetailsSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.paymentDetails);
-const ɵ2$5 = getPaymentDetailsSelector;
+const ɵ2$7 = getPaymentDetailsSelector;
 /** @type {?} */
 const getOrderDetailsSelector = (/**
  * @param {?} state
@@ -9702,13 +11783,13 @@ const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9$1));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$d = /**
+const ɵ0$h = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addressVerification;
 /** @type {?} */
-const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$d));
+const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$h));
 /** @type {?} */
 const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -9717,7 +11798,7 @@ const getAddressVerificationResults$1 = createSelector(getAddressVerificationRes
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$3 = {
+const initialState$5 = {
     entities: {},
 };
 /**
@@ -9725,7 +11806,7 @@ const initialState$3 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$3(state = initialState$3, action) {
+function reducer$5(state = initialState$5, action) {
     switch (action.type) {
         case LOAD_CARD_TYPES_SUCCESS: {
             /** @type {?} */
@@ -9742,7 +11823,7 @@ function reducer$3(state = initialState$3, action) {
             return Object.assign({}, state, { entities });
         }
         case CHECKOUT_CLEAR_MISCS_DATA: {
-            return initialState$3;
+            return initialState$5;
         }
     }
     return state;
@@ -9758,16 +11839,16 @@ const getCardTypesEntites = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$e = /**
+const ɵ0$i = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cardTypes;
 /** @type {?} */
-const getCardTypesState = createSelector(getCheckoutState, (ɵ0$e));
+const getCardTypesState = createSelector(getCheckoutState, (ɵ0$i));
 /** @type {?} */
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$a = /**
+const ɵ1$c = /**
  * @param {?} entites
  * @return {?}
  */
@@ -9779,7 +11860,7 @@ entites => {
     code => entites[code]));
 };
 /** @type {?} */
-const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$a));
+const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$c));
 
 /**
  * @fileoverview added by tsickle
@@ -10010,7 +12091,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$4 = {
+const initialState$6 = {
     address: {},
     deliveryMode: {
         supported: {},
@@ -10024,7 +12105,7 @@ const initialState$4 = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$4(state = initialState$4, action) {
+function reducer$6(state = initialState$6, action) {
     switch (action.type) {
         case ADD_DELIVERY_ADDRESS_SUCCESS:
         case SET_DELIVERY_ADDRESS_SUCCESS: {
@@ -10072,7 +12153,7 @@ function reducer$4(state = initialState$4, action) {
             return Object.assign({}, state, { orderDetails });
         }
         case CLEAR_CHECKOUT_DATA: {
-            return initialState$4;
+            return initialState$6;
         }
         case CLEAR_CHECKOUT_STEP: {
             /** @type {?} */
@@ -10114,19 +12195,19 @@ function reducer$4(state = initialState$4, action) {
 /**
  * @return {?}
  */
-function getReducers$2() {
+function getReducers$4() {
     return {
-        steps: loaderReducer(CHECKOUT_DETAILS, reducer$4),
-        cardTypes: reducer$3,
-        addressVerification: reducer$2,
+        steps: loaderReducer(CHECKOUT_DETAILS, reducer$6),
+        cardTypes: reducer$5,
+        addressVerification: reducer$4,
     };
 }
 /** @type {?} */
-const reducerToken$2 = new InjectionToken('CheckoutReducers');
+const reducerToken$4 = new InjectionToken('CheckoutReducers');
 /** @type {?} */
-const reducerProvider$2 = {
-    provide: reducerToken$2,
-    useFactory: getReducers$2,
+const reducerProvider$4 = {
+    provide: reducerToken$4,
+    useFactory: getReducers$4,
 };
 
 /**
@@ -13027,7 +15108,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$2 = [
+const effects$3 = [
     CheckoutEffects,
     AddressVerificationEffect,
     CardTypesEffects,
@@ -13044,10 +15125,10 @@ CheckoutStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$2),
-                    EffectsModule.forFeature(effects$2),
+                    StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$4),
+                    EffectsModule.forFeature(effects$3),
                 ],
-                providers: [reducerProvider$2],
+                providers: [reducerProvider$4],
             },] }
 ];
 
@@ -14915,14 +16996,14 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$3 = [RouterEffects];
+const effects$4 = [RouterEffects];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$5 = {
+const initialState$7 = {
     navigationId: 0,
     state: {
         url: '',
@@ -14938,9 +17019,9 @@ const initialState$5 = {
 /**
  * @return {?}
  */
-function getReducers$3() {
+function getReducers$5() {
     return {
-        router: reducer$5,
+        router: reducer$7,
     };
 }
 /**
@@ -14948,7 +17029,7 @@ function getReducers$3() {
  * @param {?=} action
  * @return {?}
  */
-function reducer$5(state = initialState$5, action) {
+function reducer$7(state = initialState$7, action) {
     switch (action.type) {
         case ROUTER_NAVIGATION: {
             return Object.assign({}, state, { nextState: action.payload.routerState, navigationId: action.payload.event.id });
@@ -14970,11 +17051,11 @@ function reducer$5(state = initialState$5, action) {
     }
 }
 /** @type {?} */
-const reducerToken$3 = new InjectionToken('RouterReducers');
+const reducerToken$5 = new InjectionToken('RouterReducers');
 /** @type {?} */
-const reducerProvider$3 = {
-    provide: reducerToken$3,
-    useFactory: getReducers$3,
+const reducerProvider$5 = {
+    provide: reducerToken$5,
+    useFactory: getReducers$5,
 };
 /* The serializer is there to parse the RouterStateSnapshot,
 and to reduce the amount of properties to be passed to the reducer.
@@ -15083,7 +17164,7 @@ class RoutingModule {
         return {
             ngModule: RoutingModule,
             providers: [
-                reducerProvider$3,
+                reducerProvider$5,
                 {
                     provide: RouterStateSerializer,
                     useClass: CustomSerializer,
@@ -15102,8 +17183,8 @@ class RoutingModule {
 RoutingModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
-                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken$3),
-                    EffectsModule.forFeature(effects$3),
+                    StoreModule.forFeature(ROUTING_FEATURE, reducerToken$5),
+                    EffectsModule.forFeature(effects$4),
                     StoreRouterConnectingModule.forRoot({
                         routerState: 1 /* Minimal */,
                         stateKey: ROUTING_FEATURE,
@@ -15939,7 +18020,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$4 = [
+const effects$5 = [
     PageEffects,
     ComponentEffects,
     NavigationEntryItemEffects,
@@ -15950,13 +18031,13 @@ const effects$4 = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$6 = undefined;
+const initialState$8 = undefined;
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$6(state = initialState$6, action) {
+function reducer$8(state = initialState$8, action) {
     switch (action.type) {
         case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
             if (action.payload.components) {
@@ -15983,13 +18064,13 @@ function reducer$6(state = initialState$6, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$7 = { entities: {} };
+const initialState$9 = { entities: {} };
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$7(state = initialState$7, action) {
+function reducer$9(state = initialState$9, action) {
     switch (action.type) {
         case LOAD_CMS_PAGE_DATA_SUCCESS: {
             /** @type {?} */
@@ -16005,25 +18086,25 @@ function reducer$7(state = initialState$7, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$8 = undefined;
+const initialState$a = undefined;
 /**
  * @param {?} entityType
  * @return {?}
  */
-function reducer$8(entityType) {
+function reducer$a(entityType) {
     return (/**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    (state = initialState$8, action) => {
+    (state = initialState$a, action) => {
         if (action.meta && action.meta.entityType === entityType) {
             switch (action.type) {
                 case LOAD_CMS_PAGE_DATA_SUCCESS: {
                     return action.payload.pageId;
                 }
                 case LOAD_CMS_PAGE_DATA_FAIL: {
-                    return initialState$8;
+                    return initialState$a;
                 }
                 case CMS_SET_PAGE_FAIL_INDEX: {
                     return action.payload;
@@ -16044,27 +18125,27 @@ function reducer$8(entityType) {
 /**
  * @return {?}
  */
-function getReducers$4() {
+function getReducers$6() {
     return {
         page: combineReducers({
-            pageData: reducer$7,
+            pageData: reducer$9,
             index: combineReducers({
-                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$8(PageType.CONTENT_PAGE)),
-                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$8(PageType.PRODUCT_PAGE)),
-                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$8(PageType.CATEGORY_PAGE)),
-                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$8(PageType.CATALOG_PAGE)),
+                content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$a(PageType.CONTENT_PAGE)),
+                product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$a(PageType.PRODUCT_PAGE)),
+                category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$a(PageType.CATEGORY_PAGE)),
+                catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$a(PageType.CATALOG_PAGE)),
             }),
         }),
         component: entityLoaderReducer(COMPONENT_ENTITY),
-        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$6),
+        navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$8),
     };
 }
 /** @type {?} */
-const reducerToken$4 = new InjectionToken('CmsReducers');
+const reducerToken$6 = new InjectionToken('CmsReducers');
 /** @type {?} */
-const reducerProvider$4 = {
-    provide: reducerToken$4,
-    useFactory: getReducers$4,
+const reducerProvider$6 = {
+    provide: reducerToken$6,
+    useFactory: getReducers$6,
 };
 /**
  * @param {?} reducer
@@ -16115,11 +18196,11 @@ CmsStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(CMS_FEATURE, reducerToken$4, { metaReducers: metaReducers$2 }),
-                    EffectsModule.forFeature(effects$4),
+                    StoreModule.forFeature(CMS_FEATURE, reducerToken$6, { metaReducers: metaReducers$2 }),
+                    EffectsModule.forFeature(effects$5),
                     ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                 ],
-                providers: [reducerProvider$4],
+                providers: [reducerProvider$6],
             },] }
 ];
 
@@ -16580,954 +18661,70 @@ TestConfigModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @enum {string} */
-const GlobalMessageType = {
-    MSG_TYPE_CONFIRMATION: '[GlobalMessage] Confirmation',
-    MSG_TYPE_ERROR: '[GlobalMessage] Error',
-    MSG_TYPE_INFO: '[GlobalMessage] Information',
-};
-/**
- * @record
- */
-function GlobalMessage() { }
-if (false) {
-    /** @type {?} */
-    GlobalMessage.prototype.text;
-    /** @type {?} */
-    GlobalMessage.prototype.type;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /**
  * @abstract
  */
-class GlobalMessageConfig {
+class FeaturesConfig {
 }
 if (false) {
     /** @type {?} */
-    GlobalMessageConfig.prototype.globalMessages;
+    FeaturesConfig.prototype.features;
 }
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/** @type {?} */
-const ADD_MESSAGE = '[Global-message] Add a Message';
-/** @type {?} */
-const REMOVE_MESSAGE = '[Global-message] Remove a Message';
-/** @type {?} */
-const REMOVE_MESSAGES_BY_TYPE = '[Global-message] Remove messages by type';
-class AddMessage {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = ADD_MESSAGE;
-    }
-}
-if (false) {
-    /** @type {?} */
-    AddMessage.prototype.type;
-    /** @type {?} */
-    AddMessage.prototype.payload;
-}
-class RemoveMessage {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGE;
-    }
-}
-if (false) {
-    /** @type {?} */
-    RemoveMessage.prototype.type;
-    /** @type {?} */
-    RemoveMessage.prototype.payload;
-}
-class RemoveMessagesByType {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = REMOVE_MESSAGES_BY_TYPE;
-    }
-}
-if (false) {
-    /** @type {?} */
-    RemoveMessagesByType.prototype.type;
-    /** @type {?} */
-    RemoveMessagesByType.prototype.payload;
-}
-
 /**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-var globalMessageGroup_actions = /*#__PURE__*/Object.freeze({
-    ADD_MESSAGE: ADD_MESSAGE,
-    REMOVE_MESSAGE: REMOVE_MESSAGE,
-    REMOVE_MESSAGES_BY_TYPE: REMOVE_MESSAGES_BY_TYPE,
-    AddMessage: AddMessage,
-    RemoveMessage: RemoveMessage,
-    RemoveMessagesByType: RemoveMessagesByType
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const GLOBAL_MESSAGE_FEATURE = 'global-message';
-/**
- * @record
- */
-function StateWithGlobalMessage() { }
-if (false) {
-    /* Skipping unnamed member:
-    [GLOBAL_MESSAGE_FEATURE]: GlobalMessageState;*/
-}
-/**
- * @record
- */
-function GlobalMessageState() { }
-if (false) {
-    /** @type {?} */
-    GlobalMessageState.prototype.entities;
-}
-/**
- * @record
- */
-function GlobalMessageEntities() { }
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$f = /**
- * @param {?} state
+ * @param {?} config
  * @return {?}
  */
-(state) => state.entities;
-/** @type {?} */
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$f));
-/** @type {?} */
-const getGlobalMessageEntitiesByType = (/**
- * @param {?} type
+function isFeatureConfig(config) {
+    return typeof config === 'object' && config.features;
+}
+/**
+ * @param {?} level
+ * @param {?} version
  * @return {?}
  */
-(type) => {
-    return createSelector(getGlobalMessageEntities, (/**
-     * @param {?} entities
-     * @return {?}
-     */
-    entities => entities && entities[type]));
-});
-/** @type {?} */
-const getGlobalMessageCountByType = (/**
- * @param {?} type
- * @return {?}
- */
-(type) => {
-    return createSelector(getGlobalMessageEntitiesByType(type), (/**
-     * @param {?} entities
-     * @return {?}
-     */
-    entities => entities && entities.length));
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-var globalMessageGroup_selectors = /*#__PURE__*/Object.freeze({
-    getGlobalMessageState: getGlobalMessageState,
-    getGlobalMessageEntities: getGlobalMessageEntities,
-    getGlobalMessageEntitiesByType: getGlobalMessageEntitiesByType,
-    getGlobalMessageCountByType: getGlobalMessageCountByType
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageService {
-    /**
-     * @param {?} store
-     */
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Get all global messages
-     * @return {?}
-     */
-    get() {
-        return this.store.pipe(select(getGlobalMessageEntities), filter((/**
-         * @param {?} data
-         * @return {?}
-         */
-        data => data !== undefined)));
-    }
-    /**
-     * Add one message into store
-     * @param {?} text
-     * @param {?} type
-     * @return {?}
-     */
-    add(text, type) {
-        this.store.dispatch(new AddMessage({
-            text: typeof text === 'string' ? { raw: text } : text,
-            type,
-        }));
-    }
-    /**
-     * Remove message(s) from store
-     * @param {?} type
-     * @param {?=} index
-     * @return {?}
-     */
-    remove(type, index) {
-        this.store.dispatch(index !== undefined
-            ? new RemoveMessage({
-                type: type,
-                index: index,
-            })
-            : new RemoveMessagesByType(type));
-    }
-}
-GlobalMessageService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-GlobalMessageService.ctorParameters = () => [
-    { type: Store }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    GlobalMessageService.prototype.store;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @enum {number} */
-const HttpResponseStatus = {
-    UNKNOWN: -1,
-    BAD_REQUEST: 400,
-    FORBIDDEN: 403,
-    NOT_FOUND: 404,
-    CONFLICT: 409,
-    BAD_GATEWAY: 502,
-    GATEWAY_TIMEOUT: 504,
-    INTERNAL_SERVER_ERROR: 500,
-};
-HttpResponseStatus[HttpResponseStatus.UNKNOWN] = 'UNKNOWN';
-HttpResponseStatus[HttpResponseStatus.BAD_REQUEST] = 'BAD_REQUEST';
-HttpResponseStatus[HttpResponseStatus.FORBIDDEN] = 'FORBIDDEN';
-HttpResponseStatus[HttpResponseStatus.NOT_FOUND] = 'NOT_FOUND';
-HttpResponseStatus[HttpResponseStatus.CONFLICT] = 'CONFLICT';
-HttpResponseStatus[HttpResponseStatus.BAD_GATEWAY] = 'BAD_GATEWAY';
-HttpResponseStatus[HttpResponseStatus.GATEWAY_TIMEOUT] = 'GATEWAY_TIMEOUT';
-HttpResponseStatus[HttpResponseStatus.INTERNAL_SERVER_ERROR] = 'INTERNAL_SERVER_ERROR';
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class HttpErrorHandler {
-    /**
-     * @param {?} globalMessageService
-     */
-    constructor(globalMessageService) {
-        this.globalMessageService = globalMessageService;
-    }
-}
-HttpErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-HttpErrorHandler.ctorParameters = () => [
-    { type: GlobalMessageService }
-];
-/** @nocollapse */ HttpErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function HttpErrorHandler_Factory() { return new HttpErrorHandler(ɵɵinject(GlobalMessageService)); }, token: HttpErrorHandler, providedIn: "root" });
-if (false) {
-    /**
-     * The http response status number which is handled by this handler.
-     * Implementations can set the response status number, i.e. 404, so that
-     * the handler can be found by the error interceptor.
-     * @type {?}
-     */
-    HttpErrorHandler.prototype.responseStatus;
-    /**
-     * @type {?}
-     * @protected
-     */
-    HttpErrorHandler.prototype.globalMessageService;
-    /**
-     * Handles the error response for the respose status that is register for the handler
-     * @abstract
-     * @param {?} request
-     * @param {?} errorResponse
-     * @return {?}
-     */
-    HttpErrorHandler.prototype.handleError = function (request, errorResponse) { };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class BadGatewayHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.BAD_GATEWAY;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.badGateway' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-BadGatewayHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ BadGatewayHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadGatewayHandler_Factory() { return new BadGatewayHandler(ɵɵinject(GlobalMessageService)); }, token: BadGatewayHandler, providedIn: "root" });
-if (false) {
+function isInLevel(level, version) {
     /** @type {?} */
-    BadGatewayHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const OAUTH_ENDPOINT$1 = '/authorizationserver/oauth/token';
-class BadRequestHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.BAD_REQUEST;
-    }
-    /**
-     * @param {?} request
-     * @param {?} response
-     * @return {?}
-     */
-    handleError(request, response) {
-        if (response.url.includes(OAUTH_ENDPOINT$1) &&
-            response.error &&
-            response.error.error === 'invalid_grant' &&
-            request.body.get('grant_type') === 'password') {
-            this.globalMessageService.add({
-                key: 'httpHandlers.badRequestPleaseLoginAgain',
-                params: {
-                    errorMessage: response.error.error_description || response.message || '',
-                },
-            }, GlobalMessageType.MSG_TYPE_ERROR);
-            this.globalMessageService.remove(GlobalMessageType.MSG_TYPE_CONFIRMATION);
-        }
-        else {
-            if (response.error &&
-                response.error.errors &&
-                response.error.errors instanceof Array) {
-                response.error.errors.forEach((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                (error) => {
-                    /** @type {?} */
-                    let errorMessage;
-                    if (error.type === 'PasswordMismatchError') {
-                        // uses en translation error message instead of backend exception error
-                        // @todo: this condition could be removed if backend gives better message
-                        errorMessage = {
-                            key: 'httpHandlers.badRequestOldPasswordIncorrect',
-                        };
-                    }
-                    else if (error.subjectType === 'cart' &&
-                        error.reason === 'notFound') {
-                        errorMessage = { key: 'httpHandlers.cartNotFound' };
-                    }
-                    else if (error.type === 'ValidationError') {
-                        // build translation key in case of backend field validation error
-                        errorMessage = {
-                            key: `httpHandlers.validationErrors.${error.reason}.${error.subject}`,
-                        };
-                    }
-                    else {
-                        // this is currently showing up in case we have a page not found. It should be a 404.
-                        // see https://jira.hybris.com/browse/CMSX-8516
-                        errorMessage = { raw: error.message || '' };
-                    }
-                    this.globalMessageService.add(errorMessage, GlobalMessageType.MSG_TYPE_ERROR);
-                }));
-            }
-        }
-    }
-}
-BadRequestHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ BadRequestHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function BadRequestHandler_Factory() { return new BadRequestHandler(ɵɵinject(GlobalMessageService)); }, token: BadRequestHandler, providedIn: "root" });
-if (false) {
+    const levelParts = level.split('.');
     /** @type {?} */
-    BadRequestHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ConflictHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.CONFLICT;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.conflict' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-ConflictHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ ConflictHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ConflictHandler_Factory() { return new ConflictHandler(ɵɵinject(GlobalMessageService)); }, token: ConflictHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    ConflictHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ForbiddenHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.FORBIDDEN;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.forbidden' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-ForbiddenHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ ForbiddenHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function ForbiddenHandler_Factory() { return new ForbiddenHandler(ɵɵinject(GlobalMessageService)); }, token: ForbiddenHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    ForbiddenHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GatewayTimeoutHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.GATEWAY_TIMEOUT;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.gatewayTimeout' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-GatewayTimeoutHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ GatewayTimeoutHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function GatewayTimeoutHandler_Factory() { return new GatewayTimeoutHandler(ɵɵinject(GlobalMessageService)); }, token: GatewayTimeoutHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    GatewayTimeoutHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class InternalServerErrorHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.INTERNAL_SERVER_ERROR;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        this.globalMessageService.add({ key: 'httpHandlers.internalServerError' }, GlobalMessageType.MSG_TYPE_ERROR);
-    }
-}
-InternalServerErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ InternalServerErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function InternalServerErrorHandler_Factory() { return new InternalServerErrorHandler(ɵɵinject(GlobalMessageService)); }, token: InternalServerErrorHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    InternalServerErrorHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class NotFoundHandler extends HttpErrorHandler {
-    constructor() {
-        super(...arguments);
-        this.responseStatus = HttpResponseStatus.NOT_FOUND;
-    }
-    // empty error handler to avoid we fallabck to the unknown error handler
-    /**
-     * @return {?}
-     */
-    handleError() { }
-}
-NotFoundHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */ NotFoundHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function NotFoundHandler_Factory() { return new NotFoundHandler(ɵɵinject(GlobalMessageService)); }, token: NotFoundHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    NotFoundHandler.prototype.responseStatus;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class UnknownErrorHandler extends HttpErrorHandler {
-    /**
-     * @param {?} globalMessageService
-     */
-    constructor(globalMessageService) {
-        super(globalMessageService);
-        this.globalMessageService = globalMessageService;
-        this.responseStatus = HttpResponseStatus.UNKNOWN;
-    }
-    /**
-     * @return {?}
-     */
-    handleError() {
-        if (isDevMode()) {
-            console.warn(`Unknown http response error: ${this.responseStatus}`);
-        }
-    }
-}
-UnknownErrorHandler.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-UnknownErrorHandler.ctorParameters = () => [
-    { type: GlobalMessageService }
-];
-/** @nocollapse */ UnknownErrorHandler.ngInjectableDef = ɵɵdefineInjectable({ factory: function UnknownErrorHandler_Factory() { return new UnknownErrorHandler(ɵɵinject(GlobalMessageService)); }, token: UnknownErrorHandler, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    UnknownErrorHandler.prototype.responseStatus;
-    /**
-     * @type {?}
-     * @protected
-     */
-    UnknownErrorHandler.prototype.globalMessageService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class HttpErrorInterceptor {
-    /**
-     * @param {?} handlers
-     */
-    constructor(handlers) {
-        this.handlers = handlers;
-        // We reverse the handlers to allow for custom handlers
-        // that replace standard handlers
-        this.handlers.reverse();
-    }
-    /**
-     * @param {?} request
-     * @param {?} next
-     * @return {?}
-     */
-    intercept(request, next) {
-        return next.handle(request).pipe(catchError((/**
-         * @param {?} response
-         * @return {?}
-         */
-        (response) => {
-            if (response instanceof HttpErrorResponse) {
-                this.handleErrorResponse(request, response);
-                return throwError(response);
-            }
-        })));
-    }
-    /**
-     * @protected
-     * @param {?} request
-     * @param {?} response
-     * @return {?}
-     */
-    handleErrorResponse(request, response) {
+    const versionParts = version.split('.');
+    for (let i = 0; i < versionParts.length; i++) {
         /** @type {?} */
-        const handler = this.getResponseHandler(response);
-        if (handler) {
-            handler.handleError(request, response);
-        }
-    }
-    /**
-     * return the error handler that matches the `HttpResponseStatus` code.
-     * If no handler is available, the UNKNOWN handler is returned.
-     * @protected
-     * @param {?} response
-     * @return {?}
-     */
-    getResponseHandler(response) {
+        const versionNumberPart = Number(versionParts[i]);
         /** @type {?} */
-        const status = response.status;
-        /** @type {?} */
-        let handler = this.handlers.find((/**
-         * @param {?} h
-         * @return {?}
-         */
-        h => h.responseStatus === status));
-        if (!handler) {
-            handler = this.handlers.find((/**
-             * @param {?} h
-             * @return {?}
-             */
-            h => h.responseStatus === HttpResponseStatus.UNKNOWN));
-        }
-        return handler;
-    }
-}
-HttpErrorInterceptor.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-HttpErrorInterceptor.ctorParameters = () => [
-    { type: Array, decorators: [{ type: Inject, args: [HttpErrorHandler,] }] }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    HttpErrorInterceptor.prototype.handlers;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const errorHandlers = [
-    {
-        provide: HttpErrorHandler,
-        useExisting: UnknownErrorHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: BadGatewayHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: BadRequestHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: ConflictHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: ForbiddenHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: GatewayTimeoutHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: InternalServerErrorHandler,
-        multi: true,
-    },
-    {
-        provide: HttpErrorHandler,
-        useExisting: NotFoundHandler,
-        multi: true,
-    },
-];
-/** @type {?} */
-const httpErrorInterceptors = [
-    {
-        provide: HTTP_INTERCEPTORS,
-        useClass: HttpErrorInterceptor,
-        multi: true,
-    },
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$9 = {
-    entities: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$9(state = initialState$9, action) {
-    switch (action.type) {
-        case ADD_MESSAGE: {
-            /** @type {?} */
-            const message = action.payload;
-            if (state.entities[message.type] === undefined) {
-                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [message.text] }) });
-            }
-            else {
-                /** @type {?} */
-                const currentMessages = state.entities[message.type];
-                return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [message.type]: [...currentMessages, message.text] }) });
-            }
-        }
-        case REMOVE_MESSAGE: {
-            /** @type {?} */
-            const msgType = action.payload.type;
-            /** @type {?} */
-            const msgIndex = action.payload.index;
-            if (Object.keys(state.entities).length === 0 ||
-                !state.entities[msgType]) {
-                return state;
-            }
-            /** @type {?} */
-            const messages = [...state.entities[msgType]];
-            messages.splice(msgIndex, 1);
-            return Object.assign({}, state, { entities: Object.assign({}, state.entities, { [msgType]: messages }) });
-        }
-        case REMOVE_MESSAGES_BY_TYPE: {
-            /** @type {?} */
-            const entities = Object.assign({}, state.entities, { [action.payload]: [] });
-            return Object.assign({}, state, { entities });
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function getReducers$5() {
-    return reducer$9;
-}
-/** @type {?} */
-const reducerToken$5 = new InjectionToken('GlobalMessageReducers');
-/** @type {?} */
-const reducerProvider$5 = {
-    provide: reducerToken$5,
-    useFactory: getReducers$5,
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageStoreModule {
-}
-GlobalMessageStoreModule.decorators = [
-    { type: NgModule, args: [{
-                imports: [
-                    StateModule,
-                    StoreModule.forFeature(GLOBAL_MESSAGE_FEATURE, reducerToken$5),
-                ],
-                providers: [reducerProvider$5],
-            },] }
-];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} objA
- * @param {?} objB
- * @return {?}
- */
-function shallowEqualObjects(objA, objB) {
-    if (objA === objB) {
-        return true;
-    }
-    if (!objA || !objB) {
-        return false;
-    }
-    /** @type {?} */
-    const aKeys = Object.keys(objA);
-    /** @type {?} */
-    const bKeys = Object.keys(objB);
-    /** @type {?} */
-    const aKeysLen = aKeys.length;
-    /** @type {?} */
-    const bKeysLen = bKeys.length;
-    if (aKeysLen !== bKeysLen) {
-        return false;
-    }
-    for (let i = 0; i < aKeysLen; i++) {
-        /** @type {?} */
-        const key = aKeys[i];
-        if (objA[key] !== objB[key]) {
-            return false;
+        const levelNumberPart = Number(levelParts[i]) || 0;
+        if (versionNumberPart !== levelNumberPart) {
+            return levelNumberPart > versionNumberPart;
         }
     }
     return true;
 }
 /**
- * @param {?} objA
- * @param {?} objB
+ * @param {?} config
+ * @param {?} level
  * @return {?}
  */
-function deepEqualObjects(objA, objB) {
-    if (objA === objB) {
-        return true; // if both objA and objB are null or undefined and exactly the same
-    }
-    else if (!(objA instanceof Object) || !(objB instanceof Object)) {
-        return false; // if they are not strictly equal, they both need to be Objects
-    }
-    else if (objA.constructor !== objB.constructor) {
-        // they must have the exact same prototype chain, the closest we can do is
-        // test their constructor.
-        return false;
-    }
-    else {
-        for (const key in objA) {
-            if (!objA.hasOwnProperty(key)) {
-                continue; // other properties were tested using objA.constructor === y.constructor
-            }
-            if (!objB.hasOwnProperty(key)) {
-                return false; // allows to compare objA[ key ] and objB[ key ] when set to undefined
-            }
-            if (objA[key] === objB[key]) {
-                continue; // if they have the same strict value or identity then they are equal
-            }
-            if (typeof objA[key] !== 'object') {
-                return false; // Numbers, Strings, Functions, Booleans must be strictly equal
-            }
-            if (!deepEqualObjects(objA[key], objB[key])) {
-                return false;
-            }
-        }
-        for (const key in objB) {
-            if (objB.hasOwnProperty(key) && !objA.hasOwnProperty(key)) {
-                return false;
-            }
-        }
-        return true;
+function isFeatureLevel(config, level) {
+    if (isFeatureConfig(config)) {
+        return isInLevel(config.features.level, level);
     }
 }
 /**
- * @param {?} obj
- * @param {?} arr
+ * @param {?} config
+ * @param {?} feature
  * @return {?}
  */
-function countOfDeepEqualObjects(obj, arr) {
-    return arr.reduce((/**
-     * @param {?} acc
-     * @param {?} curr
-     * @return {?}
-     */
-    (acc, curr) => {
-        if (deepEqualObjects(obj, curr)) {
-            acc++;
-        }
-        return acc;
-    }), 0);
-}
-/**
- * @param {?} obj
- * @param {?} arr
- * @return {?}
- */
-function indexOfFirstOccurrence(obj, arr) {
-    for (let index = 0; index < arr.length; index++) {
-        if (deepEqualObjects(arr[index], obj)) {
-            return index;
-        }
+function isFeatureEnabled(config, feature) {
+    if (isFeatureConfig(config)) {
+        /** @type {?} */
+        const featureConfig = config.features[feature];
+        return typeof featureConfig === 'string'
+            ? isFeatureLevel(config, featureConfig)
+            : featureConfig;
     }
 }
 
@@ -17535,148 +18732,214 @@ function indexOfFirstOccurrence(obj, arr) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class GlobalMessageEffect {
+class FeatureConfigService {
     /**
-     * @param {?} actions$
-     * @param {?} store
      * @param {?} config
      */
-    constructor(actions$, store, config) {
-        this.actions$ = actions$;
-        this.store = store;
+    constructor(config) {
         this.config = config;
-        this.removeDuplicated$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), switchMap((/**
-         * @param {?} message
-         * @return {?}
-         */
-        (message) => of(message.text).pipe(withLatestFrom(this.store.pipe(select(getGlobalMessageEntitiesByType(message.type)))), filter((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([text, messages]) => countOfDeepEqualObjects(text, messages) > 1)), map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([text, messages]) => new RemoveMessage({
-            type: message.type,
-            index: indexOfFirstOccurrence(text, messages),
-        })))))));
-        this.hideAfterDelay$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((/**
-         * @param {?} type
-         * @return {?}
-         */
-        (type) => {
-            /** @type {?} */
-            const config = this.config.globalMessages[type];
-            return this.store.pipe(select(getGlobalMessageCountByType(type)), filter((/**
-             * @param {?} count
-             * @return {?}
-             */
-            (count) => config && config.timeout !== undefined && count && count > 0)), switchMap((/**
-             * @return {?}
-             */
-            () => of(new RemoveMessage({
-                type,
-                index: 0,
-            })).pipe(delay(config.timeout)))));
-        })));
     }
-}
-GlobalMessageEffect.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-GlobalMessageEffect.ctorParameters = () => [
-    { type: Actions },
-    { type: Store },
-    { type: GlobalMessageConfig }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
-if (false) {
-    /** @type {?} */
-    GlobalMessageEffect.prototype.removeDuplicated$;
-    /** @type {?} */
-    GlobalMessageEffect.prototype.hideAfterDelay$;
     /**
-     * @type {?}
-     * @private
-     */
-    GlobalMessageEffect.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    GlobalMessageEffect.prototype.store;
-    /**
-     * @type {?}
-     * @private
-     */
-    GlobalMessageEffect.prototype.config;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @return {?}
- */
-function defaultGlobalMessageConfigFactory() {
-    return {
-        globalMessages: {
-            [GlobalMessageType.MSG_TYPE_CONFIRMATION]: {
-                timeout: 3000,
-            },
-            [GlobalMessageType.MSG_TYPE_INFO]: {
-                timeout: 3000,
-            },
-            [GlobalMessageType.MSG_TYPE_ERROR]: {
-                timeout: 7000,
-            },
-        },
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class GlobalMessageModule {
-    /**
+     * @param {?} version
      * @return {?}
      */
-    static forRoot() {
+    isLevel(version) {
+        return isFeatureLevel(this.config, version);
+    }
+    /**
+     * @param {?} feature
+     * @return {?}
+     */
+    isEnabled(feature) {
+        return isFeatureEnabled(this.config, feature);
+    }
+}
+FeatureConfigService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+FeatureConfigService.ctorParameters = () => [
+    { type: FeaturesConfig }
+];
+/** @nocollapse */ FeatureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureConfigService.prototype.config;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class FeatureLevelDirective {
+    /**
+     * @param {?} templateRef
+     * @param {?} viewContainer
+     * @param {?} featureConfig
+     */
+    constructor(templateRef, viewContainer, featureConfig) {
+        this.templateRef = templateRef;
+        this.viewContainer = viewContainer;
+        this.featureConfig = featureConfig;
+        this.hasView = false;
+    }
+    /**
+     * @param {?} level
+     * @return {?}
+     */
+    set cxFeatureLevel(level) {
+        if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
+            this.viewContainer.createEmbeddedView(this.templateRef);
+            this.hasView = true;
+        }
+        else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
+            this.viewContainer.clear();
+            this.hasView = false;
+        }
+    }
+}
+FeatureLevelDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxFeatureLevel]',
+            },] }
+];
+/** @nocollapse */
+FeatureLevelDirective.ctorParameters = () => [
+    { type: TemplateRef },
+    { type: ViewContainerRef },
+    { type: FeatureConfigService }
+];
+FeatureLevelDirective.propDecorators = {
+    cxFeatureLevel: [{ type: Input }]
+};
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureLevelDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureLevelDirective.prototype.featureConfig;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class FeatureDirective {
+    /**
+     * @param {?} templateRef
+     * @param {?} viewContainer
+     * @param {?} featureConfig
+     */
+    constructor(templateRef, viewContainer, featureConfig) {
+        this.templateRef = templateRef;
+        this.viewContainer = viewContainer;
+        this.featureConfig = featureConfig;
+        this.hasView = false;
+    }
+    /**
+     * @param {?} feature
+     * @return {?}
+     */
+    set cxFeature(feature) {
+        if (this.featureConfig.isEnabled(feature) && !this.hasView) {
+            this.viewContainer.createEmbeddedView(this.templateRef);
+            this.hasView = true;
+        }
+        else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
+            this.viewContainer.clear();
+            this.hasView = false;
+        }
+    }
+}
+FeatureDirective.decorators = [
+    { type: Directive, args: [{
+                selector: '[cxFeature]',
+            },] }
+];
+/** @nocollapse */
+FeatureDirective.ctorParameters = () => [
+    { type: TemplateRef },
+    { type: ViewContainerRef },
+    { type: FeatureConfigService }
+];
+FeatureDirective.propDecorators = {
+    cxFeature: [{ type: Input }]
+};
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    FeatureDirective.prototype.hasView;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.templateRef;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.viewContainer;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FeatureDirective.prototype.featureConfig;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class FeaturesConfigModule {
+    /**
+     * @param {?=} defaultLevel
+     * @return {?}
+     */
+    static forRoot(defaultLevel) {
         return {
-            ngModule: GlobalMessageModule,
-            providers: [...errorHandlers, ...httpErrorInterceptors],
+            ngModule: FeaturesConfigModule,
+            providers: [
+                provideConfig((/** @type {?} */ ({
+                    features: {
+                        level: defaultLevel || '999',
+                    },
+                }))),
+                {
+                    provide: FeaturesConfig,
+                    useExisting: Config,
+                },
+            ],
         };
     }
 }
-GlobalMessageModule.decorators = [
+FeaturesConfigModule.decorators = [
     { type: NgModule, args: [{
-                imports: [
-                    GlobalMessageStoreModule,
-                    EffectsModule.forFeature([GlobalMessageEffect]),
-                    ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
-                ],
-                providers: [
-                    GlobalMessageService,
-                    { provide: GlobalMessageConfig, useExisting: Config },
-                ],
+                declarations: [FeatureLevelDirective, FeatureDirective],
+                exports: [FeatureLevelDirective, FeatureDirective],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -18208,12 +19471,12 @@ function syncI18nextWithSiteContext(language) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$g = i18nextInit;
+const ɵ0$j = i18nextInit;
 /** @type {?} */
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$g,
+        useFactory: ɵ0$j,
         deps: [I18nConfig, LanguageService],
         multi: true,
     },
@@ -18660,13 +19923,13 @@ const getKymaState = createFeatureSelector(KYMA_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$h = /**
+const ɵ0$k = /**
  * @param {?} state
  * @return {?}
  */
 state => state.openIdToken;
 /** @type {?} */
-const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$h));
+const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$k));
 /** @type {?} */
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 /** @type {?} */
@@ -18929,7 +20192,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$5 = [OpenIdTokenEffect];
+const effects$6 = [OpenIdTokenEffect];
 
 /**
  * @fileoverview added by tsickle
@@ -18938,17 +20201,17 @@ const effects$5 = [OpenIdTokenEffect];
 /**
  * @return {?}
  */
-function getReducers$6() {
+function getReducers$7() {
     return {
         openIdToken: loaderReducer(OPEN_ID_TOKEN_DATA),
     };
 }
 /** @type {?} */
-const reducerToken$6 = new InjectionToken('KymaReducers');
+const reducerToken$7 = new InjectionToken('KymaReducers');
 /** @type {?} */
-const reducerProvider$6 = {
-    provide: reducerToken$6,
-    useFactory: getReducers$6,
+const reducerProvider$7 = {
+    provide: reducerToken$7,
+    useFactory: getReducers$7,
 };
 /**
  * @param {?} reducer
@@ -18999,11 +20262,11 @@ KymaStoreModule.decorators = [
                     CommonModule,
                     HttpClientModule,
                     StateModule,
-                    StoreModule.forFeature(KYMA_FEATURE, reducerToken$6, { metaReducers: metaReducers$3 }),
-                    EffectsModule.forFeature(effects$5),
+                    StoreModule.forFeature(KYMA_FEATURE, reducerToken$7, { metaReducers: metaReducers$3 }),
+                    EffectsModule.forFeature(effects$6),
                     ConfigModule.withConfigFactory(kymaStoreConfigFactory),
                 ],
-                providers: [reducerProvider$6],
+                providers: [reducerProvider$7],
             },] }
 ];
 
@@ -20875,6 +22138,13 @@ if (false) {
      * @type {?|undefined}
      */
     OccEndpoints.prototype.consignmentTracking;
+    /**
+     * Endpoint for asm customer search
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.asmCustomerSearch;
 }
 
 /**
@@ -25624,6 +26894,131 @@ var Occ;
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+const defaultOccAsmConfig = {
+    backend: {
+        occ: {
+            endpoints: {
+                asmCustomerSearch: '/assistedservicewebservices/customers/search',
+            },
+        },
+    },
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OccAsmAdapter {
+    /**
+     * @param {?} http
+     * @param {?} occEndpointsService
+     * @param {?} converterService
+     * @param {?} config
+     * @param {?} baseSiteService
+     */
+    constructor(http, occEndpointsService, converterService, config, baseSiteService) {
+        this.http = http;
+        this.occEndpointsService = occEndpointsService;
+        this.converterService = converterService;
+        this.config = config;
+        this.baseSiteService = baseSiteService;
+        this.baseSiteService
+            .getActive()
+            .subscribe((/**
+         * @param {?} value
+         * @return {?}
+         */
+        value => (this.activeBaseSite = value)));
+    }
+    /**
+     * @param {?} options
+     * @return {?}
+     */
+    customerSearch(options) {
+        /** @type {?} */
+        const headers = InterceptorUtil.createHeader(USE_CUSTOMER_SUPPORT_AGENT_TOKEN, true, new HttpHeaders());
+        /** @type {?} */
+        const params = new HttpParams()
+            .set('baseSite', this.activeBaseSite)
+            .set('query', options.query);
+        /** @type {?} */
+        const url = this.occEndpointsService.getRawEndpoint('asmCustomerSearch');
+        return this.http
+            .get(url, { headers, params })
+            .pipe(this.converterService.pipeable(CUSTOMER_SEARCH_PAGE_NORMALIZER));
+    }
+}
+OccAsmAdapter.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+OccAsmAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService },
+    { type: AsmConfig },
+    { type: BaseSiteService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    OccAsmAdapter.prototype.activeBaseSite;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAsmAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAsmAdapter.prototype.occEndpointsService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAsmAdapter.prototype.converterService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAsmAdapter.prototype.config;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAsmAdapter.prototype.baseSiteService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class AsmOccModule {
+}
+AsmOccModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [
+                    CommonModule,
+                    HttpClientModule,
+                    ConfigModule.withConfig(defaultOccAsmConfig),
+                ],
+                providers: [
+                    {
+                        provide: AsmAdapter,
+                        useClass: OccAsmAdapter,
+                    },
+                ],
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 const PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
 
 /**
@@ -25737,121 +27132,6 @@ const defaultOccCartConfig = {
         },
     },
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @abstract
- */
-class FeaturesConfig {
-}
-if (false) {
-    /** @type {?} */
-    FeaturesConfig.prototype.features;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @param {?} config
- * @return {?}
- */
-function isFeatureConfig(config) {
-    return typeof config === 'object' && config.features;
-}
-/**
- * @param {?} level
- * @param {?} version
- * @return {?}
- */
-function isInLevel(level, version) {
-    /** @type {?} */
-    const levelParts = level.split('.');
-    /** @type {?} */
-    const versionParts = version.split('.');
-    for (let i = 0; i < versionParts.length; i++) {
-        /** @type {?} */
-        const versionNumberPart = Number(versionParts[i]);
-        /** @type {?} */
-        const levelNumberPart = Number(levelParts[i]) || 0;
-        if (versionNumberPart !== levelNumberPart) {
-            return levelNumberPart > versionNumberPart;
-        }
-    }
-    return true;
-}
-/**
- * @param {?} config
- * @param {?} level
- * @return {?}
- */
-function isFeatureLevel(config, level) {
-    if (isFeatureConfig(config)) {
-        return isInLevel(config.features.level, level);
-    }
-}
-/**
- * @param {?} config
- * @param {?} feature
- * @return {?}
- */
-function isFeatureEnabled(config, feature) {
-    if (isFeatureConfig(config)) {
-        /** @type {?} */
-        const featureConfig = config.features[feature];
-        return typeof featureConfig === 'string'
-            ? isFeatureLevel(config, featureConfig)
-            : featureConfig;
-    }
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class FeatureConfigService {
-    /**
-     * @param {?} config
-     */
-    constructor(config) {
-        this.config = config;
-    }
-    /**
-     * @param {?} version
-     * @return {?}
-     */
-    isLevel(version) {
-        return isFeatureLevel(this.config, version);
-    }
-    /**
-     * @param {?} feature
-     * @return {?}
-     */
-    isEnabled(feature) {
-        return isFeatureEnabled(this.config, feature);
-    }
-}
-FeatureConfigService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-FeatureConfigService.ctorParameters = () => [
-    { type: FeaturesConfig }
-];
-/** @nocollapse */ FeatureConfigService.ngInjectableDef = ɵɵdefineInjectable({ factory: function FeatureConfigService_Factory() { return new FeatureConfigService(ɵɵinject(FeaturesConfig)); }, token: FeatureConfigService, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureConfigService.prototype.config;
-}
 
 /**
  * @fileoverview added by tsickle
@@ -29835,6 +31115,7 @@ class OccModule {
 OccModule.decorators = [
     { type: NgModule, args: [{
                 imports: [
+                    AsmOccModule,
                     CmsOccModule,
                     CartOccModule,
                     CheckoutOccModule,
@@ -29845,6 +31126,11 @@ OccModule.decorators = [
                 ],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -30281,15 +31567,15 @@ PersonalizationModule.decorators = [
  * @template T
  * @return {?}
  */
-function getReducers$7() {
+function getReducers$8() {
     return entityLoaderReducer(PROCESS_FEATURE);
 }
 /** @type {?} */
-const reducerToken$7 = new InjectionToken('ProcessReducers');
+const reducerToken$8 = new InjectionToken('ProcessReducers');
 /** @type {?} */
-const reducerProvider$7 = {
-    provide: reducerToken$7,
-    useFactory: getReducers$7,
+const reducerProvider$8 = {
+    provide: reducerToken$8,
+    useFactory: getReducers$8,
 };
 
 /**
@@ -30300,8 +31586,8 @@ class ProcessStoreModule {
 }
 ProcessStoreModule.decorators = [
     { type: NgModule, args: [{
-                imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$7)],
-                providers: [reducerProvider$7],
+                imports: [StateModule, StoreModule.forFeature(PROCESS_FEATURE, reducerToken$8)],
+                providers: [reducerProvider$8],
             },] }
 ];
 
@@ -31016,13 +32302,13 @@ const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$i = /**
+const ɵ0$l = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.references;
 /** @type {?} */
-const getProductReferencesState = createSelector(getProductsState, (ɵ0$i));
+const getProductReferencesState = createSelector(getProductsState, (ɵ0$l));
 /** @type {?} */
 const getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
@@ -31044,13 +32330,13 @@ const getSelectedProductReferencesFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$j = /**
+const ɵ0$m = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.reviews;
 /** @type {?} */
-const getProductReviewsState = createSelector(getProductsState, (ɵ0$j));
+const getProductReviewsState = createSelector(getProductsState, (ɵ0$m));
 /** @type {?} */
 const getSelectedProductReviewsFactory = (/**
  * @param {?} productCode
@@ -31073,7 +32359,7 @@ const getSelectedProductReviewsFactory = (/**
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$a = {
+const initialState$b = {
     results: {},
     suggestions: [],
     auxResults: {},
@@ -31083,7 +32369,7 @@ const initialState$a = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$a(state = initialState$a, action) {
+function reducer$b(state = initialState$b, action) {
     switch (action.type) {
         case SEARCH_PRODUCTS_SUCCESS: {
             /** @type {?} */
@@ -31130,13 +32416,13 @@ const getProductSuggestions = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$k = /**
+const ɵ0$n = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.search;
 /** @type {?} */
-const getProductsSearchState = createSelector(getProductsState, (ɵ0$k));
+const getProductsSearchState = createSelector(getProductsState, (ɵ0$n));
 /** @type {?} */
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 /** @type {?} */
@@ -31148,13 +32434,13 @@ const getProductSuggestions$1 = createSelector(getProductsSearchState, getProduc
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$l = /**
+const ɵ0$o = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getProductState = createSelector(getProductsState, (ɵ0$l));
+const getProductState = createSelector(getProductsState, (ɵ0$o));
 /** @type {?} */
 const getSelectedProductsFactory = (/**
  * @param {?} codes
@@ -31239,7 +32525,7 @@ const getSelectedProductErrorFactory = (/**
      */
     productState => loaderErrorSelector(productState)));
 });
-const ɵ1$b = /**
+const ɵ1$d = /**
  * @param {?} details
  * @return {?}
  */
@@ -31247,7 +32533,7 @@ details => {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-const getAllProductCodes = createSelector(getProductState, (ɵ1$b));
+const getAllProductCodes = createSelector(getProductState, (ɵ1$d));
 
 /**
  * @fileoverview added by tsickle
@@ -32380,7 +33666,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$6 = [
+const effects$7 = [
     ProductsSearchEffects,
     ProductEffects,
     ProductReviewsEffects,
@@ -32392,7 +33678,7 @@ const effects$6 = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$b = {
+const initialState$c = {
     productCode: '',
     list: [],
 };
@@ -32401,7 +33687,7 @@ const initialState$b = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$b(state = initialState$b, action) {
+function reducer$c(state = initialState$c, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REFERENCES_SUCCESS: {
             /** @type {?} */
@@ -32432,7 +33718,7 @@ const getProductReferenceProductCode = (/**
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$c = {
+const initialState$d = {
     productCode: '',
     list: [],
 };
@@ -32441,7 +33727,7 @@ const initialState$c = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$c(state = initialState$c, action) {
+function reducer$d(state = initialState$d, action) {
     switch (action.type) {
         case LOAD_PRODUCT_REVIEWS_SUCCESS: {
             /** @type {?} */
@@ -32474,20 +33760,20 @@ const getReviewProductCode = (/**
 /**
  * @return {?}
  */
-function getReducers$8() {
+function getReducers$9() {
     return {
-        search: reducer$a,
+        search: reducer$b,
         details: entityLoaderReducer(PRODUCT_DETAIL_ENTITY),
-        reviews: reducer$c,
-        references: reducer$b,
+        reviews: reducer$d,
+        references: reducer$c,
     };
 }
 /** @type {?} */
-const reducerToken$8 = new InjectionToken('ProductReducers');
+const reducerToken$9 = new InjectionToken('ProductReducers');
 /** @type {?} */
-const reducerProvider$8 = {
-    provide: reducerToken$8,
-    useFactory: getReducers$8,
+const reducerProvider$9 = {
+    provide: reducerToken$9,
+    useFactory: getReducers$9,
 };
 /**
  * @param {?} reducer
@@ -32536,11 +33822,11 @@ ProductStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                    EffectsModule.forFeature(effects$6),
+                    StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$9, { metaReducers: metaReducers$4 }),
+                    EffectsModule.forFeature(effects$7),
                     ConfigModule.withConfigFactory(productStoreConfigFactory),
                 ],
-                providers: [reducerProvider$8],
+                providers: [reducerProvider$9],
             },] }
 ];
 
@@ -33507,7 +34793,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$7 = [
+const effects$8 = [
     LanguagesEffects,
     CurrenciesEffects,
     BaseSiteEffects,
@@ -33518,7 +34804,7 @@ const effects$7 = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$d = {
+const initialState$e = {
     entities: null,
     activeLanguage: null,
 };
@@ -33527,7 +34813,7 @@ const initialState$d = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$d(state = initialState$d, action) {
+function reducer$e(state = initialState$e, action) {
     switch (action.type) {
         case LOAD_LANGUAGES_SUCCESS: {
             /** @type {?} */
@@ -33557,7 +34843,7 @@ function reducer$d(state = initialState$d, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$e = {
+const initialState$f = {
     entities: null,
     activeCurrency: null,
 };
@@ -33566,7 +34852,7 @@ const initialState$e = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$e(state = initialState$e, action) {
+function reducer$f(state = initialState$f, action) {
     switch (action.type) {
         case LOAD_CURRENCIES_SUCCESS: {
             /** @type {?} */
@@ -33596,7 +34882,7 @@ function reducer$e(state = initialState$e, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$f = {
+const initialState$g = {
     details: {},
     activeSite: '',
 };
@@ -33605,7 +34891,7 @@ const initialState$f = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$f(state = initialState$f, action) {
+function reducer$g(state = initialState$g, action) {
     switch (action.type) {
         case LOAD_BASE_SITE_SUCCESS: {
             return Object.assign({}, state, { details: action.payload });
@@ -33624,19 +34910,19 @@ function reducer$f(state = initialState$f, action) {
 /**
  * @return {?}
  */
-function getReducers$9() {
+function getReducers$a() {
     return {
-        languages: reducer$d,
-        currencies: reducer$e,
-        baseSite: reducer$f,
+        languages: reducer$e,
+        currencies: reducer$f,
+        baseSite: reducer$g,
     };
 }
 /** @type {?} */
-const reducerToken$9 = new InjectionToken('SiteContextReducers');
+const reducerToken$a = new InjectionToken('SiteContextReducers');
 /** @type {?} */
-const reducerProvider$9 = {
-    provide: reducerToken$9,
-    useFactory: getReducers$9,
+const reducerProvider$a = {
+    provide: reducerToken$a,
+    useFactory: getReducers$a,
 };
 
 /**
@@ -33665,11 +34951,11 @@ SiteContextStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$9),
-                    EffectsModule.forFeature(effects$7),
+                    StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$a),
+                    EffectsModule.forFeature(effects$8),
                     ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                 ],
-                providers: [reducerProvider$9],
+                providers: [reducerProvider$a],
             },] }
 ];
 
@@ -34355,53 +35641,53 @@ const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$m = /**
+const ɵ0$p = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.findStores;
 /** @type {?} */
-const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$m));
-const ɵ1$c = /**
+const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$p));
+const ɵ1$e = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$c));
-const ɵ2$6 = /**
+const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$e));
+const ɵ2$8 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getStoresLoading = createSelector(getFindStoresState, (ɵ2$6));
+const getStoresLoading = createSelector(getFindStoresState, (ɵ2$8));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$n = /**
+const ɵ0$q = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.viewAllStores;
 /** @type {?} */
-const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$n));
-const ɵ1$d = /**
+const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$q));
+const ɵ1$f = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$d));
-const ɵ2$7 = /**
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$f));
+const ɵ2$9 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$7));
+const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$9));
 
 /**
  * @fileoverview added by tsickle
@@ -35002,18 +36288,18 @@ const defaultStoreFinderConfig = {
 /**
  * @return {?}
  */
-function getReducers$a() {
+function getReducers$b() {
     return {
         findStores: loaderReducer(STORE_FINDER_DATA),
         viewAllStores: loaderReducer(STORE_FINDER_DATA),
     };
 }
 /** @type {?} */
-const reducerToken$a = new InjectionToken('StoreFinderReducers');
+const reducerToken$b = new InjectionToken('StoreFinderReducers');
 /** @type {?} */
-const reducerProvider$a = {
-    provide: reducerToken$a,
-    useFactory: getReducers$a,
+const reducerProvider$b = {
+    provide: reducerToken$b,
+    useFactory: getReducers$b,
 };
 /** @type {?} */
 const metaReducers$5 = [];
@@ -35179,7 +36465,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$8 = [FindStoresEffect, ViewAllStoresEffect];
+const effects$9 = [FindStoresEffect, ViewAllStoresEffect];
 
 /**
  * @fileoverview added by tsickle
@@ -35192,10 +36478,10 @@ StoreFinderStoreModule.decorators = [
                 imports: [
                     CommonModule,
                     HttpClientModule,
-                    StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$a),
-                    EffectsModule.forFeature(effects$8),
+                    StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$b),
+                    EffectsModule.forFeature(effects$9),
                 ],
-                providers: [reducerProvider$a],
+                providers: [reducerProvider$b],
             },] }
 ];
 
@@ -35536,70 +36822,21 @@ const getUserState = createFeatureSelector(USER_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$o = /**
+const ɵ0$r = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.billingCountries;
 /** @type {?} */
-const getBillingCountriesState = createSelector(getUserState, (ɵ0$o));
-const ɵ1$e = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.entities;
-/** @type {?} */
-const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$e));
-const ɵ2$8 = /**
- * @param {?} entites
- * @return {?}
- */
-entites => Object.keys(entites).map((/**
- * @param {?} isocode
- * @return {?}
- */
-isocode => entites[isocode]));
-/** @type {?} */
-const getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$8));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$p = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.consignmentTracking;
-/** @type {?} */
-const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$p));
-const ɵ1$f = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.tracking;
-/** @type {?} */
-const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$f));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$q = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.countries;
-/** @type {?} */
-const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$q));
+const getBillingCountriesState = createSelector(getUserState, (ɵ0$r));
 const ɵ1$g = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$g));
-const ɵ2$9 = /**
+const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$g));
+const ɵ2$a = /**
  * @param {?} entites
  * @return {?}
  */
@@ -35609,7 +36846,56 @@ entites => Object.keys(entites).map((/**
  */
 isocode => entites[isocode]));
 /** @type {?} */
-const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$9));
+const getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$a));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$s = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.consignmentTracking;
+/** @type {?} */
+const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$s));
+const ɵ1$h = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.tracking;
+/** @type {?} */
+const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$h));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$t = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.countries;
+/** @type {?} */
+const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$t));
+const ɵ1$i = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.entities;
+/** @type {?} */
+const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$i));
+const ɵ2$b = /**
+ * @param {?} entites
+ * @return {?}
+ */
+entites => Object.keys(entites).map((/**
+ * @param {?} isocode
+ * @return {?}
+ */
+isocode => entites[isocode]));
+/** @type {?} */
+const getAllDeliveryCountries = createSelector(getDeliveryCountriesEntites, (ɵ2$b));
 /** @type {?} */
 const countrySelectorFactory = (/**
  * @param {?} isocode
@@ -35625,46 +36911,46 @@ entities => (Object.keys(entities).length !== 0 ? entities[isocode] : null))));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$r = /**
+const ɵ0$u = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderState = createSelector(getUserState, (ɵ0$r));
-const ɵ1$h = /**
+const getOrderState = createSelector(getUserState, (ɵ0$u));
+const ɵ1$j = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderDetails = createSelector(getOrderState, (ɵ1$h));
+const getOrderDetails = createSelector(getOrderState, (ɵ1$j));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$s = /**
+const ɵ0$v = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.payments;
 /** @type {?} */
-const getPaymentMethodsState = createSelector(getUserState, (ɵ0$s));
-const ɵ1$i = /**
+const getPaymentMethodsState = createSelector(getUserState, (ɵ0$v));
+const ɵ1$k = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$i));
-const ɵ2$a = /**
+const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$k));
+const ɵ2$c = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$a));
+const getPaymentMethodsLoading = createSelector(getPaymentMethodsState, (ɵ2$c));
 const ɵ3$6 = /**
  * @param {?} state
  * @return {?}
@@ -35678,14 +36964,14 @@ const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (�
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$t = /**
+const ɵ0$w = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.regions;
 /** @type {?} */
-const getRegionsLoaderState = createSelector(getUserState, (ɵ0$t));
-const ɵ1$j = /**
+const getRegionsLoaderState = createSelector(getUserState, (ɵ0$w));
+const ɵ1$l = /**
  * @param {?} state
  * @return {?}
  */
@@ -35693,8 +36979,8 @@ const ɵ1$j = /**
     return loaderValueSelector(state).entities;
 };
 /** @type {?} */
-const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$j));
-const ɵ2$b = /**
+const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$l));
+const ɵ2$d = /**
  * @param {?} state
  * @return {?}
  */
@@ -35705,7 +36991,7 @@ const ɵ2$b = /**
     country: loaderValueSelector(state).country,
 });
 /** @type {?} */
-const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$b));
+const getRegionsDataAndLoading = createSelector(getRegionsLoaderState, (ɵ2$d));
 const ɵ3$7 = /**
  * @param {?} state
  * @return {?}
@@ -35732,33 +37018,33 @@ const getRegionsLoaded = createSelector(getRegionsLoaderState, (ɵ5$2));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$u = /**
+const ɵ0$x = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.resetPassword;
 /** @type {?} */
-const getResetPassword = createSelector(getUserState, (ɵ0$u));
+const getResetPassword = createSelector(getUserState, (ɵ0$x));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$v = /**
+const ɵ0$y = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.titles;
 /** @type {?} */
-const getTitlesState = createSelector(getUserState, (ɵ0$v));
-const ɵ1$k = /**
+const getTitlesState = createSelector(getUserState, (ɵ0$y));
+const ɵ1$m = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getTitlesEntites = createSelector(getTitlesState, (ɵ1$k));
-const ɵ2$c = /**
+const getTitlesEntites = createSelector(getTitlesState, (ɵ1$m));
+const ɵ2$e = /**
  * @param {?} entites
  * @return {?}
  */
@@ -35768,7 +37054,7 @@ entites => Object.keys(entites).map((/**
  */
 code => entites[code]));
 /** @type {?} */
-const getAllTitles = createSelector(getTitlesEntites, (ɵ2$c));
+const getAllTitles = createSelector(getTitlesEntites, (ɵ2$e));
 /** @type {?} */
 const titleSelectorFactory = (/**
  * @param {?} code
@@ -35784,27 +37070,27 @@ entities => (Object.keys(entities).length !== 0 ? entities[code] : null))));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$w = /**
+const ɵ0$z = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addresses;
 /** @type {?} */
-const getAddressesLoaderState = createSelector(getUserState, (ɵ0$w));
-const ɵ1$l = /**
+const getAddressesLoaderState = createSelector(getUserState, (ɵ0$z));
+const ɵ1$n = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$l));
-const ɵ2$d = /**
+const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$n));
+const ɵ2$f = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$d));
+const getAddressesLoading = createSelector(getAddressesLoaderState, (ɵ2$f));
 const ɵ3$8 = /**
  * @param {?} state
  * @return {?}
@@ -35818,13 +37104,13 @@ const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$8
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$x = /**
+const ɵ0$A = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.consents;
 /** @type {?} */
-const getConsentsState = createSelector(getUserState, (ɵ0$x));
+const getConsentsState = createSelector(getUserState, (ɵ0$A));
 /** @type {?} */
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 /** @type {?} */
@@ -35838,46 +37124,46 @@ const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$y = /**
+const ɵ0$B = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.account;
 /** @type {?} */
-const getDetailsState = createSelector(getUserState, (ɵ0$y));
-const ɵ1$m = /**
+const getDetailsState = createSelector(getUserState, (ɵ0$B));
+const ɵ1$o = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getDetails = createSelector(getDetailsState, (ɵ1$m));
+const getDetails = createSelector(getDetailsState, (ɵ1$o));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$z = /**
+const ɵ0$C = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.orders;
 /** @type {?} */
-const getOrdersState = createSelector(getUserState, (ɵ0$z));
-const ɵ1$n = /**
+const getOrdersState = createSelector(getUserState, (ɵ0$C));
+const ɵ1$p = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderSuccessSelector(state);
 /** @type {?} */
-const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$n));
-const ɵ2$e = /**
+const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$p));
+const ɵ2$g = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getOrders = createSelector(getOrdersState, (ɵ2$e));
+const getOrders = createSelector(getOrdersState, (ɵ2$g));
 
 /**
  * @fileoverview added by tsickle
@@ -35940,9 +37226,11 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
 class UserService {
     /**
      * @param {?} store
+     * @param {?=} authService
      */
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Returns a user
@@ -35964,7 +37252,15 @@ class UserService {
      * @return {?}
      */
     load() {
-        this.store.dispatch(new LoadUserDetails(OCC_USER_ID_CURRENT));
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadUserDetails(occUserId))))
+            .unsubscribe();
     }
     /**
      * Register a new user
@@ -36018,7 +37314,15 @@ class UserService {
      * @return {?}
      */
     remove() {
-        this.store.dispatch(new RemoveUser(OCC_USER_ID_CURRENT));
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new RemoveUser(occUserId))))
+            .unsubscribe();
     }
     /**
      * Returns the remove user loading flag
@@ -36076,10 +37380,18 @@ class UserService {
      * @return {?}
      */
     updatePersonalDetails(userDetails) {
-        this.store.dispatch(new UpdateUserDetails({
-            username: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new UpdateUserDetails({
+            username: occUserId,
             userDetails,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns the update user's personal details loading flag
@@ -36135,11 +37447,19 @@ class UserService {
      * @return {?}
      */
     updateEmail(password, newUid) {
-        this.store.dispatch(new UpdateEmailAction({
-            uid: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new UpdateEmailAction({
+            uid: occUserId,
             password,
             newUid,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns the update user's email success flag
@@ -36176,11 +37496,19 @@ class UserService {
      * @return {?}
      */
     updatePassword(oldPassword, newPassword) {
-        this.store.dispatch(new UpdatePassword({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new UpdatePassword({
+            userId: occUserId,
             oldPassword,
             newPassword,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns the update password loading flag
@@ -36217,7 +37545,8 @@ UserService.decorators = [
 ];
 /** @nocollapse */
 UserService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
 if (false) {
     /**
@@ -36225,6 +37554,11 @@ if (false) {
      * @protected
      */
     UserService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserService.prototype.authService;
 }
 
 /**
@@ -36234,16 +37568,26 @@ if (false) {
 class UserAddressService {
     /**
      * @param {?} store
+     * @param {?=} authService
      */
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves user's addresses
      * @return {?}
      */
     loadAddresses() {
-        this.store.dispatch(new LoadUserAddresses(OCC_USER_ID_CURRENT));
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadUserAddresses(occUserId))))
+            .unsubscribe();
     }
     /**
      * Adds user address
@@ -36251,10 +37595,18 @@ class UserAddressService {
      * @return {?}
      */
     addUserAddress(address) {
-        this.store.dispatch(new AddUserAddress({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new AddUserAddress({
+            userId: occUserId,
             address: address,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Sets user address as default
@@ -36262,11 +37614,19 @@ class UserAddressService {
      * @return {?}
      */
     setAddressAsDefault(addressId) {
-        this.store.dispatch(new UpdateUserAddress({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new UpdateUserAddress({
+            userId: occUserId,
             addressId: addressId,
             address: { defaultAddress: true },
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Updates existing user address
@@ -36275,11 +37635,19 @@ class UserAddressService {
      * @return {?}
      */
     updateUserAddress(addressId, address) {
-        this.store.dispatch(new UpdateUserAddress({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new UpdateUserAddress({
+            userId: occUserId,
             addressId: addressId,
             address: address,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Deletes existing user address
@@ -36287,10 +37655,18 @@ class UserAddressService {
      * @return {?}
      */
     deleteUserAddress(addressId) {
-        this.store.dispatch(new DeleteUserAddress({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new DeleteUserAddress({
+            userId: occUserId,
             addressId: addressId,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns addresses
@@ -36387,15 +37763,21 @@ UserAddressService.decorators = [
 ];
 /** @nocollapse */
 UserAddressService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-/** @nocollapse */ UserAddressService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store)); }, token: UserAddressService, providedIn: "root" });
+/** @nocollapse */ UserAddressService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserAddressService_Factory() { return new UserAddressService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserAddressService, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @protected
      */
     UserAddressService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserAddressService.prototype.authService;
 }
 
 /**
@@ -36405,16 +37787,26 @@ if (false) {
 class UserConsentService {
     /**
      * @param {?} store
+     * @param {?=} authService
      */
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Retrieves all consents.
      * @return {?}
      */
     loadConsents() {
-        this.store.dispatch(new LoadUserConsents(OCC_USER_ID_CURRENT));
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadUserConsents(occUserId))))
+            .unsubscribe();
     }
     /**
      * Returns all consents
@@ -36458,11 +37850,19 @@ class UserConsentService {
      * @return {?}
      */
     giveConsent(consentTemplateId, consentTemplateVersion) {
-        this.store.dispatch(new GiveUserConsent({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new GiveUserConsent({
+            userId: occUserId,
             consentTemplateId,
             consentTemplateVersion,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns the give consent process loading flag
@@ -36498,10 +37898,18 @@ class UserConsentService {
      * @return {?}
      */
     withdrawConsent(consentCode) {
-        this.store.dispatch(new WithdrawUserConsent({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new WithdrawUserConsent({
+            userId: occUserId,
             consentCode,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns the withdraw consent process loading flag
@@ -36539,15 +37947,21 @@ UserConsentService.decorators = [
 ];
 /** @nocollapse */
 UserConsentService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-/** @nocollapse */ UserConsentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store)); }, token: UserConsentService, providedIn: "root" });
+/** @nocollapse */ UserConsentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserConsentService_Factory() { return new UserConsentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserConsentService, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @protected
      */
     UserConsentService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserConsentService.prototype.authService;
 }
 
 /**
@@ -36557,16 +37971,26 @@ if (false) {
 class UserPaymentService {
     /**
      * @param {?} store
+     * @param {?=} authService
      */
-    constructor(store) {
+    constructor(store, authService) {
         this.store = store;
+        this.authService = authService;
     }
     /**
      * Loads all user's payment methods.
      * @return {?}
      */
     loadPaymentMethods() {
-        this.store.dispatch(new LoadUserPaymentMethods(OCC_USER_ID_CURRENT));
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadUserPaymentMethods(occUserId))))
+            .unsubscribe();
     }
     /**
      * Returns all user's payment methods
@@ -36594,10 +38018,18 @@ class UserPaymentService {
      * @return {?}
      */
     setPaymentMethodAsDefault(paymentMethodId) {
-        this.store.dispatch(new SetDefaultUserPaymentMethod({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new SetDefaultUserPaymentMethod({
+            userId: occUserId,
             paymentMethodId,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Deletes the payment method
@@ -36606,10 +38038,18 @@ class UserPaymentService {
      * @return {?}
      */
     deletePaymentMethod(paymentMethodId) {
-        this.store.dispatch(new DeleteUserPaymentMethod({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new DeleteUserPaymentMethod({
+            userId: occUserId,
             paymentMethodId,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Returns all billing countries
@@ -36633,15 +38073,21 @@ UserPaymentService.decorators = [
 ];
 /** @nocollapse */
 UserPaymentService.ctorParameters = () => [
-    { type: Store }
+    { type: Store },
+    { type: AuthService }
 ];
-/** @nocollapse */ UserPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store)); }, token: UserPaymentService, providedIn: "root" });
+/** @nocollapse */ UserPaymentService.ngInjectableDef = ɵɵdefineInjectable({ factory: function UserPaymentService_Factory() { return new UserPaymentService(ɵɵinject(Store), ɵɵinject(AuthService)); }, token: UserPaymentService, providedIn: "root" });
 if (false) {
     /**
      * @type {?}
      * @protected
      */
     UserPaymentService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserPaymentService.prototype.authService;
 }
 
 /**
@@ -36730,12 +38176,20 @@ class UserOrderService {
      * @return {?}
      */
     loadOrderList(pageSize, currentPage, sort) {
-        this.store.dispatch(new LoadUserOrders({
-            userId: OCC_USER_ID_CURRENT,
+        this.authService
+            .getOccUserId()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} occUserId
+         * @return {?}
+         */
+        occUserId => this.store.dispatch(new LoadUserOrders({
+            userId: occUserId,
             pageSize: pageSize,
             currentPage: currentPage,
             sort: sort,
-        }));
+        }))))
+            .unsubscribe();
     }
     /**
      * Cleaning order list
@@ -36805,7 +38259,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$g = {
+const initialState$h = {
     entities: {},
 };
 /**
@@ -36813,7 +38267,7 @@ const initialState$g = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$g(state = initialState$g, action) {
+function reducer$h(state = initialState$h, action) {
     switch (action.type) {
         case LOAD_BILLING_COUNTRIES_SUCCESS: {
             /** @type {?} */
@@ -36830,33 +38284,6 @@ function reducer$g(state = initialState$g, action) {
             return Object.assign({}, state, { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$g;
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$h = {};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$h(state = initialState$h, action) {
-    switch (action.type) {
-        case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
-            /** @type {?} */
-            const tracking = action.payload;
-            return {
-                tracking,
-            };
-        }
-        case CLEAR_CONSIGNMENT_TRACKING: {
             return initialState$h;
         }
     }
@@ -36868,7 +38295,34 @@ function reducer$h(state = initialState$h, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$i = {
+const initialState$i = {};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$i(state = initialState$i, action) {
+    switch (action.type) {
+        case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
+            /** @type {?} */
+            const tracking = action.payload;
+            return {
+                tracking,
+            };
+        }
+        case CLEAR_CONSIGNMENT_TRACKING: {
+            return initialState$i;
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$j = {
     entities: {},
 };
 /**
@@ -36876,7 +38330,7 @@ const initialState$i = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$i(state = initialState$i, action) {
+function reducer$j(state = initialState$j, action) {
     switch (action.type) {
         case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
             /** @type {?} */
@@ -36893,33 +38347,6 @@ function reducer$i(state = initialState$i, action) {
             return Object.assign({}, state, { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$i;
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$j = {
-    order: {},
-};
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$j(state = initialState$j, action) {
-    switch (action.type) {
-        case LOAD_ORDER_DETAILS_SUCCESS: {
-            /** @type {?} */
-            const order = action.payload;
-            return Object.assign({}, state, { order });
-        }
-        case CLEAR_ORDER_DETAILS: {
             return initialState$j;
         }
     }
@@ -36931,7 +38358,9 @@ function reducer$j(state = initialState$j, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$k = [];
+const initialState$k = {
+    order: {},
+};
 /**
  * @param {?=} state
  * @param {?=} action
@@ -36939,10 +38368,12 @@ const initialState$k = [];
  */
 function reducer$k(state = initialState$k, action) {
     switch (action.type) {
-        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-            return action.payload ? action.payload : initialState$k;
+        case LOAD_ORDER_DETAILS_SUCCESS: {
+            /** @type {?} */
+            const order = action.payload;
+            return Object.assign({}, state, { order });
         }
-        case LOAD_USER_PAYMENT_METHODS_FAIL: {
+        case CLEAR_ORDER_DETAILS: {
             return initialState$k;
         }
     }
@@ -36954,10 +38385,7 @@ function reducer$k(state = initialState$k, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$l = {
-    entities: [],
-    country: null,
-};
+const initialState$l = [];
 /**
  * @param {?=} state
  * @param {?=} action
@@ -36965,15 +38393,10 @@ const initialState$l = {
  */
 function reducer$l(state = initialState$l, action) {
     switch (action.type) {
-        case LOAD_REGIONS_SUCCESS: {
-            /** @type {?} */
-            const entities = action.payload.entities;
-            /** @type {?} */
-            const country = action.payload.country;
-            if (entities || country) {
-                return Object.assign({}, state, { entities,
-                    country });
-            }
+        case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+            return action.payload ? action.payload : initialState$l;
+        }
+        case LOAD_USER_PAYMENT_METHODS_FAIL: {
             return initialState$l;
         }
     }
@@ -36985,13 +38408,44 @@ function reducer$l(state = initialState$l, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$m = false;
+const initialState$m = {
+    entities: [],
+    country: null,
+};
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
 function reducer$m(state = initialState$m, action) {
+    switch (action.type) {
+        case LOAD_REGIONS_SUCCESS: {
+            /** @type {?} */
+            const entities = action.payload.entities;
+            /** @type {?} */
+            const country = action.payload.country;
+            if (entities || country) {
+                return Object.assign({}, state, { entities,
+                    country });
+            }
+            return initialState$m;
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$n = false;
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$n(state = initialState$n, action) {
     switch (action.type) {
         case RESET_PASSWORD_SUCCESS: {
             return true;
@@ -37005,7 +38459,7 @@ function reducer$m(state = initialState$m, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$n = {
+const initialState$o = {
     entities: {},
 };
 /**
@@ -37013,7 +38467,7 @@ const initialState$n = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$n(state = initialState$n, action) {
+function reducer$o(state = initialState$o, action) {
     switch (action.type) {
         case LOAD_TITLES_SUCCESS: {
             /** @type {?} */
@@ -37030,30 +38484,7 @@ function reducer$n(state = initialState$n, action) {
             return Object.assign({}, state, { entities });
         }
         case CLEAR_USER_MISCS_DATA: {
-            return initialState$n;
-        }
-    }
-    return state;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const initialState$o = [];
-/**
- * @param {?=} state
- * @param {?=} action
- * @return {?}
- */
-function reducer$o(state = initialState$o, action) {
-    switch (action.type) {
-        case LOAD_USER_ADDRESSES_FAIL: {
             return initialState$o;
-        }
-        case LOAD_USER_ADDRESSES_SUCCESS: {
-            return action.payload ? action.payload : initialState$o;
         }
     }
     return state;
@@ -37072,10 +38503,33 @@ const initialState$p = [];
  */
 function reducer$p(state = initialState$p, action) {
     switch (action.type) {
+        case LOAD_USER_ADDRESSES_FAIL: {
+            return initialState$p;
+        }
+        case LOAD_USER_ADDRESSES_SUCCESS: {
+            return action.payload ? action.payload : initialState$p;
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$q = [];
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$q(state = initialState$q, action) {
+    switch (action.type) {
         case LOAD_USER_CONSENTS_SUCCESS: {
             /** @type {?} */
             const consents = action.payload;
-            return consents ? consents : initialState$p;
+            return consents ? consents : initialState$q;
         }
         case GIVE_USER_CONSENT_SUCCESS: {
             /** @type {?} */
@@ -37097,13 +38551,13 @@ function reducer$p(state = initialState$p, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$q = (/** @type {?} */ ({}));
+const initialState$r = (/** @type {?} */ ({}));
 /**
  * @param {?=} state
  * @param {?=} action
  * @return {?}
  */
-function reducer$q(state = initialState$q, action) {
+function reducer$r(state = initialState$r, action) {
     switch (action.type) {
         case LOAD_USER_DETAILS_SUCCESS: {
             return action.payload;
@@ -37122,7 +38576,7 @@ function reducer$q(state = initialState$q, action) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$r = {
+const initialState$s = {
     orders: [],
     pagination: {},
     sorts: [],
@@ -37132,13 +38586,13 @@ const initialState$r = {
  * @param {?=} action
  * @return {?}
  */
-function reducer$r(state = initialState$r, action) {
+function reducer$s(state = initialState$s, action) {
     switch (action.type) {
         case LOAD_USER_ORDERS_SUCCESS: {
-            return action.payload ? action.payload : initialState$r;
+            return action.payload ? action.payload : initialState$s;
         }
         case LOAD_USER_ORDERS_FAIL: {
-            return initialState$r;
+            return initialState$s;
         }
     }
     return state;
@@ -37151,30 +38605,30 @@ function reducer$r(state = initialState$r, action) {
 /**
  * @return {?}
  */
-function getReducers$b() {
+function getReducers$c() {
     return {
         account: combineReducers({
-            details: reducer$q,
+            details: reducer$r,
         }),
-        addresses: loaderReducer(USER_ADDRESSES, reducer$o),
-        billingCountries: reducer$g,
-        consents: loaderReducer(USER_CONSENTS, reducer$p),
-        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$k),
-        orders: loaderReducer(USER_ORDERS, reducer$r),
-        order: reducer$j,
-        countries: reducer$i,
-        titles: reducer$n,
-        regions: loaderReducer(REGIONS, reducer$l),
-        resetPassword: reducer$m,
-        consignmentTracking: reducer$h,
+        addresses: loaderReducer(USER_ADDRESSES, reducer$p),
+        billingCountries: reducer$h,
+        consents: loaderReducer(USER_CONSENTS, reducer$q),
+        payments: loaderReducer(USER_PAYMENT_METHODS, reducer$l),
+        orders: loaderReducer(USER_ORDERS, reducer$s),
+        order: reducer$k,
+        countries: reducer$j,
+        titles: reducer$o,
+        regions: loaderReducer(REGIONS, reducer$m),
+        resetPassword: reducer$n,
+        consignmentTracking: reducer$i,
     };
 }
 /** @type {?} */
-const reducerToken$b = new InjectionToken('UserReducers');
+const reducerToken$c = new InjectionToken('UserReducers');
 /** @type {?} */
-const reducerProvider$b = {
-    provide: reducerToken$b,
-    useFactory: getReducers$b,
+const reducerProvider$c = {
+    provide: reducerToken$c,
+    useFactory: getReducers$c,
 };
 /**
  * @param {?} reducer
@@ -38080,7 +39534,7 @@ class UserAddressesEffects {
                 if (payload.address &&
                     Object.keys(payload.address).length === 1 &&
                     payload.address.defaultAddress) {
-                    return new LoadUserAddresses(OCC_USER_ID_CURRENT);
+                    return new LoadUserAddresses(payload.userId);
                 }
                 else {
                     return new UpdateUserAddressSuccess(data);
@@ -38641,7 +40095,7 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const effects$9 = [
+const effects$a = [
     ClearMiscsDataEffect,
     DeliveryCountriesEffects,
     RegionsEffects,
@@ -38673,11 +40127,11 @@ UserStoreModule.decorators = [
                     CommonModule,
                     ReactiveFormsModule,
                     StateModule,
-                    StoreModule.forFeature(USER_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
-                    EffectsModule.forFeature(effects$9),
+                    StoreModule.forFeature(USER_FEATURE, reducerToken$c, { metaReducers: metaReducers$6 }),
+                    EffectsModule.forFeature(effects$a),
                     RouterModule,
                 ],
-                providers: [reducerProvider$b],
+                providers: [reducerProvider$c],
             },] }
 ];
 
@@ -38716,185 +40170,11 @@ UserModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class FeatureLevelDirective {
-    /**
-     * @param {?} templateRef
-     * @param {?} viewContainer
-     * @param {?} featureConfig
-     */
-    constructor(templateRef, viewContainer, featureConfig) {
-        this.templateRef = templateRef;
-        this.viewContainer = viewContainer;
-        this.featureConfig = featureConfig;
-        this.hasView = false;
-    }
-    /**
-     * @param {?} level
-     * @return {?}
-     */
-    set cxFeatureLevel(level) {
-        if (this.featureConfig.isLevel(level.toString()) && !this.hasView) {
-            this.viewContainer.createEmbeddedView(this.templateRef);
-            this.hasView = true;
-        }
-        else if (!this.featureConfig.isLevel(level.toString()) && this.hasView) {
-            this.viewContainer.clear();
-            this.hasView = false;
-        }
-    }
-}
-FeatureLevelDirective.decorators = [
-    { type: Directive, args: [{
-                selector: '[cxFeatureLevel]',
-            },] }
-];
-/** @nocollapse */
-FeatureLevelDirective.ctorParameters = () => [
-    { type: TemplateRef },
-    { type: ViewContainerRef },
-    { type: FeatureConfigService }
-];
-FeatureLevelDirective.propDecorators = {
-    cxFeatureLevel: [{ type: Input }]
-};
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    FeatureLevelDirective.prototype.hasView;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureLevelDirective.prototype.templateRef;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureLevelDirective.prototype.viewContainer;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureLevelDirective.prototype.featureConfig;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class FeatureDirective {
-    /**
-     * @param {?} templateRef
-     * @param {?} viewContainer
-     * @param {?} featureConfig
-     */
-    constructor(templateRef, viewContainer, featureConfig) {
-        this.templateRef = templateRef;
-        this.viewContainer = viewContainer;
-        this.featureConfig = featureConfig;
-        this.hasView = false;
-    }
-    /**
-     * @param {?} feature
-     * @return {?}
-     */
-    set cxFeature(feature) {
-        if (this.featureConfig.isEnabled(feature) && !this.hasView) {
-            this.viewContainer.createEmbeddedView(this.templateRef);
-            this.hasView = true;
-        }
-        else if (!this.featureConfig.isEnabled(feature) && this.hasView) {
-            this.viewContainer.clear();
-            this.hasView = false;
-        }
-    }
-}
-FeatureDirective.decorators = [
-    { type: Directive, args: [{
-                selector: '[cxFeature]',
-            },] }
-];
-/** @nocollapse */
-FeatureDirective.ctorParameters = () => [
-    { type: TemplateRef },
-    { type: ViewContainerRef },
-    { type: FeatureConfigService }
-];
-FeatureDirective.propDecorators = {
-    cxFeature: [{ type: Input }]
-};
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    FeatureDirective.prototype.hasView;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureDirective.prototype.templateRef;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureDirective.prototype.viewContainer;
-    /**
-     * @type {?}
-     * @protected
-     */
-    FeatureDirective.prototype.featureConfig;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class FeaturesConfigModule {
-    /**
-     * @param {?=} defaultLevel
-     * @return {?}
-     */
-    static forRoot(defaultLevel) {
-        return {
-            ngModule: FeaturesConfigModule,
-            providers: [
-                provideConfig((/** @type {?} */ ({
-                    features: {
-                        level: defaultLevel || '999',
-                    },
-                }))),
-                {
-                    provide: FeaturesConfig,
-                    useExisting: Config,
-                },
-            ],
-        };
-    }
-}
-FeaturesConfigModule.decorators = [
-    { type: NgModule, args: [{
-                declarations: [FeatureLevelDirective, FeatureDirective],
-                exports: [FeatureLevelDirective, FeatureDirective],
-            },] }
-];
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, AUTH_FEATURE, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$1 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$1 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$1 as reducerProvider, reducerToken$1 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AuthServices as ɵba, cartStoreConfigFactory as ɵbb, CartStoreModule as ɵbc, reducer$1 as ɵbd, CartPageMetaResolver as ɵbe, CheckoutStoreModule as ɵbf, getReducers$2 as ɵbg, reducerToken$2 as ɵbh, reducerProvider$2 as ɵbi, effects$2 as ɵbj, AddressVerificationEffect as ɵbk, CardTypesEffects as ɵbl, CheckoutEffects as ɵbm, reducer$4 as ɵbn, reducer$3 as ɵbo, reducer$2 as ɵbp, cmsStoreConfigFactory as ɵbq, CmsStoreModule as ɵbr, getReducers$4 as ɵbs, reducerToken$4 as ɵbt, reducerProvider$4 as ɵbu, clearCmsState as ɵbv, metaReducers$2 as ɵbw, effects$4 as ɵbx, PageEffects as ɵby, ComponentEffects as ɵbz, authStoreConfigFactory as ɵc, NavigationEntryItemEffects as ɵca, reducer$7 as ɵcb, reducer$8 as ɵcc, reducer$6 as ɵcd, GlobalMessageStoreModule as ɵce, getReducers$5 as ɵcf, reducerToken$5 as ɵcg, reducerProvider$5 as ɵch, reducer$9 as ɵci, GlobalMessageEffect as ɵcj, defaultGlobalMessageConfigFactory as ɵck, InternalServerErrorHandler as ɵcl, HttpErrorInterceptor as ɵcm, defaultI18nConfig as ɵcn, i18nextProviders as ɵco, i18nextInit as ɵcp, MockTranslationService as ɵcq, kymaStoreConfigFactory as ɵcr, KymaStoreModule as ɵcs, getReducers$6 as ɵct, reducerToken$6 as ɵcu, reducerProvider$6 as ɵcv, clearKymaState as ɵcw, metaReducers$3 as ɵcx, effects$5 as ɵcy, OpenIdTokenEffect as ɵcz, AuthStoreModule as ɵd, OpenIdAuthenticationTokenService as ɵda, defaultKymaConfig as ɵdb, defaultOccCartConfig as ɵdc, defaultOccProductConfig as ɵdd, defaultOccSiteContextConfig as ɵde, defaultOccStoreFinderConfig as ɵdf, defaultOccUserConfig as ɵdg, defaultPersonalizationConfig as ɵdh, interceptors$1 as ɵdi, OccPersonalizationIdInterceptor as ɵdj, OccPersonalizationTimeInterceptor as ɵdk, ProcessStoreModule as ɵdl, getReducers$7 as ɵdm, reducerToken$7 as ɵdn, reducerProvider$7 as ɵdo, productStoreConfigFactory as ɵdp, ProductStoreModule as ɵdq, getReducers$8 as ɵdr, reducerToken$8 as ɵds, reducerProvider$8 as ɵdt, clearProductsState as ɵdu, metaReducers$4 as ɵdv, effects$6 as ɵdw, ProductReferencesEffects as ɵdx, ProductReviewsEffects as ɵdy, ProductsSearchEffects as ɵdz, stateMetaReducers as ɵe, ProductEffects as ɵea, reducer$a as ɵeb, reducer$c as ɵec, reducer$b as ɵed, PageMetaResolver as ɵee, addExternalRoutesFactory as ɵef, getReducers$3 as ɵeg, reducer$5 as ɵeh, reducerToken$3 as ɵei, reducerProvider$3 as ɵej, CustomSerializer as ɵek, effects$3 as ɵel, RouterEffects as ɵem, SiteContextParamsService as ɵen, SiteContextUrlSerializer as ɵeo, SiteContextRoutesHandler as ɵep, defaultSiteContextConfigFactory as ɵeq, siteContextStoreConfigFactory as ɵer, SiteContextStoreModule as ɵes, getReducers$9 as ɵet, reducerToken$9 as ɵeu, reducerProvider$9 as ɵev, effects$7 as ɵew, LanguagesEffects as ɵex, CurrenciesEffects as ɵey, BaseSiteEffects as ɵez, getStorageSyncReducer as ɵf, reducer$d as ɵfa, reducer$e as ɵfb, reducer$f as ɵfc, baseSiteConfigValidator as ɵfd, interceptors$2 as ɵfe, CmsTicketInterceptor as ɵff, defaultStoreFinderConfig as ɵfg, StoreFinderStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, FindStoresEffect as ɵfm, ViewAllStoresEffect as ɵfn, UserStoreModule as ɵfo, getReducers$b as ɵfp, reducerToken$b as ɵfq, reducerProvider$b as ɵfr, clearUserState as ɵfs, metaReducers$6 as ɵft, effects$9 as ɵfu, BillingCountriesEffect as ɵfv, ClearMiscsDataEffect as ɵfw, ConsignmentTrackingEffects as ɵfx, DeliveryCountriesEffects as ɵfy, OrderDetailsEffect as ɵfz, getTransferStateReducer as ɵg, UserPaymentMethodsEffects as ɵga, RegionsEffects as ɵgb, ResetPasswordEffects as ɵgc, TitlesEffects as ɵgd, UserAddressesEffects as ɵge, UserConsentsEffect as ɵgf, UserDetailsEffects as ɵgg, UserOrdersEffect as ɵgh, UserRegisterEffects as ɵgi, ForgotPasswordEffects as ɵgj, UpdateEmailEffects as ɵgk, UpdatePasswordEffects as ɵgl, reducer$q as ɵgm, reducer$o as ɵgn, reducer$g as ɵgo, reducer$p as ɵgp, reducer$k as ɵgq, reducer$r as ɵgr, reducer$j as ɵgs, reducer$i as ɵgt, reducer$n as ɵgu, reducer$l as ɵgv, reducer$m as ɵgw, reducer$h as ɵgx, getReducers as ɵh, reducerToken as ɵi, reducerProvider as ɵj, clearAuthState as ɵk, metaReducers as ɵl, effects as ɵm, ClientTokenEffect as ɵn, UserTokenEffects as ɵo, UserAuthenticationTokenService as ɵp, ClientAuthenticationTokenService as ɵq, reducer as ɵr, defaultAuthConfig as ɵs, interceptors as ɵt, ClientTokenInterceptor as ɵu, UserTokenInterceptor as ɵv, AuthErrorInterceptor as ɵw, UserErrorHandlingService as ɵx, UrlParsingService as ɵy, ClientErrorHandlingService as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, customerGroup_actions as AsmActions, AsmAdapter, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$2 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$3 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$3 as reducerProvider, reducerToken$3 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, UserTokenEffects as ɵba, UserAuthenticationTokenService as ɵbb, ClientAuthenticationTokenService as ɵbc, reducer$2 as ɵbd, defaultAuthConfig as ɵbe, interceptors as ɵbf, CustomerSupportAgentTokenInterceptor as ɵbg, ClientTokenInterceptor as ɵbh, UserTokenInterceptor as ɵbi, AuthErrorInterceptor as ɵbj, UserErrorHandlingService as ɵbk, UrlParsingService as ɵbl, ClientErrorHandlingService as ɵbm, CustomerSupportAgentErrorHandlingService as ɵbn, AuthServices as ɵbo, cartStoreConfigFactory as ɵbp, CartStoreModule as ɵbq, reducer$3 as ɵbr, CartPageMetaResolver as ɵbs, CheckoutStoreModule as ɵbt, getReducers$4 as ɵbu, reducerToken$4 as ɵbv, reducerProvider$4 as ɵbw, effects$3 as ɵbx, AddressVerificationEffect as ɵby, CardTypesEffects as ɵbz, asmStoreConfigFactory as ɵc, CheckoutEffects as ɵca, reducer$6 as ɵcb, reducer$5 as ɵcc, reducer$4 as ɵcd, cmsStoreConfigFactory as ɵce, CmsStoreModule as ɵcf, getReducers$6 as ɵcg, reducerToken$6 as ɵch, reducerProvider$6 as ɵci, clearCmsState as ɵcj, metaReducers$2 as ɵck, effects$5 as ɵcl, PageEffects as ɵcm, ComponentEffects as ɵcn, NavigationEntryItemEffects as ɵco, reducer$9 as ɵcp, reducer$a as ɵcq, reducer$8 as ɵcr, GlobalMessageStoreModule as ɵcs, getReducers$1 as ɵct, reducerToken$1 as ɵcu, reducerProvider$1 as ɵcv, reducer$1 as ɵcw, GlobalMessageEffect as ɵcx, defaultGlobalMessageConfigFactory as ɵcy, InternalServerErrorHandler as ɵcz, AsmStoreModule as ɵd, HttpErrorInterceptor as ɵda, defaultI18nConfig as ɵdb, i18nextProviders as ɵdc, i18nextInit as ɵdd, MockTranslationService as ɵde, kymaStoreConfigFactory as ɵdf, KymaStoreModule as ɵdg, getReducers$7 as ɵdh, reducerToken$7 as ɵdi, reducerProvider$7 as ɵdj, clearKymaState as ɵdk, metaReducers$3 as ɵdl, effects$6 as ɵdm, OpenIdTokenEffect as ɵdn, OpenIdAuthenticationTokenService as ɵdo, defaultKymaConfig as ɵdp, defaultOccAsmConfig as ɵdq, defaultOccCartConfig as ɵdr, defaultOccProductConfig as ɵds, defaultOccSiteContextConfig as ɵdt, defaultOccStoreFinderConfig as ɵdu, defaultOccUserConfig as ɵdv, defaultPersonalizationConfig as ɵdw, interceptors$1 as ɵdx, OccPersonalizationIdInterceptor as ɵdy, OccPersonalizationTimeInterceptor as ɵdz, stateMetaReducers as ɵe, ProcessStoreModule as ɵea, getReducers$8 as ɵeb, reducerToken$8 as ɵec, reducerProvider$8 as ɵed, productStoreConfigFactory as ɵee, ProductStoreModule as ɵef, getReducers$9 as ɵeg, reducerToken$9 as ɵeh, reducerProvider$9 as ɵei, clearProductsState as ɵej, metaReducers$4 as ɵek, effects$7 as ɵel, ProductReferencesEffects as ɵem, ProductReviewsEffects as ɵen, ProductsSearchEffects as ɵeo, ProductEffects as ɵep, reducer$b as ɵeq, reducer$d as ɵer, reducer$c as ɵes, PageMetaResolver as ɵet, addExternalRoutesFactory as ɵeu, getReducers$5 as ɵev, reducer$7 as ɵew, reducerToken$5 as ɵex, reducerProvider$5 as ɵey, CustomSerializer as ɵez, getStorageSyncReducer as ɵf, effects$4 as ɵfa, RouterEffects as ɵfb, SiteContextParamsService as ɵfc, SiteContextUrlSerializer as ɵfd, SiteContextRoutesHandler as ɵfe, defaultSiteContextConfigFactory as ɵff, siteContextStoreConfigFactory as ɵfg, SiteContextStoreModule as ɵfh, getReducers$a as ɵfi, reducerToken$a as ɵfj, reducerProvider$a as ɵfk, effects$8 as ɵfl, LanguagesEffects as ɵfm, CurrenciesEffects as ɵfn, BaseSiteEffects as ɵfo, reducer$e as ɵfp, reducer$f as ɵfq, reducer$g as ɵfr, baseSiteConfigValidator as ɵfs, interceptors$2 as ɵft, CmsTicketInterceptor as ɵfu, defaultStoreFinderConfig as ɵfv, StoreFinderStoreModule as ɵfw, getReducers$b as ɵfx, reducerToken$b as ɵfy, reducerProvider$b as ɵfz, getTransferStateReducer as ɵg, effects$9 as ɵga, FindStoresEffect as ɵgb, ViewAllStoresEffect as ɵgc, UserStoreModule as ɵgd, getReducers$c as ɵge, reducerToken$c as ɵgf, reducerProvider$c as ɵgg, clearUserState as ɵgh, metaReducers$6 as ɵgi, effects$a as ɵgj, BillingCountriesEffect as ɵgk, ClearMiscsDataEffect as ɵgl, ConsignmentTrackingEffects as ɵgm, DeliveryCountriesEffects as ɵgn, OrderDetailsEffect as ɵgo, UserPaymentMethodsEffects as ɵgp, RegionsEffects as ɵgq, ResetPasswordEffects as ɵgr, TitlesEffects as ɵgs, UserAddressesEffects as ɵgt, UserConsentsEffect as ɵgu, UserDetailsEffects as ɵgv, UserOrdersEffect as ɵgw, UserRegisterEffects as ɵgx, ForgotPasswordEffects as ɵgy, UpdateEmailEffects as ɵgz, getReducers as ɵh, UpdatePasswordEffects as ɵha, reducer$r as ɵhb, reducer$p as ɵhc, reducer$h as ɵhd, reducer$q as ɵhe, reducer$l as ɵhf, reducer$s as ɵhg, reducer$k as ɵhh, reducer$j as ɵhi, reducer$o as ɵhj, reducer$m as ɵhk, reducer$n as ɵhl, reducer$i as ɵhm, reducerToken as ɵi, reducerProvider as ɵj, effects as ɵk, CustomerEffects as ɵl, reducer as ɵm, defaultAsmConfig as ɵn, AsmConfig as ɵo, authStoreConfigFactory as ɵp, AuthStoreModule as ɵq, getReducers$2 as ɵr, reducerToken$2 as ɵs, reducerProvider$2 as ɵt, clearAuthState as ɵu, clearCustomerSupportAgentAuthState as ɵv, metaReducers as ɵw, effects$1 as ɵx, ClientTokenEffect as ɵy, CustomerSupportAgentTokenEffects as ɵz };
 //# sourceMappingURL=spartacus-core.js.map
