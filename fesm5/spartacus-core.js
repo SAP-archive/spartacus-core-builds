@@ -44146,9 +44146,7 @@ var TitlesEffects = /** @class */ (function () {
              * @return {?}
              */
             function (titles) {
-                /** @type {?} */
-                var sortedTitles = _this.sortTitles(titles);
-                return new LoadTitlesSuccess(sortedTitles);
+                return new LoadTitlesSuccess(titles);
             })), catchError((/**
              * @param {?} error
              * @return {?}
@@ -44158,31 +44156,6 @@ var TitlesEffects = /** @class */ (function () {
             })));
         })));
     }
-    /**
-     * @private
-     * @param {?} titles
-     * @return {?}
-     */
-    TitlesEffects.prototype.sortTitles = /**
-     * @private
-     * @param {?} titles
-     * @return {?}
-     */
-    function (titles) {
-        /** @type {?} */
-        var drTitle = { code: 'dr', name: 'Dr.' };
-        /** @type {?} */
-        var revTitle = { code: 'rev', name: 'Rev.' };
-        /** @type {?} */
-        var filteredTitles = titles.filter((/**
-         * @param {?} t
-         * @return {?}
-         */
-        function (t) { return t.code !== 'dr' && t.code !== 'rev'; }));
-        /** @type {?} */
-        var sortedTitles = __spread(filteredTitles, [drTitle, revTitle]);
-        return sortedTitles;
-    };
     TitlesEffects.decorators = [
         { type: Injectable }
     ];

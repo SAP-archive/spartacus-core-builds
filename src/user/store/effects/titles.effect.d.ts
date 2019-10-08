@@ -6,6 +6,5 @@ export declare class TitlesEffects {
     private actions$;
     private userAccountConnector;
     loadTitles$: Observable<UserActions.TitlesAction>;
-    private sortTitles;
     constructor(actions$: Actions, userAccountConnector: UserConnector);
 }

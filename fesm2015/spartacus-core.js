@@ -39277,35 +39277,13 @@ class TitlesEffects {
              * @return {?}
              */
             titles => {
-                /** @type {?} */
-                const sortedTitles = this.sortTitles(titles);
-                return new LoadTitlesSuccess(sortedTitles);
+                return new LoadTitlesSuccess(titles);
             })), catchError((/**
              * @param {?} error
              * @return {?}
              */
             error => of(new LoadTitlesFail(makeErrorSerializable(error))))));
         })));
-    }
-    /**
-     * @private
-     * @param {?} titles
-     * @return {?}
-     */
-    sortTitles(titles) {
-        /** @type {?} */
-        const drTitle = { code: 'dr', name: 'Dr.' };
-        /** @type {?} */
-        const revTitle = { code: 'rev', name: 'Rev.' };
-        /** @type {?} */
-        const filteredTitles = titles.filter((/**
-         * @param {?} t
-         * @return {?}
-         */
-        t => t.code !== 'dr' && t.code !== 'rev'));
-        /** @type {?} */
-        const sortedTitles = [...filteredTitles, drTitle, revTitle];
-        return sortedTitles;
     }
 }
 TitlesEffects.decorators = [
