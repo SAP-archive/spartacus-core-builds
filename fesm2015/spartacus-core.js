@@ -5103,38 +5103,12 @@ class DynamicTemplate {
      * @return {?}
      */
     static resolve(templateString, templateVariables) {
-        /** @type {?} */
-        const keys = Object.keys(templateVariables);
-        // Can't use Object.values as the compilation settings are to es2015 not es2017
-        /** @type {?} */
-        const values = keys.map((/**
-         * @param {?} key
-         * @return {?}
-         */
-        key => templateVariables[key]));
-        /** @type {?} */
-        let templateFunction = new Function(...keys, `return \`${templateString}\`;`);
-        try {
-            return templateFunction(...values);
+        for (const variableLabel of Object.keys(templateVariables)) {
+            /** @type {?} */
+            const placeholder = new RegExp('\\${' + variableLabel + '}', 'g');
+            templateString = templateString.replace(placeholder, templateVariables[variableLabel]);
         }
-        catch (e) {
-            if (isDevMode() && e instanceof ReferenceError) {
-                console.warn(`Key "${e.message.split(' ')[0]}" not found.`);
-            }
-            if (templateString.indexOf('?') > -1) {
-                templateFunction = new Function(...keys, `return \`${templateString.split('?')[0]}\`;`);
-                try {
-                    return templateFunction(...values);
-                }
-                catch (e) {
-                    if (isDevMode()) {
-                        console.warn('Could not resolve endpoint.');
-                    }
-                    return templateString;
-                }
-            }
-            return templateString;
-        }
+        return templateString;
     }
 }
 

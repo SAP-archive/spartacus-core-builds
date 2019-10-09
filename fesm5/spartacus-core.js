@@ -5820,38 +5820,23 @@ var DynamicTemplate = /** @class */ (function () {
      * @return {?}
      */
     function (templateString, templateVariables) {
-        /** @type {?} */
-        var keys = Object.keys(templateVariables);
-        // Can't use Object.values as the compilation settings are to es2015 not es2017
-        /** @type {?} */
-        var values = keys.map((/**
-         * @param {?} key
-         * @return {?}
-         */
-        function (key) { return templateVariables[key]; }));
-        /** @type {?} */
-        var templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString + "`;"])))();
+        var e_1, _a;
         try {
-            return templateFunction.apply(void 0, __spread(values));
-        }
-        catch (e) {
-            if (isDevMode() && e instanceof ReferenceError) {
-                console.warn("Key \"" + e.message.split(' ')[0] + "\" not found.");
+            for (var _b = __values(Object.keys(templateVariables)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                var variableLabel = _c.value;
+                /** @type {?} */
+                var placeholder = new RegExp('\\${' + variableLabel + '}', 'g');
+                templateString = templateString.replace(placeholder, templateVariables[variableLabel]);
             }
-            if (templateString.indexOf('?') > -1) {
-                templateFunction = new (Function.bind.apply(Function, __spread([void 0], keys, ["return `" + templateString.split('?')[0] + "`;"])))();
-                try {
-                    return templateFunction.apply(void 0, __spread(values));
-                }
-                catch (e) {
-                    if (isDevMode()) {
-                        console.warn('Could not resolve endpoint.');
-                    }
-                    return templateString;
-                }
-            }
-            return templateString;
         }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return templateString;
     };
     return DynamicTemplate;
 }());

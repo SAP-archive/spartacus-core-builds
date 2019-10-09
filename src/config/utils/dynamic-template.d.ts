@@ -1,3 +1,3 @@
 export declare class DynamicTemplate {
-    static resolve(templateString: string, templateVariables: Object): any;
+    static resolve(templateString: string, templateVariables: Object): string;
 }
