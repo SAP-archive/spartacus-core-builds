@@ -9788,6 +9788,16 @@ if (false) {
      */
     PageMeta.prototype.breadcrumbs;
 }
+/**
+ * @record
+ */
+function BreadcrumbMeta() { }
+if (false) {
+    /** @type {?} */
+    BreadcrumbMeta.prototype.label;
+    /** @type {?} */
+    BreadcrumbMeta.prototype.link;
+}
 /** @enum {string} */
 const PageRobotsMeta = {
     INDEX: 'INDEX',
@@ -29328,7 +29338,7 @@ const defaultOccProductConfig = {
     backend: {
         occ: {
             endpoints: {
-                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,numberOfReviews,categories(FULL)',
+                product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL)',
                 productReviews: 'products/${productCode}/reviews',
                 // Uncomment this when occ gets configured
                 // productReferences:
