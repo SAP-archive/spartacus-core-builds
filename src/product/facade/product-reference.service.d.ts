@@ -6,4 +6,5 @@ export declare class ProductReferenceService {
     protected store: Store<StateWithProduct>;
     constructor(store: Store<StateWithProduct>);
     get(productCode: string, referenceType?: string, pageSize?: number): Observable<ProductReference[]>;
+    cleanReferences(): void;
 }

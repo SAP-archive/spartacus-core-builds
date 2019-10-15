@@ -4,6 +4,7 @@ import { ProductReference } from '../../../model/product.model';
 export declare const LOAD_PRODUCT_REFERENCES = "[Product] Load Product References Data";
 export declare const LOAD_PRODUCT_REFERENCES_FAIL = "[Product] Load Product References Data Fail";
 export declare const LOAD_PRODUCT_REFERENCES_SUCCESS = "[Product] Load Product References Data Success";
+export declare const CLEAN_PRODUCT_REFERENCES = "[Product] Clean Product References";
 export declare class LoadProductReferences implements Action {
     payload: {
         productCode: string;
@@ -33,4 +34,7 @@ export declare class LoadProductReferencesSuccess implements Action {
         list: ProductReference[];
     });
 }
-export declare type ProductReferencesAction = LoadProductReferences | LoadProductReferencesFail | LoadProductReferencesSuccess;
+export declare class CleanProductReferences implements Action {
+    readonly type = "[Product] Clean Product References";
+}
+export declare type ProductReferencesAction = LoadProductReferences | LoadProductReferencesFail | LoadProductReferencesSuccess | CleanProductReferences;

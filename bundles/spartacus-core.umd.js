@@ -35481,6 +35481,8 @@
     var LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
     /** @type {?} */
     var LOAD_PRODUCT_REFERENCES_SUCCESS = '[Product] Load Product References Data Success';
+    /** @type {?} */
+    var CLEAN_PRODUCT_REFERENCES = '[Product] Clean Product References';
     var LoadProductReferences = /** @class */ (function () {
         function LoadProductReferences(payload) {
             this.payload = payload;
@@ -35519,6 +35521,16 @@
         LoadProductReferencesSuccess.prototype.type;
         /** @type {?} */
         LoadProductReferencesSuccess.prototype.payload;
+    }
+    var CleanProductReferences = /** @class */ (function () {
+        function CleanProductReferences() {
+            this.type = CLEAN_PRODUCT_REFERENCES;
+        }
+        return CleanProductReferences;
+    }());
+    if (false) {
+        /** @type {?} */
+        CleanProductReferences.prototype.type;
     }
 
     /**
@@ -35870,9 +35882,11 @@
         LOAD_PRODUCT_REFERENCES: LOAD_PRODUCT_REFERENCES,
         LOAD_PRODUCT_REFERENCES_FAIL: LOAD_PRODUCT_REFERENCES_FAIL,
         LOAD_PRODUCT_REFERENCES_SUCCESS: LOAD_PRODUCT_REFERENCES_SUCCESS,
+        CLEAN_PRODUCT_REFERENCES: CLEAN_PRODUCT_REFERENCES,
         LoadProductReferences: LoadProductReferences,
         LoadProductReferencesFail: LoadProductReferencesFail,
         LoadProductReferencesSuccess: LoadProductReferencesSuccess,
+        CleanProductReferences: CleanProductReferences,
         LOAD_PRODUCT_REVIEWS: LOAD_PRODUCT_REVIEWS,
         LOAD_PRODUCT_REVIEWS_FAIL: LOAD_PRODUCT_REVIEWS_FAIL,
         LOAD_PRODUCT_REVIEWS_SUCCESS: LOAD_PRODUCT_REVIEWS_SUCCESS,
@@ -35933,16 +35947,29 @@
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
+     * @param {?} referenceType
      * @return {?}
      */
-    function (productCode) {
+    function (productCode, referenceType) {
         return store.createSelector(getProductReferencesState, (/**
          * @param {?} referenceTypeData
          * @return {?}
          */
         function (referenceTypeData) {
             if (referenceTypeData.productCode === productCode) {
-                return !!referenceTypeData.list ? referenceTypeData.list : [];
+                if (!!referenceTypeData.list) {
+                    if (referenceType) {
+                        return referenceTypeData.list.filter((/**
+                         * @param {?} item
+                         * @return {?}
+                         */
+                        function (item) { return item.referenceType === referenceType; }));
+                    }
+                    return referenceTypeData.list;
+                }
+                else {
+                    return [];
+                }
             }
         }));
     });
@@ -36211,7 +36238,7 @@
          */
         function (productCode, referenceType, pageSize) {
             var _this = this;
-            return this.store.pipe(store.select(getSelectedProductReferencesFactory(productCode)), operators.tap((/**
+            return this.store.pipe(store.select(getSelectedProductReferencesFactory(productCode, referenceType)), operators.tap((/**
              * @param {?} references
              * @return {?}
              */
@@ -36224,6 +36251,15 @@
                     }));
                 }
             })));
+        };
+        /**
+         * @return {?}
+         */
+        ProductReferenceService.prototype.cleanReferences = /**
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new CleanProductReferences());
         };
         ProductReferenceService.decorators = [
             { type: core.Injectable }
@@ -37530,8 +37566,27 @@
                 var productCode = action.payload.productCode;
                 /** @type {?} */
                 var list = action.payload.list;
-                return __assign({}, state, { list: list,
-                    productCode: productCode });
+                return __assign({}, state, { list: __spread(state.list, list).reduce((/**
+                     * @param {?} productReferences
+                     * @param {?} productReference
+                     * @return {?}
+                     */
+                    function (productReferences, productReference) {
+                        if (!productReferences.some((/**
+                         * @param {?} obj
+                         * @return {?}
+                         */
+                        function (obj) {
+                            return obj.referenceType === productReference.referenceType &&
+                                obj.target.code === productReference.target.code;
+                        }))) {
+                            productReferences.push(productReference);
+                        }
+                        return productReferences;
+                    }), []), productCode: productCode });
+            }
+            case CLEAN_PRODUCT_REFERENCES: {
+                return initialState$c;
             }
         }
         return state;

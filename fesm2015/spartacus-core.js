@@ -31809,6 +31809,8 @@ const LOAD_PRODUCT_REFERENCES = '[Product] Load Product References Data';
 const LOAD_PRODUCT_REFERENCES_FAIL = '[Product] Load Product References Data Fail';
 /** @type {?} */
 const LOAD_PRODUCT_REFERENCES_SUCCESS = '[Product] Load Product References Data Success';
+/** @type {?} */
+const CLEAN_PRODUCT_REFERENCES = '[Product] Clean Product References';
 class LoadProductReferences {
     /**
      * @param {?} payload
@@ -31853,6 +31855,15 @@ if (false) {
     LoadProductReferencesSuccess.prototype.type;
     /** @type {?} */
     LoadProductReferencesSuccess.prototype.payload;
+}
+class CleanProductReferences {
+    constructor() {
+        this.type = CLEAN_PRODUCT_REFERENCES;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CleanProductReferences.prototype.type;
 }
 
 /**
@@ -32233,9 +32244,11 @@ var productGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_PRODUCT_REFERENCES: LOAD_PRODUCT_REFERENCES,
     LOAD_PRODUCT_REFERENCES_FAIL: LOAD_PRODUCT_REFERENCES_FAIL,
     LOAD_PRODUCT_REFERENCES_SUCCESS: LOAD_PRODUCT_REFERENCES_SUCCESS,
+    CLEAN_PRODUCT_REFERENCES: CLEAN_PRODUCT_REFERENCES,
     LoadProductReferences: LoadProductReferences,
     LoadProductReferencesFail: LoadProductReferencesFail,
     LoadProductReferencesSuccess: LoadProductReferencesSuccess,
+    CleanProductReferences: CleanProductReferences,
     LOAD_PRODUCT_REVIEWS: LOAD_PRODUCT_REVIEWS,
     LOAD_PRODUCT_REVIEWS_FAIL: LOAD_PRODUCT_REVIEWS_FAIL,
     LOAD_PRODUCT_REVIEWS_SUCCESS: LOAD_PRODUCT_REVIEWS_SUCCESS,
@@ -32296,16 +32309,29 @@ const getProductReferencesState = createSelector(getProductsState, (ɵ0$l));
 /** @type {?} */
 const getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
+ * @param {?} referenceType
  * @return {?}
  */
-(productCode) => {
+(productCode, referenceType) => {
     return createSelector(getProductReferencesState, (/**
      * @param {?} referenceTypeData
      * @return {?}
      */
     referenceTypeData => {
         if (referenceTypeData.productCode === productCode) {
-            return !!referenceTypeData.list ? referenceTypeData.list : [];
+            if (!!referenceTypeData.list) {
+                if (referenceType) {
+                    return referenceTypeData.list.filter((/**
+                     * @param {?} item
+                     * @return {?}
+                     */
+                    item => item.referenceType === referenceType));
+                }
+                return referenceTypeData.list;
+            }
+            else {
+                return [];
+            }
         }
     }));
 });
@@ -32567,7 +32593,7 @@ class ProductReferenceService {
      * @return {?}
      */
     get(productCode, referenceType, pageSize) {
-        return this.store.pipe(select(getSelectedProductReferencesFactory(productCode)), tap((/**
+        return this.store.pipe(select(getSelectedProductReferencesFactory(productCode, referenceType)), tap((/**
          * @param {?} references
          * @return {?}
          */
@@ -32580,6 +32606,12 @@ class ProductReferenceService {
                 }));
             }
         })));
+    }
+    /**
+     * @return {?}
+     */
+    cleanReferences() {
+        this.store.dispatch(new CleanProductReferences());
     }
 }
 ProductReferenceService.decorators = [
@@ -33678,8 +33710,25 @@ function reducer$c(state = initialState$c, action) {
             const productCode = action.payload.productCode;
             /** @type {?} */
             const list = action.payload.list;
-            return Object.assign({}, state, { list,
-                productCode });
+            return Object.assign({}, state, { list: [...state.list, ...list].reduce((/**
+                 * @param {?} productReferences
+                 * @param {?} productReference
+                 * @return {?}
+                 */
+                (productReferences, productReference) => {
+                    if (!productReferences.some((/**
+                     * @param {?} obj
+                     * @return {?}
+                     */
+                    obj => obj.referenceType === productReference.referenceType &&
+                        obj.target.code === productReference.target.code))) {
+                        productReferences.push(productReference);
+                    }
+                    return productReferences;
+                }), []), productCode });
+        }
+        case CLEAN_PRODUCT_REFERENCES: {
+            return initialState$c;
         }
     }
     return state;
