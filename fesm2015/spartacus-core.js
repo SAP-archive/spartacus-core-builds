@@ -33419,10 +33419,12 @@ class ProductReviewsEffects {
     /**
      * @param {?} actions$
      * @param {?} productReviewsConnector
+     * @param {?} globalMessageService
      */
-    constructor(actions$, productReviewsConnector) {
+    constructor(actions$, productReviewsConnector, globalMessageService) {
         this.actions$ = actions$;
         this.productReviewsConnector = productReviewsConnector;
+        this.globalMessageService = globalMessageService;
         this.loadProductReviews$ = this.actions$.pipe(ofType(LOAD_PRODUCT_REVIEWS), map((/**
          * @param {?} action
          * @return {?}
@@ -33472,6 +33474,12 @@ class ProductReviewsEffects {
              */
             _error => of(new PostProductReviewFail(payload.productCode)))));
         })));
+        this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(ofType(POST_PRODUCT_REVIEW_SUCCESS), tap((/**
+         * @return {?}
+         */
+        () => {
+            this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+        })));
     }
 }
 ProductReviewsEffects.decorators = [
@@ -33480,7 +33488,8 @@ ProductReviewsEffects.decorators = [
 /** @nocollapse */
 ProductReviewsEffects.ctorParameters = () => [
     { type: Actions },
-    { type: ProductReviewsConnector }
+    { type: ProductReviewsConnector },
+    { type: GlobalMessageService }
 ];
 __decorate([
     Effect(),
@@ -33490,11 +33499,17 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+__decorate([
+    Effect({ dispatch: false }),
+    __metadata("design:type", Object)
+], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
 if (false) {
     /** @type {?} */
     ProductReviewsEffects.prototype.loadProductReviews$;
     /** @type {?} */
     ProductReviewsEffects.prototype.postProductReview;
+    /** @type {?} */
+    ProductReviewsEffects.prototype.showGlobalMessageOnPostProductReviewSuccess$;
     /**
      * @type {?}
      * @private
@@ -33505,6 +33520,11 @@ if (false) {
      * @private
      */
     ProductReviewsEffects.prototype.productReviewsConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    ProductReviewsEffects.prototype.globalMessageService;
 }
 
 /**

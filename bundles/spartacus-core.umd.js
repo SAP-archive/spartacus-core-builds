@@ -37263,10 +37263,11 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var ProductReviewsEffects = /** @class */ (function () {
-        function ProductReviewsEffects(actions$, productReviewsConnector) {
+        function ProductReviewsEffects(actions$, productReviewsConnector, globalMessageService) {
             var _this = this;
             this.actions$ = actions$;
             this.productReviewsConnector = productReviewsConnector;
+            this.globalMessageService = globalMessageService;
             this.loadProductReviews$ = this.actions$.pipe(effects$b.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
              * @param {?} action
              * @return {?}
@@ -37320,6 +37321,12 @@
                     return rxjs.of(new PostProductReviewFail(payload.productCode));
                 })));
             })));
+            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(effects$b.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap((/**
+             * @return {?}
+             */
+            function () {
+                _this.globalMessageService.add({ key: 'productReview.thankYouForReview' }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+            })));
         }
         ProductReviewsEffects.decorators = [
             { type: core.Injectable }
@@ -37327,7 +37334,8 @@
         /** @nocollapse */
         ProductReviewsEffects.ctorParameters = function () { return [
             { type: effects$b.Actions },
-            { type: ProductReviewsConnector }
+            { type: ProductReviewsConnector },
+            { type: GlobalMessageService }
         ]; };
         __decorate([
             effects$b.Effect(),
@@ -37337,6 +37345,10 @@
             effects$b.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReviewsEffects.prototype, "postProductReview", void 0);
+        __decorate([
+            effects$b.Effect({ dispatch: false }),
+            __metadata("design:type", Object)
+        ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
         return ProductReviewsEffects;
     }());
     if (false) {
@@ -37344,6 +37356,8 @@
         ProductReviewsEffects.prototype.loadProductReviews$;
         /** @type {?} */
         ProductReviewsEffects.prototype.postProductReview;
+        /** @type {?} */
+        ProductReviewsEffects.prototype.showGlobalMessageOnPostProductReviewSuccess$;
         /**
          * @type {?}
          * @private
@@ -37354,6 +37368,11 @@
          * @private
          */
         ProductReviewsEffects.prototype.productReviewsConnector;
+        /**
+         * @type {?}
+         * @private
+         */
+        ProductReviewsEffects.prototype.globalMessageService;
     }
 
     /**
