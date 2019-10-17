@@ -36873,7 +36873,7 @@ function reducer$i(state = initialState$i, action) {
             const productCode = action.payload.productCode;
             /** @type {?} */
             const list = action.payload.list;
-            return Object.assign({}, state, { list: [...state.list, ...list].reduce((/**
+            return Object.assign({}, state, { list: [...state.list, ...(list ? list : [])].reduce((/**
                  * @param {?} productReferences
                  * @param {?} productReference
                  * @return {?}

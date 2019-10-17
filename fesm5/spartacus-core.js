@@ -41124,7 +41124,7 @@ function reducer$i(state, action) {
             var productCode = action.payload.productCode;
             /** @type {?} */
             var list = action.payload.list;
-            return __assign({}, state, { list: __spread(state.list, list).reduce((/**
+            return __assign({}, state, { list: __spread(state.list, (list ? list : [])).reduce((/**
                  * @param {?} productReferences
                  * @param {?} productReference
                  * @return {?}
