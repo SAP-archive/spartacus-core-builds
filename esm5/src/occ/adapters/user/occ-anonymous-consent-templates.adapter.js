@@ -1,0 +1,66 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { CONSENT_TEMPLATE_NORMALIZER } from '../../../user/connectors/consent/converters';
+import { ConverterService } from '../../../util/converter.service';
+import { OccEndpointsService } from '../../services/occ-endpoints.service';
+var OccAnonymousConsentTemplatesAdapter = /** @class */ (function () {
+    function OccAnonymousConsentTemplatesAdapter(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @return {?}
+     */
+    OccAnonymousConsentTemplatesAdapter.prototype.loadAnonymousConsentTemplates = /**
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var url = this.occEndpoints.getUrl('anonymousConsentTemplates');
+        return this.http.get(url).pipe(catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) { return throwError(error); })), map((/**
+         * @param {?} consentList
+         * @return {?}
+         */
+        function (consentList) { return consentList.consentTemplates; })), this.converter.pipeableMany(CONSENT_TEMPLATE_NORMALIZER));
+    };
+    OccAnonymousConsentTemplatesAdapter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    OccAnonymousConsentTemplatesAdapter.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: OccEndpointsService },
+        { type: ConverterService }
+    ]; };
+    return OccAnonymousConsentTemplatesAdapter;
+}());
+export { OccAnonymousConsentTemplatesAdapter };
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAnonymousConsentTemplatesAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAnonymousConsentTemplatesAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccAnonymousConsentTemplatesAdapter.prototype.converter;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2NjLWFub255bW91cy1jb25zZW50LXRlbXBsYXRlcy5hZGFwdGVyLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQHNwYXJ0YWN1cy9jb3JlLyIsInNvdXJjZXMiOlsic3JjL29jYy9hZGFwdGVycy91c2VyL29jYy1hbm9ueW1vdXMtY29uc2VudC10ZW1wbGF0ZXMuYWRhcHRlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLHNCQUFzQixDQUFDO0FBQ2xELE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFDM0MsT0FBTyxFQUFjLFVBQVUsRUFBRSxNQUFNLE1BQU0sQ0FBQztBQUM5QyxPQUFPLEVBQUUsVUFBVSxFQUFFLEdBQUcsRUFBRSxNQUFNLGdCQUFnQixDQUFDO0FBR2pELE9BQU8sRUFBRSwyQkFBMkIsRUFBRSxNQUFNLDZDQUE2QyxDQUFDO0FBQzFGLE9BQU8sRUFBRSxnQkFBZ0IsRUFBRSxNQUFNLGlDQUFpQyxDQUFDO0FBRW5FLE9BQU8sRUFBRSxtQkFBbUIsRUFBRSxNQUFNLHNDQUFzQyxDQUFDO0FBRTNFO0lBR0UsNkNBQ1ksSUFBZ0IsRUFDaEIsWUFBaUMsRUFDakMsU0FBMkI7UUFGM0IsU0FBSSxHQUFKLElBQUksQ0FBWTtRQUNoQixpQkFBWSxHQUFaLFlBQVksQ0FBcUI7UUFDakMsY0FBUyxHQUFULFNBQVMsQ0FBa0I7SUFDcEMsQ0FBQzs7OztJQUVKLDJFQUE2Qjs7O0lBQTdCOztZQUNRLEdBQUcsR0FBRyxJQUFJLENBQUMsWUFBWSxDQUFDLE1BQU0sQ0FBQywyQkFBMkIsQ0FBQztRQUNqRSxPQUFPLElBQUksQ0FBQyxJQUFJLENBQUMsR0FBRyxDQUEwQixHQUFHLENBQUMsQ0FBQyxJQUFJLENBQ3JELFVBQVU7Ozs7UUFBQyxVQUFBLEtBQUssSUFBSSxPQUFBLFVBQVUsQ0FBQyxLQUFLLENBQUMsRUFBakIsQ0FBaUIsRUFBQyxFQUN0QyxHQUFHOzs7O1FBQUMsVUFBQSxXQUFXLElBQUksT0FBQSxXQUFXLENBQUMsZ0JBQWdCLEVBQTVCLENBQTRCLEVBQUMsRUFDaEQsSUFBSSxDQUFDLFNBQVMsQ0FBQyxZQUFZLENBQUMsMkJBQTJCLENBQUMsQ0FDekQsQ0FBQztJQUNKLENBQUM7O2dCQWhCRixVQUFVOzs7O2dCQVhGLFVBQVU7Z0JBU1YsbUJBQW1CO2dCQUZuQixnQkFBZ0I7O0lBcUJ6QiwwQ0FBQztDQUFBLEFBakJELElBaUJDO1NBaEJZLG1DQUFtQzs7Ozs7O0lBRzVDLG1EQUEwQjs7Ozs7SUFDMUIsMkRBQTJDOzs7OztJQUMzQyx3REFBcUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBIdHRwQ2xpZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnO1xuaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgT2JzZXJ2YWJsZSwgdGhyb3dFcnJvciB9IGZyb20gJ3J4anMnO1xuaW1wb3J0IHsgY2F0Y2hFcnJvciwgbWFwIH0gZnJvbSAncnhqcy9vcGVyYXRvcnMnO1xuaW1wb3J0IHsgQW5vbnltb3VzQ29uc2VudFRlbXBsYXRlc0FkYXB0ZXIgfSBmcm9tICcuLi8uLi8uLi9hbm9ueW1vdXMtY29uc2VudHMvY29ubmVjdG9ycy9hbm9ueW1vdXMtY29uc2VudC10ZW1wbGF0ZXMuYWRhcHRlcic7XG5pbXBvcnQgeyBDb25zZW50VGVtcGxhdGUgfSBmcm9tICcuLi8uLi8uLi9tb2RlbC9jb25zZW50Lm1vZGVsJztcbmltcG9ydCB7IENPTlNFTlRfVEVNUExBVEVfTk9STUFMSVpFUiB9IGZyb20gJy4uLy4uLy4uL3VzZXIvY29ubmVjdG9ycy9jb25zZW50L2NvbnZlcnRlcnMnO1xuaW1wb3J0IHsgQ29udmVydGVyU2VydmljZSB9IGZyb20gJy4uLy4uLy4uL3V0aWwvY29udmVydGVyLnNlcnZpY2UnO1xuaW1wb3J0IHsgT2NjIH0gZnJvbSAnLi4vLi4vb2NjLW1vZGVscy9vY2MubW9kZWxzJztcbmltcG9ydCB7IE9jY0VuZHBvaW50c1NlcnZpY2UgfSBmcm9tICcuLi8uLi9zZXJ2aWNlcy9vY2MtZW5kcG9pbnRzLnNlcnZpY2UnO1xuXG5ASW5qZWN0YWJsZSgpXG5leHBvcnQgY2xhc3MgT2NjQW5vbnltb3VzQ29uc2VudFRlbXBsYXRlc0FkYXB0ZXJcbiAgaW1wbGVtZW50cyBBbm9ueW1vdXNDb25zZW50VGVtcGxhdGVzQWRhcHRlciB7XG4gIGNvbnN0cnVjdG9yKFxuICAgIHByb3RlY3RlZCBodHRwOiBIdHRwQ2xpZW50LFxuICAgIHByb3RlY3RlZCBvY2NFbmRwb2ludHM6IE9jY0VuZHBvaW50c1NlcnZpY2UsXG4gICAgcHJvdGVjdGVkIGNvbnZlcnRlcjogQ29udmVydGVyU2VydmljZVxuICApIHt9XG5cbiAgbG9hZEFub255bW91c0NvbnNlbnRUZW1wbGF0ZXMoKTogT2JzZXJ2YWJsZTxDb25zZW50VGVtcGxhdGVbXT4ge1xuICAgIGNvbnN0IHVybCA9IHRoaXMub2NjRW5kcG9pbnRzLmdldFVybCgnYW5vbnltb3VzQ29uc2VudFRlbXBsYXRlcycpO1xuICAgIHJldHVybiB0aGlzLmh0dHAuZ2V0PE9jYy5Db25zZW50VGVtcGxhdGVMaXN0Pih1cmwpLnBpcGUoXG4gICAgICBjYXRjaEVycm9yKGVycm9yID0+IHRocm93RXJyb3IoZXJyb3IpKSxcbiAgICAgIG1hcChjb25zZW50TGlzdCA9PiBjb25zZW50TGlzdC5jb25zZW50VGVtcGxhdGVzKSxcbiAgICAgIHRoaXMuY29udmVydGVyLnBpcGVhYmxlTWFueShDT05TRU5UX1RFTVBMQVRFX05PUk1BTElaRVIpXG4gICAgKTtcbiAgfVxufVxuIl19

@@ -81,4 +81,12 @@ export declare class UserConsentService {
      * Resets the process flags for withdraw consent
      */
     resetWithdrawConsentProcessState(): void;
+    /**
+     * Filters the provided `templateList`' templates by hiding the template IDs specified in `hideTemplateIds`.
+     * If the `hideTemplateIds` is empty, the provided `templateList` is returned.
+     *
+     * @param templateList a list of consent templates to filter
+     * @param hideTemplateIds template IDs to hide
+     */
+    filterConsentTemplates(templateList: ConsentTemplate[], hideTemplateIds?: string[]): ConsentTemplate[];
 }

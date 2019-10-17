@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { AnonymousConsentsEffects } from './anonymous-consents.effect';
+/** @type {?} */
+export const effects = [AnonymousConsentsEffects];
+export { AnonymousConsentsEffects } from './anonymous-consents.effect';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvYW5vbnltb3VzLWNvbnNlbnRzL3N0b3JlL2VmZmVjdHMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSx3QkFBd0IsRUFBRSxNQUFNLDZCQUE2QixDQUFDOztBQUV2RSxNQUFNLE9BQU8sT0FBTyxHQUFVLENBQUMsd0JBQXdCLENBQUM7QUFFeEQseUNBQWMsNkJBQTZCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBBbm9ueW1vdXNDb25zZW50c0VmZmVjdHMgfSBmcm9tICcuL2Fub255bW91cy1jb25zZW50cy5lZmZlY3QnO1xuXG5leHBvcnQgY29uc3QgZWZmZWN0czogYW55W10gPSBbQW5vbnltb3VzQ29uc2VudHNFZmZlY3RzXTtcblxuZXhwb3J0ICogZnJvbSAnLi9hbm9ueW1vdXMtY29uc2VudHMuZWZmZWN0JztcbiJdfQ==

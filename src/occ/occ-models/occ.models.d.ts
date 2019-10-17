@@ -3766,6 +3766,15 @@ export declare namespace Occ {
         Product = "product",
         Order = "order"
     }
+    interface AnonymousConsent {
+        templateCode?: string;
+        version?: number;
+        consentState?: CONSENT_STATUS;
+    }
+    enum CONSENT_STATUS {
+        ANONYMOUS_CONSENT_GIVEN = "GIVEN",
+        ANONYMOUS_CONSENT_WITHDRAWN = "WITHDRAWN"
+    }
     interface ConsentTemplate {
         id?: string;
         name?: string;

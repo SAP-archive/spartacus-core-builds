@@ -8,6 +8,7 @@ export declare const GIVE_USER_CONSENT = "[User] Give User Consent";
 export declare const GIVE_USER_CONSENT_FAIL = "[User] Give User Consent Fail";
 export declare const GIVE_USER_CONSENT_SUCCESS = "[User] Give User Consent Success";
 export declare const RESET_GIVE_USER_CONSENT_PROCESS = "[User] Reset Give User Consent Process";
+export declare const TRANSFER_ANONYMOUS_CONSENT = "[User] Transfer Anonymous Consent";
 export declare const WITHDRAW_USER_CONSENT = "[User] Withdraw User Consent";
 export declare const WITHDRAW_USER_CONSENT_FAIL = "[User] Withdraw User Consent Fail";
 export declare const WITHDRAW_USER_CONSENT_SUCCESS = "[User] Withdraw User Consent Success";
@@ -56,6 +57,19 @@ export declare class GiveUserConsentSuccess extends StateEntityLoaderActions.Ent
 export declare class ResetGiveUserConsentProcess extends StateEntityLoaderActions.EntityResetAction {
     readonly type = "[User] Reset Give User Consent Process";
     constructor();
+}
+export declare class TransferAnonymousConsent {
+    payload: {
+        userId: string;
+        consentTemplateId: string;
+        consentTemplateVersion: number;
+    };
+    readonly type = "[User] Transfer Anonymous Consent";
+    constructor(payload: {
+        userId: string;
+        consentTemplateId: string;
+        consentTemplateVersion: number;
+    });
 }
 export declare class WithdrawUserConsent extends StateEntityLoaderActions.EntityLoadAction {
     payload: {

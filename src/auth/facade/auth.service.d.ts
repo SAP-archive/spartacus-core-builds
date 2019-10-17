@@ -81,4 +81,8 @@ export declare class AuthService {
      */
     refreshClientToken(): Observable<ClientToken>;
     protected isClientTokenLoaded(state: LoaderState<ClientToken>): boolean;
+    /**
+     * Returns `true` if the user is logged in; and `false` if the user is anonymous.
+     */
+    isUserLoggedIn(): Observable<boolean>;
 }
