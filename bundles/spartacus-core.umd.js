@@ -27264,6 +27264,11 @@
         /** @type {?} */
         PageMetaResolver.prototype.pageTemplate;
         /**
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         *
+         * @deprecated since version 1.3
          * @abstract
          * @return {?}
          */
@@ -29949,28 +29954,55 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
+     * and the `CartPageTemplate`. If the cart page matches this template, the more generic
+     * `ContentPageMetaResolver` is overriden by this resolver.
+     *
+     * The page title and robots are resolved in this implementation only.
+     */
     var CartPageMetaResolver = /** @class */ (function (_super) {
         __extends(CartPageMetaResolver, _super);
         function CartPageMetaResolver(cms) {
             var _this = _super.call(this) || this;
             _this.cms = cms;
+            _this.cms$ = _this.cms
+                .getCurrentPage()
+                .pipe(operators.filter((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) { return !!page; })));
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'CartPageTemplate';
             return _this;
         }
         /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         CartPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         function () {
             var _this = this;
-            return this.cms.getCurrentPage().pipe(operators.filter((/**
-             * @param {?} page
-             * @return {?}
-             */
-            function (page) { return page !== undefined; })), operators.switchMap((/**
+            return this.cms$.pipe(operators.switchMap((/**
              * @param {?} page
              * @return {?}
              */
@@ -29986,15 +30018,19 @@
             })));
         };
         /**
-         * @param {?} page
+         * @param {?=} page
          * @return {?}
          */
         CartPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} page
+         * @param {?=} page
          * @return {?}
          */
         function (page) {
-            return rxjs.of(page.title);
+            return page ? rxjs.of(page.title) : this.cms$.pipe(operators.map((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) { return p.title; })));
         };
         /**
          * @return {?}
@@ -30018,6 +30054,8 @@
         return CartPageMetaResolver;
     }(PageMetaResolver));
     if (false) {
+        /** @type {?} */
+        CartPageMetaResolver.prototype.cms$;
         /**
          * @type {?}
          * @protected
@@ -32151,25 +32189,50 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
+     * and the `MultiStepCheckoutSummaryPageTemplate`. If the checkout page matches this template,
+     * the more generic `ContentPageMetaResolver` is overriden by this resolver.
+     *
+     * The page title and robots are resolved in this implementation only.
+     */
     var CheckoutPageMetaResolver = /** @class */ (function (_super) {
         __extends(CheckoutPageMetaResolver, _super);
         function CheckoutPageMetaResolver(cartService, translation) {
             var _this = _super.call(this) || this;
             _this.cartService = cartService;
             _this.translation = translation;
+            _this.cart$ = _this.cartService.getActive();
             _this.pageType = PageType.CONTENT_PAGE;
             _this.pageTemplate = 'MultiStepCheckoutSummaryPageTemplate';
             return _this;
         }
         /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         CheckoutPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         function () {
             var _this = this;
-            return this.cartService.getActive().pipe(operators.switchMap((/**
+            return this.cart$.pipe(operators.switchMap((/**
              * @param {?} cart
              * @return {?}
              */
@@ -32185,17 +32248,26 @@
             })));
         };
         /**
-         * @param {?} cart
+         * @param {?=} cart
          * @return {?}
          */
         CheckoutPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} cart
+         * @param {?=} cart
          * @return {?}
          */
         function (cart) {
-            return this.translation.translate('pageMetaResolver.checkout.title', {
-                count: cart.totalItems,
-            });
+            var _this = this;
+            /** @type {?} */
+            var cart$ = cart ? rxjs.of(cart) : this.cart$;
+            return cart$.pipe(operators.switchMap((/**
+             * @param {?} c
+             * @return {?}
+             */
+            function (c) {
+                return _this.translation.translate('pageMetaResolver.checkout.title', {
+                    count: c.totalItems,
+                });
+            })));
         };
         /**
          * @return {?}
@@ -32220,6 +32292,11 @@
         return CheckoutPageMetaResolver;
     }(PageMetaResolver));
     if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        CheckoutPageMetaResolver.prototype.cart$;
         /**
          * @type {?}
          * @protected
@@ -34073,24 +34150,55 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`.
+     * More specific resolvers for content pages can be implemented by making them more
+     * specific, for example by using the page template (see `CartPageMetaResolver`).
+     *
+     * The page title, and breadcrumbs are resolved in this implementation only.
+     */
     var ContentPageMetaResolver = /** @class */ (function (_super) {
         __extends(ContentPageMetaResolver, _super);
         function ContentPageMetaResolver(cms, translation) {
             var _this = _super.call(this) || this;
             _this.cms = cms;
             _this.translation = translation;
+            _this.cms$ = _this.cms
+                .getCurrentPage()
+                .pipe(operators.filter((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) { return !!p; })));
             _this.pageType = PageType.CONTENT_PAGE;
             return _this;
         }
         /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         ContentPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         function () {
             var _this = this;
-            return this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap((/**
+            return this.cms$.pipe(operators.switchMap((/**
              * @param {?} page
              * @return {?}
              */
@@ -34113,39 +34221,60 @@
             })));
         };
         /**
-         * @param {?} page
+         * @param {?=} page
          * @return {?}
          */
         ContentPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} page
+         * @param {?=} page
          * @return {?}
          */
         function (page) {
-            return rxjs.of(page.title);
+            return page ? rxjs.of(page.title) : this.cms$.pipe(operators.map((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) { return p.title; })));
         };
         /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
+         */
+        /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
          * @return {?}
          */
         ContentPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
          * @return {?}
          */
         function () {
             return this.translation.translate('common.home');
         };
         /**
-         * @param {?} _page
-         * @param {?} breadcrumbLabel
+         * @param {?=} _page
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
         ContentPageMetaResolver.prototype.resolveBreadcrumbs = /**
-         * @param {?} _page
-         * @param {?} breadcrumbLabel
+         * @param {?=} _page
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
         function (_page, breadcrumbLabel) {
-            // as long as we do not have CMSX-8689 in place
-            // we need specific resolvers for nested pages
-            return rxjs.of([{ label: breadcrumbLabel, link: '/' }]);
+            if (breadcrumbLabel) {
+                return rxjs.of([{ label: breadcrumbLabel, link: '/' }]);
+            }
+            else {
+                return this.translation
+                    .translate('common.home')
+                    .pipe(operators.map((/**
+                 * @param {?} label
+                 * @return {?}
+                 */
+                function (label) { return [{ label: label, link: '/' }]; })));
+            }
         };
         ContentPageMetaResolver.decorators = [
             { type: core.Injectable, args: [{
@@ -34161,6 +34290,11 @@
         return ContentPageMetaResolver;
     }(PageMetaResolver));
     if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ContentPageMetaResolver.prototype.cms$;
         /**
          * @type {?}
          * @protected
@@ -36850,9 +36984,25 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var PageMetaService = /** @class */ (function () {
-        function PageMetaService(resolvers, cms) {
+        function PageMetaService(resolvers, cms, featureConfigService) {
             this.resolvers = resolvers;
             this.cms = cms;
+            this.featureConfigService = featureConfigService;
+            /**
+             * The list of resolver interfaces will be evaluated for the pageResolvers.
+             *
+             * TOOD: optimize browser vs SSR resolvers; image, robots and description
+             *       aren't needed during browsing.
+             * TODO: we can make the list of resolver types configurable
+             */
+            this.resolverMethods = {
+                title: 'resolveTitle',
+                heading: 'resolveHeading',
+                description: 'resolveDescription',
+                breadcrumbs: 'resolveBreadcrumbs',
+                image: 'resolveImage',
+                robots: 'resolveRobots',
+            };
             this.resolvers = this.resolvers || [];
         }
         /**
@@ -36871,7 +37021,7 @@
                 /** @type {?} */
                 var metaResolver = _this.getMetaResolver(page);
                 if (metaResolver) {
-                    return metaResolver.resolve();
+                    return _this.resolve(metaResolver);
                 }
                 else {
                     // we do not have a page resolver
@@ -36880,21 +37030,78 @@
             })));
         };
         /**
-         * return the title resolver with the best match
-         * title resovers can by default match on PageType and page template
+         * If a pageResolver has implemented a resolver interface, the resolved data
+         * is merged into the `PageMeta` object.
+         * @param metaResolver
+         */
+        /**
+         * If a pageResolver has implemented a resolver interface, the resolved data
+         * is merged into the `PageMeta` object.
+         * @private
+         * @param {?} metaResolver
+         * @return {?}
+         */
+        PageMetaService.prototype.resolve = /**
+         * If a pageResolver has implemented a resolver interface, the resolved data
+         * is merged into the `PageMeta` object.
+         * @private
+         * @param {?} metaResolver
+         * @return {?}
+         */
+        function (metaResolver) {
+            var _this = this;
+            if (metaResolver.resolve &&
+                (!this.featureConfigService || !this.featureConfigService.isLevel('1.3'))) {
+                return metaResolver.resolve();
+            }
+            else {
+                // resolve individual resolvers to make the extension mechanism more flexible
+                /** @type {?} */
+                var resolveMethods = Object.keys(this.resolverMethods)
+                    .filter((/**
+                 * @param {?} key
+                 * @return {?}
+                 */
+                function (key) { return metaResolver[_this.resolverMethods[key]]; }))
+                    .map((/**
+                 * @param {?} key
+                 * @return {?}
+                 */
+                function (key) {
+                    return metaResolver[_this.resolverMethods[key]]().pipe(operators.map((/**
+                     * @param {?} data
+                     * @return {?}
+                     */
+                    function (data) {
+                        var _a;
+                        return (_a = {},
+                            _a[key] = data,
+                            _a);
+                    })));
+                }));
+                return rxjs.combineLatest(resolveMethods).pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return Object.assign.apply(Object, __spread([{}], data)); })));
+            }
+        };
+        /**
+         * return the resolver with the best match
+         * resovers can by default match on PageType and page template
          * but custom match comparisors can be implemented.
          */
         /**
-         * return the title resolver with the best match
-         * title resovers can by default match on PageType and page template
+         * return the resolver with the best match
+         * resovers can by default match on PageType and page template
          * but custom match comparisors can be implemented.
          * @protected
          * @param {?} page
          * @return {?}
          */
         PageMetaService.prototype.getMetaResolver = /**
-         * return the title resolver with the best match
-         * title resovers can by default match on PageType and page template
+         * return the resolver with the best match
+         * resovers can by default match on PageType and page template
          * but custom match comparisors can be implemented.
          * @protected
          * @param {?} page
@@ -36925,12 +37132,22 @@
         /** @nocollapse */
         PageMetaService.ctorParameters = function () { return [
             { type: Array, decorators: [{ type: core.Optional }, { type: core.Inject, args: [PageMetaResolver,] }] },
-            { type: CmsService }
+            { type: CmsService },
+            { type: FeatureConfigService }
         ]; };
-        /** @nocollapse */ PageMetaService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(core.ɵɵinject(PageMetaResolver, 8), core.ɵɵinject(CmsService)); }, token: PageMetaService, providedIn: "root" });
+        /** @nocollapse */ PageMetaService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function PageMetaService_Factory() { return new PageMetaService(core.ɵɵinject(PageMetaResolver, 8), core.ɵɵinject(CmsService), core.ɵɵinject(FeatureConfigService)); }, token: PageMetaService, providedIn: "root" });
         return PageMetaService;
     }());
     if (false) {
+        /**
+         * The list of resolver interfaces will be evaluated for the pageResolvers.
+         *
+         * TOOD: optimize browser vs SSR resolvers; image, robots and description
+         *       aren't needed during browsing.
+         * TODO: we can make the list of resolver types configurable
+         * @type {?}
+         */
+        PageMetaService.prototype.resolverMethods;
         /**
          * @type {?}
          * @protected
@@ -36941,6 +37158,11 @@
          * @protected
          */
         PageMetaService.prototype.cms;
+        /**
+         * @type {?}
+         * @protected
+         */
+        PageMetaService.prototype.featureConfigService;
     }
 
     /**
@@ -36996,68 +37218,117 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * Resolves the page heading which is used in the UI.
+     * Resolves the page heading which is used in the UI. The page
+     * heading might differ from the page title, which is used to address
+     * the page in the browser (history, tabs) and outside the storefront
+     * (Goolge, bots, etc).
      * @record
      */
     function PageHeadingResolver() { }
     if (false) {
         /**
+         * Resolves the page heading.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveHeading()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageHeadingResolver.prototype.resolveHeading = function (args) { };
+        /**
+         * Resolves the page heading.
+         * @return {?}
+         */
+        PageHeadingResolver.prototype.resolveHeading = function () { };
     }
     /**
-     * Resolves the page title which is first and foremost
-     * used for the page title tag, but could also be used for the
+     * Resolves the page title which is first and foremost used
+     * for the page title tag, but could also be used for the
      * page heading in the UI.
      * @record
      */
     function PageTitleResolver() { }
     if (false) {
         /**
+         * Resolves the page title.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveTitle()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageTitleResolver.prototype.resolveTitle = function (args) { };
+        /**
+         * Resolves the page title.
+         * @return {?}
+         */
+        PageTitleResolver.prototype.resolveTitle = function () { };
     }
     /**
-     * Resolves the page description. The page description is used
+     * Resolves the page description. The page description is typically used
      * in the Search Engine Result Page (SERP).
      * @record
      */
     function PageDescriptionResolver() { }
     if (false) {
         /**
+         * Resolves the page description.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveHeading()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageDescriptionResolver.prototype.resolveDescription = function (args) { };
+        /**
+         * Resolves the page description.
+         * @return {?}
+         */
+        PageDescriptionResolver.prototype.resolveDescription = function () { };
     }
     /**
-     * Resolves breadcrumbs for the page, which is used in the `BreadcrumbComponent`/
+     * Resolves breadcrumbs for the page, which is used in the `BreadcrumbComponent`
      * @record
      */
     function PageBreadcrumbResolver() { }
     if (false) {
         /**
+         * Resolves the breadcrumbs for the page.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveBreadcrumbs()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageBreadcrumbResolver.prototype.resolveBreadcrumbs = function (args) { };
+        /**
+         * Resolves the breadcrumbs for the page.
+         * @return {?}
+         */
+        PageBreadcrumbResolver.prototype.resolveBreadcrumbs = function () { };
     }
     /**
-     * Resolves the main image for the page. This is typically used
-     * for social sharing (using `og:image` metatag)
+     * Provides a method to resolve the the main image for the page.
+     * This is typically used for social sharing (for example by using
+     * the `og:image` metatag).
      * @record
      */
     function PageImageResolver() { }
     if (false) {
         /**
+         * Resolves the main image for the page.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveImage()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageImageResolver.prototype.resolveImage = function (args) { };
+        /**
+         * Resolves the main image for the page.
+         * @return {?}
+         */
+        PageImageResolver.prototype.resolveImage = function () { };
     }
     /**
      * Resolves the robot information for the page. This is used by
@@ -37069,10 +37340,19 @@
     function PageRobotsResolver() { }
     if (false) {
         /**
+         * Resolves the robots for the page.
+         *
+         * @deprecated since version 1.3
+         * Use `resolveRobots()` instead.
          * @param {...?} args
          * @return {?}
          */
         PageRobotsResolver.prototype.resolveRobots = function (args) { };
+        /**
+         * Resolves the robots for the page.
+         * @return {?}
+         */
+        PageRobotsResolver.prototype.resolveRobots = function () { };
     }
 
     /**
@@ -40397,6 +40677,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for the Product Listing Page
+     * based on the `PageType.CATEGORY_PAGE`.
+     *
+     * The page title, and breadcrumbs are resolved in this implementation only.
+     */
     var CategoryPageMetaResolver = /** @class */ (function (_super) {
         __extends(CategoryPageMetaResolver, _super);
         function CategoryPageMetaResolver(routingService, productSearchService, cms, translation) {
@@ -40405,13 +40691,42 @@
             _this.productSearchService = productSearchService;
             _this.cms = cms;
             _this.translation = translation;
+            // reusable observable for search page data
+            _this.searchPage$ = _this.cms.getCurrentPage().pipe(operators.filter(Boolean), operators.switchMap((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) {
+                // only the existence of a plp component tells us if products
+                // are rendered or if this is an ordinary content page
+                return _this.hasProductListComponent(page)
+                    ? _this.productSearchService.getResults().pipe(operators.filter(Boolean))
+                    : rxjs.of(page);
+            })));
             _this.pageType = PageType.CATEGORY_PAGE;
             return _this;
         }
         /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
          * @return {?}
          */
         function () {
@@ -40458,45 +40773,95 @@
             })));
         };
         /**
-         * @param {?} data
+         * @param {?=} searchPage
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} data
+         * @param {?=} searchPage
          * @return {?}
          */
-        function (data) {
-            return this.translation.translate('pageMetaResolver.category.title', {
-                count: data.pagination.totalResults,
-                query: data.breadcrumbs[0].facetValueName,
-            });
+        function (searchPage) {
+            var _this = this;
+            /** @type {?} */
+            var searchPage$ = searchPage ? rxjs.of(searchPage) : this.searchPage$;
+            return searchPage$.pipe(operators.filter((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) { return !!page.pagination; })), operators.switchMap((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                return _this.translation.translate('pageMetaResolver.category.title', {
+                    count: ((/** @type {?} */ (p))).pagination.totalResults,
+                    query: ((/** @type {?} */ (p))).breadcrumbs[0].facetValueName,
+                });
+            })));
         };
         /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
+         */
+        /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @deprecated since version 1.3
+         * This method will removed with with 2.0
          * @return {?}
          */
         function () {
             return this.translation.translate('common.home');
         };
         /**
-         * @param {?} data
-         * @param {?} breadcrumbLabel
+         * @param {?=} searchPage
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
         CategoryPageMetaResolver.prototype.resolveBreadcrumbs = /**
-         * @param {?} data
-         * @param {?} breadcrumbLabel
+         * @param {?=} searchPage
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
-        function (data, breadcrumbLabel) {
+        function (searchPage, breadcrumbLabel) {
+            var _this = this;
+            /** @type {?} */
+            var sources = searchPage && breadcrumbLabel
+                ? [rxjs.of(searchPage), rxjs.of(breadcrumbLabel)]
+                : [this.searchPage$.pipe(), this.translation.translate('common.home')];
+            return rxjs.combineLatest(sources).pipe(operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), p = _b[0], label = _b[1];
+                return p.breadcrumbs
+                    ? _this.resolveBreadcrumbData((/** @type {?} */ (p)), label)
+                    : null;
+            })));
+        };
+        /**
+         * @private
+         * @param {?} page
+         * @param {?} label
+         * @return {?}
+         */
+        CategoryPageMetaResolver.prototype.resolveBreadcrumbData = /**
+         * @private
+         * @param {?} page
+         * @param {?} label
+         * @return {?}
+         */
+        function (page, label) {
             var e_1, _a;
             /** @type {?} */
             var breadcrumbs = [];
-            breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
+            breadcrumbs.push({ label: label, link: '/' });
             try {
-                for (var _b = __values(data.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
+                for (var _b = __values(page.breadcrumbs), _c = _b.next(); !_c.done; _c = _b.next()) {
                     var br = _c.value;
                     if (br.facetCode === 'category') {
                         breadcrumbs.push({
@@ -40519,7 +40884,7 @@
                 }
                 finally { if (e_1) throw e_1.error; }
             }
-            return rxjs.of(breadcrumbs);
+            return breadcrumbs;
         };
         /**
          * @private
@@ -40532,7 +40897,6 @@
          * @return {?}
          */
         function (page) {
-            // ProductListComponent
             return !!Object.keys(page.slots).find((/**
              * @param {?} key
              * @return {?}
@@ -40563,6 +40927,11 @@
     if (false) {
         /**
          * @type {?}
+         * @private
+         */
+        CategoryPageMetaResolver.prototype.searchPage$;
+        /**
+         * @type {?}
          * @protected
          */
         CategoryPageMetaResolver.prototype.routingService;
@@ -40587,6 +40956,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for the Product Detail Page
+     * based on the `PageType.PRODUCT_PAGE`.
+     *
+     * The page title, heading, description, breadcrumbs and
+     * first GALLERY image are resolved if available in the data.
+     */
     var ProductPageMetaResolver = /** @class */ (function (_super) {
         __extends(ProductPageMetaResolver, _super);
         function ProductPageMetaResolver(routingService, productService, translation) {
@@ -40594,18 +40970,8 @@
             _this.routingService = routingService;
             _this.productService = productService;
             _this.translation = translation;
-            _this.pageType = PageType.PRODUCT_PAGE;
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        ProductPageMetaResolver.prototype.resolve = /**
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.routingService.getRouterState().pipe(operators.map((/**
+            // resuable observable for product data based on the current page
+            _this.product$ = _this.routingService.getRouterState().pipe(operators.map((/**
              * @param {?} state
              * @return {?}
              */
@@ -40617,7 +40983,36 @@
              * @param {?} code
              * @return {?}
              */
-            function (code) { return _this.productService.get(code); })), operators.filter(Boolean), operators.switchMap((/**
+            function (code) { return _this.productService.get(code); })), operators.filter(Boolean));
+            _this.pageType = PageType.PRODUCT_PAGE;
+            return _this;
+        }
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        ProductPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.product$.pipe(operators.switchMap((/**
              * @param {?} p
              * @return {?}
              */
@@ -40649,108 +41044,159 @@
             })));
         };
         /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveHeading = /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         function (product) {
-            return this.translation.translate('pageMetaResolver.product.heading', {
-                heading: product.name,
-            });
+            var _this = this;
+            /** @type {?} */
+            var product$ = product ? rxjs.of(product) : this.product$;
+            return product$.pipe(operators.switchMap((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                return _this.translation.translate('pageMetaResolver.product.heading', {
+                    heading: p.name,
+                });
+            })));
         };
         /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         function (product) {
+            var _this = this;
             /** @type {?} */
-            var title = product.name;
-            title += this.resolveFirstCategory(product);
-            title += this.resolveManufacturer(product);
-            return this.translation.translate('pageMetaResolver.product.title', {
-                title: title,
-            });
+            var product$ = product ? rxjs.of(product) : this.product$;
+            return product$.pipe(operators.switchMap((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                /** @type {?} */
+                var title = p.name;
+                title += _this.resolveFirstCategory(p);
+                title += _this.resolveManufacturer(p);
+                return _this.translation.translate('pageMetaResolver.product.title', {
+                    title: title,
+                });
+            })));
         };
         /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveDescription = /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         function (product) {
-            return this.translation.translate('pageMetaResolver.product.description', {
-                description: product.summary,
-            });
+            var _this = this;
+            /** @type {?} */
+            var product$ = product ? rxjs.of(product) : this.product$;
+            return product$.pipe(operators.switchMap((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                return _this.translation.translate('pageMetaResolver.product.description', {
+                    description: p.summary,
+                });
+            })));
         };
         /**
+         * @deprecated since version 1.3
+         * This method will be removed with with 2.0
+         */
+        /**
+         * @deprecated since version 1.3
+         * This method will be removed with with 2.0
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveBreadcrumbLabel = /**
+         * @deprecated since version 1.3
+         * This method will be removed with with 2.0
          * @return {?}
          */
         function () {
             return this.translation.translate('common.home');
         };
         /**
-         * @param {?} product
-         * @param {?} breadcrumbLabel
+         * @param {?=} product
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveBreadcrumbs = /**
-         * @param {?} product
-         * @param {?} breadcrumbLabel
+         * @param {?=} product
+         * @param {?=} breadcrumbLabel
          * @return {?}
          */
         function (product, breadcrumbLabel) {
-            var e_1, _a;
             /** @type {?} */
-            var breadcrumbs = [];
-            breadcrumbs.push({ label: breadcrumbLabel, link: '/' });
-            try {
-                for (var _b = __values(product.categories), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var _d = _c.value, name_1 = _d.name, code = _d.code, url = _d.url;
-                    breadcrumbs.push({
-                        label: name_1 || code,
-                        link: url,
-                    });
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
+            var sources = product && breadcrumbLabel
+                ? [rxjs.of(product), rxjs.of(breadcrumbLabel)]
+                : [this.product$.pipe(), this.translation.translate('common.home')];
+            return rxjs.combineLatest(sources).pipe(operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var e_1, _b;
+                var _c = __read(_a, 2), p = _c[0], label = _c[1];
+                /** @type {?} */
+                var breadcrumbs = [];
+                breadcrumbs.push({ label: label, link: '/' });
                 try {
-                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                    for (var _d = __values(p.categories), _e = _d.next(); !_e.done; _e = _d.next()) {
+                        var _f = _e.value, name_1 = _f.name, code = _f.code, url = _f.url;
+                        breadcrumbs.push({
+                            label: name_1 || code,
+                            link: url,
+                        });
+                    }
                 }
-                finally { if (e_1) throw e_1.error; }
-            }
-            return rxjs.of(breadcrumbs);
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
+                    try {
+                        if (_e && !_e.done && (_b = _d.return)) _b.call(_d);
+                    }
+                    finally { if (e_1) throw e_1.error; }
+                }
+                return breadcrumbs;
+            })));
         };
         /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         ProductPageMetaResolver.prototype.resolveImage = /**
-         * @param {?} product
+         * @param {?=} product
          * @return {?}
          */
         function (product) {
             /** @type {?} */
-            var result;
-            if (product.images &&
-                product.images.PRIMARY &&
-                product.images.PRIMARY.zoom &&
-                product.images.PRIMARY.zoom.url) {
-                result = product.images.PRIMARY.zoom.url;
-            }
-            return rxjs.of(result);
+            var product$ = product ? rxjs.of(product) : this.product$;
+            return product$.pipe(operators.map((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                return p.images &&
+                    p.images.PRIMARY &&
+                    ((/** @type {?} */ (p.images.PRIMARY))).zoom &&
+                    ((/** @type {?} */ (p.images.PRIMARY))).zoom.url
+                    ? ((/** @type {?} */ (p.images.PRIMARY))).zoom.url
+                    : null;
+            })));
         };
         /**
          * @private
@@ -40802,6 +41248,11 @@
     if (false) {
         /**
          * @type {?}
+         * @private
+         */
+        ProductPageMetaResolver.prototype.product$;
+        /**
+         * @type {?}
          * @protected
          */
         ProductPageMetaResolver.prototype.routingService;
@@ -40821,6 +41272,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Resolves the page data for the Search Result Page based on the
+     * `PageType.CATEGORY_PAGE` and the `SearchResultsListPageTemplate` template.
+     *
+     * Only the page title is resolved in the implemenation.
+     */
     var SearchPageMetaResolver = /** @class */ (function (_super) {
         __extends(SearchPageMetaResolver, _super);
         function SearchPageMetaResolver(routingService, productSearchService, translation) {
@@ -40828,20 +41285,7 @@
             _this.routingService = routingService;
             _this.productSearchService = productSearchService;
             _this.translation = translation;
-            _this.pageType = PageType.CONTENT_PAGE;
-            _this.pageTemplate = 'SearchResultsListPageTemplate';
-            return _this;
-        }
-        /**
-         * @return {?}
-         */
-        SearchPageMetaResolver.prototype.resolve = /**
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            /** @type {?} */
-            var total$ = this.productSearchService.getResults().pipe(operators.filter((/**
+            _this.total$ = _this.productSearchService.getResults().pipe(operators.filter((/**
              * @param {?} data
              * @return {?}
              */
@@ -40850,42 +41294,68 @@
              * @return {?}
              */
             function (results) { return results.pagination.totalResults; })));
-            /** @type {?} */
-            var query$ = this.routingService
+            _this.query$ = _this.routingService
                 .getRouterState()
                 .pipe(operators.map((/**
              * @param {?} state
              * @return {?}
              */
             function (state) { return state.state.params['query']; })));
-            return rxjs.combineLatest([total$, query$]).pipe(operators.switchMap((/**
+            _this.pageType = PageType.CONTENT_PAGE;
+            _this.pageTemplate = 'SearchResultsListPageTemplate';
+            return _this;
+        }
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        SearchPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        function () {
+            return this.resolveTitle();
+        };
+        /**
+         * @param {?=} total
+         * @param {?=} query
+         * @return {?}
+         */
+        SearchPageMetaResolver.prototype.resolveTitle = /**
+         * @param {?=} total
+         * @param {?=} query
+         * @return {?}
+         */
+        function (total, query) {
+            var _this = this;
+            /** @type {?} */
+            var sources = total && query ? [rxjs.of(total), rxjs.of(query)] : [this.total$, this.query$];
+            return rxjs.combineLatest(sources).pipe(operators.switchMap((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
-                var _b = __read(_a, 2), total = _b[0], query = _b[1];
-                return _this.resolveTitle(total, query);
-            })), operators.map((/**
-             * @param {?} title
-             * @return {?}
-             */
-            function (title) { return ({ title: title }); })));
-        };
-        /**
-         * @param {?} total
-         * @param {?} query
-         * @return {?}
-         */
-        SearchPageMetaResolver.prototype.resolveTitle = /**
-         * @param {?} total
-         * @param {?} query
-         * @return {?}
-         */
-        function (total, query) {
-            return this.translation.translate('pageMetaResolver.search.title', {
-                count: total,
-                query: query,
-            });
+                var _b = __read(_a, 2), t = _b[0], q = _b[1];
+                return _this.translation.translate('pageMetaResolver.search.title', {
+                    count: t,
+                    query: q,
+                });
+            })));
         };
         SearchPageMetaResolver.decorators = [
             { type: core.Injectable, args: [{
@@ -40902,6 +41372,10 @@
         return SearchPageMetaResolver;
     }(PageMetaResolver));
     if (false) {
+        /** @type {?} */
+        SearchPageMetaResolver.prototype.total$;
+        /** @type {?} */
+        SearchPageMetaResolver.prototype.query$;
         /**
          * @type {?}
          * @protected
@@ -47509,135 +47983,136 @@
     exports.ɵdb = reducer$f;
     exports.ɵdc = reducer$g;
     exports.ɵdd = reducer$e;
-    exports.ɵde = GlobalMessageStoreModule;
-    exports.ɵdf = getReducers;
-    exports.ɵdg = reducerToken;
-    exports.ɵdh = reducerProvider;
-    exports.ɵdi = reducer;
-    exports.ɵdj = GlobalMessageEffect;
-    exports.ɵdk = defaultGlobalMessageConfigFactory;
-    exports.ɵdl = InternalServerErrorHandler;
-    exports.ɵdm = HttpErrorInterceptor;
-    exports.ɵdn = defaultI18nConfig;
-    exports.ɵdo = i18nextProviders;
-    exports.ɵdp = i18nextInit;
-    exports.ɵdq = MockTranslationService;
-    exports.ɵdr = kymaStoreConfigFactory;
-    exports.ɵds = KymaStoreModule;
-    exports.ɵdt = getReducers$9;
-    exports.ɵdu = reducerToken$9;
-    exports.ɵdv = reducerProvider$9;
-    exports.ɵdw = clearKymaState;
-    exports.ɵdx = metaReducers$3;
-    exports.ɵdy = effects$8;
-    exports.ɵdz = OpenIdTokenEffect;
+    exports.ɵde = FeatureConfigService;
+    exports.ɵdf = GlobalMessageStoreModule;
+    exports.ɵdg = getReducers;
+    exports.ɵdh = reducerToken;
+    exports.ɵdi = reducerProvider;
+    exports.ɵdj = reducer;
+    exports.ɵdk = GlobalMessageEffect;
+    exports.ɵdl = defaultGlobalMessageConfigFactory;
+    exports.ɵdm = InternalServerErrorHandler;
+    exports.ɵdn = HttpErrorInterceptor;
+    exports.ɵdo = defaultI18nConfig;
+    exports.ɵdp = i18nextProviders;
+    exports.ɵdq = i18nextInit;
+    exports.ɵdr = MockTranslationService;
+    exports.ɵds = kymaStoreConfigFactory;
+    exports.ɵdt = KymaStoreModule;
+    exports.ɵdu = getReducers$9;
+    exports.ɵdv = reducerToken$9;
+    exports.ɵdw = reducerProvider$9;
+    exports.ɵdx = clearKymaState;
+    exports.ɵdy = metaReducers$3;
+    exports.ɵdz = effects$8;
     exports.ɵe = stateMetaReducers;
-    exports.ɵea = OpenIdAuthenticationTokenService;
-    exports.ɵeb = defaultKymaConfig;
-    exports.ɵec = defaultOccAsmConfig;
-    exports.ɵed = defaultOccCartConfig;
-    exports.ɵee = defaultOccProductConfig;
-    exports.ɵef = defaultOccSiteContextConfig;
-    exports.ɵeg = defaultOccStoreFinderConfig;
-    exports.ɵeh = defaultOccUserConfig;
-    exports.ɵei = defaultPersonalizationConfig;
-    exports.ɵej = interceptors$2;
-    exports.ɵek = OccPersonalizationIdInterceptor;
-    exports.ɵel = OccPersonalizationTimeInterceptor;
-    exports.ɵem = ProcessStoreModule;
-    exports.ɵen = getReducers$a;
-    exports.ɵeo = reducerToken$a;
-    exports.ɵep = reducerProvider$a;
-    exports.ɵeq = productStoreConfigFactory;
-    exports.ɵer = ProductStoreModule;
-    exports.ɵes = getReducers$b;
-    exports.ɵet = reducerToken$b;
-    exports.ɵeu = reducerProvider$b;
-    exports.ɵev = clearProductsState;
-    exports.ɵew = metaReducers$4;
-    exports.ɵex = effects$9;
-    exports.ɵey = ProductReferencesEffects;
-    exports.ɵez = ProductReviewsEffects;
+    exports.ɵea = OpenIdTokenEffect;
+    exports.ɵeb = OpenIdAuthenticationTokenService;
+    exports.ɵec = defaultKymaConfig;
+    exports.ɵed = defaultOccAsmConfig;
+    exports.ɵee = defaultOccCartConfig;
+    exports.ɵef = defaultOccProductConfig;
+    exports.ɵeg = defaultOccSiteContextConfig;
+    exports.ɵeh = defaultOccStoreFinderConfig;
+    exports.ɵei = defaultOccUserConfig;
+    exports.ɵej = defaultPersonalizationConfig;
+    exports.ɵek = interceptors$2;
+    exports.ɵel = OccPersonalizationIdInterceptor;
+    exports.ɵem = OccPersonalizationTimeInterceptor;
+    exports.ɵen = ProcessStoreModule;
+    exports.ɵeo = getReducers$a;
+    exports.ɵep = reducerToken$a;
+    exports.ɵeq = reducerProvider$a;
+    exports.ɵer = productStoreConfigFactory;
+    exports.ɵes = ProductStoreModule;
+    exports.ɵet = getReducers$b;
+    exports.ɵeu = reducerToken$b;
+    exports.ɵev = reducerProvider$b;
+    exports.ɵew = clearProductsState;
+    exports.ɵex = metaReducers$4;
+    exports.ɵey = effects$9;
+    exports.ɵez = ProductReferencesEffects;
     exports.ɵf = getStorageSyncReducer;
-    exports.ɵfa = ProductsSearchEffects;
-    exports.ɵfb = ProductEffects;
-    exports.ɵfc = reducer$h;
-    exports.ɵfd = reducer$j;
-    exports.ɵfe = reducer$i;
-    exports.ɵff = PageMetaResolver;
-    exports.ɵfg = addExternalRoutesFactory;
-    exports.ɵfh = getReducers$7;
-    exports.ɵfi = reducer$d;
-    exports.ɵfj = reducerToken$7;
-    exports.ɵfk = reducerProvider$7;
-    exports.ɵfl = CustomSerializer;
-    exports.ɵfm = effects$6;
-    exports.ɵfn = RouterEffects;
-    exports.ɵfo = SiteContextParamsService;
-    exports.ɵfp = SiteContextUrlSerializer;
-    exports.ɵfq = SiteContextRoutesHandler;
-    exports.ɵfr = defaultSiteContextConfigFactory;
-    exports.ɵfs = siteContextStoreConfigFactory;
-    exports.ɵft = SiteContextStoreModule;
-    exports.ɵfu = getReducers$2;
-    exports.ɵfv = reducerToken$2;
-    exports.ɵfw = reducerProvider$2;
-    exports.ɵfx = effects$1;
-    exports.ɵfy = LanguagesEffects;
-    exports.ɵfz = CurrenciesEffects;
+    exports.ɵfa = ProductReviewsEffects;
+    exports.ɵfb = ProductsSearchEffects;
+    exports.ɵfc = ProductEffects;
+    exports.ɵfd = reducer$h;
+    exports.ɵfe = reducer$j;
+    exports.ɵff = reducer$i;
+    exports.ɵfg = PageMetaResolver;
+    exports.ɵfh = addExternalRoutesFactory;
+    exports.ɵfi = getReducers$7;
+    exports.ɵfj = reducer$d;
+    exports.ɵfk = reducerToken$7;
+    exports.ɵfl = reducerProvider$7;
+    exports.ɵfm = CustomSerializer;
+    exports.ɵfn = effects$6;
+    exports.ɵfo = RouterEffects;
+    exports.ɵfp = SiteContextParamsService;
+    exports.ɵfq = SiteContextUrlSerializer;
+    exports.ɵfr = SiteContextRoutesHandler;
+    exports.ɵfs = defaultSiteContextConfigFactory;
+    exports.ɵft = siteContextStoreConfigFactory;
+    exports.ɵfu = SiteContextStoreModule;
+    exports.ɵfv = getReducers$2;
+    exports.ɵfw = reducerToken$2;
+    exports.ɵfx = reducerProvider$2;
+    exports.ɵfy = effects$1;
+    exports.ɵfz = LanguagesEffects;
     exports.ɵg = getTransferStateReducer;
-    exports.ɵga = BaseSiteEffects;
-    exports.ɵgb = reducer$2;
-    exports.ɵgc = reducer$3;
-    exports.ɵgd = reducer$4;
-    exports.ɵge = baseSiteConfigValidator;
-    exports.ɵgf = interceptors$3;
-    exports.ɵgg = CmsTicketInterceptor;
-    exports.ɵgh = defaultStoreFinderConfig;
-    exports.ɵgi = StoreFinderStoreModule;
-    exports.ɵgj = getReducers$c;
-    exports.ɵgk = reducerToken$c;
-    exports.ɵgl = reducerProvider$c;
-    exports.ɵgm = effects$a;
-    exports.ɵgn = FindStoresEffect;
-    exports.ɵgo = ViewAllStoresEffect;
-    exports.ɵgp = UserStoreModule;
-    exports.ɵgq = getReducers$d;
-    exports.ɵgr = reducerToken$d;
-    exports.ɵgs = reducerProvider$d;
-    exports.ɵgt = clearUserState;
-    exports.ɵgu = metaReducers$6;
-    exports.ɵgv = effects$b;
-    exports.ɵgw = BillingCountriesEffect;
-    exports.ɵgx = ClearMiscsDataEffect;
-    exports.ɵgy = ConsignmentTrackingEffects;
-    exports.ɵgz = DeliveryCountriesEffects;
+    exports.ɵga = CurrenciesEffects;
+    exports.ɵgb = BaseSiteEffects;
+    exports.ɵgc = reducer$2;
+    exports.ɵgd = reducer$3;
+    exports.ɵge = reducer$4;
+    exports.ɵgf = baseSiteConfigValidator;
+    exports.ɵgg = interceptors$3;
+    exports.ɵgh = CmsTicketInterceptor;
+    exports.ɵgi = defaultStoreFinderConfig;
+    exports.ɵgj = StoreFinderStoreModule;
+    exports.ɵgk = getReducers$c;
+    exports.ɵgl = reducerToken$c;
+    exports.ɵgm = reducerProvider$c;
+    exports.ɵgn = effects$a;
+    exports.ɵgo = FindStoresEffect;
+    exports.ɵgp = ViewAllStoresEffect;
+    exports.ɵgq = UserStoreModule;
+    exports.ɵgr = getReducers$d;
+    exports.ɵgs = reducerToken$d;
+    exports.ɵgt = reducerProvider$d;
+    exports.ɵgu = clearUserState;
+    exports.ɵgv = metaReducers$6;
+    exports.ɵgw = effects$b;
+    exports.ɵgx = BillingCountriesEffect;
+    exports.ɵgy = ClearMiscsDataEffect;
+    exports.ɵgz = ConsignmentTrackingEffects;
     exports.ɵh = getReducers$3;
-    exports.ɵha = OrderDetailsEffect;
-    exports.ɵhb = UserPaymentMethodsEffects;
-    exports.ɵhc = RegionsEffects;
-    exports.ɵhd = ResetPasswordEffects;
-    exports.ɵhe = TitlesEffects;
-    exports.ɵhf = UserAddressesEffects;
-    exports.ɵhg = UserConsentsEffect;
-    exports.ɵhh = UserDetailsEffects;
-    exports.ɵhi = UserOrdersEffect;
-    exports.ɵhj = UserRegisterEffects;
-    exports.ɵhk = ForgotPasswordEffects;
-    exports.ɵhl = UpdateEmailEffects;
-    exports.ɵhm = UpdatePasswordEffects;
-    exports.ɵhn = reducer$u;
-    exports.ɵho = reducer$s;
-    exports.ɵhp = reducer$k;
-    exports.ɵhq = reducer$t;
-    exports.ɵhr = reducer$o;
-    exports.ɵhs = reducer$v;
-    exports.ɵht = reducer$n;
-    exports.ɵhu = reducer$m;
-    exports.ɵhv = reducer$r;
-    exports.ɵhw = reducer$p;
-    exports.ɵhx = reducer$q;
-    exports.ɵhy = reducer$l;
+    exports.ɵha = DeliveryCountriesEffects;
+    exports.ɵhb = OrderDetailsEffect;
+    exports.ɵhc = UserPaymentMethodsEffects;
+    exports.ɵhd = RegionsEffects;
+    exports.ɵhe = ResetPasswordEffects;
+    exports.ɵhf = TitlesEffects;
+    exports.ɵhg = UserAddressesEffects;
+    exports.ɵhh = UserConsentsEffect;
+    exports.ɵhi = UserDetailsEffects;
+    exports.ɵhj = UserOrdersEffect;
+    exports.ɵhk = UserRegisterEffects;
+    exports.ɵhl = ForgotPasswordEffects;
+    exports.ɵhm = UpdateEmailEffects;
+    exports.ɵhn = UpdatePasswordEffects;
+    exports.ɵho = reducer$u;
+    exports.ɵhp = reducer$s;
+    exports.ɵhq = reducer$k;
+    exports.ɵhr = reducer$t;
+    exports.ɵhs = reducer$o;
+    exports.ɵht = reducer$v;
+    exports.ɵhu = reducer$n;
+    exports.ɵhv = reducer$m;
+    exports.ɵhw = reducer$r;
+    exports.ɵhx = reducer$p;
+    exports.ɵhy = reducer$q;
+    exports.ɵhz = reducer$l;
     exports.ɵi = reducerToken$3;
     exports.ɵj = reducerProvider$3;
     exports.ɵk = effects$2;
