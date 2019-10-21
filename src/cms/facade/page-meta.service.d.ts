@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { FeatureConfigService } from '../../features-config';
+import { FeatureConfigService } from '../../features-config/services/feature-config.service';
 import { Page, PageMeta } from '../model/page.model';
 import { PageMetaResolver } from '../page/page-meta.resolver';
 import { CmsService } from './cms.service';
