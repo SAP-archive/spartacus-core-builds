@@ -3366,7 +3366,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var ANONYMOUS_CONSENTS_FEATURE = 'anonymous-consents';
+    var ANONYMOUS_CONSENTS_STORE_FEATURE = 'anonymous-consents';
     /** @type {?} */
     var ANONYMOUS_CONSENTS = '[Anonymous Consents] Anonymous Consents';
     /**
@@ -3375,7 +3375,7 @@
     function StateWithAnonymousConsents() { }
     if (false) {
         /* Skipping unnamed member:
-        [ANONYMOUS_CONSENTS_FEATURE]: AnonymousConsentsState;*/
+        [ANONYMOUS_CONSENTS_STORE_FEATURE]: AnonymousConsentsState;*/
     }
     /**
      * @record
@@ -3602,7 +3602,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var getAnonymousConsentState = store.createFeatureSelector(ANONYMOUS_CONSENTS_FEATURE);
+    var getAnonymousConsentState = store.createFeatureSelector(ANONYMOUS_CONSENTS_STORE_FEATURE);
 
     /**
      * @fileoverview added by tsickle
@@ -10018,6 +10018,8 @@
         /** @type {?} */
         FeaturesConfig.prototype.features;
     }
+    /** @type {?} */
+    var ANONYMOUS_CONSENTS_FEATURE = 'anonymousConsents';
 
     /**
      * @fileoverview added by tsickle
@@ -21853,11 +21855,10 @@
          */
         function (request, next) {
             var _this = this;
-            // TODO(issue:4989) Anonymous consents - remove `iif()`, `condition` parameter and the `falseResult` parameter of it
             return rxjs.iif((/**
              * @return {?}
              */
-            function () { return isFeatureLevel(_this.config, '1.3'); }), this.anonymousConsentsService.getConsents().pipe(operators.take(1), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.switchMap((/**
+            function () { return isFeatureEnabled(_this.config, ANONYMOUS_CONSENTS_FEATURE); }), this.anonymousConsentsService.getConsents().pipe(operators.take(1), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.switchMap((/**
              * @param {?} __0
              * @return {?}
              */
@@ -26141,13 +26142,13 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.handleLogoutAndLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT), 
-            // TODO(issue:4989) Anonymous consents - remove this filter
-            operators.filter((/**
+            this.handleLogoutAndLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT), operators.filter((/**
              * @param {?} _
              * @return {?}
              */
-            function (_) { return isFeatureLevel(_this.anonymousConsentsConfig, '1.3'); })), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.filter((/**
+            function (_) {
+                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE);
+            })), operators.withLatestFrom(this.authService.isUserLoggedIn()), operators.filter((/**
              * @param {?} __0
              * @return {?}
              */
@@ -26159,13 +26160,13 @@
              * @return {?}
              */
             function (_) { return new LoadAnonymousConsentTemplates(); })));
-            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), 
-            // TODO(issue:4989) Anonymous consents - remove this filter
-            operators.filter((/**
+            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.filter((/**
              * @param {?} _
              * @return {?}
              */
-            function (_) { return isFeatureLevel(_this.anonymousConsentsConfig, '1.3'); })), operators.concatMap((/**
+            function (_) {
+                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE);
+            })), operators.concatMap((/**
              * @param {?} _
              * @return {?}
              */
@@ -26200,8 +26201,7 @@
              * @return {?}
              */
             function () {
-                // TODO(issue:4989) Anonymous consents - remove the `isFeatureLevel(this.anonymousConsentsConfig, '1.3')` check
-                return isFeatureLevel(_this.anonymousConsentsConfig, '1.3') &&
+                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
                     Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
                     Boolean(_this.anonymousConsentsConfig.anonymousConsents.registerConsent);
             })), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter((/**
@@ -26279,8 +26279,7 @@
              * @return {?}
              */
             function (action) {
-                // TODO(issue:4989) Anonymous consents - remove the `isFeatureLevel(this.anonymousConsentsConfig, '1.3')` check
-                return isFeatureLevel(_this.anonymousConsentsConfig, '1.3') &&
+                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
                     Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
                     Boolean(_this.anonymousConsentsConfig.anonymousConsents.requiredConsents) &&
                     Boolean(action);
@@ -26569,7 +26568,7 @@
                             common.CommonModule,
                             forms.ReactiveFormsModule,
                             StateModule,
-                            store.StoreModule.forFeature(ANONYMOUS_CONSENTS_FEATURE, reducerToken$3),
+                            store.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$3),
                             effects$c.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
                         ],
@@ -47552,6 +47551,7 @@
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
     exports.ANONYMOUS_CONSENTS = ANONYMOUS_CONSENTS;
     exports.ANONYMOUS_CONSENTS_FEATURE = ANONYMOUS_CONSENTS_FEATURE;
+    exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
     exports.ANONYMOUS_CONSENT_STATUS = ANONYMOUS_CONSENT_STATUS;
     exports.ANONYMOUS_USERID = ANONYMOUS_USERID;
     exports.ASM_FEATURE = ASM_FEATURE;
