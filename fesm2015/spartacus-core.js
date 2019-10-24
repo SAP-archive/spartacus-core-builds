@@ -23761,13 +23761,11 @@ class AnonymousConsentsEffects {
         this.transferAnonymousConsentsToUser$ = this.actions$.pipe(ofType(LOAD_USER_TOKEN_SUCCESS), filter((/**
          * @return {?}
          */
-        () => isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
-            Boolean(this.anonymousConsentsConfig.anonymousConsents) &&
-            Boolean(this.anonymousConsentsConfig.anonymousConsents.registerConsent))), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter((/**
+        () => isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.anonymousConsentsConfig.anonymousConsents))), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter((/**
          * @param {?} __0
          * @return {?}
          */
-        ([, registerAction]) => Boolean(registerAction))), concatMap((/**
+        ([, registerAction]) => Boolean(registerAction))), switchMap((/**
          * @return {?}
          */
         () => this.anonymousConsentService.getConsents().pipe(withLatestFrom(this.authService.getOccUserId(), this.anonymousConsentService.getTemplates(), this.authService.isUserLoggedIn()), filter((/**

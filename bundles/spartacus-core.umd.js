@@ -26386,9 +26386,7 @@
              * @return {?}
              */
             function () {
-                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
-                    Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
-                    Boolean(_this.anonymousConsentsConfig.anonymousConsents.registerConsent);
+                return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(_this.anonymousConsentsConfig.anonymousConsents);
             })), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter((/**
              * @param {?} __0
              * @return {?}
@@ -26396,7 +26394,7 @@
             function (_a) {
                 var _b = __read(_a, 2), registerAction = _b[1];
                 return Boolean(registerAction);
-            })), operators.concatMap((/**
+            })), operators.switchMap((/**
              * @return {?}
              */
             function () {

@@ -26195,9 +26195,7 @@ var AnonymousConsentsEffects = /** @class */ (function () {
          * @return {?}
          */
         function () {
-            return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) &&
-                Boolean(_this.anonymousConsentsConfig.anonymousConsents) &&
-                Boolean(_this.anonymousConsentsConfig.anonymousConsents.registerConsent);
+            return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(_this.anonymousConsentsConfig.anonymousConsents);
         })), withLatestFrom(this.actions$.pipe(ofType(REGISTER_USER_SUCCESS))), filter((/**
          * @param {?} __0
          * @return {?}
@@ -26205,7 +26203,7 @@ var AnonymousConsentsEffects = /** @class */ (function () {
         function (_a) {
             var _b = __read(_a, 2), registerAction = _b[1];
             return Boolean(registerAction);
-        })), concatMap((/**
+        })), switchMap((/**
          * @return {?}
          */
         function () {
