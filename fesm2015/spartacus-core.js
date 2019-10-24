@@ -9537,6 +9537,13 @@ if (false) {
      * @type {?|undefined}
      */
     OccEndpoints.prototype.asmCustomerSearch;
+    /**
+     * Endpoint for cart voucher
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.cartVoucher;
 }
 
 /**
@@ -14753,6 +14760,38 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @abstract
+ */
+class CartVoucherAdapter {
+}
+if (false) {
+    /**
+     * Abstract method used to apply voucher to cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    CartVoucherAdapter.prototype.add = function (userId, cartId, voucherId) { };
+    /**
+     * Abstract method used to remove voucher from cart
+     *
+     * @abstract
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    CartVoucherAdapter.prototype.remove = function (userId, cartId, voucherId) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 const PRODUCT_NORMALIZER = new InjectionToken('ProductNormalizer');
 
@@ -14863,6 +14902,7 @@ const defaultOccCartConfig = {
                 removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                 addEmail: 'users/${userId}/carts/${cartId}/email',
                 deleteCart: 'users/${userId}/carts/${cartId}',
+                cartVoucher: 'users/${userId}/carts/${cartId}/vouchers',
             },
         },
     },
@@ -15094,6 +15134,122 @@ if (false) {
      * @protected
      */
     OccCartEntryAdapter.prototype.featureConfigService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CART_VOUCHER_NORMALIZER = new InjectionToken('CartVoucherNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OccCartVoucherAdapter {
+    /**
+     * @param {?} http
+     * @param {?} occEndpoints
+     * @param {?} converter
+     */
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @protected
+     * @param {?} userId
+     * @param {?} cartId
+     * @return {?}
+     */
+    getCartVoucherEndpoint(userId, cartId) {
+        return this.occEndpoints.getUrl('cartVoucher', { userId, cartId });
+    }
+    /**
+     * @protected
+     * @param {?} userId
+     * @return {?}
+     */
+    getHeaders(userId) {
+        /** @type {?} */
+        let headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+        if (userId === OCC_USER_ID_ANONYMOUS) {
+            headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+        }
+        return headers;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    add(userId, cartId, voucherId) {
+        /** @type {?} */
+        const url = this.getCartVoucherEndpoint(userId, cartId);
+        /** @type {?} */
+        const toAdd = JSON.stringify({});
+        /** @type {?} */
+        const params = new HttpParams().set('voucherId', voucherId);
+        /** @type {?} */
+        const headers = this.getHeaders(userId);
+        return this.http.post(url, toAdd, { headers, params }).pipe(catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        (error) => throwError(error.json()))), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    remove(userId, cartId, voucherId) {
+        /** @type {?} */
+        const url = this.getCartVoucherEndpoint(userId, cartId) +
+            '/' +
+            encodeURIComponent(voucherId);
+        /** @type {?} */
+        const headers = this.getHeaders(userId);
+        return this.http
+            .delete(url, { headers })
+            .pipe(catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        (error) => throwError(error))));
+    }
+}
+OccCartVoucherAdapter.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+OccCartVoucherAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartVoucherAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartVoucherAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCartVoucherAdapter.prototype.converter;
 }
 
 /**
@@ -15370,6 +15526,10 @@ CartOccModule.decorators = [
                     {
                         provide: CartEntryAdapter,
                         useClass: OccCartEntryAdapter,
+                    },
+                    {
+                        provide: CartVoucherAdapter,
+                        useClass: OccCartVoucherAdapter,
                     },
                 ],
             },] }
@@ -24759,6 +24919,8 @@ const PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).
 const CART_FEATURE = 'cart';
 /** @type {?} */
 const CART_DATA = '[Cart] Cart Data';
+/** @type {?} */
+const ADD_VOUCHER_PROCESS_ID = 'addVoucher';
 /**
  * @record
  */
@@ -25221,6 +25383,133 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+const CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
+/** @type {?} */
+const CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
+/** @type {?} */
+const CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
+/** @type {?} */
+const CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
+/** @type {?} */
+const CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
+/** @type {?} */
+const CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
+/** @type {?} */
+const CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
+// Adding cart voucher actions
+class CartAddVoucher extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartAddVoucher.prototype.type;
+    /** @type {?} */
+    CartAddVoucher.prototype.payload;
+}
+class CartAddVoucherFail extends EntityFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartAddVoucherFail.prototype.type;
+    /** @type {?} */
+    CartAddVoucherFail.prototype.payload;
+}
+class CartAddVoucherSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.payload = payload;
+        this.type = CART_ADD_VOUCHER_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartAddVoucherSuccess.prototype.type;
+    /** @type {?} */
+    CartAddVoucherSuccess.prototype.payload;
+}
+class CartResetAddVoucher extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID);
+        this.type = CART_RESET_ADD_VOUCHER;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartResetAddVoucher.prototype.type;
+}
+// Deleting cart voucher
+class CartRemoveVoucher extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartRemoveVoucher.prototype.type;
+    /** @type {?} */
+    CartRemoveVoucher.prototype.payload;
+}
+class CartRemoveVoucherFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartRemoveVoucherFail.prototype.type;
+    /** @type {?} */
+    CartRemoveVoucherFail.prototype.payload;
+}
+class CartRemoveVoucherSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = CART_REMOVE_VOUCHER_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CartRemoveVoucherSuccess.prototype.type;
+    /** @type {?} */
+    CartRemoveVoucherSuccess.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 const CREATE_CART = '[Cart] Create Cart';
 /** @type {?} */
 const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
@@ -25244,6 +25533,8 @@ const MERGE_CART = '[Cart] Merge Cart';
 const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
 /** @type {?} */
 const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+/** @type {?} */
+const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
 /** @type {?} */
 const CLEAR_CART = '[Cart] Clear Cart';
 /** @type {?} */
@@ -25433,6 +25724,21 @@ if (false) {
     /** @type {?} */
     ResetCartDetails.prototype.type;
 }
+class ClearExpiredCoupons {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_EXPIRED_COUPONS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClearExpiredCoupons.prototype.type;
+    /** @type {?} */
+    ClearExpiredCoupons.prototype.payload;
+}
 class ClearCart extends LoaderResetAction {
     constructor() {
         super(CART_DATA);
@@ -25500,6 +25806,20 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CartUpdateEntry: CartUpdateEntry,
     CartUpdateEntrySuccess: CartUpdateEntrySuccess,
     CartUpdateEntryFail: CartUpdateEntryFail,
+    CART_ADD_VOUCHER: CART_ADD_VOUCHER,
+    CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
+    CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
+    CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
+    CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
+    CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
+    CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
+    CartAddVoucher: CartAddVoucher,
+    CartAddVoucherFail: CartAddVoucherFail,
+    CartAddVoucherSuccess: CartAddVoucherSuccess,
+    CartResetAddVoucher: CartResetAddVoucher,
+    CartRemoveVoucher: CartRemoveVoucher,
+    CartRemoveVoucherFail: CartRemoveVoucherFail,
+    CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
     CREATE_CART: CREATE_CART,
     CREATE_CART_FAIL: CREATE_CART_FAIL,
     CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
@@ -25512,6 +25832,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_CART: MERGE_CART,
     MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
     RESET_CART_DETAILS: RESET_CART_DETAILS,
+    CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
     CLEAR_CART: CLEAR_CART,
     DELETE_CART: DELETE_CART,
     DELETE_CART_FAIL: DELETE_CART_FAIL,
@@ -25527,6 +25848,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MergeCart: MergeCart,
     MergeCartSuccess: MergeCartSuccess,
     ResetCartDetails: ResetCartDetails,
+    ClearExpiredCoupons: ClearExpiredCoupons,
     ClearCart: ClearCart,
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail
@@ -25872,6 +26194,17 @@ class CartService {
             this.addEntries(cartEntries);
         }));
     }
+    /**
+     * @param {?} voucherId
+     * @return {?}
+     */
+    addVoucher(voucherId) {
+        this.store.dispatch(new CartAddVoucher({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            voucherId: voucherId,
+        }));
+    }
 }
 CartService.decorators = [
     { type: Injectable }
@@ -25913,6 +26246,114 @@ if (false) {
      * @protected
      */
     CartService.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartVoucherService {
+    /**
+     * @param {?} store
+     * @param {?} authService
+     */
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * @param {?} voucherId
+     * @param {?=} cartId
+     * @return {?}
+     */
+    addVoucher(voucherId, cartId) {
+        this.combineUserAndCartId(cartId).subscribe((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartAddVoucher({
+            userId: occUserId,
+            cartId: cartIdentifier,
+            voucherId: voucherId,
+        }))));
+    }
+    /**
+     * @param {?} voucherId
+     * @param {?=} cartId
+     * @return {?}
+     */
+    removeVoucher(voucherId, cartId) {
+        this.combineUserAndCartId(cartId).subscribe((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartRemoveVoucher({
+            userId: occUserId,
+            cartId: cartIdentifier,
+            voucherId: voucherId,
+        }))));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    resetAddVoucherProcessingState() {
+        this.store.dispatch(new CartResetAddVoucher());
+    }
+    /**
+     * @private
+     * @param {?} cartId
+     * @return {?}
+     */
+    combineUserAndCartId(cartId) {
+        return combineLatest([
+            this.authService.getOccUserId(),
+            cartId
+                ? of(cartId)
+                : this.store.pipe(select(getCartContent), map((/**
+                 * @param {?} cart
+                 * @return {?}
+                 */
+                cart => cart.code))),
+        ]).pipe(take(1));
+    }
+}
+CartVoucherService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartVoucherService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartVoucherService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartVoucherService.prototype.authService;
 }
 
 /**
@@ -26965,6 +27406,348 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class CartEntryConnector {
+    /**
+     * @param {?} adapter
+     */
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?=} quantity
+     * @return {?}
+     */
+    add(userId, cartId, productCode, quantity) {
+        return this.adapter.add(userId, cartId, productCode, quantity);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} qty
+     * @param {?=} pickupStore
+     * @return {?}
+     */
+    update(userId, cartId, entryNumber, qty, pickupStore) {
+        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    remove(userId, cartId, entryNumber) {
+        return this.adapter.remove(userId, cartId, entryNumber);
+    }
+}
+CartEntryConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CartEntryConnector.ctorParameters = () => [
+    { type: CartEntryAdapter }
+];
+/** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartEntryConnector.prototype.adapter;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartEntryEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartEntryConnector
+     */
+    constructor(actions$, cartEntryConnector) {
+        this.actions$ = actions$;
+        this.cartEntryConnector = cartEntryConnector;
+        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+            .pipe(map((/**
+         * @param {?} entry
+         * @return {?}
+         */
+        (entry) => new CartAddEntrySuccess(Object.assign({}, entry, { userId: payload.userId, cartId: payload.cartId })))), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartAddEntryFail(makeErrorSerializable(error)))))))));
+        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .remove(payload.userId, payload.cartId, payload.entry)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new CartRemoveEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartRemoveEntryFail(makeErrorSerializable(error)))))))));
+        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => this.cartEntryConnector
+            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+            .pipe(map((/**
+         * @return {?}
+         */
+        () => {
+            return new CartUpdateEntrySuccess({
+                userId: payload.userId,
+                cartId: payload.cartId,
+            });
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => of(new CartUpdateEntryFail(makeErrorSerializable(error)))))))));
+    }
+}
+CartEntryEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartEntryEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartEntryConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "addEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "removeEntry$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartEntryEffects.prototype, "updateEntry$", void 0);
+if (false) {
+    /** @type {?} */
+    CartEntryEffects.prototype.addEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.removeEntry$;
+    /** @type {?} */
+    CartEntryEffects.prototype.updateEntry$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.cartEntryConnector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartVoucherConnector {
+    /**
+     * @param {?} adapter
+     */
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    add(userId, cartId, voucherId) {
+        return this.adapter.add(userId, cartId, voucherId);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} voucherId
+     * @return {?}
+     */
+    remove(userId, cartId, voucherId) {
+        return this.adapter.remove(userId, cartId, voucherId);
+    }
+}
+CartVoucherConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CartVoucherConnector.ctorParameters = () => [
+    { type: CartVoucherAdapter }
+];
+/** @nocollapse */ CartVoucherConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartVoucherConnector.prototype.adapter;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartVoucherEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} cartVoucherConnector
+     * @param {?} messageService
+     */
+    constructor(actions$, cartVoucherConnector, messageService) {
+        this.actions$ = actions$;
+        this.cartVoucherConnector = cartVoucherConnector;
+        this.messageService = messageService;
+        this.addCartVoucher$ = this.actions$.pipe(ofType(CART_ADD_VOUCHER), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartVoucherConnector
+                .add(payload.userId, payload.cartId, payload.voucherId)
+                .pipe(map((/**
+             * @return {?}
+             */
+            () => {
+                this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId);
+                return new CartAddVoucherSuccess({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new CartAddVoucherFail(makeErrorSerializable(error))))));
+        })));
+        this.removeCartVoucher$ = this.actions$.pipe(ofType(CART_REMOVE_VOUCHER), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.cartVoucherConnector
+                .remove(payload.userId, payload.cartId, payload.voucherId)
+                .pipe(map((/**
+             * @return {?}
+             */
+            () => {
+                this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId);
+                return new CartRemoveVoucherSuccess({
+                    userId: payload.userId,
+                    cartId: payload.cartId,
+                });
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new CartRemoveVoucherFail(makeErrorSerializable(error))))));
+        })));
+    }
+    /**
+     * @private
+     * @param {?} text
+     * @param {?} param
+     * @return {?}
+     */
+    showGlobalMessage(text, param) {
+        this.messageService.add({ key: text, params: { voucherCode: param } }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+    }
+}
+CartVoucherEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartVoucherEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CartVoucherConnector },
+    { type: GlobalMessageService }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
+if (false) {
+    /** @type {?} */
+    CartVoucherEffects.prototype.addCartVoucher$;
+    /** @type {?} */
+    CartVoucherEffects.prototype.removeCartVoucher$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartVoucherEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartVoucherEffects.prototype.cartVoucherConnector;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartVoucherEffects.prototype.messageService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class CartConnector {
     /**
      * @param {?} adapter
@@ -27994,6 +28777,15 @@ class CartEffects {
              * @return {?}
              */
             error => {
+                /** @type {?} */
+                const couponExpiredErrors = error.error.errors.filter((/**
+                 * @param {?} err
+                 * @return {?}
+                 */
+                err => err.reason === 'invalid'));
+                if (couponExpiredErrors.length > 0) {
+                    return of(new ClearExpiredCoupons({}));
+                }
                 if (error && error.error && error.error.errors) {
                     /** @type {?} */
                     const cartNotFoundErrors = error.error.errors.filter((/**
@@ -28061,7 +28853,7 @@ class CartEffects {
                 });
             })));
         })));
-        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), map((/**
+        this.refresh$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_FAIL, CLEAR_EXPIRED_COUPONS), map((/**
          * @param {?} action
          * @return {?}
          */
@@ -28202,186 +28994,12 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class CartEntryConnector {
-    /**
-     * @param {?} adapter
-     */
-    constructor(adapter) {
-        this.adapter = adapter;
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} productCode
-     * @param {?=} quantity
-     * @return {?}
-     */
-    add(userId, cartId, productCode, quantity) {
-        return this.adapter.add(userId, cartId, productCode, quantity);
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @param {?} qty
-     * @param {?=} pickupStore
-     * @return {?}
-     */
-    update(userId, cartId, entryNumber, qty, pickupStore) {
-        return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-    }
-    /**
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @return {?}
-     */
-    remove(userId, cartId, entryNumber) {
-        return this.adapter.remove(userId, cartId, entryNumber);
-    }
-}
-CartEntryConnector.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CartEntryConnector.ctorParameters = () => [
-    { type: CartEntryAdapter }
-];
-/** @nocollapse */ CartEntryConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartEntryConnector.prototype.adapter;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CartEntryEffects {
-    /**
-     * @param {?} actions$
-     * @param {?} cartEntryConnector
-     */
-    constructor(actions$, cartEntryConnector) {
-        this.actions$ = actions$;
-        this.cartEntryConnector = cartEntryConnector;
-        this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-            .pipe(map((/**
-         * @param {?} entry
-         * @return {?}
-         */
-        (entry) => new CartAddEntrySuccess(Object.assign({}, entry, { userId: payload.userId, cartId: payload.cartId })))), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartAddEntryFail(makeErrorSerializable(error)))))))));
-        this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .remove(payload.userId, payload.cartId, payload.entry)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new CartRemoveEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartRemoveEntryFail(makeErrorSerializable(error)))))))));
-        this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((/**
-         * @param {?} action
-         * @return {?}
-         */
-        (action) => action.payload)), mergeMap((/**
-         * @param {?} payload
-         * @return {?}
-         */
-        payload => this.cartEntryConnector
-            .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-            .pipe(map((/**
-         * @return {?}
-         */
-        () => {
-            return new CartUpdateEntrySuccess({
-                userId: payload.userId,
-                cartId: payload.cartId,
-            });
-        })), catchError((/**
-         * @param {?} error
-         * @return {?}
-         */
-        error => of(new CartUpdateEntryFail(makeErrorSerializable(error)))))))));
-    }
-}
-CartEntryEffects.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartEntryEffects.ctorParameters = () => [
-    { type: Actions },
-    { type: CartEntryConnector }
-];
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "addEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "removeEntry$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], CartEntryEffects.prototype, "updateEntry$", void 0);
-if (false) {
-    /** @type {?} */
-    CartEntryEffects.prototype.addEntry$;
-    /** @type {?} */
-    CartEntryEffects.prototype.removeEntry$;
-    /** @type {?} */
-    CartEntryEffects.prototype.updateEntry$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEntryEffects.prototype.actions$;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartEntryEffects.prototype.cartEntryConnector;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
-const effects$4 = [CartEffects, CartEntryEffects];
+const effects$4 = [
+    CartEffects,
+    CartEntryEffects,
+    CartVoucherEffects,
+];
 
 /**
  * @fileoverview added by tsickle
@@ -28428,6 +29046,8 @@ function reducer$9(state = initialState$9, action) {
             return Object.assign({}, state, { content,
                 entries, refresh: false });
         }
+        case CART_ADD_VOUCHER_SUCCESS:
+        case CART_REMOVE_VOUCHER_SUCCESS:
         case CART_REMOVE_ENTRY_SUCCESS:
         case CART_UPDATE_ENTRY_SUCCESS:
         case CART_ADD_ENTRY_SUCCESS:
@@ -28544,6 +29164,7 @@ class CartModule {
             ngModule: CartModule,
             providers: [
                 CartDataService,
+                CartVoucherService,
                 CartService,
                 {
                     provide: PageMetaResolver,
@@ -28559,6 +29180,11 @@ CartModule.decorators = [
                 imports: [CartStoreModule],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -41972,5 +42598,5 @@ UserModule.decorators = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$5 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AsmConfig as ɵba, authStoreConfigFactory as ɵbb, AuthStoreModule as ɵbc, getReducers$1 as ɵbd, reducerToken$1 as ɵbe, reducerProvider$1 as ɵbf, clearAuthState as ɵbg, clearCustomerSupportAgentAuthState as ɵbh, metaReducers as ɵbi, effects as ɵbj, ClientTokenEffect as ɵbk, CustomerSupportAgentTokenEffects as ɵbl, UserTokenEffects as ɵbm, UserAuthenticationTokenService as ɵbn, ClientAuthenticationTokenService as ɵbo, reducer$1 as ɵbp, defaultAuthConfig as ɵbq, interceptors as ɵbr, CustomerSupportAgentTokenInterceptor as ɵbs, ClientTokenInterceptor as ɵbt, UserTokenInterceptor as ɵbu, AuthErrorInterceptor as ɵbv, UserErrorHandlingService as ɵbw, UrlParsingService as ɵbx, ClientErrorHandlingService as ɵby, CustomerSupportAgentErrorHandlingService as ɵbz, anonymousConsentsStoreConfigFactory as ɵc, AuthServices as ɵca, cartStoreConfigFactory as ɵcb, CartStoreModule as ɵcc, reducer$9 as ɵcd, CartPageMetaResolver as ɵce, CheckoutStoreModule as ɵcf, getReducers$6 as ɵcg, reducerToken$6 as ɵch, reducerProvider$6 as ɵci, effects$5 as ɵcj, AddressVerificationEffect as ɵck, CardTypesEffects as ɵcl, CheckoutEffects as ɵcm, reducer$c as ɵcn, reducer$b as ɵco, reducer$a as ɵcp, cmsStoreConfigFactory as ɵcq, CmsStoreModule as ɵcr, getReducers$8 as ɵcs, reducerToken$8 as ɵct, reducerProvider$8 as ɵcu, clearCmsState as ɵcv, metaReducers$2 as ɵcw, effects$7 as ɵcx, PageEffects as ɵcy, ComponentEffects as ɵcz, AnonymousConsentsStoreModule as ɵd, NavigationEntryItemEffects as ɵda, reducer$f as ɵdb, reducer$g as ɵdc, reducer$e as ɵdd, GlobalMessageStoreModule as ɵde, getReducers as ɵdf, reducerToken as ɵdg, reducerProvider as ɵdh, reducer as ɵdi, GlobalMessageEffect as ɵdj, defaultGlobalMessageConfigFactory as ɵdk, InternalServerErrorHandler as ɵdl, HttpErrorInterceptor as ɵdm, defaultI18nConfig as ɵdn, i18nextProviders as ɵdo, i18nextInit as ɵdp, MockTranslationService as ɵdq, kymaStoreConfigFactory as ɵdr, KymaStoreModule as ɵds, getReducers$9 as ɵdt, reducerToken$9 as ɵdu, reducerProvider$9 as ɵdv, clearKymaState as ɵdw, metaReducers$3 as ɵdx, effects$8 as ɵdy, OpenIdTokenEffect as ɵdz, stateMetaReducers as ɵe, OpenIdAuthenticationTokenService as ɵea, defaultKymaConfig as ɵeb, defaultOccAsmConfig as ɵec, defaultOccCartConfig as ɵed, defaultOccProductConfig as ɵee, defaultOccSiteContextConfig as ɵef, defaultOccStoreFinderConfig as ɵeg, defaultOccUserConfig as ɵeh, defaultPersonalizationConfig as ɵei, interceptors$2 as ɵej, OccPersonalizationIdInterceptor as ɵek, OccPersonalizationTimeInterceptor as ɵel, ProcessStoreModule as ɵem, getReducers$a as ɵen, reducerToken$a as ɵeo, reducerProvider$a as ɵep, productStoreConfigFactory as ɵeq, ProductStoreModule as ɵer, getReducers$b as ɵes, reducerToken$b as ɵet, reducerProvider$b as ɵeu, clearProductsState as ɵev, metaReducers$4 as ɵew, effects$9 as ɵex, ProductReferencesEffects as ɵey, ProductReviewsEffects as ɵez, getStorageSyncReducer as ɵf, ProductsSearchEffects as ɵfa, ProductEffects as ɵfb, reducer$h as ɵfc, reducer$j as ɵfd, reducer$i as ɵfe, PageMetaResolver as ɵff, addExternalRoutesFactory as ɵfg, getReducers$7 as ɵfh, reducer$d as ɵfi, reducerToken$7 as ɵfj, reducerProvider$7 as ɵfk, CustomSerializer as ɵfl, effects$6 as ɵfm, RouterEffects as ɵfn, SiteContextParamsService as ɵfo, SiteContextUrlSerializer as ɵfp, SiteContextRoutesHandler as ɵfq, defaultSiteContextConfigFactory as ɵfr, siteContextStoreConfigFactory as ɵfs, SiteContextStoreModule as ɵft, getReducers$2 as ɵfu, reducerToken$2 as ɵfv, reducerProvider$2 as ɵfw, effects$1 as ɵfx, LanguagesEffects as ɵfy, CurrenciesEffects as ɵfz, getTransferStateReducer as ɵg, BaseSiteEffects as ɵga, reducer$2 as ɵgb, reducer$3 as ɵgc, reducer$4 as ɵgd, baseSiteConfigValidator as ɵge, interceptors$3 as ɵgf, CmsTicketInterceptor as ɵgg, defaultStoreFinderConfig as ɵgh, StoreFinderStoreModule as ɵgi, getReducers$c as ɵgj, reducerToken$c as ɵgk, reducerProvider$c as ɵgl, effects$a as ɵgm, FindStoresEffect as ɵgn, ViewAllStoresEffect as ɵgo, UserStoreModule as ɵgp, getReducers$d as ɵgq, reducerToken$d as ɵgr, reducerProvider$d as ɵgs, clearUserState as ɵgt, metaReducers$6 as ɵgu, effects$b as ɵgv, BillingCountriesEffect as ɵgw, ClearMiscsDataEffect as ɵgx, ConsignmentTrackingEffects as ɵgy, DeliveryCountriesEffects as ɵgz, getReducers$3 as ɵh, OrderDetailsEffect as ɵha, UserPaymentMethodsEffects as ɵhb, RegionsEffects as ɵhc, ResetPasswordEffects as ɵhd, TitlesEffects as ɵhe, UserAddressesEffects as ɵhf, UserConsentsEffect as ɵhg, UserDetailsEffects as ɵhh, UserOrdersEffect as ɵhi, UserRegisterEffects as ɵhj, ForgotPasswordEffects as ɵhk, UpdateEmailEffects as ɵhl, UpdatePasswordEffects as ɵhm, reducer$u as ɵhn, reducer$s as ɵho, reducer$k as ɵhp, reducer$t as ɵhq, reducer$o as ɵhr, reducer$v as ɵhs, reducer$n as ɵht, reducer$m as ɵhu, reducer$r as ɵhv, reducer$p as ɵhw, reducer$q as ɵhx, reducer$l as ɵhy, reducerToken$3 as ɵi, reducerProvider$3 as ɵj, effects$2 as ɵk, AnonymousConsentsEffects as ɵl, reducer$7 as ɵm, reducer$5 as ɵn, reducer$6 as ɵo, interceptors$1 as ɵp, AnonymousConsentsInterceptor as ɵq, asmStoreConfigFactory as ɵr, AsmStoreModule as ɵs, getReducers$4 as ɵt, reducerToken$4 as ɵu, reducerProvider$4 as ɵv, effects$3 as ɵw, CustomerEffects as ɵx, reducer$8 as ɵy, defaultAsmConfig as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DynamicAttributeService, EMAIL_PATTERN, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MockDatePipe, MockTranslatePipe, NAVIGATION_DETAIL_ENTITY, NotAuthGuard, NotFoundHandler, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccEndpointsService, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccSiteAdapter, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_PAYMENT_METHODS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserModule, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, clearCartState, configurationFactory, contextServiceMapProvider, contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityReducer, errorHandlers, getReducers$5 as getReducers, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, initSiteContextRoutesHandler, initialEntityState, initialLoaderState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$1 as metaReducers, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AsmConfig as ɵba, authStoreConfigFactory as ɵbb, AuthStoreModule as ɵbc, getReducers$1 as ɵbd, reducerToken$1 as ɵbe, reducerProvider$1 as ɵbf, clearAuthState as ɵbg, clearCustomerSupportAgentAuthState as ɵbh, metaReducers as ɵbi, effects as ɵbj, ClientTokenEffect as ɵbk, CustomerSupportAgentTokenEffects as ɵbl, UserTokenEffects as ɵbm, UserAuthenticationTokenService as ɵbn, ClientAuthenticationTokenService as ɵbo, reducer$1 as ɵbp, defaultAuthConfig as ɵbq, interceptors as ɵbr, CustomerSupportAgentTokenInterceptor as ɵbs, ClientTokenInterceptor as ɵbt, UserTokenInterceptor as ɵbu, AuthErrorInterceptor as ɵbv, UserErrorHandlingService as ɵbw, UrlParsingService as ɵbx, ClientErrorHandlingService as ɵby, CustomerSupportAgentErrorHandlingService as ɵbz, anonymousConsentsStoreConfigFactory as ɵc, AuthServices as ɵca, cartStoreConfigFactory as ɵcb, CartStoreModule as ɵcc, reducer$9 as ɵcd, CartPageMetaResolver as ɵce, CheckoutStoreModule as ɵcf, getReducers$6 as ɵcg, reducerToken$6 as ɵch, reducerProvider$6 as ɵci, effects$5 as ɵcj, AddressVerificationEffect as ɵck, CardTypesEffects as ɵcl, CheckoutEffects as ɵcm, reducer$c as ɵcn, reducer$b as ɵco, reducer$a as ɵcp, cmsStoreConfigFactory as ɵcq, CmsStoreModule as ɵcr, getReducers$8 as ɵcs, reducerToken$8 as ɵct, reducerProvider$8 as ɵcu, clearCmsState as ɵcv, metaReducers$2 as ɵcw, effects$7 as ɵcx, PageEffects as ɵcy, ComponentEffects as ɵcz, AnonymousConsentsStoreModule as ɵd, NavigationEntryItemEffects as ɵda, reducer$f as ɵdb, reducer$g as ɵdc, reducer$e as ɵdd, GlobalMessageStoreModule as ɵde, getReducers as ɵdf, reducerToken as ɵdg, reducerProvider as ɵdh, reducer as ɵdi, GlobalMessageEffect as ɵdj, defaultGlobalMessageConfigFactory as ɵdk, InternalServerErrorHandler as ɵdl, HttpErrorInterceptor as ɵdm, defaultI18nConfig as ɵdn, i18nextProviders as ɵdo, i18nextInit as ɵdp, MockTranslationService as ɵdq, kymaStoreConfigFactory as ɵdr, KymaStoreModule as ɵds, getReducers$9 as ɵdt, reducerToken$9 as ɵdu, reducerProvider$9 as ɵdv, clearKymaState as ɵdw, metaReducers$3 as ɵdx, effects$8 as ɵdy, OpenIdTokenEffect as ɵdz, stateMetaReducers as ɵe, OpenIdAuthenticationTokenService as ɵea, defaultKymaConfig as ɵeb, defaultOccAsmConfig as ɵec, defaultOccCartConfig as ɵed, defaultOccProductConfig as ɵee, defaultOccSiteContextConfig as ɵef, defaultOccStoreFinderConfig as ɵeg, defaultOccUserConfig as ɵeh, defaultPersonalizationConfig as ɵei, interceptors$2 as ɵej, OccPersonalizationIdInterceptor as ɵek, OccPersonalizationTimeInterceptor as ɵel, ProcessStoreModule as ɵem, getReducers$a as ɵen, reducerToken$a as ɵeo, reducerProvider$a as ɵep, productStoreConfigFactory as ɵeq, ProductStoreModule as ɵer, getReducers$b as ɵes, reducerToken$b as ɵet, reducerProvider$b as ɵeu, clearProductsState as ɵev, metaReducers$4 as ɵew, effects$9 as ɵex, ProductReferencesEffects as ɵey, ProductReviewsEffects as ɵez, getStorageSyncReducer as ɵf, ProductsSearchEffects as ɵfa, ProductEffects as ɵfb, reducer$h as ɵfc, reducer$j as ɵfd, reducer$i as ɵfe, PageMetaResolver as ɵff, addExternalRoutesFactory as ɵfg, getReducers$7 as ɵfh, reducer$d as ɵfi, reducerToken$7 as ɵfj, reducerProvider$7 as ɵfk, CustomSerializer as ɵfl, effects$6 as ɵfm, RouterEffects as ɵfn, SiteContextParamsService as ɵfo, SiteContextUrlSerializer as ɵfp, SiteContextRoutesHandler as ɵfq, defaultSiteContextConfigFactory as ɵfr, siteContextStoreConfigFactory as ɵfs, SiteContextStoreModule as ɵft, getReducers$2 as ɵfu, reducerToken$2 as ɵfv, reducerProvider$2 as ɵfw, effects$1 as ɵfx, LanguagesEffects as ɵfy, CurrenciesEffects as ɵfz, getTransferStateReducer as ɵg, BaseSiteEffects as ɵga, reducer$2 as ɵgb, reducer$3 as ɵgc, reducer$4 as ɵgd, baseSiteConfigValidator as ɵge, interceptors$3 as ɵgf, CmsTicketInterceptor as ɵgg, defaultStoreFinderConfig as ɵgh, StoreFinderStoreModule as ɵgi, getReducers$c as ɵgj, reducerToken$c as ɵgk, reducerProvider$c as ɵgl, effects$a as ɵgm, FindStoresEffect as ɵgn, ViewAllStoresEffect as ɵgo, UserStoreModule as ɵgp, getReducers$d as ɵgq, reducerToken$d as ɵgr, reducerProvider$d as ɵgs, clearUserState as ɵgt, metaReducers$6 as ɵgu, effects$b as ɵgv, BillingCountriesEffect as ɵgw, ClearMiscsDataEffect as ɵgx, ConsignmentTrackingEffects as ɵgy, DeliveryCountriesEffects as ɵgz, getReducers$3 as ɵh, OrderDetailsEffect as ɵha, UserPaymentMethodsEffects as ɵhb, RegionsEffects as ɵhc, ResetPasswordEffects as ɵhd, TitlesEffects as ɵhe, UserAddressesEffects as ɵhf, UserConsentsEffect as ɵhg, UserDetailsEffects as ɵhh, UserOrdersEffect as ɵhi, UserRegisterEffects as ɵhj, ForgotPasswordEffects as ɵhk, UpdateEmailEffects as ɵhl, UpdatePasswordEffects as ɵhm, reducer$u as ɵhn, reducer$s as ɵho, reducer$k as ɵhp, reducer$t as ɵhq, reducer$o as ɵhr, reducer$v as ɵhs, reducer$n as ɵht, reducer$m as ɵhu, reducer$r as ɵhv, reducer$p as ɵhw, reducer$q as ɵhx, reducer$l as ɵhy, reducerToken$3 as ɵi, reducerProvider$3 as ɵj, effects$2 as ɵk, AnonymousConsentsEffects as ɵl, reducer$7 as ɵm, reducer$5 as ɵn, reducer$6 as ɵo, interceptors$1 as ɵp, AnonymousConsentsInterceptor as ɵq, asmStoreConfigFactory as ɵr, AsmStoreModule as ɵs, getReducers$4 as ɵt, reducerToken$4 as ɵu, reducerProvider$4 as ɵv, effects$3 as ɵw, CustomerEffects as ɵx, reducer$8 as ɵy, defaultAsmConfig as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

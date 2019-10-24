@@ -10717,6 +10717,13 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.asmCustomerSearch;
+        /**
+         * Endpoint for cart voucher
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.cartVoucher;
     }
 
     /**
@@ -16022,6 +16029,44 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    CartVoucherAdapter = /** @class */ (function () {
+        function CartVoucherAdapter() {
+        }
+        return CartVoucherAdapter;
+    }());
+    if (false) {
+        /**
+         * Abstract method used to apply voucher to cart
+         *
+         * @abstract
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        CartVoucherAdapter.prototype.add = function (userId, cartId, voucherId) { };
+        /**
+         * Abstract method used to remove voucher from cart
+         *
+         * @abstract
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        CartVoucherAdapter.prototype.remove = function (userId, cartId, voucherId) { };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var PRODUCT_NORMALIZER = new core.InjectionToken('ProductNormalizer');
 
@@ -16151,6 +16196,7 @@
                     removeEntries: 'users/${userId}/carts/${cartId}/entries/${entryNumber}',
                     addEmail: 'users/${userId}/carts/${cartId}/email',
                     deleteCart: 'users/${userId}/carts/${cartId}',
+                    cartVoucher: 'users/${userId}/carts/${cartId}/vouchers',
                 },
             },
         },
@@ -16461,6 +16507,141 @@
          * @protected
          */
         OccCartEntryAdapter.prototype.featureConfigService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_VOUCHER_NORMALIZER = new core.InjectionToken('CartVoucherNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCartVoucherAdapter = /** @class */ (function () {
+        function OccCartVoucherAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        OccCartVoucherAdapter.prototype.getCartVoucherEndpoint = /**
+         * @protected
+         * @param {?} userId
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (userId, cartId) {
+            return this.occEndpoints.getUrl('cartVoucher', { userId: userId, cartId: cartId });
+        };
+        /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        OccCartVoucherAdapter.prototype.getHeaders = /**
+         * @protected
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            if (userId === OCC_USER_ID_ANONYMOUS) {
+                headers = InterceptorUtil.createHeader(USE_CLIENT_TOKEN, true, headers);
+            }
+            return headers;
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        OccCartVoucherAdapter.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        function (userId, cartId, voucherId) {
+            /** @type {?} */
+            var url = this.getCartVoucherEndpoint(userId, cartId);
+            /** @type {?} */
+            var toAdd = JSON.stringify({});
+            /** @type {?} */
+            var params = new http.HttpParams().set('voucherId', voucherId);
+            /** @type {?} */
+            var headers = this.getHeaders(userId);
+            return this.http.post(url, toAdd, { headers: headers, params: params }).pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error.json()); })), this.converter.pipeable(CART_VOUCHER_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        OccCartVoucherAdapter.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        function (userId, cartId, voucherId) {
+            /** @type {?} */
+            var url = this.getCartVoucherEndpoint(userId, cartId) +
+                '/' +
+                encodeURIComponent(voucherId);
+            /** @type {?} */
+            var headers = this.getHeaders(userId);
+            return this.http
+                .delete(url, { headers: headers })
+                .pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })));
+        };
+        OccCartVoucherAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccCartVoucherAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        return OccCartVoucherAdapter;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCartVoucherAdapter.prototype.http;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCartVoucherAdapter.prototype.occEndpoints;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCartVoucherAdapter.prototype.converter;
     }
 
     /**
@@ -16815,6 +16996,10 @@
                             {
                                 provide: CartEntryAdapter,
                                 useClass: OccCartEntryAdapter,
+                            },
+                            {
+                                provide: CartVoucherAdapter,
+                                useClass: OccCartVoucherAdapter,
                             },
                         ],
                     },] }
@@ -27515,6 +27700,8 @@
     var CART_FEATURE = 'cart';
     /** @type {?} */
     var CART_DATA = '[Cart] Cart Data';
+    /** @type {?} */
+    var ADD_VOUCHER_PROCESS_ID = 'addVoucher';
     /**
      * @record
      */
@@ -28004,6 +28191,140 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
+    /** @type {?} */
+    var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
+    /** @type {?} */
+    var CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
+    /** @type {?} */
+    var CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
+    // Adding cart voucher actions
+    var 
+    // Adding cart voucher actions
+    CartAddVoucher = /** @class */ (function (_super) {
+        __extends(CartAddVoucher, _super);
+        function CartAddVoucher(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER;
+            return _this;
+        }
+        return CartAddVoucher;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucher.prototype.type;
+        /** @type {?} */
+        CartAddVoucher.prototype.payload;
+    }
+    var CartAddVoucherFail = /** @class */ (function (_super) {
+        __extends(CartAddVoucherFail, _super);
+        function CartAddVoucherFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartAddVoucherFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucherFail.prototype.type;
+        /** @type {?} */
+        CartAddVoucherFail.prototype.payload;
+    }
+    var CartAddVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartAddVoucherSuccess, _super);
+        function CartAddVoucherSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartAddVoucherSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucherSuccess.prototype.type;
+        /** @type {?} */
+        CartAddVoucherSuccess.prototype.payload;
+    }
+    var CartResetAddVoucher = /** @class */ (function (_super) {
+        __extends(CartResetAddVoucher, _super);
+        function CartResetAddVoucher() {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.type = CART_RESET_ADD_VOUCHER;
+            return _this;
+        }
+        return CartResetAddVoucher;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        CartResetAddVoucher.prototype.type;
+    }
+    // Deleting cart voucher
+    var 
+    // Deleting cart voucher
+    CartRemoveVoucher = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucher, _super);
+        function CartRemoveVoucher(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER;
+            return _this;
+        }
+        return CartRemoveVoucher;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucher.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucher.prototype.payload;
+    }
+    var CartRemoveVoucherFail = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherFail, _super);
+        function CartRemoveVoucherFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartRemoveVoucherFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucherFail.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucherFail.prototype.payload;
+    }
+    var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherSuccess, _super);
+        function CartRemoveVoucherSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartRemoveVoucherSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucherSuccess.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucherSuccess.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
     var CREATE_CART = '[Cart] Create Cart';
     /** @type {?} */
     var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
@@ -28027,6 +28348,8 @@
     var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
     /** @type {?} */
     var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+    /** @type {?} */
+    var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
     /** @type {?} */
     var CLEAR_CART = '[Cart] Clear Cart';
     /** @type {?} */
@@ -28213,6 +28536,19 @@
         /** @type {?} */
         ResetCartDetails.prototype.type;
     }
+    var ClearExpiredCoupons = /** @class */ (function () {
+        function ClearExpiredCoupons(payload) {
+            this.payload = payload;
+            this.type = CLEAR_EXPIRED_COUPONS;
+        }
+        return ClearExpiredCoupons;
+    }());
+    if (false) {
+        /** @type {?} */
+        ClearExpiredCoupons.prototype.type;
+        /** @type {?} */
+        ClearExpiredCoupons.prototype.payload;
+    }
     var ClearCart = /** @class */ (function (_super) {
         __extends(ClearCart, _super);
         function ClearCart() {
@@ -28283,6 +28619,20 @@
         CartUpdateEntry: CartUpdateEntry,
         CartUpdateEntrySuccess: CartUpdateEntrySuccess,
         CartUpdateEntryFail: CartUpdateEntryFail,
+        CART_ADD_VOUCHER: CART_ADD_VOUCHER,
+        CART_ADD_VOUCHER_FAIL: CART_ADD_VOUCHER_FAIL,
+        CART_ADD_VOUCHER_SUCCESS: CART_ADD_VOUCHER_SUCCESS,
+        CART_RESET_ADD_VOUCHER: CART_RESET_ADD_VOUCHER,
+        CART_REMOVE_VOUCHER: CART_REMOVE_VOUCHER,
+        CART_REMOVE_VOUCHER_FAIL: CART_REMOVE_VOUCHER_FAIL,
+        CART_REMOVE_VOUCHER_SUCCESS: CART_REMOVE_VOUCHER_SUCCESS,
+        CartAddVoucher: CartAddVoucher,
+        CartAddVoucherFail: CartAddVoucherFail,
+        CartAddVoucherSuccess: CartAddVoucherSuccess,
+        CartResetAddVoucher: CartResetAddVoucher,
+        CartRemoveVoucher: CartRemoveVoucher,
+        CartRemoveVoucherFail: CartRemoveVoucherFail,
+        CartRemoveVoucherSuccess: CartRemoveVoucherSuccess,
         CREATE_CART: CREATE_CART,
         CREATE_CART_FAIL: CREATE_CART_FAIL,
         CREATE_CART_SUCCESS: CREATE_CART_SUCCESS,
@@ -28295,6 +28645,7 @@
         MERGE_CART: MERGE_CART,
         MERGE_CART_SUCCESS: MERGE_CART_SUCCESS,
         RESET_CART_DETAILS: RESET_CART_DETAILS,
+        CLEAR_EXPIRED_COUPONS: CLEAR_EXPIRED_COUPONS,
         CLEAR_CART: CLEAR_CART,
         DELETE_CART: DELETE_CART,
         DELETE_CART_FAIL: DELETE_CART_FAIL,
@@ -28310,6 +28661,7 @@
         MergeCart: MergeCart,
         MergeCartSuccess: MergeCartSuccess,
         ResetCartDetails: ResetCartDetails,
+        ClearExpiredCoupons: ClearExpiredCoupons,
         ClearCart: ClearCart,
         DeleteCart: DeleteCart,
         DeleteCartFail: DeleteCartFail
@@ -28762,6 +29114,21 @@
                 _this.addEntries(cartEntries);
             }));
         };
+        /**
+         * @param {?} voucherId
+         * @return {?}
+         */
+        CartService.prototype.addVoucher = /**
+         * @param {?} voucherId
+         * @return {?}
+         */
+        function (voucherId) {
+            this.store.dispatch(new CartAddVoucher({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                voucherId: voucherId,
+            }));
+        };
         CartService.decorators = [
             { type: core.Injectable }
         ];
@@ -28804,6 +29171,146 @@
          * @protected
          */
         CartService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartVoucherService = /** @class */ (function () {
+        function CartVoucherService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.addVoucher = /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartAddVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
+                }));
+            }));
+        };
+        /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.removeVoucher = /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartRemoveVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
+                }));
+            }));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultError = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultSuccess = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultLoading = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.resetAddVoucherProcessingState = /**
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new CartResetAddVoucher());
+        };
+        /**
+         * @private
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.combineUserAndCartId = /**
+         * @private
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (cartId) {
+            return rxjs.combineLatest([
+                this.authService.getOccUserId(),
+                cartId
+                    ? rxjs.of(cartId)
+                    : this.store.pipe(store.select(getCartContent), operators.map((/**
+                     * @param {?} cart
+                     * @return {?}
+                     */
+                    function (cart) { return cart.code; }))),
+            ]).pipe(operators.take(1));
+        };
+        CartVoucherService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartVoucherService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        return CartVoucherService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartVoucherService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartVoucherService.prototype.authService;
     }
 
     /**
@@ -30066,6 +30573,396 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CartEntryConnector = /** @class */ (function () {
+        function CartEntryConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        CartEntryConnector.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} productCode
+         * @param {?=} quantity
+         * @return {?}
+         */
+        function (userId, cartId, productCode, quantity) {
+            return this.adapter.add(userId, cartId, productCode, quantity);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        CartEntryConnector.prototype.update = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @param {?} qty
+         * @param {?=} pickupStore
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber, qty, pickupStore) {
+            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        CartEntryConnector.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} entryNumber
+         * @return {?}
+         */
+        function (userId, cartId, entryNumber) {
+            return this.adapter.remove(userId, cartId, entryNumber);
+        };
+        CartEntryConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartEntryConnector.ctorParameters = function () { return [
+            { type: CartEntryAdapter }
+        ]; };
+        /** @nocollapse */ CartEntryConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
+        return CartEntryConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartEntryConnector.prototype.adapter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartEntryEffects = /** @class */ (function () {
+        function CartEntryEffects(actions$, cartEntryConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartEntryConnector = cartEntryConnector;
+            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartEntryConnector
+                    .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
+                    .pipe(operators.map((/**
+                 * @param {?} entry
+                 * @return {?}
+                 */
+                function (entry) {
+                    return new CartAddEntrySuccess(__assign({}, entry, { userId: payload.userId, cartId: payload.cartId }));
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CartAddEntryFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartEntryConnector
+                    .remove(payload.userId, payload.cartId, payload.entry)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    return new CartRemoveEntrySuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CartRemoveEntryFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartEntryConnector
+                    .update(payload.userId, payload.cartId, payload.entry, payload.qty)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    return new CartUpdateEntrySuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CartUpdateEntryFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        CartEntryEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartEntryEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartEntryConnector }
+        ]; };
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartEntryEffects.prototype, "addEntry$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartEntryEffects.prototype, "removeEntry$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartEntryEffects.prototype, "updateEntry$", void 0);
+        return CartEntryEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        CartEntryEffects.prototype.addEntry$;
+        /** @type {?} */
+        CartEntryEffects.prototype.removeEntry$;
+        /** @type {?} */
+        CartEntryEffects.prototype.updateEntry$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartEntryEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartEntryEffects.prototype.cartEntryConnector;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartVoucherConnector = /** @class */ (function () {
+        function CartVoucherConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        CartVoucherConnector.prototype.add = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        function (userId, cartId, voucherId) {
+            return this.adapter.add(userId, cartId, voucherId);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        CartVoucherConnector.prototype.remove = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?} voucherId
+         * @return {?}
+         */
+        function (userId, cartId, voucherId) {
+            return this.adapter.remove(userId, cartId, voucherId);
+        };
+        CartVoucherConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CartVoucherConnector.ctorParameters = function () { return [
+            { type: CartVoucherAdapter }
+        ]; };
+        /** @nocollapse */ CartVoucherConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartVoucherConnector_Factory() { return new CartVoucherConnector(core.ɵɵinject(CartVoucherAdapter)); }, token: CartVoucherConnector, providedIn: "root" });
+        return CartVoucherConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartVoucherConnector.prototype.adapter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartVoucherEffects = /** @class */ (function () {
+        function CartVoucherEffects(actions$, cartVoucherConnector, messageService) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartVoucherConnector = cartVoucherConnector;
+            this.messageService = messageService;
+            this.addCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartVoucherConnector
+                    .add(payload.userId, payload.cartId, payload.voucherId)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId);
+                    return new CartAddVoucherSuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CartAddVoucherFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.removeCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_VOUCHER), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartVoucherConnector
+                    .remove(payload.userId, payload.cartId, payload.voucherId)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    _this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId);
+                    return new CartRemoveVoucherSuccess({
+                        userId: payload.userId,
+                        cartId: payload.cartId,
+                    });
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CartRemoveVoucherFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        /**
+         * @private
+         * @param {?} text
+         * @param {?} param
+         * @return {?}
+         */
+        CartVoucherEffects.prototype.showGlobalMessage = /**
+         * @private
+         * @param {?} text
+         * @param {?} param
+         * @return {?}
+         */
+        function (text, param) {
+            this.messageService.add({ key: text, params: { voucherCode: param } }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+        };
+        CartVoucherEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartVoucherEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartVoucherConnector },
+            { type: GlobalMessageService }
+        ]; };
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
+        return CartVoucherEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        CartVoucherEffects.prototype.addCartVoucher$;
+        /** @type {?} */
+        CartVoucherEffects.prototype.removeCartVoucher$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartVoucherEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartVoucherEffects.prototype.cartVoucherConnector;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartVoucherEffects.prototype.messageService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CartConnector = /** @class */ (function () {
         function CartConnector(adapter) {
             this.adapter = adapter;
@@ -31093,6 +31990,15 @@
                  * @return {?}
                  */
                 function (error) {
+                    /** @type {?} */
+                    var couponExpiredErrors = error.error.errors.filter((/**
+                     * @param {?} err
+                     * @return {?}
+                     */
+                    function (err) { return err.reason === 'invalid'; }));
+                    if (couponExpiredErrors.length > 0) {
+                        return rxjs.of(new ClearExpiredCoupons({}));
+                    }
                     if (error && error.error && error.error.errors) {
                         /** @type {?} */
                         var cartNotFoundErrors = error.error.errors.filter((/**
@@ -31162,7 +32068,7 @@
                     });
                 })));
             })));
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS), operators.map((/**
+            this.refresh$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS, CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_FAIL, CLEAR_EXPIRED_COUPONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -31319,217 +32225,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CartEntryConnector = /** @class */ (function () {
-        function CartEntryConnector(adapter) {
-            this.adapter = adapter;
-        }
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        CartEntryConnector.prototype.add = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} productCode
-         * @param {?=} quantity
-         * @return {?}
-         */
-        function (userId, cartId, productCode, quantity) {
-            return this.adapter.add(userId, cartId, productCode, quantity);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        CartEntryConnector.prototype.update = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @param {?} qty
-         * @param {?=} pickupStore
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber, qty, pickupStore) {
-            return this.adapter.update(userId, cartId, entryNumber, qty, pickupStore);
-        };
-        /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        CartEntryConnector.prototype.remove = /**
-         * @param {?} userId
-         * @param {?} cartId
-         * @param {?} entryNumber
-         * @return {?}
-         */
-        function (userId, cartId, entryNumber) {
-            return this.adapter.remove(userId, cartId, entryNumber);
-        };
-        CartEntryConnector.decorators = [
-            { type: core.Injectable, args: [{
-                        providedIn: 'root',
-                    },] }
-        ];
-        /** @nocollapse */
-        CartEntryConnector.ctorParameters = function () { return [
-            { type: CartEntryAdapter }
-        ]; };
-        /** @nocollapse */ CartEntryConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CartEntryConnector_Factory() { return new CartEntryConnector(core.ɵɵinject(CartEntryAdapter)); }, token: CartEntryConnector, providedIn: "root" });
-        return CartEntryConnector;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        CartEntryConnector.prototype.adapter;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var CartEntryEffects = /** @class */ (function () {
-        function CartEntryEffects(actions$, cartEntryConnector) {
-            var _this = this;
-            this.actions$ = actions$;
-            this.cartEntryConnector = cartEntryConnector;
-            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.cartEntryConnector
-                    .add(payload.userId, payload.cartId, payload.productCode, payload.quantity)
-                    .pipe(operators.map((/**
-                 * @param {?} entry
-                 * @return {?}
-                 */
-                function (entry) {
-                    return new CartAddEntrySuccess(__assign({}, entry, { userId: payload.userId, cartId: payload.cartId }));
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new CartAddEntryFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.cartEntryConnector
-                    .remove(payload.userId, payload.cartId, payload.entry)
-                    .pipe(operators.map((/**
-                 * @return {?}
-                 */
-                function () {
-                    return new CartRemoveEntrySuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    });
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new CartRemoveEntryFail(makeErrorSerializable(error)));
-                })));
-            })));
-            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map((/**
-             * @param {?} action
-             * @return {?}
-             */
-            function (action) { return action.payload; })), operators.mergeMap((/**
-             * @param {?} payload
-             * @return {?}
-             */
-            function (payload) {
-                return _this.cartEntryConnector
-                    .update(payload.userId, payload.cartId, payload.entry, payload.qty)
-                    .pipe(operators.map((/**
-                 * @return {?}
-                 */
-                function () {
-                    return new CartUpdateEntrySuccess({
-                        userId: payload.userId,
-                        cartId: payload.cartId,
-                    });
-                })), operators.catchError((/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                function (error) {
-                    return rxjs.of(new CartUpdateEntryFail(makeErrorSerializable(error)));
-                })));
-            })));
-        }
-        CartEntryEffects.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CartEntryEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
-            { type: CartEntryConnector }
-        ]; };
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CartEntryEffects.prototype, "addEntry$", void 0);
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CartEntryEffects.prototype, "removeEntry$", void 0);
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], CartEntryEffects.prototype, "updateEntry$", void 0);
-        return CartEntryEffects;
-    }());
-    if (false) {
-        /** @type {?} */
-        CartEntryEffects.prototype.addEntry$;
-        /** @type {?} */
-        CartEntryEffects.prototype.removeEntry$;
-        /** @type {?} */
-        CartEntryEffects.prototype.updateEntry$;
-        /**
-         * @type {?}
-         * @private
-         */
-        CartEntryEffects.prototype.actions$;
-        /**
-         * @type {?}
-         * @private
-         */
-        CartEntryEffects.prototype.cartEntryConnector;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /** @type {?} */
-    var effects$4 = [CartEffects, CartEntryEffects];
+    var effects$4 = [
+        CartEffects,
+        CartEntryEffects,
+        CartVoucherEffects,
+    ];
 
     /**
      * @fileoverview added by tsickle
@@ -31578,6 +32279,8 @@
                 return __assign({}, state, { content: content,
                     entries: entries, refresh: false });
             }
+            case CART_ADD_VOUCHER_SUCCESS:
+            case CART_REMOVE_VOUCHER_SUCCESS:
             case CART_REMOVE_ENTRY_SUCCESS:
             case CART_UPDATE_ENTRY_SUCCESS:
             case CART_ADD_ENTRY_SUCCESS:
@@ -31703,6 +32406,7 @@
                 ngModule: CartModule,
                 providers: [
                     CartDataService,
+                    CartVoucherService,
                     CartService,
                     {
                         provide: PageMetaResolver,
@@ -31719,6 +32423,11 @@
         ];
         return CartModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -47549,6 +48258,7 @@
     exports.ADDRESS_NORMALIZER = ADDRESS_NORMALIZER;
     exports.ADDRESS_SERIALIZER = ADDRESS_SERIALIZER;
     exports.ADDRESS_VALIDATION_NORMALIZER = ADDRESS_VALIDATION_NORMALIZER;
+    exports.ADD_VOUCHER_PROCESS_ID = ADD_VOUCHER_PROCESS_ID;
     exports.ANONYMOUS_CONSENTS = ANONYMOUS_CONSENTS;
     exports.ANONYMOUS_CONSENTS_FEATURE = ANONYMOUS_CONSENTS_FEATURE;
     exports.ANONYMOUS_CONSENTS_STORE_FEATURE = ANONYMOUS_CONSENTS_STORE_FEATURE;
@@ -47586,6 +48296,7 @@
     exports.CART_FEATURE = CART_FEATURE;
     exports.CART_MODIFICATION_NORMALIZER = CART_MODIFICATION_NORMALIZER;
     exports.CART_NORMALIZER = CART_NORMALIZER;
+    exports.CART_VOUCHER_NORMALIZER = CART_VOUCHER_NORMALIZER;
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
@@ -47614,6 +48325,10 @@
     exports.CartOccModule = CartOccModule;
     exports.CartSelectors = cartGroup_selectors;
     exports.CartService = CartService;
+    exports.CartVoucherAdapter = CartVoucherAdapter;
+    exports.CartVoucherConnector = CartVoucherConnector;
+    exports.CartVoucherEffects = CartVoucherEffects;
+    exports.CartVoucherService = CartVoucherService;
     exports.CategoryPageMetaResolver = CategoryPageMetaResolver;
     exports.CheckoutActions = checkoutGroup_actions;
     exports.CheckoutAdapter = CheckoutAdapter;
@@ -47720,6 +48435,7 @@
     exports.OccCartAdapter = OccCartAdapter;
     exports.OccCartEntryAdapter = OccCartEntryAdapter;
     exports.OccCartNormalizer = OccCartNormalizer;
+    exports.OccCartVoucherAdapter = OccCartVoucherAdapter;
     exports.OccCheckoutAdapter = OccCheckoutAdapter;
     exports.OccCheckoutDeliveryAdapter = OccCheckoutDeliveryAdapter;
     exports.OccCheckoutPaymentAdapter = OccCheckoutPaymentAdapter;

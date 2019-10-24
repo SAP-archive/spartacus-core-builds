@@ -12,6 +12,7 @@ export declare const ADD_EMAIL_TO_CART_SUCCESS = "[Cart] Add Email to Cart Succe
 export declare const MERGE_CART = "[Cart] Merge Cart";
 export declare const MERGE_CART_SUCCESS = "[Cart] Merge Cart Success";
 export declare const RESET_CART_DETAILS = "[Cart] Reset Cart Details";
+export declare const CLEAR_EXPIRED_COUPONS = "[Cart] Clear Expired Coupon";
 export declare const CLEAR_CART = "[Cart] Clear Cart";
 export declare const DELETE_CART = "[Cart] Delete Cart";
 export declare const DELETE_CART_FAIL = "[Cart] Delete Cart Fail";
@@ -88,6 +89,11 @@ export declare class ResetCartDetails implements Action {
     readonly type = "[Cart] Reset Cart Details";
     constructor();
 }
+export declare class ClearExpiredCoupons implements Action {
+    payload: any;
+    readonly type = "[Cart] Clear Expired Coupon";
+    constructor(payload: any);
+}
 export declare class ClearCart extends StateLoaderActions.LoaderResetAction {
     readonly type = "[Cart] Clear Cart";
     constructor();
@@ -108,4 +114,4 @@ export declare class DeleteCartFail extends StateLoaderActions.LoaderFailAction 
     readonly type = "[Cart] Delete Cart Fail";
     constructor(payload: any);
 }
-export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | ClearCart | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartFail;
+export declare type CartAction = CreateCart | CreateCartFail | CreateCartSuccess | LoadCart | LoadCartFail | LoadCartSuccess | MergeCart | MergeCartSuccess | ResetCartDetails | AddEmailToCart | AddEmailToCartFail | AddEmailToCartSuccess | DeleteCart | DeleteCartFail | ClearExpiredCoupons | ClearCart;

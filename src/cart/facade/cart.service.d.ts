@@ -4,16 +4,17 @@ import { AuthService } from '../../auth/index';
 import { Cart } from '../../model/cart.model';
 import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
+import * as fromProcessStore from '../../process/store/process-state';
 import { StateWithCart } from '../store/cart-state';
 import { CartDataService } from './cart-data.service';
 export declare class CartService {
-    protected store: Store<StateWithCart>;
+    protected store: Store<StateWithCart | fromProcessStore.StateWithProcess<void>>;
     protected cartData: CartDataService;
     protected authService: AuthService;
     private readonly PREVIOUS_USER_ID_INITIAL_VALUE;
     private previousUserId;
     private _activeCart$;
-    constructor(store: Store<StateWithCart>, cartData: CartDataService, authService: AuthService);
+    constructor(store: Store<StateWithCart | fromProcessStore.StateWithProcess<void>>, cartData: CartDataService, authService: AuthService);
     getActive(): Observable<Cart>;
     getEntries(): Observable<OrderEntry[]>;
     getCartMergeComplete(): Observable<boolean>;
@@ -46,4 +47,5 @@ export declare class CartService {
      * This is for an edge case
      */
     private guestCartMerge;
+    addVoucher(voucherId: string): void;
 }
