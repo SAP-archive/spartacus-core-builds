@@ -342,7 +342,6 @@ if (false) {
 /** @type {?} */
 const defaultAnonymousConsentsConfig = {
     anonymousConsents: {
-        footerLink: true,
         registerConsent: 'MARKETING_NEWSLETTER',
         showLegalDescriptionInDialog: true,
         requiredConsents: [],
