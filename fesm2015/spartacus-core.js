@@ -3083,9 +3083,7 @@ if (false) {
     /** @type {?} */
     AnonymousConsentsState.prototype.consents;
     /** @type {?} */
-    AnonymousConsentsState.prototype.bannerVisible;
-    /** @type {?} */
-    AnonymousConsentsState.prototype.updated;
+    AnonymousConsentsState.prototype.ui;
 }
 
 /**
@@ -3340,13 +3338,6 @@ const getAnonymousConsentTemplate = (/**
      */
     template => template.id === templateCode))));
 });
-const ɵ1 = /**
- * @param {?} state
- * @return {?}
- */
-state => state.updated;
-/** @type {?} */
-const getAnonymousConsentTemplatesUpdate = createSelector(getAnonymousConsentState, (ɵ1));
 
 /**
  * @fileoverview added by tsickle
@@ -3356,9 +3347,28 @@ const ɵ0$1 = /**
  * @param {?} state
  * @return {?}
  */
+state => state.ui.updated;
+/** @type {?} */
+const getAnonymousConsentTemplatesUpdate = createSelector(getAnonymousConsentState, (ɵ0$1));
+const ɵ1 = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => state.ui.bannerVisible;
+/** @type {?} */
+const getAnonymousConsentsBannerVisibility = createSelector(getAnonymousConsentState, (ɵ1));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$2 = /**
+ * @param {?} state
+ * @return {?}
+ */
 state => state.consents;
 /** @type {?} */
-const getAnonymousConsents = createSelector(getAnonymousConsentState, (ɵ0$1));
+const getAnonymousConsents = createSelector(getAnonymousConsentState, (ɵ0$2));
 /** @type {?} */
 const getAnonymousConsentByTemplateCode = (/**
  * @param {?} templateCode
@@ -3375,13 +3385,6 @@ const getAnonymousConsentByTemplateCode = (/**
      */
     consent => consent.templateCode === templateCode))));
 });
-const ɵ1$1 = /**
- * @param {?} state
- * @return {?}
- */
-state => state.bannerVisible;
-/** @type {?} */
-const getAnonymousConsentsBannerVisibility = createSelector(getAnonymousConsentState, (ɵ1$1));
 
 /**
  * @fileoverview added by tsickle
@@ -3396,9 +3399,9 @@ var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
     getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
     getAnonymousConsentTemplate: getAnonymousConsentTemplate,
     getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
+    getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
     getAnonymousConsents: getAnonymousConsents,
     getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
-    getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
     getAnonymousConsentState: getAnonymousConsentState
 });
 
@@ -3558,7 +3561,7 @@ class AnonymousConsentsService {
      * @param {?} visible the banner is visible if `true`, otherwise it's hidden
      * @return {?}
      */
-    toggleAnonymousConsentsBannerVisibility(visible) {
+    toggleBannerVisibility(visible) {
         this.store.dispatch(new ToggleAnonymousConsentsBannerVisibility(visible));
         if (!visible) {
             this.toggleTemplatesUpdated(false);
@@ -3568,7 +3571,7 @@ class AnonymousConsentsService {
      * Returns `true` if the banner is visible, `false` otherwise
      * @return {?}
      */
-    isAnonymousConsentsBannerVisible() {
+    isBannerVisible() {
         return this.store.pipe(select(getAnonymousConsentsBannerVisibility));
     }
     /**
@@ -3606,6 +3609,49 @@ class AnonymousConsentsService {
             }
         }
         return false;
+    }
+    /**
+     * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+     * @param {?} consents to serialize and encode
+     * @return {?}
+     */
+    serializeAndEncode(consents) {
+        if (!consents) {
+            return '';
+        }
+        /** @type {?} */
+        const serialized = JSON.stringify(consents);
+        /** @type {?} */
+        const encoded = encodeURIComponent(serialized);
+        return encoded;
+    }
+    /**
+     * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+     * @param {?} rawConsents to decode an deserialize
+     * @return {?}
+     */
+    decodeAndDeserialize(rawConsents) {
+        /** @type {?} */
+        const decoded = decodeURIComponent(rawConsents);
+        /** @type {?} */
+        const unserialized = (/** @type {?} */ (JSON.parse(decoded)));
+        return unserialized;
+    }
+    /**
+     *
+     * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+     * Otherwise it returns `false`.
+     *
+     * @param {?} newConsents new consents to compare
+     * @param {?} previousConsents old consents to compare
+     * @return {?}
+     */
+    consentsUpdated(newConsents, previousConsents) {
+        /** @type {?} */
+        const newRawConsents = this.serializeAndEncode(newConsents);
+        /** @type {?} */
+        const previousRawConsents = this.serializeAndEncode(previousConsents);
+        return newRawConsents !== previousRawConsents;
     }
 }
 AnonymousConsentsService.decorators = [
@@ -4067,32 +4113,32 @@ const getAuthState = createFeatureSelector(AUTH_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$2 = /**
+const ɵ0$3 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.clientToken;
 /** @type {?} */
-const getClientTokenState = createSelector(getAuthState, (ɵ0$2));
+const getClientTokenState = createSelector(getAuthState, (ɵ0$3));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$3 = /**
+const ɵ0$4 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.csagentToken;
 /** @type {?} */
-const getCustomerSupportAgentTokenState = createSelector(getAuthState, (ɵ0$3));
-const ɵ1$2 = /**
+const getCustomerSupportAgentTokenState = createSelector(getAuthState, (ɵ0$4));
+const ɵ1$1 = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, (ɵ1$2));
+const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, (ɵ1$1));
 const ɵ2 = /**
  * @param {?} state
  * @return {?}
@@ -4111,14 +4157,14 @@ const getUserTokenSelector = (/**
  * @return {?}
  */
 (state) => state.token);
-const ɵ0$4 = getUserTokenSelector;
-const ɵ1$3 = /**
+const ɵ0$5 = getUserTokenSelector;
+const ɵ1$2 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.userToken;
 /** @type {?} */
-const getUserTokenState = createSelector(getAuthState, (ɵ1$3));
+const getUserTokenState = createSelector(getAuthState, (ɵ1$2));
 /** @type {?} */
 const getUserToken = createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -4557,13 +4603,13 @@ const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$5 = /**
+const ɵ0$6 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$5));
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$6));
 /** @type {?} */
 const getGlobalMessageEntitiesByType = (/**
  * @param {?} type
@@ -5603,12 +5649,12 @@ function getBrowserTransferStateReducer(transferState, keys) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$6 = getTransferStateReducer, ɵ1$4 = getStorageSyncReducer;
+const ɵ0$7 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
 /** @type {?} */
 const stateMetaReducers = [
     {
         provide: META_REDUCERS,
-        useFactory: ɵ0$6,
+        useFactory: ɵ0$7,
         deps: [
             PLATFORM_ID,
             [new Optional(), TransferState],
@@ -5618,7 +5664,7 @@ const stateMetaReducers = [
     },
     {
         provide: META_REDUCERS,
-        useFactory: ɵ1$4,
+        useFactory: ɵ1$3,
         deps: [WindowRef, [new Optional(), Config]],
         multi: true,
     },
@@ -6468,20 +6514,20 @@ if (false) {
  */
 /** @type {?} */
 const getRouterFeatureState = createFeatureSelector(ROUTING_FEATURE);
-const ɵ0$7 = /**
+const ɵ0$8 = /**
  * @param {?} state
  * @return {?}
  */
 state => state.router;
 /** @type {?} */
-const getRouterState = createSelector(getRouterFeatureState, (ɵ0$7));
-const ɵ1$5 = /**
+const getRouterState = createSelector(getRouterFeatureState, (ɵ0$8));
+const ɵ1$4 = /**
  * @param {?} routingState
  * @return {?}
  */
 (routingState) => (routingState.state && routingState.state.context) || { id: '' };
 /** @type {?} */
-const getPageContext = createSelector(getRouterState, (ɵ1$5));
+const getPageContext = createSelector(getRouterState, (ɵ1$4));
 const ɵ2$1 = /**
  * @param {?} routingState
  * @return {?}
@@ -7293,20 +7339,20 @@ const getSiteContextState = createFeatureSelector(SITE_CONTEXT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$8 = /**
+const ɵ0$9 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.activeSite;
 /** @type {?} */
-const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$8));
-const ɵ1$6 = /**
+const getActiveBaseSite = createSelector(getSiteContextState, (ɵ0$9));
+const ɵ1$5 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state && state.baseSite && state.baseSite.details;
 /** @type {?} */
-const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$6));
+const getBaseSiteData = createSelector(getSiteContextState, (ɵ1$5));
 
 /**
  * @fileoverview added by tsickle
@@ -7318,14 +7364,14 @@ const currenciesEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.entities);
-const ɵ0$9 = currenciesEntitiesSelector;
+const ɵ0$a = currenciesEntitiesSelector;
 /** @type {?} */
 const activeCurrencySelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.activeCurrency);
-const ɵ1$7 = activeCurrencySelector;
+const ɵ1$6 = activeCurrencySelector;
 const ɵ2$2 = /**
  * @param {?} state
  * @return {?}
@@ -7363,14 +7409,14 @@ const activeLanguageSelector = (/**
  * @return {?}
  */
 (state) => state.activeLanguage);
-const ɵ0$a = activeLanguageSelector;
+const ɵ0$b = activeLanguageSelector;
 /** @type {?} */
 const languagesEntitiesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities);
-const ɵ1$8 = languagesEntitiesSelector;
+const ɵ1$7 = languagesEntitiesSelector;
 const ɵ2$3 = /**
  * @param {?} state
  * @return {?}
@@ -8098,7 +8144,7 @@ const circularReplacer = (/**
         return value;
     });
 });
-const ɵ0$b = circularReplacer;
+const ɵ0$c = circularReplacer;
 /**
  * @param {?} error
  * @return {?}
@@ -19788,35 +19834,28 @@ class AnonymousConsentsInterceptor {
              */
             event => {
                 if (event instanceof HttpResponse) {
-                    this.handleResponse(event.headers.get(ANONYMOUS_CONSENTS_HEADER), isUserLoggedIn);
+                    this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                 }
             })));
         }))), next.handle(request));
     }
     /**
      * @private
-     * @param {?} rawConsents
      * @param {?} isUserLoggedIn
+     * @param {?} newRawConsents
+     * @param {?} previousConsents
      * @return {?}
      */
-    handleResponse(rawConsents, isUserLoggedIn) {
-        if (rawConsents && !isUserLoggedIn) {
+    handleResponse(isUserLoggedIn, newRawConsents, previousConsents) {
+        if (!isUserLoggedIn && newRawConsents) {
             /** @type {?} */
-            const consents = this.decodeAndDeserialize(rawConsents);
-            this.giveRequiredConsents(consents);
+            let newConsents = [];
+            newConsents = this.anonymousConsentsService.decodeAndDeserialize(newRawConsents);
+            newConsents = this.giveRequiredConsents(newConsents);
+            if (this.anonymousConsentsService.consentsUpdated(newConsents, previousConsents)) {
+                this.anonymousConsentsService.setConsents(newConsents);
+            }
         }
-    }
-    /**
-     * @private
-     * @param {?} rawConsents
-     * @return {?}
-     */
-    decodeAndDeserialize(rawConsents) {
-        /** @type {?} */
-        const decoded = decodeURIComponent(rawConsents);
-        /** @type {?} */
-        const unserialized = (/** @type {?} */ (JSON.parse(decoded)));
-        return unserialized;
     }
     /**
      * @private
@@ -19829,27 +19868,12 @@ class AnonymousConsentsInterceptor {
             return request;
         }
         /** @type {?} */
-        const rawConsents = this.serializeAndEncode(consents);
+        const rawConsents = this.anonymousConsentsService.serializeAndEncode(consents);
         return request.clone({
             setHeaders: {
                 [ANONYMOUS_CONSENTS_HEADER]: rawConsents,
             },
         });
-    }
-    /**
-     * @private
-     * @param {?} consents
-     * @return {?}
-     */
-    serializeAndEncode(consents) {
-        if (!consents) {
-            return '';
-        }
-        /** @type {?} */
-        const serialized = JSON.stringify(consents);
-        /** @type {?} */
-        const encoded = encodeURIComponent(serialized);
-        return encoded;
     }
     /**
      * @private
@@ -19865,15 +19889,17 @@ class AnonymousConsentsInterceptor {
      * @return {?}
      */
     giveRequiredConsents(consents) {
+        /** @type {?} */
+        const givenConsents = [...consents];
         if (Boolean(this.config.anonymousConsents) &&
             Boolean(this.config.anonymousConsents.requiredConsents)) {
-            for (const consent of consents) {
+            for (const consent of givenConsents) {
                 if (this.config.anonymousConsents.requiredConsents.includes(consent.templateCode)) {
                     consent.consentState = ANONYMOUS_CONSENT_STATUS.GIVEN;
                 }
             }
         }
-        this.anonymousConsentsService.setConsents(consents);
+        return givenConsents;
     }
 }
 AnonymousConsentsInterceptor.decorators = [
@@ -23049,20 +23075,20 @@ const getUserState = createFeatureSelector(USER_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$c = /**
+const ɵ0$d = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.billingCountries;
 /** @type {?} */
-const getBillingCountriesState = createSelector(getUserState, (ɵ0$c));
-const ɵ1$9 = /**
+const getBillingCountriesState = createSelector(getUserState, (ɵ0$d));
+const ɵ1$8 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$9));
+const getBillingCountriesEntites = createSelector(getBillingCountriesState, (ɵ1$8));
 const ɵ2$4 = /**
  * @param {?} entites
  * @return {?}
@@ -23079,39 +23105,39 @@ const getAllBillingCountries = createSelector(getBillingCountriesEntites, (ɵ2$4
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$d = /**
+const ɵ0$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.consignmentTracking;
 /** @type {?} */
-const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$d));
-const ɵ1$a = /**
+const getConsignmentTrackingState = createSelector(getUserState, (ɵ0$e));
+const ɵ1$9 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.tracking;
 /** @type {?} */
-const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$a));
+const getConsignmentTracking = createSelector(getConsignmentTrackingState, (ɵ1$9));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$e = /**
+const ɵ0$f = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.countries;
 /** @type {?} */
-const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$e));
-const ɵ1$b = /**
+const getDeliveryCountriesState = createSelector(getUserState, (ɵ0$f));
+const ɵ1$a = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$b));
+const getDeliveryCountriesEntites = createSelector(getDeliveryCountriesState, (ɵ1$a));
 const ɵ2$5 = /**
  * @param {?} entites
  * @return {?}
@@ -23138,39 +23164,39 @@ entities => (Object.keys(entities).length !== 0 ? entities[isocode] : null))));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$f = /**
+const ɵ0$g = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderState = createSelector(getUserState, (ɵ0$f));
-const ɵ1$c = /**
+const getOrderState = createSelector(getUserState, (ɵ0$g));
+const ɵ1$b = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.order;
 /** @type {?} */
-const getOrderDetails = createSelector(getOrderState, (ɵ1$c));
+const getOrderDetails = createSelector(getOrderState, (ɵ1$b));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$g = /**
+const ɵ0$h = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.payments;
 /** @type {?} */
-const getPaymentMethodsState = createSelector(getUserState, (ɵ0$g));
-const ɵ1$d = /**
+const getPaymentMethodsState = createSelector(getUserState, (ɵ0$h));
+const ɵ1$c = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$d));
+const getPaymentMethods = createSelector(getPaymentMethodsState, (ɵ1$c));
 const ɵ2$6 = /**
  * @param {?} state
  * @return {?}
@@ -23191,14 +23217,14 @@ const getPaymentMethodsLoadedSuccess = createSelector(getPaymentMethodsState, (�
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$h = /**
+const ɵ0$i = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.regions;
 /** @type {?} */
-const getRegionsLoaderState = createSelector(getUserState, (ɵ0$h));
-const ɵ1$e = /**
+const getRegionsLoaderState = createSelector(getUserState, (ɵ0$i));
+const ɵ1$d = /**
  * @param {?} state
  * @return {?}
  */
@@ -23206,7 +23232,7 @@ const ɵ1$e = /**
     return loaderValueSelector(state).entities;
 };
 /** @type {?} */
-const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$e));
+const getAllRegions = createSelector(getRegionsLoaderState, (ɵ1$d));
 const ɵ2$7 = /**
  * @param {?} state
  * @return {?}
@@ -23245,32 +23271,32 @@ const getRegionsLoaded = createSelector(getRegionsLoaderState, (ɵ5));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$i = /**
+const ɵ0$j = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.resetPassword;
 /** @type {?} */
-const getResetPassword = createSelector(getUserState, (ɵ0$i));
+const getResetPassword = createSelector(getUserState, (ɵ0$j));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$j = /**
+const ɵ0$k = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.titles;
 /** @type {?} */
-const getTitlesState = createSelector(getUserState, (ɵ0$j));
-const ɵ1$f = /**
+const getTitlesState = createSelector(getUserState, (ɵ0$k));
+const ɵ1$e = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getTitlesEntites = createSelector(getTitlesState, (ɵ1$f));
+const getTitlesEntites = createSelector(getTitlesState, (ɵ1$e));
 const ɵ2$8 = /**
  * @param {?} entites
  * @return {?}
@@ -23297,20 +23323,20 @@ entities => (Object.keys(entities).length !== 0 ? entities[code] : null))));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$k = /**
+const ɵ0$l = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addresses;
 /** @type {?} */
-const getAddressesLoaderState = createSelector(getUserState, (ɵ0$k));
-const ɵ1$g = /**
+const getAddressesLoaderState = createSelector(getUserState, (ɵ0$l));
+const ɵ1$f = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$g));
+const getAddresses = createSelector(getAddressesLoaderState, (ɵ1$f));
 const ɵ2$9 = /**
  * @param {?} state
  * @return {?}
@@ -23331,13 +23357,13 @@ const getAddressesLoadedSuccess = createSelector(getAddressesLoaderState, (ɵ3$5
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$l = /**
+const ɵ0$m = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.consents;
 /** @type {?} */
-const getConsentsState = createSelector(getUserState, (ɵ0$l));
+const getConsentsState = createSelector(getUserState, (ɵ0$m));
 /** @type {?} */
 const getConsentsValue = createSelector(getConsentsState, loaderValueSelector);
 /** @type {?} */
@@ -23351,39 +23377,39 @@ const getConsentsError = createSelector(getConsentsState, loaderErrorSelector);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$m = /**
+const ɵ0$n = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.account;
 /** @type {?} */
-const getDetailsState = createSelector(getUserState, (ɵ0$m));
-const ɵ1$h = /**
+const getDetailsState = createSelector(getUserState, (ɵ0$n));
+const ɵ1$g = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getDetails = createSelector(getDetailsState, (ɵ1$h));
+const getDetails = createSelector(getDetailsState, (ɵ1$g));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$n = /**
+const ɵ0$o = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.orders;
 /** @type {?} */
-const getOrdersState = createSelector(getUserState, (ɵ0$n));
-const ɵ1$i = /**
+const getOrdersState = createSelector(getUserState, (ɵ0$o));
+const ɵ1$h = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderSuccessSelector(state);
 /** @type {?} */
-const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$i));
+const getOrdersLoaded = createSelector(getOrdersState, (ɵ1$h));
 const ɵ2$a = /**
  * @param {?} state
  * @return {?}
@@ -23657,6 +23683,11 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class AnonymousConsentTemplatesConnector {
     /**
      * @param {?} adapter
@@ -23706,14 +23737,16 @@ class AnonymousConsentsEffects {
      * @param {?} anonymousConsentsConfig
      * @param {?} anonymousConsentService
      * @param {?} userConsentService
+     * @param {?} winRef
      */
-    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
+    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, winRef) {
         this.actions$ = actions$;
         this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
         this.authService = authService;
         this.anonymousConsentsConfig = anonymousConsentsConfig;
         this.anonymousConsentService = anonymousConsentService;
         this.userConsentService = userConsentService;
+        this.winRef = winRef;
         this.handleLogoutAndLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT), filter((/**
          * @param {?} _
          * @return {?}
@@ -23852,6 +23885,93 @@ class AnonymousConsentsEffects {
             }
             return EMPTY;
         }))))));
+        this.synchronizeBannerAcrossTabs$ = iif((/**
+         * @return {?}
+         */
+        () => this.checkFeatureAndSsrEnabled()), fromEvent(this.winRef.nativeWindow, 'storage').pipe(filter((/**
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        storageEvent => this.checkStorageEvent(storageEvent))), distinctUntilChanged(), 
+        // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
+        debounceTime(100), map((/**
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        storageEvent => {
+            /** @type {?} */
+            const newState = JSON.parse(storageEvent.newValue);
+            /** @type {?} */
+            const newUiFlag = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).ui.bannerVisible;
+            return newUiFlag;
+        })), distinctUntilChanged(), map((/**
+         * @param {?} newUiFlag
+         * @return {?}
+         */
+        newUiFlag => new ToggleAnonymousConsentsBannerVisibility(newUiFlag)))), EMPTY);
+        this.synchronizeConsentStateAcrossTabs$ = iif((/**
+         * @return {?}
+         */
+        () => this.checkFeatureAndSsrEnabled()), fromEvent(this.winRef.nativeWindow, 'storage').pipe(filter((/**
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        storageEvent => this.checkStorageEvent(storageEvent))), distinctUntilChanged(), 
+        // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
+        debounceTime(100), mergeMap((/**
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        storageEvent => {
+            /** @type {?} */
+            const newState = JSON.parse(storageEvent.newValue);
+            /** @type {?} */
+            const newConsets = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
+            /** @type {?} */
+            const oldState = JSON.parse(storageEvent.oldValue);
+            /** @type {?} */
+            const oldConsents = ((/** @type {?} */ (oldState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
+            if (this.anonymousConsentService.consentsUpdated(newConsets, oldConsents)) {
+                return this.createStateUpdateActions(newConsets);
+            }
+            return EMPTY;
+        }))), EMPTY);
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    checkFeatureAndSsrEnabled() {
+        return (isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.winRef.nativeWindow));
+    }
+    /**
+     * @private
+     * @param {?} storageEvent
+     * @return {?}
+     */
+    checkStorageEvent(storageEvent) {
+        return (Boolean(storageEvent) &&
+            storageEvent.key === DEFAULT_LOCAL_STORAGE_KEY &&
+            storageEvent.newValue !== null &&
+            storageEvent.oldValue !== null);
+    }
+    /**
+     * @private
+     * @param {?} newConsets
+     * @return {?}
+     */
+    createStateUpdateActions(newConsets) {
+        /** @type {?} */
+        const consentStateActions = [];
+        for (const consent of newConsets) {
+            if (this.anonymousConsentService.isConsentGiven(consent)) {
+                consentStateActions.push(new GiveAnonymousConsent(consent.templateCode));
+            }
+            else if (this.anonymousConsentService.isConsentWithdrawn(consent)) {
+                consentStateActions.push(new WithdrawAnonymousConsent(consent.templateCode));
+            }
+        }
+        return consentStateActions;
     }
 }
 AnonymousConsentsEffects.decorators = [
@@ -23864,7 +23984,8 @@ AnonymousConsentsEffects.ctorParameters = () => [
     { type: AuthService },
     { type: AnonymousConsentsConfig },
     { type: AnonymousConsentsService },
-    { type: UserConsentService }
+    { type: UserConsentService },
+    { type: WindowRef }
 ];
 __decorate([
     Effect(),
@@ -23882,6 +24003,14 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], AnonymousConsentsEffects.prototype, "synchronizeBannerAcrossTabs$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], AnonymousConsentsEffects.prototype, "synchronizeConsentStateAcrossTabs$", void 0);
 if (false) {
     /** @type {?} */
     AnonymousConsentsEffects.prototype.handleLogoutAndLanguageChange$;
@@ -23891,6 +24020,10 @@ if (false) {
     AnonymousConsentsEffects.prototype.transferAnonymousConsentsToUser$;
     /** @type {?} */
     AnonymousConsentsEffects.prototype.giveRequiredConsentsToUser$;
+    /** @type {?} */
+    AnonymousConsentsEffects.prototype.synchronizeBannerAcrossTabs$;
+    /** @type {?} */
+    AnonymousConsentsEffects.prototype.synchronizeConsentStateAcrossTabs$;
     /**
      * @type {?}
      * @private
@@ -23921,6 +24054,11 @@ if (false) {
      * @private
      */
     AnonymousConsentsEffects.prototype.userConsentService;
+    /**
+     * @type {?}
+     * @private
+     */
+    AnonymousConsentsEffects.prototype.winRef;
 }
 
 /**
@@ -24028,8 +24166,10 @@ function getReducers$3() {
     return {
         templates: loaderReducer(ANONYMOUS_CONSENTS),
         consents: reducer$7,
-        bannerVisible: reducer$5,
-        updated: reducer$6,
+        ui: combineReducers({
+            bannerVisible: reducer$5,
+            updated: reducer$6,
+        }),
     };
 }
 /** @type {?} */
@@ -24053,7 +24193,7 @@ function anonymousConsentsStoreConfigFactory() {
         state: {
             storageSync: {
                 keys: {
-                    'anonymous-consents': StorageSyncType.LOCAL_STORAGE,
+                    [ANONYMOUS_CONSENTS_STORE_FEATURE]: StorageSyncType.LOCAL_STORAGE,
                 },
             },
         },
@@ -24489,32 +24629,32 @@ const getAsmState = createFeatureSelector(ASM_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$o = /**
+const ɵ0$p = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.asmUi;
 /** @type {?} */
-const getAsmUi = createSelector(getAsmState, (ɵ0$o));
+const getAsmUi = createSelector(getAsmState, (ɵ0$p));
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$p = /**
+const ɵ0$q = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.customerSearchResult;
 /** @type {?} */
-const getCustomerSearchResultsLoaderState = createSelector(getAsmState, (ɵ0$p));
-const ɵ1$j = /**
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, (ɵ0$q));
+const ɵ1$i = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, (ɵ1$j));
+const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, (ɵ1$i));
 const ɵ2$b = /**
  * @param {?} state
  * @return {?}
@@ -24959,14 +25099,14 @@ const getCartContentSelector = (/**
  * @return {?}
  */
 (state) => state.content);
-const ɵ0$q = getCartContentSelector;
+const ɵ0$r = getCartContentSelector;
 /** @type {?} */
 const getCartRefreshSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.refresh);
-const ɵ1$k = getCartRefreshSelector;
+const ɵ1$j = getCartRefreshSelector;
 /** @type {?} */
 const getCartEntriesSelector = (/**
  * @param {?} state
@@ -26704,14 +26844,14 @@ const getComponentEntitiesSelector = (/**
     acc[cur] = state.entities[cur].value;
     return acc;
 }), {}));
-const ɵ0$r = getComponentEntitiesSelector;
-const ɵ1$l = /**
+const ɵ0$s = getComponentEntitiesSelector;
+const ɵ1$k = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.component;
 /** @type {?} */
-const getComponentState = createSelector(getCmsState, (ɵ1$l));
+const getComponentState = createSelector(getCmsState, (ɵ1$k));
 /** @type {?} */
 const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
 /** @type {?} */
@@ -26758,13 +26898,13 @@ const componentSelectorFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$s = /**
+const ɵ0$t = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.navigation;
 /** @type {?} */
-const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$s));
+const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$t));
 /** @type {?} */
 const getSelectedNavigationEntryItemState = (/**
  * @param {?} nodeId
@@ -26800,7 +26940,7 @@ const getPageEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.pageData.entities);
-const ɵ0$t = getPageEntitiesSelector;
+const ɵ0$u = getPageEntitiesSelector;
 /** @type {?} */
 const getIndexByType = (/**
  * @param {?} index
@@ -26824,7 +26964,7 @@ const getIndexByType = (/**
     }
     return { entities: {} };
 });
-const ɵ1$m = getIndexByType;
+const ɵ1$l = getIndexByType;
 /** @type {?} */
 const getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -29254,14 +29394,14 @@ const getDeliveryAddressSelector = (/**
  * @return {?}
  */
 (state) => state.address);
-const ɵ0$u = getDeliveryAddressSelector;
+const ɵ0$v = getDeliveryAddressSelector;
 /** @type {?} */
 const getDeliveryModeSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.deliveryMode);
-const ɵ1$n = getDeliveryModeSelector;
+const ɵ1$m = getDeliveryModeSelector;
 /** @type {?} */
 const getPaymentDetailsSelector = (/**
  * @param {?} state
@@ -29350,13 +29490,13 @@ const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9$1));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$v = /**
+const ɵ0$w = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addressVerification;
 /** @type {?} */
-const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$v));
+const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$w));
 /** @type {?} */
 const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -29406,16 +29546,16 @@ const getCardTypesEntites = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$w = /**
+const ɵ0$x = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cardTypes;
 /** @type {?} */
-const getCardTypesState = createSelector(getCheckoutState, (ɵ0$w));
+const getCardTypesState = createSelector(getCheckoutState, (ɵ0$x));
 /** @type {?} */
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$o = /**
+const ɵ1$n = /**
  * @param {?} entites
  * @return {?}
  */
@@ -29427,7 +29567,7 @@ entites => {
     code => entites[code]));
 };
 /** @type {?} */
-const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$o));
+const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$n));
 
 /**
  * @fileoverview added by tsickle
@@ -34381,12 +34521,12 @@ function syncI18nextWithSiteContext(language) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$x = i18nextInit;
+const ɵ0$y = i18nextInit;
 /** @type {?} */
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$x,
+        useFactory: ɵ0$y,
         deps: [I18nConfig, LanguageService],
         multi: true,
     },
@@ -34833,13 +34973,13 @@ const getKymaState = createFeatureSelector(KYMA_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$y = /**
+const ɵ0$z = /**
  * @param {?} state
  * @return {?}
  */
 state => state.openIdToken;
 /** @type {?} */
-const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$y));
+const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$z));
 /** @type {?} */
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 /** @type {?} */
@@ -36276,13 +36416,13 @@ const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$z = /**
+const ɵ0$A = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.references;
 /** @type {?} */
-const getProductReferencesState = createSelector(getProductsState, (ɵ0$z));
+const getProductReferencesState = createSelector(getProductsState, (ɵ0$A));
 /** @type {?} */
 const getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
@@ -36317,13 +36457,13 @@ const getSelectedProductReferencesFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$A = /**
+const ɵ0$B = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.reviews;
 /** @type {?} */
-const getProductReviewsState = createSelector(getProductsState, (ɵ0$A));
+const getProductReviewsState = createSelector(getProductsState, (ɵ0$B));
 /** @type {?} */
 const getSelectedProductReviewsFactory = (/**
  * @param {?} productCode
@@ -36403,13 +36543,13 @@ const getProductSuggestions = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$B = /**
+const ɵ0$C = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.search;
 /** @type {?} */
-const getProductsSearchState = createSelector(getProductsState, (ɵ0$B));
+const getProductsSearchState = createSelector(getProductsState, (ɵ0$C));
 /** @type {?} */
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 /** @type {?} */
@@ -36421,13 +36561,13 @@ const getProductSuggestions$1 = createSelector(getProductsSearchState, getProduc
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$C = /**
+const ɵ0$D = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getProductState = createSelector(getProductsState, (ɵ0$C));
+const getProductState = createSelector(getProductsState, (ɵ0$D));
 /** @type {?} */
 const getSelectedProductsFactory = (/**
  * @param {?} codes
@@ -36512,7 +36652,7 @@ const getSelectedProductErrorFactory = (/**
      */
     productState => loaderErrorSelector(productState)));
 });
-const ɵ1$p = /**
+const ɵ1$o = /**
  * @param {?} details
  * @return {?}
  */
@@ -36520,7 +36660,7 @@ details => {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-const getAllProductCodes = createSelector(getProductState, (ɵ1$p));
+const getAllProductCodes = createSelector(getProductState, (ɵ1$o));
 
 /**
  * @fileoverview added by tsickle
@@ -38668,20 +38808,20 @@ const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$D = /**
+const ɵ0$E = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.findStores;
 /** @type {?} */
-const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$D));
-const ɵ1$q = /**
+const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$E));
+const ɵ1$p = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$q));
+const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$p));
 const ɵ2$f = /**
  * @param {?} state
  * @return {?}
@@ -38694,20 +38834,20 @@ const getStoresLoading = createSelector(getFindStoresState, (ɵ2$f));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$E = /**
+const ɵ0$F = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.viewAllStores;
 /** @type {?} */
-const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$E));
-const ɵ1$r = /**
+const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$F));
+const ɵ1$q = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$r));
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$q));
 const ɵ2$g = /**
  * @param {?} state
  * @return {?}
@@ -42574,11 +42714,6 @@ UserModule.decorators = [
                 imports: [UserStoreModule],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle

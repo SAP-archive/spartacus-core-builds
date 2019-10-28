@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../../../auth/index';
 import { UserConsentService } from '../../../user/facade/user-consent.service';
 import { UserActions } from '../../../user/store/actions/index';
+import { WindowRef } from '../../../window/index';
 import { AnonymousConsentsConfig } from '../../config/anonymous-consents-config';
 import { AnonymousConsentTemplatesConnector } from '../../connectors/anonymous-consent-templates.connector';
 import { AnonymousConsentsService } from '../../facade/index';
@@ -14,9 +15,15 @@ export declare class AnonymousConsentsEffects {
     private anonymousConsentsConfig;
     private anonymousConsentService;
     private userConsentService;
+    private winRef;
     handleLogoutAndLanguageChange$: Observable<AnonymousConsentsActions.LoadAnonymousConsentTemplates>;
     loadAnonymousConsentTemplates$: Observable<AnonymousConsentsActions.AnonymousConsentsActions>;
     transferAnonymousConsentsToUser$: Observable<UserActions.TransferAnonymousConsent | Observable<never>>;
     giveRequiredConsentsToUser$: Observable<UserActions.GiveUserConsent | Observable<never>>;
-    constructor(actions$: Actions, anonymousConsentTemplatesConnector: AnonymousConsentTemplatesConnector, authService: AuthService, anonymousConsentsConfig: AnonymousConsentsConfig, anonymousConsentService: AnonymousConsentsService, userConsentService: UserConsentService);
+    synchronizeBannerAcrossTabs$: Observable<AnonymousConsentsActions.ToggleAnonymousConsentsBannerVisibility>;
+    synchronizeConsentStateAcrossTabs$: Observable<(AnonymousConsentsActions.GiveAnonymousConsent | AnonymousConsentsActions.WithdrawAnonymousConsent) | Observable<never>>;
+    private checkFeatureAndSsrEnabled;
+    private checkStorageEvent;
+    private createStateUpdateActions;
+    constructor(actions$: Actions, anonymousConsentTemplatesConnector: AnonymousConsentTemplatesConnector, authService: AuthService, anonymousConsentsConfig: AnonymousConsentsConfig, anonymousConsentService: AnonymousConsentsService, userConsentService: UserConsentService, winRef: WindowRef);
 }

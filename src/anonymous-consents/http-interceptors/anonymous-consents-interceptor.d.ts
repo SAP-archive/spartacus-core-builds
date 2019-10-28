@@ -13,9 +13,7 @@ export declare class AnonymousConsentsInterceptor implements HttpInterceptor {
     constructor(anonymousConsentsService: AnonymousConsentsService, authService: AuthService, occEndpoints: OccEndpointsService, config: AnonymousConsentsConfig);
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
     private handleResponse;
-    private decodeAndDeserialize;
     private handleRequest;
-    private serializeAndEncode;
     private isOccUrl;
     private giveRequiredConsents;
 }

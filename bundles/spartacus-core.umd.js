@@ -3386,9 +3386,7 @@
         /** @type {?} */
         AnonymousConsentsState.prototype.consents;
         /** @type {?} */
-        AnonymousConsentsState.prototype.bannerVisible;
-        /** @type {?} */
-        AnonymousConsentsState.prototype.updated;
+        AnonymousConsentsState.prototype.ui;
     }
 
     /**
@@ -3638,13 +3636,6 @@
          */
         function (template) { return template.id === templateCode; })); }));
     });
-    var ɵ1 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.updated; };
-    /** @type {?} */
-    var getAnonymousConsentTemplatesUpdate = store.createSelector(getAnonymousConsentState, (ɵ1));
 
     /**
      * @fileoverview added by tsickle
@@ -3654,9 +3645,28 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return state.ui.updated; };
+    /** @type {?} */
+    var getAnonymousConsentTemplatesUpdate = store.createSelector(getAnonymousConsentState, (ɵ0$1));
+    var ɵ1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.ui.bannerVisible; };
+    /** @type {?} */
+    var getAnonymousConsentsBannerVisibility = store.createSelector(getAnonymousConsentState, (ɵ1));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$2 = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getAnonymousConsents = store.createSelector(getAnonymousConsentState, (ɵ0$1));
+    var getAnonymousConsents = store.createSelector(getAnonymousConsentState, (ɵ0$2));
     /** @type {?} */
     var getAnonymousConsentByTemplateCode = (/**
      * @param {?} templateCode
@@ -3673,13 +3683,6 @@
          */
         function (consent) { return consent.templateCode === templateCode; })); }));
     });
-    var ɵ1$1 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.bannerVisible; };
-    /** @type {?} */
-    var getAnonymousConsentsBannerVisibility = store.createSelector(getAnonymousConsentState, (ɵ1$1));
 
     /**
      * @fileoverview added by tsickle
@@ -3694,9 +3697,9 @@
         getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
         getAnonymousConsentTemplate: getAnonymousConsentTemplate,
         getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
+        getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
         getAnonymousConsents: getAnonymousConsents,
         getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
-        getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
         getAnonymousConsentState: getAnonymousConsentState
     });
 
@@ -3988,7 +3991,7 @@
          * @param {?} visible the banner is visible if `true`, otherwise it's hidden
          * @return {?}
          */
-        AnonymousConsentsService.prototype.toggleAnonymousConsentsBannerVisibility = /**
+        AnonymousConsentsService.prototype.toggleBannerVisibility = /**
          * Toggles the visibility of the anonymous consents banner.
          * @param {?} visible the banner is visible if `true`, otherwise it's hidden
          * @return {?}
@@ -4006,7 +4009,7 @@
          * Returns `true` if the banner is visible, `false` otherwise
          * @return {?}
          */
-        AnonymousConsentsService.prototype.isAnonymousConsentsBannerVisible = /**
+        AnonymousConsentsService.prototype.isBannerVisible = /**
          * Returns `true` if the banner is visible, `false` otherwise
          * @return {?}
          */
@@ -4075,6 +4078,84 @@
                 }
             }
             return false;
+        };
+        /**
+         * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+         * @param consents to serialize and encode
+         */
+        /**
+         * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+         * @param {?} consents to serialize and encode
+         * @return {?}
+         */
+        AnonymousConsentsService.prototype.serializeAndEncode = /**
+         * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+         * @param {?} consents to serialize and encode
+         * @return {?}
+         */
+        function (consents) {
+            if (!consents) {
+                return '';
+            }
+            /** @type {?} */
+            var serialized = JSON.stringify(consents);
+            /** @type {?} */
+            var encoded = encodeURIComponent(serialized);
+            return encoded;
+        };
+        /**
+         * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+         * @param rawConsents to decode an deserialize
+         */
+        /**
+         * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+         * @param {?} rawConsents to decode an deserialize
+         * @return {?}
+         */
+        AnonymousConsentsService.prototype.decodeAndDeserialize = /**
+         * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+         * @param {?} rawConsents to decode an deserialize
+         * @return {?}
+         */
+        function (rawConsents) {
+            /** @type {?} */
+            var decoded = decodeURIComponent(rawConsents);
+            /** @type {?} */
+            var unserialized = (/** @type {?} */ (JSON.parse(decoded)));
+            return unserialized;
+        };
+        /**
+         *
+         * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+         * Otherwise it returns `false`.
+         *
+         * @param newConsents new consents to compare
+         * @param previousConsents old consents to compare
+         */
+        /**
+         *
+         * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+         * Otherwise it returns `false`.
+         *
+         * @param {?} newConsents new consents to compare
+         * @param {?} previousConsents old consents to compare
+         * @return {?}
+         */
+        AnonymousConsentsService.prototype.consentsUpdated = /**
+         *
+         * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+         * Otherwise it returns `false`.
+         *
+         * @param {?} newConsents new consents to compare
+         * @param {?} previousConsents old consents to compare
+         * @return {?}
+         */
+        function (newConsents, previousConsents) {
+            /** @type {?} */
+            var newRawConsents = this.serializeAndEncode(newConsents);
+            /** @type {?} */
+            var previousRawConsents = this.serializeAndEncode(previousConsents);
+            return newRawConsents !== previousRawConsents;
         };
         AnonymousConsentsService.decorators = [
             { type: core.Injectable, args: [{ providedIn: 'root' },] }
@@ -4560,32 +4641,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$2 = /**
+    var ɵ0$3 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.clientToken; };
     /** @type {?} */
-    var getClientTokenState = store.createSelector(getAuthState, (ɵ0$2));
+    var getClientTokenState = store.createSelector(getAuthState, (ɵ0$3));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$3 = /**
+    var ɵ0$4 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.csagentToken; };
     /** @type {?} */
-    var getCustomerSupportAgentTokenState = store.createSelector(getAuthState, (ɵ0$3));
-    var ɵ1$2 = /**
+    var getCustomerSupportAgentTokenState = store.createSelector(getAuthState, (ɵ0$4));
+    var ɵ1$1 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$2));
+    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$1));
     var ɵ2 = /**
      * @param {?} state
      * @return {?}
@@ -4604,14 +4685,14 @@
      * @return {?}
      */
     function (state) { return state.token; });
-    var ɵ0$4 = getUserTokenSelector;
-    var ɵ1$3 = /**
+    var ɵ0$5 = getUserTokenSelector;
+    var ɵ1$2 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.userToken; };
     /** @type {?} */
-    var getUserTokenState = store.createSelector(getAuthState, (ɵ1$3));
+    var getUserTokenState = store.createSelector(getAuthState, (ɵ1$2));
     /** @type {?} */
     var getUserToken = store.createSelector(getUserTokenState, getUserTokenSelector);
 
@@ -5209,13 +5290,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$5 = /**
+    var ɵ0$6 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$5));
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$6));
     /** @type {?} */
     var getGlobalMessageEntitiesByType = (/**
      * @param {?} type
@@ -6381,12 +6462,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$6 = getTransferStateReducer, ɵ1$4 = getStorageSyncReducer;
+    var ɵ0$7 = getTransferStateReducer, ɵ1$3 = getStorageSyncReducer;
     /** @type {?} */
     var stateMetaReducers = [
         {
             provide: store.META_REDUCERS,
-            useFactory: ɵ0$6,
+            useFactory: ɵ0$7,
             deps: [
                 core.PLATFORM_ID,
                 [new core.Optional(), platformBrowser.TransferState],
@@ -6396,7 +6477,7 @@
         },
         {
             provide: store.META_REDUCERS,
-            useFactory: ɵ1$4,
+            useFactory: ɵ1$3,
             deps: [WindowRef, [new core.Optional(), Config]],
             multi: true,
         },
@@ -7387,14 +7468,14 @@
      */
     /** @type {?} */
     var getRouterFeatureState = store.createFeatureSelector(ROUTING_FEATURE);
-    var ɵ0$7 = /**
+    var ɵ0$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.router; };
     /** @type {?} */
-    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$7));
-    var ɵ1$5 = /**
+    var getRouterState = store.createSelector(getRouterFeatureState, (ɵ0$8));
+    var ɵ1$4 = /**
      * @param {?} routingState
      * @return {?}
      */
@@ -7402,7 +7483,7 @@
         return (routingState.state && routingState.state.context) || { id: '' };
     };
     /** @type {?} */
-    var getPageContext = store.createSelector(getRouterState, (ɵ1$5));
+    var getPageContext = store.createSelector(getRouterState, (ɵ1$4));
     var ɵ2$1 = /**
      * @param {?} routingState
      * @return {?}
@@ -8330,7 +8411,7 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$8 = /**
+    var ɵ0$9 = /**
      * @param {?} state
      * @return {?}
      */
@@ -8338,14 +8419,14 @@
         return state && state.baseSite && state.baseSite.activeSite;
     };
     /** @type {?} */
-    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$8));
-    var ɵ1$6 = /**
+    var getActiveBaseSite = store.createSelector(getSiteContextState, (ɵ0$9));
+    var ɵ1$5 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state && state.baseSite && state.baseSite.details; };
     /** @type {?} */
-    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$6));
+    var getBaseSiteData = store.createSelector(getSiteContextState, (ɵ1$5));
 
     /**
      * @fileoverview added by tsickle
@@ -8357,14 +8438,14 @@
      * @return {?}
      */
     function (state) { return state.entities; });
-    var ɵ0$9 = currenciesEntitiesSelector;
+    var ɵ0$a = currenciesEntitiesSelector;
     /** @type {?} */
     var activeCurrencySelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.activeCurrency; });
-    var ɵ1$7 = activeCurrencySelector;
+    var ɵ1$6 = activeCurrencySelector;
     var ɵ2$2 = /**
      * @param {?} state
      * @return {?}
@@ -8402,14 +8483,14 @@
      * @return {?}
      */
     function (state) { return state.activeLanguage; });
-    var ɵ0$a = activeLanguageSelector;
+    var ɵ0$b = activeLanguageSelector;
     /** @type {?} */
     var languagesEntitiesSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; });
-    var ɵ1$8 = languagesEntitiesSelector;
+    var ɵ1$7 = languagesEntitiesSelector;
     var ɵ2$3 = /**
      * @param {?} state
      * @return {?}
@@ -9233,7 +9314,7 @@
             return value;
         });
     });
-    var ɵ0$b = circularReplacer;
+    var ɵ0$c = circularReplacer;
     /**
      * @param {?} error
      * @return {?}
@@ -22059,46 +22140,35 @@
                  */
                 function (event) {
                     if (event instanceof http.HttpResponse) {
-                        _this.handleResponse(event.headers.get(ANONYMOUS_CONSENTS_HEADER), isUserLoggedIn);
+                        _this.handleResponse(isUserLoggedIn, event.headers.get(ANONYMOUS_CONSENTS_HEADER), consents);
                     }
                 })));
             }))), next.handle(request));
         };
         /**
          * @private
-         * @param {?} rawConsents
          * @param {?} isUserLoggedIn
+         * @param {?} newRawConsents
+         * @param {?} previousConsents
          * @return {?}
          */
         AnonymousConsentsInterceptor.prototype.handleResponse = /**
          * @private
-         * @param {?} rawConsents
          * @param {?} isUserLoggedIn
+         * @param {?} newRawConsents
+         * @param {?} previousConsents
          * @return {?}
          */
-        function (rawConsents, isUserLoggedIn) {
-            if (rawConsents && !isUserLoggedIn) {
+        function (isUserLoggedIn, newRawConsents, previousConsents) {
+            if (!isUserLoggedIn && newRawConsents) {
                 /** @type {?} */
-                var consents = this.decodeAndDeserialize(rawConsents);
-                this.giveRequiredConsents(consents);
+                var newConsents = [];
+                newConsents = this.anonymousConsentsService.decodeAndDeserialize(newRawConsents);
+                newConsents = this.giveRequiredConsents(newConsents);
+                if (this.anonymousConsentsService.consentsUpdated(newConsents, previousConsents)) {
+                    this.anonymousConsentsService.setConsents(newConsents);
+                }
             }
-        };
-        /**
-         * @private
-         * @param {?} rawConsents
-         * @return {?}
-         */
-        AnonymousConsentsInterceptor.prototype.decodeAndDeserialize = /**
-         * @private
-         * @param {?} rawConsents
-         * @return {?}
-         */
-        function (rawConsents) {
-            /** @type {?} */
-            var decoded = decodeURIComponent(rawConsents);
-            /** @type {?} */
-            var unserialized = (/** @type {?} */ (JSON.parse(decoded)));
-            return unserialized;
         };
         /**
          * @private
@@ -22118,32 +22188,12 @@
                 return request;
             }
             /** @type {?} */
-            var rawConsents = this.serializeAndEncode(consents);
+            var rawConsents = this.anonymousConsentsService.serializeAndEncode(consents);
             return request.clone({
                 setHeaders: (_a = {},
                     _a[ANONYMOUS_CONSENTS_HEADER] = rawConsents,
                     _a),
             });
-        };
-        /**
-         * @private
-         * @param {?} consents
-         * @return {?}
-         */
-        AnonymousConsentsInterceptor.prototype.serializeAndEncode = /**
-         * @private
-         * @param {?} consents
-         * @return {?}
-         */
-        function (consents) {
-            if (!consents) {
-                return '';
-            }
-            /** @type {?} */
-            var serialized = JSON.stringify(consents);
-            /** @type {?} */
-            var encoded = encodeURIComponent(serialized);
-            return encoded;
         };
         /**
          * @private
@@ -22170,11 +22220,13 @@
          */
         function (consents) {
             var e_1, _a;
+            /** @type {?} */
+            var givenConsents = __spread(consents);
             if (Boolean(this.config.anonymousConsents) &&
                 Boolean(this.config.anonymousConsents.requiredConsents)) {
                 try {
-                    for (var consents_1 = __values(consents), consents_1_1 = consents_1.next(); !consents_1_1.done; consents_1_1 = consents_1.next()) {
-                        var consent = consents_1_1.value;
+                    for (var givenConsents_1 = __values(givenConsents), givenConsents_1_1 = givenConsents_1.next(); !givenConsents_1_1.done; givenConsents_1_1 = givenConsents_1.next()) {
+                        var consent = givenConsents_1_1.value;
                         if (this.config.anonymousConsents.requiredConsents.includes(consent.templateCode)) {
                             consent.consentState = ANONYMOUS_CONSENT_STATUS.GIVEN;
                         }
@@ -22183,12 +22235,12 @@
                 catch (e_1_1) { e_1 = { error: e_1_1 }; }
                 finally {
                     try {
-                        if (consents_1_1 && !consents_1_1.done && (_a = consents_1.return)) _a.call(consents_1);
+                        if (givenConsents_1_1 && !givenConsents_1_1.done && (_a = givenConsents_1.return)) _a.call(givenConsents_1);
                     }
                     finally { if (e_1) throw e_1.error; }
                 }
             }
-            this.anonymousConsentsService.setConsents(consents);
+            return givenConsents;
         };
         AnonymousConsentsInterceptor.decorators = [
             { type: core.Injectable }
@@ -25490,20 +25542,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$c = /**
+    var ɵ0$d = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.billingCountries; };
     /** @type {?} */
-    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$c));
-    var ɵ1$9 = /**
+    var getBillingCountriesState = store.createSelector(getUserState, (ɵ0$d));
+    var ɵ1$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getBillingCountriesEntites = store.createSelector(getBillingCountriesState, (ɵ1$9));
+    var getBillingCountriesEntites = store.createSelector(getBillingCountriesState, (ɵ1$8));
     var ɵ2$4 = /**
      * @param {?} entites
      * @return {?}
@@ -25520,39 +25572,39 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$d = /**
+    var ɵ0$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consignmentTracking; };
     /** @type {?} */
-    var getConsignmentTrackingState = store.createSelector(getUserState, (ɵ0$d));
-    var ɵ1$a = /**
+    var getConsignmentTrackingState = store.createSelector(getUserState, (ɵ0$e));
+    var ɵ1$9 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.tracking; };
     /** @type {?} */
-    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, (ɵ1$a));
+    var getConsignmentTracking = store.createSelector(getConsignmentTrackingState, (ɵ1$9));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$e = /**
+    var ɵ0$f = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.countries; };
     /** @type {?} */
-    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$e));
-    var ɵ1$b = /**
+    var getDeliveryCountriesState = store.createSelector(getUserState, (ɵ0$f));
+    var ɵ1$a = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$b));
+    var getDeliveryCountriesEntites = store.createSelector(getDeliveryCountriesState, (ɵ1$a));
     var ɵ2$5 = /**
      * @param {?} entites
      * @return {?}
@@ -25581,33 +25633,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$f = /**
+    var ɵ0$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderState = store.createSelector(getUserState, (ɵ0$f));
-    var ɵ1$c = /**
+    var getOrderState = store.createSelector(getUserState, (ɵ0$g));
+    var ɵ1$b = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.order; };
     /** @type {?} */
-    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$c));
+    var getOrderDetails = store.createSelector(getOrderState, (ɵ1$b));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$g = /**
+    var ɵ0$h = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.payments; };
     /** @type {?} */
-    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$g));
-    var ɵ1$d = /**
+    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$h));
+    var ɵ1$c = /**
      * @param {?} state
      * @return {?}
      */
@@ -25615,7 +25667,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$d));
+    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$c));
     var ɵ2$6 = /**
      * @param {?} state
      * @return {?}
@@ -25640,14 +25692,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$h = /**
+    var ɵ0$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.regions; };
     /** @type {?} */
-    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$h));
-    var ɵ1$e = /**
+    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$i));
+    var ɵ1$d = /**
      * @param {?} state
      * @return {?}
      */
@@ -25655,7 +25707,7 @@
         return loaderValueSelector(state).entities;
     };
     /** @type {?} */
-    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$e));
+    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$d));
     var ɵ2$7 = /**
      * @param {?} state
      * @return {?}
@@ -25700,32 +25752,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$i = /**
+    var ɵ0$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.resetPassword; };
     /** @type {?} */
-    var getResetPassword = store.createSelector(getUserState, (ɵ0$i));
+    var getResetPassword = store.createSelector(getUserState, (ɵ0$j));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$j = /**
+    var ɵ0$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.titles; };
     /** @type {?} */
-    var getTitlesState = store.createSelector(getUserState, (ɵ0$j));
-    var ɵ1$f = /**
+    var getTitlesState = store.createSelector(getUserState, (ɵ0$k));
+    var ɵ1$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$f));
+    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$e));
     var ɵ2$8 = /**
      * @param {?} entites
      * @return {?}
@@ -25754,14 +25806,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$k = /**
+    var ɵ0$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addresses; };
     /** @type {?} */
-    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$k));
-    var ɵ1$g = /**
+    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$l));
+    var ɵ1$f = /**
      * @param {?} state
      * @return {?}
      */
@@ -25769,7 +25821,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$g));
+    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$f));
     var ɵ2$9 = /**
      * @param {?} state
      * @return {?}
@@ -25794,13 +25846,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$l = /**
+    var ɵ0$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getConsentsState = store.createSelector(getUserState, (ɵ0$l));
+    var getConsentsState = store.createSelector(getUserState, (ɵ0$m));
     /** @type {?} */
     var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
@@ -25814,33 +25866,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$m = /**
+    var ɵ0$n = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.account; };
     /** @type {?} */
-    var getDetailsState = store.createSelector(getUserState, (ɵ0$m));
-    var ɵ1$h = /**
+    var getDetailsState = store.createSelector(getUserState, (ɵ0$n));
+    var ɵ1$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getDetails = store.createSelector(getDetailsState, (ɵ1$h));
+    var getDetails = store.createSelector(getDetailsState, (ɵ1$g));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$n = /**
+    var ɵ0$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.orders; };
     /** @type {?} */
-    var getOrdersState = store.createSelector(getUserState, (ɵ0$n));
-    var ɵ1$i = /**
+    var getOrdersState = store.createSelector(getUserState, (ɵ0$o));
+    var ɵ1$h = /**
      * @param {?} state
      * @return {?}
      */
@@ -25848,7 +25900,7 @@
         return loaderSuccessSelector(state);
     };
     /** @type {?} */
-    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$i));
+    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$h));
     var ɵ2$a = /**
      * @param {?} state
      * @return {?}
@@ -26275,6 +26327,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {
         function AnonymousConsentTemplatesConnector(adapter) {
             this.adapter = adapter;
@@ -26318,7 +26375,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var AnonymousConsentsEffects = /** @class */ (function () {
-        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
+        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, winRef) {
             var _this = this;
             this.actions$ = actions$;
             this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
@@ -26326,6 +26383,7 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
+            this.winRef = winRef;
             this.handleLogoutAndLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT), operators.filter((/**
              * @param {?} _
              * @return {?}
@@ -26529,7 +26587,121 @@
                     return rxjs.EMPTY;
                 })));
             })));
+            this.synchronizeBannerAcrossTabs$ = rxjs.iif((/**
+             * @return {?}
+             */
+            function () { return _this.checkFeatureAndSsrEnabled(); }), rxjs.fromEvent(this.winRef.nativeWindow, 'storage').pipe(operators.filter((/**
+             * @param {?} storageEvent
+             * @return {?}
+             */
+            function (storageEvent) { return _this.checkStorageEvent(storageEvent); })), operators.distinctUntilChanged(), 
+            // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
+            operators.debounceTime(100), operators.map((/**
+             * @param {?} storageEvent
+             * @return {?}
+             */
+            function (storageEvent) {
+                /** @type {?} */
+                var newState = JSON.parse(storageEvent.newValue);
+                /** @type {?} */
+                var newUiFlag = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).ui.bannerVisible;
+                return newUiFlag;
+            })), operators.distinctUntilChanged(), operators.map((/**
+             * @param {?} newUiFlag
+             * @return {?}
+             */
+            function (newUiFlag) {
+                return new ToggleAnonymousConsentsBannerVisibility(newUiFlag);
+            }))), rxjs.EMPTY);
+            this.synchronizeConsentStateAcrossTabs$ = rxjs.iif((/**
+             * @return {?}
+             */
+            function () { return _this.checkFeatureAndSsrEnabled(); }), rxjs.fromEvent(this.winRef.nativeWindow, 'storage').pipe(operators.filter((/**
+             * @param {?} storageEvent
+             * @return {?}
+             */
+            function (storageEvent) { return _this.checkStorageEvent(storageEvent); })), operators.distinctUntilChanged(), 
+            // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
+            operators.debounceTime(100), operators.mergeMap((/**
+             * @param {?} storageEvent
+             * @return {?}
+             */
+            function (storageEvent) {
+                /** @type {?} */
+                var newState = JSON.parse(storageEvent.newValue);
+                /** @type {?} */
+                var newConsets = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
+                /** @type {?} */
+                var oldState = JSON.parse(storageEvent.oldValue);
+                /** @type {?} */
+                var oldConsents = ((/** @type {?} */ (oldState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
+                if (_this.anonymousConsentService.consentsUpdated(newConsets, oldConsents)) {
+                    return _this.createStateUpdateActions(newConsets);
+                }
+                return rxjs.EMPTY;
+            }))), rxjs.EMPTY);
         }
+        /**
+         * @private
+         * @return {?}
+         */
+        AnonymousConsentsEffects.prototype.checkFeatureAndSsrEnabled = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            return (isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.winRef.nativeWindow));
+        };
+        /**
+         * @private
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        AnonymousConsentsEffects.prototype.checkStorageEvent = /**
+         * @private
+         * @param {?} storageEvent
+         * @return {?}
+         */
+        function (storageEvent) {
+            return (Boolean(storageEvent) &&
+                storageEvent.key === DEFAULT_LOCAL_STORAGE_KEY &&
+                storageEvent.newValue !== null &&
+                storageEvent.oldValue !== null);
+        };
+        /**
+         * @private
+         * @param {?} newConsets
+         * @return {?}
+         */
+        AnonymousConsentsEffects.prototype.createStateUpdateActions = /**
+         * @private
+         * @param {?} newConsets
+         * @return {?}
+         */
+        function (newConsets) {
+            var e_4, _a;
+            /** @type {?} */
+            var consentStateActions = [];
+            try {
+                for (var newConsets_1 = __values(newConsets), newConsets_1_1 = newConsets_1.next(); !newConsets_1_1.done; newConsets_1_1 = newConsets_1.next()) {
+                    var consent = newConsets_1_1.value;
+                    if (this.anonymousConsentService.isConsentGiven(consent)) {
+                        consentStateActions.push(new GiveAnonymousConsent(consent.templateCode));
+                    }
+                    else if (this.anonymousConsentService.isConsentWithdrawn(consent)) {
+                        consentStateActions.push(new WithdrawAnonymousConsent(consent.templateCode));
+                    }
+                }
+            }
+            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+            finally {
+                try {
+                    if (newConsets_1_1 && !newConsets_1_1.done && (_a = newConsets_1.return)) _a.call(newConsets_1);
+                }
+                finally { if (e_4) throw e_4.error; }
+            }
+            return consentStateActions;
+        };
         AnonymousConsentsEffects.decorators = [
             { type: core.Injectable }
         ];
@@ -26540,7 +26712,8 @@
             { type: AuthService },
             { type: AnonymousConsentsConfig },
             { type: AnonymousConsentsService },
-            { type: UserConsentService }
+            { type: UserConsentService },
+            { type: WindowRef }
         ]; };
         __decorate([
             effects$c.Effect(),
@@ -26558,6 +26731,14 @@
             effects$c.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], AnonymousConsentsEffects.prototype, "synchronizeBannerAcrossTabs$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], AnonymousConsentsEffects.prototype, "synchronizeConsentStateAcrossTabs$", void 0);
         return AnonymousConsentsEffects;
     }());
     if (false) {
@@ -26569,6 +26750,10 @@
         AnonymousConsentsEffects.prototype.transferAnonymousConsentsToUser$;
         /** @type {?} */
         AnonymousConsentsEffects.prototype.giveRequiredConsentsToUser$;
+        /** @type {?} */
+        AnonymousConsentsEffects.prototype.synchronizeBannerAcrossTabs$;
+        /** @type {?} */
+        AnonymousConsentsEffects.prototype.synchronizeConsentStateAcrossTabs$;
         /**
          * @type {?}
          * @private
@@ -26599,6 +26784,11 @@
          * @private
          */
         AnonymousConsentsEffects.prototype.userConsentService;
+        /**
+         * @type {?}
+         * @private
+         */
+        AnonymousConsentsEffects.prototype.winRef;
     }
 
     /**
@@ -26709,8 +26899,10 @@
         return {
             templates: loaderReducer(ANONYMOUS_CONSENTS),
             consents: reducer$7,
-            bannerVisible: reducer$5,
-            updated: reducer$6,
+            ui: store.combineReducers({
+                bannerVisible: reducer$5,
+                updated: reducer$6,
+            }),
         };
     }
     /** @type {?} */
@@ -26729,13 +26921,14 @@
      * @return {?}
      */
     function anonymousConsentsStoreConfigFactory() {
+        var _a;
         /** @type {?} */
         var config = {
             state: {
                 storageSync: {
-                    keys: {
-                        'anonymous-consents': StorageSyncType.LOCAL_STORAGE,
-                    },
+                    keys: (_a = {},
+                        _a[ANONYMOUS_CONSENTS_STORE_FEATURE] = StorageSyncType.LOCAL_STORAGE,
+                        _a),
                 },
             },
         };
@@ -27193,32 +27386,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$o = /**
+    var ɵ0$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.asmUi; };
     /** @type {?} */
-    var getAsmUi = store.createSelector(getAsmState, (ɵ0$o));
+    var getAsmUi = store.createSelector(getAsmState, (ɵ0$p));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$p = /**
+    var ɵ0$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.customerSearchResult; };
     /** @type {?} */
-    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$p));
-    var ɵ1$j = /**
+    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$q));
+    var ɵ1$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$j));
+    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$i));
     var ɵ2$b = /**
      * @param {?} state
      * @return {?}
@@ -27740,14 +27933,14 @@
      * @return {?}
      */
     function (state) { return state.content; });
-    var ɵ0$q = getCartContentSelector;
+    var ɵ0$r = getCartContentSelector;
     /** @type {?} */
     var getCartRefreshSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.refresh; });
-    var ɵ1$k = getCartRefreshSelector;
+    var ɵ1$j = getCartRefreshSelector;
     /** @type {?} */
     var getCartEntriesSelector = (/**
      * @param {?} state
@@ -29662,14 +29855,14 @@
             return acc;
         }), {});
     });
-    var ɵ0$r = getComponentEntitiesSelector;
-    var ɵ1$l = /**
+    var ɵ0$s = getComponentEntitiesSelector;
+    var ɵ1$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
     /** @type {?} */
-    var getComponentState = store.createSelector(getCmsState, (ɵ1$l));
+    var getComponentState = store.createSelector(getCmsState, (ɵ1$k));
     /** @type {?} */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
@@ -29716,13 +29909,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$s = /**
+    var ɵ0$t = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.navigation; };
     /** @type {?} */
-    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$s));
+    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$t));
     /** @type {?} */
     var getSelectedNavigationEntryItemState = (/**
      * @param {?} nodeId
@@ -29758,7 +29951,7 @@
      * @return {?}
      */
     function (state) { return state.pageData.entities; });
-    var ɵ0$t = getPageEntitiesSelector;
+    var ɵ0$u = getPageEntitiesSelector;
     /** @type {?} */
     var getIndexByType = (/**
      * @param {?} index
@@ -29782,7 +29975,7 @@
         }
         return { entities: {} };
     });
-    var ɵ1$m = getIndexByType;
+    var ɵ1$l = getIndexByType;
     /** @type {?} */
     var getPageComponentTypesSelector = (/**
      * @param {?} page
@@ -32498,7 +32691,7 @@
      * @return {?}
      */
     function (state) { return state.address; });
-    var ɵ0$u = getDeliveryAddressSelector;
+    var ɵ0$v = getDeliveryAddressSelector;
     /** @type {?} */
     var getDeliveryModeSelector = (/**
      * @param {?} state
@@ -32507,7 +32700,7 @@
     function (state) {
         return state.deliveryMode;
     });
-    var ɵ1$n = getDeliveryModeSelector;
+    var ɵ1$m = getDeliveryModeSelector;
     /** @type {?} */
     var getPaymentDetailsSelector = (/**
      * @param {?} state
@@ -32602,13 +32795,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$v = /**
+    var ɵ0$w = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addressVerification; };
     /** @type {?} */
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$v));
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$w));
     /** @type {?} */
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -32660,16 +32853,16 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$w = /**
+    var ɵ0$x = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.cardTypes; };
     /** @type {?} */
-    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$w));
+    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$x));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$o = /**
+    var ɵ1$n = /**
      * @param {?} entites
      * @return {?}
      */
@@ -32681,7 +32874,7 @@
         function (code) { return entites[code]; }));
     };
     /** @type {?} */
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$o));
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$n));
 
     /**
      * @fileoverview added by tsickle
@@ -38626,12 +38819,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$x = i18nextInit;
+    var ɵ0$y = i18nextInit;
     /** @type {?} */
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$x,
+            useFactory: ɵ0$y,
             deps: [I18nConfig, LanguageService],
             multi: true,
         },
@@ -39162,13 +39355,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$y = /**
+    var ɵ0$z = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.openIdToken; };
     /** @type {?} */
-    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$y));
+    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$z));
     /** @type {?} */
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     /** @type {?} */
@@ -40652,13 +40845,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$z = /**
+    var ɵ0$A = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.references; };
     /** @type {?} */
-    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$z));
+    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$A));
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
@@ -40693,13 +40886,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$A = /**
+    var ɵ0$B = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.reviews; };
     /** @type {?} */
-    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$A));
+    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$B));
     /** @type {?} */
     var getSelectedProductReviewsFactory = (/**
      * @param {?} productCode
@@ -40780,13 +40973,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$B = /**
+    var ɵ0$C = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.search; };
     /** @type {?} */
-    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$B));
+    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$C));
     /** @type {?} */
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
@@ -40798,13 +40991,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$C = /**
+    var ɵ0$D = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getProductState = store.createSelector(getProductsState, (ɵ0$C));
+    var getProductState = store.createSelector(getProductsState, (ɵ0$D));
     /** @type {?} */
     var getSelectedProductsFactory = (/**
      * @param {?} codes
@@ -40891,7 +41084,7 @@
          */
         function (productState) { return loaderErrorSelector(productState); }));
     });
-    var ɵ1$p = /**
+    var ɵ1$o = /**
      * @param {?} details
      * @return {?}
      */
@@ -40899,7 +41092,7 @@
         return Object.keys(details.entities);
     };
     /** @type {?} */
-    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$p));
+    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$o));
 
     /**
      * @fileoverview added by tsickle
@@ -43409,20 +43602,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$D = /**
+    var ɵ0$E = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
-    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$D));
-    var ɵ1$q = /**
+    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$E));
+    var ɵ1$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$q));
+    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$p));
     var ɵ2$f = /**
      * @param {?} state
      * @return {?}
@@ -43435,20 +43628,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$E = /**
+    var ɵ0$F = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.viewAllStores; };
     /** @type {?} */
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$E));
-    var ɵ1$r = /**
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$F));
+    var ɵ1$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$r));
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$q));
     var ɵ2$g = /**
      * @param {?} state
      * @return {?}

@@ -79,11 +79,11 @@ export declare class AnonymousConsentsService {
      * Toggles the visibility of the anonymous consents banner.
      * @param visible the banner is visible if `true`, otherwise it's hidden
      */
-    toggleAnonymousConsentsBannerVisibility(visible: boolean): void;
+    toggleBannerVisibility(visible: boolean): void;
     /**
      * Returns `true` if the banner is visible, `false` otherwise
      */
-    isAnonymousConsentsBannerVisible(): Observable<boolean>;
+    isBannerVisible(): Observable<boolean>;
     /**
      * Returns `true` if the consent templates were updated on the back-end.
      */
@@ -99,4 +99,23 @@ export declare class AnonymousConsentsService {
      * @param newTemplates new templates to check
      */
     detectUpdatedTemplates(currentTemplates: ConsentTemplate[], newTemplates: ConsentTemplate[]): boolean;
+    /**
+     * Serializes using `JSON.stringify()` and encodes using `encodeURIComponent()` methods
+     * @param consents to serialize and encode
+     */
+    serializeAndEncode(consents: AnonymousConsent[]): string;
+    /**
+     * Decodes using `decodeURIComponent()` and deserializes using `JSON.parse()`
+     * @param rawConsents to decode an deserialize
+     */
+    decodeAndDeserialize(rawConsents: string): AnonymousConsent[];
+    /**
+     *
+     * Compares the given `newConsents` and `previousConsents` and returns `true` if there are differences (the `newConsents` are updates).
+     * Otherwise it returns `false`.
+     *
+     * @param newConsents new consents to compare
+     * @param previousConsents old consents to compare
+     */
+    consentsUpdated(newConsents: AnonymousConsent[], previousConsents: AnonymousConsent[]): boolean;
 }
