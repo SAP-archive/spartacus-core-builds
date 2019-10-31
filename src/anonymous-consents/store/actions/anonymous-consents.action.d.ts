@@ -9,7 +9,7 @@ export declare const GET_ANONYMOUS_CONSENT = "[Anonymous Consents] Get Anonymous
 export declare const SET_ANONYMOUS_CONSENTS = "[Anonymous Consents] Set Anonymous Consents";
 export declare const GIVE_ANONYMOUS_CONSENT = "[Anonymous Consents] Give Anonymous Consent";
 export declare const WITHDRAW_ANONYMOUS_CONSENT = "[Anonymous Consents] Withdraw Anonymous Consent";
-export declare const TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY = "[Anonymous Consents] Toggle Anonymous Consents Banner Visibility";
+export declare const TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = "[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed";
 export declare const TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = "[Anonymous Consents] Anonymous Consent Templates Updated";
 export declare class LoadAnonymousConsentTemplates extends StateLoaderActions.LoaderLoadAction {
     readonly type = "[Anonymous Consents] Load Anonymous Consent Templates";
@@ -52,9 +52,9 @@ export declare class WithdrawAnonymousConsent {
     readonly type = "[Anonymous Consents] Withdraw Anonymous Consent";
     constructor(templateCode: string);
 }
-export declare class ToggleAnonymousConsentsBannerVisibility {
+export declare class ToggleAnonymousConsentsBannerDissmissed {
     visible: boolean;
-    readonly type = "[Anonymous Consents] Toggle Anonymous Consents Banner Visibility";
+    readonly type = "[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed";
     constructor(visible: boolean);
 }
 export declare class ToggleAnonymousConsentTemplatesUpdated {
@@ -62,4 +62,4 @@ export declare class ToggleAnonymousConsentTemplatesUpdated {
     readonly type = "[Anonymous Consents] Anonymous Consent Templates Updated";
     constructor(updated: boolean);
 }
-export declare type AnonymousConsentsActions = LoadAnonymousConsentTemplates | LoadAnonymousConsentTemplatesSuccess | LoadAnonymousConsentTemplatesFail | ResetLoadAnonymousConsentTemplates | GetAllAnonymousConsents | SetAnonymousConsents | GetAnonymousConsent | GiveAnonymousConsent | WithdrawAnonymousConsent | ToggleAnonymousConsentsBannerVisibility | ToggleAnonymousConsentTemplatesUpdated;
+export declare type AnonymousConsentsActions = LoadAnonymousConsentTemplates | LoadAnonymousConsentTemplatesSuccess | LoadAnonymousConsentTemplatesFail | ResetLoadAnonymousConsentTemplates | GetAllAnonymousConsents | SetAnonymousConsents | GetAnonymousConsent | GiveAnonymousConsent | WithdrawAnonymousConsent | ToggleAnonymousConsentsBannerDissmissed | ToggleAnonymousConsentTemplatesUpdated;

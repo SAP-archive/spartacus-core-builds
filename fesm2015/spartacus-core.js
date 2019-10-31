@@ -1,9 +1,9 @@
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, ɵɵdefineInjectable, ɵɵinject, Inject, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, APP_INITIALIZER, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, combineReducers } from '@ngrx/store';
-import { filter, tap, map, take, switchMap, catchError, debounceTime, startWith, distinctUntilChanged, pluck, withLatestFrom, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
+import { combineLatest, throwError, of, fromEvent, Observable, iif, Subscription, EMPTY } from 'rxjs';
+import { filter, tap, switchMap, map, take, catchError, debounceTime, startWith, distinctUntilChanged, pluck, withLatestFrom, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
 import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS, HttpParams, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
-import { throwError, of, fromEvent, Observable, iif, Subscription, EMPTY, combineLatest } from 'rxjs';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
 import { makeStateKey, TransferState, Meta } from '@angular/platform-browser';
 import { __decorate, __metadata } from 'tslib';
@@ -3109,7 +3109,7 @@ const GIVE_ANONYMOUS_CONSENT = '[Anonymous Consents] Give Anonymous Consent';
 /** @type {?} */
 const WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
 /** @type {?} */
-const TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY = '[Anonymous Consents] Toggle Anonymous Consents Banner Visibility';
+const TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
 /** @type {?} */
 const TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
 class LoadAnonymousConsentTemplates extends LoaderLoadAction {
@@ -3230,20 +3230,20 @@ if (false) {
     /** @type {?} */
     WithdrawAnonymousConsent.prototype.templateCode;
 }
-class ToggleAnonymousConsentsBannerVisibility {
+class ToggleAnonymousConsentsBannerDissmissed {
     /**
      * @param {?} visible
      */
     constructor(visible) {
         this.visible = visible;
-        this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY;
+        this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
     }
 }
 if (false) {
     /** @type {?} */
-    ToggleAnonymousConsentsBannerVisibility.prototype.type;
+    ToggleAnonymousConsentsBannerDissmissed.prototype.type;
     /** @type {?} */
-    ToggleAnonymousConsentsBannerVisibility.prototype.visible;
+    ToggleAnonymousConsentsBannerDissmissed.prototype.visible;
 }
 class ToggleAnonymousConsentTemplatesUpdated {
     /**
@@ -3276,7 +3276,7 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     SET_ANONYMOUS_CONSENTS: SET_ANONYMOUS_CONSENTS,
     GIVE_ANONYMOUS_CONSENT: GIVE_ANONYMOUS_CONSENT,
     WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
-    TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY: TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY,
+    TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
     TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
     LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
     LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
@@ -3287,7 +3287,7 @@ var anonymousConsentsGroup = /*#__PURE__*/Object.freeze({
     SetAnonymousConsents: SetAnonymousConsents,
     GiveAnonymousConsent: GiveAnonymousConsent,
     WithdrawAnonymousConsent: WithdrawAnonymousConsent,
-    ToggleAnonymousConsentsBannerVisibility: ToggleAnonymousConsentsBannerVisibility,
+    ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
     ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated
 });
 
@@ -3354,9 +3354,9 @@ const ɵ1 = /**
  * @param {?} state
  * @return {?}
  */
-state => state.ui.bannerVisible;
+state => state.ui.bannerDismissed;
 /** @type {?} */
-const getAnonymousConsentsBannerVisibility = createSelector(getAnonymousConsentState, (ɵ1));
+const getAnonymousConsentsBannerDismissed = createSelector(getAnonymousConsentState, (ɵ1));
 
 /**
  * @fileoverview added by tsickle
@@ -3399,7 +3399,7 @@ var anonymousConsentsGroup_selectors = /*#__PURE__*/Object.freeze({
     getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
     getAnonymousConsentTemplate: getAnonymousConsentTemplate,
     getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
-    getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
+    getAnonymousConsentsBannerDismissed: getAnonymousConsentsBannerDismissed,
     getAnonymousConsents: getAnonymousConsents,
     getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
     getAnonymousConsentState: getAnonymousConsentState
@@ -3557,29 +3557,42 @@ class AnonymousConsentsService {
         return consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN;
     }
     /**
-     * Toggles the visibility of the anonymous consents banner.
-     * @param {?} visible the banner is visible if `true`, otherwise it's hidden
+     * Toggles the dismissed state of the anonymous consents banner.
+     * @param {?} dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
      * @return {?}
      */
-    toggleBannerVisibility(visible) {
-        this.store.dispatch(new ToggleAnonymousConsentsBannerVisibility(visible));
-        if (!visible) {
+    toggleBannerDismissed(dismissed) {
+        this.store.dispatch(new ToggleAnonymousConsentsBannerDissmissed(dismissed));
+        if (dismissed) {
             this.toggleTemplatesUpdated(false);
         }
     }
     /**
-     * Returns `true` if the banner is visible, `false` otherwise
+     * Returns `true` if the banner was dismissed, `false` otherwise.
      * @return {?}
      */
-    isBannerVisible() {
-        return this.store.pipe(select(getAnonymousConsentsBannerVisibility));
+    isBannerDismissed() {
+        return this.store.pipe(select(getAnonymousConsentsBannerDismissed));
     }
     /**
      * Returns `true` if the consent templates were updated on the back-end.
+     * If the templates are not present in the store, it triggers the load.
      * @return {?}
      */
     getTemplatesUpdated() {
-        return this.store.pipe(select(getAnonymousConsentTemplatesUpdate));
+        return this.getTemplates().pipe(tap((/**
+         * @param {?} templates
+         * @return {?}
+         */
+        templates => {
+            if (!Boolean(templates)) {
+                this.loadTemplates();
+            }
+        })), switchMap((/**
+         * @param {?} _
+         * @return {?}
+         */
+        _ => this.store.pipe(select(getAnonymousConsentTemplatesUpdate)))));
     }
     /**
      * Toggles the `updated` slice of the state
@@ -3588,6 +3601,21 @@ class AnonymousConsentsService {
      */
     toggleTemplatesUpdated(updated) {
         this.store.dispatch(new ToggleAnonymousConsentTemplatesUpdated(updated));
+    }
+    /**
+     * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+     * Otherwise, it returns `false`.
+     * @return {?}
+     */
+    isBannerVisible() {
+        return combineLatest([
+            this.isBannerDismissed(),
+            this.getTemplatesUpdated(),
+        ]).pipe(map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([dismissed, updated]) => !dismissed || updated)));
     }
     /**
      * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
@@ -23683,11 +23711,6 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 class AnonymousConsentTemplatesConnector {
     /**
      * @param {?} adapter
@@ -23737,16 +23760,14 @@ class AnonymousConsentsEffects {
      * @param {?} anonymousConsentsConfig
      * @param {?} anonymousConsentService
      * @param {?} userConsentService
-     * @param {?} winRef
      */
-    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, winRef) {
+    constructor(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
         this.actions$ = actions$;
         this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
         this.authService = authService;
         this.anonymousConsentsConfig = anonymousConsentsConfig;
         this.anonymousConsentService = anonymousConsentService;
         this.userConsentService = userConsentService;
-        this.winRef = winRef;
         this.handleLogoutAndLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT), filter((/**
          * @param {?} _
          * @return {?}
@@ -23885,93 +23906,6 @@ class AnonymousConsentsEffects {
             }
             return EMPTY;
         }))))));
-        this.synchronizeBannerAcrossTabs$ = iif((/**
-         * @return {?}
-         */
-        () => this.checkFeatureAndSsrEnabled()), fromEvent(this.winRef.nativeWindow, 'storage').pipe(filter((/**
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        storageEvent => this.checkStorageEvent(storageEvent))), distinctUntilChanged(), 
-        // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
-        debounceTime(100), map((/**
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        storageEvent => {
-            /** @type {?} */
-            const newState = JSON.parse(storageEvent.newValue);
-            /** @type {?} */
-            const newUiFlag = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).ui.bannerVisible;
-            return newUiFlag;
-        })), distinctUntilChanged(), map((/**
-         * @param {?} newUiFlag
-         * @return {?}
-         */
-        newUiFlag => new ToggleAnonymousConsentsBannerVisibility(newUiFlag)))), EMPTY);
-        this.synchronizeConsentStateAcrossTabs$ = iif((/**
-         * @return {?}
-         */
-        () => this.checkFeatureAndSsrEnabled()), fromEvent(this.winRef.nativeWindow, 'storage').pipe(filter((/**
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        storageEvent => this.checkStorageEvent(storageEvent))), distinctUntilChanged(), 
-        // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
-        debounceTime(100), mergeMap((/**
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        storageEvent => {
-            /** @type {?} */
-            const newState = JSON.parse(storageEvent.newValue);
-            /** @type {?} */
-            const newConsets = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
-            /** @type {?} */
-            const oldState = JSON.parse(storageEvent.oldValue);
-            /** @type {?} */
-            const oldConsents = ((/** @type {?} */ (oldState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
-            if (this.anonymousConsentService.consentsUpdated(newConsets, oldConsents)) {
-                return this.createStateUpdateActions(newConsets);
-            }
-            return EMPTY;
-        }))), EMPTY);
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    checkFeatureAndSsrEnabled() {
-        return (isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.winRef.nativeWindow));
-    }
-    /**
-     * @private
-     * @param {?} storageEvent
-     * @return {?}
-     */
-    checkStorageEvent(storageEvent) {
-        return (Boolean(storageEvent) &&
-            storageEvent.key === DEFAULT_LOCAL_STORAGE_KEY &&
-            storageEvent.newValue !== null &&
-            storageEvent.oldValue !== null);
-    }
-    /**
-     * @private
-     * @param {?} newConsets
-     * @return {?}
-     */
-    createStateUpdateActions(newConsets) {
-        /** @type {?} */
-        const consentStateActions = [];
-        for (const consent of newConsets) {
-            if (this.anonymousConsentService.isConsentGiven(consent)) {
-                consentStateActions.push(new GiveAnonymousConsent(consent.templateCode));
-            }
-            else if (this.anonymousConsentService.isConsentWithdrawn(consent)) {
-                consentStateActions.push(new WithdrawAnonymousConsent(consent.templateCode));
-            }
-        }
-        return consentStateActions;
     }
 }
 AnonymousConsentsEffects.decorators = [
@@ -23984,8 +23918,7 @@ AnonymousConsentsEffects.ctorParameters = () => [
     { type: AuthService },
     { type: AnonymousConsentsConfig },
     { type: AnonymousConsentsService },
-    { type: UserConsentService },
-    { type: WindowRef }
+    { type: UserConsentService }
 ];
 __decorate([
     Effect(),
@@ -24003,14 +23936,6 @@ __decorate([
     Effect(),
     __metadata("design:type", Observable)
 ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], AnonymousConsentsEffects.prototype, "synchronizeBannerAcrossTabs$", void 0);
-__decorate([
-    Effect(),
-    __metadata("design:type", Observable)
-], AnonymousConsentsEffects.prototype, "synchronizeConsentStateAcrossTabs$", void 0);
 if (false) {
     /** @type {?} */
     AnonymousConsentsEffects.prototype.handleLogoutAndLanguageChange$;
@@ -24020,10 +23945,6 @@ if (false) {
     AnonymousConsentsEffects.prototype.transferAnonymousConsentsToUser$;
     /** @type {?} */
     AnonymousConsentsEffects.prototype.giveRequiredConsentsToUser$;
-    /** @type {?} */
-    AnonymousConsentsEffects.prototype.synchronizeBannerAcrossTabs$;
-    /** @type {?} */
-    AnonymousConsentsEffects.prototype.synchronizeConsentStateAcrossTabs$;
     /**
      * @type {?}
      * @private
@@ -24054,11 +23975,6 @@ if (false) {
      * @private
      */
     AnonymousConsentsEffects.prototype.userConsentService;
-    /**
-     * @type {?}
-     * @private
-     */
-    AnonymousConsentsEffects.prototype.winRef;
 }
 
 /**
@@ -24073,7 +23989,7 @@ const effects$2 = [AnonymousConsentsEffects];
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const initialState$5 = true;
+const initialState$5 = false;
 /**
  * @param {?=} state
  * @param {?=} action
@@ -24081,7 +23997,7 @@ const initialState$5 = true;
  */
 function reducer$5(state = initialState$5, action) {
     switch (action.type) {
-        case TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY: {
+        case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
             return action.visible;
         }
     }
@@ -24167,7 +24083,7 @@ function getReducers$3() {
         templates: loaderReducer(ANONYMOUS_CONSENTS),
         consents: reducer$7,
         ui: combineReducers({
-            bannerVisible: reducer$5,
+            bannerDismissed: reducer$5,
             updated: reducer$6,
         }),
     };
@@ -42728,6 +42644,11 @@ UserModule.decorators = [
                 imports: [UserStoreModule],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle

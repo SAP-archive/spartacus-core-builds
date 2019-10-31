@@ -76,16 +76,17 @@ export declare class AnonymousConsentsService {
      */
     isConsentWithdrawn(consent: AnonymousConsent): boolean;
     /**
-     * Toggles the visibility of the anonymous consents banner.
-     * @param visible the banner is visible if `true`, otherwise it's hidden
+     * Toggles the dismissed state of the anonymous consents banner.
+     * @param dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
      */
-    toggleBannerVisibility(visible: boolean): void;
+    toggleBannerDismissed(dismissed: boolean): void;
     /**
-     * Returns `true` if the banner is visible, `false` otherwise
+     * Returns `true` if the banner was dismissed, `false` otherwise.
      */
-    isBannerVisible(): Observable<boolean>;
+    isBannerDismissed(): Observable<boolean>;
     /**
      * Returns `true` if the consent templates were updated on the back-end.
+     * If the templates are not present in the store, it triggers the load.
      */
     getTemplatesUpdated(): Observable<boolean>;
     /**
@@ -93,6 +94,11 @@ export declare class AnonymousConsentsService {
      * @param updated
      */
     toggleTemplatesUpdated(updated: boolean): void;
+    /**
+     * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+     * Otherwise, it returns `false`.
+     */
+    isBannerVisible(): Observable<boolean>;
     /**
      * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
      * @param currentTemplates current templates to check

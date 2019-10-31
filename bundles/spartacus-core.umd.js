@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs/operators'), require('@angular/common/http'), require('rxjs'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/router'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs/operators', '@angular/common/http', 'rxjs', '@ngrx/effects', '@angular/platform-browser', '@angular/router', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs.operators, global.ng.common.http, global.rxjs, global.effects, global.ng.platformBrowser, global.ng.router, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, function (exports, core, common, store, operators, http, rxjs, effects$c, platformBrowser, router, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/router'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@angular/router', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.effects, global.ng.platformBrowser, global.ng.router, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, function (exports, core, common, store, rxjs, operators, http, effects$c, platformBrowser, router, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -3412,7 +3412,7 @@
     /** @type {?} */
     var WITHDRAW_ANONYMOUS_CONSENT = '[Anonymous Consents] Withdraw Anonymous Consent';
     /** @type {?} */
-    var TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY = '[Anonymous Consents] Toggle Anonymous Consents Banner Visibility';
+    var TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED = '[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed';
     /** @type {?} */
     var TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED = '[Anonymous Consents] Anonymous Consent Templates Updated';
     var LoadAnonymousConsentTemplates = /** @class */ (function (_super) {
@@ -3532,18 +3532,18 @@
         /** @type {?} */
         WithdrawAnonymousConsent.prototype.templateCode;
     }
-    var ToggleAnonymousConsentsBannerVisibility = /** @class */ (function () {
-        function ToggleAnonymousConsentsBannerVisibility(visible) {
+    var ToggleAnonymousConsentsBannerDissmissed = /** @class */ (function () {
+        function ToggleAnonymousConsentsBannerDissmissed(visible) {
             this.visible = visible;
-            this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY;
+            this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
         }
-        return ToggleAnonymousConsentsBannerVisibility;
+        return ToggleAnonymousConsentsBannerDissmissed;
     }());
     if (false) {
         /** @type {?} */
-        ToggleAnonymousConsentsBannerVisibility.prototype.type;
+        ToggleAnonymousConsentsBannerDissmissed.prototype.type;
         /** @type {?} */
-        ToggleAnonymousConsentsBannerVisibility.prototype.visible;
+        ToggleAnonymousConsentsBannerDissmissed.prototype.visible;
     }
     var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
         function ToggleAnonymousConsentTemplatesUpdated(updated) {
@@ -3574,7 +3574,7 @@
         SET_ANONYMOUS_CONSENTS: SET_ANONYMOUS_CONSENTS,
         GIVE_ANONYMOUS_CONSENT: GIVE_ANONYMOUS_CONSENT,
         WITHDRAW_ANONYMOUS_CONSENT: WITHDRAW_ANONYMOUS_CONSENT,
-        TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY: TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY,
+        TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED,
         TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED: TOGGLE_ANONYMOUS_CONSENT_TEMPLATES_UPDATED,
         LoadAnonymousConsentTemplates: LoadAnonymousConsentTemplates,
         LoadAnonymousConsentTemplatesSuccess: LoadAnonymousConsentTemplatesSuccess,
@@ -3585,7 +3585,7 @@
         SetAnonymousConsents: SetAnonymousConsents,
         GiveAnonymousConsent: GiveAnonymousConsent,
         WithdrawAnonymousConsent: WithdrawAnonymousConsent,
-        ToggleAnonymousConsentsBannerVisibility: ToggleAnonymousConsentsBannerVisibility,
+        ToggleAnonymousConsentsBannerDissmissed: ToggleAnonymousConsentsBannerDissmissed,
         ToggleAnonymousConsentTemplatesUpdated: ToggleAnonymousConsentTemplatesUpdated
     });
 
@@ -3652,9 +3652,9 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.ui.bannerVisible; };
+    function (state) { return state.ui.bannerDismissed; };
     /** @type {?} */
-    var getAnonymousConsentsBannerVisibility = store.createSelector(getAnonymousConsentState, (ɵ1));
+    var getAnonymousConsentsBannerDismissed = store.createSelector(getAnonymousConsentState, (ɵ1));
 
     /**
      * @fileoverview added by tsickle
@@ -3697,7 +3697,7 @@
         getAnonymousConsentTemplatesError: getAnonymousConsentTemplatesError,
         getAnonymousConsentTemplate: getAnonymousConsentTemplate,
         getAnonymousConsentTemplatesUpdate: getAnonymousConsentTemplatesUpdate,
-        getAnonymousConsentsBannerVisibility: getAnonymousConsentsBannerVisibility,
+        getAnonymousConsentsBannerDismissed: getAnonymousConsentsBannerDismissed,
         getAnonymousConsents: getAnonymousConsents,
         getAnonymousConsentByTemplateCode: getAnonymousConsentByTemplateCode,
         getAnonymousConsentState: getAnonymousConsentState
@@ -3983,52 +3983,70 @@
             return consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN;
         };
         /**
-         * Toggles the visibility of the anonymous consents banner.
-         * @param visible the banner is visible if `true`, otherwise it's hidden
+         * Toggles the dismissed state of the anonymous consents banner.
+         * @param dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
          */
         /**
-         * Toggles the visibility of the anonymous consents banner.
-         * @param {?} visible the banner is visible if `true`, otherwise it's hidden
+         * Toggles the dismissed state of the anonymous consents banner.
+         * @param {?} dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
          * @return {?}
          */
-        AnonymousConsentsService.prototype.toggleBannerVisibility = /**
-         * Toggles the visibility of the anonymous consents banner.
-         * @param {?} visible the banner is visible if `true`, otherwise it's hidden
+        AnonymousConsentsService.prototype.toggleBannerDismissed = /**
+         * Toggles the dismissed state of the anonymous consents banner.
+         * @param {?} dismissed the banner will be dismissed if `true` is passed, otherwise it will be visible.
          * @return {?}
          */
-        function (visible) {
-            this.store.dispatch(new ToggleAnonymousConsentsBannerVisibility(visible));
-            if (!visible) {
+        function (dismissed) {
+            this.store.dispatch(new ToggleAnonymousConsentsBannerDissmissed(dismissed));
+            if (dismissed) {
                 this.toggleTemplatesUpdated(false);
             }
         };
         /**
-         * Returns `true` if the banner is visible, `false` otherwise
+         * Returns `true` if the banner was dismissed, `false` otherwise.
          */
         /**
-         * Returns `true` if the banner is visible, `false` otherwise
+         * Returns `true` if the banner was dismissed, `false` otherwise.
          * @return {?}
          */
-        AnonymousConsentsService.prototype.isBannerVisible = /**
-         * Returns `true` if the banner is visible, `false` otherwise
+        AnonymousConsentsService.prototype.isBannerDismissed = /**
+         * Returns `true` if the banner was dismissed, `false` otherwise.
          * @return {?}
          */
         function () {
-            return this.store.pipe(store.select(getAnonymousConsentsBannerVisibility));
+            return this.store.pipe(store.select(getAnonymousConsentsBannerDismissed));
         };
         /**
          * Returns `true` if the consent templates were updated on the back-end.
+         * If the templates are not present in the store, it triggers the load.
          */
         /**
          * Returns `true` if the consent templates were updated on the back-end.
+         * If the templates are not present in the store, it triggers the load.
          * @return {?}
          */
         AnonymousConsentsService.prototype.getTemplatesUpdated = /**
          * Returns `true` if the consent templates were updated on the back-end.
+         * If the templates are not present in the store, it triggers the load.
          * @return {?}
          */
         function () {
-            return this.store.pipe(store.select(getAnonymousConsentTemplatesUpdate));
+            var _this = this;
+            return this.getTemplates().pipe(operators.tap((/**
+             * @param {?} templates
+             * @return {?}
+             */
+            function (templates) {
+                if (!Boolean(templates)) {
+                    _this.loadTemplates();
+                }
+            })), operators.switchMap((/**
+             * @param {?} _
+             * @return {?}
+             */
+            function (_) {
+                return _this.store.pipe(store.select(getAnonymousConsentTemplatesUpdate));
+            })));
         };
         /**
          * Toggles the `updated` slice of the state
@@ -4046,6 +4064,33 @@
          */
         function (updated) {
             this.store.dispatch(new ToggleAnonymousConsentTemplatesUpdated(updated));
+        };
+        /**
+         * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+         * Otherwise, it returns `false`.
+         */
+        /**
+         * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+         * Otherwise, it returns `false`.
+         * @return {?}
+         */
+        AnonymousConsentsService.prototype.isBannerVisible = /**
+         * Returns `true` if either the banner is not dismissed or if the templates were updated on the back-end.
+         * Otherwise, it returns `false`.
+         * @return {?}
+         */
+        function () {
+            return rxjs.combineLatest([
+                this.isBannerDismissed(),
+                this.getTemplatesUpdated(),
+            ]).pipe(operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), dismissed = _b[0], updated = _b[1];
+                return !dismissed || updated;
+            })));
         };
         /**
          * Returns `true` if there's a missmatch in template versions between the provided `currentTemplates` and `newTemplates`
@@ -26327,11 +26372,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var AnonymousConsentTemplatesConnector = /** @class */ (function () {
         function AnonymousConsentTemplatesConnector(adapter) {
             this.adapter = adapter;
@@ -26375,7 +26415,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var AnonymousConsentsEffects = /** @class */ (function () {
-        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService, winRef) {
+        function AnonymousConsentsEffects(actions$, anonymousConsentTemplatesConnector, authService, anonymousConsentsConfig, anonymousConsentService, userConsentService) {
             var _this = this;
             this.actions$ = actions$;
             this.anonymousConsentTemplatesConnector = anonymousConsentTemplatesConnector;
@@ -26383,7 +26423,6 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.winRef = winRef;
             this.handleLogoutAndLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT), operators.filter((/**
              * @param {?} _
              * @return {?}
@@ -26587,121 +26626,7 @@
                     return rxjs.EMPTY;
                 })));
             })));
-            this.synchronizeBannerAcrossTabs$ = rxjs.iif((/**
-             * @return {?}
-             */
-            function () { return _this.checkFeatureAndSsrEnabled(); }), rxjs.fromEvent(this.winRef.nativeWindow, 'storage').pipe(operators.filter((/**
-             * @param {?} storageEvent
-             * @return {?}
-             */
-            function (storageEvent) { return _this.checkStorageEvent(storageEvent); })), operators.distinctUntilChanged(), 
-            // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
-            operators.debounceTime(100), operators.map((/**
-             * @param {?} storageEvent
-             * @return {?}
-             */
-            function (storageEvent) {
-                /** @type {?} */
-                var newState = JSON.parse(storageEvent.newValue);
-                /** @type {?} */
-                var newUiFlag = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).ui.bannerVisible;
-                return newUiFlag;
-            })), operators.distinctUntilChanged(), operators.map((/**
-             * @param {?} newUiFlag
-             * @return {?}
-             */
-            function (newUiFlag) {
-                return new ToggleAnonymousConsentsBannerVisibility(newUiFlag);
-            }))), rxjs.EMPTY);
-            this.synchronizeConsentStateAcrossTabs$ = rxjs.iif((/**
-             * @return {?}
-             */
-            function () { return _this.checkFeatureAndSsrEnabled(); }), rxjs.fromEvent(this.winRef.nativeWindow, 'storage').pipe(operators.filter((/**
-             * @param {?} storageEvent
-             * @return {?}
-             */
-            function (storageEvent) { return _this.checkStorageEvent(storageEvent); })), operators.distinctUntilChanged(), 
-            // Clicking on "Allow All" on the banner hides the banner, causing an infinite loop of firing events.
-            operators.debounceTime(100), operators.mergeMap((/**
-             * @param {?} storageEvent
-             * @return {?}
-             */
-            function (storageEvent) {
-                /** @type {?} */
-                var newState = JSON.parse(storageEvent.newValue);
-                /** @type {?} */
-                var newConsets = ((/** @type {?} */ (newState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
-                /** @type {?} */
-                var oldState = JSON.parse(storageEvent.oldValue);
-                /** @type {?} */
-                var oldConsents = ((/** @type {?} */ (oldState[ANONYMOUS_CONSENTS_STORE_FEATURE]))).consents;
-                if (_this.anonymousConsentService.consentsUpdated(newConsets, oldConsents)) {
-                    return _this.createStateUpdateActions(newConsets);
-                }
-                return rxjs.EMPTY;
-            }))), rxjs.EMPTY);
         }
-        /**
-         * @private
-         * @return {?}
-         */
-        AnonymousConsentsEffects.prototype.checkFeatureAndSsrEnabled = /**
-         * @private
-         * @return {?}
-         */
-        function () {
-            return (isFeatureEnabled(this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(this.winRef.nativeWindow));
-        };
-        /**
-         * @private
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        AnonymousConsentsEffects.prototype.checkStorageEvent = /**
-         * @private
-         * @param {?} storageEvent
-         * @return {?}
-         */
-        function (storageEvent) {
-            return (Boolean(storageEvent) &&
-                storageEvent.key === DEFAULT_LOCAL_STORAGE_KEY &&
-                storageEvent.newValue !== null &&
-                storageEvent.oldValue !== null);
-        };
-        /**
-         * @private
-         * @param {?} newConsets
-         * @return {?}
-         */
-        AnonymousConsentsEffects.prototype.createStateUpdateActions = /**
-         * @private
-         * @param {?} newConsets
-         * @return {?}
-         */
-        function (newConsets) {
-            var e_4, _a;
-            /** @type {?} */
-            var consentStateActions = [];
-            try {
-                for (var newConsets_1 = __values(newConsets), newConsets_1_1 = newConsets_1.next(); !newConsets_1_1.done; newConsets_1_1 = newConsets_1.next()) {
-                    var consent = newConsets_1_1.value;
-                    if (this.anonymousConsentService.isConsentGiven(consent)) {
-                        consentStateActions.push(new GiveAnonymousConsent(consent.templateCode));
-                    }
-                    else if (this.anonymousConsentService.isConsentWithdrawn(consent)) {
-                        consentStateActions.push(new WithdrawAnonymousConsent(consent.templateCode));
-                    }
-                }
-            }
-            catch (e_4_1) { e_4 = { error: e_4_1 }; }
-            finally {
-                try {
-                    if (newConsets_1_1 && !newConsets_1_1.done && (_a = newConsets_1.return)) _a.call(newConsets_1);
-                }
-                finally { if (e_4) throw e_4.error; }
-            }
-            return consentStateActions;
-        };
         AnonymousConsentsEffects.decorators = [
             { type: core.Injectable }
         ];
@@ -26712,8 +26637,7 @@
             { type: AuthService },
             { type: AnonymousConsentsConfig },
             { type: AnonymousConsentsService },
-            { type: UserConsentService },
-            { type: WindowRef }
+            { type: UserConsentService }
         ]; };
         __decorate([
             effects$c.Effect(),
@@ -26731,14 +26655,6 @@
             effects$c.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], AnonymousConsentsEffects.prototype, "synchronizeBannerAcrossTabs$", void 0);
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], AnonymousConsentsEffects.prototype, "synchronizeConsentStateAcrossTabs$", void 0);
         return AnonymousConsentsEffects;
     }());
     if (false) {
@@ -26750,10 +26666,6 @@
         AnonymousConsentsEffects.prototype.transferAnonymousConsentsToUser$;
         /** @type {?} */
         AnonymousConsentsEffects.prototype.giveRequiredConsentsToUser$;
-        /** @type {?} */
-        AnonymousConsentsEffects.prototype.synchronizeBannerAcrossTabs$;
-        /** @type {?} */
-        AnonymousConsentsEffects.prototype.synchronizeConsentStateAcrossTabs$;
         /**
          * @type {?}
          * @private
@@ -26784,11 +26696,6 @@
          * @private
          */
         AnonymousConsentsEffects.prototype.userConsentService;
-        /**
-         * @type {?}
-         * @private
-         */
-        AnonymousConsentsEffects.prototype.winRef;
     }
 
     /**
@@ -26803,7 +26710,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$5 = true;
+    var initialState$5 = false;
     /**
      * @param {?=} state
      * @param {?=} action
@@ -26812,7 +26719,7 @@
     function reducer$5(state, action) {
         if (state === void 0) { state = initialState$5; }
         switch (action.type) {
-            case TOGGLE_ANONYMOUS_CONSENTS_BANNER_VISIBILITY: {
+            case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
                 return action.visible;
             }
         }
@@ -26900,7 +26807,7 @@
             templates: loaderReducer(ANONYMOUS_CONSENTS),
             consents: reducer$7,
             ui: store.combineReducers({
-                bannerVisible: reducer$5,
+                bannerDismissed: reducer$5,
                 updated: reducer$6,
             }),
         };
