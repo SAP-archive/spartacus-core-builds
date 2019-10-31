@@ -29469,16 +29469,33 @@
          * @return {?}
          */
         function (cartId) {
-            return rxjs.combineLatest([
-                this.authService.getOccUserId(),
-                cartId
-                    ? rxjs.of(cartId)
-                    : this.store.pipe(store.select(getCartContent), operators.map((/**
+            if (cartId) {
+                return this.authService.getOccUserId().pipe(operators.take(1), operators.map((/**
+                 * @param {?} userId
+                 * @return {?}
+                 */
+                function (userId) { return [userId, cartId]; })));
+            }
+            else {
+                return rxjs.combineLatest([
+                    this.authService.getOccUserId(),
+                    this.store.pipe(store.select(getCartContent), operators.map((/**
                      * @param {?} cart
                      * @return {?}
                      */
-                    function (cart) { return cart.code; }))),
-            ]).pipe(operators.take(1));
+                    function (cart) { return cart; }))),
+                ]).pipe(operators.take(1), operators.map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), userId = _b[0], cart = _b[1];
+                    return [
+                        userId,
+                        userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
+                    ];
+                })));
+            }
         };
         CartVoucherService.decorators = [
             { type: core.Injectable }

@@ -26460,16 +26460,30 @@ class CartVoucherService {
      * @return {?}
      */
     combineUserAndCartId(cartId) {
-        return combineLatest([
-            this.authService.getOccUserId(),
-            cartId
-                ? of(cartId)
-                : this.store.pipe(select(getCartContent), map((/**
+        if (cartId) {
+            return this.authService.getOccUserId().pipe(take(1), map((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            userId => [userId, cartId])));
+        }
+        else {
+            return combineLatest([
+                this.authService.getOccUserId(),
+                this.store.pipe(select(getCartContent), map((/**
                  * @param {?} cart
                  * @return {?}
                  */
-                cart => cart.code))),
-        ]).pipe(take(1));
+                cart => cart))),
+            ]).pipe(take(1), map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([userId, cart]) => [
+                userId,
+                userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
+            ])));
+        }
     }
 }
 CartVoucherService.decorators = [

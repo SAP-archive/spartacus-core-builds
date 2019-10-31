@@ -29278,16 +29278,33 @@ var CartVoucherService = /** @class */ (function () {
      * @return {?}
      */
     function (cartId) {
-        return combineLatest([
-            this.authService.getOccUserId(),
-            cartId
-                ? of(cartId)
-                : this.store.pipe(select(getCartContent), map((/**
+        if (cartId) {
+            return this.authService.getOccUserId().pipe(take(1), map((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) { return [userId, cartId]; })));
+        }
+        else {
+            return combineLatest([
+                this.authService.getOccUserId(),
+                this.store.pipe(select(getCartContent), map((/**
                  * @param {?} cart
                  * @return {?}
                  */
-                function (cart) { return cart.code; }))),
-        ]).pipe(take(1));
+                function (cart) { return cart; }))),
+            ]).pipe(take(1), map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), userId = _b[0], cart = _b[1];
+                return [
+                    userId,
+                    userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
+                ];
+            })));
+        }
     };
     CartVoucherService.decorators = [
         { type: Injectable }
