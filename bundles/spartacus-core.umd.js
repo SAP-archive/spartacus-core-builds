@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('@ngrx/store'), require('rxjs'), require('rxjs/operators'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/router'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
-    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', '@ngrx/store', 'rxjs', 'rxjs/operators', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@angular/router', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
-    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.store, global.rxjs, global.rxjs.operators, global.ng.common.http, global.effects, global.ng.platformBrowser, global.ng.router, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, function (exports, core, common, store, rxjs, operators, http, effects$c, platformBrowser, router, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/common/http'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/router'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
+    typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/common/http', '@ngrx/effects', '@angular/platform-browser', '@angular/router', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
+    (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.rxjs, global.rxjs.operators, global.store, global.ng.common.http, global.effects, global.ng.platformBrowser, global.ng.router, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
+}(this, function (exports, core, common, rxjs, operators, store, http, effects$c, platformBrowser, router, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -554,6 +554,443 @@
         ];
         return TestConfigModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
+    /**
+     * Used to provide asynchronous config during app initialization
+     * @record
+     */
+    function ConfigInitializer() { }
+    if (false) {
+        /**
+         * List of config parts that are resolved by configFactory, e.g.:
+         * 'context.baseSite', 'context.language'
+         * @type {?}
+         */
+        ConfigInitializer.prototype.scopes;
+        /**
+         * Promise that returns config chunk
+         * @type {?}
+         */
+        ConfigInitializer.prototype.configFactory;
+    }
+    /** @type {?} */
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Provides support for CONFIG_INITIALIZERS
+     */
+    var ConfigInitializerService = /** @class */ (function () {
+        function ConfigInitializerService(config, initializerGuard) {
+            this.config = config;
+            this.initializerGuard = initializerGuard;
+            this.ongoingScopes$ = new rxjs.BehaviorSubject(undefined);
+        }
+        Object.defineProperty(ConfigInitializerService.prototype, "isStable", {
+            /**
+             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+             */
+            get: /**
+             * Returns true if config is stable, i.e. all CONFIG_INITIALIZERS resolved correctly
+             * @return {?}
+             */
+            function () {
+                return (!this.initializerGuard ||
+                    (this.ongoingScopes$.value && this.ongoingScopes$.value.length === 0));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Recommended way to get config for code that can run before app will finish
+         * initialization (APP_INITIALIZERS, selected service constructors)
+         *
+         * Used without parameters waits for the whole config to become stable
+         *
+         * Parameters allow to describe which part of the config should be stable using
+         * string describing config part, e.g.:
+         * 'siteContext', 'siteContext.language', etc.
+         *
+         * @param scopes String describing parts of the config we want to be sure are stable
+         */
+        /**
+         * Recommended way to get config for code that can run before app will finish
+         * initialization (APP_INITIALIZERS, selected service constructors)
+         *
+         * Used without parameters waits for the whole config to become stable
+         *
+         * Parameters allow to describe which part of the config should be stable using
+         * string describing config part, e.g.:
+         * 'siteContext', 'siteContext.language', etc.
+         *
+         * @param {...?} scopes String describing parts of the config we want to be sure are stable
+         * @return {?}
+         */
+        ConfigInitializerService.prototype.getStableConfig = /**
+         * Recommended way to get config for code that can run before app will finish
+         * initialization (APP_INITIALIZERS, selected service constructors)
+         *
+         * Used without parameters waits for the whole config to become stable
+         *
+         * Parameters allow to describe which part of the config should be stable using
+         * string describing config part, e.g.:
+         * 'siteContext', 'siteContext.language', etc.
+         *
+         * @param {...?} scopes String describing parts of the config we want to be sure are stable
+         * @return {?}
+         */
+        function () {
+            var scopes = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                scopes[_i] = arguments[_i];
+            }
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    if (this.isStable) {
+                        return [2 /*return*/, this.config];
+                    }
+                    return [2 /*return*/, this.ongoingScopes$
+                            .pipe(operators.filter((/**
+                         * @param {?} ongoingScopes
+                         * @return {?}
+                         */
+                        function (ongoingScopes) { return ongoingScopes && _this.areReady(scopes, ongoingScopes); })), operators.take(1), operators.mapTo(this.config))
+                            .toPromise()];
+                });
+            });
+        };
+        /**
+         * Removes provided scopes from currently ongoingScopes
+         *
+         * @param scopes
+         */
+        /**
+         * Removes provided scopes from currently ongoingScopes
+         *
+         * @protected
+         * @param {?} scopes
+         * @return {?}
+         */
+        ConfigInitializerService.prototype.finishScopes = /**
+         * Removes provided scopes from currently ongoingScopes
+         *
+         * @protected
+         * @param {?} scopes
+         * @return {?}
+         */
+        function (scopes) {
+            var e_1, _a;
+            /** @type {?} */
+            var newScopes = __spread(this.ongoingScopes$.value);
+            try {
+                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
+                    var scope = scopes_1_1.value;
+                    newScopes.splice(newScopes.indexOf(scope), 1);
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+            this.ongoingScopes$.next(newScopes);
+        };
+        /**
+         * Return true if provided scopes are not part of ongoingScopes
+         *
+         * @param scopes
+         * @param ongoingScopes
+         */
+        /**
+         * Return true if provided scopes are not part of ongoingScopes
+         *
+         * @protected
+         * @param {?} scopes
+         * @param {?} ongoingScopes
+         * @return {?}
+         */
+        ConfigInitializerService.prototype.areReady = /**
+         * Return true if provided scopes are not part of ongoingScopes
+         *
+         * @protected
+         * @param {?} scopes
+         * @param {?} ongoingScopes
+         * @return {?}
+         */
+        function (scopes, ongoingScopes) {
+            var e_2, _a, e_3, _b;
+            if (!scopes.length) {
+                return !ongoingScopes.length;
+            }
+            try {
+                for (var scopes_2 = __values(scopes), scopes_2_1 = scopes_2.next(); !scopes_2_1.done; scopes_2_1 = scopes_2.next()) {
+                    var scope = scopes_2_1.value;
+                    try {
+                        for (var ongoingScopes_1 = (e_3 = void 0, __values(ongoingScopes)), ongoingScopes_1_1 = ongoingScopes_1.next(); !ongoingScopes_1_1.done; ongoingScopes_1_1 = ongoingScopes_1.next()) {
+                            var ongoingScope = ongoingScopes_1_1.value;
+                            if (this.scopesOverlap(scope, ongoingScope)) {
+                                return false;
+                            }
+                        }
+                    }
+                    catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                    finally {
+                        try {
+                            if (ongoingScopes_1_1 && !ongoingScopes_1_1.done && (_b = ongoingScopes_1.return)) _b.call(ongoingScopes_1);
+                        }
+                        finally { if (e_3) throw e_3.error; }
+                    }
+                }
+            }
+            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+            finally {
+                try {
+                    if (scopes_2_1 && !scopes_2_1.done && (_a = scopes_2.return)) _a.call(scopes_2);
+                }
+                finally { if (e_2) throw e_2.error; }
+            }
+            return true;
+        };
+        /**
+         * Check if two scopes overlap.
+         *
+         * Example of scopes that overlap:
+         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+         *
+         * Example of scopes that do not overlap:
+         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+         *
+         * @param a ScopeA
+         * @param b ScopeB
+         */
+        /**
+         * Check if two scopes overlap.
+         *
+         * Example of scopes that overlap:
+         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+         *
+         * Example of scopes that do not overlap:
+         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+         *
+         * @protected
+         * @param {?} a ScopeA
+         * @param {?} b ScopeB
+         * @return {?}
+         */
+        ConfigInitializerService.prototype.scopesOverlap = /**
+         * Check if two scopes overlap.
+         *
+         * Example of scopes that overlap:
+         * 'test' and 'test', 'test.a' and 'test', 'test' and 'test.a'
+         *
+         * Example of scopes that do not overlap:
+         * 'test' and 'testA', 'test.a' and 'test.b', 'test.nested' and 'test.nest'
+         *
+         * @protected
+         * @param {?} a ScopeA
+         * @param {?} b ScopeB
+         * @return {?}
+         */
+        function (a, b) {
+            var _a;
+            if (b.length > a.length) {
+                _a = __read([b, a], 2), a = _a[0], b = _a[1];
+            }
+            return a.startsWith(b) && (a[b.length] || '.') === '.';
+        };
+        /**
+         * @internal
+         *
+         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+         *
+         */
+        /**
+         * \@internal
+         *
+         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+         *
+         * @param {?=} initializers
+         * @return {?}
+         */
+        ConfigInitializerService.prototype.initialize = /**
+         * \@internal
+         *
+         * Not a part of a public API, used by APP_INITIALIZER to initialize all provided CONFIG_INITIALIZERS
+         *
+         * @param {?=} initializers
+         * @return {?}
+         */
+        function (initializers) {
+            return __awaiter(this, void 0, void 0, function () {
+                var ongoingScopes, asyncConfigs, _loop_1, this_1, _a, _b, initializer;
+                var e_4, _c;
+                var _this = this;
+                return __generator(this, function (_d) {
+                    switch (_d.label) {
+                        case 0:
+                            if (this.ongoingScopes$.value) {
+                                // guard for double initialization
+                                return [2 /*return*/];
+                            }
+                            ongoingScopes = [];
+                            asyncConfigs = [];
+                            _loop_1 = function (initializer) {
+                                if (!initializer) {
+                                    return "continue";
+                                }
+                                if (!initializer.scopes || !initializer.scopes.length) {
+                                    throw new Error('CONFIG_INITIALIZER should provide scope!');
+                                }
+                                if (core.isDevMode() && !this_1.areReady(initializer.scopes, ongoingScopes)) {
+                                    console.warn('More than one CONFIG_INITIALIZER is initializing the same config scope.');
+                                }
+                                ongoingScopes.push.apply(ongoingScopes, __spread(initializer.scopes));
+                                asyncConfigs.push(((/**
+                                 * @return {?}
+                                 */
+                                function () { return __awaiter(_this, void 0, void 0, function () {
+                                    var _a, _b;
+                                    return __generator(this, function (_c) {
+                                        switch (_c.label) {
+                                            case 0:
+                                                _a = deepMerge;
+                                                _b = [this.config];
+                                                return [4 /*yield*/, initializer.configFactory()];
+                                            case 1:
+                                                _a.apply(void 0, _b.concat([_c.sent()]));
+                                                this.finishScopes(initializer.scopes);
+                                                return [2 /*return*/];
+                                        }
+                                    });
+                                }); }))());
+                            };
+                            this_1 = this;
+                            try {
+                                for (_a = __values(initializers || []), _b = _a.next(); !_b.done; _b = _a.next()) {
+                                    initializer = _b.value;
+                                    _loop_1(initializer);
+                                }
+                            }
+                            catch (e_4_1) { e_4 = { error: e_4_1 }; }
+                            finally {
+                                try {
+                                    if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                                }
+                                finally { if (e_4) throw e_4.error; }
+                            }
+                            this.ongoingScopes$.next(ongoingScopes);
+                            if (!asyncConfigs.length) return [3 /*break*/, 2];
+                            return [4 /*yield*/, Promise.all(asyncConfigs)];
+                        case 1:
+                            _d.sent();
+                            _d.label = 2;
+                        case 2: return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        ConfigInitializerService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ConfigInitializerService.ctorParameters = function () { return [
+            { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
+            { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [CONFIG_INITIALIZER_FORROOT_GUARD,] }] }
+        ]; };
+        /** @nocollapse */ ConfigInitializerService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ConfigInitializerService_Factory() { return new ConfigInitializerService(core.ɵɵinject(Config), core.ɵɵinject(CONFIG_INITIALIZER_FORROOT_GUARD, 8)); }, token: ConfigInitializerService, providedIn: "root" });
+        return ConfigInitializerService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        ConfigInitializerService.prototype.ongoingScopes$;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ConfigInitializerService.prototype.config;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ConfigInitializerService.prototype.initializerGuard;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} configInitializer
+     * @param {?} initializers
+     * @return {?}
+     */
+    function configInitializerFactory(configInitializer, initializers) {
+        /** @type {?} */
+        var isReady = (/**
+         * @return {?}
+         */
+        function () { return configInitializer.initialize(initializers); });
+        return isReady;
+    }
+    var ConfigInitializerModule = /** @class */ (function () {
+        function ConfigInitializerModule() {
+        }
+        /**
+         * @return {?}
+         */
+        ConfigInitializerModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: ConfigInitializerModule,
+                providers: [
+                    {
+                        provide: CONFIG_INITIALIZER_FORROOT_GUARD,
+                        useValue: true,
+                    },
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configInitializerFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), CONFIG_INITIALIZER],
+                        ],
+                    },
+                ],
+            };
+        };
+        ConfigInitializerModule.decorators = [
+            { type: core.NgModule, args: [{
+                        declarations: [],
+                        imports: [common.CommonModule],
+                    },] }
+        ];
+        return ConfigInitializerModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -48421,6 +48858,7 @@
     exports.CMS_FLEX_COMPONENT_TYPE = CMS_FLEX_COMPONENT_TYPE;
     exports.CMS_PAGE_NORMALIZER = CMS_PAGE_NORMALIZER;
     exports.COMPONENT_ENTITY = COMPONENT_ENTITY;
+    exports.CONFIG_INITIALIZER = CONFIG_INITIALIZER;
     exports.CONSENT_TEMPLATE_NORMALIZER = CONSENT_TEMPLATE_NORMALIZER;
     exports.CONSIGNMENT_TRACKING_NORMALIZER = CONSIGNMENT_TRACKING_NORMALIZER;
     exports.COUNTRY_NORMALIZER = COUNTRY_NORMALIZER;
@@ -48476,6 +48914,8 @@
     exports.CmsStructureConfigService = CmsStructureConfigService;
     exports.Config = Config;
     exports.ConfigChunk = ConfigChunk;
+    exports.ConfigInitializerModule = ConfigInitializerModule;
+    exports.ConfigInitializerService = ConfigInitializerService;
     exports.ConfigModule = ConfigModule;
     exports.ConfigValidatorToken = ConfigValidatorToken;
     exports.ConfigurableRoutesService = ConfigurableRoutesService;
@@ -48716,6 +49156,7 @@
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
     exports.WindowRef = WindowRef;
     exports.clearCartState = clearCartState;
+    exports.configInitializerFactory = configInitializerFactory;
     exports.configurationFactory = configurationFactory;
     exports.contextServiceMapProvider = contextServiceMapProvider;
     exports.contextServiceProviders = contextServiceProviders;
@@ -48757,211 +49198,212 @@
     exports.validateConfig = validateConfig;
     exports.ɵa = TEST_CONFIG_COOKIE_NAME;
     exports.ɵb = configFromCookieFactory;
-    exports.ɵba = AsmConfig;
-    exports.ɵbb = authStoreConfigFactory;
-    exports.ɵbc = AuthStoreModule;
-    exports.ɵbd = getReducers$1;
-    exports.ɵbe = reducerToken$1;
-    exports.ɵbf = reducerProvider$1;
-    exports.ɵbg = clearAuthState;
-    exports.ɵbh = clearCustomerSupportAgentAuthState;
-    exports.ɵbi = metaReducers;
-    exports.ɵbj = effects;
-    exports.ɵbk = ClientTokenEffect;
-    exports.ɵbl = CustomerSupportAgentTokenEffects;
-    exports.ɵbm = UserTokenEffects;
-    exports.ɵbn = UserAuthenticationTokenService;
-    exports.ɵbo = ClientAuthenticationTokenService;
-    exports.ɵbp = reducer$1;
-    exports.ɵbq = defaultAuthConfig;
-    exports.ɵbr = interceptors;
-    exports.ɵbs = CustomerSupportAgentTokenInterceptor;
-    exports.ɵbt = ClientTokenInterceptor;
-    exports.ɵbu = UserTokenInterceptor;
-    exports.ɵbv = AuthErrorInterceptor;
-    exports.ɵbw = UserErrorHandlingService;
-    exports.ɵbx = UrlParsingService;
-    exports.ɵby = ClientErrorHandlingService;
-    exports.ɵbz = CustomerSupportAgentErrorHandlingService;
-    exports.ɵc = anonymousConsentsStoreConfigFactory;
-    exports.ɵca = AuthServices;
-    exports.ɵcb = cartStoreConfigFactory;
-    exports.ɵcc = CartStoreModule;
-    exports.ɵcd = reducer$9;
-    exports.ɵce = CartPageMetaResolver;
-    exports.ɵcf = CheckoutStoreModule;
-    exports.ɵcg = getReducers$6;
-    exports.ɵch = reducerToken$6;
-    exports.ɵci = reducerProvider$6;
-    exports.ɵcj = effects$5;
-    exports.ɵck = AddressVerificationEffect;
-    exports.ɵcl = CardTypesEffects;
-    exports.ɵcm = CheckoutEffects;
-    exports.ɵcn = reducer$c;
-    exports.ɵco = reducer$b;
-    exports.ɵcp = reducer$a;
-    exports.ɵcq = cmsStoreConfigFactory;
-    exports.ɵcr = CmsStoreModule;
-    exports.ɵcs = getReducers$8;
-    exports.ɵct = reducerToken$8;
-    exports.ɵcu = reducerProvider$8;
-    exports.ɵcv = clearCmsState;
-    exports.ɵcw = metaReducers$2;
-    exports.ɵcx = effects$7;
-    exports.ɵcy = PageEffects;
-    exports.ɵcz = ComponentEffects;
-    exports.ɵd = AnonymousConsentsStoreModule;
-    exports.ɵda = NavigationEntryItemEffects;
-    exports.ɵdb = reducer$f;
-    exports.ɵdc = reducer$g;
-    exports.ɵdd = reducer$e;
-    exports.ɵde = GlobalMessageStoreModule;
-    exports.ɵdf = getReducers;
-    exports.ɵdg = reducerToken;
-    exports.ɵdh = reducerProvider;
-    exports.ɵdi = reducer;
-    exports.ɵdj = GlobalMessageEffect;
-    exports.ɵdk = defaultGlobalMessageConfigFactory;
-    exports.ɵdl = InternalServerErrorHandler;
-    exports.ɵdm = HttpErrorInterceptor;
-    exports.ɵdn = defaultI18nConfig;
-    exports.ɵdo = i18nextProviders;
-    exports.ɵdp = i18nextInit;
-    exports.ɵdq = MockTranslationService;
-    exports.ɵdr = kymaStoreConfigFactory;
-    exports.ɵds = KymaStoreModule;
-    exports.ɵdt = getReducers$9;
-    exports.ɵdu = reducerToken$9;
-    exports.ɵdv = reducerProvider$9;
-    exports.ɵdw = clearKymaState;
-    exports.ɵdx = metaReducers$3;
-    exports.ɵdy = effects$8;
-    exports.ɵdz = OpenIdTokenEffect;
-    exports.ɵe = stateMetaReducers;
-    exports.ɵea = OpenIdAuthenticationTokenService;
-    exports.ɵeb = defaultKymaConfig;
-    exports.ɵec = defaultOccAsmConfig;
-    exports.ɵed = defaultOccCartConfig;
-    exports.ɵee = defaultOccProductConfig;
-    exports.ɵef = defaultOccSiteContextConfig;
-    exports.ɵeg = defaultOccStoreFinderConfig;
-    exports.ɵeh = defaultOccUserConfig;
-    exports.ɵei = defaultPersonalizationConfig;
-    exports.ɵej = interceptors$2;
-    exports.ɵek = OccPersonalizationIdInterceptor;
-    exports.ɵel = OccPersonalizationTimeInterceptor;
-    exports.ɵem = ProcessStoreModule;
-    exports.ɵen = getReducers$a;
-    exports.ɵeo = reducerToken$a;
-    exports.ɵep = reducerProvider$a;
-    exports.ɵeq = productStoreConfigFactory;
-    exports.ɵer = ProductStoreModule;
-    exports.ɵes = getReducers$b;
-    exports.ɵet = reducerToken$b;
-    exports.ɵeu = reducerProvider$b;
-    exports.ɵev = clearProductsState;
-    exports.ɵew = metaReducers$4;
-    exports.ɵex = effects$9;
-    exports.ɵey = ProductReferencesEffects;
-    exports.ɵez = ProductReviewsEffects;
-    exports.ɵf = getStorageSyncReducer;
-    exports.ɵfa = ProductsSearchEffects;
-    exports.ɵfb = ProductEffects;
-    exports.ɵfc = reducer$h;
-    exports.ɵfd = reducer$j;
-    exports.ɵfe = reducer$i;
-    exports.ɵff = PageMetaResolver;
-    exports.ɵfg = addExternalRoutesFactory;
-    exports.ɵfh = getReducers$7;
-    exports.ɵfi = reducer$d;
-    exports.ɵfj = reducerToken$7;
-    exports.ɵfk = reducerProvider$7;
-    exports.ɵfl = CustomSerializer;
-    exports.ɵfm = effects$6;
-    exports.ɵfn = RouterEffects;
-    exports.ɵfo = SiteContextParamsService;
-    exports.ɵfp = SiteContextUrlSerializer;
-    exports.ɵfq = SiteContextRoutesHandler;
-    exports.ɵfr = defaultSiteContextConfigFactory;
-    exports.ɵfs = siteContextStoreConfigFactory;
-    exports.ɵft = SiteContextStoreModule;
-    exports.ɵfu = getReducers$2;
-    exports.ɵfv = reducerToken$2;
-    exports.ɵfw = reducerProvider$2;
-    exports.ɵfx = effects$1;
-    exports.ɵfy = LanguagesEffects;
-    exports.ɵfz = CurrenciesEffects;
-    exports.ɵg = getTransferStateReducer;
-    exports.ɵga = BaseSiteEffects;
-    exports.ɵgb = reducer$2;
-    exports.ɵgc = reducer$3;
-    exports.ɵgd = reducer$4;
-    exports.ɵge = baseSiteConfigValidator;
-    exports.ɵgf = interceptors$3;
-    exports.ɵgg = CmsTicketInterceptor;
-    exports.ɵgh = defaultStoreFinderConfig;
-    exports.ɵgi = StoreFinderStoreModule;
-    exports.ɵgj = getReducers$c;
-    exports.ɵgk = reducerToken$c;
-    exports.ɵgl = reducerProvider$c;
-    exports.ɵgm = effects$a;
-    exports.ɵgn = FindStoresEffect;
-    exports.ɵgo = ViewAllStoresEffect;
-    exports.ɵgp = UserStoreModule;
-    exports.ɵgq = getReducers$d;
-    exports.ɵgr = reducerToken$d;
-    exports.ɵgs = reducerProvider$d;
-    exports.ɵgt = clearUserState;
-    exports.ɵgu = metaReducers$6;
-    exports.ɵgv = effects$b;
-    exports.ɵgw = BillingCountriesEffect;
-    exports.ɵgx = ClearMiscsDataEffect;
-    exports.ɵgy = ConsignmentTrackingEffects;
-    exports.ɵgz = DeliveryCountriesEffects;
-    exports.ɵh = getReducers$3;
-    exports.ɵha = OrderDetailsEffect;
-    exports.ɵhb = UserPaymentMethodsEffects;
-    exports.ɵhc = RegionsEffects;
-    exports.ɵhd = ResetPasswordEffects;
-    exports.ɵhe = TitlesEffects;
-    exports.ɵhf = UserAddressesEffects;
-    exports.ɵhg = UserConsentsEffect;
-    exports.ɵhh = UserDetailsEffects;
-    exports.ɵhi = UserOrdersEffect;
-    exports.ɵhj = UserRegisterEffects;
-    exports.ɵhk = ForgotPasswordEffects;
-    exports.ɵhl = UpdateEmailEffects;
-    exports.ɵhm = UpdatePasswordEffects;
-    exports.ɵhn = reducer$u;
-    exports.ɵho = reducer$s;
-    exports.ɵhp = reducer$k;
-    exports.ɵhq = reducer$t;
-    exports.ɵhr = reducer$o;
-    exports.ɵhs = reducer$v;
-    exports.ɵht = reducer$n;
-    exports.ɵhu = reducer$m;
-    exports.ɵhv = reducer$r;
-    exports.ɵhw = reducer$p;
-    exports.ɵhx = reducer$q;
-    exports.ɵhy = reducer$l;
-    exports.ɵi = reducerToken$3;
-    exports.ɵj = reducerProvider$3;
-    exports.ɵk = effects$2;
-    exports.ɵl = AnonymousConsentsEffects;
-    exports.ɵm = reducer$7;
-    exports.ɵn = reducer$5;
-    exports.ɵo = reducer$6;
-    exports.ɵp = interceptors$1;
-    exports.ɵq = AnonymousConsentsInterceptor;
-    exports.ɵr = asmStoreConfigFactory;
-    exports.ɵs = AsmStoreModule;
-    exports.ɵt = getReducers$4;
-    exports.ɵu = reducerToken$4;
-    exports.ɵv = reducerProvider$4;
-    exports.ɵw = effects$3;
-    exports.ɵx = CustomerEffects;
-    exports.ɵy = reducer$8;
-    exports.ɵz = defaultAsmConfig;
+    exports.ɵba = defaultAsmConfig;
+    exports.ɵbb = AsmConfig;
+    exports.ɵbc = authStoreConfigFactory;
+    exports.ɵbd = AuthStoreModule;
+    exports.ɵbe = getReducers$1;
+    exports.ɵbf = reducerToken$1;
+    exports.ɵbg = reducerProvider$1;
+    exports.ɵbh = clearAuthState;
+    exports.ɵbi = clearCustomerSupportAgentAuthState;
+    exports.ɵbj = metaReducers;
+    exports.ɵbk = effects;
+    exports.ɵbl = ClientTokenEffect;
+    exports.ɵbm = CustomerSupportAgentTokenEffects;
+    exports.ɵbn = UserTokenEffects;
+    exports.ɵbo = UserAuthenticationTokenService;
+    exports.ɵbp = ClientAuthenticationTokenService;
+    exports.ɵbq = reducer$1;
+    exports.ɵbr = defaultAuthConfig;
+    exports.ɵbs = interceptors;
+    exports.ɵbt = CustomerSupportAgentTokenInterceptor;
+    exports.ɵbu = ClientTokenInterceptor;
+    exports.ɵbv = UserTokenInterceptor;
+    exports.ɵbw = AuthErrorInterceptor;
+    exports.ɵbx = UserErrorHandlingService;
+    exports.ɵby = UrlParsingService;
+    exports.ɵbz = ClientErrorHandlingService;
+    exports.ɵc = CONFIG_INITIALIZER_FORROOT_GUARD;
+    exports.ɵca = CustomerSupportAgentErrorHandlingService;
+    exports.ɵcb = AuthServices;
+    exports.ɵcc = cartStoreConfigFactory;
+    exports.ɵcd = CartStoreModule;
+    exports.ɵce = reducer$9;
+    exports.ɵcf = CartPageMetaResolver;
+    exports.ɵcg = CheckoutStoreModule;
+    exports.ɵch = getReducers$6;
+    exports.ɵci = reducerToken$6;
+    exports.ɵcj = reducerProvider$6;
+    exports.ɵck = effects$5;
+    exports.ɵcl = AddressVerificationEffect;
+    exports.ɵcm = CardTypesEffects;
+    exports.ɵcn = CheckoutEffects;
+    exports.ɵco = reducer$c;
+    exports.ɵcp = reducer$b;
+    exports.ɵcq = reducer$a;
+    exports.ɵcr = cmsStoreConfigFactory;
+    exports.ɵcs = CmsStoreModule;
+    exports.ɵct = getReducers$8;
+    exports.ɵcu = reducerToken$8;
+    exports.ɵcv = reducerProvider$8;
+    exports.ɵcw = clearCmsState;
+    exports.ɵcx = metaReducers$2;
+    exports.ɵcy = effects$7;
+    exports.ɵcz = PageEffects;
+    exports.ɵd = anonymousConsentsStoreConfigFactory;
+    exports.ɵda = ComponentEffects;
+    exports.ɵdb = NavigationEntryItemEffects;
+    exports.ɵdc = reducer$f;
+    exports.ɵdd = reducer$g;
+    exports.ɵde = reducer$e;
+    exports.ɵdf = GlobalMessageStoreModule;
+    exports.ɵdg = getReducers;
+    exports.ɵdh = reducerToken;
+    exports.ɵdi = reducerProvider;
+    exports.ɵdj = reducer;
+    exports.ɵdk = GlobalMessageEffect;
+    exports.ɵdl = defaultGlobalMessageConfigFactory;
+    exports.ɵdm = InternalServerErrorHandler;
+    exports.ɵdn = HttpErrorInterceptor;
+    exports.ɵdo = defaultI18nConfig;
+    exports.ɵdp = i18nextProviders;
+    exports.ɵdq = i18nextInit;
+    exports.ɵdr = MockTranslationService;
+    exports.ɵds = kymaStoreConfigFactory;
+    exports.ɵdt = KymaStoreModule;
+    exports.ɵdu = getReducers$9;
+    exports.ɵdv = reducerToken$9;
+    exports.ɵdw = reducerProvider$9;
+    exports.ɵdx = clearKymaState;
+    exports.ɵdy = metaReducers$3;
+    exports.ɵdz = effects$8;
+    exports.ɵe = AnonymousConsentsStoreModule;
+    exports.ɵea = OpenIdTokenEffect;
+    exports.ɵeb = OpenIdAuthenticationTokenService;
+    exports.ɵec = defaultKymaConfig;
+    exports.ɵed = defaultOccAsmConfig;
+    exports.ɵee = defaultOccCartConfig;
+    exports.ɵef = defaultOccProductConfig;
+    exports.ɵeg = defaultOccSiteContextConfig;
+    exports.ɵeh = defaultOccStoreFinderConfig;
+    exports.ɵei = defaultOccUserConfig;
+    exports.ɵej = defaultPersonalizationConfig;
+    exports.ɵek = interceptors$2;
+    exports.ɵel = OccPersonalizationIdInterceptor;
+    exports.ɵem = OccPersonalizationTimeInterceptor;
+    exports.ɵen = ProcessStoreModule;
+    exports.ɵeo = getReducers$a;
+    exports.ɵep = reducerToken$a;
+    exports.ɵeq = reducerProvider$a;
+    exports.ɵer = productStoreConfigFactory;
+    exports.ɵes = ProductStoreModule;
+    exports.ɵet = getReducers$b;
+    exports.ɵeu = reducerToken$b;
+    exports.ɵev = reducerProvider$b;
+    exports.ɵew = clearProductsState;
+    exports.ɵex = metaReducers$4;
+    exports.ɵey = effects$9;
+    exports.ɵez = ProductReferencesEffects;
+    exports.ɵf = stateMetaReducers;
+    exports.ɵfa = ProductReviewsEffects;
+    exports.ɵfb = ProductsSearchEffects;
+    exports.ɵfc = ProductEffects;
+    exports.ɵfd = reducer$h;
+    exports.ɵfe = reducer$j;
+    exports.ɵff = reducer$i;
+    exports.ɵfg = PageMetaResolver;
+    exports.ɵfh = addExternalRoutesFactory;
+    exports.ɵfi = getReducers$7;
+    exports.ɵfj = reducer$d;
+    exports.ɵfk = reducerToken$7;
+    exports.ɵfl = reducerProvider$7;
+    exports.ɵfm = CustomSerializer;
+    exports.ɵfn = effects$6;
+    exports.ɵfo = RouterEffects;
+    exports.ɵfp = SiteContextParamsService;
+    exports.ɵfq = SiteContextUrlSerializer;
+    exports.ɵfr = SiteContextRoutesHandler;
+    exports.ɵfs = defaultSiteContextConfigFactory;
+    exports.ɵft = siteContextStoreConfigFactory;
+    exports.ɵfu = SiteContextStoreModule;
+    exports.ɵfv = getReducers$2;
+    exports.ɵfw = reducerToken$2;
+    exports.ɵfx = reducerProvider$2;
+    exports.ɵfy = effects$1;
+    exports.ɵfz = LanguagesEffects;
+    exports.ɵg = getStorageSyncReducer;
+    exports.ɵga = CurrenciesEffects;
+    exports.ɵgb = BaseSiteEffects;
+    exports.ɵgc = reducer$2;
+    exports.ɵgd = reducer$3;
+    exports.ɵge = reducer$4;
+    exports.ɵgf = baseSiteConfigValidator;
+    exports.ɵgg = interceptors$3;
+    exports.ɵgh = CmsTicketInterceptor;
+    exports.ɵgi = defaultStoreFinderConfig;
+    exports.ɵgj = StoreFinderStoreModule;
+    exports.ɵgk = getReducers$c;
+    exports.ɵgl = reducerToken$c;
+    exports.ɵgm = reducerProvider$c;
+    exports.ɵgn = effects$a;
+    exports.ɵgo = FindStoresEffect;
+    exports.ɵgp = ViewAllStoresEffect;
+    exports.ɵgq = UserStoreModule;
+    exports.ɵgr = getReducers$d;
+    exports.ɵgs = reducerToken$d;
+    exports.ɵgt = reducerProvider$d;
+    exports.ɵgu = clearUserState;
+    exports.ɵgv = metaReducers$6;
+    exports.ɵgw = effects$b;
+    exports.ɵgx = BillingCountriesEffect;
+    exports.ɵgy = ClearMiscsDataEffect;
+    exports.ɵgz = ConsignmentTrackingEffects;
+    exports.ɵh = getTransferStateReducer;
+    exports.ɵha = DeliveryCountriesEffects;
+    exports.ɵhb = OrderDetailsEffect;
+    exports.ɵhc = UserPaymentMethodsEffects;
+    exports.ɵhd = RegionsEffects;
+    exports.ɵhe = ResetPasswordEffects;
+    exports.ɵhf = TitlesEffects;
+    exports.ɵhg = UserAddressesEffects;
+    exports.ɵhh = UserConsentsEffect;
+    exports.ɵhi = UserDetailsEffects;
+    exports.ɵhj = UserOrdersEffect;
+    exports.ɵhk = UserRegisterEffects;
+    exports.ɵhl = ForgotPasswordEffects;
+    exports.ɵhm = UpdateEmailEffects;
+    exports.ɵhn = UpdatePasswordEffects;
+    exports.ɵho = reducer$u;
+    exports.ɵhp = reducer$s;
+    exports.ɵhq = reducer$k;
+    exports.ɵhr = reducer$t;
+    exports.ɵhs = reducer$o;
+    exports.ɵht = reducer$v;
+    exports.ɵhu = reducer$n;
+    exports.ɵhv = reducer$m;
+    exports.ɵhw = reducer$r;
+    exports.ɵhx = reducer$p;
+    exports.ɵhy = reducer$q;
+    exports.ɵhz = reducer$l;
+    exports.ɵi = getReducers$3;
+    exports.ɵj = reducerToken$3;
+    exports.ɵk = reducerProvider$3;
+    exports.ɵl = effects$2;
+    exports.ɵm = AnonymousConsentsEffects;
+    exports.ɵn = reducer$7;
+    exports.ɵo = reducer$5;
+    exports.ɵp = reducer$6;
+    exports.ɵq = interceptors$1;
+    exports.ɵr = AnonymousConsentsInterceptor;
+    exports.ɵs = asmStoreConfigFactory;
+    exports.ɵt = AsmStoreModule;
+    exports.ɵu = getReducers$4;
+    exports.ɵv = reducerToken$4;
+    exports.ɵw = reducerProvider$4;
+    exports.ɵx = effects$3;
+    exports.ɵy = CustomerEffects;
+    exports.ɵz = reducer$8;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
