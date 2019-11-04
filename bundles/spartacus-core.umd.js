@@ -30975,7 +30975,7 @@
                  * @return {?}
                  */
                 function () {
-                    _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId);
+                    _this.showGlobalMessage('voucher.applyVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_CONFIRMATION);
                     return new CartAddVoucherSuccess({
                         userId: payload.userId,
                         cartId: payload.cartId,
@@ -31003,7 +31003,7 @@
                  * @return {?}
                  */
                 function () {
-                    _this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId);
+                    _this.showGlobalMessage('voucher.removeVoucherSuccess', payload.voucherId, GlobalMessageType.MSG_TYPE_INFO);
                     return new CartRemoveVoucherSuccess({
                         userId: payload.userId,
                         cartId: payload.cartId,
@@ -31021,16 +31021,18 @@
          * @private
          * @param {?} text
          * @param {?} param
+         * @param {?} messageType
          * @return {?}
          */
         CartVoucherEffects.prototype.showGlobalMessage = /**
          * @private
          * @param {?} text
          * @param {?} param
+         * @param {?} messageType
          * @return {?}
          */
-        function (text, param) {
-            this.messageService.add({ key: text, params: { voucherCode: param } }, GlobalMessageType.MSG_TYPE_CONFIRMATION);
+        function (text, param, messageType) {
+            this.messageService.add({ key: text, params: { voucherCode: param } }, messageType);
         };
         CartVoucherEffects.decorators = [
             { type: core.Injectable }
