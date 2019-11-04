@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { getServerRequestProviders, NgExpressEngineDecorator, } from './ng-express-engine-decorator';
+export { SERVER_REQUEST_URL } from './ssr.providers';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvc3NyL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxPQUFPLEVBQ0wseUJBQXlCLEVBQ3pCLHdCQUF3QixHQUN6QixNQUFNLCtCQUErQixDQUFDO0FBQ3ZDLG1DQUFjLGlCQUFpQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0IHtcbiAgZ2V0U2VydmVyUmVxdWVzdFByb3ZpZGVycyxcbiAgTmdFeHByZXNzRW5naW5lRGVjb3JhdG9yLFxufSBmcm9tICcuL25nLWV4cHJlc3MtZW5naW5lLWRlY29yYXRvcic7XG5leHBvcnQgKiBmcm9tICcuL3Nzci5wcm92aWRlcnMnO1xuIl19

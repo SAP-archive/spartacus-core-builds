@@ -64,6 +64,12 @@ export interface HttpErrorModel {
     statusText?: string;
     url?: string | null;
 }
+export interface BaseStore {
+    currencies?: Currency[];
+    defaultCurrency?: Currency;
+    languages?: Language[];
+    defaultLanguage?: Language;
+}
 export interface BaseSite {
     channel?: string;
     defaultLanguage?: Language;
@@ -74,6 +80,9 @@ export interface BaseSite {
     name?: string;
     theme?: string;
     uid?: string;
+    stores?: BaseStore[];
+    urlPatterns?: string[];
+    urlEncodingAttributes?: string[];
 }
 export interface UserSignUp {
     firstName?: string;

@@ -3790,4 +3790,27 @@ export declare namespace Occ {
     interface ConsentTemplateList {
         consentTemplates?: ConsentTemplate[];
     }
+    interface BaseSites {
+        baseSites?: BaseSite[];
+    }
+    interface BaseSite {
+        channel?: string;
+        defaultLanguage?: Language;
+        defaultPreviewCatalogId?: string;
+        defaultPreviewCategoryCode?: string;
+        defaultPreviewProductCode?: string;
+        locale?: string;
+        name?: string;
+        theme?: string;
+        uid?: string;
+        stores?: BaseStore[];
+        urlPatterns?: string[];
+        urlEncodingAttributes?: string[];
+    }
+    interface BaseStore {
+        currencies?: Currency[];
+        defaultCurrency?: Currency;
+        languages?: Language[];
+        defaultLanguage?: Language;
+    }
 }
