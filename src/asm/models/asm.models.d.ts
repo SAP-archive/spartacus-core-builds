@@ -6,6 +6,7 @@ export interface CustomerSearchPage {
 }
 export interface CustomerSearchOptions {
     query?: string;
+    pageSize?: number;
 }
 export interface AsmUi {
     visible?: boolean;
