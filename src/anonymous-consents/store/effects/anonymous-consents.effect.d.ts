@@ -14,7 +14,6 @@ export declare class AnonymousConsentsEffects {
     private anonymousConsentsConfig;
     private anonymousConsentService;
     private userConsentService;
-    handleLogoutAndLanguageChange$: Observable<AnonymousConsentsActions.LoadAnonymousConsentTemplates>;
     loadAnonymousConsentTemplates$: Observable<AnonymousConsentsActions.AnonymousConsentsActions>;
     transferAnonymousConsentsToUser$: Observable<UserActions.TransferAnonymousConsent | Observable<never>>;
     giveRequiredConsentsToUser$: Observable<UserActions.GiveUserConsent | Observable<never>>;
