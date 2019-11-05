@@ -300,6 +300,33 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
+    /**
+     * Used to provide asynchronous config during app initialization
+     * @record
+     */
+    function ConfigInitializer() { }
+    if (false) {
+        /**
+         * List of config parts that are resolved by configFactory, e.g.:
+         * 'context.baseSite', 'context.language'
+         * @type {?}
+         */
+        ConfigInitializer.prototype.scopes;
+        /**
+         * Promise that returns config chunk
+         * @type {?}
+         */
+        ConfigInitializer.prototype.configFactory;
+    }
+    /** @type {?} */
+    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * Global Configuration injection token, can be used to inject configuration to any part of the app
      * @type {?}
@@ -341,12 +368,16 @@
      *
      * @param {?} configChunks
      * @param {?} configValidators
+     * @param {?=} configInitializerGuard
      * @return {?}
      */
-    function configurationFactory(configChunks, configValidators) {
+    function configurationFactory(configChunks, configValidators, // TODO: remove, deprecated since 1.3, issue #5279
+    configInitializerGuard // TODO: remove, deprecated since 1.3, issue #5279
+    ) {
         /** @type {?} */
         var config = deepMerge.apply(void 0, __spread([{}], configChunks));
-        if (core.isDevMode()) {
+        // TODO: remove as validators should run independently, deprecated since 1.3, issue #5279
+        if (core.isDevMode() && !configInitializerGuard) {
             validateConfig(config, configValidators || []);
         }
         return config;
@@ -429,7 +460,11 @@
                     {
                         provide: Config,
                         useFactory: configurationFactory,
-                        deps: [ConfigChunk, [new core.Optional(), ConfigValidatorToken]],
+                        deps: [
+                            ConfigChunk,
+                            [new core.Optional(), ConfigValidatorToken],
+                            [new core.Optional(), CONFIG_INITIALIZER_FORROOT_GUARD],
+                        ],
                     },
                 ],
             };
@@ -554,33 +589,6 @@
         ];
         return TestConfigModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CONFIG_INITIALIZER = new core.InjectionToken('ConfigInitializer');
-    /**
-     * Used to provide asynchronous config during app initialization
-     * @record
-     */
-    function ConfigInitializer() { }
-    if (false) {
-        /**
-         * List of config parts that are resolved by configFactory, e.g.:
-         * 'context.baseSite', 'context.language'
-         * @type {?}
-         */
-        ConfigInitializer.prototype.scopes;
-        /**
-         * Promise that returns config chunk
-         * @type {?}
-         */
-        ConfigInitializer.prototype.configFactory;
-    }
-    /** @type {?} */
-    var CONFIG_INITIALIZER_FORROOT_GUARD = new core.InjectionToken('CONFIG_INITIALIZER_FORROOT_GUARD');
 
     /**
      * @fileoverview added by tsickle
@@ -938,6 +946,64 @@
      */
     /**
      * @param {?} configInitializer
+     * @param {?} validators
+     * @return {?}
+     */
+    function configValidatorFactory(configInitializer, validators) {
+        /** @type {?} */
+        var validate = (/**
+         * @return {?}
+         */
+        function () {
+            if (core.isDevMode()) {
+                configInitializer
+                    .getStableConfig()
+                    .then((/**
+                 * @param {?} config
+                 * @return {?}
+                 */
+                function (config) { return validateConfig(config, validators || []); }));
+            }
+        });
+        return validate;
+    }
+    var ConfigValidatorModule = /** @class */ (function () {
+        function ConfigValidatorModule() {
+        }
+        /**
+         * @return {?}
+         */
+        ConfigValidatorModule.forRoot = /**
+         * @return {?}
+         */
+        function () {
+            return {
+                ngModule: ConfigValidatorModule,
+                providers: [
+                    {
+                        provide: core.APP_INITIALIZER,
+                        multi: true,
+                        useFactory: configValidatorFactory,
+                        deps: [
+                            ConfigInitializerService,
+                            [new core.Optional(), ConfigValidatorToken],
+                        ],
+                    },
+                ],
+            };
+        };
+        ConfigValidatorModule.decorators = [
+            { type: core.NgModule }
+        ];
+        return ConfigValidatorModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @param {?} configInitializer
      * @param {?} initializers
      * @return {?}
      */
@@ -980,8 +1046,9 @@
         };
         ConfigInitializerModule.decorators = [
             { type: core.NgModule, args: [{
-                        declarations: [],
-                        imports: [common.CommonModule],
+                        imports: [
+                            ConfigValidatorModule.forRoot(),
+                        ],
                     },] }
         ];
         return ConfigInitializerModule;
@@ -50279,138 +50346,140 @@
     exports.ɵde = reducer$f;
     exports.ɵdf = reducer$g;
     exports.ɵdg = reducer$e;
-    exports.ɵdh = GlobalMessageStoreModule;
-    exports.ɵdi = getReducers;
-    exports.ɵdj = reducerToken;
-    exports.ɵdk = reducerProvider;
-    exports.ɵdl = reducer;
-    exports.ɵdm = GlobalMessageEffect;
-    exports.ɵdn = defaultGlobalMessageConfigFactory;
-    exports.ɵdo = InternalServerErrorHandler;
-    exports.ɵdp = HttpErrorInterceptor;
-    exports.ɵdq = defaultI18nConfig;
-    exports.ɵdr = i18nextProviders;
-    exports.ɵds = i18nextInit;
-    exports.ɵdt = MockTranslationService;
-    exports.ɵdu = kymaStoreConfigFactory;
-    exports.ɵdv = KymaStoreModule;
-    exports.ɵdw = getReducers$9;
-    exports.ɵdx = reducerToken$9;
-    exports.ɵdy = reducerProvider$9;
-    exports.ɵdz = clearKymaState;
+    exports.ɵdh = configValidatorFactory;
+    exports.ɵdi = ConfigValidatorModule;
+    exports.ɵdj = GlobalMessageStoreModule;
+    exports.ɵdk = getReducers;
+    exports.ɵdl = reducerToken;
+    exports.ɵdm = reducerProvider;
+    exports.ɵdn = reducer;
+    exports.ɵdo = GlobalMessageEffect;
+    exports.ɵdp = defaultGlobalMessageConfigFactory;
+    exports.ɵdq = InternalServerErrorHandler;
+    exports.ɵdr = HttpErrorInterceptor;
+    exports.ɵds = defaultI18nConfig;
+    exports.ɵdt = i18nextProviders;
+    exports.ɵdu = i18nextInit;
+    exports.ɵdv = MockTranslationService;
+    exports.ɵdw = kymaStoreConfigFactory;
+    exports.ɵdx = KymaStoreModule;
+    exports.ɵdy = getReducers$9;
+    exports.ɵdz = reducerToken$9;
     exports.ɵe = initializeContext;
-    exports.ɵea = metaReducers$3;
-    exports.ɵeb = effects$8;
-    exports.ɵec = OpenIdTokenEffect;
-    exports.ɵed = OpenIdAuthenticationTokenService;
-    exports.ɵee = defaultKymaConfig;
-    exports.ɵef = defaultOccAsmConfig;
-    exports.ɵeg = defaultOccCartConfig;
-    exports.ɵeh = defaultOccProductConfig;
-    exports.ɵei = defaultOccSiteContextConfig;
-    exports.ɵej = defaultOccStoreFinderConfig;
-    exports.ɵek = defaultOccUserConfig;
-    exports.ɵel = OccConfigLoaderService;
-    exports.ɵem = OccSitesConfigLoader;
-    exports.ɵen = defaultPersonalizationConfig;
-    exports.ɵeo = interceptors$2;
-    exports.ɵep = OccPersonalizationIdInterceptor;
-    exports.ɵeq = OccPersonalizationTimeInterceptor;
-    exports.ɵer = ProcessStoreModule;
-    exports.ɵes = getReducers$a;
-    exports.ɵet = reducerToken$a;
-    exports.ɵeu = reducerProvider$a;
-    exports.ɵev = productStoreConfigFactory;
-    exports.ɵew = ProductStoreModule;
-    exports.ɵex = getReducers$b;
-    exports.ɵey = reducerToken$b;
-    exports.ɵez = reducerProvider$b;
+    exports.ɵea = reducerProvider$9;
+    exports.ɵeb = clearKymaState;
+    exports.ɵec = metaReducers$3;
+    exports.ɵed = effects$8;
+    exports.ɵee = OpenIdTokenEffect;
+    exports.ɵef = OpenIdAuthenticationTokenService;
+    exports.ɵeg = defaultKymaConfig;
+    exports.ɵeh = defaultOccAsmConfig;
+    exports.ɵei = defaultOccCartConfig;
+    exports.ɵej = defaultOccProductConfig;
+    exports.ɵek = defaultOccSiteContextConfig;
+    exports.ɵel = defaultOccStoreFinderConfig;
+    exports.ɵem = defaultOccUserConfig;
+    exports.ɵen = OccConfigLoaderService;
+    exports.ɵeo = OccSitesConfigLoader;
+    exports.ɵep = defaultPersonalizationConfig;
+    exports.ɵeq = interceptors$2;
+    exports.ɵer = OccPersonalizationIdInterceptor;
+    exports.ɵes = OccPersonalizationTimeInterceptor;
+    exports.ɵet = ProcessStoreModule;
+    exports.ɵeu = getReducers$a;
+    exports.ɵev = reducerToken$a;
+    exports.ɵew = reducerProvider$a;
+    exports.ɵex = productStoreConfigFactory;
+    exports.ɵey = ProductStoreModule;
+    exports.ɵez = getReducers$b;
     exports.ɵf = contextServiceProviders;
-    exports.ɵfa = clearProductsState;
-    exports.ɵfb = metaReducers$4;
-    exports.ɵfc = effects$9;
-    exports.ɵfd = ProductReferencesEffects;
-    exports.ɵfe = ProductReviewsEffects;
-    exports.ɵff = ProductsSearchEffects;
-    exports.ɵfg = ProductEffects;
-    exports.ɵfh = reducer$h;
-    exports.ɵfi = reducer$j;
-    exports.ɵfj = reducer$i;
-    exports.ɵfk = PageMetaResolver;
-    exports.ɵfl = addExternalRoutesFactory;
-    exports.ɵfm = getReducers$7;
-    exports.ɵfn = reducer$d;
-    exports.ɵfo = reducerToken$7;
-    exports.ɵfp = reducerProvider$7;
-    exports.ɵfq = CustomSerializer;
-    exports.ɵfr = effects$6;
-    exports.ɵfs = RouterEffects;
-    exports.ɵft = SiteContextParamsService;
-    exports.ɵfu = SiteContextUrlSerializer;
-    exports.ɵfv = SiteContextRoutesHandler;
-    exports.ɵfw = defaultSiteContextConfigFactory;
-    exports.ɵfx = siteContextStoreConfigFactory;
-    exports.ɵfy = SiteContextStoreModule;
-    exports.ɵfz = getReducers$2;
+    exports.ɵfa = reducerToken$b;
+    exports.ɵfb = reducerProvider$b;
+    exports.ɵfc = clearProductsState;
+    exports.ɵfd = metaReducers$4;
+    exports.ɵfe = effects$9;
+    exports.ɵff = ProductReferencesEffects;
+    exports.ɵfg = ProductReviewsEffects;
+    exports.ɵfh = ProductsSearchEffects;
+    exports.ɵfi = ProductEffects;
+    exports.ɵfj = reducer$h;
+    exports.ɵfk = reducer$j;
+    exports.ɵfl = reducer$i;
+    exports.ɵfm = PageMetaResolver;
+    exports.ɵfn = addExternalRoutesFactory;
+    exports.ɵfo = getReducers$7;
+    exports.ɵfp = reducer$d;
+    exports.ɵfq = reducerToken$7;
+    exports.ɵfr = reducerProvider$7;
+    exports.ɵfs = CustomSerializer;
+    exports.ɵft = effects$6;
+    exports.ɵfu = RouterEffects;
+    exports.ɵfv = SiteContextParamsService;
+    exports.ɵfw = SiteContextUrlSerializer;
+    exports.ɵfx = SiteContextRoutesHandler;
+    exports.ɵfy = defaultSiteContextConfigFactory;
+    exports.ɵfz = siteContextStoreConfigFactory;
     exports.ɵg = anonymousConsentsStoreConfigFactory;
-    exports.ɵga = reducerToken$2;
-    exports.ɵgb = reducerProvider$2;
-    exports.ɵgc = effects$1;
-    exports.ɵgd = LanguagesEffects;
-    exports.ɵge = CurrenciesEffects;
-    exports.ɵgf = BaseSiteEffects;
-    exports.ɵgg = reducer$2;
-    exports.ɵgh = reducer$3;
-    exports.ɵgi = reducer$4;
-    exports.ɵgj = baseSiteConfigValidator;
-    exports.ɵgk = interceptors$3;
-    exports.ɵgl = CmsTicketInterceptor;
-    exports.ɵgm = defaultStoreFinderConfig;
-    exports.ɵgn = StoreFinderStoreModule;
-    exports.ɵgo = getReducers$c;
-    exports.ɵgp = reducerToken$c;
-    exports.ɵgq = reducerProvider$c;
-    exports.ɵgr = effects$a;
-    exports.ɵgs = FindStoresEffect;
-    exports.ɵgt = ViewAllStoresEffect;
-    exports.ɵgu = UserStoreModule;
-    exports.ɵgv = getReducers$d;
-    exports.ɵgw = reducerToken$d;
-    exports.ɵgx = reducerProvider$d;
-    exports.ɵgy = clearUserState;
-    exports.ɵgz = metaReducers$6;
+    exports.ɵga = SiteContextStoreModule;
+    exports.ɵgb = getReducers$2;
+    exports.ɵgc = reducerToken$2;
+    exports.ɵgd = reducerProvider$2;
+    exports.ɵge = effects$1;
+    exports.ɵgf = LanguagesEffects;
+    exports.ɵgg = CurrenciesEffects;
+    exports.ɵgh = BaseSiteEffects;
+    exports.ɵgi = reducer$2;
+    exports.ɵgj = reducer$3;
+    exports.ɵgk = reducer$4;
+    exports.ɵgl = baseSiteConfigValidator;
+    exports.ɵgm = interceptors$3;
+    exports.ɵgn = CmsTicketInterceptor;
+    exports.ɵgo = defaultStoreFinderConfig;
+    exports.ɵgp = StoreFinderStoreModule;
+    exports.ɵgq = getReducers$c;
+    exports.ɵgr = reducerToken$c;
+    exports.ɵgs = reducerProvider$c;
+    exports.ɵgt = effects$a;
+    exports.ɵgu = FindStoresEffect;
+    exports.ɵgv = ViewAllStoresEffect;
+    exports.ɵgw = UserStoreModule;
+    exports.ɵgx = getReducers$d;
+    exports.ɵgy = reducerToken$d;
+    exports.ɵgz = reducerProvider$d;
     exports.ɵh = AnonymousConsentsStoreModule;
-    exports.ɵha = effects$b;
-    exports.ɵhb = BillingCountriesEffect;
-    exports.ɵhc = ClearMiscsDataEffect;
-    exports.ɵhd = ConsignmentTrackingEffects;
-    exports.ɵhe = DeliveryCountriesEffects;
-    exports.ɵhf = OrderDetailsEffect;
-    exports.ɵhg = UserPaymentMethodsEffects;
-    exports.ɵhh = RegionsEffects;
-    exports.ɵhi = ResetPasswordEffects;
-    exports.ɵhj = TitlesEffects;
-    exports.ɵhk = UserAddressesEffects;
-    exports.ɵhl = UserConsentsEffect;
-    exports.ɵhm = UserDetailsEffects;
-    exports.ɵhn = UserOrdersEffect;
-    exports.ɵho = UserRegisterEffects;
-    exports.ɵhp = ForgotPasswordEffects;
-    exports.ɵhq = UpdateEmailEffects;
-    exports.ɵhr = UpdatePasswordEffects;
-    exports.ɵhs = reducer$u;
-    exports.ɵht = reducer$s;
-    exports.ɵhu = reducer$k;
-    exports.ɵhv = reducer$t;
-    exports.ɵhw = reducer$o;
-    exports.ɵhx = reducer$v;
-    exports.ɵhy = reducer$n;
-    exports.ɵhz = reducer$m;
+    exports.ɵha = clearUserState;
+    exports.ɵhb = metaReducers$6;
+    exports.ɵhc = effects$b;
+    exports.ɵhd = BillingCountriesEffect;
+    exports.ɵhe = ClearMiscsDataEffect;
+    exports.ɵhf = ConsignmentTrackingEffects;
+    exports.ɵhg = DeliveryCountriesEffects;
+    exports.ɵhh = OrderDetailsEffect;
+    exports.ɵhi = UserPaymentMethodsEffects;
+    exports.ɵhj = RegionsEffects;
+    exports.ɵhk = ResetPasswordEffects;
+    exports.ɵhl = TitlesEffects;
+    exports.ɵhm = UserAddressesEffects;
+    exports.ɵhn = UserConsentsEffect;
+    exports.ɵho = UserDetailsEffects;
+    exports.ɵhp = UserOrdersEffect;
+    exports.ɵhq = UserRegisterEffects;
+    exports.ɵhr = ForgotPasswordEffects;
+    exports.ɵhs = UpdateEmailEffects;
+    exports.ɵht = UpdatePasswordEffects;
+    exports.ɵhu = reducer$u;
+    exports.ɵhv = reducer$s;
+    exports.ɵhw = reducer$k;
+    exports.ɵhx = reducer$t;
+    exports.ɵhy = reducer$o;
+    exports.ɵhz = reducer$v;
     exports.ɵi = stateMetaReducers;
-    exports.ɵia = reducer$r;
-    exports.ɵib = reducer$p;
-    exports.ɵic = reducer$q;
-    exports.ɵid = reducer$l;
+    exports.ɵia = reducer$n;
+    exports.ɵib = reducer$m;
+    exports.ɵic = reducer$r;
+    exports.ɵid = reducer$p;
+    exports.ɵie = reducer$q;
+    exports.ɵif = reducer$l;
     exports.ɵj = getStorageSyncReducer;
     exports.ɵk = getTransferStateReducer;
     exports.ɵl = getReducers$3;
