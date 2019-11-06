@@ -531,6 +531,12 @@ function configValidatorFactory(configInitializer, validators) {
     });
     return validate;
 }
+/**
+ * Should stay private in 1.x
+ * as forRoot() is used internally by ConfigInitializerModule
+ *
+ * issue: #5279
+ */
 class ConfigValidatorModule {
     /**
      * @return {?}
@@ -23981,8 +23987,8 @@ function inititializeContext(baseSiteService, langService, currService) {
      */
     () => {
         baseSiteService.initialize();
-        currService.initialize();
         langService.initialize();
+        currService.initialize();
     });
 }
 /**
@@ -35468,7 +35474,7 @@ function i18nextInit(configInit, languageService) {
     return (/**
      * @return {?}
      */
-    () => configInit.getStableConfig('i18n.fallbackLang').then((/**
+    () => configInit.getStableConfig('i18n').then((/**
      * @param {?} config
      * @return {?}
      */

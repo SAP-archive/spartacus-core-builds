@@ -967,6 +967,12 @@
         });
         return validate;
     }
+    /**
+     * Should stay private in 1.x
+     * as forRoot() is used internally by ConfigInitializerModule
+     *
+     * issue: #5279
+     */
     var ConfigValidatorModule = /** @class */ (function () {
         function ConfigValidatorModule() {
         }
@@ -26949,8 +26955,8 @@
          */
         function () {
             baseSiteService.initialize();
-            currService.initialize();
             langService.initialize();
+            currService.initialize();
         });
     }
     /**
@@ -40104,7 +40110,7 @@
          * @return {?}
          */
         function () {
-            return configInit.getStableConfig('i18n.fallbackLang').then((/**
+            return configInit.getStableConfig('i18n').then((/**
              * @param {?} config
              * @return {?}
              */
