@@ -7059,20 +7059,20 @@ var GlobalMessageEffect = /** @class */ (function () {
         function (type) {
             /** @type {?} */
             var config = _this.config.globalMessages[type];
-            return _this.store.pipe(select(getGlobalMessageCountByType(type)), filter((/**
+            return _this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter((/**
              * @param {?} count
              * @return {?}
              */
             function (count) {
                 return config && config.timeout !== undefined && count && count > 0;
-            })), switchMap((/**
+            })), delay(config.timeout), switchMap((/**
              * @return {?}
              */
             function () {
                 return of(new RemoveMessage({
                     type: type,
                     index: 0,
-                })).pipe(delay(config.timeout));
+                }));
             })));
         })));
     }

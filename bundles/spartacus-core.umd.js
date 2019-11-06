@@ -7250,20 +7250,20 @@
             function (type) {
                 /** @type {?} */
                 var config = _this.config.globalMessages[type];
-                return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.filter((/**
+                return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.take(1), operators.filter((/**
                  * @param {?} count
                  * @return {?}
                  */
                 function (count) {
                     return config && config.timeout !== undefined && count && count > 0;
-                })), operators.switchMap((/**
+                })), operators.delay(config.timeout), operators.switchMap((/**
                  * @return {?}
                  */
                 function () {
                     return rxjs.of(new RemoveMessage({
                         type: type,
                         index: 0,
-                    })).pipe(operators.delay(config.timeout));
+                    }));
                 })));
             })));
         }

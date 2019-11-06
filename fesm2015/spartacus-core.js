@@ -6227,17 +6227,17 @@ class GlobalMessageEffect {
         (type) => {
             /** @type {?} */
             const config = this.config.globalMessages[type];
-            return this.store.pipe(select(getGlobalMessageCountByType(type)), filter((/**
+            return this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter((/**
              * @param {?} count
              * @return {?}
              */
-            (count) => config && config.timeout !== undefined && count && count > 0)), switchMap((/**
+            (count) => config && config.timeout !== undefined && count && count > 0)), delay(config.timeout), switchMap((/**
              * @return {?}
              */
             () => of(new RemoveMessage({
                 type,
                 index: 0,
-            })).pipe(delay(config.timeout)))));
+            })))));
         })));
     }
 }
