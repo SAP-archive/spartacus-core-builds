@@ -28571,7 +28571,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$8 = (/** @type {?} */ ({ visible: false }));
+    var initialState$8 = (/** @type {?} */ ({ visible: false, expanded: true }));
     /**
      * @param {?=} state
      * @param {?=} action
@@ -28925,6 +28925,8 @@
     if (false) {
         /** @type {?|undefined} */
         AsmUi.prototype.visible;
+        /** @type {?|undefined} */
+        AsmUi.prototype.expanded;
     }
 
     /**

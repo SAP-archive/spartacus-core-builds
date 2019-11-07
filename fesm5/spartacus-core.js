@@ -28380,7 +28380,7 @@ var effects$3 = [CustomerEffects];
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-var initialState$8 = (/** @type {?} */ ({ visible: false }));
+var initialState$8 = (/** @type {?} */ ({ visible: false, expanded: true }));
 /**
  * @param {?=} state
  * @param {?=} action
@@ -28734,6 +28734,8 @@ function AsmUi() { }
 if (false) {
     /** @type {?|undefined} */
     AsmUi.prototype.visible;
+    /** @type {?|undefined} */
+    AsmUi.prototype.expanded;
 }
 
 /**
