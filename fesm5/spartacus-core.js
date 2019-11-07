@@ -17608,7 +17608,7 @@ var OccSitesConfigLoader = /** @class */ (function () {
     function OccSitesConfigLoader(config, http) {
         this.config = config;
         this.http = http;
-        this.endpoint = '/basesites?fields=baseSites(uid,defaultLanguage(isocode),urlEncodingAttributes,urlPatterns,stores(currencies(isocode),defaultCurrency(isocode),languages(isocode),defaultLanguage(isocode)))';
+        this.endpoint = 'basesites?fields=baseSites(uid,defaultLanguage(isocode),urlEncodingAttributes,urlPatterns,stores(currencies(isocode),defaultCurrency(isocode),languages(isocode),defaultLanguage(isocode)))';
     }
     Object.defineProperty(OccSitesConfigLoader.prototype, "baseEndpoint", {
         get: /**
