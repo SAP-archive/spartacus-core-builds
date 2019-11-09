@@ -4,7 +4,7 @@ export declare abstract class AsmConfig extends OccConfig {
         agentSessionTimer?: {
             startingDelayInSeconds?: number;
         };
-        customeSearch?: {
+        customerSearch?: {
             maxResults?: number;
         };
     };

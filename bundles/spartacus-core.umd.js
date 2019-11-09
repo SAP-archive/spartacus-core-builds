@@ -11309,8 +11309,11 @@
             /** @type {?} */
             var params = new http.HttpParams()
                 .set('baseSite', this.activeBaseSite)
-                .set('query', options.query);
-            if (!!options.pageSize) {
+                .set('sort', 'byNameAsc');
+            if (typeof options['query'] !== 'undefined') {
+                params = params.set('query', '' + options.query);
+            }
+            if (typeof options['pageSize'] !== 'undefined') {
                 params = params.set('pageSize', '' + options.pageSize);
             }
             /** @type {?} */
@@ -28308,7 +28311,7 @@
             agentSessionTimer: {
                 startingDelayInSeconds: 600,
             },
-            customeSearch: {
+            customerSearch: {
                 maxResults: 20,
             },
         },
