@@ -5238,7 +5238,9 @@ var AuthService = /** @class */ (function () {
      * @return {?}
      */
     function (userToken) {
-        return !!userToken.userId && userToken.userId !== OCC_USER_ID_CURRENT;
+        return (Boolean(userToken) &&
+            Boolean(userToken.userId) &&
+            userToken.userId !== OCC_USER_ID_CURRENT);
     };
     /**
      * Returns the user's token
