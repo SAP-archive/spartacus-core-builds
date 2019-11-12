@@ -17997,7 +17997,7 @@
          * @return {?}
          */
         function () {
-            if (common.isPlatformBrowser(this.platform)) {
+            if (this.transferState && common.isPlatformBrowser(this.platform)) {
                 return this.transferState.get(EXTERNAL_CONFIG_TRANSFER_ID, undefined);
             }
         };
@@ -18021,7 +18021,9 @@
          * @return {?}
          */
         function (externalConfig) {
-            if (common.isPlatformServer(this.platform) && externalConfig) {
+            if (this.transferState &&
+                common.isPlatformServer(this.platform) &&
+                externalConfig) {
                 this.transferState.set(EXTERNAL_CONFIG_TRANSFER_ID, externalConfig);
             }
         };
@@ -18071,10 +18073,10 @@
             { type: undefined, decorators: [{ type: core.Inject, args: [Config,] }] },
             { type: OccSitesConfigLoader },
             { type: OccLoadedConfigConverter },
-            { type: platformBrowser.TransferState },
+            { type: platformBrowser.TransferState, decorators: [{ type: core.Optional }] },
             { type: String, decorators: [{ type: core.Optional }, { type: core.Inject, args: [SERVER_REQUEST_URL,] }] }
         ]; };
-        /** @nocollapse */ OccConfigLoaderService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(core.ɵɵinject(core.PLATFORM_ID), core.ɵɵinject(common.DOCUMENT), core.ɵɵinject(Config), core.ɵɵinject(OccSitesConfigLoader), core.ɵɵinject(OccLoadedConfigConverter), core.ɵɵinject(platformBrowser.TransferState), core.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+        /** @nocollapse */ OccConfigLoaderService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(core.ɵɵinject(core.PLATFORM_ID), core.ɵɵinject(common.DOCUMENT), core.ɵɵinject(Config), core.ɵɵinject(OccSitesConfigLoader), core.ɵɵinject(OccLoadedConfigConverter), core.ɵɵinject(platformBrowser.TransferState, 8), core.ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
         return OccConfigLoaderService;
     }());
     if (false) {

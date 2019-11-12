@@ -17806,7 +17806,7 @@ var OccConfigLoaderService = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        if (isPlatformBrowser(this.platform)) {
+        if (this.transferState && isPlatformBrowser(this.platform)) {
             return this.transferState.get(EXTERNAL_CONFIG_TRANSFER_ID, undefined);
         }
     };
@@ -17830,7 +17830,9 @@ var OccConfigLoaderService = /** @class */ (function () {
      * @return {?}
      */
     function (externalConfig) {
-        if (isPlatformServer(this.platform) && externalConfig) {
+        if (this.transferState &&
+            isPlatformServer(this.platform) &&
+            externalConfig) {
             this.transferState.set(EXTERNAL_CONFIG_TRANSFER_ID, externalConfig);
         }
     };
@@ -17880,10 +17882,10 @@ var OccConfigLoaderService = /** @class */ (function () {
         { type: undefined, decorators: [{ type: Inject, args: [Config,] }] },
         { type: OccSitesConfigLoader },
         { type: OccLoadedConfigConverter },
-        { type: TransferState },
+        { type: TransferState, decorators: [{ type: Optional }] },
         { type: String, decorators: [{ type: Optional }, { type: Inject, args: [SERVER_REQUEST_URL,] }] }
     ]; };
-    /** @nocollapse */ OccConfigLoaderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(ɵɵinject(PLATFORM_ID), ɵɵinject(DOCUMENT), ɵɵinject(Config), ɵɵinject(OccSitesConfigLoader), ɵɵinject(OccLoadedConfigConverter), ɵɵinject(TransferState), ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
+    /** @nocollapse */ OccConfigLoaderService.ngInjectableDef = ɵɵdefineInjectable({ factory: function OccConfigLoaderService_Factory() { return new OccConfigLoaderService(ɵɵinject(PLATFORM_ID), ɵɵinject(DOCUMENT), ɵɵinject(Config), ɵɵinject(OccSitesConfigLoader), ɵɵinject(OccLoadedConfigConverter), ɵɵinject(TransferState, 8), ɵɵinject(SERVER_REQUEST_URL, 8)); }, token: OccConfigLoaderService, providedIn: "root" });
     return OccConfigLoaderService;
 }());
 if (false) {
