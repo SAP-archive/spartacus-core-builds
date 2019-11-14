@@ -9,6 +9,5 @@ export interface CustomerSearchOptions {
     pageSize?: number;
 }
 export interface AsmUi {
-    visible?: boolean;
     expanded?: boolean;
 }
