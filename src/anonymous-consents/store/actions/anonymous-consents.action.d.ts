@@ -53,9 +53,9 @@ export declare class WithdrawAnonymousConsent {
     constructor(templateCode: string);
 }
 export declare class ToggleAnonymousConsentsBannerDissmissed {
-    visible: boolean;
+    dismissed: boolean;
     readonly type = "[Anonymous Consents] Toggle Anonymous Consents Banner Dismissed";
-    constructor(visible: boolean);
+    constructor(dismissed: boolean);
 }
 export declare class ToggleAnonymousConsentTemplatesUpdated {
     updated: boolean;

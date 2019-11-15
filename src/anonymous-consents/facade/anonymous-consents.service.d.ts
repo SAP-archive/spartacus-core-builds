@@ -10,9 +10,15 @@ export declare class AnonymousConsentsService {
      */
     loadTemplates(): void;
     /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      */
-    getTemplates(): Observable<ConsentTemplate[]>;
+    getTemplates(loadIfMissing?: boolean): Observable<ConsentTemplate[]>;
     /**
      * Returns the anonymous consent templates with the given template code.
      * @param templateCode a template code by which to filter anonymous consent templates.

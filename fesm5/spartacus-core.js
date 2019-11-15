@@ -1,8 +1,8 @@
 import { __values, __spread, __awaiter, __generator, __read, __extends, __assign, __decorate, __metadata } from 'tslib';
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
-import { BehaviorSubject, combineLatest, throwError, of, fromEvent, Observable, iif, EMPTY, Subscription } from 'rxjs';
-import { filter, take, mapTo, tap, switchMap, map, catchError, debounceTime, startWith, distinctUntilChanged, pluck, withLatestFrom, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, iif, combineLatest, throwError, of, fromEvent, Observable, EMPTY, Subscription } from 'rxjs';
+import { filter, take, mapTo, withLatestFrom, tap, map, switchMap, catchError, debounceTime, startWith, distinctUntilChanged, pluck, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, combineReducers } from '@ngrx/store';
 import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS, HttpParams, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
@@ -3872,8 +3872,8 @@ if (false) {
     WithdrawAnonymousConsent.prototype.templateCode;
 }
 var ToggleAnonymousConsentsBannerDissmissed = /** @class */ (function () {
-    function ToggleAnonymousConsentsBannerDissmissed(visible) {
-        this.visible = visible;
+    function ToggleAnonymousConsentsBannerDissmissed(dismissed) {
+        this.dismissed = dismissed;
         this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
     }
     return ToggleAnonymousConsentsBannerDissmissed;
@@ -3882,7 +3882,7 @@ if (false) {
     /** @type {?} */
     ToggleAnonymousConsentsBannerDissmissed.prototype.type;
     /** @type {?} */
-    ToggleAnonymousConsentsBannerDissmissed.prototype.visible;
+    ToggleAnonymousConsentsBannerDissmissed.prototype.dismissed;
 }
 var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
     function ToggleAnonymousConsentTemplatesUpdated(updated) {
@@ -4070,18 +4070,71 @@ var AnonymousConsentsService = /** @class */ (function () {
         this.store.dispatch(new LoadAnonymousConsentTemplates());
     };
     /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      */
     /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param {?=} loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      * @return {?}
      */
     AnonymousConsentsService.prototype.getTemplates = /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param {?=} loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      * @return {?}
      */
-    function () {
-        return this.store.pipe(select(getAnonymousConsentTemplatesValue));
+    function (loadIfMissing) {
+        var _this = this;
+        if (loadIfMissing === void 0) { loadIfMissing = false; }
+        return iif((/**
+         * @return {?}
+         */
+        function () { return loadIfMissing; }), this.store.pipe(select(getAnonymousConsentTemplatesValue), withLatestFrom(this.getLoadTemplatesLoading()), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 2), _templates = _b[0], loading = _b[1];
+            return !loading;
+        })), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+            if (!Boolean(templates)) {
+                _this.loadTemplates();
+            }
+        })), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+            return Boolean(templates);
+        })), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+            return templates;
+        }))), this.store.pipe(select(getAnonymousConsentTemplatesValue)));
     };
     /**
      * Returns the anonymous consent templates with the given template code.
@@ -4233,7 +4286,7 @@ var AnonymousConsentsService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        return this.getTemplates().pipe(tap((/**
+        return this.getTemplates(true).pipe(tap((/**
          * @param {?} templates
          * @return {?}
          */
@@ -4292,7 +4345,7 @@ var AnonymousConsentsService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        return this.getTemplates().pipe(tap((/**
+        return this.getTemplates(true).pipe(tap((/**
          * @param {?} templates
          * @return {?}
          */
@@ -4371,15 +4424,7 @@ var AnonymousConsentsService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        return this.getTemplates().pipe(tap((/**
-         * @param {?} templates
-         * @return {?}
-         */
-        function (templates) {
-            if (!Boolean(templates)) {
-                _this.loadTemplates();
-            }
-        })), switchMap((/**
+        return this.getTemplates(true).pipe(switchMap((/**
          * @param {?} _
          * @return {?}
          */
@@ -27933,7 +27978,7 @@ function reducer$5(state, action) {
     if (state === void 0) { state = initialState$5; }
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
-            return action.visible;
+            return action.dismissed;
         }
     }
     return state;

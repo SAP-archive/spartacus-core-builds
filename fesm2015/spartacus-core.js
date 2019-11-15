@@ -1,8 +1,8 @@
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { __awaiter, __decorate, __metadata } from 'tslib';
-import { BehaviorSubject, combineLatest, throwError, of, fromEvent, Observable, iif, EMPTY, Subscription } from 'rxjs';
-import { filter, take, mapTo, tap, switchMap, map, catchError, debounceTime, startWith, distinctUntilChanged, pluck, withLatestFrom, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, iif, combineLatest, throwError, of, fromEvent, Observable, EMPTY, Subscription } from 'rxjs';
+import { filter, take, mapTo, withLatestFrom, tap, map, switchMap, catchError, debounceTime, startWith, distinctUntilChanged, pluck, concatMap, delay, exhaustMap, mergeMap, shareReplay, groupBy, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, StoreModule, combineReducers } from '@ngrx/store';
 import { HttpHeaders, HttpErrorResponse, HTTP_INTERCEPTORS, HttpParams, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ofType, Actions, Effect, EffectsModule } from '@ngrx/effects';
@@ -3581,10 +3581,10 @@ if (false) {
 }
 class ToggleAnonymousConsentsBannerDissmissed {
     /**
-     * @param {?} visible
+     * @param {?} dismissed
      */
-    constructor(visible) {
-        this.visible = visible;
+    constructor(dismissed) {
+        this.dismissed = dismissed;
         this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
     }
 }
@@ -3592,7 +3592,7 @@ if (false) {
     /** @type {?} */
     ToggleAnonymousConsentsBannerDissmissed.prototype.type;
     /** @type {?} */
-    ToggleAnonymousConsentsBannerDissmissed.prototype.visible;
+    ToggleAnonymousConsentsBannerDissmissed.prototype.dismissed;
 }
 class ToggleAnonymousConsentTemplatesUpdated {
     /**
@@ -3778,11 +3778,40 @@ class AnonymousConsentsService {
         this.store.dispatch(new LoadAnonymousConsentTemplates());
     }
     /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param {?=} loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      * @return {?}
      */
-    getTemplates() {
-        return this.store.pipe(select(getAnonymousConsentTemplatesValue));
+    getTemplates(loadIfMissing = false) {
+        return iif((/**
+         * @return {?}
+         */
+        () => loadIfMissing), this.store.pipe(select(getAnonymousConsentTemplatesValue), withLatestFrom(this.getLoadTemplatesLoading()), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([_templates, loading]) => !loading)), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([templates, _loading]) => {
+            if (!Boolean(templates)) {
+                this.loadTemplates();
+            }
+        })), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([templates, _loading]) => Boolean(templates))), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([templates, _loading]) => templates))), this.store.pipe(select(getAnonymousConsentTemplatesValue)));
     }
     /**
      * Returns the anonymous consent templates with the given template code.
@@ -3856,7 +3885,7 @@ class AnonymousConsentsService {
      * @return {?}
      */
     giveAllConsents() {
-        return this.getTemplates().pipe(tap((/**
+        return this.getTemplates(true).pipe(tap((/**
          * @param {?} templates
          * @return {?}
          */
@@ -3887,7 +3916,7 @@ class AnonymousConsentsService {
      * @return {?}
      */
     withdrawAllConsents() {
-        return this.getTemplates().pipe(tap((/**
+        return this.getTemplates(true).pipe(tap((/**
          * @param {?} templates
          * @return {?}
          */
@@ -3929,15 +3958,7 @@ class AnonymousConsentsService {
      * @return {?}
      */
     getTemplatesUpdated() {
-        return this.getTemplates().pipe(tap((/**
-         * @param {?} templates
-         * @return {?}
-         */
-        templates => {
-            if (!Boolean(templates)) {
-                this.loadTemplates();
-            }
-        })), switchMap((/**
+        return this.getTemplates(true).pipe(switchMap((/**
          * @param {?} _
          * @return {?}
          */
@@ -25059,7 +25080,7 @@ const initialState$5 = false;
 function reducer$5(state = initialState$5, action) {
     switch (action.type) {
         case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
-            return action.visible;
+            return action.dismissed;
         }
     }
     return state;

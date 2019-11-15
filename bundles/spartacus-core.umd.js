@@ -4063,8 +4063,8 @@
         WithdrawAnonymousConsent.prototype.templateCode;
     }
     var ToggleAnonymousConsentsBannerDissmissed = /** @class */ (function () {
-        function ToggleAnonymousConsentsBannerDissmissed(visible) {
-            this.visible = visible;
+        function ToggleAnonymousConsentsBannerDissmissed(dismissed) {
+            this.dismissed = dismissed;
             this.type = TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED;
         }
         return ToggleAnonymousConsentsBannerDissmissed;
@@ -4073,7 +4073,7 @@
         /** @type {?} */
         ToggleAnonymousConsentsBannerDissmissed.prototype.type;
         /** @type {?} */
-        ToggleAnonymousConsentsBannerDissmissed.prototype.visible;
+        ToggleAnonymousConsentsBannerDissmissed.prototype.dismissed;
     }
     var ToggleAnonymousConsentTemplatesUpdated = /** @class */ (function () {
         function ToggleAnonymousConsentTemplatesUpdated(updated) {
@@ -4261,18 +4261,71 @@
             this.store.dispatch(new LoadAnonymousConsentTemplates());
         };
         /**
-         * Returns all the anonymous consent templates.
+         * Conditionally triggers the load of the anonymous consent templates if:
+         *   - `loadIfMissing` parameter is set to `true`
+         *   - the `templates` in the store are `undefined`
+         *
+         * Othewise it just returns the value from the store.
+         *
+         * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
          */
         /**
-         * Returns all the anonymous consent templates.
+         * Conditionally triggers the load of the anonymous consent templates if:
+         *   - `loadIfMissing` parameter is set to `true`
+         *   - the `templates` in the store are `undefined`
+         *
+         * Othewise it just returns the value from the store.
+         *
+         * @param {?=} loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
          * @return {?}
          */
         AnonymousConsentsService.prototype.getTemplates = /**
-         * Returns all the anonymous consent templates.
+         * Conditionally triggers the load of the anonymous consent templates if:
+         *   - `loadIfMissing` parameter is set to `true`
+         *   - the `templates` in the store are `undefined`
+         *
+         * Othewise it just returns the value from the store.
+         *
+         * @param {?=} loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
          * @return {?}
          */
-        function () {
-            return this.store.pipe(store.select(getAnonymousConsentTemplatesValue));
+        function (loadIfMissing) {
+            var _this = this;
+            if (loadIfMissing === void 0) { loadIfMissing = false; }
+            return rxjs.iif((/**
+             * @return {?}
+             */
+            function () { return loadIfMissing; }), this.store.pipe(store.select(getAnonymousConsentTemplatesValue), operators.withLatestFrom(this.getLoadTemplatesLoading()), operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), _templates = _b[0], loading = _b[1];
+                return !loading;
+            })), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                if (!Boolean(templates)) {
+                    _this.loadTemplates();
+                }
+            })), operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                return Boolean(templates);
+            })), operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), templates = _b[0], _loading = _b[1];
+                return templates;
+            }))), this.store.pipe(store.select(getAnonymousConsentTemplatesValue)));
         };
         /**
          * Returns the anonymous consent templates with the given template code.
@@ -4424,7 +4477,7 @@
          */
         function () {
             var _this = this;
-            return this.getTemplates().pipe(operators.tap((/**
+            return this.getTemplates(true).pipe(operators.tap((/**
              * @param {?} templates
              * @return {?}
              */
@@ -4483,7 +4536,7 @@
          */
         function () {
             var _this = this;
-            return this.getTemplates().pipe(operators.tap((/**
+            return this.getTemplates(true).pipe(operators.tap((/**
              * @param {?} templates
              * @return {?}
              */
@@ -4562,15 +4615,7 @@
          */
         function () {
             var _this = this;
-            return this.getTemplates().pipe(operators.tap((/**
-             * @param {?} templates
-             * @return {?}
-             */
-            function (templates) {
-                if (!Boolean(templates)) {
-                    _this.loadTemplates();
-                }
-            })), operators.switchMap((/**
+            return this.getTemplates(true).pipe(operators.switchMap((/**
              * @param {?} _
              * @return {?}
              */
@@ -28124,7 +28169,7 @@
         if (state === void 0) { state = initialState$5; }
         switch (action.type) {
             case TOGGLE_ANONYMOUS_CONSENTS_BANNER_DISMISSED: {
-                return action.visible;
+                return action.dismissed;
             }
         }
         return state;
