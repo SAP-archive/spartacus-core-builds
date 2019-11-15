@@ -1,10 +1,12 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/index';
 import { AnonymousConsent, ConsentTemplate } from '../../model/index';
 import { StateWithAnonymousConsents } from '../store/anonymous-consents-state';
 export declare class AnonymousConsentsService {
     protected store: Store<StateWithAnonymousConsents>;
-    constructor(store: Store<StateWithAnonymousConsents>);
+    protected authService: AuthService;
+    constructor(store: Store<StateWithAnonymousConsents>, authService: AuthService);
     /**
      * Retrieves the anonymous consent templates.
      */
@@ -49,10 +51,13 @@ export declare class AnonymousConsentsService {
      */
     setConsents(consents: AnonymousConsent[]): void;
     /**
-     * Returns the anonymous consent with the given template code.
-     * @param templateCode a template code by which to filter anonymous consent templates.
+     * Returns the anonymous consent for the given template ID.
+     *
+     * As a side-effect, the method will call `getTemplates(true)` to load the templates if those are not present.
+     *
+     * @param templateId a template ID by which to filter anonymous consent templates.
      */
-    getConsent(templateCode: string): Observable<AnonymousConsent>;
+    getConsent(templateId: string): Observable<AnonymousConsent>;
     /**
      * Give a consent for the given `templateCode`
      * @param templateCode for which to give the consent

@@ -4,6 +4,7 @@ import { LoaderState } from '../../../state/utils/loader/loader-state';
 import { StateWithUser } from '../user-state';
 export declare const getConsentsState: MemoizedSelector<StateWithUser, LoaderState<ConsentTemplate[]>>;
 export declare const getConsentsValue: MemoizedSelector<StateWithUser, ConsentTemplate[]>;
+export declare const getConsentByTemplateId: (templateId: string) => MemoizedSelector<StateWithUser, ConsentTemplate, import("@ngrx/store").DefaultProjectorFn<ConsentTemplate>>;
 export declare const getConsentsLoading: MemoizedSelector<StateWithUser, boolean>;
 export declare const getConsentsSuccess: MemoizedSelector<StateWithUser, boolean>;
 export declare const getConsentsError: MemoizedSelector<StateWithUser, boolean>;
