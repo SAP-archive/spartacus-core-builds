@@ -9109,7 +9109,7 @@ class AnonymousConsentsService {
          * @param {?} authenticated
          * @return {?}
          */
-        authenticated => !authenticated)), switchMap((/**
+        authenticated => !authenticated)), tap((/**
          * @param {?} _
          * @return {?}
          */
@@ -23576,7 +23576,7 @@ class UserConsentService {
      * @return {?}
      */
     getConsent(templateId) {
-        return this.authService.isUserLoggedIn().pipe(filter(Boolean), switchMap((/**
+        return this.authService.isUserLoggedIn().pipe(filter(Boolean), tap((/**
          * @param {?} _
          * @return {?}
          */
@@ -23588,7 +23588,7 @@ class UserConsentService {
          * @param {?} template
          * @return {?}
          */
-        (template) => Boolean(template))), map((/**
+        template => Boolean(template))), map((/**
          * @param {?} template
          * @return {?}
          */
@@ -41264,6 +41264,9 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * Unified facade for both anonymous and registered user consents.
+ */
 class ConsentService {
     /**
      * @param {?} anonymousConsentsService
@@ -41282,14 +41285,14 @@ class ConsentService {
         return merge(this.userConsentService.getConsent(templateCode), this.anonymousConsentsService.getConsent(templateCode));
     }
     /**
-     * Checks if the `templateCode`'s template has a given consent.
+     * Checks if the `templateId`'s template has a given consent.
      * The method returns `false` if the consent doesn't exist or if it's withdrawn. Otherwise, `true` is returned.
      *
-     * @param {?} templateCode of a template which's consent should be checked
+     * @param {?} templateId of a template which's consent should be checked
      * @return {?}
      */
-    isConsentGiven(templateCode) {
-        return this.getConsent(templateCode).pipe(map((/**
+    checkConsentGivenByTemplateId(templateId) {
+        return this.getConsent(templateId).pipe(map((/**
          * @param {?} consent
          * @return {?}
          */
@@ -41303,14 +41306,14 @@ class ConsentService {
         })), distinctUntilChanged());
     }
     /**
-     * Checks if the `templateCode`'s template has a withdrawn consent.
+     * Checks if the `templateId`'s template has a withdrawn consent.
      * The method returns `true` if the consent doesn't exist or if it's withdrawn. Otherwise, `false` is returned.
      *
-     * @param {?} templateCode of a template which's consent should be checked
+     * @param {?} templateId of a template which's consent should be checked
      * @return {?}
      */
-    isConsentWithdrawn(templateCode) {
-        return this.getConsent(templateCode).pipe(map((/**
+    checkConsentWithdrawnByTemplateId(templateId) {
+        return this.getConsent(templateId).pipe(map((/**
          * @param {?} consent
          * @return {?}
          */
@@ -41324,11 +41327,38 @@ class ConsentService {
         })), distinctUntilChanged());
     }
     /**
+     *
+     * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentGiven(consent)` or `this.userConsentService.isConsentGiven`
+     *
+     * @param {?} consent a consent to check
+     * @return {?}
+     */
+    isConsentGiven(consent) {
+        return this.isAnonymousConsentType(consent)
+            ? this.anonymousConsentsService.isConsentGiven(consent)
+            : this.userConsentService.isConsentGiven(consent);
+    }
+    /**
+     *
+     * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentWithdrawn(consent)` or `this.userConsentService.isConsentWithdrawn`
+     *
+     * @param {?} consent a consent to check
+     * @return {?}
+     */
+    isConsentWithdrawn(consent) {
+        return this.isAnonymousConsentType(consent)
+            ? this.anonymousConsentsService.isConsentWithdrawn(consent)
+            : this.userConsentService.isConsentWithdrawn(consent);
+    }
+    /**
      * Returns `true` if the provided consent is of type `AnonymousConsent`. Otherwise, `false` is returned.
      * @param {?} consent
      * @return {?}
      */
     isAnonymousConsentType(consent) {
+        if (!consent) {
+            return false;
+        }
         return ((/** @type {?} */ (consent))).templateCode !== undefined;
     }
     /**
@@ -41337,6 +41367,9 @@ class ConsentService {
      * @return {?}
      */
     isConsentType(consent) {
+        if (!consent) {
+            return false;
+        }
         return ((/** @type {?} */ (consent))).code !== undefined;
     }
 }

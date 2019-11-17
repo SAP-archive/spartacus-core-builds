@@ -10383,7 +10383,7 @@
              * @param {?} authenticated
              * @return {?}
              */
-            function (authenticated) { return !authenticated; })), operators.switchMap((/**
+            function (authenticated) { return !authenticated; })), operators.tap((/**
              * @param {?} _
              * @return {?}
              */
@@ -26425,7 +26425,7 @@
          */
         function (templateId) {
             var _this = this;
-            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.switchMap((/**
+            return this.authService.isUserLoggedIn().pipe(operators.filter(Boolean), operators.tap((/**
              * @param {?} _
              * @return {?}
              */
@@ -46818,6 +46818,9 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * Unified facade for both anonymous and registered user consents.
+     */
     var ConsentService = /** @class */ (function () {
         function ConsentService(anonymousConsentsService, userConsentService) {
             this.anonymousConsentsService = anonymousConsentsService;
@@ -46841,28 +46844,28 @@
             return rxjs.merge(this.userConsentService.getConsent(templateCode), this.anonymousConsentsService.getConsent(templateCode));
         };
         /**
-         * Checks if the `templateCode`'s template has a given consent.
+         * Checks if the `templateId`'s template has a given consent.
          * The method returns `false` if the consent doesn't exist or if it's withdrawn. Otherwise, `true` is returned.
          *
-         * @param templateCode of a template which's consent should be checked
+         * @param templateId of a template which's consent should be checked
          */
         /**
-         * Checks if the `templateCode`'s template has a given consent.
+         * Checks if the `templateId`'s template has a given consent.
          * The method returns `false` if the consent doesn't exist or if it's withdrawn. Otherwise, `true` is returned.
          *
-         * @param {?} templateCode of a template which's consent should be checked
+         * @param {?} templateId of a template which's consent should be checked
          * @return {?}
          */
-        ConsentService.prototype.isConsentGiven = /**
-         * Checks if the `templateCode`'s template has a given consent.
+        ConsentService.prototype.checkConsentGivenByTemplateId = /**
+         * Checks if the `templateId`'s template has a given consent.
          * The method returns `false` if the consent doesn't exist or if it's withdrawn. Otherwise, `true` is returned.
          *
-         * @param {?} templateCode of a template which's consent should be checked
+         * @param {?} templateId of a template which's consent should be checked
          * @return {?}
          */
-        function (templateCode) {
+        function (templateId) {
             var _this = this;
-            return this.getConsent(templateCode).pipe(operators.map((/**
+            return this.getConsent(templateId).pipe(operators.map((/**
              * @param {?} consent
              * @return {?}
              */
@@ -46876,28 +46879,28 @@
             })), operators.distinctUntilChanged());
         };
         /**
-         * Checks if the `templateCode`'s template has a withdrawn consent.
+         * Checks if the `templateId`'s template has a withdrawn consent.
          * The method returns `true` if the consent doesn't exist or if it's withdrawn. Otherwise, `false` is returned.
          *
-         * @param templateCode of a template which's consent should be checked
+         * @param templateId of a template which's consent should be checked
          */
         /**
-         * Checks if the `templateCode`'s template has a withdrawn consent.
+         * Checks if the `templateId`'s template has a withdrawn consent.
          * The method returns `true` if the consent doesn't exist or if it's withdrawn. Otherwise, `false` is returned.
          *
-         * @param {?} templateCode of a template which's consent should be checked
+         * @param {?} templateId of a template which's consent should be checked
          * @return {?}
          */
-        ConsentService.prototype.isConsentWithdrawn = /**
-         * Checks if the `templateCode`'s template has a withdrawn consent.
+        ConsentService.prototype.checkConsentWithdrawnByTemplateId = /**
+         * Checks if the `templateId`'s template has a withdrawn consent.
          * The method returns `true` if the consent doesn't exist or if it's withdrawn. Otherwise, `false` is returned.
          *
-         * @param {?} templateCode of a template which's consent should be checked
+         * @param {?} templateId of a template which's consent should be checked
          * @return {?}
          */
-        function (templateCode) {
+        function (templateId) {
             var _this = this;
-            return this.getConsent(templateCode).pipe(operators.map((/**
+            return this.getConsent(templateId).pipe(operators.map((/**
              * @param {?} consent
              * @return {?}
              */
@@ -46909,6 +46912,56 @@
                     ? _this.anonymousConsentsService.isConsentWithdrawn(consent)
                     : _this.userConsentService.isConsentWithdrawn(consent);
             })), operators.distinctUntilChanged());
+        };
+        /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentGiven(consent)` or `this.userConsentService.isConsentGiven`
+         *
+         * @param consent a consent to check
+         */
+        /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentGiven(consent)` or `this.userConsentService.isConsentGiven`
+         *
+         * @param {?} consent a consent to check
+         * @return {?}
+         */
+        ConsentService.prototype.isConsentGiven = /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentGiven(consent)` or `this.userConsentService.isConsentGiven`
+         *
+         * @param {?} consent a consent to check
+         * @return {?}
+         */
+        function (consent) {
+            return this.isAnonymousConsentType(consent)
+                ? this.anonymousConsentsService.isConsentGiven(consent)
+                : this.userConsentService.isConsentGiven(consent);
+        };
+        /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentWithdrawn(consent)` or `this.userConsentService.isConsentWithdrawn`
+         *
+         * @param consent a consent to check
+         */
+        /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentWithdrawn(consent)` or `this.userConsentService.isConsentWithdrawn`
+         *
+         * @param {?} consent a consent to check
+         * @return {?}
+         */
+        ConsentService.prototype.isConsentWithdrawn = /**
+         *
+         * Checks the provided `consent`'s type and delegates to an appropriate method - `anonymousConsentsService.isConsentWithdrawn(consent)` or `this.userConsentService.isConsentWithdrawn`
+         *
+         * @param {?} consent a consent to check
+         * @return {?}
+         */
+        function (consent) {
+            return this.isAnonymousConsentType(consent)
+                ? this.anonymousConsentsService.isConsentWithdrawn(consent)
+                : this.userConsentService.isConsentWithdrawn(consent);
         };
         /**
          * Returns `true` if the provided consent is of type `AnonymousConsent`. Otherwise, `false` is returned.
@@ -46924,6 +46977,9 @@
          * @return {?}
          */
         function (consent) {
+            if (!consent) {
+                return false;
+            }
             return ((/** @type {?} */ (consent))).templateCode !== undefined;
         };
         /**
@@ -46940,6 +46996,9 @@
          * @return {?}
          */
         function (consent) {
+            if (!consent) {
+                return false;
+            }
             return ((/** @type {?} */ (consent))).code !== undefined;
         };
         ConsentService.decorators = [
