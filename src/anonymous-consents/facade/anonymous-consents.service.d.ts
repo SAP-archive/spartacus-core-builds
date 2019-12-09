@@ -1,18 +1,26 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../auth/index';
 import { AnonymousConsent, ConsentTemplate } from '../../model/index';
 import { StateWithAnonymousConsents } from '../store/anonymous-consents-state';
 export declare class AnonymousConsentsService {
     protected store: Store<StateWithAnonymousConsents>;
-    constructor(store: Store<StateWithAnonymousConsents>);
+    protected authService: AuthService;
+    constructor(store: Store<StateWithAnonymousConsents>, authService: AuthService);
     /**
      * Retrieves the anonymous consent templates.
      */
     loadTemplates(): void;
     /**
-     * Returns all the anonymous consent templates.
+     * Conditionally triggers the load of the anonymous consent templates if:
+     *   - `loadIfMissing` parameter is set to `true`
+     *   - the `templates` in the store are `undefined`
+     *
+     * Othewise it just returns the value from the store.
+     *
+     * @param loadIfMissing setting to `true` will trigger the load of the templates if the currently stored templates are `undefined`
      */
-    getTemplates(): Observable<ConsentTemplate[]>;
+    getTemplates(loadIfMissing?: boolean): Observable<ConsentTemplate[]>;
     /**
      * Returns the anonymous consent templates with the given template code.
      * @param templateCode a template code by which to filter anonymous consent templates.
@@ -43,10 +51,13 @@ export declare class AnonymousConsentsService {
      */
     setConsents(consents: AnonymousConsent[]): void;
     /**
-     * Returns the anonymous consent with the given template code.
-     * @param templateCode a template code by which to filter anonymous consent templates.
+     * Returns the anonymous consent for the given template ID.
+     *
+     * As a side-effect, the method will call `getTemplates(true)` to load the templates if those are not present.
+     *
+     * @param templateId a template ID by which to filter anonymous consent templates.
      */
-    getConsent(templateCode: string): Observable<AnonymousConsent>;
+    getConsent(templateId: string): Observable<AnonymousConsent>;
     /**
      * Give a consent for the given `templateCode`
      * @param templateCode for which to give the consent

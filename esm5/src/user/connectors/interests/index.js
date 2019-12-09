@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { PRODUCT_INTERESTS_NORMALIZER } from './converters';
+export { UserInterestsConnector } from './user-interests.connector';
+export { UserInterestsAdapter } from './user-interests.adapter';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL2ludGVyZXN0cy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsNkNBQWMsY0FBYyxDQUFDO0FBQzdCLHVDQUFjLDRCQUE0QixDQUFDO0FBQzNDLHFDQUFjLDBCQUEwQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jb252ZXJ0ZXJzJztcbmV4cG9ydCAqIGZyb20gJy4vdXNlci1pbnRlcmVzdHMuY29ubmVjdG9yJztcbmV4cG9ydCAqIGZyb20gJy4vdXNlci1pbnRlcmVzdHMuYWRhcHRlcic7XG4iXX0=

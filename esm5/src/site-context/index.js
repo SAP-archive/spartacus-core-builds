@@ -5,7 +5,7 @@
 export { SiteContextConfig } from './config/site-context-config';
 export { SiteConnector, SiteAdapter, LANGUAGE_NORMALIZER, CURRENCY_NORMALIZER, COUNTRY_NORMALIZER, REGION_NORMALIZER } from './connectors/index';
 export { BaseSiteService, LanguageService, CurrencyService } from './facade/index';
-export { contextServiceProviders, inititializeContext, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, serviceMapFactory, ContextServiceMap, contextServiceMapProvider, initSiteContextRoutesHandler, siteContextParamsProviders } from './providers/index';
+export { contextServiceProviders, inititializeContext, initSiteContextRoutesHandler, siteContextParamsProviders, LANGUAGE_CONTEXT_ID, CURRENCY_CONTEXT_ID, BASE_SITE_CONTEXT_ID, serviceMapFactory, ContextServiceMap, contextServiceMapProvider } from './providers/index';
 export { SiteContextModule } from './site-context.module';
 export { SiteContextActions } from './store/actions/index';
 export { SiteContextSelectors } from './store/selectors/index';

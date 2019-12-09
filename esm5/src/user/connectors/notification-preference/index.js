@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { NOTIFICATION_PREFERENCE_SERIALIZER, NOTIFICATION_PREFERENCE_NORMALIZER } from './converters';
+export { UserNotificationPreferenceAdapter } from './user-notification-preference.adapter';
+export { UserNotificationPreferenceConnector } from './user-notification-preference.connector';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL25vdGlmaWNhdGlvbi1wcmVmZXJlbmNlL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSx1RkFBYyxjQUFjLENBQUM7QUFDN0Isa0RBQWMsd0NBQXdDLENBQUM7QUFDdkQsb0RBQWMsMENBQTBDLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL2NvbnZlcnRlcnMnO1xuZXhwb3J0ICogZnJvbSAnLi91c2VyLW5vdGlmaWNhdGlvbi1wcmVmZXJlbmNlLmFkYXB0ZXInO1xuZXhwb3J0ICogZnJvbSAnLi91c2VyLW5vdGlmaWNhdGlvbi1wcmVmZXJlbmNlLmNvbm5lY3Rvcic7XG4iXX0=

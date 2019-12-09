@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
-import { ConsentTemplate } from '../../model/consent.model';
+import { Consent, ConsentTemplate } from '../../model/consent.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class UserConsentService {
@@ -12,6 +12,8 @@ export declare class UserConsentService {
      * @deprecated since version 1.3
      *  Use constructor(store: Store<StateWithUser | StateWithProcess<void>>,
      *  authService: AuthService) instead
+     *
+     *  TODO(issue:#5628) Deprecated since 1.3.0
      */
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
@@ -19,9 +21,10 @@ export declare class UserConsentService {
      */
     loadConsents(): void;
     /**
-     * Returns all consents
+     * Returns all consent templates. If `loadIfMissing` parameter is set to `true`, the method triggers the load if consent templates.
+     * @param loadIfMissing is set to `true`, the method will load templates if those are not already present. The default value is `false`.
      */
-    getConsents(): Observable<ConsentTemplate[]>;
+    getConsents(loadIfMissing?: boolean): Observable<ConsentTemplate[]>;
     /**
      * Returns the consents loading flag
      */
@@ -38,6 +41,28 @@ export declare class UserConsentService {
      * Resets the processing state for consent retrieval
      */
     resetConsentsProcessState(): void;
+    /**
+     * Returns the registered consent for the given template ID.
+     *
+     * As a side-effect, the method will call `getConsents(true)` to load the templates if those are not present.
+     *
+     * @param templateId a template ID by which to filter the registered templates.
+     */
+    getConsent(templateId: string): Observable<Consent>;
+    /**
+     * Returns `true` if the consent is truthy and if `consentWithdrawnDate` doesn't exist.
+     * Otherwise, `false` is returned.
+     *
+     * @param consent to check
+     */
+    isConsentGiven(consent: Consent): boolean;
+    /**
+     * Returns `true` if the consent is either falsy or if `consentWithdrawnDate` is present.
+     * Otherwise, `false` is returned.
+     *
+     * @param consent to check
+     */
+    isConsentWithdrawn(consent: Consent): boolean;
     /**
      * Give consent for specified consent template ID and version.
      * @param consentTemplateId a template ID for which to give a consent
@@ -89,4 +114,9 @@ export declare class UserConsentService {
      * @param hideTemplateIds template IDs to hide
      */
     filterConsentTemplates(templateList: ConsentTemplate[], hideTemplateIds?: string[]): ConsentTemplate[];
+    /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     */
+    private withUserId;
 }

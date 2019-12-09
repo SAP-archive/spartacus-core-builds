@@ -8,4 +8,4 @@ export declare const initialLoaderState: LoaderState<any>;
  * Utilizes "loader" meta field of actions to set specific flags for specific
  * action (LOAD, SUCCESS, FAIL, RESET)
  */
-export declare function loaderReducer<T>(loadActionType: string, reducer?: (state: T, action: Action) => T): (state: LoaderState<T>, action: LoaderAction) => LoaderState<T>;
+export declare function loaderReducer<T>(entityType: string, reducer?: (state: T, action: Action) => T): (state: LoaderState<T>, action: LoaderAction) => LoaderState<T>;

@@ -1,0 +1,21 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CustomerSupportAgentTokenInterceptor } from './csagent-token.interceptor';
+import { CustomerSupportAgentAuthErrorInterceptor } from './csagent-auth-error.interceptor';
+/** @type {?} */
+export const interceptors = [
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: CustomerSupportAgentTokenInterceptor,
+        multi: true,
+    },
+    {
+        provide: HTTP_INTERCEPTORS,
+        useExisting: CustomerSupportAgentAuthErrorInterceptor,
+        multi: true,
+    },
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvYXNtL2h0dHAtaW50ZXJjZXB0b3JzL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxPQUFPLEVBQUUsaUJBQWlCLEVBQUUsTUFBTSxzQkFBc0IsQ0FBQztBQUV6RCxPQUFPLEVBQUUsb0NBQW9DLEVBQUUsTUFBTSw2QkFBNkIsQ0FBQztBQUNuRixPQUFPLEVBQUUsd0NBQXdDLEVBQUUsTUFBTSxrQ0FBa0MsQ0FBQzs7QUFFNUYsTUFBTSxPQUFPLFlBQVksR0FBZTtJQUN0QztRQUNFLE9BQU8sRUFBRSxpQkFBaUI7UUFDMUIsV0FBVyxFQUFFLG9DQUFvQztRQUNqRCxLQUFLLEVBQUUsSUFBSTtLQUNaO0lBQ0Q7UUFDRSxPQUFPLEVBQUUsaUJBQWlCO1FBQzFCLFdBQVcsRUFBRSx3Q0FBd0M7UUFDckQsS0FBSyxFQUFFLElBQUk7S0FDWjtDQUNGIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSFRUUF9JTlRFUkNFUFRPUlMgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7XG5pbXBvcnQgeyBQcm92aWRlciB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnO1xuaW1wb3J0IHsgQ3VzdG9tZXJTdXBwb3J0QWdlbnRUb2tlbkludGVyY2VwdG9yIH0gZnJvbSAnLi9jc2FnZW50LXRva2VuLmludGVyY2VwdG9yJztcbmltcG9ydCB7IEN1c3RvbWVyU3VwcG9ydEFnZW50QXV0aEVycm9ySW50ZXJjZXB0b3IgfSBmcm9tICcuL2NzYWdlbnQtYXV0aC1lcnJvci5pbnRlcmNlcHRvcic7XG5cbmV4cG9ydCBjb25zdCBpbnRlcmNlcHRvcnM6IFByb3ZpZGVyW10gPSBbXG4gIHtcbiAgICBwcm92aWRlOiBIVFRQX0lOVEVSQ0VQVE9SUyxcbiAgICB1c2VFeGlzdGluZzogQ3VzdG9tZXJTdXBwb3J0QWdlbnRUb2tlbkludGVyY2VwdG9yLFxuICAgIG11bHRpOiB0cnVlLFxuICB9LFxuICB7XG4gICAgcHJvdmlkZTogSFRUUF9JTlRFUkNFUFRPUlMsXG4gICAgdXNlRXhpc3Rpbmc6IEN1c3RvbWVyU3VwcG9ydEFnZW50QXV0aEVycm9ySW50ZXJjZXB0b3IsXG4gICAgbXVsdGk6IHRydWUsXG4gIH0sXG5dO1xuIl19

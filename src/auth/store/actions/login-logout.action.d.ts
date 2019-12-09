@@ -8,7 +8,4 @@ export declare class Login implements Action {
 export declare class Logout implements Action {
     readonly type = "[Auth] Logout";
 }
-export declare class LogoutCustomerSupportAgent implements Action {
-    readonly type = "[Auth] Logout Customer Support Agent";
-}
-export declare type LoginLogoutAction = Login | Logout | LogoutCustomerSupportAgent;
+export declare type LoginLogoutAction = Login | Logout;

@@ -1,9 +1,9 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { OrderEntry } from '../../model/order.model';
-import { StateWithMultiCart } from '../store/multi-cart-state';
-import { LoaderState } from '../../state/utils/loader/loader-state';
 import { Cart } from '../../model/cart.model';
+import { OrderEntry } from '../../model/order.model';
+import { ProcessesLoaderState } from '../../state/utils/processes-loader/processes-loader-state';
+import { StateWithMultiCart } from '../store/multi-cart-state';
 export declare class MultiCartService {
     protected store: Store<StateWithMultiCart>;
     constructor(store: Store<StateWithMultiCart>);
@@ -18,7 +18,13 @@ export declare class MultiCartService {
      *
      * @param cartId
      */
-    getCartEntity(cartId: string): Observable<LoaderState<Cart>>;
+    getCartEntity(cartId: string): Observable<ProcessesLoaderState<Cart>>;
+    /**
+     * Returns true when there are no operations on that in progress and it is not currently loading
+     *
+     * @param cartId
+     */
+    isStable(cartId: string): Observable<boolean>;
     /**
      * Create or merge cart
      *
@@ -29,7 +35,7 @@ export declare class MultiCartService {
         oldCartId?: string;
         toMergeCartGuid?: string;
         extraData?: any;
-    }): Observable<LoaderState<Cart>>;
+    }): Observable<ProcessesLoaderState<Cart>>;
     /**
      * Load cart
      *
@@ -65,10 +71,6 @@ export declare class MultiCartService {
         productCode: string;
         quantity: number;
     }>): void;
-    /**
-     * Initialize add entry process used for loading status
-     */
-    initAddEntryProcess(): void;
     /**
      * Remove entry from cart
      *

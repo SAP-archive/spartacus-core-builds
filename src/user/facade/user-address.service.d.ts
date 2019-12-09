@@ -12,6 +12,8 @@ export declare class UserAddressService {
      * @deprecated since version 1.3
      *  Use constructor(store: Store<StateWithUser | StateWithProcess<void>>,
      *  authService: AuthService) instead
+     *
+     *  TODO(issue:#5628) Deprecated since 1.3.0
      */
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
@@ -74,4 +76,9 @@ export declare class UserAddressService {
      * Returns all regions
      */
     getRegions(countryIsoCode: string): Observable<Region[]>;
+    /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     */
+    private withUserId;
 }

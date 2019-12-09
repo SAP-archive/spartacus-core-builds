@@ -6,6 +6,7 @@ import { TranslationService } from '../../i18n/translation.service';
 import { Product } from '../../model/product.model';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductService } from '../facade/product.service';
+import { FeatureConfigService } from '../../features-config/services/feature-config.service';
 /**
  * Resolves the page data for the Product Detail Page
  * based on the `PageType.PRODUCT_PAGE`.
@@ -17,8 +18,10 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     protected routingService: RoutingService;
     protected productService: ProductService;
     protected translation: TranslationService;
+    protected features?: FeatureConfigService;
+    protected readonly PRODUCT_SCOPE: string;
     private product$;
-    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService);
+    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService, features?: FeatureConfigService);
     /**
      * @deprecated since version 1.3
      *

@@ -1,11 +1,11 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { ActiveCartService } from './active-cart.service';
 import { AuthService } from '../../auth/index';
 import { Cart } from '../../model/cart.model';
 import { User } from '../../model/misc.model';
 import { OrderEntry } from '../../model/order.model';
 import { StateWithCart } from '../store/cart-state';
+import { ActiveCartService } from './active-cart.service';
 import { CartDataService } from './cart-data.service';
 /**
  * @deprecated since version 1.4
@@ -26,7 +26,6 @@ export declare class CartService {
     getEntries(): Observable<OrderEntry[]>;
     getCartMergeComplete(): Observable<boolean>;
     getLoaded(): Observable<boolean>;
-    getAddEntryLoaded(): Observable<boolean>;
     private loadOrMerge;
     private load;
     addEntry(productCode: string, quantity: number): void;

@@ -5,6 +5,8 @@ import { ProductActions } from '../actions/index';
 export declare class ProductEffects {
     private actions$;
     private productConnector;
-    loadProduct$: Observable<ProductActions.LoadProductSuccess | ProductActions.LoadProductFail>;
+    private contextSafeActions$;
+    loadProduct$: ({ scheduler, debounce }?: any) => Observable<ProductActions.LoadProductFail | ProductActions.LoadProductSuccess>;
+    private productLoadEffect;
     constructor(actions$: Actions, productConnector: ProductConnector);
 }

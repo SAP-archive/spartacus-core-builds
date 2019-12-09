@@ -4,6 +4,7 @@ export declare class OccEndpointsService {
     private config;
     private baseSiteService;
     private activeBaseSite;
+    private readonly SCOPE_SUFFIX;
     constructor(config: OccConfig, baseSiteService: BaseSiteService);
     /**
      * Returns and endpoint starting from the OCC baseUrl (no baseSite)
@@ -24,6 +25,8 @@ export declare class OccEndpointsService {
      * @param endpoint Name of the OCC endpoint key config
      * @param urlParams  URL parameters
      * @param queryParams Query parameters
+     * @param scope
      */
-    getUrl(endpoint: string, urlParams?: object, queryParams?: object): string;
+    getUrl(endpoint: string, urlParams?: object, queryParams?: object, scope?: string): string;
+    private getEndpointForScope;
 }

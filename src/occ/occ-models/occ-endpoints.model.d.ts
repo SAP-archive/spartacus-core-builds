@@ -8,9 +8,19 @@ export interface OccEndpoints {
     /**
      * Get product details
      *
-     * @member {string}
+     * @member string
      */
     product?: string;
+    /**
+     * Get product details for scope
+     *
+     * @member Object
+     */
+    product_scopes?: {
+        list?: string;
+        details?: string;
+        [scope: string]: string;
+    };
     /**
      * Get reviews for a product
      *
@@ -276,9 +286,21 @@ export interface OccEndpoints {
      */
     cartVoucher?: string;
     /**
-     * Explicitly saves a cart
+     * Endpoint for notification preference
      *
      * @member {string}
      */
-    saveCart?: string;
+    notificationPreference?: string;
+    /**
+     * Endpoint for product interests
+     *
+     * @member {string}
+     */
+    productInterests?: string;
+    /**
+     * Endpoint for getting product interests
+     *
+     * @member {string}
+     */
+    getProductInterests?: string;
 }

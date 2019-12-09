@@ -3813,4 +3813,21 @@ export declare namespace Occ {
         languages?: Language[];
         defaultLanguage?: Language;
     }
+    interface ProductInterestEntry {
+        interestType?: NotificationType;
+        dateAdded?: string;
+        expirationDate?: string;
+    }
+    interface ProductInterestEntryRelation {
+        product?: Product;
+        productInterestEntry?: ProductInterestEntry[];
+    }
+    interface ProductInterestSearchResult {
+        results?: ProductInterestEntryRelation[];
+        sorts?: Sort[];
+        pagination?: Pagination;
+    }
+    enum NotificationType {
+        BACK_IN_STOCK = "BACK_IN_STOCK"
+    }
 }

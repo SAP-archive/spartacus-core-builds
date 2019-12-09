@@ -13,6 +13,8 @@ export declare class UserOrderService {
      * @deprecated since version 1.2
      *  Use constructor(store: Store<StateWithUser | StateWithProcess<void>>,
      *  authService: AuthService) instead
+     *
+     *  TODO(issue:#5628) Deprecated since 1.3.0
      */
     constructor(store: Store<StateWithUser | StateWithProcess<void>>);
     /**
@@ -62,4 +64,9 @@ export declare class UserOrderService {
      * Cleaning consignment tracking
      */
     clearConsignmentTracking(): void;
+    /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     */
+    private withUserId;
 }
