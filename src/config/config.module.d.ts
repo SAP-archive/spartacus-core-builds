@@ -1,5 +1,5 @@
 import { InjectionToken, ModuleWithProviders, Provider } from '@angular/core';
-import { ConfigValidator } from './config-validator/config-validator';
+import { ConfigValidator } from './utils/config-validator';
 /**
  * Global Configuration injection token, can be used to inject configuration to any part of the app
  */
@@ -26,8 +26,7 @@ export declare function provideConfigFactory(configFactory: Function, deps?: any
  * Factory function that merges all configurations chunks. Should not be used directly without explicit reason.
  *
  */
-export declare function configurationFactory(configChunks: any[], configValidators: ConfigValidator[], // TODO: remove, deprecated since 1.3, issue #5279
-configInitializerGuard?: boolean): any;
+export declare function configurationFactory(configChunks: any[], configValidators: ConfigValidator[]): any;
 export declare class ConfigModule {
     /**
      * Import ConfigModule and contribute config to the global configuration

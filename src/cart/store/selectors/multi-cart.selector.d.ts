@@ -1,0 +1,15 @@
+import { MemoizedSelector } from '@ngrx/store';
+import { Cart } from '../../../model/cart.model';
+import { OrderEntry } from '../../../model/order.model';
+import { EntityLoaderState } from '../../../state';
+import { LoaderState } from '../../../state/utils/loader/loader-state';
+import { MultiCartState, StateWithMultiCart } from '../multi-cart-state';
+export declare const getMultiCartState: MemoizedSelector<StateWithMultiCart, MultiCartState>;
+export declare const getMultiCartEntities: MemoizedSelector<StateWithMultiCart, EntityLoaderState<Cart>>;
+export declare const getCartEntitySelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, LoaderState<Cart>, import("@ngrx/store").DefaultProjectorFn<LoaderState<Cart>>>;
+export declare const getCartSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, Cart, import("@ngrx/store").DefaultProjectorFn<Cart>>;
+export declare const getCartEntriesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, OrderEntry[], import("@ngrx/store").DefaultProjectorFn<OrderEntry[]>>;
+export declare const getCartEntrySelectorFactory: (cartId: string, productCode: string) => MemoizedSelector<StateWithMultiCart, OrderEntry, import("@ngrx/store").DefaultProjectorFn<OrderEntry>>;
+export declare const getActiveCartId: MemoizedSelector<StateWithMultiCart, string>;
+export declare const getWishListId: MemoizedSelector<StateWithMultiCart, string>;
+export declare const getWishListLoading: MemoizedSelector<StateWithMultiCart, boolean, import("@ngrx/store").DefaultProjectorFn<boolean>>;

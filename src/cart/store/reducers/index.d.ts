@@ -1,8 +1,14 @@
 import { InjectionToken, Provider } from '@angular/core';
 import { ActionReducer, ActionReducerMap, MetaReducer } from '@ngrx/store';
-import { CartsState } from './../cart-state';
+import { CartsState } from '../cart-state';
+import { MultiCartState } from '../multi-cart-state';
 export declare function getReducers(): ActionReducerMap<CartsState>;
 export declare const reducerToken: InjectionToken<ActionReducerMap<CartsState>>;
 export declare const reducerProvider: Provider;
 export declare function clearCartState(reducer: ActionReducer<any>): ActionReducer<any>;
 export declare const metaReducers: MetaReducer<any>[];
+export declare function clearMultiCartState(reducer: ActionReducer<any>): ActionReducer<any>;
+export declare const multiCartMetaReducers: MetaReducer<any>[];
+export declare const multiCartReducerToken: InjectionToken<ActionReducerMap<MultiCartState>>;
+export declare function getMultiCartReducers(): ActionReducerMap<MultiCartState>;
+export declare const multiCartReducerProvider: Provider;

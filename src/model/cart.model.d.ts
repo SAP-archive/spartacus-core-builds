@@ -1,7 +1,7 @@
-import { Price, Promotion } from './product.model';
-import { DeliveryMode, OrderEntry, PromotionOrderEntryConsumed, PickupOrderEntryGroup } from './order.model';
 import { Address } from './address.model';
 import { Currency } from './misc.model';
+import { DeliveryMode, OrderEntry, PickupOrderEntryGroup, PromotionOrderEntryConsumed } from './order.model';
+import { Price, Promotion } from './product.model';
 export interface PromotionResult {
     consumedEntries?: PromotionOrderEntryConsumed[];
     description?: string;
@@ -48,6 +48,9 @@ export interface PaymentDetails {
     startMonth?: string;
     startYear?: string;
     subscriptionId?: string;
+}
+export interface SaveCartResult {
+    savedCartData?: Cart;
 }
 export interface Cart {
     appliedOrderPromotions?: PromotionResult[];

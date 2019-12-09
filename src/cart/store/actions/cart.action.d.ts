@@ -58,11 +58,13 @@ export declare class LoadCart extends StateLoaderActions.LoaderLoadAction {
     payload: {
         userId: string;
         cartId: string;
+        extraData?: any;
     };
     readonly type = "[Cart] Load Cart";
     constructor(payload: {
         userId: string;
         cartId: string;
+        extraData?: any;
     });
 }
 export declare class LoadCartFail extends StateLoaderActions.LoaderFailAction {

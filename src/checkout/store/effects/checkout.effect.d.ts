@@ -22,7 +22,7 @@ export declare class CheckoutEffects {
     setDeliveryMode$: Observable<CheckoutActions.SetDeliveryModeSuccess | CheckoutActions.SetDeliveryModeFail | CartActions.LoadCart>;
     createPaymentDetails$: Observable<UserActions.LoadUserPaymentMethods | CheckoutActions.CreatePaymentDetailsSuccess | CheckoutActions.CreatePaymentDetailsFail>;
     setPaymentDetails$: Observable<CheckoutActions.SetPaymentDetailsSuccess | CheckoutActions.SetPaymentDetailsFail>;
-    placeOrder$: Observable<CheckoutActions.PlaceOrderSuccess | GlobalMessageActions.AddMessage | CheckoutActions.PlaceOrderFail>;
+    placeOrder$: Observable<CheckoutActions.PlaceOrderSuccess | GlobalMessageActions.AddMessage | CheckoutActions.PlaceOrderFail | CartActions.RemoveCart>;
     loadCheckoutDetails$: Observable<CheckoutActions.LoadCheckoutDetailsSuccess | CheckoutActions.LoadCheckoutDetailsFail>;
     reloadDetailsOnMergeCart$: Observable<CheckoutActions.LoadCheckoutDetails>;
     clearCheckoutDeliveryAddress$: Observable<CheckoutActions.ClearCheckoutDeliveryAddressFail | CheckoutActions.ClearCheckoutDeliveryAddressSuccess>;
