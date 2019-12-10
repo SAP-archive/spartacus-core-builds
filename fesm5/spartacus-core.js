@@ -9428,6 +9428,9 @@ function isFeatureConfig(config) {
  * @return {?}
  */
 function isInLevel(level, version) {
+    if (level === '*') {
+        return true;
+    }
     /** @type {?} */
     var levelParts = level.split('.');
     /** @type {?} */
@@ -9450,7 +9453,9 @@ function isInLevel(level, version) {
  */
 function isFeatureLevel(config, level) {
     if (isFeatureConfig(config)) {
-        return isInLevel(config.features.level, level);
+        return level[0] === '!'
+            ? !isInLevel(config.features.level, level.substr(1, level.length))
+            : isInLevel(config.features.level, level);
     }
 }
 /**
@@ -9461,10 +9466,14 @@ function isFeatureLevel(config, level) {
 function isFeatureEnabled(config, feature) {
     if (isFeatureConfig(config)) {
         /** @type {?} */
-        var featureConfig = config.features[feature];
-        return typeof featureConfig === 'string'
+        var featureConfig = feature[0] === '!'
+            ? config.features[feature.substr(1, feature.length)]
+            : config.features[feature];
+        /** @type {?} */
+        var result = typeof featureConfig === 'string'
             ? isFeatureLevel(config, featureConfig)
             : featureConfig;
+        return feature[0] === '!' ? !result : result;
     }
 }
 
@@ -9675,7 +9684,7 @@ var FeaturesConfigModule = /** @class */ (function () {
             providers: [
                 provideConfig((/** @type {?} */ ({
                     features: {
-                        level: defaultLevel || '999',
+                        level: defaultLevel || '*',
                     },
                 }))),
                 {
