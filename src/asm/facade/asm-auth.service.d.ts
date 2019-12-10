@@ -1,7 +1,7 @@
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { UserToken } from '../../auth/models/token-types.model';
 import { AuthService } from '../../auth/facade/auth.service';
+import { UserToken } from '../../auth/models/token-types.model';
 import { StateWithAsm } from '../store/asm-state';
 export declare class AsmAuthService {
     protected store: Store<StateWithAsm>;

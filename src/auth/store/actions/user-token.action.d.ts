@@ -6,6 +6,9 @@ export declare const LOAD_USER_TOKEN_SUCCESS = "[Auth] Load User Token Success";
 export declare const REFRESH_USER_TOKEN = "[Auth] Refresh User Token";
 export declare const REFRESH_USER_TOKEN_FAIL = "[Auth] Refresh User Token Fail";
 export declare const REFRESH_USER_TOKEN_SUCCESS = "[Auth] Refresh User Token Success";
+export declare const REVOKE_USER_TOKEN = "[Auth] Revoke User Token";
+export declare const REVOKE_USER_TOKEN_FAIL = "[Auth] Revoke User Token Fail";
+export declare const REVOKE_USER_TOKEN_SUCCESS = "[Auth] Revoke User Token Success";
 export declare class LoadUserToken implements Action {
     payload: {
         userId: string;
@@ -46,4 +49,19 @@ export declare class RefreshUserTokenFail implements Action {
     readonly type = "[Auth] Refresh User Token Fail";
     constructor(payload: any);
 }
-export declare type UserTokenAction = LoadUserToken | LoadUserTokenFail | LoadUserTokenSuccess | RefreshUserToken | RefreshUserTokenFail | RefreshUserTokenSuccess;
+export declare class RevokeUserToken implements Action {
+    payload: UserToken;
+    readonly type = "[Auth] Revoke User Token";
+    constructor(payload: UserToken);
+}
+export declare class RevokeUserTokenSuccess implements Action {
+    payload: UserToken;
+    readonly type = "[Auth] Revoke User Token Success";
+    constructor(payload: UserToken);
+}
+export declare class RevokeUserTokenFail implements Action {
+    payload: any;
+    readonly type = "[Auth] Revoke User Token Fail";
+    constructor(payload: any);
+}
+export declare type UserTokenAction = LoadUserToken | LoadUserTokenFail | LoadUserTokenSuccess | RefreshUserToken | RefreshUserTokenFail | RefreshUserTokenSuccess | RevokeUserToken | RevokeUserTokenFail | RevokeUserTokenSuccess;

@@ -8,5 +8,6 @@ export declare class UserTokenEffects {
     loadUserToken$: Observable<AuthActions.UserTokenAction>;
     login$: Observable<AuthActions.Login>;
     refreshUserToken$: Observable<AuthActions.UserTokenAction>;
+    revokeUserToken$: Observable<AuthActions.UserTokenAction>;
     constructor(actions$: Actions, userTokenService: UserAuthenticationTokenService);
 }

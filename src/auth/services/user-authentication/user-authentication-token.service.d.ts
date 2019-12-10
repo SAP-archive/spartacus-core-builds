@@ -15,4 +15,5 @@ export declare class UserAuthenticationTokenService {
     constructor(http: HttpClient, config: AuthConfig);
     loadToken(userId: string, password: string): Observable<UserToken>;
     refreshToken(refreshToken: string): Observable<UserToken>;
+    revoke(userToken: UserToken): Observable<{}>;
 }
