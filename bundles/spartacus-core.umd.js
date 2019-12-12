@@ -3054,7 +3054,7 @@
         };
         /**
          * This function provides the userId the OCC calls should use, depending
-         * on wether there is an active storefront session or not.
+         * on whether there is an active storefront session or not.
          *
          * It returns the userId of the current storefront user or 'anonymous'
          * in the case there are no signed in user in the storefront.
@@ -3064,7 +3064,7 @@
          */
         /**
          * This function provides the userId the OCC calls should use, depending
-         * on wether there is an active storefront session or not.
+         * on whether there is an active storefront session or not.
          *
          * It returns the userId of the current storefront user or 'anonymous'
          * in the case there are no signed in user in the storefront.
@@ -3075,7 +3075,7 @@
          */
         AuthService.prototype.getOccUserId = /**
          * This function provides the userId the OCC calls should use, depending
-         * on wether there is an active storefront session or not.
+         * on whether there is an active storefront session or not.
          *
          * It returns the userId of the current storefront user or 'anonymous'
          * in the case there are no signed in user in the storefront.
@@ -7185,6 +7185,14 @@
     /**
      * @record
      */
+    function SaveCartResult() { }
+    if (false) {
+        /** @type {?|undefined} */
+        SaveCartResult.prototype.savedCartData;
+    }
+    /**
+     * @record
+     */
     function Cart() { }
     if (false) {
         /** @type {?|undefined} */
@@ -10644,6 +10652,35 @@
     var   /**
      * @abstract
      */
+    SaveCartAdapter = /** @class */ (function () {
+        function SaveCartAdapter() {
+        }
+        return SaveCartAdapter;
+    }());
+    if (false) {
+        /**
+         * Abstract method used to save a cart
+         *
+         * @abstract
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} saveCartName
+         * @param {?=} saveCartDescription
+         * @return {?}
+         */
+        SaveCartAdapter.prototype.saveCart = function (userId, cartId, saveCartName, saveCartDescription) { };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
     CartVoucherAdapter = /** @class */ (function () {
         function CartVoucherAdapter() {
         }
@@ -10798,7 +10835,7 @@
             occ: {
                 endpoints: {
                     // tslint:disable:max-line-length
-                    carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime,user)',
+                    carts: 'users/${userId}/carts?fields=carts(DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),saveTime,user,name)',
                     cart: 'users/${userId}/carts/${cartId}?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
                     createCart: 'users/${userId}/carts?fields=DEFAULT,potentialProductPromotions,appliedProductPromotions,potentialOrderPromotions,appliedOrderPromotions,entries(totalPrice(formattedValue),product(images(FULL),stock(FULL)),basePrice(formattedValue),updateable),totalPrice(formattedValue),totalItems,totalPriceWithTax(formattedValue),totalDiscounts(value,formattedValue),subTotal(formattedValue),deliveryItemsQuantity,deliveryCost(formattedValue),totalTax(formattedValue),pickupItemsQuantity,net,appliedVouchers,productDiscounts(formattedValue),user',
                     addEntries: 'users/${userId}/carts/${cartId}/entries',
@@ -10807,6 +10844,7 @@
                     addEmail: 'users/${userId}/carts/${cartId}/email',
                     deleteCart: 'users/${userId}/carts/${cartId}',
                     cartVoucher: 'users/${userId}/carts/${cartId}/vouchers',
+                    saveCart: 'users/${userId}/carts/${cartId}/save',
                 },
             },
         },
@@ -11583,6 +11621,83 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var SAVE_CART_NORMALIZER = new core.InjectionToken('SaveCartNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccSaveCartAdapter = /** @class */ (function () {
+        function OccSaveCartAdapter(http, occEndpointsService, converterService) {
+            this.http = http;
+            this.occEndpointsService = occEndpointsService;
+            this.converterService = converterService;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} saveCartName
+         * @param {?=} saveCartDescription
+         * @return {?}
+         */
+        OccSaveCartAdapter.prototype.saveCart = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} saveCartName
+         * @param {?=} saveCartDescription
+         * @return {?}
+         */
+        function (userId, cartId, saveCartName, saveCartDescription) {
+            /** @type {?} */
+            var httpParams = new http.HttpParams();
+            if (Boolean(saveCartName)) {
+                httpParams = httpParams.set('saveCartName', saveCartName);
+            }
+            if (Boolean(saveCartDescription)) {
+                httpParams = httpParams.set('saveCartDescription', saveCartDescription);
+            }
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded',
+            });
+            return this.http
+                .patch(this.occEndpointsService.getUrl('saveCart', { userId: userId, cartId: cartId }), httpParams, { headers: headers })
+                .pipe(this.converterService.pipeable(SAVE_CART_NORMALIZER));
+        };
+        OccSaveCartAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccSaveCartAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        return OccSaveCartAdapter;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccSaveCartAdapter.prototype.http;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccSaveCartAdapter.prototype.occEndpointsService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccSaveCartAdapter.prototype.converterService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CartOccModule = /** @class */ (function () {
         function CartOccModule() {
         }
@@ -11610,6 +11725,10 @@
                             {
                                 provide: CartVoucherAdapter,
                                 useClass: OccCartVoucherAdapter,
+                            },
+                            {
+                                provide: SaveCartAdapter,
+                                useClass: OccSaveCartAdapter,
                             },
                         ],
                     },] }
@@ -18793,6 +18912,13 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.cartVoucher;
+        /**
+         * Explicitly saves a cart
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.saveCart;
         /**
          * Endpoint for notification preference
          *
@@ -31792,234 +31918,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var QUESTION_MARK = '[^/]';
-    /** @type {?} */
-    var WILD_SINGLE = '[^/]*';
-    /** @type {?} */
-    var WILD_OPEN = '(?:.+\\/)?';
-    /** @type {?} */
-    var TO_ESCAPE_BASE = [
-        { replace: /\./g, with: '\\.' },
-        { replace: /\+/g, with: '\\+' },
-        { replace: /\*/g, with: WILD_SINGLE },
-    ];
-    /** @type {?} */
-    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: QUESTION_MARK },
-    ]);
-    /** @type {?} */
-    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
-        { replace: /\?/g, with: '\\?' },
-    ]);
-    /**
-     * Converts the glob-like pattern into regex string.
-     * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
-     *
-     * Patterns use a limited glob format:
-     * `**` matches 0 or more path segments
-     * `*` matches 0 or more characters excluding `/`
-     * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
-     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
-     *
-     * @param {?} glob glob-like pattern
-     * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
-     * @return {?}
-     */
-    function globToRegex(glob, literalQuestionMark) {
-        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
-        /** @type {?} */
-        var toEscape = literalQuestionMark
-            ? TO_ESCAPE_LITERAL_QM
-            : TO_ESCAPE_WILDCARD_QM;
-        /** @type {?} */
-        var segments = glob.split('/').reverse();
-        /** @type {?} */
-        var regex = '';
-        while (segments.length > 0) {
-            /** @type {?} */
-            var segment = segments.pop();
-            if (segment === '**') {
-                if (segments.length > 0) {
-                    regex += WILD_OPEN;
-                }
-                else {
-                    regex += '.*';
-                }
-            }
-            else {
-                /** @type {?} */
-                var processed = toEscape.reduce((/**
-                 * @param {?} seg
-                 * @param {?} escape
-                 * @return {?}
-                 */
-                function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
-                regex += processed;
-                if (segments.length > 0) {
-                    regex += '\\/';
-                }
-            }
-        }
-        return regex;
-    }
-    /**
-     * For given list of glob-like patterns, returns a matcher function.
-     *
-     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-     * @param {?} patterns
-     * @return {?}
-     */
-    function getGlobMatcher(patterns) {
-        /** @type {?} */
-        var processedPatterns = processGlobPatterns(patterns).map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        function (_a) {
-            var positive = _a.positive, regex = _a.regex;
-            return ({
-                positive: positive,
-                regex: new RegExp(regex),
-            });
-        }));
-        /** @type {?} */
-        var includePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return spec.positive; }));
-        /** @type {?} */
-        var excludePatterns = processedPatterns.filter((/**
-         * @param {?} spec
-         * @return {?}
-         */
-        function (spec) { return !spec.positive; }));
-        return (/**
-         * @param {?} url
-         * @return {?}
-         */
-        function (url) {
-            return includePatterns.some((/**
-             * @param {?} pattern
-             * @return {?}
-             */
-            function (pattern) { return pattern.regex.test(url); })) &&
-                !excludePatterns.some((/**
-                 * @param {?} pattern
-                 * @return {?}
-                 */
-                function (pattern) { return pattern.regex.test(url); }));
-        });
-    }
-    /**
-     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
-     * @param {?} urls
-     * @return {?}
-     */
-    function processGlobPatterns(urls) {
-        return urls.map((/**
-         * @param {?} url
-         * @return {?}
-         */
-        function (url) {
-            /** @type {?} */
-            var positive = !url.startsWith('!');
-            url = positive ? url : url.substr(1);
-            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
-        }));
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var GlobService = /** @class */ (function () {
-        function GlobService() {
-        }
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         */
-        /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         * @param {?} patterns
-         * @return {?}
-         */
-        GlobService.prototype.getValidator = /**
-         * For given list of glob-like patterns, returns a validator function.
-         *
-         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
-         * @param {?} patterns
-         * @return {?}
-         */
-        function (patterns) {
-            /** @type {?} */
-            var processedPatterns = processGlobPatterns(patterns).map((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            function (_a) {
-                var positive = _a.positive, regex = _a.regex;
-                return ({
-                    positive: positive,
-                    regex: new RegExp(regex),
-                });
-            }));
-            /** @type {?} */
-            var includePatterns = processedPatterns.filter((/**
-             * @param {?} spec
-             * @return {?}
-             */
-            function (spec) { return spec.positive; }));
-            /** @type {?} */
-            var excludePatterns = processedPatterns.filter((/**
-             * @param {?} spec
-             * @return {?}
-             */
-            function (spec) { return !spec.positive; }));
-            return (/**
-             * @param {?} url
-             * @return {?}
-             */
-            function (url) {
-                return includePatterns.some((/**
-                 * @param {?} pattern
-                 * @return {?}
-                 */
-                function (pattern) { return pattern.regex.test(url); })) &&
-                    !excludePatterns.some((/**
-                     * @param {?} pattern
-                     * @return {?}
-                     */
-                    function (pattern) { return pattern.regex.test(url); }));
-            });
-        };
-        GlobService.decorators = [
-            { type: core.Injectable, args: [{ providedIn: 'root' },] }
-        ];
-        /** @nocollapse */ GlobService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
-        return GlobService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     // Email Standard RFC 5322:
     /** @type {?} */
     var EMAIL_PATTERN = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     // tslint:disable-line
     /** @type {?} */
     var PASSWORD_PATTERN = /^(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#$%^*()_\-+{};:.,]).{6,}$/;
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -32060,476 +31964,6 @@
         CartState.prototype.refresh;
         /** @type {?} */
         CartState.prototype.cartMergeComplete;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getCartContentSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.content; });
-    var ɵ0$t = getCartContentSelector;
-    /** @type {?} */
-    var getCartRefreshSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.refresh; });
-    var ɵ1$l = getCartRefreshSelector;
-    /** @type {?} */
-    var getCartEntriesSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.entries; });
-    var ɵ2$e = getCartEntriesSelector;
-    /** @type {?} */
-    var getCartMergeCompleteSelector = (/**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        return state.cartMergeComplete;
-    });
-    var ɵ3$7 = getCartMergeCompleteSelector;
-    /** @type {?} */
-    var getCartsState = store.createFeatureSelector(CART_FEATURE);
-    var ɵ4$1 = /**
-     * @param {?} cartsState
-     * @return {?}
-     */
-    function (cartsState) { return cartsState.active; };
-    /** @type {?} */
-    var getActiveCartState = store.createSelector(getCartsState, (ɵ4$1));
-    var ɵ5$1 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderValueSelector(state); };
-    /** @type {?} */
-    var getCartState = store.createSelector(getActiveCartState, (ɵ5$1));
-    /** @type {?} */
-    var getCartContent = store.createSelector(getCartState, getCartContentSelector);
-    /** @type {?} */
-    var getCartRefresh = store.createSelector(getCartState, getCartRefreshSelector);
-    var ɵ6 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        return (loaderSuccessSelector(state) &&
-            !loaderLoadingSelector(state) &&
-            !loaderValueSelector(state).refresh) ||
-            (loaderErrorSelector(state) &&
-                !loaderLoadingSelector(state) &&
-                !loaderValueSelector(state).refresh);
-    };
-    /** @type {?} */
-    var getCartLoaded = store.createSelector(getActiveCartState, (ɵ6));
-    var ɵ7 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderLoadingSelector(state); };
-    /** @type {?} */
-    var getCartLoading = store.createSelector(getActiveCartState, (ɵ7));
-    /** @type {?} */
-    var getCartMergeComplete = store.createSelector(getCartState, getCartMergeCompleteSelector);
-    /** @type {?} */
-    var getCartEntriesMap = store.createSelector(getCartState, getCartEntriesSelector);
-    /** @type {?} */
-    var getCartEntrySelectorFactory = (/**
-     * @param {?} productCode
-     * @return {?}
-     */
-    function (productCode) {
-        return store.createSelector(getCartEntriesMap, (/**
-         * @param {?} entries
-         * @return {?}
-         */
-        function (entries) {
-            if (entries) {
-                return entries[productCode];
-            }
-        }));
-    });
-    var ɵ8 = /**
-     * @param {?} entities
-     * @return {?}
-     */
-    function (entities) {
-        return Object.keys(entities).map((/**
-         * @param {?} code
-         * @return {?}
-         */
-        function (code) { return entities[code]; }));
-    };
-    /** @type {?} */
-    var getCartEntries = store.createSelector(getCartEntriesMap, (ɵ8));
-    var ɵ9 = /**
-     * @param {?} content
-     * @return {?}
-     */
-    function (content) { return content.user; };
-    /** @type {?} */
-    var getCartUser = store.createSelector(getCartContent, (ɵ9));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    var cartGroup_selectors = /*#__PURE__*/Object.freeze({
-        getCartsState: getCartsState,
-        getActiveCartState: getActiveCartState,
-        getCartState: getCartState,
-        getCartContent: getCartContent,
-        getCartRefresh: getCartRefresh,
-        getCartLoaded: getCartLoaded,
-        getCartLoading: getCartLoading,
-        getCartMergeComplete: getCartMergeComplete,
-        getCartEntriesMap: getCartEntriesMap,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
-        getCartEntries: getCartEntries,
-        getCartUser: getCartUser
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var MULTI_CART_FEATURE = 'multi-cart';
-    /** @type {?} */
-    var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
-    /**
-     * @record
-     */
-    function StateWithMultiCart() { }
-    if (false) {
-        /* Skipping unnamed member:
-        [MULTI_CART_FEATURE]: MultiCartState;*/
-    }
-    /**
-     * @record
-     */
-    function MultiCartState() { }
-    if (false) {
-        /** @type {?} */
-        MultiCartState.prototype.carts;
-        /** @type {?} */
-        MultiCartState.prototype.active;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$u = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.carts; };
-    /** @type {?} */
-    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$u));
-    /** @type {?} */
-    var getCartEntitySelectorFactory = (/**
-     * @param {?} cartId
-     * @return {?}
-     */
-    function (cartId) {
-        return store.createSelector(getMultiCartEntities, (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return entityProcessesLoaderStateSelector(state, cartId);
-        }));
-    });
-    /** @type {?} */
-    var getCartSelectorFactory = (/**
-     * @param {?} cartId
-     * @return {?}
-     */
-    function (cartId) {
-        return store.createSelector(getMultiCartEntities, (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return entityValueSelector(state, cartId);
-        }));
-    });
-    /** @type {?} */
-    var getCartIsStableSelectorFactory = (/**
-     * @param {?} cartId
-     * @return {?}
-     */
-    function (cartId) {
-        return store.createSelector(getMultiCartEntities, (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return entityIsStableSelector(state, cartId);
-        }));
-    });
-    /** @type {?} */
-    var getCartHasPendingProcessesSelectorFactory = (/**
-     * @param {?} cartId
-     * @return {?}
-     */
-    function (cartId) {
-        return store.createSelector(getMultiCartEntities, (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return entityHasPendingProcessesSelector(state, cartId);
-        }));
-    });
-    /** @type {?} */
-    var getCartEntriesSelectorFactory = (/**
-     * @param {?} cartId
-     * @return {?}
-     */
-    function (cartId) {
-        return store.createSelector(getCartSelectorFactory(cartId), (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return state && state.entries ? state.entries : [];
-        }));
-    });
-    /** @type {?} */
-    var getCartEntrySelectorFactory$1 = (/**
-     * @param {?} cartId
-     * @param {?} productCode
-     * @return {?}
-     */
-    function (cartId, productCode) {
-        return store.createSelector(getCartEntriesSelectorFactory(cartId), (/**
-         * @param {?} state
-         * @return {?}
-         */
-        function (state) {
-            return state
-                ? state.find((/**
-                 * @param {?} entry
-                 * @return {?}
-                 */
-                function (entry) { return entry.product.code === productCode; }))
-                : undefined;
-        }));
-    });
-    var ɵ1$m = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.active; };
-    /** @type {?} */
-    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$m));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
-        getMultiCartState: getMultiCartState,
-        getMultiCartEntities: getMultiCartEntities,
-        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
-        getCartSelectorFactory: getCartSelectorFactory,
-        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
-        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
-        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
-        getCartEntrySelectorFactory: getCartEntrySelectorFactory$1,
-        getActiveCartId: getActiveCartId
-    });
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @deprecated since version 1.4
-     * Replace particular methods usage with replacements from other services
-     */
-    var CartDataService = /** @class */ (function () {
-        function CartDataService(store$1, authService) {
-            var _this = this;
-            this.store = store$1;
-            this.authService = authService;
-            this._userId = OCC_USER_ID_ANONYMOUS;
-            this.authService
-                .getUserToken()
-                .pipe(operators.filter((/**
-             * @param {?} userToken
-             * @return {?}
-             */
-            function (userToken) { return _this.userId !== userToken.userId; })))
-                .subscribe((/**
-             * @param {?} userToken
-             * @return {?}
-             */
-            function (userToken) {
-                if (Object.keys(userToken).length !== 0) {
-                    _this._userId = userToken.userId;
-                }
-                else {
-                    _this._userId = OCC_USER_ID_ANONYMOUS;
-                }
-            }));
-            this.store.pipe(store.select(getCartContent)).subscribe((/**
-             * @param {?} cart
-             * @return {?}
-             */
-            function (cart) {
-                _this._cart = cart;
-            }));
-        }
-        Object.defineProperty(CartDataService.prototype, "hasCart", {
-            get: /**
-             * @return {?}
-             */
-            function () {
-                return !!this._cart && Object.keys(this._cart).length > 0;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "userId", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getOccUserId` from `AuthService` instead
-             */
-            get: /**
-             * @deprecated since version 1.4
-             * Use `getOccUserId` from `AuthService` instead
-             * @return {?}
-             */
-            function () {
-                return this._userId;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "cart", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getActive` from `ActiveCartService` instead
-             */
-            get: /**
-             * @deprecated since version 1.4
-             * Use `getActive` from `ActiveCartService` instead
-             * @return {?}
-             */
-            function () {
-                return this._cart;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "cartId", {
-            /**
-             * @deprecated since version 1.4
-             * Use `getActiveCartId` from `ActiveCartService` instead
-             */
-            get: /**
-             * @deprecated since version 1.4
-             * Use `getActiveCartId` from `ActiveCartService` instead
-             * @return {?}
-             */
-            function () {
-                if (this.hasCart) {
-                    return this.userId === OCC_USER_ID_ANONYMOUS
-                        ? this.cart.guid
-                        : this.cart.code;
-                }
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(CartDataService.prototype, "isGuestCart", {
-            /**
-             * @deprecated since version 1.4
-             * Use `isGuestCart` from `ActiveCartService` instead
-             */
-            get: /**
-             * @deprecated since version 1.4
-             * Use `isGuestCart` from `ActiveCartService` instead
-             * @return {?}
-             */
-            function () {
-                return (this.cart.user &&
-                    (this.cart.user.name === OCC_USER_ID_GUEST ||
-                        this.isEmail(this.cart.user.uid
-                            .split('|')
-                            .slice(1)
-                            .join('|'))));
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @private
-         * @param {?} str
-         * @return {?}
-         */
-        CartDataService.prototype.isEmail = /**
-         * @private
-         * @param {?} str
-         * @return {?}
-         */
-        function (str) {
-            if (str) {
-                return str.match(EMAIL_PATTERN) ? true : false;
-            }
-            return false;
-        };
-        CartDataService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        CartDataService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        return CartDataService;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        CartDataService.prototype._userId;
-        /**
-         * @type {?}
-         * @private
-         */
-        CartDataService.prototype._cart;
-        /**
-         * @type {?}
-         * @protected
-         */
-        CartDataService.prototype.store;
-        /**
-         * @type {?}
-         * @protected
-         */
-        CartDataService.prototype.authService;
     }
 
     /**
@@ -32811,307 +32245,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
-    var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
-    /** @type {?} */
-    var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
-    /** @type {?} */
-    var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
-    /** @type {?} */
-    var CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
-    /** @type {?} */
-    var CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
-    /** @type {?} */
-    var CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
-    /** @type {?} */
-    var CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
-    /** @type {?} */
-    var CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
-    /** @type {?} */
-    var CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
-    var CartAddEntry = /** @class */ (function (_super) {
-        __extends(CartAddEntry, _super);
-        function CartAddEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY;
-            return _this;
-        }
-        return CartAddEntry;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        CartAddEntry.prototype.type;
-        /** @type {?} */
-        CartAddEntry.prototype.payload;
-    }
-    var CartAddEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartAddEntrySuccess, _super);
-        function CartAddEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartAddEntrySuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        CartAddEntrySuccess.prototype.type;
-        /** @type {?} */
-        CartAddEntrySuccess.prototype.payload;
-    }
-    var CartAddEntryFail = /** @class */ (function (_super) {
-        __extends(CartAddEntryFail, _super);
-        function CartAddEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_ENTRY_FAIL;
-            return _this;
-        }
-        return CartAddEntryFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        CartAddEntryFail.prototype.type;
-        /** @type {?} */
-        CartAddEntryFail.prototype.payload;
-    }
-    var CartRemoveEntry = /** @class */ (function (_super) {
-        __extends(CartRemoveEntry, _super);
-        function CartRemoveEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY;
-            return _this;
-        }
-        return CartRemoveEntry;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveEntry.prototype.type;
-        /** @type {?} */
-        CartRemoveEntry.prototype.payload;
-    }
-    var CartRemoveEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartRemoveEntrySuccess, _super);
-        function CartRemoveEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartRemoveEntrySuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveEntrySuccess.prototype.type;
-        /** @type {?} */
-        CartRemoveEntrySuccess.prototype.payload;
-    }
-    var CartRemoveEntryFail = /** @class */ (function (_super) {
-        __extends(CartRemoveEntryFail, _super);
-        function CartRemoveEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_ENTRY_FAIL;
-            return _this;
-        }
-        return CartRemoveEntryFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveEntryFail.prototype.type;
-        /** @type {?} */
-        CartRemoveEntryFail.prototype.payload;
-    }
-    var CartUpdateEntry = /** @class */ (function (_super) {
-        __extends(CartUpdateEntry, _super);
-        function CartUpdateEntry(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY;
-            return _this;
-        }
-        return CartUpdateEntry;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        CartUpdateEntry.prototype.type;
-        /** @type {?} */
-        CartUpdateEntry.prototype.payload;
-    }
-    var CartUpdateEntrySuccess = /** @class */ (function (_super) {
-        __extends(CartUpdateEntrySuccess, _super);
-        function CartUpdateEntrySuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY_SUCCESS;
-            return _this;
-        }
-        return CartUpdateEntrySuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        CartUpdateEntrySuccess.prototype.type;
-        /** @type {?} */
-        CartUpdateEntrySuccess.prototype.payload;
-    }
-    var CartUpdateEntryFail = /** @class */ (function (_super) {
-        __extends(CartUpdateEntryFail, _super);
-        function CartUpdateEntryFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_UPDATE_ENTRY_FAIL;
-            return _this;
-        }
-        return CartUpdateEntryFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        CartUpdateEntryFail.prototype.type;
-        /** @type {?} */
-        CartUpdateEntryFail.prototype.payload;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
-    /** @type {?} */
-    var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
-    /** @type {?} */
-    var CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
-    /** @type {?} */
-    var CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
-    /** @type {?} */
-    var CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
-    /** @type {?} */
-    var CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
-    /** @type {?} */
-    var CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
-    // Adding cart voucher actions
-    var 
-    // Adding cart voucher actions
-    CartAddVoucher = /** @class */ (function (_super) {
-        __extends(CartAddVoucher, _super);
-        function CartAddVoucher(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER;
-            return _this;
-        }
-        return CartAddVoucher;
-    }(EntityLoadAction));
-    if (false) {
-        /** @type {?} */
-        CartAddVoucher.prototype.type;
-        /** @type {?} */
-        CartAddVoucher.prototype.payload;
-    }
-    var CartAddVoucherFail = /** @class */ (function (_super) {
-        __extends(CartAddVoucherFail, _super);
-        function CartAddVoucherFail(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER_FAIL;
-            return _this;
-        }
-        return CartAddVoucherFail;
-    }(EntityFailAction));
-    if (false) {
-        /** @type {?} */
-        CartAddVoucherFail.prototype.type;
-        /** @type {?} */
-        CartAddVoucherFail.prototype.payload;
-    }
-    var CartAddVoucherSuccess = /** @class */ (function (_super) {
-        __extends(CartAddVoucherSuccess, _super);
-        function CartAddVoucherSuccess(payload) {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.payload = payload;
-            _this.type = CART_ADD_VOUCHER_SUCCESS;
-            return _this;
-        }
-        return CartAddVoucherSuccess;
-    }(EntitySuccessAction));
-    if (false) {
-        /** @type {?} */
-        CartAddVoucherSuccess.prototype.type;
-        /** @type {?} */
-        CartAddVoucherSuccess.prototype.payload;
-    }
-    var CartResetAddVoucher = /** @class */ (function (_super) {
-        __extends(CartResetAddVoucher, _super);
-        function CartResetAddVoucher() {
-            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
-            _this.type = CART_RESET_ADD_VOUCHER;
-            return _this;
-        }
-        return CartResetAddVoucher;
-    }(EntityResetAction));
-    if (false) {
-        /** @type {?} */
-        CartResetAddVoucher.prototype.type;
-    }
-    // Deleting cart voucher
-    var 
-    // Deleting cart voucher
-    CartRemoveVoucher = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucher, _super);
-        function CartRemoveVoucher(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER;
-            return _this;
-        }
-        return CartRemoveVoucher;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveVoucher.prototype.type;
-        /** @type {?} */
-        CartRemoveVoucher.prototype.payload;
-    }
-    var CartRemoveVoucherFail = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucherFail, _super);
-        function CartRemoveVoucherFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER_FAIL;
-            return _this;
-        }
-        return CartRemoveVoucherFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveVoucherFail.prototype.type;
-        /** @type {?} */
-        CartRemoveVoucherFail.prototype.payload;
-    }
-    var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
-        __extends(CartRemoveVoucherSuccess, _super);
-        function CartRemoveVoucherSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CART_REMOVE_VOUCHER_SUCCESS;
-            return _this;
-        }
-        return CartRemoveVoucherSuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        CartRemoveVoucherSuccess.prototype.type;
-        /** @type {?} */
-        CartRemoveVoucherSuccess.prototype.payload;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     /**
      * @param {?} cart
      * @param {?} userId
@@ -33122,6 +32255,35 @@
             return cart.guid;
         }
         return cart.code;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var MULTI_CART_FEATURE = 'multi-cart';
+    /** @type {?} */
+    var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+    /**
+     * @record
+     */
+    function StateWithMultiCart() { }
+    if (false) {
+        /* Skipping unnamed member:
+        [MULTI_CART_FEATURE]: MultiCartState;*/
+    }
+    /**
+     * @record
+     */
+    function MultiCartState() { }
+    if (false) {
+        /** @type {?} */
+        MultiCartState.prototype.carts;
+        /** @type {?} */
+        MultiCartState.prototype.active;
+        /** @type {?} */
+        MultiCartState.prototype.wishList;
     }
 
     /**
@@ -33437,6 +32599,692 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var getCartContentSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.content; });
+    var ɵ0$t = getCartContentSelector;
+    /** @type {?} */
+    var getCartRefreshSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.refresh; });
+    var ɵ1$l = getCartRefreshSelector;
+    /** @type {?} */
+    var getCartEntriesSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.entries; });
+    var ɵ2$e = getCartEntriesSelector;
+    /** @type {?} */
+    var getCartMergeCompleteSelector = (/**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return state.cartMergeComplete;
+    });
+    var ɵ3$7 = getCartMergeCompleteSelector;
+    /** @type {?} */
+    var getCartsState = store.createFeatureSelector(CART_FEATURE);
+    var ɵ4$1 = /**
+     * @param {?} cartsState
+     * @return {?}
+     */
+    function (cartsState) { return cartsState.active; };
+    /** @type {?} */
+    var getActiveCartState = store.createSelector(getCartsState, (ɵ4$1));
+    var ɵ5$1 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getCartState = store.createSelector(getActiveCartState, (ɵ5$1));
+    /** @type {?} */
+    var getCartContent = store.createSelector(getCartState, getCartContentSelector);
+    /** @type {?} */
+    var getCartRefresh = store.createSelector(getCartState, getCartRefreshSelector);
+    var ɵ6 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return (loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state) &&
+            !loaderValueSelector(state).refresh) ||
+            (loaderErrorSelector(state) &&
+                !loaderLoadingSelector(state) &&
+                !loaderValueSelector(state).refresh);
+    };
+    /** @type {?} */
+    var getCartLoaded = store.createSelector(getActiveCartState, (ɵ6));
+    var ɵ7 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getCartLoading = store.createSelector(getActiveCartState, (ɵ7));
+    /** @type {?} */
+    var getCartMergeComplete = store.createSelector(getCartState, getCartMergeCompleteSelector);
+    /** @type {?} */
+    var getCartEntriesMap = store.createSelector(getCartState, getCartEntriesSelector);
+    /** @type {?} */
+    var getCartEntrySelectorFactory = (/**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        return store.createSelector(getCartEntriesMap, (/**
+         * @param {?} entries
+         * @return {?}
+         */
+        function (entries) {
+            if (entries) {
+                return entries[productCode];
+            }
+        }));
+    });
+    var ɵ8 = /**
+     * @param {?} entities
+     * @return {?}
+     */
+    function (entities) {
+        return Object.keys(entities).map((/**
+         * @param {?} code
+         * @return {?}
+         */
+        function (code) { return entities[code]; }));
+    };
+    /** @type {?} */
+    var getCartEntries = store.createSelector(getCartEntriesMap, (ɵ8));
+    var ɵ9 = /**
+     * @param {?} content
+     * @return {?}
+     */
+    function (content) { return content.user; };
+    /** @type {?} */
+    var getCartUser = store.createSelector(getCartContent, (ɵ9));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var cartGroup_selectors = /*#__PURE__*/Object.freeze({
+        getCartsState: getCartsState,
+        getActiveCartState: getActiveCartState,
+        getCartState: getCartState,
+        getCartContent: getCartContent,
+        getCartRefresh: getCartRefresh,
+        getCartLoaded: getCartLoaded,
+        getCartLoading: getCartLoading,
+        getCartMergeComplete: getCartMergeComplete,
+        getCartEntriesMap: getCartEntriesMap,
+        getCartEntrySelectorFactory: getCartEntrySelectorFactory,
+        getCartEntries: getCartEntries,
+        getCartUser: getCartUser
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
+    var ɵ0$u = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.carts; };
+    /** @type {?} */
+    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$u));
+    /** @type {?} */
+    var getCartEntitySelectorFactory = (/**
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (cartId) {
+        return store.createSelector(getMultiCartEntities, (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return entityProcessesLoaderStateSelector(state, cartId);
+        }));
+    });
+    /** @type {?} */
+    var getCartSelectorFactory = (/**
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (cartId) {
+        return store.createSelector(getMultiCartEntities, (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return entityValueSelector(state, cartId);
+        }));
+    });
+    /** @type {?} */
+    var getCartIsStableSelectorFactory = (/**
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (cartId) {
+        return store.createSelector(getMultiCartEntities, (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return entityIsStableSelector(state, cartId);
+        }));
+    });
+    /** @type {?} */
+    var getCartHasPendingProcessesSelectorFactory = (/**
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (cartId) {
+        return store.createSelector(getMultiCartEntities, (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return entityHasPendingProcessesSelector(state, cartId);
+        }));
+    });
+    /** @type {?} */
+    var getCartEntriesSelectorFactory = (/**
+     * @param {?} cartId
+     * @return {?}
+     */
+    function (cartId) {
+        return store.createSelector(getCartSelectorFactory(cartId), (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return state && state.entries ? state.entries : [];
+        }));
+    });
+    /** @type {?} */
+    var getCartEntrySelectorFactory$1 = (/**
+     * @param {?} cartId
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (cartId, productCode) {
+        return store.createSelector(getCartEntriesSelectorFactory(cartId), (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) {
+            return state
+                ? state.find((/**
+                 * @param {?} entry
+                 * @return {?}
+                 */
+                function (entry) { return entry.product.code === productCode; }))
+                : undefined;
+        }));
+    });
+    var ɵ1$m = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.active; };
+    /** @type {?} */
+    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$m));
+    var ɵ2$f = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.wishList; };
+    /** @type {?} */
+    var getWishListId = store.createSelector(getMultiCartState, (ɵ2$f));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
+        getMultiCartState: getMultiCartState,
+        getMultiCartEntities: getMultiCartEntities,
+        getCartEntitySelectorFactory: getCartEntitySelectorFactory,
+        getCartSelectorFactory: getCartSelectorFactory,
+        getCartIsStableSelectorFactory: getCartIsStableSelectorFactory,
+        getCartHasPendingProcessesSelectorFactory: getCartHasPendingProcessesSelectorFactory,
+        getCartEntriesSelectorFactory: getCartEntriesSelectorFactory,
+        getCartEntrySelectorFactory: getCartEntrySelectorFactory$1,
+        getActiveCartId: getActiveCartId,
+        getWishListId: getWishListId
+    });
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_ADD_ENTRY = '[Cart-entry] Add Entry';
+    /** @type {?} */
+    var CART_ADD_ENTRY_SUCCESS = '[Cart-entry] Add Entry Success';
+    /** @type {?} */
+    var CART_ADD_ENTRY_FAIL = '[Cart-entry] Add Entry Fail';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY = '[Cart-entry] Remove Entry';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY_SUCCESS = '[Cart-entry] Remove Entry Success';
+    /** @type {?} */
+    var CART_REMOVE_ENTRY_FAIL = '[Cart-entry] Remove Entry Fail';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY = '[Cart-entry] Update Entry';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY_SUCCESS = '[Cart-entry] Update Entry Success';
+    /** @type {?} */
+    var CART_UPDATE_ENTRY_FAIL = '[Cart-entry] Update Entry Fail';
+    var CartAddEntry = /** @class */ (function (_super) {
+        __extends(CartAddEntry, _super);
+        function CartAddEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY;
+            return _this;
+        }
+        return CartAddEntry;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartAddEntry.prototype.type;
+        /** @type {?} */
+        CartAddEntry.prototype.payload;
+    }
+    var CartAddEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartAddEntrySuccess, _super);
+        function CartAddEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartAddEntrySuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartAddEntrySuccess.prototype.type;
+        /** @type {?} */
+        CartAddEntrySuccess.prototype.payload;
+    }
+    var CartAddEntryFail = /** @class */ (function (_super) {
+        __extends(CartAddEntryFail, _super);
+        function CartAddEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_ENTRY_FAIL;
+            return _this;
+        }
+        return CartAddEntryFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CartAddEntryFail.prototype.type;
+        /** @type {?} */
+        CartAddEntryFail.prototype.payload;
+    }
+    var CartRemoveEntry = /** @class */ (function (_super) {
+        __extends(CartRemoveEntry, _super);
+        function CartRemoveEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY;
+            return _this;
+        }
+        return CartRemoveEntry;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveEntry.prototype.type;
+        /** @type {?} */
+        CartRemoveEntry.prototype.payload;
+    }
+    var CartRemoveEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveEntrySuccess, _super);
+        function CartRemoveEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartRemoveEntrySuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveEntrySuccess.prototype.type;
+        /** @type {?} */
+        CartRemoveEntrySuccess.prototype.payload;
+    }
+    var CartRemoveEntryFail = /** @class */ (function (_super) {
+        __extends(CartRemoveEntryFail, _super);
+        function CartRemoveEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartRemoveEntryFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveEntryFail.prototype.type;
+        /** @type {?} */
+        CartRemoveEntryFail.prototype.payload;
+    }
+    var CartUpdateEntry = /** @class */ (function (_super) {
+        __extends(CartUpdateEntry, _super);
+        function CartUpdateEntry(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY;
+            return _this;
+        }
+        return CartUpdateEntry;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartUpdateEntry.prototype.type;
+        /** @type {?} */
+        CartUpdateEntry.prototype.payload;
+    }
+    var CartUpdateEntrySuccess = /** @class */ (function (_super) {
+        __extends(CartUpdateEntrySuccess, _super);
+        function CartUpdateEntrySuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_SUCCESS;
+            return _this;
+        }
+        return CartUpdateEntrySuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartUpdateEntrySuccess.prototype.type;
+        /** @type {?} */
+        CartUpdateEntrySuccess.prototype.payload;
+    }
+    var CartUpdateEntryFail = /** @class */ (function (_super) {
+        __extends(CartUpdateEntryFail, _super);
+        function CartUpdateEntryFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_UPDATE_ENTRY_FAIL;
+            return _this;
+        }
+        return CartUpdateEntryFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CartUpdateEntryFail.prototype.type;
+        /** @type {?} */
+        CartUpdateEntryFail.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CART_ADD_VOUCHER = '[Cart-voucher] Add Cart Vouchers';
+    /** @type {?} */
+    var CART_ADD_VOUCHER_FAIL = '[Cart-voucher] Add Cart Voucher Fail';
+    /** @type {?} */
+    var CART_ADD_VOUCHER_SUCCESS = '[Cart-voucher] Add Cart Voucher Success';
+    /** @type {?} */
+    var CART_RESET_ADD_VOUCHER = '[Cart-voucher] Reset Add Cart Voucher';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER = '[Cart-voucher] Remove Cart Voucher';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER_FAIL = '[Cart-voucher] Remove Cart Voucher Fail';
+    /** @type {?} */
+    var CART_REMOVE_VOUCHER_SUCCESS = '[Cart-voucher] Remove Cart Voucher Success';
+    // Adding cart voucher actions
+    var 
+    // Adding cart voucher actions
+    CartAddVoucher = /** @class */ (function (_super) {
+        __extends(CartAddVoucher, _super);
+        function CartAddVoucher(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER;
+            return _this;
+        }
+        return CartAddVoucher;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucher.prototype.type;
+        /** @type {?} */
+        CartAddVoucher.prototype.payload;
+    }
+    var CartAddVoucherFail = /** @class */ (function (_super) {
+        __extends(CartAddVoucherFail, _super);
+        function CartAddVoucherFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartAddVoucherFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucherFail.prototype.type;
+        /** @type {?} */
+        CartAddVoucherFail.prototype.payload;
+    }
+    var CartAddVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartAddVoucherSuccess, _super);
+        function CartAddVoucherSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CART_ADD_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartAddVoucherSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartAddVoucherSuccess.prototype.type;
+        /** @type {?} */
+        CartAddVoucherSuccess.prototype.payload;
+    }
+    var CartResetAddVoucher = /** @class */ (function (_super) {
+        __extends(CartResetAddVoucher, _super);
+        function CartResetAddVoucher() {
+            var _this = _super.call(this, PROCESS_FEATURE, ADD_VOUCHER_PROCESS_ID) || this;
+            _this.type = CART_RESET_ADD_VOUCHER;
+            return _this;
+        }
+        return CartResetAddVoucher;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        CartResetAddVoucher.prototype.type;
+    }
+    // Deleting cart voucher
+    var 
+    // Deleting cart voucher
+    CartRemoveVoucher = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucher, _super);
+        function CartRemoveVoucher(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER;
+            return _this;
+        }
+        return CartRemoveVoucher;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucher.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucher.prototype.payload;
+    }
+    var CartRemoveVoucherFail = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherFail, _super);
+        function CartRemoveVoucherFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_FAIL;
+            return _this;
+        }
+        return CartRemoveVoucherFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucherFail.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucherFail.prototype.payload;
+    }
+    var CartRemoveVoucherSuccess = /** @class */ (function (_super) {
+        __extends(CartRemoveVoucherSuccess, _super);
+        function CartRemoveVoucherSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CART_REMOVE_VOUCHER_SUCCESS;
+            return _this;
+        }
+        return CartRemoveVoucherSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CartRemoveVoucherSuccess.prototype.type;
+        /** @type {?} */
+        CartRemoveVoucherSuccess.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CREATE_WISH_LIST = '[Wish List] Create Wish List';
+    /** @type {?} */
+    var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
+    /** @type {?} */
+    var CREATE_WISH_LIST_SUCCESS = '[Wish List] Create Wish List Success';
+    /** @type {?} */
+    var LOAD_WISH_LIST = '[Wish List] Load Wish List';
+    /** @type {?} */
+    var LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
+    /** @type {?} */
+    var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
+    var CreateWishList = /** @class */ (function (_super) {
+        __extends(CreateWishList, _super);
+        function CreateWishList(payload) {
+            var _this = _super.call(this, MULTI_CART_FEATURE, 'fresh') || this;
+            _this.payload = payload;
+            _this.type = CREATE_WISH_LIST;
+            return _this;
+        }
+        return CreateWishList;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        CreateWishList.prototype.type;
+        /** @type {?} */
+        CreateWishList.prototype.payload;
+    }
+    var CreateWishListSuccess = /** @class */ (function (_super) {
+        __extends(CreateWishListSuccess, _super);
+        function CreateWishListSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            _this.payload = payload;
+            _this.type = CREATE_WISH_LIST_SUCCESS;
+            return _this;
+        }
+        return CreateWishListSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        CreateWishListSuccess.prototype.type;
+        /** @type {?} */
+        CreateWishListSuccess.prototype.payload;
+    }
+    var CreateWishListFail = /** @class */ (function (_super) {
+        __extends(CreateWishListFail, _super);
+        function CreateWishListFail(payload) {
+            var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+            _this.payload = payload;
+            _this.type = CREATE_WISH_LIST_FAIL;
+            return _this;
+        }
+        return CreateWishListFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        CreateWishListFail.prototype.type;
+        /** @type {?} */
+        CreateWishListFail.prototype.payload;
+    }
+    var LoadWisthList = /** @class */ (function () {
+        function LoadWisthList(payload) {
+            this.payload = payload;
+            this.type = LOAD_WISH_LIST;
+        }
+        return LoadWisthList;
+    }());
+    if (false) {
+        /** @type {?} */
+        LoadWisthList.prototype.type;
+        /** @type {?} */
+        LoadWisthList.prototype.payload;
+    }
+    var LoadWisthListSuccess = /** @class */ (function (_super) {
+        __extends(LoadWisthListSuccess, _super);
+        function LoadWisthListSuccess(payload) {
+            var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+            _this.payload = payload;
+            _this.type = LOAD_WISH_LIST_SUCCESS;
+            return _this;
+        }
+        return LoadWisthListSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadWisthListSuccess.prototype.type;
+        /** @type {?} */
+        LoadWisthListSuccess.prototype.payload;
+    }
+    var ResetWishListDetails = /** @class */ (function (_super) {
+        __extends(ResetWishListDetails, _super);
+        function ResetWishListDetails() {
+            var _this = _super.call(this, MULTI_CART_FEATURE, undefined) || this;
+            _this.type = RESET_WISH_LIST_DETAILS;
+            return _this;
+        }
+        return ResetWishListDetails;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetWishListDetails.prototype.type;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     var cartGroup_actions = /*#__PURE__*/Object.freeze({
         CART_ADD_ENTRY: CART_ADD_ENTRY,
@@ -33537,7 +33385,19 @@
         AddEmailToMultiCartFail: AddEmailToMultiCartFail,
         AddEmailToMultiCartSuccess: AddEmailToMultiCartSuccess,
         CartProcessesIncrement: CartProcessesIncrement,
-        CartProcessesDecrement: CartProcessesDecrement
+        CartProcessesDecrement: CartProcessesDecrement,
+        CREATE_WISH_LIST: CREATE_WISH_LIST,
+        CREATE_WISH_LIST_FAIL: CREATE_WISH_LIST_FAIL,
+        CREATE_WISH_LIST_SUCCESS: CREATE_WISH_LIST_SUCCESS,
+        LOAD_WISH_LIST: LOAD_WISH_LIST,
+        LOAD_WISH_LIST_SUCCESS: LOAD_WISH_LIST_SUCCESS,
+        RESET_WISH_LIST_DETAILS: RESET_WISH_LIST_DETAILS,
+        CreateWishList: CreateWishList,
+        CreateWishListSuccess: CreateWishListSuccess,
+        CreateWishListFail: CreateWishListFail,
+        LoadWisthList: LoadWisthList,
+        LoadWisthListSuccess: LoadWisthListSuccess,
+        ResetWishListDetails: ResetWishListDetails
     });
 
     /**
@@ -34649,6 +34509,558 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var QUESTION_MARK = '[^/]';
+    /** @type {?} */
+    var WILD_SINGLE = '[^/]*';
+    /** @type {?} */
+    var WILD_OPEN = '(?:.+\\/)?';
+    /** @type {?} */
+    var TO_ESCAPE_BASE = [
+        { replace: /\./g, with: '\\.' },
+        { replace: /\+/g, with: '\\+' },
+        { replace: /\*/g, with: WILD_SINGLE },
+    ];
+    /** @type {?} */
+    var TO_ESCAPE_WILDCARD_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: QUESTION_MARK },
+    ]);
+    /** @type {?} */
+    var TO_ESCAPE_LITERAL_QM = __spread(TO_ESCAPE_BASE, [
+        { replace: /\?/g, with: '\\?' },
+    ]);
+    /**
+     * Converts the glob-like pattern into regex string.
+     * See similar Angular code: https://github.com/angular/angular/blob/master/packages/service-worker/config/src/glob.ts#L27
+     *
+     * Patterns use a limited glob format:
+     * `**` matches 0 or more path segments
+     * `*` matches 0 or more characters excluding `/`
+     * `?` matches exactly one character excluding `/` (but when \@param literalQuestionMark is true, `?` is treated as normal character)
+     * The `!` prefix marks the pattern as being negative, meaning that only URLs that don't match the pattern will be included
+     *
+     * @param {?} glob glob-like pattern
+     * @param {?=} literalQuestionMark when true, it tells that `?` is treated as a normal character
+     * @return {?}
+     */
+    function globToRegex(glob, literalQuestionMark) {
+        if (literalQuestionMark === void 0) { literalQuestionMark = false; }
+        /** @type {?} */
+        var toEscape = literalQuestionMark
+            ? TO_ESCAPE_LITERAL_QM
+            : TO_ESCAPE_WILDCARD_QM;
+        /** @type {?} */
+        var segments = glob.split('/').reverse();
+        /** @type {?} */
+        var regex = '';
+        while (segments.length > 0) {
+            /** @type {?} */
+            var segment = segments.pop();
+            if (segment === '**') {
+                if (segments.length > 0) {
+                    regex += WILD_OPEN;
+                }
+                else {
+                    regex += '.*';
+                }
+            }
+            else {
+                /** @type {?} */
+                var processed = toEscape.reduce((/**
+                 * @param {?} seg
+                 * @param {?} escape
+                 * @return {?}
+                 */
+                function (seg, escape) { return seg.replace(escape.replace, escape.with); }), segment);
+                regex += processed;
+                if (segments.length > 0) {
+                    regex += '\\/';
+                }
+            }
+        }
+        return regex;
+    }
+    /**
+     * For given list of glob-like patterns, returns a matcher function.
+     *
+     * The matcher returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+     * @param {?} patterns
+     * @return {?}
+     */
+    function getGlobMatcher(patterns) {
+        /** @type {?} */
+        var processedPatterns = processGlobPatterns(patterns).map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var positive = _a.positive, regex = _a.regex;
+            return ({
+                positive: positive,
+                regex: new RegExp(regex),
+            });
+        }));
+        /** @type {?} */
+        var includePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return spec.positive; }));
+        /** @type {?} */
+        var excludePatterns = processedPatterns.filter((/**
+         * @param {?} spec
+         * @return {?}
+         */
+        function (spec) { return !spec.positive; }));
+        return (/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            return includePatterns.some((/**
+             * @param {?} pattern
+             * @return {?}
+             */
+            function (pattern) { return pattern.regex.test(url); })) &&
+                !excludePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); }));
+        });
+    }
+    /**
+     * Converts list of glob-like patterns into list of RegExps with information whether the glob pattern is positive or negative
+     * @param {?} urls
+     * @return {?}
+     */
+    function processGlobPatterns(urls) {
+        return urls.map((/**
+         * @param {?} url
+         * @return {?}
+         */
+        function (url) {
+            /** @type {?} */
+            var positive = !url.startsWith('!');
+            url = positive ? url : url.substr(1);
+            return { positive: positive, regex: "^" + globToRegex(url) + "$" };
+        }));
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var GlobService = /** @class */ (function () {
+        function GlobService() {
+        }
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         */
+        /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        GlobService.prototype.getValidator = /**
+         * For given list of glob-like patterns, returns a validator function.
+         *
+         * The validator returns true for given URL only when ANY of the positive patterns is matched and NONE of the negative ones.
+         * @param {?} patterns
+         * @return {?}
+         */
+        function (patterns) {
+            /** @type {?} */
+            var processedPatterns = processGlobPatterns(patterns).map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var positive = _a.positive, regex = _a.regex;
+                return ({
+                    positive: positive,
+                    regex: new RegExp(regex),
+                });
+            }));
+            /** @type {?} */
+            var includePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return spec.positive; }));
+            /** @type {?} */
+            var excludePatterns = processedPatterns.filter((/**
+             * @param {?} spec
+             * @return {?}
+             */
+            function (spec) { return !spec.positive; }));
+            return (/**
+             * @param {?} url
+             * @return {?}
+             */
+            function (url) {
+                return includePatterns.some((/**
+                 * @param {?} pattern
+                 * @return {?}
+                 */
+                function (pattern) { return pattern.regex.test(url); })) &&
+                    !excludePatterns.some((/**
+                     * @param {?} pattern
+                     * @return {?}
+                     */
+                    function (pattern) { return pattern.regex.test(url); }));
+            });
+        };
+        GlobService.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */ GlobService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function GlobService_Factory() { return new GlobService(); }, token: GlobService, providedIn: "root" });
+        return GlobService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @deprecated since version 1.4
+     * Replace particular methods usage with replacements from other services
+     */
+    var CartDataService = /** @class */ (function () {
+        function CartDataService(store$1, authService) {
+            var _this = this;
+            this.store = store$1;
+            this.authService = authService;
+            this._userId = OCC_USER_ID_ANONYMOUS;
+            this.authService
+                .getUserToken()
+                .pipe(operators.filter((/**
+             * @param {?} userToken
+             * @return {?}
+             */
+            function (userToken) { return _this.userId !== userToken.userId; })))
+                .subscribe((/**
+             * @param {?} userToken
+             * @return {?}
+             */
+            function (userToken) {
+                if (Object.keys(userToken).length !== 0) {
+                    _this._userId = userToken.userId;
+                }
+                else {
+                    _this._userId = OCC_USER_ID_ANONYMOUS;
+                }
+            }));
+            this.store.pipe(store.select(getCartContent)).subscribe((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            function (cart) {
+                _this._cart = cart;
+            }));
+        }
+        Object.defineProperty(CartDataService.prototype, "hasCart", {
+            get: /**
+             * @return {?}
+             */
+            function () {
+                return !!this._cart && Object.keys(this._cart).length > 0;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CartDataService.prototype, "userId", {
+            /**
+             * @deprecated since version 1.4
+             * Use `getOccUserId` from `AuthService` instead
+             */
+            get: /**
+             * @deprecated since version 1.4
+             * Use `getOccUserId` from `AuthService` instead
+             * @return {?}
+             */
+            function () {
+                return this._userId;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CartDataService.prototype, "cart", {
+            /**
+             * @deprecated since version 1.4
+             * Use `getActive` from `ActiveCartService` instead
+             */
+            get: /**
+             * @deprecated since version 1.4
+             * Use `getActive` from `ActiveCartService` instead
+             * @return {?}
+             */
+            function () {
+                return this._cart;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CartDataService.prototype, "cartId", {
+            /**
+             * @deprecated since version 1.4
+             * Use `getActiveCartId` from `ActiveCartService` instead
+             */
+            get: /**
+             * @deprecated since version 1.4
+             * Use `getActiveCartId` from `ActiveCartService` instead
+             * @return {?}
+             */
+            function () {
+                if (this.hasCart) {
+                    return this.userId === OCC_USER_ID_ANONYMOUS
+                        ? this.cart.guid
+                        : this.cart.code;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(CartDataService.prototype, "isGuestCart", {
+            /**
+             * @deprecated since version 1.4
+             * Use `isGuestCart` from `ActiveCartService` instead
+             */
+            get: /**
+             * @deprecated since version 1.4
+             * Use `isGuestCart` from `ActiveCartService` instead
+             * @return {?}
+             */
+            function () {
+                return (this.cart.user &&
+                    (this.cart.user.name === OCC_USER_ID_GUEST ||
+                        this.isEmail(this.cart.user.uid
+                            .split('|')
+                            .slice(1)
+                            .join('|'))));
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @private
+         * @param {?} str
+         * @return {?}
+         */
+        CartDataService.prototype.isEmail = /**
+         * @private
+         * @param {?} str
+         * @return {?}
+         */
+        function (str) {
+            if (str) {
+                return str.match(EMAIL_PATTERN) ? true : false;
+            }
+            return false;
+        };
+        CartDataService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartDataService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        return CartDataService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        CartDataService.prototype._userId;
+        /**
+         * @type {?}
+         * @private
+         */
+        CartDataService.prototype._cart;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartDataService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartDataService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CartVoucherService = /** @class */ (function () {
+        function CartVoucherService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.addVoucher = /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartAddVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
+                }));
+            }));
+        };
+        /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.removeVoucher = /**
+         * @param {?} voucherId
+         * @param {?=} cartId
+         * @return {?}
+         */
+        function (voucherId, cartId) {
+            var _this = this;
+            this.combineUserAndCartId(cartId).subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
+                return _this.store.dispatch(new CartRemoveVoucher({
+                    userId: occUserId,
+                    cartId: cartIdentifier,
+                    voucherId: voucherId,
+                }));
+            }));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultError = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultSuccess = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.getAddVoucherResultLoading = /**
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+        };
+        /**
+         * @return {?}
+         */
+        CartVoucherService.prototype.resetAddVoucherProcessingState = /**
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new CartResetAddVoucher());
+        };
+        /**
+         * @private
+         * @param {?} cartId
+         * @return {?}
+         */
+        CartVoucherService.prototype.combineUserAndCartId = /**
+         * @private
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (cartId) {
+            if (cartId) {
+                return this.authService.getOccUserId().pipe(operators.take(1), operators.map((/**
+                 * @param {?} userId
+                 * @return {?}
+                 */
+                function (userId) { return [userId, cartId]; })));
+            }
+            else {
+                return rxjs.combineLatest([
+                    this.authService.getOccUserId(),
+                    this.store.pipe(store.select(getCartContent), operators.map((/**
+                     * @param {?} cart
+                     * @return {?}
+                     */
+                    function (cart) { return cart; }))),
+                ]).pipe(operators.take(1), operators.map((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), userId = _b[0], cart = _b[1];
+                    return [
+                        userId,
+                        userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
+                    ];
+                })));
+            }
+        };
+        CartVoucherService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CartVoucherService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        return CartVoucherService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartVoucherService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        CartVoucherService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @deprecated since version 1.4
      * Use ActiveCartService instead (API is almost the same)
@@ -35212,157 +35624,203 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var CartVoucherService = /** @class */ (function () {
-        function CartVoucherService(store, authService) {
+    var WishListService = /** @class */ (function () {
+        function WishListService(store, authService, multiCartService) {
             this.store = store;
             this.authService = authService;
+            this.multiCartService = multiCartService;
         }
         /**
-         * @param {?} voucherId
-         * @param {?=} cartId
+         * @param {?} userId
+         * @param {?=} name
+         * @param {?=} description
          * @return {?}
          */
-        CartVoucherService.prototype.addVoucher = /**
-         * @param {?} voucherId
-         * @param {?=} cartId
+        WishListService.prototype.createWishList = /**
+         * @param {?} userId
+         * @param {?=} name
+         * @param {?=} description
          * @return {?}
          */
-        function (voucherId, cartId) {
+        function (userId, name, description) {
+            this.store.dispatch(new CreateWishList({ userId: userId, name: name, description: description }));
+        };
+        /**
+         * @return {?}
+         */
+        WishListService.prototype.getWishList = /**
+         * @return {?}
+         */
+        function () {
             var _this = this;
-            this.combineUserAndCartId(cartId).subscribe((/**
+            return this.getWishListId().pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId()), operators.tap((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
-                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-                return _this.store.dispatch(new CartAddVoucher({
-                    userId: occUserId,
-                    cartId: cartIdentifier,
-                    voucherId: voucherId,
-                }));
-            }));
-        };
-        /**
-         * @param {?} voucherId
-         * @param {?=} cartId
-         * @return {?}
-         */
-        CartVoucherService.prototype.removeVoucher = /**
-         * @param {?} voucherId
-         * @param {?=} cartId
-         * @return {?}
-         */
-        function (voucherId, cartId) {
-            var _this = this;
-            this.combineUserAndCartId(cartId).subscribe((/**
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                if (!Boolean(wishListId) && userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.loadWishList(userId);
+                }
+            })), operators.filter((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
-                var _b = __read(_a, 2), occUserId = _b[0], cartIdentifier = _b[1];
-                return _this.store.dispatch(new CartRemoveVoucher({
-                    userId: occUserId,
-                    cartId: cartIdentifier,
-                    voucherId: voucherId,
-                }));
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            })), operators.switchMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return _this.multiCartService.getCart(wishListId);
+            })));
+        };
+        /**
+         * @param {?} userId
+         * @return {?}
+         */
+        WishListService.prototype.loadWishList = /**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            this.store.dispatch(new LoadWisthList(userId));
+        };
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        WishListService.prototype.addEntry = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        function (productCode) {
+            var _this = this;
+            this.getWishListId()
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId()), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                if (!Boolean(wishListId)) {
+                    _this.loadWishList(userId);
+                }
+            })), operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            })), operators.take(1))
+                .subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                return _this.multiCartService.addEntry(userId, wishListId, productCode, 1);
+            }));
+        };
+        /**
+         * @param {?} entry
+         * @return {?}
+         */
+        WishListService.prototype.removeEntry = /**
+         * @param {?} entry
+         * @return {?}
+         */
+        function (entry) {
+            var _this = this;
+            this.getWishListId()
+                .pipe(operators.distinctUntilChanged(), operators.withLatestFrom(this.authService.getOccUserId()), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                if (!Boolean(wishListId)) {
+                    _this.loadWishList(userId);
+                }
+            })), operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 1), wishListId = _b[0];
+                return Boolean(wishListId);
+            })), operators.take(1))
+                .subscribe((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
+                return _this.multiCartService.removeEntry(userId, wishListId, entry.entryNumber);
             }));
         };
         /**
          * @return {?}
          */
-        CartVoucherService.prototype.getAddVoucherResultError = /**
+        WishListService.prototype.getWishListLoading = /**
          * @return {?}
          */
         function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        /**
-         * @return {?}
-         */
-        CartVoucherService.prototype.getAddVoucherResultSuccess = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        /**
-         * @return {?}
-         */
-        CartVoucherService.prototype.getAddVoucherResultLoading = /**
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
-        };
-        /**
-         * @return {?}
-         */
-        CartVoucherService.prototype.resetAddVoucherProcessingState = /**
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new CartResetAddVoucher());
-        };
-        /**
-         * @private
-         * @param {?} cartId
-         * @return {?}
-         */
-        CartVoucherService.prototype.combineUserAndCartId = /**
-         * @private
-         * @param {?} cartId
-         * @return {?}
-         */
-        function (cartId) {
-            if (cartId) {
-                return this.authService.getOccUserId().pipe(operators.take(1), operators.map((/**
-                 * @param {?} userId
+            var _this = this;
+            return this.getWishListId().pipe(operators.switchMap((/**
+             * @param {?} wishListId
+             * @return {?}
+             */
+            function (wishListId) {
+                return _this.multiCartService.isStable(wishListId).pipe(operators.map((/**
+                 * @param {?} stable
                  * @return {?}
                  */
-                function (userId) { return [userId, cartId]; })));
-            }
-            else {
-                return rxjs.combineLatest([
-                    this.authService.getOccUserId(),
-                    this.store.pipe(store.select(getCartContent), operators.map((/**
-                     * @param {?} cart
-                     * @return {?}
-                     */
-                    function (cart) { return cart; }))),
-                ]).pipe(operators.take(1), operators.map((/**
-                 * @param {?} __0
-                 * @return {?}
-                 */
-                function (_a) {
-                    var _b = __read(_a, 2), userId = _b[0], cart = _b[1];
-                    return [
-                        userId,
-                        userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
-                    ];
-                })));
-            }
+                function (stable) { return !stable; })));
+            })));
         };
-        CartVoucherService.decorators = [
+        /**
+         * @protected
+         * @return {?}
+         */
+        WishListService.prototype.getWishListId = /**
+         * @protected
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getWishListId));
+        };
+        WishListService.decorators = [
             { type: core.Injectable }
         ];
         /** @nocollapse */
-        CartVoucherService.ctorParameters = function () { return [
+        WishListService.ctorParameters = function () { return [
             { type: store.Store },
-            { type: AuthService }
+            { type: AuthService },
+            { type: MultiCartService }
         ]; };
-        return CartVoucherService;
+        return WishListService;
     }());
     if (false) {
         /**
          * @type {?}
          * @protected
          */
-        CartVoucherService.prototype.store;
+        WishListService.prototype.store;
         /**
          * @type {?}
          * @protected
          */
-        CartVoucherService.prototype.authService;
+        WishListService.prototype.authService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        WishListService.prototype.multiCartService;
     }
 
     /**
@@ -35876,7 +36334,7 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$f = getPageComponentTypesSelector;
+    var ɵ2$g = getPageComponentTypesSelector;
     var ɵ3$8 = /**
      * @param {?} state
      * @return {?}
@@ -38468,11 +38926,234 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var SaveCartConnector = /** @class */ (function () {
+        function SaveCartConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} saveCartName
+         * @param {?=} saveCartDescription
+         * @return {?}
+         */
+        SaveCartConnector.prototype.saveCart = /**
+         * @param {?} userId
+         * @param {?} cartId
+         * @param {?=} saveCartName
+         * @param {?=} saveCartDescription
+         * @return {?}
+         */
+        function (userId, cartId, saveCartName, saveCartDescription) {
+            return this.adapter.saveCart(userId, cartId, saveCartName, saveCartDescription);
+        };
+        SaveCartConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        SaveCartConnector.ctorParameters = function () { return [
+            { type: SaveCartAdapter }
+        ]; };
+        /** @nocollapse */ SaveCartConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function SaveCartConnector_Factory() { return new SaveCartConnector(core.ɵɵinject(SaveCartAdapter)); }, token: SaveCartConnector, providedIn: "root" });
+        return SaveCartConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        SaveCartConnector.prototype.adapter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var WishListEffects = /** @class */ (function () {
+        function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store$1) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.cartConnector = cartConnector;
+            this.saveCartConnector = saveCartConnector;
+            this.authService = authService;
+            this.store = store$1;
+            this.createWishList$ = this.actions$.pipe(effects$c.ofType(CREATE_WISH_LIST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.cartConnector.create(payload.userId).pipe(operators.switchMap((/**
+                 * @param {?} cart
+                 * @return {?}
+                 */
+                function (cart) {
+                    return _this.saveCartConnector
+                        .saveCart(payload.userId, cart.code, payload.name, payload.description)
+                        .pipe(operators.switchMap((/**
+                     * @param {?} saveCartResult
+                     * @return {?}
+                     */
+                    function (saveCartResult) { return [
+                        new CreateWishListSuccess({
+                            cart: saveCartResult.savedCartData,
+                            userId: payload.userId,
+                        }),
+                    ]; })), operators.catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return rxjs.from([
+                            new CreateWishListFail({
+                                cartId: cart.code,
+                                error: makeErrorSerializable(error),
+                            }),
+                        ]);
+                    })));
+                })));
+            })));
+            this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.concatMap((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.cartConnector.loadAll(userId).pipe(operators.switchMap((/**
+                 * @param {?} carts
+                 * @return {?}
+                 */
+                function (carts) {
+                    if (carts) {
+                        /** @type {?} */
+                        var wishList = carts.find((/**
+                         * @param {?} cart
+                         * @return {?}
+                         */
+                        function (cart) { return cart.name === 'wishlist'; }));
+                        if (Boolean(wishList)) {
+                            return [
+                                new LoadWisthListSuccess({
+                                    cart: wishList,
+                                    userId: userId,
+                                }),
+                            ];
+                        }
+                        else {
+                            return [
+                                new CreateWishList({ userId: userId, name: 'wishlist' }),
+                            ];
+                        }
+                    }
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.from([new LoadCartFail(makeErrorSerializable(error))]);
+                })));
+            })));
+            this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 3), userId = _b[1], wishListId = _b[2];
+                if (Boolean(wishListId)) {
+                    return _this.cartConnector.load(userId, wishListId).pipe(operators.switchMap((/**
+                     * @param {?} wishList
+                     * @return {?}
+                     */
+                    function (wishList) { return [
+                        new LoadWisthListSuccess({ cart: wishList, userId: userId }),
+                    ]; })), operators.catchError((/**
+                     * @param {?} error
+                     * @return {?}
+                     */
+                    function (error) {
+                        return rxjs.from([new LoadCartFail(makeErrorSerializable(error))]);
+                    })));
+                }
+                return rxjs.EMPTY;
+            })));
+        }
+        WishListEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        WishListEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CartConnector },
+            { type: SaveCartConnector },
+            { type: AuthService },
+            { type: store.Store }
+        ]; };
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], WishListEffects.prototype, "createWishList$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], WishListEffects.prototype, "loadWishList$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], WishListEffects.prototype, "resetWishList$", void 0);
+        return WishListEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        WishListEffects.prototype.createWishList$;
+        /** @type {?} */
+        WishListEffects.prototype.loadWishList$;
+        /** @type {?} */
+        WishListEffects.prototype.resetWishList$;
+        /**
+         * @type {?}
+         * @private
+         */
+        WishListEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        WishListEffects.prototype.cartConnector;
+        /**
+         * @type {?}
+         * @private
+         */
+        WishListEffects.prototype.saveCartConnector;
+        /**
+         * @type {?}
+         * @private
+         */
+        WishListEffects.prototype.authService;
+        /**
+         * @type {?}
+         * @private
+         */
+        WishListEffects.prototype.store;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var effects$4 = [
         CartEffects,
         CartEntryEffects,
         CartVoucherEffects,
+        WishListEffects,
     ];
 
     /**
@@ -38555,6 +39236,8 @@
      */
     /** @type {?} */
     var activeCartInitialState = '';
+    /** @type {?} */
+    var wishListinitialState = '';
     /**
      * @param {?=} state
      * @param {?=} action
@@ -38597,9 +39280,25 @@
         switch (action.type) {
             case LOAD_MULTI_CART_SUCCESS:
             case CREATE_MULTI_CART_SUCCESS:
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
                 return action.payload.cart;
             case SET_FRESH_CART:
                 return action.payload;
+        }
+        return state;
+    }
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function wishListReducer(state, action) {
+        if (state === void 0) { state = wishListinitialState; }
+        switch (action.type) {
+            case CREATE_WISH_LIST_SUCCESS:
+            case LOAD_WISH_LIST_SUCCESS:
+                return (/** @type {?} */ (action.meta.entityId));
         }
         return state;
     }
@@ -38671,6 +39370,7 @@
         return {
             carts: entityProcessesLoaderReducer(MULTI_CART_FEATURE, cartEntitiesReducer),
             active: activeCartReducer,
+            wishList: wishListReducer,
         };
     }
     /** @type {?} */
@@ -38904,6 +39604,7 @@
                     CartVoucherService,
                     CartService,
                     MultiCartService,
+                    WishListService,
                     ActiveCartService,
                     {
                         provide: PageMetaResolver,
@@ -39016,7 +39717,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$g = getPaymentDetailsSelector;
+    var ɵ2$h = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -50484,13 +51185,13 @@
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
     var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$s));
-    var ɵ2$h = /**
+    var ɵ2$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$h));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$i));
 
     /**
      * @fileoverview added by tsickle
@@ -50510,13 +51211,13 @@
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
     var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$t));
-    var ɵ2$i = /**
+    var ɵ2$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$i));
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$j));
 
     /**
      * @fileoverview added by tsickle
@@ -56771,6 +57472,8 @@
     exports.UsersSelectors = usersGroup_selectors;
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
     exports.WindowRef = WindowRef;
+    exports.WishListEffects = WishListEffects;
+    exports.WishListService = WishListService;
     exports.clearCartState = clearCartState;
     exports.clearMultiCartState = clearMultiCartState;
     exports.configInitializerFactory = configInitializerFactory;
@@ -56865,183 +57568,187 @@
     exports.ɵcm = AuthServices;
     exports.ɵcn = cartStoreConfigFactory;
     exports.ɵco = CartStoreModule;
-    exports.ɵcp = reducer$9;
-    exports.ɵcq = multiCartStoreConfigFactory;
-    exports.ɵcr = MultiCartStoreModule;
-    exports.ɵcs = MultiCartEffects;
-    exports.ɵct = processesLoaderReducer;
-    exports.ɵcu = activeCartReducer;
-    exports.ɵcv = cartEntitiesReducer;
-    exports.ɵcw = MultiCartService;
-    exports.ɵcx = CartPageMetaResolver;
-    exports.ɵcy = CheckoutStoreModule;
-    exports.ɵcz = getReducers$6;
+    exports.ɵcp = SaveCartConnector;
+    exports.ɵcq = SaveCartAdapter;
+    exports.ɵcr = reducer$9;
+    exports.ɵcs = multiCartStoreConfigFactory;
+    exports.ɵct = MultiCartStoreModule;
+    exports.ɵcu = MultiCartEffects;
+    exports.ɵcv = processesLoaderReducer;
+    exports.ɵcw = activeCartReducer;
+    exports.ɵcx = cartEntitiesReducer;
+    exports.ɵcy = wishListReducer;
+    exports.ɵcz = MultiCartService;
     exports.ɵd = initConfig;
-    exports.ɵda = reducerToken$6;
-    exports.ɵdb = reducerProvider$6;
-    exports.ɵdc = effects$5;
-    exports.ɵdd = AddressVerificationEffect;
-    exports.ɵde = CardTypesEffects;
-    exports.ɵdf = CheckoutEffects;
-    exports.ɵdg = reducer$c;
-    exports.ɵdh = reducer$b;
-    exports.ɵdi = reducer$a;
-    exports.ɵdj = cmsStoreConfigFactory;
-    exports.ɵdk = CmsStoreModule;
-    exports.ɵdl = getReducers$8;
-    exports.ɵdm = reducerToken$8;
-    exports.ɵdn = reducerProvider$8;
-    exports.ɵdo = clearCmsState;
-    exports.ɵdp = metaReducers$4;
-    exports.ɵdq = effects$7;
-    exports.ɵdr = PageEffects;
-    exports.ɵds = ComponentEffects;
-    exports.ɵdt = NavigationEntryItemEffects;
-    exports.ɵdu = reducer$f;
-    exports.ɵdv = reducer$g;
-    exports.ɵdw = reducer$e;
-    exports.ɵdx = configValidatorFactory;
-    exports.ɵdy = ConfigValidatorModule;
-    exports.ɵdz = GlobalMessageStoreModule;
+    exports.ɵda = CartPageMetaResolver;
+    exports.ɵdb = CheckoutStoreModule;
+    exports.ɵdc = getReducers$6;
+    exports.ɵdd = reducerToken$6;
+    exports.ɵde = reducerProvider$6;
+    exports.ɵdf = effects$5;
+    exports.ɵdg = AddressVerificationEffect;
+    exports.ɵdh = CardTypesEffects;
+    exports.ɵdi = CheckoutEffects;
+    exports.ɵdj = reducer$c;
+    exports.ɵdk = reducer$b;
+    exports.ɵdl = reducer$a;
+    exports.ɵdm = cmsStoreConfigFactory;
+    exports.ɵdn = CmsStoreModule;
+    exports.ɵdo = getReducers$8;
+    exports.ɵdp = reducerToken$8;
+    exports.ɵdq = reducerProvider$8;
+    exports.ɵdr = clearCmsState;
+    exports.ɵds = metaReducers$4;
+    exports.ɵdt = effects$7;
+    exports.ɵdu = PageEffects;
+    exports.ɵdv = ComponentEffects;
+    exports.ɵdw = NavigationEntryItemEffects;
+    exports.ɵdx = reducer$f;
+    exports.ɵdy = reducer$g;
+    exports.ɵdz = reducer$e;
     exports.ɵe = initializeContext;
-    exports.ɵea = getReducers$4;
-    exports.ɵeb = reducerToken$4;
-    exports.ɵec = reducerProvider$4;
-    exports.ɵed = reducer$8;
-    exports.ɵee = GlobalMessageEffect;
-    exports.ɵef = defaultGlobalMessageConfigFactory;
-    exports.ɵeg = InternalServerErrorHandler;
-    exports.ɵeh = HttpErrorInterceptor;
-    exports.ɵei = defaultI18nConfig;
-    exports.ɵej = i18nextProviders;
-    exports.ɵek = i18nextInit;
-    exports.ɵel = MockTranslationService;
-    exports.ɵem = kymaStoreConfigFactory;
-    exports.ɵen = KymaStoreModule;
-    exports.ɵeo = getReducers$9;
-    exports.ɵep = reducerToken$9;
-    exports.ɵeq = reducerProvider$9;
-    exports.ɵer = clearKymaState;
-    exports.ɵes = metaReducers$5;
-    exports.ɵet = effects$8;
-    exports.ɵeu = OpenIdTokenEffect;
-    exports.ɵev = OpenIdAuthenticationTokenService;
-    exports.ɵew = defaultKymaConfig;
-    exports.ɵex = defaultOccAsmConfig;
-    exports.ɵey = defaultOccCartConfig;
-    exports.ɵez = defaultOccProductConfig;
+    exports.ɵea = configValidatorFactory;
+    exports.ɵeb = ConfigValidatorModule;
+    exports.ɵec = GlobalMessageStoreModule;
+    exports.ɵed = getReducers$4;
+    exports.ɵee = reducerToken$4;
+    exports.ɵef = reducerProvider$4;
+    exports.ɵeg = reducer$8;
+    exports.ɵeh = GlobalMessageEffect;
+    exports.ɵei = defaultGlobalMessageConfigFactory;
+    exports.ɵej = InternalServerErrorHandler;
+    exports.ɵek = HttpErrorInterceptor;
+    exports.ɵel = defaultI18nConfig;
+    exports.ɵem = i18nextProviders;
+    exports.ɵen = i18nextInit;
+    exports.ɵeo = MockTranslationService;
+    exports.ɵep = kymaStoreConfigFactory;
+    exports.ɵeq = KymaStoreModule;
+    exports.ɵer = getReducers$9;
+    exports.ɵes = reducerToken$9;
+    exports.ɵet = reducerProvider$9;
+    exports.ɵeu = clearKymaState;
+    exports.ɵev = metaReducers$5;
+    exports.ɵew = effects$8;
+    exports.ɵex = OpenIdTokenEffect;
+    exports.ɵey = OpenIdAuthenticationTokenService;
+    exports.ɵez = defaultKymaConfig;
     exports.ɵf = contextServiceProviders;
-    exports.ɵfa = defaultOccSiteContextConfig;
-    exports.ɵfb = defaultOccStoreFinderConfig;
-    exports.ɵfc = defaultOccUserConfig;
-    exports.ɵfd = UserNotificationPreferenceAdapter;
-    exports.ɵfe = OccUserInterestsNormalizer;
-    exports.ɵff = defaultPersonalizationConfig;
-    exports.ɵfg = interceptors$3;
-    exports.ɵfh = OccPersonalizationIdInterceptor;
-    exports.ɵfi = OccPersonalizationTimeInterceptor;
-    exports.ɵfj = ProcessStoreModule;
-    exports.ɵfk = getReducers$a;
-    exports.ɵfl = reducerToken$a;
-    exports.ɵfm = reducerProvider$a;
-    exports.ɵfn = productStoreConfigFactory;
-    exports.ɵfo = ProductStoreModule;
-    exports.ɵfp = getReducers$b;
-    exports.ɵfq = reducerToken$b;
-    exports.ɵfr = reducerProvider$b;
-    exports.ɵfs = clearProductsState;
-    exports.ɵft = metaReducers$6;
-    exports.ɵfu = effects$9;
-    exports.ɵfv = ProductReferencesEffects;
-    exports.ɵfw = ProductReviewsEffects;
-    exports.ɵfx = ProductsSearchEffects;
-    exports.ɵfy = ProductEffects;
-    exports.ɵfz = reducer$h;
+    exports.ɵfa = defaultOccAsmConfig;
+    exports.ɵfb = defaultOccCartConfig;
+    exports.ɵfc = OccSaveCartAdapter;
+    exports.ɵfd = defaultOccProductConfig;
+    exports.ɵfe = defaultOccSiteContextConfig;
+    exports.ɵff = defaultOccStoreFinderConfig;
+    exports.ɵfg = defaultOccUserConfig;
+    exports.ɵfh = UserNotificationPreferenceAdapter;
+    exports.ɵfi = OccUserInterestsNormalizer;
+    exports.ɵfj = defaultPersonalizationConfig;
+    exports.ɵfk = interceptors$3;
+    exports.ɵfl = OccPersonalizationIdInterceptor;
+    exports.ɵfm = OccPersonalizationTimeInterceptor;
+    exports.ɵfn = ProcessStoreModule;
+    exports.ɵfo = getReducers$a;
+    exports.ɵfp = reducerToken$a;
+    exports.ɵfq = reducerProvider$a;
+    exports.ɵfr = productStoreConfigFactory;
+    exports.ɵfs = ProductStoreModule;
+    exports.ɵft = getReducers$b;
+    exports.ɵfu = reducerToken$b;
+    exports.ɵfv = reducerProvider$b;
+    exports.ɵfw = clearProductsState;
+    exports.ɵfx = metaReducers$6;
+    exports.ɵfy = effects$9;
+    exports.ɵfz = ProductReferencesEffects;
     exports.ɵg = initSiteContextRoutesHandler;
-    exports.ɵga = entityScopedLoaderReducer;
-    exports.ɵgb = scopedLoaderReducer;
-    exports.ɵgc = reducer$j;
-    exports.ɵgd = reducer$i;
-    exports.ɵge = PageMetaResolver;
-    exports.ɵgf = addExternalRoutesFactory;
-    exports.ɵgg = getReducers$7;
-    exports.ɵgh = reducer$d;
-    exports.ɵgi = reducerToken$7;
-    exports.ɵgj = reducerProvider$7;
-    exports.ɵgk = CustomSerializer;
-    exports.ɵgl = effects$6;
-    exports.ɵgm = RouterEffects;
-    exports.ɵgn = SiteContextParamsService;
-    exports.ɵgo = SiteContextUrlSerializer;
-    exports.ɵgp = SiteContextRoutesHandler;
-    exports.ɵgq = defaultSiteContextConfigFactory;
-    exports.ɵgr = siteContextStoreConfigFactory;
-    exports.ɵgs = SiteContextStoreModule;
-    exports.ɵgt = getReducers$1;
-    exports.ɵgu = reducerToken$1;
-    exports.ɵgv = reducerProvider$1;
-    exports.ɵgw = effects$2;
-    exports.ɵgx = LanguagesEffects;
-    exports.ɵgy = CurrenciesEffects;
-    exports.ɵgz = BaseSiteEffects;
+    exports.ɵga = ProductReviewsEffects;
+    exports.ɵgb = ProductsSearchEffects;
+    exports.ɵgc = ProductEffects;
+    exports.ɵgd = reducer$h;
+    exports.ɵge = entityScopedLoaderReducer;
+    exports.ɵgf = scopedLoaderReducer;
+    exports.ɵgg = reducer$j;
+    exports.ɵgh = reducer$i;
+    exports.ɵgi = PageMetaResolver;
+    exports.ɵgj = addExternalRoutesFactory;
+    exports.ɵgk = getReducers$7;
+    exports.ɵgl = reducer$d;
+    exports.ɵgm = reducerToken$7;
+    exports.ɵgn = reducerProvider$7;
+    exports.ɵgo = CustomSerializer;
+    exports.ɵgp = effects$6;
+    exports.ɵgq = RouterEffects;
+    exports.ɵgr = SiteContextParamsService;
+    exports.ɵgs = SiteContextUrlSerializer;
+    exports.ɵgt = SiteContextRoutesHandler;
+    exports.ɵgu = defaultSiteContextConfigFactory;
+    exports.ɵgv = siteContextStoreConfigFactory;
+    exports.ɵgw = SiteContextStoreModule;
+    exports.ɵgx = getReducers$1;
+    exports.ɵgy = reducerToken$1;
+    exports.ɵgz = reducerProvider$1;
     exports.ɵh = siteContextParamsProviders;
-    exports.ɵha = reducer$3;
-    exports.ɵhb = reducer$2;
-    exports.ɵhc = reducer$1;
-    exports.ɵhd = baseSiteConfigValidator;
-    exports.ɵhe = interceptors$4;
-    exports.ɵhf = CmsTicketInterceptor;
-    exports.ɵhg = defaultStoreFinderConfig;
-    exports.ɵhh = StoreFinderStoreModule;
-    exports.ɵhi = getReducers$c;
-    exports.ɵhj = reducerToken$c;
-    exports.ɵhk = reducerProvider$c;
-    exports.ɵhl = effects$a;
-    exports.ɵhm = FindStoresEffect;
-    exports.ɵhn = ViewAllStoresEffect;
-    exports.ɵho = UserStoreModule;
-    exports.ɵhp = getReducers$d;
-    exports.ɵhq = reducerToken$d;
-    exports.ɵhr = reducerProvider$d;
-    exports.ɵhs = clearUserState;
-    exports.ɵht = metaReducers$8;
-    exports.ɵhu = effects$b;
-    exports.ɵhv = BillingCountriesEffect;
-    exports.ɵhw = ClearMiscsDataEffect;
-    exports.ɵhx = ConsignmentTrackingEffects;
-    exports.ɵhy = DeliveryCountriesEffects;
-    exports.ɵhz = NotificationPreferenceEffects;
+    exports.ɵha = effects$2;
+    exports.ɵhb = LanguagesEffects;
+    exports.ɵhc = CurrenciesEffects;
+    exports.ɵhd = BaseSiteEffects;
+    exports.ɵhe = reducer$3;
+    exports.ɵhf = reducer$2;
+    exports.ɵhg = reducer$1;
+    exports.ɵhh = baseSiteConfigValidator;
+    exports.ɵhi = interceptors$4;
+    exports.ɵhj = CmsTicketInterceptor;
+    exports.ɵhk = defaultStoreFinderConfig;
+    exports.ɵhl = StoreFinderStoreModule;
+    exports.ɵhm = getReducers$c;
+    exports.ɵhn = reducerToken$c;
+    exports.ɵho = reducerProvider$c;
+    exports.ɵhp = effects$a;
+    exports.ɵhq = FindStoresEffect;
+    exports.ɵhr = ViewAllStoresEffect;
+    exports.ɵhs = UserStoreModule;
+    exports.ɵht = getReducers$d;
+    exports.ɵhu = reducerToken$d;
+    exports.ɵhv = reducerProvider$d;
+    exports.ɵhw = clearUserState;
+    exports.ɵhx = metaReducers$8;
+    exports.ɵhy = effects$b;
+    exports.ɵhz = BillingCountriesEffect;
     exports.ɵi = anonymousConsentsStoreConfigFactory;
-    exports.ɵia = OrderDetailsEffect;
-    exports.ɵib = UserPaymentMethodsEffects;
-    exports.ɵic = RegionsEffects;
-    exports.ɵid = ResetPasswordEffects;
-    exports.ɵie = TitlesEffects;
-    exports.ɵif = UserAddressesEffects;
-    exports.ɵig = UserConsentsEffect;
-    exports.ɵih = UserDetailsEffects;
-    exports.ɵii = UserOrdersEffect;
-    exports.ɵij = UserRegisterEffects;
-    exports.ɵik = ProductInterestsEffect;
-    exports.ɵil = ForgotPasswordEffects;
-    exports.ɵim = UpdateEmailEffects;
-    exports.ɵin = UpdatePasswordEffects;
-    exports.ɵio = UserNotificationPreferenceConnector;
-    exports.ɵip = reducer$v;
-    exports.ɵiq = reducer$t;
-    exports.ɵir = reducer$k;
-    exports.ɵis = reducer$u;
-    exports.ɵit = reducer$p;
-    exports.ɵiu = reducer$w;
-    exports.ɵiv = reducer$o;
-    exports.ɵiw = reducer$m;
-    exports.ɵix = reducer$s;
-    exports.ɵiy = reducer$q;
-    exports.ɵiz = reducer$r;
+    exports.ɵia = ClearMiscsDataEffect;
+    exports.ɵib = ConsignmentTrackingEffects;
+    exports.ɵic = DeliveryCountriesEffects;
+    exports.ɵid = NotificationPreferenceEffects;
+    exports.ɵie = OrderDetailsEffect;
+    exports.ɵif = UserPaymentMethodsEffects;
+    exports.ɵig = RegionsEffects;
+    exports.ɵih = ResetPasswordEffects;
+    exports.ɵii = TitlesEffects;
+    exports.ɵij = UserAddressesEffects;
+    exports.ɵik = UserConsentsEffect;
+    exports.ɵil = UserDetailsEffects;
+    exports.ɵim = UserOrdersEffect;
+    exports.ɵin = UserRegisterEffects;
+    exports.ɵio = ProductInterestsEffect;
+    exports.ɵip = ForgotPasswordEffects;
+    exports.ɵiq = UpdateEmailEffects;
+    exports.ɵir = UpdatePasswordEffects;
+    exports.ɵis = UserNotificationPreferenceConnector;
+    exports.ɵit = reducer$v;
+    exports.ɵiu = reducer$t;
+    exports.ɵiv = reducer$k;
+    exports.ɵiw = reducer$u;
+    exports.ɵix = reducer$p;
+    exports.ɵiy = reducer$w;
+    exports.ɵiz = reducer$o;
     exports.ɵj = AnonymousConsentsStoreModule;
-    exports.ɵja = reducer$l;
-    exports.ɵjb = reducer$n;
-    exports.ɵjc = reducer$x;
+    exports.ɵja = reducer$m;
+    exports.ɵjb = reducer$s;
+    exports.ɵjc = reducer$q;
+    exports.ɵjd = reducer$r;
+    exports.ɵje = reducer$l;
+    exports.ɵjf = reducer$n;
+    exports.ɵjg = reducer$x;
     exports.ɵk = TRANSFER_STATE_META_REDUCER;
     exports.ɵl = STORAGE_SYNC_META_REDUCER;
     exports.ɵm = stateMetaReducers;

@@ -13,3 +13,4 @@ export declare const getCartHasPendingProcessesSelectorFactory: (cartId: string)
 export declare const getCartEntriesSelectorFactory: (cartId: string) => MemoizedSelector<StateWithMultiCart, OrderEntry[], import("@ngrx/store").DefaultProjectorFn<OrderEntry[]>>;
 export declare const getCartEntrySelectorFactory: (cartId: string, productCode: string) => MemoizedSelector<StateWithMultiCart, OrderEntry, import("@ngrx/store").DefaultProjectorFn<OrderEntry>>;
 export declare const getActiveCartId: MemoizedSelector<StateWithMultiCart, string>;
+export declare const getWishListId: MemoizedSelector<StateWithMultiCart, string>;
