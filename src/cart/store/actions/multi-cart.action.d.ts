@@ -18,7 +18,6 @@ export declare const REMOVE_CART = "[Multi Cart] Remove Cart";
 export declare const ADD_EMAIL_TO_MULTI_CART = "[Multi Cart] Add Email";
 export declare const ADD_EMAIL_TO_MULTI_CART_FAIL = "[Multi Cart] Add Email Fail";
 export declare const ADD_EMAIL_TO_MULTI_CART_SUCCESS = "[Multi Cart] Add Email Success";
-export declare const SET_ACTIVE_CART_ID = "[Multi Cart] Set Active Cart Id";
 export declare const CART_PROCESSES_INCREMENT = "[Multi Cart] Cart Processes Increment";
 export declare const CART_PROCESSES_DECREMENT = "[Multi Cart] Cart Processes Decrement";
 /**
@@ -45,11 +44,6 @@ export declare class CreateMultiCartFail extends EntityFailAction {
     payload: any;
     readonly type = "[Multi Cart] Create Cart Fail";
     constructor(payload: any);
-}
-export declare class SetActiveCartId implements Action {
-    payload: string;
-    readonly type = "[Multi Cart] Set Active Cart Id";
-    constructor(payload: string);
 }
 export declare class CreateMultiCartSuccess extends EntitySuccessAction {
     payload: {
@@ -173,4 +167,4 @@ export declare class CartProcessesDecrement extends EntityProcessesDecrementActi
     readonly type = "[Multi Cart] Cart Processes Decrement";
     constructor(payload: string);
 }
-export declare type MultiCartActions = ResetFreshCart | SetFreshCart | SetActiveCartId | CreateMultiCart | CreateMultiCartFail | CreateMultiCartSuccess | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement;
+export declare type MultiCartActions = ResetFreshCart | SetFreshCart | CreateMultiCart | CreateMultiCartFail | CreateMultiCartSuccess | LoadMultiCart | LoadMultiCartFail | LoadMultiCartSuccess | MergeMultiCart | MergeMultiCartSuccess | ResetMultiCartDetails | RemoveCart | AddEmailToMultiCart | AddEmailToMultiCartFail | AddEmailToMultiCartSuccess | CartProcessesIncrement | CartProcessesDecrement;

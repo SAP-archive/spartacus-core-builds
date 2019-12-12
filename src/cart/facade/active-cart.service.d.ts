@@ -38,7 +38,6 @@ export declare class ActiveCartService {
     getLoaded(): Observable<boolean>;
     private loadOrMerge;
     private load;
-    private setActiveCartIdToFresh;
     private addEntriesGuestMerge;
     private requireLoadedCartForGuestMerge;
     private requireLoadedCart;

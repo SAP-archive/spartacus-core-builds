@@ -1,8 +1,8 @@
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, DatePipe, getLocaleId } from '@angular/common';
 import { __awaiter, __decorate, __metadata } from 'tslib';
-import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, from, timer, queueScheduler, merge } from 'rxjs';
-import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, groupBy, debounce, auditTime, observeOn, switchMapTo, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, from, queueScheduler, merge } from 'rxjs';
+import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, groupBy, auditTime, observeOn, switchMapTo, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
@@ -29632,8 +29632,6 @@ const ADD_EMAIL_TO_MULTI_CART_FAIL = '[Multi Cart] Add Email Fail';
 /** @type {?} */
 const ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
 /** @type {?} */
-const SET_ACTIVE_CART_ID = '[Multi Cart] Set Active Cart Id';
-/** @type {?} */
 const CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
 /** @type {?} */
 const CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
@@ -29701,21 +29699,6 @@ if (false) {
     CreateMultiCartFail.prototype.type;
     /** @type {?} */
     CreateMultiCartFail.prototype.payload;
-}
-class SetActiveCartId {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = SET_ACTIVE_CART_ID;
-    }
-}
-if (false) {
-    /** @type {?} */
-    SetActiveCartId.prototype.type;
-    /** @type {?} */
-    SetActiveCartId.prototype.payload;
 }
 class CreateMultiCartSuccess extends EntitySuccessAction {
     /**
@@ -30004,7 +29987,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     ADD_EMAIL_TO_MULTI_CART: ADD_EMAIL_TO_MULTI_CART,
     ADD_EMAIL_TO_MULTI_CART_FAIL: ADD_EMAIL_TO_MULTI_CART_FAIL,
     ADD_EMAIL_TO_MULTI_CART_SUCCESS: ADD_EMAIL_TO_MULTI_CART_SUCCESS,
-    SET_ACTIVE_CART_ID: SET_ACTIVE_CART_ID,
     CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
     CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
     FRESH_CART_ID: FRESH_CART_ID,
@@ -30012,7 +29994,6 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     SetFreshCart: SetFreshCart,
     CreateMultiCart: CreateMultiCart,
     CreateMultiCartFail: CreateMultiCartFail,
-    SetActiveCartId: SetActiveCartId,
     CreateMultiCartSuccess: CreateMultiCartSuccess,
     LoadMultiCart: LoadMultiCart,
     LoadMultiCartFail: LoadMultiCartFail,
@@ -30032,6 +30013,2363 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class MultiCartService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Returns cart from store as an observable
+     *
+     * @param {?} cartId
+     * @return {?}
+     */
+    getCart(cartId) {
+        return this.store.pipe(select(getCartSelectorFactory(cartId)));
+    }
+    /**
+     * Returns cart entity from store (cart with loading, error, success flags) as an observable
+     *
+     * @param {?} cartId
+     * @return {?}
+     */
+    getCartEntity(cartId) {
+        return this.store.pipe(select(getCartEntitySelectorFactory(cartId)));
+    }
+    /**
+     * Returns true when there are no operations on that in progress and it is not currently loading
+     *
+     * @param {?} cartId
+     * @return {?}
+     */
+    isStable(cartId) {
+        return this.store.pipe(select(getCartIsStableSelectorFactory(cartId)), 
+        // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
+        // This flickering should only be avoided when switching from false to true
+        // Start of loading should be showed instantly (no debounce)
+        // Extra actions are only dispatched after some loading
+        debounce((/**
+         * @param {?} isStable
+         * @return {?}
+         */
+        isStable => (isStable ? timer(0) : EMPTY))), distinctUntilChanged());
+    }
+    /**
+     * Create or merge cart
+     *
+     * @param {?} __0
+     * @return {?}
+     */
+    createCart({ userId, oldCartId, toMergeCartGuid, extraData, }) {
+        this.store.dispatch(new CreateCart({
+            extraData,
+            userId,
+            oldCartId,
+            toMergeCartGuid,
+        }));
+        return this.getCartEntity(FRESH_CART_ID);
+    }
+    /**
+     * Load cart
+     *
+     * @param {?} __0
+     * @return {?}
+     */
+    loadCart({ cartId, userId, extraData, }) {
+        this.store.dispatch(new LoadCart({
+            userId,
+            cartId,
+            extraData,
+        }));
+    }
+    /**
+     * Get cart entries as an observable
+     * @param {?} cartId
+     * @return {?}
+     */
+    getEntries(cartId) {
+        return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)));
+    }
+    /**
+     * Add entry to cart
+     *
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} productCode
+     * @param {?} quantity
+     * @return {?}
+     */
+    addEntry(userId, cartId, productCode, quantity) {
+        this.store.dispatch(new CartAddEntry({
+            userId,
+            cartId,
+            productCode,
+            quantity,
+        }));
+    }
+    /**
+     * Add multiple entries to cart
+     *
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} products Array with items (productCode and quantity)
+     * @return {?}
+     */
+    addEntries(userId, cartId, products) {
+        products.forEach((/**
+         * @param {?} product
+         * @return {?}
+         */
+        product => {
+            this.store.dispatch(new CartAddEntry({
+                userId,
+                cartId,
+                productCode: product.productCode,
+                quantity: product.quantity,
+            }));
+        }));
+    }
+    /**
+     * Remove entry from cart
+     *
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @return {?}
+     */
+    removeEntry(userId, cartId, entryNumber) {
+        this.store.dispatch(new CartRemoveEntry({
+            userId,
+            cartId,
+            entry: entryNumber,
+        }));
+    }
+    /**
+     * Update entry in cart. For quantity = 0 it removes entry
+     *
+     * @param {?} userId
+     * @param {?} cartId
+     * @param {?} entryNumber
+     * @param {?} quantity
+     * @return {?}
+     */
+    updateEntry(userId, cartId, entryNumber, quantity) {
+        if (quantity > 0) {
+            this.store.dispatch(new CartUpdateEntry({
+                userId,
+                cartId,
+                entry: entryNumber,
+                qty: quantity,
+            }));
+        }
+        else {
+            this.removeEntry(userId, cartId, entryNumber);
+        }
+    }
+    /**
+     * Get specific entry from cart
+     *
+     * @param {?} cartId
+     * @param {?} productCode
+     * @return {?}
+     */
+    getEntry(cartId, productCode) {
+        return this.store.pipe(select(getCartEntrySelectorFactory$1(cartId, productCode)));
+    }
+    /**
+     * Assign email to the cart
+     *
+     * @param {?} cartId
+     * @param {?} userId
+     * @param {?} email
+     * @return {?}
+     */
+    assignEmail(cartId, userId, email) {
+        this.store.dispatch(new AddEmailToCart({
+            userId,
+            cartId,
+            email,
+        }));
+    }
+    /**
+     * Delete cart
+     *
+     * @param {?} cartId
+     * @param {?} userId
+     * @return {?}
+     */
+    deleteCart(cartId, userId) {
+        this.store.dispatch(new DeleteCart({
+            userId,
+            cartId,
+        }));
+    }
+}
+MultiCartService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+MultiCartService.ctorParameters = () => [
+    { type: Store }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    MultiCartService.prototype.store;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class ActiveCartService {
+    /**
+     * @param {?} store
+     * @param {?} authService
+     * @param {?} multiCartService
+     */
+    constructor(store, authService, multiCartService) {
+        this.store = store;
+        this.authService = authService;
+        this.multiCartService = multiCartService;
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this.userId = OCC_USER_ID_ANONYMOUS;
+        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => {
+            if (!cartId) {
+                return OCC_CART_ID_CURRENT;
+            }
+            return cartId;
+        })));
+        this.cartSelector$ = this.activeCartId$.pipe(switchMap((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => this.multiCartService.getCartEntity(cartId))));
+        this.authService.getOccUserId().subscribe((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        userId => {
+            this.userId = userId;
+            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+                if (this.isJustLoggedIn(userId)) {
+                    this.loadOrMerge(this.cartId);
+                }
+            }
+            this.previousUserId = userId;
+        }));
+        this.activeCartId$.subscribe((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => {
+            this.cartId = cartId;
+        }));
+        this.initActiveCart();
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    initActiveCart() {
+        this.activeCart$ = this.cartSelector$.pipe(withLatestFrom(this.activeCartId$), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cartEntity, activeCartId]) => {
+            return {
+                cart: cartEntity.value,
+                cartId: activeCartId,
+                isStable: !cartEntity.loading && cartEntity.processesCount === 0,
+                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+            };
+        })), 
+        // we want to emit empty carts even if those are not stable
+        // on merge cart action we want to switch to empty cart so no one would use old cartId which can be already obsolete
+        // so on merge action the resulting stream looks like this: old_cart -> {} -> new_cart
+        filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ isStable, cart }) => isStable || this.isEmpty(cart))), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ cart, cartId, loaded, isStable }) => {
+            if (isStable &&
+                this.isEmpty(cart) &&
+                !loaded &&
+                cartId !== FRESH_CART_ID) {
+                this.load(cartId);
+            }
+        })), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ({ cart }) => (cart ? cart : {}))), tap((/**
+         * @param {?} cart
+         * @return {?}
+         */
+        cart => {
+            if (cart) {
+                this.cartUser = cart.user;
+            }
+        })), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * Returns active cart
+     * @return {?}
+     */
+    getActive() {
+        return this.activeCart$;
+    }
+    /**
+     * Returns active cart id
+     * @return {?}
+     */
+    getActiveCartId() {
+        return this.activeCart$.pipe(map((/**
+         * @param {?} cart
+         * @return {?}
+         */
+        cart => getCartIdByUserId(cart, this.userId))), distinctUntilChanged());
+    }
+    /**
+     * Returns cart entries
+     * @return {?}
+     */
+    getEntries() {
+        return this.activeCartId$.pipe(switchMap((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => this.multiCartService.getEntries(cartId))), distinctUntilChanged());
+    }
+    /**
+     * Returns true when cart is stable (not loading and not pending processes on cart)
+     * @return {?}
+     */
+    getLoaded() {
+        // Debounce is used here, to avoid flickering when we switch between different cart entities.
+        // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
+        // After load fails we might create new cart so we switch to `fresh` cart entity used when creating cart.
+        // At the end we finally switch to cart `code` for cart id. Between those switches cart `getLoaded` function should not flicker.
+        return this.activeCartId$.pipe(switchMap((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => this.multiCartService.isStable(cartId))), debounce((/**
+         * @param {?} state
+         * @return {?}
+         */
+        state => (state ? timer(0) : EMPTY))), distinctUntilChanged());
+    }
+    /**
+     * @private
+     * @param {?} cartId
+     * @return {?}
+     */
+    loadOrMerge(cartId) {
+        // for login user, whenever there's an existing cart, we will load the user
+        // current cart and merge it into the existing cart
+        if (!cartId || cartId === OCC_CART_ID_CURRENT) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: OCC_CART_ID_CURRENT,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+        else if (this.isGuestCart()) {
+            this.guestCartMerge(cartId);
+        }
+        else {
+            this.store.dispatch(new MergeCart({
+                userId: this.userId,
+                cartId: cartId,
+                extraData: {
+                    active: true,
+                },
+            }));
+        }
+    }
+    /**
+     * @private
+     * @param {?} cartId
+     * @return {?}
+     */
+    load(cartId) {
+        if (this.userId !== OCC_USER_ID_ANONYMOUS) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+        else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: cartId,
+                extraData: {
+                    active: true,
+                },
+            });
+        }
+    }
+    /**
+     * @private
+     * @param {?} cartEntries
+     * @return {?}
+     */
+    addEntriesGuestMerge(cartEntries) {
+        /** @type {?} */
+        const entriesToAdd = cartEntries.map((/**
+         * @param {?} entry
+         * @return {?}
+         */
+        entry => ({
+            productCode: entry.product.code,
+            quantity: entry.quantity,
+        })));
+        this.requireLoadedCartForGuestMerge().subscribe((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            this.multiCartService.addEntries(this.userId, getCartIdByUserId(cartState.value, this.userId), entriesToAdd);
+        }));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    requireLoadedCartForGuestMerge() {
+        return this.requireLoadedCart(this.cartSelector$.pipe(filter((/**
+         * @return {?}
+         */
+        () => !this.isGuestCart()))));
+    }
+    /**
+     * @private
+     * @param {?=} customCartSelector$
+     * @return {?}
+     */
+    requireLoadedCart(customCartSelector$) {
+        // For guest cart merge we want to filter guest cart in the whole stream
+        // We have to wait with load/create/addEntry after guest cart will be deleted.
+        // That's why you can provide custom selector with this filter applied.
+        /** @type {?} */
+        const cartSelector$ = customCartSelector$
+            ? customCartSelector$
+            : this.cartSelector$;
+        return cartSelector$.pipe(filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !cartState.loading)), 
+        // Avoid load/create call when there are new cart creating at the moment
+        filter((/**
+         * @return {?}
+         */
+        () => this.cartId !== FRESH_CART_ID)), take(1), switchMap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            // Try to load the cart, because it might have been created on another device between our login and add entry call
+            if (this.isEmpty(cartState.value) &&
+                this.userId !== OCC_USER_ID_ANONYMOUS) {
+                this.load(undefined);
+            }
+            return cartSelector$;
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !cartState.loading)), 
+        // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
+        filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => this.userId === OCC_USER_ID_ANONYMOUS ||
+            (cartState.success || cartState.error))), take(1), switchMap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            if (this.isEmpty(cartState.value)) {
+                this.multiCartService.createCart({
+                    userId: this.userId,
+                    extraData: {
+                        active: true,
+                    },
+                });
+            }
+            return cartSelector$;
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !cartState.loading)), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => cartState.success || cartState.error)), 
+        // wait for active cart id to point to code/guid to avoid some work on fresh entity
+        filter((/**
+         * @return {?}
+         */
+        () => this.cartId !== FRESH_CART_ID)), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !this.isEmpty(cartState.value))), take(1));
+    }
+    /**
+     * Add entry to active cart
+     *
+     * @param {?} productCode
+     * @param {?} quantity
+     * @return {?}
+     */
+    addEntry(productCode, quantity) {
+        this.requireLoadedCart().subscribe((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            this.multiCartService.addEntry(this.userId, getCartIdByUserId(cartState.value, this.userId), productCode, quantity);
+        }));
+    }
+    /**
+     * Remove entry
+     *
+     * @param {?} entry
+     * @return {?}
+     */
+    removeEntry(entry) {
+        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+    }
+    /**
+     * Update entry
+     *
+     * @param {?} entryNumber
+     * @param {?} quantity
+     * @return {?}
+     */
+    updateEntry(entryNumber, quantity) {
+        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+    }
+    /**
+     * Returns cart entry
+     *
+     * @param {?} productCode
+     * @return {?}
+     */
+    getEntry(productCode) {
+        return this.activeCartId$.pipe(switchMap((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        cartId => this.multiCartService.getEntry(cartId, productCode))), distinctUntilChanged());
+    }
+    /**
+     * Assign email to cart
+     *
+     * @param {?} email
+     * @return {?}
+     */
+    addEmail(email) {
+        this.multiCartService.assignEmail(this.cartId, this.userId, email);
+    }
+    /**
+     * Get assigned user to cart
+     * @return {?}
+     */
+    getAssignedUser() {
+        return this.getActive().pipe(map((/**
+         * @param {?} cart
+         * @return {?}
+         */
+        cart => cart.user)));
+    }
+    /**
+     * Returns true for guest cart
+     * @return {?}
+     */
+    isGuestCart() {
+        return (this.cartUser &&
+            (this.cartUser.name === OCC_USER_ID_GUEST ||
+                this.isEmail(this.cartUser.uid
+                    .split('|')
+                    .slice(1)
+                    .join('|'))));
+    }
+    /**
+     * Add multiple entries to a cart
+     *
+     * @param {?} cartEntries : list of entries to add (OrderEntry[])
+     * @return {?}
+     */
+    addEntries(cartEntries) {
+        cartEntries.forEach((/**
+         * @param {?} entry
+         * @return {?}
+         */
+        entry => {
+            this.addEntry(entry.product.code, entry.quantity);
+        }));
+    }
+    /**
+     * @private
+     * @param {?} str
+     * @return {?}
+     */
+    isEmail(str) {
+        if (str) {
+            return str.match(EMAIL_PATTERN) ? true : false;
+        }
+        return false;
+    }
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of backend limitation
+     * This is for an edge case
+     * @private
+     * @param {?} cartId
+     * @return {?}
+     */
+    guestCartMerge(cartId) {
+        /** @type {?} */
+        let cartEntries;
+        this.getEntries()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} entries
+         * @return {?}
+         */
+        entries => {
+            cartEntries = entries;
+        }));
+        this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
+        this.addEntriesGuestMerge(cartEntries);
+    }
+    /**
+     * @private
+     * @param {?} cart
+     * @return {?}
+     */
+    isEmpty(cart) {
+        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    isJustLoggedIn(userId) {
+        return (this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
+    }
+}
+ActiveCartService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ActiveCartService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService },
+    { type: MultiCartService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.previousUserId;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.activeCart$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.userId;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.cartId;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.cartUser;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.activeCartId$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ActiveCartService.prototype.cartSelector$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ActiveCartService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ActiveCartService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    ActiveCartService.prototype.multiCartService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @deprecated since version 1.4
+ * Use ActiveCartService instead (API is almost the same)
+ * From 1.4 version CartService uses ActiveCartService if it is available
+ * Fixes and improvements will be only implemented in ActiveCartService
+ */
+class CartService {
+    /**
+     * @param {?} store
+     * @param {?} cartData
+     * @param {?} authService
+     * @param {?=} activeCartService
+     */
+    constructor(store, cartData, authService, activeCartService) {
+        this.store = store;
+        this.cartData = cartData;
+        this.authService = authService;
+        this.activeCartService = activeCartService;
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this._activeCart$ = combineLatest([
+            this.store.select(getCartContent),
+            this.store.select(getCartLoading),
+            this.authService.getUserToken(),
+            this.store.select(getCartLoaded),
+        ]).pipe(
+        // combineLatest emits multiple times on each property update instead of one emit
+        // additionally dispatching actions that changes selectors used here needs to happen in order
+        // for this asyncScheduler is used here
+        debounceTime(0), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([, loading]) => !loading)), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart, , userToken, loaded]) => {
+            if (this.isJustLoggedIn(userToken.userId)) {
+                this.loadOrMerge();
+            }
+            else if ((this.isCreated(cart) && this.isIncomplete(cart)) ||
+                (this.isLoggedIn(userToken.userId) &&
+                    !this.isCreated(cart) &&
+                    !loaded) // try to load current cart for logged in user (loaded flag to prevent infinite loop when user doesn't have cart)
+            ) {
+                this.load();
+            }
+            this.previousUserId = userToken.userId;
+        })), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart]) => !this.isCreated(cart) ||
+            (this.isCreated(cart) && !this.isIncomplete(cart)))), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([cart]) => cart)), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * @return {?}
+     */
+    getActive() {
+        if (this.activeCartService) {
+            return this.activeCartService.getActive();
+        }
+        return this._activeCart$;
+    }
+    /**
+     * @return {?}
+     */
+    getEntries() {
+        if (this.activeCartService) {
+            return this.activeCartService.getEntries();
+        }
+        return this.store.pipe(select(getCartEntries));
+    }
+    // TODO: to remove in 2.0
+    // doesn't seem useful for end developers
+    // there shouldn't be a need for such low level information
+    /**
+     * @return {?}
+     */
+    getCartMergeComplete() {
+        return this.store.pipe(select(getCartMergeComplete));
+    }
+    /**
+     * @return {?}
+     */
+    getLoaded() {
+        if (this.activeCartService) {
+            return this.activeCartService.getLoaded();
+        }
+        return this.store.pipe(select(getCartLoaded));
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    loadOrMerge() {
+        // for login user, whenever there's an existing cart, we will load the user
+        // current cart and merge it into the existing cart
+        if (!this.isCreated(this.cartData.cart)) {
+            this.store.dispatch(new LoadCart({
+                userId: this.cartData.userId,
+                cartId: OCC_CART_ID_CURRENT,
+            }));
+        }
+        else if (this.isGuestCart()) {
+            this.guestCartMerge();
+        }
+        else {
+            this.store.dispatch(new MergeCart({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cart.guid,
+            }));
+        }
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    load() {
+        if (this.cartData.userId !== OCC_USER_ID_ANONYMOUS) {
+            this.store.dispatch(new LoadCart({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId
+                    ? this.cartData.cartId
+                    : OCC_CART_ID_CURRENT,
+            }));
+        }
+        else {
+            this.store.dispatch(new LoadCart({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+            }));
+        }
+    }
+    /**
+     * @param {?} productCode
+     * @param {?} quantity
+     * @return {?}
+     */
+    addEntry(productCode, quantity) {
+        if (this.activeCartService) {
+            return this.activeCartService.addEntry(productCode, quantity);
+        }
+        this.store
+            .pipe(select(getActiveCartState), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            if (!this.isCreated(cartState.value.content) && !cartState.loading) {
+                this.store.dispatch(new CreateCart({
+                    userId: this.cartData.userId,
+                }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => this.isCreated(cartState.value.content))), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        _ => {
+            this.store.dispatch(new CartAddEntry({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                productCode: productCode,
+                quantity: quantity,
+            }));
+        }));
+    }
+    /**
+     * @param {?} entry
+     * @return {?}
+     */
+    removeEntry(entry) {
+        if (this.activeCartService) {
+            return this.activeCartService.removeEntry(entry);
+        }
+        this.store.dispatch(new CartRemoveEntry({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            entry: entry.entryNumber,
+        }));
+    }
+    /**
+     * @param {?} entryNumber
+     * @param {?} quantity
+     * @return {?}
+     */
+    updateEntry(entryNumber, quantity) {
+        if (this.activeCartService) {
+            return this.activeCartService.updateEntry(parseInt(entryNumber, 10), quantity);
+        }
+        if (quantity > 0) {
+            this.store.dispatch(new CartUpdateEntry({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                entry: entryNumber,
+                qty: quantity,
+            }));
+        }
+        else {
+            this.store.dispatch(new CartRemoveEntry({
+                userId: this.cartData.userId,
+                cartId: this.cartData.cartId,
+                entry: entryNumber,
+            }));
+        }
+    }
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    getEntry(productCode) {
+        if (this.activeCartService) {
+            return this.activeCartService.getEntry(productCode);
+        }
+        return this.store.pipe(select(getCartEntrySelectorFactory(productCode)));
+    }
+    /**
+     * @param {?} email
+     * @return {?}
+     */
+    addEmail(email) {
+        if (this.activeCartService) {
+            return this.activeCartService.addEmail(email);
+        }
+        this.store.dispatch(new AddEmailToCart({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            email: email,
+        }));
+    }
+    /**
+     * @return {?}
+     */
+    getAssignedUser() {
+        if (this.activeCartService) {
+            return this.activeCartService.getAssignedUser();
+        }
+        return this.store.pipe(select(getCartUser));
+    }
+    /**
+     * @return {?}
+     */
+    isGuestCart() {
+        if (this.activeCartService) {
+            return this.activeCartService.isGuestCart();
+        }
+        return this.cartData.isGuestCart;
+    }
+    /**
+     * Add multiple entries to a cart
+     * Requires a created cart
+     * @param {?} cartEntries : list of entries to add (OrderEntry[])
+     * @return {?}
+     */
+    addEntries(cartEntries) {
+        if (this.activeCartService) {
+            return this.activeCartService.addEntries(cartEntries);
+        }
+        /** @type {?} */
+        let newEntries = 0;
+        this.getEntries()
+            .pipe(tap((/**
+         * @return {?}
+         */
+        () => {
+            // Keep adding entries until the user cart contains the same number of entries
+            // as the guest cart did
+            if (newEntries < cartEntries.length) {
+                this.store.dispatch(new CartAddEntry({
+                    userId: this.cartData.userId,
+                    cartId: this.cartData.cartId,
+                    productCode: cartEntries[newEntries].product.code,
+                    quantity: cartEntries[newEntries].quantity,
+                }));
+                newEntries++;
+            }
+        })), filter((/**
+         * @return {?}
+         */
+        () => newEntries === cartEntries.length)), take(1))
+            .subscribe();
+    }
+    /**
+     * @private
+     * @param {?} cart
+     * @return {?}
+     */
+    isCreated(cart) {
+        return cart && typeof cart.guid !== 'undefined';
+    }
+    /**
+     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
+     * To get cart content, we need to load cart from backend.
+     * @private
+     * @param {?} cart
+     * @return {?}
+     */
+    isIncomplete(cart) {
+        return cart && Object.keys(cart).length <= 3;
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    isJustLoggedIn(userId) {
+        return (this.isLoggedIn(userId) &&
+            this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
+    }
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    isLoggedIn(userId) {
+        return typeof userId !== 'undefined';
+    }
+    // TODO: Remove once backend is updated
+    /**
+     * Temporary method to merge guest cart with user cart because of backend limitation
+     * This is for an edge case
+     * @private
+     * @return {?}
+     */
+    guestCartMerge() {
+        /** @type {?} */
+        let cartEntries;
+        this.getEntries()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} entries
+         * @return {?}
+         */
+        entries => {
+            cartEntries = entries;
+        }));
+        this.store.dispatch(new DeleteCart({
+            userId: OCC_USER_ID_ANONYMOUS,
+            cartId: this.cartData.cart.guid,
+        }));
+        this.store
+            .pipe(select(getActiveCartState), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => !cartState.loading)), tap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => {
+            // If the cart is not created it needs to be created
+            // This step should happen before adding entries to avoid conflicts in the requests
+            if (!this.isCreated(cartState.value.content)) {
+                this.store.dispatch(new CreateCart({
+                    userId: this.cartData.userId,
+                }));
+            }
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        cartState => this.isCreated(cartState.value.content))), take(1))
+            .subscribe((/**
+         * @return {?}
+         */
+        () => {
+            this.addEntries(cartEntries);
+        }));
+    }
+    /**
+     * @param {?} voucherId
+     * @return {?}
+     */
+    addVoucher(voucherId) {
+        this.store.dispatch(new CartAddVoucher({
+            userId: this.cartData.userId,
+            cartId: this.cartData.cartId,
+            voucherId: voucherId,
+        }));
+    }
+}
+CartService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartService.ctorParameters = () => [
+    { type: Store },
+    { type: CartDataService },
+    { type: AuthService },
+    { type: ActiveCartService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype.previousUserId;
+    /**
+     * @type {?}
+     * @private
+     */
+    CartService.prototype._activeCart$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.cartData;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartService.prototype.activeCartService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CartVoucherService {
+    /**
+     * @param {?} store
+     * @param {?} authService
+     */
+    constructor(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * @param {?} voucherId
+     * @param {?=} cartId
+     * @return {?}
+     */
+    addVoucher(voucherId, cartId) {
+        this.combineUserAndCartId(cartId).subscribe((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartAddVoucher({
+            userId: occUserId,
+            cartId: cartIdentifier,
+            voucherId: voucherId,
+        }))));
+    }
+    /**
+     * @param {?} voucherId
+     * @param {?=} cartId
+     * @return {?}
+     */
+    removeVoucher(voucherId, cartId) {
+        this.combineUserAndCartId(cartId).subscribe((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartRemoveVoucher({
+            userId: occUserId,
+            cartId: cartIdentifier,
+            voucherId: voucherId,
+        }))));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    getAddVoucherResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
+    }
+    /**
+     * @return {?}
+     */
+    resetAddVoucherProcessingState() {
+        this.store.dispatch(new CartResetAddVoucher());
+    }
+    /**
+     * @private
+     * @param {?} cartId
+     * @return {?}
+     */
+    combineUserAndCartId(cartId) {
+        if (cartId) {
+            return this.authService.getOccUserId().pipe(take(1), map((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            userId => [userId, cartId])));
+        }
+        else {
+            return combineLatest([
+                this.authService.getOccUserId(),
+                this.store.pipe(select(getCartContent), map((/**
+                 * @param {?} cart
+                 * @return {?}
+                 */
+                cart => cart))),
+            ]).pipe(take(1), map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([userId, cart]) => [
+                userId,
+                userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
+            ])));
+        }
+    }
+}
+CartVoucherService.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CartVoucherService.ctorParameters = () => [
+    { type: Store },
+    { type: AuthService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartVoucherService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartVoucherService.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CMS_FEATURE = 'cms';
+/** @type {?} */
+const NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
+/** @type {?} */
+const COMPONENT_ENTITY = '[Cms[ Component Entity';
+/**
+ * @record
+ */
+function StateWithCms() { }
+if (false) {
+    /* Skipping unnamed member:
+    [CMS_FEATURE]: CmsState;*/
+}
+/**
+ * @record
+ */
+function NavigationNodes() { }
+/**
+ * @record
+ */
+function PageState() { }
+if (false) {
+    /** @type {?} */
+    PageState.prototype.pageData;
+    /** @type {?} */
+    PageState.prototype.index;
+}
+/**
+ * @record
+ */
+function CmsState() { }
+if (false) {
+    /** @type {?} */
+    CmsState.prototype.page;
+    /** @type {?} */
+    CmsState.prototype.component;
+    /** @type {?} */
+    CmsState.prototype.navigation;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CMS_COMPONENT = '[Cms] Load Component';
+/** @type {?} */
+const LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
+/** @type {?} */
+const LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
+/** @type {?} */
+const CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
+class LoadCmsComponent extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(COMPONENT_ENTITY, payload);
+        this.payload = payload;
+        this.type = LOAD_CMS_COMPONENT;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsComponent.prototype.type;
+    /** @type {?} */
+    LoadCmsComponent.prototype.payload;
+}
+class LoadCmsComponentFail extends EntityFailAction {
+    /**
+     * @param {?} uid
+     * @param {?} payload
+     */
+    constructor(uid, payload) {
+        super(COMPONENT_ENTITY, uid, payload);
+        this.payload = payload;
+        this.type = LOAD_CMS_COMPONENT_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentFail.prototype.payload;
+}
+/**
+ * @template T
+ */
+class LoadCmsComponentSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     * @param {?=} uid
+     */
+    constructor(payload, uid) {
+        super(COMPONENT_ENTITY, uid || payload.uid || '');
+        this.payload = payload;
+        this.type = LOAD_CMS_COMPONENT_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsComponentSuccess.prototype.payload;
+}
+/**
+ * @template T
+ */
+class CmsGetComponentFromPage extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(COMPONENT_ENTITY, payload.map((/**
+         * @param {?} cmp
+         * @return {?}
+         */
+        cmp => cmp.uid)));
+        this.payload = payload;
+        this.type = CMS_GET_COMPONENET_FROM_PAGE;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.type;
+    /** @type {?} */
+    CmsGetComponentFromPage.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
+/** @type {?} */
+const LOAD_CMS_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
+/** @type {?} */
+const LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
+class LoadCmsNavigationItems extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(NAVIGATION_DETAIL_ENTITY, payload.nodeId);
+        this.payload = payload;
+        this.type = LOAD_CMS_NAVIGATION_ITEMS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItems.prototype.payload;
+}
+class LoadCmsNavigationItemsFail extends EntityFailAction {
+    /**
+     * @param {?} nodeId
+     * @param {?} payload
+     */
+    constructor(nodeId, payload) {
+        super(NAVIGATION_DETAIL_ENTITY, nodeId, payload);
+        this.payload = payload;
+        this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsFail.prototype.payload;
+}
+class LoadCmsNavigationItemsSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(NAVIGATION_DETAIL_ENTITY, payload.nodeId);
+        this.payload = payload;
+        this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCmsNavigationItemsSuccess.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
+/** @type {?} */
+const LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
+/** @type {?} */
+const LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
+/** @type {?} */
+const CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
+/** @type {?} */
+const CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
+class LoadCmsPageData extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(payload.type, payload.id);
+        this.payload = payload;
+        this.type = LOAD_CMS_PAGE_DATA;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsPageData.prototype.type;
+    /** @type {?} */
+    LoadCmsPageData.prototype.payload;
+}
+class LoadCmsPageDataFail extends EntityFailAction {
+    /**
+     * @param {?} pageContext
+     * @param {?} error
+     */
+    constructor(pageContext, error) {
+        super(pageContext.type, pageContext.id, error);
+        this.type = LOAD_CMS_PAGE_DATA_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataFail.prototype.type;
+}
+class LoadCmsPageDataSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} pageContext
+     * @param {?} payload
+     */
+    constructor(pageContext, payload) {
+        super(pageContext.type, pageContext.id, payload);
+        this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCmsPageDataSuccess.prototype.type;
+}
+class CmsSetPageSuccessIndex extends EntitySuccessAction {
+    /**
+     * @param {?} pageContext
+     * @param {?} payload
+     */
+    constructor(pageContext, payload) {
+        super(pageContext.type, pageContext.id, payload);
+        this.type = CMS_SET_PAGE_SUCCESS_INDEX;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CmsSetPageSuccessIndex.prototype.type;
+}
+class CmsSetPageFailIndex extends EntityFailAction {
+    /**
+     * @param {?} pageContext
+     * @param {?} payload
+     */
+    constructor(pageContext, payload) {
+        super(pageContext.type, pageContext.id);
+        this.payload = payload;
+        this.type = CMS_SET_PAGE_FAIL_INDEX;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.type;
+    /** @type {?} */
+    CmsSetPageFailIndex.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var cmsGroup_actions = /*#__PURE__*/Object.freeze({
+    LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
+    LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
+    LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
+    CMS_GET_COMPONENET_FROM_PAGE: CMS_GET_COMPONENET_FROM_PAGE,
+    LoadCmsComponent: LoadCmsComponent,
+    LoadCmsComponentFail: LoadCmsComponentFail,
+    LoadCmsComponentSuccess: LoadCmsComponentSuccess,
+    CmsGetComponentFromPage: CmsGetComponentFromPage,
+    LOAD_CMS_NAVIGATION_ITEMS: LOAD_CMS_NAVIGATION_ITEMS,
+    LOAD_CMS_NAVIGATION_ITEMS_FAIL: LOAD_CMS_NAVIGATION_ITEMS_FAIL,
+    LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: LOAD_CMS_NAVIGATION_ITEMS_SUCCESS,
+    LoadCmsNavigationItems: LoadCmsNavigationItems,
+    LoadCmsNavigationItemsFail: LoadCmsNavigationItemsFail,
+    LoadCmsNavigationItemsSuccess: LoadCmsNavigationItemsSuccess,
+    LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
+    LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
+    LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
+    CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
+    CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
+    LoadCmsPageData: LoadCmsPageData,
+    LoadCmsPageDataFail: LoadCmsPageDataFail,
+    LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
+    CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
+    CmsSetPageFailIndex: CmsSetPageFailIndex
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getCmsState = createFeatureSelector(CMS_FEATURE);
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getComponentEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => Object.keys(state.entities).reduce((/**
+ * @param {?} acc
+ * @param {?} cur
+ * @return {?}
+ */
+(acc, cur) => {
+    acc[cur] = state.entities[cur].value;
+    return acc;
+}), {}));
+const ɵ0$v = getComponentEntitiesSelector;
+const ɵ1$n = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.component;
+/** @type {?} */
+const getComponentState = createSelector(getCmsState, (ɵ1$n));
+/** @type {?} */
+const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
+/** @type {?} */
+const componentStateSelectorFactory = (/**
+ * @param {?} uid
+ * @return {?}
+ */
+(uid) => {
+    return createSelector(getComponentState, (/**
+     * @param {?} entities
+     * @return {?}
+     */
+    entities => {
+        // the whole component entities are emtpy
+        if (Object.keys(entities.entities).length === 0) {
+            return undefined;
+        }
+        else {
+            return entityStateSelector(entities, uid);
+        }
+    }));
+});
+/** @type {?} */
+const componentSelectorFactory = (/**
+ * @param {?} uid
+ * @return {?}
+ */
+(uid) => {
+    return createSelector(componentStateSelectorFactory(uid), (/**
+     * @param {?} state
+     * @return {?}
+     */
+    state => {
+        if (state) {
+            return loaderValueSelector(state);
+        }
+        else {
+            return undefined;
+        }
+    }));
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$w = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.navigation;
+/** @type {?} */
+const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$w));
+/** @type {?} */
+const getSelectedNavigationEntryItemState = (/**
+ * @param {?} nodeId
+ * @return {?}
+ */
+(nodeId) => {
+    return createSelector(getNavigationEntryItemState, (/**
+     * @param {?} nodes
+     * @return {?}
+     */
+    nodes => entityStateSelector(nodes, nodeId)));
+});
+/** @type {?} */
+const getNavigationEntryItems = (/**
+ * @param {?} nodeId
+ * @return {?}
+ */
+(nodeId) => {
+    return createSelector(getSelectedNavigationEntryItemState(nodeId), (/**
+     * @param {?} itemState
+     * @return {?}
+     */
+    itemState => loaderValueSelector(itemState)));
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const getPageEntitiesSelector = (/**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.pageData.entities);
+const ɵ0$x = getPageEntitiesSelector;
+/** @type {?} */
+const getIndexByType = (/**
+ * @param {?} index
+ * @param {?} type
+ * @return {?}
+ */
+(index, type) => {
+    switch (type) {
+        case PageType.CONTENT_PAGE: {
+            return index.content;
+        }
+        case PageType.PRODUCT_PAGE: {
+            return index.product;
+        }
+        case PageType.CATEGORY_PAGE: {
+            return index.category;
+        }
+        case PageType.CATALOG_PAGE: {
+            return index.catalog;
+        }
+    }
+    return { entities: {} };
+});
+const ɵ1$o = getIndexByType;
+/** @type {?} */
+const getPageComponentTypesSelector = (/**
+ * @param {?} page
+ * @return {?}
+ */
+(page) => {
+    /** @type {?} */
+    const componentTypes = new Set();
+    if (page && page.slots) {
+        for (const slot of Object.keys(page.slots)) {
+            for (const component of page.slots[slot].components || []) {
+                componentTypes.add(component.flexType);
+            }
+        }
+    }
+    return Array.from(componentTypes);
+});
+const ɵ2$f = getPageComponentTypesSelector;
+const ɵ3$8 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.page;
+/** @type {?} */
+const getPageState = createSelector(getCmsState, (ɵ3$8));
+const ɵ4$2 = /**
+ * @param {?} page
+ * @return {?}
+ */
+(page) => page.index;
+/** @type {?} */
+const getPageStateIndex = createSelector(getPageState, (ɵ4$2));
+/** @type {?} */
+const getPageStateIndexEntityLoaderState = (/**
+ * @param {?} pageContext
+ * @return {?}
+ */
+(pageContext) => createSelector(getPageStateIndex, (/**
+ * @param {?} index
+ * @return {?}
+ */
+(index) => getIndexByType(index, pageContext.type))));
+/** @type {?} */
+const getPageStateIndexLoaderState = (/**
+ * @param {?} pageContext
+ * @return {?}
+ */
+(pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), (/**
+ * @param {?} indexState
+ * @return {?}
+ */
+indexState => entityStateSelector(indexState, pageContext.id))));
+/** @type {?} */
+const getPageStateIndexValue = (/**
+ * @param {?} pageContext
+ * @return {?}
+ */
+(pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), (/**
+ * @param {?} entity
+ * @return {?}
+ */
+entity => loaderValueSelector(entity))));
+/** @type {?} */
+const getPageEntities = createSelector(getPageState, getPageEntitiesSelector);
+/** @type {?} */
+const getPageData = (/**
+ * @param {?} pageContext
+ * @return {?}
+ */
+(pageContext) => createSelector(getPageEntities, getPageStateIndexValue(pageContext), (/**
+ * @param {?} entities
+ * @param {?} indexValue
+ * @return {?}
+ */
+(entities, indexValue) => entities[indexValue])));
+/** @type {?} */
+const getPageComponentTypes = (/**
+ * @param {?} pageContext
+ * @return {?}
+ */
+(pageContext) => createSelector(getPageData(pageContext), (/**
+ * @param {?} pageData
+ * @return {?}
+ */
+pageData => getPageComponentTypesSelector(pageData))));
+/** @type {?} */
+const getCurrentSlotSelectorFactory = (/**
+ * @param {?} pageContext
+ * @param {?} position
+ * @return {?}
+ */
+(pageContext, position) => {
+    return createSelector(getPageData(pageContext), (/**
+     * @param {?} entity
+     * @return {?}
+     */
+    entity => {
+        if (entity) {
+            return entity.slots[position] || { components: [] };
+        }
+    }));
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
+    getComponentState: getComponentState,
+    getComponentEntities: getComponentEntities,
+    componentStateSelectorFactory: componentStateSelectorFactory,
+    componentSelectorFactory: componentSelectorFactory,
+    getCmsState: getCmsState,
+    getNavigationEntryItemState: getNavigationEntryItemState,
+    getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
+    getNavigationEntryItems: getNavigationEntryItems,
+    getPageState: getPageState,
+    getPageStateIndex: getPageStateIndex,
+    getPageStateIndexEntityLoaderState: getPageStateIndexEntityLoaderState,
+    getPageStateIndexLoaderState: getPageStateIndexLoaderState,
+    getPageStateIndexValue: getPageStateIndexValue,
+    getPageEntities: getPageEntities,
+    getPageData: getPageData,
+    getPageComponentTypes: getPageComponentTypes,
+    getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory
+});
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CmsService {
+    /**
+     * @param {?} store
+     * @param {?} routingService
+     */
+    constructor(store, routingService) {
+        this.store = store;
+        this.routingService = routingService;
+        this._launchInSmartEdit = false;
+        this.components = {};
+    }
+    /**
+     * Set _launchInSmartEdit value
+     * @param {?} value
+     * @return {?}
+     */
+    set launchInSmartEdit(value) {
+        this._launchInSmartEdit = value;
+    }
+    /**
+     * Whether the app launched in smart edit
+     * @return {?}
+     */
+    isLaunchInSmartEdit() {
+        return this._launchInSmartEdit;
+    }
+    /**
+     * Get current CMS page data
+     * @return {?}
+     */
+    getCurrentPage() {
+        return this.routingService
+            .getPageContext()
+            .pipe(switchMap((/**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        pageContext => this.store.select(getPageData(pageContext)))));
+    }
+    /**
+     * Get CMS component data by uid
+     * @template T
+     * @param {?} uid : CMS componet uid
+     * @return {?}
+     */
+    getComponentData(uid) {
+        if (!this.components[uid]) {
+            this.components[uid] = combineLatest([
+                this.routingService.isNavigating(),
+                this.store.pipe(select(componentStateSelectorFactory(uid))),
+            ]).pipe(tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            ([isNavigating, componentState]) => {
+                // componentState is undefined when the whole components entities are empty.
+                // In this case, we don't load component one by one, but extract component data from cms page
+                if (componentState !== undefined) {
+                    /** @type {?} */
+                    const attemptedLoad = componentState.loading ||
+                        componentState.success ||
+                        componentState.error;
+                    if (!attemptedLoad && !isNavigating) {
+                        this.store.dispatch(new LoadCmsComponent(uid));
+                    }
+                }
+            })), pluck(1), filter((/**
+             * @param {?} componentState
+             * @return {?}
+             */
+            componentState => componentState && componentState.success)), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        return (/** @type {?} */ (this.components[uid]));
+    }
+    /**
+     * Given the position, get the content slot data
+     * @param {?} position : content slot position
+     * @return {?}
+     */
+    getContentSlot(position) {
+        return this.routingService.getPageContext().pipe(switchMap((/**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        pageContext => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean)))));
+    }
+    /**
+     * Given navigation node uid, get items (with id and type) inside the navigation entries
+     * @param {?} navigationNodeUid : uid of the navigation node
+     * @return {?}
+     */
+    getNavigationEntryItems(navigationNodeUid) {
+        return this.store.pipe(select(getNavigationEntryItems(navigationNodeUid)));
+    }
+    /**
+     * Load navigation items data
+     * @param {?} rootUid : the uid of the root navigation node
+     * @param {?} itemList : list of items (with id and type)
+     * @return {?}
+     */
+    loadNavigationItems(rootUid, itemList) {
+        this.store.dispatch(new LoadCmsNavigationItems({
+            nodeId: rootUid,
+            items: itemList,
+        }));
+    }
+    /**
+     * Refresh the content of the latest cms page
+     * @return {?}
+     */
+    refreshLatestPage() {
+        this.routingService
+            .getPageContext()
+            .pipe(take(1))
+            .subscribe((/**
+         * @param {?} pageContext
+         * @return {?}
+         */
+        pageContext => this.store.dispatch(new LoadCmsPageData(pageContext))));
+    }
+    /**
+     * Refresh the cms page content by page Id
+     * @param {?} pageId
+     * @return {?}
+     */
+    refreshPageById(pageId) {
+        /** @type {?} */
+        const pageContext = { id: pageId };
+        this.store.dispatch(new LoadCmsPageData(pageContext));
+    }
+    /**
+     * Refresh cms component's content
+     * @param {?} uid : component uid
+     * @return {?}
+     */
+    refreshComponent(uid) {
+        this.store.dispatch(new LoadCmsComponent(uid));
+    }
+    /**
+     * Given pageContext, return the CMS page data
+     * @param {?} pageContext
+     * @return {?}
+     */
+    getPageState(pageContext) {
+        return this.store.pipe(select(getPageData(pageContext)));
+    }
+    /**
+     * Given pageContext, return the CMS page data
+     * @param {?} pageContext
+     * @return {?}
+     */
+    getPageComponentTypes(pageContext) {
+        return this.store.pipe(select(getPageComponentTypes(pageContext)));
+    }
+    /**
+     * Given pageContext, return whether the CMS page data exists or not
+     * @param {?} pageContext
+     * @param {?=} forceReload
+     * @return {?}
+     */
+    hasPage(pageContext, forceReload = false) {
+        return this.store.pipe(select(getPageStateIndexLoaderState(pageContext)), tap((/**
+         * @param {?} entity
+         * @return {?}
+         */
+        (entity) => {
+            /** @type {?} */
+            const attemptedLoad = entity.loading || entity.success || entity.error;
+            /** @type {?} */
+            const shouldReload = forceReload && !entity.loading;
+            if (!attemptedLoad || shouldReload) {
+                this.store.dispatch(new LoadCmsPageData(pageContext));
+                forceReload = false;
+            }
+        })), filter((/**
+         * @param {?} entity
+         * @return {?}
+         */
+        entity => {
+            if (!entity.hasOwnProperty('value')) {
+                // if we have incomplete state from srr failed load transfer state,
+                // we should wait for reload and actual value
+                return false;
+            }
+            return entity.success || (entity.error && !entity.loading);
+        })), pluck('success'), catchError((/**
+         * @return {?}
+         */
+        () => of(false))));
+    }
+    /**
+     * Given pageContext, return the CMS page data
+     *
+     * @param {?} pageContext
+     * @param {?=} forceReload
+     * @return {?}
+     */
+    getPage(pageContext, forceReload = false) {
+        return this.hasPage(pageContext, forceReload).pipe(switchMap((/**
+         * @param {?} hasPage
+         * @return {?}
+         */
+        hasPage => hasPage ? this.getPageState(pageContext) : of(null))));
+    }
+    /**
+     * @param {?} pageContext
+     * @return {?}
+     */
+    getPageIndex(pageContext) {
+        return this.store.pipe(select(getPageStateIndexValue(pageContext)));
+    }
+    /**
+     * @param {?} pageContext
+     * @param {?} value
+     * @return {?}
+     */
+    setPageFailIndex(pageContext, value) {
+        this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
+    }
+}
+CmsService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CmsService.ctorParameters = () => [
+    { type: Store },
+    { type: RoutingService }
+];
+/** @nocollapse */ CmsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype._launchInSmartEdit;
+    /**
+     * @type {?}
+     * @private
+     */
+    CmsService.prototype.components;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CmsService.prototype.routingService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function Page() { }
+if (false) {
+    /** @type {?|undefined} */
+    Page.prototype.pageId;
+    /** @type {?|undefined} */
+    Page.prototype.name;
+    /** @type {?|undefined} */
+    Page.prototype.type;
+    /** @type {?|undefined} */
+    Page.prototype.title;
+    /** @type {?|undefined} */
+    Page.prototype.template;
+    /** @type {?|undefined} */
+    Page.prototype.loadTime;
+    /** @type {?} */
+    Page.prototype.slots;
+    /** @type {?|undefined} */
+    Page.prototype.properties;
+    /** @type {?|undefined} */
+    Page.prototype.label;
+}
+/**
+ * Represents the cms structure for pages, slots and components.
+ * @record
+ */
+function CmsStructureModel() { }
+if (false) {
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.page;
+    /** @type {?|undefined} */
+    CmsStructureModel.prototype.components;
+}
+/**
+ * Represents the page meta data that can be used
+ * to resolve page data and seo related data.
+ * @record
+ */
+function PageMeta() { }
+if (false) {
+    /**
+     * the page title is used for the page title tag which
+     * is visible in the browser navigation as well as in the
+     * Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.title;
+    /**
+     * the page heading is typically used in the UI
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.heading;
+    /**
+     * the page description is used in the Search Engine Result Page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.description;
+    /**
+     * the robots information drives search engines to index the page and
+     * follow links in the page
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.robots;
+    /**
+     * image that can be added to the og:image metatag
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.image;
+    /**
+     * the list of breadcrumbs that can be rendered in the page UI.
+     * @type {?|undefined}
+     */
+    PageMeta.prototype.breadcrumbs;
+}
+/**
+ * @record
+ */
+function BreadcrumbMeta() { }
+if (false) {
+    /** @type {?} */
+    BreadcrumbMeta.prototype.label;
+    /** @type {?} */
+    BreadcrumbMeta.prototype.link;
+}
+/** @enum {string} */
+const PageRobotsMeta = {
+    INDEX: 'INDEX',
+    NOINDEX: 'NOINDEX',
+    FOLLOW: 'FOLLOW',
+    NOFOLLOW: 'NOFOLLOW',
+};
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
+ * and the `CartPageTemplate`. If the cart page matches this template, the more generic
+ * `ContentPageMetaResolver` is overriden by this resolver.
+ *
+ * The page title and robots are resolved in this implementation only.
+ */
+class CartPageMetaResolver extends PageMetaResolver {
+    /**
+     * @param {?} cms
+     */
+    constructor(cms) {
+        super();
+        this.cms = cms;
+        this.cms$ = this.cms
+            .getCurrentPage()
+            .pipe(filter((/**
+         * @param {?} page
+         * @return {?}
+         */
+        page => !!page)));
+        this.pageType = PageType.CONTENT_PAGE;
+        this.pageTemplate = 'CartPageTemplate';
+    }
+    /**
+     * @deprecated since version 1.3
+     *
+     * The resolve method is no longer preferred and will be removed with release 2.0.
+     * The caller `PageMetaService` service is improved to expect all individual resolvers
+     * instead, so that the code is easier extensible.
+     * @return {?}
+     */
+    resolve() {
+        return this.cms$.pipe(switchMap((/**
+         * @param {?} page
+         * @return {?}
+         */
+        page => combineLatest([this.resolveTitle(page), this.resolveRobots()]))), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([title, robots]) => ({ title, robots }))));
+    }
+    /**
+     * @param {?=} page
+     * @return {?}
+     */
+    resolveTitle(page) {
+        return page ? of(page.title) : this.cms$.pipe(map((/**
+         * @param {?} p
+         * @return {?}
+         */
+        p => p.title)));
+    }
+    /**
+     * @return {?}
+     */
+    resolveRobots() {
+        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
+    }
+}
+CartPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CartPageMetaResolver.ctorParameters = () => [
+    { type: CmsService }
+];
+/** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    CartPageMetaResolver.prototype.cms$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    CartPageMetaResolver.prototype.cms;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -31903,6 +34241,8 @@ function activeCartReducer(state = activeCartInitialState, action) {
     switch (action.type) {
         case LOAD_MULTI_CART_SUCCESS:
         case CREATE_MULTI_CART_SUCCESS:
+        // point to `fresh` cart when we are creating/merging cart
+        case CREATE_MULTI_CART:
             if (action.payload &&
                 action.payload.extraData &&
                 action.payload.extraData.active) {
@@ -31918,8 +34258,6 @@ function activeCartReducer(state = activeCartInitialState, action) {
             else {
                 return state;
             }
-        case SET_ACTIVE_CART_ID:
-            return action.payload;
     }
     return state;
 }
@@ -32015,2370 +34353,6 @@ const multiCartReducerProvider = {
     provide: multiCartReducerToken,
     useFactory: getMultiCartReducers,
 };
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class MultiCartService {
-    /**
-     * @param {?} store
-     */
-    constructor(store) {
-        this.store = store;
-    }
-    /**
-     * Returns cart from store as an observable
-     *
-     * @param {?} cartId
-     * @return {?}
-     */
-    getCart(cartId) {
-        return this.store.pipe(select(getCartSelectorFactory(cartId)));
-    }
-    /**
-     * Returns cart entity from store (cart with loading, error, success flags) as an observable
-     *
-     * @param {?} cartId
-     * @return {?}
-     */
-    getCartEntity(cartId) {
-        return this.store.pipe(select(getCartEntitySelectorFactory(cartId)));
-    }
-    /**
-     * Returns true when there are no operations on that in progress and it is not currently loading
-     *
-     * @param {?} cartId
-     * @return {?}
-     */
-    isStable(cartId) {
-        return this.store.pipe(select(getCartIsStableSelectorFactory(cartId)), 
-        // We dispatch a lot of actions just after finishing some process or loading, so we want this flag not to flicker.
-        // This flickering should only be avoided when switching from false to true
-        // Start of loading should be showed instantly (no debounce)
-        // Extra actions are only dispatched after some loading
-        debounce((/**
-         * @param {?} isStable
-         * @return {?}
-         */
-        isStable => (isStable ? timer(0) : EMPTY))), distinctUntilChanged());
-    }
-    /**
-     * Create or merge cart
-     *
-     * @param {?} __0
-     * @return {?}
-     */
-    createCart({ userId, oldCartId, toMergeCartGuid, extraData, }) {
-        this.store.dispatch(new CreateCart({
-            extraData,
-            userId,
-            oldCartId,
-            toMergeCartGuid,
-        }));
-        return this.getCartEntity(FRESH_CART_ID);
-    }
-    /**
-     * Load cart
-     *
-     * @param {?} __0
-     * @return {?}
-     */
-    loadCart({ cartId, userId, extraData, }) {
-        this.store.dispatch(new LoadCart({
-            userId,
-            cartId,
-            extraData,
-        }));
-    }
-    /**
-     * Get cart entries as an observable
-     * @param {?} cartId
-     * @return {?}
-     */
-    getEntries(cartId) {
-        return this.store.pipe(select(getCartEntriesSelectorFactory(cartId)));
-    }
-    /**
-     * Add entry to cart
-     *
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} productCode
-     * @param {?} quantity
-     * @return {?}
-     */
-    addEntry(userId, cartId, productCode, quantity) {
-        this.store.dispatch(new CartAddEntry({
-            userId,
-            cartId,
-            productCode,
-            quantity,
-        }));
-    }
-    /**
-     * Add multiple entries to cart
-     *
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} products Array with items (productCode and quantity)
-     * @return {?}
-     */
-    addEntries(userId, cartId, products) {
-        products.forEach((/**
-         * @param {?} product
-         * @return {?}
-         */
-        product => {
-            this.store.dispatch(new CartAddEntry({
-                userId,
-                cartId,
-                productCode: product.productCode,
-                quantity: product.quantity,
-            }));
-        }));
-    }
-    /**
-     * Remove entry from cart
-     *
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @return {?}
-     */
-    removeEntry(userId, cartId, entryNumber) {
-        this.store.dispatch(new CartRemoveEntry({
-            userId,
-            cartId,
-            entry: entryNumber,
-        }));
-    }
-    /**
-     * Update entry in cart. For quantity = 0 it removes entry
-     *
-     * @param {?} userId
-     * @param {?} cartId
-     * @param {?} entryNumber
-     * @param {?} quantity
-     * @return {?}
-     */
-    updateEntry(userId, cartId, entryNumber, quantity) {
-        if (quantity > 0) {
-            this.store.dispatch(new CartUpdateEntry({
-                userId,
-                cartId,
-                entry: entryNumber,
-                qty: quantity,
-            }));
-        }
-        else {
-            this.removeEntry(userId, cartId, entryNumber);
-        }
-    }
-    /**
-     * Get specific entry from cart
-     *
-     * @param {?} cartId
-     * @param {?} productCode
-     * @return {?}
-     */
-    getEntry(cartId, productCode) {
-        return this.store.pipe(select(getCartEntrySelectorFactory$1(cartId, productCode)));
-    }
-    /**
-     * Assign email to the cart
-     *
-     * @param {?} cartId
-     * @param {?} userId
-     * @param {?} email
-     * @return {?}
-     */
-    assignEmail(cartId, userId, email) {
-        this.store.dispatch(new AddEmailToCart({
-            userId,
-            cartId,
-            email,
-        }));
-    }
-    /**
-     * Delete cart
-     *
-     * @param {?} cartId
-     * @param {?} userId
-     * @return {?}
-     */
-    deleteCart(cartId, userId) {
-        this.store.dispatch(new DeleteCart({
-            userId,
-            cartId,
-        }));
-    }
-}
-MultiCartService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-MultiCartService.ctorParameters = () => [
-    { type: Store }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    MultiCartService.prototype.store;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class ActiveCartService {
-    /**
-     * @param {?} store
-     * @param {?} authService
-     * @param {?} multiCartService
-     */
-    constructor(store, authService, multiCartService) {
-        this.store = store;
-        this.authService = authService;
-        this.multiCartService = multiCartService;
-        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-        this.userId = OCC_USER_ID_ANONYMOUS;
-        this.activeCartId$ = this.store.pipe(select(getActiveCartId), map((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => {
-            if (!cartId) {
-                return OCC_CART_ID_CURRENT;
-            }
-            return cartId;
-        })));
-        this.cartSelector$ = this.activeCartId$.pipe(switchMap((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => this.multiCartService.getCartEntity(cartId))));
-        this.authService.getOccUserId().subscribe((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        userId => {
-            this.userId = userId;
-            if (this.userId !== OCC_USER_ID_ANONYMOUS) {
-                if (this.isJustLoggedIn(userId)) {
-                    this.loadOrMerge(this.cartId);
-                }
-            }
-            this.previousUserId = userId;
-        }));
-        this.activeCartId$.subscribe((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => {
-            this.cartId = cartId;
-        }));
-        this.initActiveCart();
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    initActiveCart() {
-        this.activeCart$ = this.cartSelector$.pipe(withLatestFrom(this.activeCartId$), map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([cartEntity, activeCartId]) => {
-            return {
-                cart: cartEntity.value,
-                cartId: activeCartId,
-                isStable: !cartEntity.loading && cartEntity.processesCount === 0,
-                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
-            };
-        })), filter((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ isStable }) => isStable)), tap((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ cart, cartId, loaded }) => {
-            if (this.isEmpty(cart) && !loaded && cartId !== FRESH_CART_ID) {
-                this.load(cartId);
-            }
-        })), map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ({ cart }) => (cart ? cart : {}))), tap((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        cart => {
-            if (cart) {
-                this.cartUser = cart.user;
-            }
-        })), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    /**
-     * Returns active cart
-     * @return {?}
-     */
-    getActive() {
-        return this.activeCart$;
-    }
-    /**
-     * Returns active cart id
-     * @return {?}
-     */
-    getActiveCartId() {
-        return this.activeCart$.pipe(map((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        cart => getCartIdByUserId(cart, this.userId))), distinctUntilChanged());
-    }
-    /**
-     * Returns cart entries
-     * @return {?}
-     */
-    getEntries() {
-        return this.activeCartId$.pipe(switchMap((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => this.multiCartService.getEntries(cartId))), distinctUntilChanged());
-    }
-    /**
-     * Returns true when cart is stable (not loading and not pending processes on cart)
-     * @return {?}
-     */
-    getLoaded() {
-        // Debounce is used here, to avoid flickering when we switch between different cart entities.
-        // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
-        // After load fails we might create new cart so we switch to `fresh` cart entity used when creating cart.
-        // At the end we finally switch to cart `code` for cart id. Between those switches cart `getLoaded` function should not flicker.
-        return this.activeCartId$.pipe(switchMap((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => this.multiCartService.isStable(cartId))), debounce((/**
-         * @param {?} state
-         * @return {?}
-         */
-        state => (state ? timer(0) : EMPTY))), distinctUntilChanged());
-    }
-    /**
-     * @private
-     * @param {?} cartId
-     * @return {?}
-     */
-    loadOrMerge(cartId) {
-        // for login user, whenever there's an existing cart, we will load the user
-        // current cart and merge it into the existing cart
-        if (!cartId || cartId === OCC_CART_ID_CURRENT) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: OCC_CART_ID_CURRENT,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-        else if (this.isGuestCart()) {
-            this.guestCartMerge(cartId);
-        }
-        else {
-            this.store.dispatch(new MergeCart({
-                userId: this.userId,
-                cartId: cartId,
-                extraData: {
-                    active: true,
-                },
-            }));
-        }
-    }
-    /**
-     * @private
-     * @param {?} cartId
-     * @return {?}
-     */
-    load(cartId) {
-        if (this.userId !== OCC_USER_ID_ANONYMOUS) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: cartId ? cartId : OCC_CART_ID_CURRENT,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-        else if (cartId && cartId !== OCC_CART_ID_CURRENT) {
-            this.multiCartService.loadCart({
-                userId: this.userId,
-                cartId: cartId,
-                extraData: {
-                    active: true,
-                },
-            });
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    setActiveCartIdToFresh() {
-        this.store.dispatch(new SetActiveCartId(FRESH_CART_ID));
-    }
-    /**
-     * @private
-     * @param {?} cartEntries
-     * @return {?}
-     */
-    addEntriesGuestMerge(cartEntries) {
-        /** @type {?} */
-        const entriesToAdd = cartEntries.map((/**
-         * @param {?} entry
-         * @return {?}
-         */
-        entry => ({
-            productCode: entry.product.code,
-            quantity: entry.quantity,
-        })));
-        this.requireLoadedCartForGuestMerge().subscribe((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            this.multiCartService.addEntries(this.userId, getCartIdByUserId(cartState.value, this.userId), entriesToAdd);
-        }));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    requireLoadedCartForGuestMerge() {
-        return this.requireLoadedCart(this.cartSelector$.pipe(filter((/**
-         * @return {?}
-         */
-        () => !this.isGuestCart()))));
-    }
-    /**
-     * @private
-     * @param {?=} customCartSelector$
-     * @return {?}
-     */
-    requireLoadedCart(customCartSelector$) {
-        // For guest cart merge we want to filter guest cart in the whole stream
-        // We have to wait with load/create/addEntry after guest cart will be deleted.
-        // That's why you can provide custom selector with this filter applied.
-        /** @type {?} */
-        const cartSelector$ = customCartSelector$
-            ? customCartSelector$
-            : this.cartSelector$;
-        return cartSelector$.pipe(filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => !cartState.loading)), 
-        // Avoid load/create call when there are new cart creating at the moment
-        filter((/**
-         * @return {?}
-         */
-        () => this.cartId !== FRESH_CART_ID)), take(1), switchMap((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            // Try to load the cart, because it might have been created on another device between our login and add entry call
-            if (this.isEmpty(cartState.value) &&
-                this.userId !== OCC_USER_ID_ANONYMOUS) {
-                this.load(undefined);
-            }
-            return cartSelector$;
-        })), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => !cartState.loading)), 
-        // create cart can happen to anonymous user if it is not empty or to any other user if it is loaded and empty
-        filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => this.userId === OCC_USER_ID_ANONYMOUS ||
-            (cartState.success || cartState.error))), take(1), switchMap((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            if (this.isEmpty(cartState.value)) {
-                // point to fresh cart to use their `loading` flag while we create cart
-                this.setActiveCartIdToFresh();
-                this.multiCartService.createCart({
-                    userId: this.userId,
-                    extraData: {
-                        active: true,
-                    },
-                });
-            }
-            return cartSelector$;
-        })), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => !cartState.loading)), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => cartState.success || cartState.error)), 
-        // wait for active cart id to point to code/guid to avoid some work on fresh entity
-        filter((/**
-         * @return {?}
-         */
-        () => this.cartId !== FRESH_CART_ID)), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => !this.isEmpty(cartState.value))), take(1));
-    }
-    /**
-     * Add entry to active cart
-     *
-     * @param {?} productCode
-     * @param {?} quantity
-     * @return {?}
-     */
-    addEntry(productCode, quantity) {
-        this.requireLoadedCart().subscribe((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            this.multiCartService.addEntry(this.userId, getCartIdByUserId(cartState.value, this.userId), productCode, quantity);
-        }));
-    }
-    /**
-     * Remove entry
-     *
-     * @param {?} entry
-     * @return {?}
-     */
-    removeEntry(entry) {
-        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
-    }
-    /**
-     * Update entry
-     *
-     * @param {?} entryNumber
-     * @param {?} quantity
-     * @return {?}
-     */
-    updateEntry(entryNumber, quantity) {
-        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
-    }
-    /**
-     * Returns cart entry
-     *
-     * @param {?} productCode
-     * @return {?}
-     */
-    getEntry(productCode) {
-        return this.activeCartId$.pipe(switchMap((/**
-         * @param {?} cartId
-         * @return {?}
-         */
-        cartId => this.multiCartService.getEntry(cartId, productCode))), distinctUntilChanged());
-    }
-    /**
-     * Assign email to cart
-     *
-     * @param {?} email
-     * @return {?}
-     */
-    addEmail(email) {
-        this.multiCartService.assignEmail(this.cartId, this.userId, email);
-    }
-    /**
-     * Get assigned user to cart
-     * @return {?}
-     */
-    getAssignedUser() {
-        return this.getActive().pipe(map((/**
-         * @param {?} cart
-         * @return {?}
-         */
-        cart => cart.user)));
-    }
-    /**
-     * Returns true for guest cart
-     * @return {?}
-     */
-    isGuestCart() {
-        return (this.cartUser &&
-            (this.cartUser.name === OCC_USER_ID_GUEST ||
-                this.isEmail(this.cartUser.uid
-                    .split('|')
-                    .slice(1)
-                    .join('|'))));
-    }
-    /**
-     * Add multiple entries to a cart
-     *
-     * @param {?} cartEntries : list of entries to add (OrderEntry[])
-     * @return {?}
-     */
-    addEntries(cartEntries) {
-        cartEntries.forEach((/**
-         * @param {?} entry
-         * @return {?}
-         */
-        entry => {
-            this.addEntry(entry.product.code, entry.quantity);
-        }));
-    }
-    /**
-     * @private
-     * @param {?} str
-     * @return {?}
-     */
-    isEmail(str) {
-        if (str) {
-            return str.match(EMAIL_PATTERN) ? true : false;
-        }
-        return false;
-    }
-    // TODO: Remove once backend is updated
-    /**
-     * Temporary method to merge guest cart with user cart because of backend limitation
-     * This is for an edge case
-     * @private
-     * @param {?} cartId
-     * @return {?}
-     */
-    guestCartMerge(cartId) {
-        /** @type {?} */
-        let cartEntries;
-        this.getEntries()
-            .pipe(take(1))
-            .subscribe((/**
-         * @param {?} entries
-         * @return {?}
-         */
-        entries => {
-            cartEntries = entries;
-        }));
-        this.multiCartService.deleteCart(cartId, OCC_USER_ID_ANONYMOUS);
-        this.addEntriesGuestMerge(cartEntries);
-    }
-    /**
-     * @private
-     * @param {?} cart
-     * @return {?}
-     */
-    isEmpty(cart) {
-        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
-    }
-    /**
-     * @private
-     * @param {?} userId
-     * @return {?}
-     */
-    isJustLoggedIn(userId) {
-        return (this.previousUserId !== userId && // *just* logged in
-            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-        );
-    }
-}
-ActiveCartService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-ActiveCartService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService },
-    { type: MultiCartService }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.previousUserId;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.activeCart$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.userId;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.cartId;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.cartUser;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.activeCartId$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ActiveCartService.prototype.cartSelector$;
-    /**
-     * @type {?}
-     * @protected
-     */
-    ActiveCartService.prototype.store;
-    /**
-     * @type {?}
-     * @protected
-     */
-    ActiveCartService.prototype.authService;
-    /**
-     * @type {?}
-     * @protected
-     */
-    ActiveCartService.prototype.multiCartService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @deprecated since version 1.4
- * Use ActiveCartService instead (API is almost the same)
- * From 1.4 version CartService uses ActiveCartService if it is available
- * Fixes and improvements will be only implemented in ActiveCartService
- */
-class CartService {
-    /**
-     * @param {?} store
-     * @param {?} cartData
-     * @param {?} authService
-     * @param {?=} activeCartService
-     */
-    constructor(store, cartData, authService, activeCartService) {
-        this.store = store;
-        this.cartData = cartData;
-        this.authService = authService;
-        this.activeCartService = activeCartService;
-        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
-        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
-        this._activeCart$ = combineLatest([
-            this.store.select(getCartContent),
-            this.store.select(getCartLoading),
-            this.authService.getUserToken(),
-            this.store.select(getCartLoaded),
-        ]).pipe(
-        // combineLatest emits multiple times on each property update instead of one emit
-        // additionally dispatching actions that changes selectors used here needs to happen in order
-        // for this asyncScheduler is used here
-        debounceTime(0), filter((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([, loading]) => !loading)), tap((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([cart, , userToken, loaded]) => {
-            if (this.isJustLoggedIn(userToken.userId)) {
-                this.loadOrMerge();
-            }
-            else if ((this.isCreated(cart) && this.isIncomplete(cart)) ||
-                (this.isLoggedIn(userToken.userId) &&
-                    !this.isCreated(cart) &&
-                    !loaded) // try to load current cart for logged in user (loaded flag to prevent infinite loop when user doesn't have cart)
-            ) {
-                this.load();
-            }
-            this.previousUserId = userToken.userId;
-        })), filter((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([cart]) => !this.isCreated(cart) ||
-            (this.isCreated(cart) && !this.isIncomplete(cart)))), map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([cart]) => cart)), shareReplay({ bufferSize: 1, refCount: true }));
-    }
-    /**
-     * @return {?}
-     */
-    getActive() {
-        if (this.activeCartService) {
-            return this.activeCartService.getActive();
-        }
-        return this._activeCart$;
-    }
-    /**
-     * @return {?}
-     */
-    getEntries() {
-        if (this.activeCartService) {
-            return this.activeCartService.getEntries();
-        }
-        return this.store.pipe(select(getCartEntries));
-    }
-    // TODO: to remove in 2.0
-    // doesn't seem useful for end developers
-    // there shouldn't be a need for such low level information
-    /**
-     * @return {?}
-     */
-    getCartMergeComplete() {
-        return this.store.pipe(select(getCartMergeComplete));
-    }
-    /**
-     * @return {?}
-     */
-    getLoaded() {
-        if (this.activeCartService) {
-            return this.activeCartService.getLoaded();
-        }
-        return this.store.pipe(select(getCartLoaded));
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    loadOrMerge() {
-        // for login user, whenever there's an existing cart, we will load the user
-        // current cart and merge it into the existing cart
-        if (!this.isCreated(this.cartData.cart)) {
-            this.store.dispatch(new LoadCart({
-                userId: this.cartData.userId,
-                cartId: OCC_CART_ID_CURRENT,
-            }));
-        }
-        else if (this.isGuestCart()) {
-            this.guestCartMerge();
-        }
-        else {
-            this.store.dispatch(new MergeCart({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cart.guid,
-            }));
-        }
-    }
-    /**
-     * @private
-     * @return {?}
-     */
-    load() {
-        if (this.cartData.userId !== OCC_USER_ID_ANONYMOUS) {
-            this.store.dispatch(new LoadCart({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId
-                    ? this.cartData.cartId
-                    : OCC_CART_ID_CURRENT,
-            }));
-        }
-        else {
-            this.store.dispatch(new LoadCart({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-            }));
-        }
-    }
-    /**
-     * @param {?} productCode
-     * @param {?} quantity
-     * @return {?}
-     */
-    addEntry(productCode, quantity) {
-        if (this.activeCartService) {
-            return this.activeCartService.addEntry(productCode, quantity);
-        }
-        this.store
-            .pipe(select(getActiveCartState), tap((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            if (!this.isCreated(cartState.value.content) && !cartState.loading) {
-                this.store.dispatch(new CreateCart({
-                    userId: this.cartData.userId,
-                }));
-            }
-        })), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => this.isCreated(cartState.value.content))), take(1))
-            .subscribe((/**
-         * @param {?} _
-         * @return {?}
-         */
-        _ => {
-            this.store.dispatch(new CartAddEntry({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                productCode: productCode,
-                quantity: quantity,
-            }));
-        }));
-    }
-    /**
-     * @param {?} entry
-     * @return {?}
-     */
-    removeEntry(entry) {
-        if (this.activeCartService) {
-            return this.activeCartService.removeEntry(entry);
-        }
-        this.store.dispatch(new CartRemoveEntry({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-            entry: entry.entryNumber,
-        }));
-    }
-    /**
-     * @param {?} entryNumber
-     * @param {?} quantity
-     * @return {?}
-     */
-    updateEntry(entryNumber, quantity) {
-        if (this.activeCartService) {
-            return this.activeCartService.updateEntry(parseInt(entryNumber, 10), quantity);
-        }
-        if (quantity > 0) {
-            this.store.dispatch(new CartUpdateEntry({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                entry: entryNumber,
-                qty: quantity,
-            }));
-        }
-        else {
-            this.store.dispatch(new CartRemoveEntry({
-                userId: this.cartData.userId,
-                cartId: this.cartData.cartId,
-                entry: entryNumber,
-            }));
-        }
-    }
-    /**
-     * @param {?} productCode
-     * @return {?}
-     */
-    getEntry(productCode) {
-        if (this.activeCartService) {
-            return this.activeCartService.getEntry(productCode);
-        }
-        return this.store.pipe(select(getCartEntrySelectorFactory(productCode)));
-    }
-    /**
-     * @param {?} email
-     * @return {?}
-     */
-    addEmail(email) {
-        if (this.activeCartService) {
-            return this.activeCartService.addEmail(email);
-        }
-        this.store.dispatch(new AddEmailToCart({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-            email: email,
-        }));
-    }
-    /**
-     * @return {?}
-     */
-    getAssignedUser() {
-        if (this.activeCartService) {
-            return this.activeCartService.getAssignedUser();
-        }
-        return this.store.pipe(select(getCartUser));
-    }
-    /**
-     * @return {?}
-     */
-    isGuestCart() {
-        if (this.activeCartService) {
-            return this.activeCartService.isGuestCart();
-        }
-        return this.cartData.isGuestCart;
-    }
-    /**
-     * Add multiple entries to a cart
-     * Requires a created cart
-     * @param {?} cartEntries : list of entries to add (OrderEntry[])
-     * @return {?}
-     */
-    addEntries(cartEntries) {
-        if (this.activeCartService) {
-            return this.activeCartService.addEntries(cartEntries);
-        }
-        /** @type {?} */
-        let newEntries = 0;
-        this.getEntries()
-            .pipe(tap((/**
-         * @return {?}
-         */
-        () => {
-            // Keep adding entries until the user cart contains the same number of entries
-            // as the guest cart did
-            if (newEntries < cartEntries.length) {
-                this.store.dispatch(new CartAddEntry({
-                    userId: this.cartData.userId,
-                    cartId: this.cartData.cartId,
-                    productCode: cartEntries[newEntries].product.code,
-                    quantity: cartEntries[newEntries].quantity,
-                }));
-                newEntries++;
-            }
-        })), filter((/**
-         * @return {?}
-         */
-        () => newEntries === cartEntries.length)), take(1))
-            .subscribe();
-    }
-    /**
-     * @private
-     * @param {?} cart
-     * @return {?}
-     */
-    isCreated(cart) {
-        return cart && typeof cart.guid !== 'undefined';
-    }
-    /**
-     * Cart is incomplete if it contains only `guid`, `code` and `user` properties, which come from local storage.
-     * To get cart content, we need to load cart from backend.
-     * @private
-     * @param {?} cart
-     * @return {?}
-     */
-    isIncomplete(cart) {
-        return cart && Object.keys(cart).length <= 3;
-    }
-    /**
-     * @private
-     * @param {?} userId
-     * @return {?}
-     */
-    isJustLoggedIn(userId) {
-        return (this.isLoggedIn(userId) &&
-            this.previousUserId !== userId && // *just* logged in
-            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
-        );
-    }
-    /**
-     * @private
-     * @param {?} userId
-     * @return {?}
-     */
-    isLoggedIn(userId) {
-        return typeof userId !== 'undefined';
-    }
-    // TODO: Remove once backend is updated
-    /**
-     * Temporary method to merge guest cart with user cart because of backend limitation
-     * This is for an edge case
-     * @private
-     * @return {?}
-     */
-    guestCartMerge() {
-        /** @type {?} */
-        let cartEntries;
-        this.getEntries()
-            .pipe(take(1))
-            .subscribe((/**
-         * @param {?} entries
-         * @return {?}
-         */
-        entries => {
-            cartEntries = entries;
-        }));
-        this.store.dispatch(new DeleteCart({
-            userId: OCC_USER_ID_ANONYMOUS,
-            cartId: this.cartData.cart.guid,
-        }));
-        this.store
-            .pipe(select(getActiveCartState), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => !cartState.loading)), tap((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => {
-            // If the cart is not created it needs to be created
-            // This step should happen before adding entries to avoid conflicts in the requests
-            if (!this.isCreated(cartState.value.content)) {
-                this.store.dispatch(new CreateCart({
-                    userId: this.cartData.userId,
-                }));
-            }
-        })), filter((/**
-         * @param {?} cartState
-         * @return {?}
-         */
-        cartState => this.isCreated(cartState.value.content))), take(1))
-            .subscribe((/**
-         * @return {?}
-         */
-        () => {
-            this.addEntries(cartEntries);
-        }));
-    }
-    /**
-     * @param {?} voucherId
-     * @return {?}
-     */
-    addVoucher(voucherId) {
-        this.store.dispatch(new CartAddVoucher({
-            userId: this.cartData.userId,
-            cartId: this.cartData.cartId,
-            voucherId: voucherId,
-        }));
-    }
-}
-CartService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartService.ctorParameters = () => [
-    { type: Store },
-    { type: CartDataService },
-    { type: AuthService },
-    { type: ActiveCartService }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    CartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartService.prototype.previousUserId;
-    /**
-     * @type {?}
-     * @private
-     */
-    CartService.prototype._activeCart$;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartService.prototype.store;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartService.prototype.cartData;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartService.prototype.authService;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartService.prototype.activeCartService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CartVoucherService {
-    /**
-     * @param {?} store
-     * @param {?} authService
-     */
-    constructor(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * @param {?} voucherId
-     * @param {?=} cartId
-     * @return {?}
-     */
-    addVoucher(voucherId, cartId) {
-        this.combineUserAndCartId(cartId).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartAddVoucher({
-            userId: occUserId,
-            cartId: cartIdentifier,
-            voucherId: voucherId,
-        }))));
-    }
-    /**
-     * @param {?} voucherId
-     * @param {?=} cartId
-     * @return {?}
-     */
-    removeVoucher(voucherId, cartId) {
-        this.combineUserAndCartId(cartId).subscribe((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([occUserId, cartIdentifier]) => this.store.dispatch(new CartRemoveVoucher({
-            userId: occUserId,
-            cartId: cartIdentifier,
-            voucherId: voucherId,
-        }))));
-    }
-    /**
-     * @return {?}
-     */
-    getAddVoucherResultError() {
-        return this.store.pipe(select(getProcessErrorFactory(ADD_VOUCHER_PROCESS_ID)));
-    }
-    /**
-     * @return {?}
-     */
-    getAddVoucherResultSuccess() {
-        return this.store.pipe(select(getProcessSuccessFactory(ADD_VOUCHER_PROCESS_ID)));
-    }
-    /**
-     * @return {?}
-     */
-    getAddVoucherResultLoading() {
-        return this.store.pipe(select(getProcessLoadingFactory(ADD_VOUCHER_PROCESS_ID)));
-    }
-    /**
-     * @return {?}
-     */
-    resetAddVoucherProcessingState() {
-        this.store.dispatch(new CartResetAddVoucher());
-    }
-    /**
-     * @private
-     * @param {?} cartId
-     * @return {?}
-     */
-    combineUserAndCartId(cartId) {
-        if (cartId) {
-            return this.authService.getOccUserId().pipe(take(1), map((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            userId => [userId, cartId])));
-        }
-        else {
-            return combineLatest([
-                this.authService.getOccUserId(),
-                this.store.pipe(select(getCartContent), map((/**
-                 * @param {?} cart
-                 * @return {?}
-                 */
-                cart => cart))),
-            ]).pipe(take(1), map((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            ([userId, cart]) => [
-                userId,
-                userId === OCC_USER_ID_ANONYMOUS ? cart.guid : cart.code,
-            ])));
-        }
-    }
-}
-CartVoucherService.decorators = [
-    { type: Injectable }
-];
-/** @nocollapse */
-CartVoucherService.ctorParameters = () => [
-    { type: Store },
-    { type: AuthService }
-];
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartVoucherService.prototype.store;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartVoucherService.prototype.authService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const CMS_FEATURE = 'cms';
-/** @type {?} */
-const NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
-/** @type {?} */
-const COMPONENT_ENTITY = '[Cms[ Component Entity';
-/**
- * @record
- */
-function StateWithCms() { }
-if (false) {
-    /* Skipping unnamed member:
-    [CMS_FEATURE]: CmsState;*/
-}
-/**
- * @record
- */
-function NavigationNodes() { }
-/**
- * @record
- */
-function PageState() { }
-if (false) {
-    /** @type {?} */
-    PageState.prototype.pageData;
-    /** @type {?} */
-    PageState.prototype.index;
-}
-/**
- * @record
- */
-function CmsState() { }
-if (false) {
-    /** @type {?} */
-    CmsState.prototype.page;
-    /** @type {?} */
-    CmsState.prototype.component;
-    /** @type {?} */
-    CmsState.prototype.navigation;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_CMS_COMPONENT = '[Cms] Load Component';
-/** @type {?} */
-const LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
-/** @type {?} */
-const LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
-/** @type {?} */
-const CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
-class LoadCmsComponent extends EntityLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(COMPONENT_ENTITY, payload);
-        this.payload = payload;
-        this.type = LOAD_CMS_COMPONENT;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsComponent.prototype.type;
-    /** @type {?} */
-    LoadCmsComponent.prototype.payload;
-}
-class LoadCmsComponentFail extends EntityFailAction {
-    /**
-     * @param {?} uid
-     * @param {?} payload
-     */
-    constructor(uid, payload) {
-        super(COMPONENT_ENTITY, uid, payload);
-        this.payload = payload;
-        this.type = LOAD_CMS_COMPONENT_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsComponentFail.prototype.type;
-    /** @type {?} */
-    LoadCmsComponentFail.prototype.payload;
-}
-/**
- * @template T
- */
-class LoadCmsComponentSuccess extends EntitySuccessAction {
-    /**
-     * @param {?} payload
-     * @param {?=} uid
-     */
-    constructor(payload, uid) {
-        super(COMPONENT_ENTITY, uid || payload.uid || '');
-        this.payload = payload;
-        this.type = LOAD_CMS_COMPONENT_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsComponentSuccess.prototype.type;
-    /** @type {?} */
-    LoadCmsComponentSuccess.prototype.payload;
-}
-/**
- * @template T
- */
-class CmsGetComponentFromPage extends EntitySuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(COMPONENT_ENTITY, payload.map((/**
-         * @param {?} cmp
-         * @return {?}
-         */
-        cmp => cmp.uid)));
-        this.payload = payload;
-        this.type = CMS_GET_COMPONENET_FROM_PAGE;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CmsGetComponentFromPage.prototype.type;
-    /** @type {?} */
-    CmsGetComponentFromPage.prototype.payload;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_CMS_NAVIGATION_ITEMS = '[Cms] Load NavigationEntry items';
-/** @type {?} */
-const LOAD_CMS_NAVIGATION_ITEMS_FAIL = '[Cms] Load NavigationEntry items Fail';
-/** @type {?} */
-const LOAD_CMS_NAVIGATION_ITEMS_SUCCESS = '[Cms] Load NavigationEntry items Success';
-class LoadCmsNavigationItems extends EntityLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(NAVIGATION_DETAIL_ENTITY, payload.nodeId);
-        this.payload = payload;
-        this.type = LOAD_CMS_NAVIGATION_ITEMS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsNavigationItems.prototype.type;
-    /** @type {?} */
-    LoadCmsNavigationItems.prototype.payload;
-}
-class LoadCmsNavigationItemsFail extends EntityFailAction {
-    /**
-     * @param {?} nodeId
-     * @param {?} payload
-     */
-    constructor(nodeId, payload) {
-        super(NAVIGATION_DETAIL_ENTITY, nodeId, payload);
-        this.payload = payload;
-        this.type = LOAD_CMS_NAVIGATION_ITEMS_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsNavigationItemsFail.prototype.type;
-    /** @type {?} */
-    LoadCmsNavigationItemsFail.prototype.payload;
-}
-class LoadCmsNavigationItemsSuccess extends EntitySuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(NAVIGATION_DETAIL_ENTITY, payload.nodeId);
-        this.payload = payload;
-        this.type = LOAD_CMS_NAVIGATION_ITEMS_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsNavigationItemsSuccess.prototype.type;
-    /** @type {?} */
-    LoadCmsNavigationItemsSuccess.prototype.payload;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const LOAD_CMS_PAGE_DATA = '[Cms] Load Page Data';
-/** @type {?} */
-const LOAD_CMS_PAGE_DATA_FAIL = '[Cms] Load Page Data Fail';
-/** @type {?} */
-const LOAD_CMS_PAGE_DATA_SUCCESS = '[Cms] Load Page Data Success';
-/** @type {?} */
-const CMS_SET_PAGE_SUCCESS_INDEX = '[Cms] Set Page Success Index';
-/** @type {?} */
-const CMS_SET_PAGE_FAIL_INDEX = '[Cms] Set Page Fail Index';
-class LoadCmsPageData extends EntityLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(payload.type, payload.id);
-        this.payload = payload;
-        this.type = LOAD_CMS_PAGE_DATA;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsPageData.prototype.type;
-    /** @type {?} */
-    LoadCmsPageData.prototype.payload;
-}
-class LoadCmsPageDataFail extends EntityFailAction {
-    /**
-     * @param {?} pageContext
-     * @param {?} error
-     */
-    constructor(pageContext, error) {
-        super(pageContext.type, pageContext.id, error);
-        this.type = LOAD_CMS_PAGE_DATA_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsPageDataFail.prototype.type;
-}
-class LoadCmsPageDataSuccess extends EntitySuccessAction {
-    /**
-     * @param {?} pageContext
-     * @param {?} payload
-     */
-    constructor(pageContext, payload) {
-        super(pageContext.type, pageContext.id, payload);
-        this.type = LOAD_CMS_PAGE_DATA_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCmsPageDataSuccess.prototype.type;
-}
-class CmsSetPageSuccessIndex extends EntitySuccessAction {
-    /**
-     * @param {?} pageContext
-     * @param {?} payload
-     */
-    constructor(pageContext, payload) {
-        super(pageContext.type, pageContext.id, payload);
-        this.type = CMS_SET_PAGE_SUCCESS_INDEX;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CmsSetPageSuccessIndex.prototype.type;
-}
-class CmsSetPageFailIndex extends EntityFailAction {
-    /**
-     * @param {?} pageContext
-     * @param {?} payload
-     */
-    constructor(pageContext, payload) {
-        super(pageContext.type, pageContext.id);
-        this.payload = payload;
-        this.type = CMS_SET_PAGE_FAIL_INDEX;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CmsSetPageFailIndex.prototype.type;
-    /** @type {?} */
-    CmsSetPageFailIndex.prototype.payload;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-var cmsGroup_actions = /*#__PURE__*/Object.freeze({
-    LOAD_CMS_COMPONENT: LOAD_CMS_COMPONENT,
-    LOAD_CMS_COMPONENT_FAIL: LOAD_CMS_COMPONENT_FAIL,
-    LOAD_CMS_COMPONENT_SUCCESS: LOAD_CMS_COMPONENT_SUCCESS,
-    CMS_GET_COMPONENET_FROM_PAGE: CMS_GET_COMPONENET_FROM_PAGE,
-    LoadCmsComponent: LoadCmsComponent,
-    LoadCmsComponentFail: LoadCmsComponentFail,
-    LoadCmsComponentSuccess: LoadCmsComponentSuccess,
-    CmsGetComponentFromPage: CmsGetComponentFromPage,
-    LOAD_CMS_NAVIGATION_ITEMS: LOAD_CMS_NAVIGATION_ITEMS,
-    LOAD_CMS_NAVIGATION_ITEMS_FAIL: LOAD_CMS_NAVIGATION_ITEMS_FAIL,
-    LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: LOAD_CMS_NAVIGATION_ITEMS_SUCCESS,
-    LoadCmsNavigationItems: LoadCmsNavigationItems,
-    LoadCmsNavigationItemsFail: LoadCmsNavigationItemsFail,
-    LoadCmsNavigationItemsSuccess: LoadCmsNavigationItemsSuccess,
-    LOAD_CMS_PAGE_DATA: LOAD_CMS_PAGE_DATA,
-    LOAD_CMS_PAGE_DATA_FAIL: LOAD_CMS_PAGE_DATA_FAIL,
-    LOAD_CMS_PAGE_DATA_SUCCESS: LOAD_CMS_PAGE_DATA_SUCCESS,
-    CMS_SET_PAGE_SUCCESS_INDEX: CMS_SET_PAGE_SUCCESS_INDEX,
-    CMS_SET_PAGE_FAIL_INDEX: CMS_SET_PAGE_FAIL_INDEX,
-    LoadCmsPageData: LoadCmsPageData,
-    LoadCmsPageDataFail: LoadCmsPageDataFail,
-    LoadCmsPageDataSuccess: LoadCmsPageDataSuccess,
-    CmsSetPageSuccessIndex: CmsSetPageSuccessIndex,
-    CmsSetPageFailIndex: CmsSetPageFailIndex
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getCmsState = createFeatureSelector(CMS_FEATURE);
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getComponentEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => Object.keys(state.entities).reduce((/**
- * @param {?} acc
- * @param {?} cur
- * @return {?}
- */
-(acc, cur) => {
-    acc[cur] = state.entities[cur].value;
-    return acc;
-}), {}));
-const ɵ0$v = getComponentEntitiesSelector;
-const ɵ1$n = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.component;
-/** @type {?} */
-const getComponentState = createSelector(getCmsState, (ɵ1$n));
-/** @type {?} */
-const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
-/** @type {?} */
-const componentStateSelectorFactory = (/**
- * @param {?} uid
- * @return {?}
- */
-(uid) => {
-    return createSelector(getComponentState, (/**
-     * @param {?} entities
-     * @return {?}
-     */
-    entities => {
-        // the whole component entities are emtpy
-        if (Object.keys(entities.entities).length === 0) {
-            return undefined;
-        }
-        else {
-            return entityStateSelector(entities, uid);
-        }
-    }));
-});
-/** @type {?} */
-const componentSelectorFactory = (/**
- * @param {?} uid
- * @return {?}
- */
-(uid) => {
-    return createSelector(componentStateSelectorFactory(uid), (/**
-     * @param {?} state
-     * @return {?}
-     */
-    state => {
-        if (state) {
-            return loaderValueSelector(state);
-        }
-        else {
-            return undefined;
-        }
-    }));
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$w = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.navigation;
-/** @type {?} */
-const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$w));
-/** @type {?} */
-const getSelectedNavigationEntryItemState = (/**
- * @param {?} nodeId
- * @return {?}
- */
-(nodeId) => {
-    return createSelector(getNavigationEntryItemState, (/**
-     * @param {?} nodes
-     * @return {?}
-     */
-    nodes => entityStateSelector(nodes, nodeId)));
-});
-/** @type {?} */
-const getNavigationEntryItems = (/**
- * @param {?} nodeId
- * @return {?}
- */
-(nodeId) => {
-    return createSelector(getSelectedNavigationEntryItemState(nodeId), (/**
-     * @param {?} itemState
-     * @return {?}
-     */
-    itemState => loaderValueSelector(itemState)));
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-const getPageEntitiesSelector = (/**
- * @param {?} state
- * @return {?}
- */
-(state) => state.pageData.entities);
-const ɵ0$x = getPageEntitiesSelector;
-/** @type {?} */
-const getIndexByType = (/**
- * @param {?} index
- * @param {?} type
- * @return {?}
- */
-(index, type) => {
-    switch (type) {
-        case PageType.CONTENT_PAGE: {
-            return index.content;
-        }
-        case PageType.PRODUCT_PAGE: {
-            return index.product;
-        }
-        case PageType.CATEGORY_PAGE: {
-            return index.category;
-        }
-        case PageType.CATALOG_PAGE: {
-            return index.catalog;
-        }
-    }
-    return { entities: {} };
-});
-const ɵ1$o = getIndexByType;
-/** @type {?} */
-const getPageComponentTypesSelector = (/**
- * @param {?} page
- * @return {?}
- */
-(page) => {
-    /** @type {?} */
-    const componentTypes = new Set();
-    if (page && page.slots) {
-        for (const slot of Object.keys(page.slots)) {
-            for (const component of page.slots[slot].components || []) {
-                componentTypes.add(component.flexType);
-            }
-        }
-    }
-    return Array.from(componentTypes);
-});
-const ɵ2$f = getPageComponentTypesSelector;
-const ɵ3$8 = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.page;
-/** @type {?} */
-const getPageState = createSelector(getCmsState, (ɵ3$8));
-const ɵ4$2 = /**
- * @param {?} page
- * @return {?}
- */
-(page) => page.index;
-/** @type {?} */
-const getPageStateIndex = createSelector(getPageState, (ɵ4$2));
-/** @type {?} */
-const getPageStateIndexEntityLoaderState = (/**
- * @param {?} pageContext
- * @return {?}
- */
-(pageContext) => createSelector(getPageStateIndex, (/**
- * @param {?} index
- * @return {?}
- */
-(index) => getIndexByType(index, pageContext.type))));
-/** @type {?} */
-const getPageStateIndexLoaderState = (/**
- * @param {?} pageContext
- * @return {?}
- */
-(pageContext) => createSelector(getPageStateIndexEntityLoaderState(pageContext), (/**
- * @param {?} indexState
- * @return {?}
- */
-indexState => entityStateSelector(indexState, pageContext.id))));
-/** @type {?} */
-const getPageStateIndexValue = (/**
- * @param {?} pageContext
- * @return {?}
- */
-(pageContext) => createSelector(getPageStateIndexLoaderState(pageContext), (/**
- * @param {?} entity
- * @return {?}
- */
-entity => loaderValueSelector(entity))));
-/** @type {?} */
-const getPageEntities = createSelector(getPageState, getPageEntitiesSelector);
-/** @type {?} */
-const getPageData = (/**
- * @param {?} pageContext
- * @return {?}
- */
-(pageContext) => createSelector(getPageEntities, getPageStateIndexValue(pageContext), (/**
- * @param {?} entities
- * @param {?} indexValue
- * @return {?}
- */
-(entities, indexValue) => entities[indexValue])));
-/** @type {?} */
-const getPageComponentTypes = (/**
- * @param {?} pageContext
- * @return {?}
- */
-(pageContext) => createSelector(getPageData(pageContext), (/**
- * @param {?} pageData
- * @return {?}
- */
-pageData => getPageComponentTypesSelector(pageData))));
-/** @type {?} */
-const getCurrentSlotSelectorFactory = (/**
- * @param {?} pageContext
- * @param {?} position
- * @return {?}
- */
-(pageContext, position) => {
-    return createSelector(getPageData(pageContext), (/**
-     * @param {?} entity
-     * @return {?}
-     */
-    entity => {
-        if (entity) {
-            return entity.slots[position] || { components: [] };
-        }
-    }));
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
-    getComponentState: getComponentState,
-    getComponentEntities: getComponentEntities,
-    componentStateSelectorFactory: componentStateSelectorFactory,
-    componentSelectorFactory: componentSelectorFactory,
-    getCmsState: getCmsState,
-    getNavigationEntryItemState: getNavigationEntryItemState,
-    getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
-    getNavigationEntryItems: getNavigationEntryItems,
-    getPageState: getPageState,
-    getPageStateIndex: getPageStateIndex,
-    getPageStateIndexEntityLoaderState: getPageStateIndexEntityLoaderState,
-    getPageStateIndexLoaderState: getPageStateIndexLoaderState,
-    getPageStateIndexValue: getPageStateIndexValue,
-    getPageEntities: getPageEntities,
-    getPageData: getPageData,
-    getPageComponentTypes: getPageComponentTypes,
-    getCurrentSlotSelectorFactory: getCurrentSlotSelectorFactory
-});
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-class CmsService {
-    /**
-     * @param {?} store
-     * @param {?} routingService
-     */
-    constructor(store, routingService) {
-        this.store = store;
-        this.routingService = routingService;
-        this._launchInSmartEdit = false;
-        this.components = {};
-    }
-    /**
-     * Set _launchInSmartEdit value
-     * @param {?} value
-     * @return {?}
-     */
-    set launchInSmartEdit(value) {
-        this._launchInSmartEdit = value;
-    }
-    /**
-     * Whether the app launched in smart edit
-     * @return {?}
-     */
-    isLaunchInSmartEdit() {
-        return this._launchInSmartEdit;
-    }
-    /**
-     * Get current CMS page data
-     * @return {?}
-     */
-    getCurrentPage() {
-        return this.routingService
-            .getPageContext()
-            .pipe(switchMap((/**
-         * @param {?} pageContext
-         * @return {?}
-         */
-        pageContext => this.store.select(getPageData(pageContext)))));
-    }
-    /**
-     * Get CMS component data by uid
-     * @template T
-     * @param {?} uid : CMS componet uid
-     * @return {?}
-     */
-    getComponentData(uid) {
-        if (!this.components[uid]) {
-            this.components[uid] = combineLatest([
-                this.routingService.isNavigating(),
-                this.store.pipe(select(componentStateSelectorFactory(uid))),
-            ]).pipe(tap((/**
-             * @param {?} __0
-             * @return {?}
-             */
-            ([isNavigating, componentState]) => {
-                // componentState is undefined when the whole components entities are empty.
-                // In this case, we don't load component one by one, but extract component data from cms page
-                if (componentState !== undefined) {
-                    /** @type {?} */
-                    const attemptedLoad = componentState.loading ||
-                        componentState.success ||
-                        componentState.error;
-                    if (!attemptedLoad && !isNavigating) {
-                        this.store.dispatch(new LoadCmsComponent(uid));
-                    }
-                }
-            })), pluck(1), filter((/**
-             * @param {?} componentState
-             * @return {?}
-             */
-            componentState => componentState && componentState.success)), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
-        }
-        return (/** @type {?} */ (this.components[uid]));
-    }
-    /**
-     * Given the position, get the content slot data
-     * @param {?} position : content slot position
-     * @return {?}
-     */
-    getContentSlot(position) {
-        return this.routingService.getPageContext().pipe(switchMap((/**
-         * @param {?} pageContext
-         * @return {?}
-         */
-        pageContext => this.store.pipe(select(getCurrentSlotSelectorFactory(pageContext, position)), filter(Boolean)))));
-    }
-    /**
-     * Given navigation node uid, get items (with id and type) inside the navigation entries
-     * @param {?} navigationNodeUid : uid of the navigation node
-     * @return {?}
-     */
-    getNavigationEntryItems(navigationNodeUid) {
-        return this.store.pipe(select(getNavigationEntryItems(navigationNodeUid)));
-    }
-    /**
-     * Load navigation items data
-     * @param {?} rootUid : the uid of the root navigation node
-     * @param {?} itemList : list of items (with id and type)
-     * @return {?}
-     */
-    loadNavigationItems(rootUid, itemList) {
-        this.store.dispatch(new LoadCmsNavigationItems({
-            nodeId: rootUid,
-            items: itemList,
-        }));
-    }
-    /**
-     * Refresh the content of the latest cms page
-     * @return {?}
-     */
-    refreshLatestPage() {
-        this.routingService
-            .getPageContext()
-            .pipe(take(1))
-            .subscribe((/**
-         * @param {?} pageContext
-         * @return {?}
-         */
-        pageContext => this.store.dispatch(new LoadCmsPageData(pageContext))));
-    }
-    /**
-     * Refresh the cms page content by page Id
-     * @param {?} pageId
-     * @return {?}
-     */
-    refreshPageById(pageId) {
-        /** @type {?} */
-        const pageContext = { id: pageId };
-        this.store.dispatch(new LoadCmsPageData(pageContext));
-    }
-    /**
-     * Refresh cms component's content
-     * @param {?} uid : component uid
-     * @return {?}
-     */
-    refreshComponent(uid) {
-        this.store.dispatch(new LoadCmsComponent(uid));
-    }
-    /**
-     * Given pageContext, return the CMS page data
-     * @param {?} pageContext
-     * @return {?}
-     */
-    getPageState(pageContext) {
-        return this.store.pipe(select(getPageData(pageContext)));
-    }
-    /**
-     * Given pageContext, return the CMS page data
-     * @param {?} pageContext
-     * @return {?}
-     */
-    getPageComponentTypes(pageContext) {
-        return this.store.pipe(select(getPageComponentTypes(pageContext)));
-    }
-    /**
-     * Given pageContext, return whether the CMS page data exists or not
-     * @param {?} pageContext
-     * @param {?=} forceReload
-     * @return {?}
-     */
-    hasPage(pageContext, forceReload = false) {
-        return this.store.pipe(select(getPageStateIndexLoaderState(pageContext)), tap((/**
-         * @param {?} entity
-         * @return {?}
-         */
-        (entity) => {
-            /** @type {?} */
-            const attemptedLoad = entity.loading || entity.success || entity.error;
-            /** @type {?} */
-            const shouldReload = forceReload && !entity.loading;
-            if (!attemptedLoad || shouldReload) {
-                this.store.dispatch(new LoadCmsPageData(pageContext));
-                forceReload = false;
-            }
-        })), filter((/**
-         * @param {?} entity
-         * @return {?}
-         */
-        entity => {
-            if (!entity.hasOwnProperty('value')) {
-                // if we have incomplete state from srr failed load transfer state,
-                // we should wait for reload and actual value
-                return false;
-            }
-            return entity.success || (entity.error && !entity.loading);
-        })), pluck('success'), catchError((/**
-         * @return {?}
-         */
-        () => of(false))));
-    }
-    /**
-     * Given pageContext, return the CMS page data
-     *
-     * @param {?} pageContext
-     * @param {?=} forceReload
-     * @return {?}
-     */
-    getPage(pageContext, forceReload = false) {
-        return this.hasPage(pageContext, forceReload).pipe(switchMap((/**
-         * @param {?} hasPage
-         * @return {?}
-         */
-        hasPage => hasPage ? this.getPageState(pageContext) : of(null))));
-    }
-    /**
-     * @param {?} pageContext
-     * @return {?}
-     */
-    getPageIndex(pageContext) {
-        return this.store.pipe(select(getPageStateIndexValue(pageContext)));
-    }
-    /**
-     * @param {?} pageContext
-     * @param {?} value
-     * @return {?}
-     */
-    setPageFailIndex(pageContext, value) {
-        this.store.dispatch(new CmsSetPageFailIndex(pageContext, value));
-    }
-}
-CmsService.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CmsService.ctorParameters = () => [
-    { type: Store },
-    { type: RoutingService }
-];
-/** @nocollapse */ CmsService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CmsService_Factory() { return new CmsService(ɵɵinject(Store), ɵɵinject(RoutingService)); }, token: CmsService, providedIn: "root" });
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    CmsService.prototype._launchInSmartEdit;
-    /**
-     * @type {?}
-     * @private
-     */
-    CmsService.prototype.components;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CmsService.prototype.store;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CmsService.prototype.routingService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function Page() { }
-if (false) {
-    /** @type {?|undefined} */
-    Page.prototype.pageId;
-    /** @type {?|undefined} */
-    Page.prototype.name;
-    /** @type {?|undefined} */
-    Page.prototype.type;
-    /** @type {?|undefined} */
-    Page.prototype.title;
-    /** @type {?|undefined} */
-    Page.prototype.template;
-    /** @type {?|undefined} */
-    Page.prototype.loadTime;
-    /** @type {?} */
-    Page.prototype.slots;
-    /** @type {?|undefined} */
-    Page.prototype.properties;
-    /** @type {?|undefined} */
-    Page.prototype.label;
-}
-/**
- * Represents the cms structure for pages, slots and components.
- * @record
- */
-function CmsStructureModel() { }
-if (false) {
-    /** @type {?|undefined} */
-    CmsStructureModel.prototype.page;
-    /** @type {?|undefined} */
-    CmsStructureModel.prototype.components;
-}
-/**
- * Represents the page meta data that can be used
- * to resolve page data and seo related data.
- * @record
- */
-function PageMeta() { }
-if (false) {
-    /**
-     * the page title is used for the page title tag which
-     * is visible in the browser navigation as well as in the
-     * Search Engine Result Page
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.title;
-    /**
-     * the page heading is typically used in the UI
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.heading;
-    /**
-     * the page description is used in the Search Engine Result Page
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.description;
-    /**
-     * the robots information drives search engines to index the page and
-     * follow links in the page
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.robots;
-    /**
-     * image that can be added to the og:image metatag
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.image;
-    /**
-     * the list of breadcrumbs that can be rendered in the page UI.
-     * @type {?|undefined}
-     */
-    PageMeta.prototype.breadcrumbs;
-}
-/**
- * @record
- */
-function BreadcrumbMeta() { }
-if (false) {
-    /** @type {?} */
-    BreadcrumbMeta.prototype.label;
-    /** @type {?} */
-    BreadcrumbMeta.prototype.link;
-}
-/** @enum {string} */
-const PageRobotsMeta = {
-    INDEX: 'INDEX',
-    NOINDEX: 'NOINDEX',
-    FOLLOW: 'FOLLOW',
-    NOFOLLOW: 'NOFOLLOW',
-};
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Resolves the page data for all Content Pages based on the `PageType.CONTENT_PAGE`
- * and the `CartPageTemplate`. If the cart page matches this template, the more generic
- * `ContentPageMetaResolver` is overriden by this resolver.
- *
- * The page title and robots are resolved in this implementation only.
- */
-class CartPageMetaResolver extends PageMetaResolver {
-    /**
-     * @param {?} cms
-     */
-    constructor(cms) {
-        super();
-        this.cms = cms;
-        this.cms$ = this.cms
-            .getCurrentPage()
-            .pipe(filter((/**
-         * @param {?} page
-         * @return {?}
-         */
-        page => !!page)));
-        this.pageType = PageType.CONTENT_PAGE;
-        this.pageTemplate = 'CartPageTemplate';
-    }
-    /**
-     * @deprecated since version 1.3
-     *
-     * The resolve method is no longer preferred and will be removed with release 2.0.
-     * The caller `PageMetaService` service is improved to expect all individual resolvers
-     * instead, so that the code is easier extensible.
-     * @return {?}
-     */
-    resolve() {
-        return this.cms$.pipe(switchMap((/**
-         * @param {?} page
-         * @return {?}
-         */
-        page => combineLatest([this.resolveTitle(page), this.resolveRobots()]))), map((/**
-         * @param {?} __0
-         * @return {?}
-         */
-        ([title, robots]) => ({ title, robots }))));
-    }
-    /**
-     * @param {?=} page
-     * @return {?}
-     */
-    resolveTitle(page) {
-        return page ? of(page.title) : this.cms$.pipe(map((/**
-         * @param {?} p
-         * @return {?}
-         */
-        p => p.title)));
-    }
-    /**
-     * @return {?}
-     */
-    resolveRobots() {
-        return of([PageRobotsMeta.NOFOLLOW, PageRobotsMeta.NOINDEX]);
-    }
-}
-CartPageMetaResolver.decorators = [
-    { type: Injectable, args: [{
-                providedIn: 'root',
-            },] }
-];
-/** @nocollapse */
-CartPageMetaResolver.ctorParameters = () => [
-    { type: CmsService }
-];
-/** @nocollapse */ CartPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function CartPageMetaResolver_Factory() { return new CartPageMetaResolver(ɵɵinject(CmsService)); }, token: CartPageMetaResolver, providedIn: "root" });
-if (false) {
-    /** @type {?} */
-    CartPageMetaResolver.prototype.cms$;
-    /**
-     * @type {?}
-     * @protected
-     */
-    CartPageMetaResolver.prototype.cms;
-}
 
 /**
  * @fileoverview added by tsickle
@@ -34601,6 +34575,11 @@ CartModule.decorators = [
                 imports: [CartStoreModule, MultiCartStoreModule],
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
