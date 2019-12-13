@@ -13,7 +13,7 @@ export declare class WishListEffects {
     private authService;
     private store;
     createWishList$: Observable<CartActions.CreateWishListSuccess | CartActions.CreateWishListFail>;
-    loadWishList$: Observable<CartActions.LoadWisthListSuccess | CartActions.CreateWishList | CartActions.LoadCartFail>;
-    resetWishList$: Observable<CartActions.LoadWisthListSuccess | CartActions.LoadCartFail>;
+    loadWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.CreateWishList | CartActions.LoadCartFail>;
+    resetWishList$: Observable<CartActions.LoadWishListSuccess | CartActions.LoadCartFail>;
     constructor(actions$: Actions, cartConnector: CartConnector, saveCartConnector: SaveCartConnector, authService: AuthService, store: Store<StateWithMultiCart>);
 }

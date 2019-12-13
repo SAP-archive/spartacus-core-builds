@@ -42,12 +42,12 @@ export declare class CreateWishListFail extends EntityFailAction {
         error?: any;
     });
 }
-export declare class LoadWisthList implements Action {
+export declare class LoadWishList implements Action {
     payload: string;
     readonly type = "[Wish List] Load Wish List";
     constructor(payload: string);
 }
-export declare class LoadWisthListSuccess extends EntitySuccessAction {
+export declare class LoadWishListSuccess extends EntitySuccessAction {
     payload: {
         cart: Cart;
         userId: string;
@@ -64,4 +64,4 @@ export declare class ResetWishListDetails extends EntityResetAction {
     readonly type = "[Wish List] Reset Wish List";
     constructor();
 }
-export declare type WishListActions = CreateWishList | CreateWishListSuccess | CreateWishListFail | LoadWisthList | LoadWisthListSuccess | ResetWishListDetails;
+export declare type WishListActions = CreateWishList | CreateWishListSuccess | CreateWishListFail | LoadWishList | LoadWishListSuccess | ResetWishListDetails;

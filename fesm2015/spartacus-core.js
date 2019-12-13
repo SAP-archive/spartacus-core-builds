@@ -29718,7 +29718,7 @@ class CreateWishList extends EntityLoadAction {
      * @param {?} payload
      */
     constructor(payload) {
-        super(MULTI_CART_FEATURE, 'fresh');
+        super(MULTI_CART_FEATURE, FRESH_CART_ID);
         this.payload = payload;
         this.type = CREATE_WISH_LIST;
     }
@@ -29761,7 +29761,7 @@ if (false) {
     /** @type {?} */
     CreateWishListFail.prototype.payload;
 }
-class LoadWisthList {
+class LoadWishList {
     /**
      * @param {?} payload
      */
@@ -29772,11 +29772,11 @@ class LoadWisthList {
 }
 if (false) {
     /** @type {?} */
-    LoadWisthList.prototype.type;
+    LoadWishList.prototype.type;
     /** @type {?} */
-    LoadWisthList.prototype.payload;
+    LoadWishList.prototype.payload;
 }
-class LoadWisthListSuccess extends EntitySuccessAction {
+class LoadWishListSuccess extends EntitySuccessAction {
     /**
      * @param {?} payload
      */
@@ -29788,9 +29788,9 @@ class LoadWisthListSuccess extends EntitySuccessAction {
 }
 if (false) {
     /** @type {?} */
-    LoadWisthListSuccess.prototype.type;
+    LoadWishListSuccess.prototype.type;
     /** @type {?} */
-    LoadWisthListSuccess.prototype.payload;
+    LoadWishListSuccess.prototype.payload;
 }
 class ResetWishListDetails extends EntityResetAction {
     constructor() {
@@ -29917,8 +29917,8 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CreateWishList: CreateWishList,
     CreateWishListSuccess: CreateWishListSuccess,
     CreateWishListFail: CreateWishListFail,
-    LoadWisthList: LoadWisthList,
-    LoadWisthListSuccess: LoadWisthListSuccess,
+    LoadWishList: LoadWishList,
+    LoadWishListSuccess: LoadWishListSuccess,
     ResetWishListDetails: ResetWishListDetails
 });
 
@@ -31621,7 +31621,7 @@ class WishListService {
      * @return {?}
      */
     loadWishList(userId) {
-        this.store.dispatch(new LoadWisthList(userId));
+        this.store.dispatch(new LoadWishList(userId));
     }
     /**
      * @param {?} productCode
@@ -34673,7 +34673,7 @@ class WishListEffects {
                     cart => cart.name === 'wishlist'));
                     if (Boolean(wishList)) {
                         return [
-                            new LoadWisthListSuccess({
+                            new LoadWishListSuccess({
                                 cart: wishList,
                                 userId,
                             }),
@@ -34702,7 +34702,7 @@ class WishListEffects {
                  * @return {?}
                  */
                 wishList => [
-                    new LoadWisthListSuccess({ cart: wishList, userId }),
+                    new LoadWishListSuccess({ cart: wishList, userId }),
                 ])), catchError((/**
                  * @param {?} error
                  * @return {?}
@@ -34861,7 +34861,7 @@ function reducer$9(state = initialState$9, action) {
 /** @type {?} */
 const activeCartInitialState = '';
 /** @type {?} */
-const wishListinitialState = '';
+const wishListInitialState = '';
 /**
  * @param {?=} state
  * @param {?=} action
@@ -34915,7 +34915,7 @@ function cartEntitiesReducer(state = cartEntitiesInitialState, action) {
  * @param {?=} action
  * @return {?}
  */
-function wishListReducer(state = wishListinitialState, action) {
+function wishListReducer(state = wishListInitialState, action) {
     switch (action.type) {
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:

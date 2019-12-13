@@ -33002,7 +33002,7 @@ var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
 var CreateWishList = /** @class */ (function (_super) {
     __extends(CreateWishList, _super);
     function CreateWishList(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, 'fresh') || this;
+        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID) || this;
         _this.payload = payload;
         _this.type = CREATE_WISH_LIST;
         return _this;
@@ -33047,34 +33047,34 @@ if (false) {
     /** @type {?} */
     CreateWishListFail.prototype.payload;
 }
-var LoadWisthList = /** @class */ (function () {
-    function LoadWisthList(payload) {
+var LoadWishList = /** @class */ (function () {
+    function LoadWishList(payload) {
         this.payload = payload;
         this.type = LOAD_WISH_LIST;
     }
-    return LoadWisthList;
+    return LoadWishList;
 }());
 if (false) {
     /** @type {?} */
-    LoadWisthList.prototype.type;
+    LoadWishList.prototype.type;
     /** @type {?} */
-    LoadWisthList.prototype.payload;
+    LoadWishList.prototype.payload;
 }
-var LoadWisthListSuccess = /** @class */ (function (_super) {
-    __extends(LoadWisthListSuccess, _super);
-    function LoadWisthListSuccess(payload) {
+var LoadWishListSuccess = /** @class */ (function (_super) {
+    __extends(LoadWishListSuccess, _super);
+    function LoadWishListSuccess(payload) {
         var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
         _this.payload = payload;
         _this.type = LOAD_WISH_LIST_SUCCESS;
         return _this;
     }
-    return LoadWisthListSuccess;
+    return LoadWishListSuccess;
 }(EntitySuccessAction));
 if (false) {
     /** @type {?} */
-    LoadWisthListSuccess.prototype.type;
+    LoadWishListSuccess.prototype.type;
     /** @type {?} */
-    LoadWisthListSuccess.prototype.payload;
+    LoadWishListSuccess.prototype.payload;
 }
 var ResetWishListDetails = /** @class */ (function (_super) {
     __extends(ResetWishListDetails, _super);
@@ -33204,8 +33204,8 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CreateWishList: CreateWishList,
     CreateWishListSuccess: CreateWishListSuccess,
     CreateWishListFail: CreateWishListFail,
-    LoadWisthList: LoadWisthList,
-    LoadWisthListSuccess: LoadWisthListSuccess,
+    LoadWishList: LoadWishList,
+    LoadWishListSuccess: LoadWishListSuccess,
     ResetWishListDetails: ResetWishListDetails
 });
 
@@ -35496,7 +35496,7 @@ var WishListService = /** @class */ (function () {
      * @return {?}
      */
     function (userId) {
-        this.store.dispatch(new LoadWisthList(userId));
+        this.store.dispatch(new LoadWishList(userId));
     };
     /**
      * @param {?} productCode
@@ -38866,7 +38866,7 @@ var WishListEffects = /** @class */ (function () {
                     function (cart) { return cart.name === 'wishlist'; }));
                     if (Boolean(wishList)) {
                         return [
-                            new LoadWisthListSuccess({
+                            new LoadWishListSuccess({
                                 cart: wishList,
                                 userId: userId,
                             }),
@@ -38898,7 +38898,7 @@ var WishListEffects = /** @class */ (function () {
                  * @return {?}
                  */
                 function (wishList) { return [
-                    new LoadWisthListSuccess({ cart: wishList, userId: userId }),
+                    new LoadWishListSuccess({ cart: wishList, userId: userId }),
                 ]; })), catchError((/**
                  * @param {?} error
                  * @return {?}
@@ -39062,7 +39062,7 @@ function reducer$9(state, action) {
 /** @type {?} */
 var activeCartInitialState = '';
 /** @type {?} */
-var wishListinitialState = '';
+var wishListInitialState = '';
 /**
  * @param {?=} state
  * @param {?=} action
@@ -39119,7 +39119,7 @@ function cartEntitiesReducer(state, action) {
  * @return {?}
  */
 function wishListReducer(state, action) {
-    if (state === void 0) { state = wishListinitialState; }
+    if (state === void 0) { state = wishListInitialState; }
     switch (action.type) {
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
