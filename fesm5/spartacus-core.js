@@ -38374,15 +38374,27 @@ var CartEffects = /** @class */ (function () {
                 }
                 return _this.cartConnector
                     .load(loadCartParams.userId, loadCartParams.cartId)
-                    .pipe(mergeMap((/**
-                 * @param {?} cart
+                    .pipe(
+                // TODO: remove with the `cart` store feature
+                withLatestFrom(
+                // TODO: deprecated -> remove check for store in 2.0 when store will be required
+                !_this.store
+                    ? of(payload.cartId)
+                    : _this.store.pipe(select(getActiveCartId))), mergeMap((/**
+                 * @param {?} __0
                  * @return {?}
                  */
-                function (cart) {
+                function (_a) {
+                    var _b = __read(_a, 2), cart = _b[0], activeCartId = _b[1];
                     /** @type {?} */
                     var actions = [];
                     if (cart) {
-                        actions.push(new LoadCartSuccess(cart));
+                        // `cart` store branch should only be updated for active cart
+                        // avoid dispatching LoadCartSuccess action on different cart loads
+                        if (loadCartParams.cartId === activeCartId ||
+                            loadCartParams.cartId === OCC_CART_ID_CURRENT) {
+                            actions.push(new LoadCartSuccess(cart));
+                        }
                         actions.push(new LoadMultiCartSuccess({
                             cart: cart,
                             userId: loadCartParams.userId,
@@ -38468,27 +38480,31 @@ var CartEffects = /** @class */ (function () {
              */
             function (cart) {
                 /** @type {?} */
-                var mergeActions = [];
+                var conditionalActions = [];
                 if (payload.oldCartId) {
-                    mergeActions.push(new MergeCartSuccess({
+                    conditionalActions.push(new MergeCartSuccess({
                         userId: payload.userId,
                         cartId: cart.code,
                     }));
-                    mergeActions.push(new MergeMultiCartSuccess({
+                    conditionalActions.push(new MergeMultiCartSuccess({
                         userId: payload.userId,
                         cartId: cart.code,
                         oldCartId: payload.oldCartId,
                     }));
                 }
+                // `cart` store branch should only be updated for active cart
+                // avoid dispatching CreateCartSuccess action on different cart loads
+                if (payload.extraData && payload.extraData.active) {
+                    conditionalActions.push(new CreateCartSuccess(cart));
+                }
                 return __spread([
-                    new CreateCartSuccess(cart),
                     new CreateMultiCartSuccess({
                         cart: cart,
                         userId: payload.userId,
                         extraData: payload.extraData,
                     }),
                     new SetFreshCart(cart)
-                ], mergeActions);
+                ], conditionalActions);
             })), catchError((/**
              * @param {?} error
              * @return {?}
