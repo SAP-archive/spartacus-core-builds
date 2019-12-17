@@ -1,8 +1,8 @@
 import { __values, __spread, __awaiter, __generator, __read, __extends, __assign, __decorate, __metadata } from 'tslib';
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
-import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, from, queueScheduler, merge } from 'rxjs';
-import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, groupBy, auditTime, observeOn, switchMapTo, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, from, merge } from 'rxjs';
+import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, observeOn, groupBy, switchMapTo, auditTime, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
@@ -36358,7 +36358,7 @@ var CmsService = /** @class */ (function () {
             this.components[uid] = combineLatest([
                 this.routingService.isNavigating(),
                 this.store.pipe(select(componentStateSelectorFactory(uid))),
-            ]).pipe(tap((/**
+            ]).pipe(observeOn(queueScheduler), tap((/**
              * @param {?} __0
              * @return {?}
              */
@@ -36379,7 +36379,7 @@ var CmsService = /** @class */ (function () {
              * @param {?} componentState
              * @return {?}
              */
-            function (componentState) { return componentState && componentState.success; })), pluck('value'), shareReplay({ bufferSize: 1, refCount: true }));
+            function (componentState) { return componentState && componentState.success; })), pluck('value'), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
         }
         return (/** @type {?} */ (this.components[uid]));
     };
@@ -44236,58 +44236,142 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ * @template T
+ * @param {?=} time
+ * @param {?=} scheduler
+ * @return {?}
+ */
+function bufferDebounceTime(time, scheduler) {
+    if (time === void 0) { time = 0; }
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        /** @type {?} */
+        var bufferedValues = [];
+        return source.pipe(tap((/**
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) { return bufferedValues.push(value); })), debounceTime(time, scheduler), map((/**
+         * @return {?}
+         */
+        function () { return bufferedValues; })), tap((/**
+         * @return {?}
+         */
+        function () { return (bufferedValues = []); })));
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @template T
+ * @param {?} notifier
+ * @return {?}
+ */
+function withdrawOn(notifier) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        return notifier.pipe(startWith(undefined), switchMapTo(source));
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var ComponentEffects = /** @class */ (function () {
     function ComponentEffects(actions$, cmsComponentLoader, routingService) {
         var _this = this;
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
         this.routingService = routingService;
-        this.loadComponent$ = this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), map((/**
-         * @param {?} action
+        this.currentPageContext$ = this.routingService.getRouterState().pipe(filter((/**
+         * @param {?} routerState
          * @return {?}
          */
-        function (action) { return action.payload; })), groupBy((/**
-         * @param {?} uid
+        function (routerState) { return routerState !== undefined; })), map((/**
+         * @param {?} routerState
          * @return {?}
          */
-        function (uid) { return uid; })), mergeMap((/**
-         * @param {?} group
+        function (routerState) { return routerState.state.context; })));
+        this.contextChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+        this.loadComponent$ = createEffect((/**
          * @return {?}
          */
-        function (group) {
-            return group.pipe(switchMap((/**
+        function () { return (/**
+         * @param {?=} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
+            return _this.actions$.pipe(ofType(LOAD_CMS_COMPONENT), map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), bufferDebounceTime(debounce, scheduler), withLatestFrom(_this.currentPageContext$), mergeMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), componentUids = _b[0], pageContext = _b[1];
+                return _this.loadComponentsEffect(componentUids, pageContext);
+            })), withdrawOn(_this.contextChange$));
+        }); }));
+    }
+    /**
+     * @private
+     * @param {?} componentUids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    ComponentEffects.prototype.loadComponentsEffect = /**
+     * @private
+     * @param {?} componentUids
+     * @param {?} pageContext
+     * @return {?}
+     */
+    function (componentUids, pageContext) {
+        return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((/**
+         * @param {?} components
+         * @return {?}
+         */
+        function (components) {
+            return from(components.map((/**
+             * @param {?} component
+             * @return {?}
+             */
+            function (component) {
+                return new LoadCmsComponentSuccess(component, component.uid);
+            })));
+        })), catchError((/**
+         * @param {?} error
+         * @return {?}
+         */
+        function (error) {
+            return from(componentUids.map((/**
              * @param {?} uid
              * @return {?}
              */
             function (uid) {
-                return _this.routingService.getRouterState().pipe(filter((/**
-                 * @param {?} routerState
-                 * @return {?}
-                 */
-                function (routerState) { return routerState !== undefined; })), map((/**
-                 * @param {?} routerState
-                 * @return {?}
-                 */
-                function (routerState) { return routerState.state.context; })), take(1), mergeMap((/**
-                 * @param {?} pageContext
-                 * @return {?}
-                 */
-                function (pageContext) {
-                    return _this.cmsComponentLoader.get(uid, pageContext).pipe(map((/**
-                     * @param {?} data
-                     * @return {?}
-                     */
-                    function (data) { return new LoadCmsComponentSuccess(data, uid); })), catchError((/**
-                     * @param {?} error
-                     * @return {?}
-                     */
-                    function (error) {
-                        return of(new LoadCmsComponentFail(uid, makeErrorSerializable(error)));
-                    })));
-                })));
+                return new LoadCmsComponentFail(uid, makeErrorSerializable(error));
             })));
         })));
-    }
+    };
     ComponentEffects.decorators = [
         { type: Injectable }
     ];
@@ -44297,13 +44381,19 @@ var ComponentEffects = /** @class */ (function () {
         { type: CmsComponentConnector },
         { type: RoutingService }
     ]; };
-    __decorate([
-        Effect(),
-        __metadata("design:type", Observable)
-    ], ComponentEffects.prototype, "loadComponent$", void 0);
     return ComponentEffects;
 }());
 if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.currentPageContext$;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.contextChange$;
     /** @type {?} */
     ComponentEffects.prototype.loadComponent$;
     /**
@@ -49749,64 +49839,6 @@ if (false) {
      * @private
      */
     ProductsSearchEffects.prototype.productSearchConnector;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @param {?=} time
- * @param {?=} scheduler
- * @return {?}
- */
-function bufferDebounceTime(time, scheduler) {
-    if (time === void 0) { time = 0; }
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    function (source) {
-        /** @type {?} */
-        var bufferedValues = [];
-        return source.pipe(tap((/**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) { return bufferedValues.push(value); })), debounceTime(time, scheduler), map((/**
-         * @return {?}
-         */
-        function () { return bufferedValues; })), tap((/**
-         * @return {?}
-         */
-        function () { return (bufferedValues = []); })));
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- *
- * Withdraw from the source observable when notifier emits a value
- *
- * Withdraw will result in resubscribing to the source observable
- * Operator is useful to kill ongoing emission transformation on notifier emission
- *
- * @template T
- * @param {?} notifier
- * @return {?}
- */
-function withdrawOn(notifier) {
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    function (source) {
-        return notifier.pipe(startWith(undefined), switchMapTo(source));
-    });
 }
 
 /**

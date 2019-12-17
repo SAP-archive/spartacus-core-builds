@@ -36549,7 +36549,7 @@
                 this.components[uid] = rxjs.combineLatest([
                     this.routingService.isNavigating(),
                     this.store.pipe(store.select(componentStateSelectorFactory(uid))),
-                ]).pipe(operators.tap((/**
+                ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap((/**
                  * @param {?} __0
                  * @return {?}
                  */
@@ -36570,7 +36570,7 @@
                  * @param {?} componentState
                  * @return {?}
                  */
-                function (componentState) { return componentState && componentState.success; })), operators.pluck('value'), operators.shareReplay({ bufferSize: 1, refCount: true }));
+                function (componentState) { return componentState && componentState.success; })), operators.pluck('value'), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
             }
             return (/** @type {?} */ (this.components[uid]));
         };
@@ -44427,58 +44427,142 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @template T
+     * @param {?=} time
+     * @param {?=} scheduler
+     * @return {?}
+     */
+    function bufferDebounceTime(time, scheduler) {
+        if (time === void 0) { time = 0; }
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            /** @type {?} */
+            var bufferedValues = [];
+            return source.pipe(operators.tap((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
+             * @return {?}
+             */
+            function () { return bufferedValues; })), operators.tap((/**
+             * @return {?}
+             */
+            function () { return (bufferedValues = []); })));
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @template T
+     * @param {?} notifier
+     * @return {?}
+     */
+    function withdrawOn(notifier) {
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ComponentEffects = /** @class */ (function () {
         function ComponentEffects(actions$, cmsComponentLoader, routingService) {
             var _this = this;
             this.actions$ = actions$;
             this.cmsComponentLoader = cmsComponentLoader;
             this.routingService = routingService;
-            this.loadComponent$ = this.actions$.pipe(effects$c.ofType(LOAD_CMS_COMPONENT), operators.map((/**
-             * @param {?} action
+            this.currentPageContext$ = this.routingService.getRouterState().pipe(operators.filter((/**
+             * @param {?} routerState
              * @return {?}
              */
-            function (action) { return action.payload; })), operators.groupBy((/**
-             * @param {?} uid
+            function (routerState) { return routerState !== undefined; })), operators.map((/**
+             * @param {?} routerState
              * @return {?}
              */
-            function (uid) { return uid; })), operators.mergeMap((/**
-             * @param {?} group
+            function (routerState) { return routerState.state.context; })));
+            this.contextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+            this.loadComponent$ = effects$c.createEffect((/**
              * @return {?}
              */
-            function (group) {
-                return group.pipe(operators.switchMap((/**
+            function () { return (/**
+             * @param {?=} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
+                return _this.actions$.pipe(effects$c.ofType(LOAD_CMS_COMPONENT), operators.map((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) { return action.payload; })), bufferDebounceTime(debounce, scheduler), operators.withLatestFrom(_this.currentPageContext$), operators.mergeMap((/**
+                 * @param {?} __0
+                 * @return {?}
+                 */
+                function (_a) {
+                    var _b = __read(_a, 2), componentUids = _b[0], pageContext = _b[1];
+                    return _this.loadComponentsEffect(componentUids, pageContext);
+                })), withdrawOn(_this.contextChange$));
+            }); }));
+        }
+        /**
+         * @private
+         * @param {?} componentUids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        ComponentEffects.prototype.loadComponentsEffect = /**
+         * @private
+         * @param {?} componentUids
+         * @param {?} pageContext
+         * @return {?}
+         */
+        function (componentUids, pageContext) {
+            return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(operators.switchMap((/**
+             * @param {?} components
+             * @return {?}
+             */
+            function (components) {
+                return rxjs.from(components.map((/**
+                 * @param {?} component
+                 * @return {?}
+                 */
+                function (component) {
+                    return new LoadCmsComponentSuccess(component, component.uid);
+                })));
+            })), operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) {
+                return rxjs.from(componentUids.map((/**
                  * @param {?} uid
                  * @return {?}
                  */
                 function (uid) {
-                    return _this.routingService.getRouterState().pipe(operators.filter((/**
-                     * @param {?} routerState
-                     * @return {?}
-                     */
-                    function (routerState) { return routerState !== undefined; })), operators.map((/**
-                     * @param {?} routerState
-                     * @return {?}
-                     */
-                    function (routerState) { return routerState.state.context; })), operators.take(1), operators.mergeMap((/**
-                     * @param {?} pageContext
-                     * @return {?}
-                     */
-                    function (pageContext) {
-                        return _this.cmsComponentLoader.get(uid, pageContext).pipe(operators.map((/**
-                         * @param {?} data
-                         * @return {?}
-                         */
-                        function (data) { return new LoadCmsComponentSuccess(data, uid); })), operators.catchError((/**
-                         * @param {?} error
-                         * @return {?}
-                         */
-                        function (error) {
-                            return rxjs.of(new LoadCmsComponentFail(uid, makeErrorSerializable(error)));
-                        })));
-                    })));
+                    return new LoadCmsComponentFail(uid, makeErrorSerializable(error));
                 })));
             })));
-        }
+        };
         ComponentEffects.decorators = [
             { type: core.Injectable }
         ];
@@ -44488,13 +44572,19 @@
             { type: CmsComponentConnector },
             { type: RoutingService }
         ]; };
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], ComponentEffects.prototype, "loadComponent$", void 0);
         return ComponentEffects;
     }());
     if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentEffects.prototype.currentPageContext$;
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentEffects.prototype.contextChange$;
         /** @type {?} */
         ComponentEffects.prototype.loadComponent$;
         /**
@@ -49940,64 +50030,6 @@
          * @private
          */
         ProductsSearchEffects.prototype.productSearchConnector;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * @template T
-     * @param {?=} time
-     * @param {?=} scheduler
-     * @return {?}
-     */
-    function bufferDebounceTime(time, scheduler) {
-        if (time === void 0) { time = 0; }
-        return (/**
-         * @param {?} source
-         * @return {?}
-         */
-        function (source) {
-            /** @type {?} */
-            var bufferedValues = [];
-            return source.pipe(operators.tap((/**
-             * @param {?} value
-             * @return {?}
-             */
-            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
-             * @return {?}
-             */
-            function () { return bufferedValues; })), operators.tap((/**
-             * @return {?}
-             */
-            function () { return (bufferedValues = []); })));
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     *
-     * Withdraw from the source observable when notifier emits a value
-     *
-     * Withdraw will result in resubscribing to the source observable
-     * Operator is useful to kill ongoing emission transformation on notifier emission
-     *
-     * @template T
-     * @param {?} notifier
-     * @return {?}
-     */
-    function withdrawOn(notifier) {
-        return (/**
-         * @param {?} source
-         * @return {?}
-         */
-        function (source) {
-            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
-        });
     }
 
     /**
