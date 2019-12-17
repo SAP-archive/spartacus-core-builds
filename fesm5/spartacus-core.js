@@ -2,7 +2,7 @@ import { __values, __spread, __awaiter, __generator, __read, __extends, __assign
 import { InjectionToken, isDevMode, Optional, NgModule, PLATFORM_ID, Injectable, Inject, ɵɵdefineInjectable, ɵɵinject, APP_INITIALIZER, Directive, TemplateRef, ViewContainerRef, Input, Injector, INJECTOR, Pipe, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT, isPlatformServer, Location, getLocaleId, DatePipe } from '@angular/common';
 import { BehaviorSubject, of, fromEvent, throwError, EMPTY, Observable, iif, combineLatest, forkJoin, Subscription, timer, queueScheduler, from, merge } from 'rxjs';
-import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, observeOn, groupBy, switchMapTo, auditTime, takeWhile } from 'rxjs/operators';
+import { filter, take, mapTo, map, switchMap, debounceTime, startWith, distinctUntilChanged, tap, catchError, exhaustMap, mergeMap, withLatestFrom, pluck, shareReplay, concatMap, delay, debounce, observeOn, switchMapTo, groupBy, auditTime, takeWhile } from 'rxjs/operators';
 import { createFeatureSelector, createSelector, select, Store, INIT, UPDATE, META_REDUCERS, combineReducers, StoreModule } from '@ngrx/store';
 import { HttpHeaders, HttpErrorResponse, HttpParams, HTTP_INTERCEPTORS, HttpClient, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { PRIMARY_OUTLET, Router, DefaultUrlSerializer, NavigationStart, NavigationEnd, NavigationError, NavigationCancel, UrlSerializer, RouterModule } from '@angular/router';
@@ -2021,6 +2021,12 @@ function processesLoaderReducer(entityType, reducer) {
         if (action.meta && action.meta.entityType === entityType) {
             /** @type {?} */
             var processesCountDiff = action.meta.processesCountDiff;
+            if (isDevMode() && state.processesCount + processesCountDiff < 0) {
+                console.error("Action '" + action.type + "' sets processesCount to value < 0!\n" +
+                    'Make sure to keep processesCount in sync.\n' +
+                    'There should always be only one decrement action for each increment action.\n' +
+                    "Make sure that you don't reset state in between those actions.\n", action);
+            }
             if (processesCountDiff) {
                 return __assign({}, loaderState, { processesCount: state.processesCount
                         ? state.processesCount + processesCountDiff
@@ -36892,6 +36898,31 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @template T
+ * @param {?} notifier
+ * @return {?}
+ */
+function withdrawOn(notifier) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        return notifier.pipe(startWith(undefined), switchMapTo(source));
+    });
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 var CartEntryConnector = /** @class */ (function () {
     function CartEntryConnector(adapter) {
         this.adapter = adapter;
@@ -36976,6 +37007,7 @@ var CartEntryEffects = /** @class */ (function () {
         var _this = this;
         this.actions$ = actions$;
         this.cartEntryConnector = cartEntryConnector;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.addEntry$ = this.actions$.pipe(ofType(CART_ADD_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -37007,7 +37039,7 @@ var CartEntryEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.removeEntry$ = this.actions$.pipe(ofType(CART_REMOVE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -37041,7 +37073,7 @@ var CartEntryEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.updateEntry$ = this.actions$.pipe(ofType(CART_UPDATE_ENTRY), map((/**
          * @param {?} action
          * @return {?}
@@ -37075,7 +37107,7 @@ var CartEntryEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
     }
     CartEntryEffects.decorators = [
         { type: Injectable }
@@ -37100,6 +37132,11 @@ var CartEntryEffects = /** @class */ (function () {
     return CartEntryEffects;
 }());
 if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEntryEffects.prototype.contextChange$;
     /** @type {?} */
     CartEntryEffects.prototype.addEntry$;
     /** @type {?} */
@@ -38317,6 +38354,7 @@ var CartEffects = /** @class */ (function () {
         this.cartConnector = cartConnector;
         this.cartData = cartData;
         this.store = store;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.loadCart$ = this.actions$.pipe(ofType(LOAD_CART), map((/**
          * @param {?} action
          * @return {?}
@@ -38462,7 +38500,7 @@ var CartEffects = /** @class */ (function () {
                     ]);
                 })));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.createCart$ = this.actions$.pipe(ofType(CREATE_CART), map((/**
          * @param {?} action
          * @return {?}
@@ -38518,7 +38556,7 @@ var CartEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.mergeCart$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
          * @return {?}
@@ -38542,7 +38580,7 @@ var CartEffects = /** @class */ (function () {
                     }),
                 ];
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.refresh$ = this.actions$.pipe(ofType(CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), map((/**
          * @param {?} action
          * @return {?}
@@ -38627,7 +38665,7 @@ var CartEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.deleteCart$ = this.actions$.pipe(ofType(DELETE_CART), map((/**
          * @param {?} action
          * @return {?}
@@ -38709,6 +38747,11 @@ var CartEffects = /** @class */ (function () {
     return CartEffects;
 }());
 if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CartEffects.prototype.contextChange$;
     /** @type {?} */
     CartEffects.prototype.loadCart$;
     /** @type {?} */
@@ -40631,6 +40674,7 @@ var CheckoutEffects = /** @class */ (function () {
         this.checkoutDeliveryConnector = checkoutDeliveryConnector;
         this.checkoutPaymentConnector = checkoutPaymentConnector;
         this.checkoutConnector = checkoutConnector;
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.addDeliveryAddress$ = this.actions$.pipe(ofType(ADD_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -40679,7 +40723,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.setDeliveryAddress$ = this.actions$.pipe(ofType(SET_DELIVERY_ADDRESS), map((/**
          * @param {?} action
          * @return {?}
@@ -40713,7 +40757,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.loadSupportedDeliveryModes$ = this.actions$.pipe(ofType(LOAD_SUPPORTED_DELIVERY_MODES), map((/**
          * @param {?} action
          * @return {?}
@@ -40738,7 +40782,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
          * @return {?}
          */
@@ -40784,7 +40828,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new SetDeliveryModeFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.createPaymentDetails$ = this.actions$.pipe(ofType(CREATE_PAYMENT_DETAILS), map((/**
          * @param {?} action
          * @return {?}
@@ -40818,7 +40862,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.setPaymentDetails$ = this.actions$.pipe(ofType(SET_PAYMENT_DETAILS), map((/**
          * @param {?} action
          * @return {?}
@@ -40842,7 +40886,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.placeOrder$ = this.actions$.pipe(ofType(PLACE_ORDER), map((/**
          * @param {?} action
          * @return {?}
@@ -40868,7 +40912,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new PlaceOrderFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.loadCheckoutDetails$ = this.actions$.pipe(ofType(LOAD_CHECKOUT_DETAILS), map((/**
          * @param {?} action
          * @return {?}
@@ -40893,7 +40937,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.reloadDetailsOnMergeCart$ = this.actions$.pipe(ofType(MERGE_CART_SUCCESS), map((/**
          * @param {?} action
          * @return {?}
@@ -40933,7 +40977,7 @@ var CheckoutEffects = /** @class */ (function () {
             function (error) {
                 return of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)));
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
         this.clearCheckoutDeliveryMode$ = this.actions$.pipe(ofType(CLEAR_CHECKOUT_DELIVERY_MODE), map((/**
          * @param {?} action
          * @return {?}
@@ -40971,7 +41015,7 @@ var CheckoutEffects = /** @class */ (function () {
                     }),
                 ]);
             })));
-        })));
+        })), withdrawOn(this.contextChange$));
     }
     CheckoutEffects.decorators = [
         { type: Injectable }
@@ -41046,6 +41090,11 @@ var CheckoutEffects = /** @class */ (function () {
     return CheckoutEffects;
 }());
 if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    CheckoutEffects.prototype.contextChange$;
     /** @type {?} */
     CheckoutEffects.prototype.addDeliveryAddress$;
     /** @type {?} */
@@ -44262,31 +44311,6 @@ function bufferDebounceTime(time, scheduler) {
          * @return {?}
          */
         function () { return (bufferedValues = []); })));
-    });
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- *
- * Withdraw from the source observable when notifier emits a value
- *
- * Withdraw will result in resubscribing to the source observable
- * Operator is useful to kill ongoing emission transformation on notifier emission
- *
- * @template T
- * @param {?} notifier
- * @return {?}
- */
-function withdrawOn(notifier) {
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    function (source) {
-        return notifier.pipe(startWith(undefined), switchMapTo(source));
     });
 }
 

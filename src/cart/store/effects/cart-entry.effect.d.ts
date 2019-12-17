@@ -6,6 +6,7 @@ import { CartActions } from '../actions/index';
 export declare class CartEntryEffects {
     private actions$;
     private cartEntryConnector;
+    private contextChange$;
     addEntry$: Observable<CartActions.CartAddEntrySuccess | CartActions.CartAddEntryFail | DeprecatedCartActions.LoadCart | CartActions.CartProcessesDecrement>;
     removeEntry$: Observable<CartActions.CartRemoveEntrySuccess | CartActions.CartRemoveEntryFail | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;
     updateEntry$: Observable<CartActions.CartUpdateEntrySuccess | CartActions.CartUpdateEntryFail | CartActions.CartProcessesDecrement | DeprecatedCartActions.LoadCart>;

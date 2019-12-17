@@ -13,6 +13,7 @@ export declare class CheckoutEffects {
     private checkoutDeliveryConnector;
     private checkoutPaymentConnector;
     private checkoutConnector;
+    private contextChange$;
     addDeliveryAddress$: Observable<UserActions.LoadUserAddresses | CheckoutActions.SetDeliveryAddress | CheckoutActions.AddDeliveryAddressFail>;
     setDeliveryAddress$: Observable<CheckoutActions.SetDeliveryAddressSuccess | CheckoutActions.ClearSupportedDeliveryModes | CheckoutActions.ClearCheckoutDeliveryMode | CheckoutActions.ResetLoadSupportedDeliveryModesProcess | CheckoutActions.LoadSupportedDeliveryModes | CheckoutActions.SetDeliveryAddressFail>;
     loadSupportedDeliveryModes$: Observable<CheckoutActions.LoadSupportedDeliveryModesSuccess | CheckoutActions.LoadSupportedDeliveryModesFail>;
