@@ -1,0 +1,26 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { startWith, switchMapTo } from 'rxjs/operators';
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @template T
+ * @param {?} notifier
+ * @return {?}
+ */
+export function withdrawOn(notifier) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        return notifier.pipe(startWith(undefined), switchMapTo(source));
+    });
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoid2l0aGRyYXctb24uanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXRpbC93aXRoZHJhdy1vbi50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQ0EsT0FBTyxFQUFFLFNBQVMsRUFBRSxXQUFXLEVBQUUsTUFBTSxnQkFBZ0IsQ0FBQzs7Ozs7Ozs7Ozs7O0FBV3hELE1BQU0sVUFBVSxVQUFVLENBQ3hCLFFBQXlCO0lBRXpCOzs7O0lBQU8sVUFBQyxNQUFxQjtRQUMzQixPQUFBLFFBQVEsQ0FBQyxJQUFJLENBQ1gsU0FBUyxDQUFDLFNBQVMsQ0FBQyxFQUNwQixXQUFXLENBQUMsTUFBTSxDQUFDLENBQ3BCO0lBSEQsQ0FHQyxFQUFDO0FBQ04sQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE9ic2VydmFibGUsIE9wZXJhdG9yRnVuY3Rpb24gfSBmcm9tICdyeGpzJztcbmltcG9ydCB7IHN0YXJ0V2l0aCwgc3dpdGNoTWFwVG8gfSBmcm9tICdyeGpzL29wZXJhdG9ycyc7XG5cbi8qKlxuICpcbiAqIFdpdGhkcmF3IGZyb20gdGhlIHNvdXJjZSBvYnNlcnZhYmxlIHdoZW4gbm90aWZpZXIgZW1pdHMgYSB2YWx1ZVxuICpcbiAqIFdpdGhkcmF3IHdpbGwgcmVzdWx0IGluIHJlc3Vic2NyaWJpbmcgdG8gdGhlIHNvdXJjZSBvYnNlcnZhYmxlXG4gKiBPcGVyYXRvciBpcyB1c2VmdWwgdG8ga2lsbCBvbmdvaW5nIGVtaXNzaW9uIHRyYW5zZm9ybWF0aW9uIG9uIG5vdGlmaWVyIGVtaXNzaW9uXG4gKlxuICogQHBhcmFtIG5vdGlmaWVyXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiB3aXRoZHJhd09uPFQ+KFxuICBub3RpZmllcjogT2JzZXJ2YWJsZTxhbnk+XG4pOiBPcGVyYXRvckZ1bmN0aW9uPFQsIFQ+IHtcbiAgcmV0dXJuIChzb3VyY2U6IE9ic2VydmFibGU8VD4pID0+XG4gICAgbm90aWZpZXIucGlwZShcbiAgICAgIHN0YXJ0V2l0aCh1bmRlZmluZWQpLFxuICAgICAgc3dpdGNoTWFwVG8oc291cmNlKVxuICAgICk7XG59XG4iXX0=

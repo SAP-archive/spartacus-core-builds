@@ -43063,7 +43063,7 @@ class ProductService {
          * @param {?} productState
          * @return {?}
          */
-        productState => productState.value)), shareReplay({ bufferSize: 1, refCount: true }));
+        productState => productState.value)), distinctUntilChanged(), shareReplay({ bufferSize: 1, refCount: true }));
     }
     /**
      * Returns boolean observable for product's loading state
@@ -44099,6 +44099,29 @@ function bufferDebounceTime(time = 0, scheduler) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/**
+ *
+ * Withdraw from the source observable when notifier emits a value
+ *
+ * Withdraw will result in resubscribing to the source observable
+ * Operator is useful to kill ongoing emission transformation on notifier emission
+ *
+ * @template T
+ * @param {?} notifier
+ * @return {?}
+ */
+function withdrawOn(notifier) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    (source) => notifier.pipe(startWith(undefined), switchMapTo(source)));
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class ProductEffects {
     /**
      * @param {?} actions$
@@ -44108,8 +44131,7 @@ class ProductEffects {
         this.actions$ = actions$;
         this.productConnector = productConnector;
         // we want to cancel all ongoing requests when currency or language changes,
-        // that's why observe them and switch actions stream on each change
-        this.contextSafeActions$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE), startWith({}), switchMapTo(this.actions$));
+        this.contextChange$ = this.actions$.pipe(ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
         this.loadProduct$ = createEffect((/**
          * @return {?}
          */
@@ -44117,7 +44139,7 @@ class ProductEffects {
          * @param {?=} __0
          * @return {?}
          */
-        ({ scheduler, debounce = 0 } = {}) => this.contextSafeActions$.pipe(ofType(LOAD_PRODUCT), map((/**
+        ({ scheduler, debounce = 0 } = {}) => this.actions$.pipe(ofType(LOAD_PRODUCT), map((/**
          * @param {?} action
          * @return {?}
          */
@@ -44133,7 +44155,7 @@ class ProductEffects {
          */
         products => merge(...this.productConnector
             .getMany(products)
-            .map(this.productLoadEffect))))))));
+            .map(this.productLoadEffect)))), withdrawOn(this.contextChange$)))));
     }
     /**
      * @private
@@ -44167,7 +44189,7 @@ if (false) {
      * @type {?}
      * @private
      */
-    ProductEffects.prototype.contextSafeActions$;
+    ProductEffects.prototype.contextChange$;
     /** @type {?} */
     ProductEffects.prototype.loadProduct$;
     /**

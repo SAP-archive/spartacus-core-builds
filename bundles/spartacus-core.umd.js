@@ -48691,7 +48691,7 @@
              * @param {?} productState
              * @return {?}
              */
-            function (productState) { return productState.value; })), operators.shareReplay({ bufferSize: 1, refCount: true }));
+            function (productState) { return productState.value; })), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
          * Returns boolean observable for product's loading state
@@ -49979,14 +49979,38 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     *
+     * Withdraw from the source observable when notifier emits a value
+     *
+     * Withdraw will result in resubscribing to the source observable
+     * Operator is useful to kill ongoing emission transformation on notifier emission
+     *
+     * @template T
+     * @param {?} notifier
+     * @return {?}
+     */
+    function withdrawOn(notifier) {
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            return notifier.pipe(operators.startWith(undefined), operators.switchMapTo(source));
+        });
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductEffects = /** @class */ (function () {
         function ProductEffects(actions$, productConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.productConnector = productConnector;
             // we want to cancel all ongoing requests when currency or language changes,
-            // that's why observe them and switch actions stream on each change
-            this.contextSafeActions$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE), operators.startWith({}), operators.switchMapTo(this.actions$));
+            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
             this.loadProduct$ = effects$c.createEffect((/**
              * @return {?}
              */
@@ -49996,7 +50020,7 @@
              */
             function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.contextSafeActions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.map((/**
+                return _this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.map((/**
                  * @param {?} action
                  * @return {?}
                  */
@@ -50014,7 +50038,7 @@
                     return rxjs.merge.apply(void 0, __spread(_this.productConnector
                         .getMany(products)
                         .map(_this.productLoadEffect)));
-                })));
+                })), withdrawOn(_this.contextChange$));
             }); }));
         }
         /**
@@ -50057,7 +50081,7 @@
          * @type {?}
          * @private
          */
-        ProductEffects.prototype.contextSafeActions$;
+        ProductEffects.prototype.contextChange$;
         /** @type {?} */
         ProductEffects.prototype.loadProduct$;
         /**
