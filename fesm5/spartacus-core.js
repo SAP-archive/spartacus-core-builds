@@ -44319,11 +44319,12 @@ function bufferDebounceTime(time, scheduler) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var ComponentEffects = /** @class */ (function () {
-    function ComponentEffects(actions$, cmsComponentLoader, routingService) {
+    function ComponentEffects(actions$, cmsComponentLoader, routingService, featureConfigService) {
         var _this = this;
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
         this.routingService = routingService;
+        this.featureConfigService = featureConfigService;
         this.currentPageContext$ = this.routingService.getRouterState().pipe(filter((/**
          * @param {?} routerState
          * @return {?}
@@ -44370,6 +44371,30 @@ var ComponentEffects = /** @class */ (function () {
      * @return {?}
      */
     function (componentUids, pageContext) {
+        var _this = this;
+        // TODO: remove, deprecated behavior since 1.4
+        if (!this.featureConfigService.isLevel('1.4')) {
+            return merge.apply(void 0, __spread(componentUids.map((/**
+             * @param {?} componentUid
+             * @return {?}
+             */
+            function (componentUid) {
+                return _this.cmsComponentLoader.get(componentUid, pageContext).pipe(map((/**
+                 * @param {?} component
+                 * @return {?}
+                 */
+                function (component) {
+                    return new LoadCmsComponentSuccess(component, component.uid);
+                })), catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error)));
+                })));
+            }))));
+        }
+        // END OF (TODO: remove, deprecated behavior since 1.4)
         return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((/**
          * @param {?} components
          * @return {?}
@@ -44403,7 +44428,8 @@ var ComponentEffects = /** @class */ (function () {
     ComponentEffects.ctorParameters = function () { return [
         { type: Actions },
         { type: CmsComponentConnector },
-        { type: RoutingService }
+        { type: RoutingService },
+        { type: FeatureConfigService }
     ]; };
     return ComponentEffects;
 }());
@@ -44435,6 +44461,11 @@ if (false) {
      * @private
      */
     ComponentEffects.prototype.routingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.featureConfigService;
 }
 
 /**

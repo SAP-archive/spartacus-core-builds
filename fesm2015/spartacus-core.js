@@ -39227,11 +39227,13 @@ class ComponentEffects {
      * @param {?} actions$
      * @param {?} cmsComponentLoader
      * @param {?} routingService
+     * @param {?} featureConfigService
      */
-    constructor(actions$, cmsComponentLoader, routingService) {
+    constructor(actions$, cmsComponentLoader, routingService, featureConfigService) {
         this.actions$ = actions$;
         this.cmsComponentLoader = cmsComponentLoader;
         this.routingService = routingService;
+        this.featureConfigService = featureConfigService;
         this.currentPageContext$ = this.routingService.getRouterState().pipe(filter((/**
          * @param {?} routerState
          * @return {?}
@@ -39266,6 +39268,23 @@ class ComponentEffects {
      * @return {?}
      */
     loadComponentsEffect(componentUids, pageContext) {
+        // TODO: remove, deprecated behavior since 1.4
+        if (!this.featureConfigService.isLevel('1.4')) {
+            return merge(...componentUids.map((/**
+             * @param {?} componentUid
+             * @return {?}
+             */
+            componentUid => this.cmsComponentLoader.get(componentUid, pageContext).pipe(map((/**
+             * @param {?} component
+             * @return {?}
+             */
+            component => new LoadCmsComponentSuccess(component, component.uid))), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error)))))))));
+        }
+        // END OF (TODO: remove, deprecated behavior since 1.4)
         return this.cmsComponentLoader.getList(componentUids, pageContext).pipe(switchMap((/**
          * @param {?} components
          * @return {?}
@@ -39292,7 +39311,8 @@ ComponentEffects.decorators = [
 ComponentEffects.ctorParameters = () => [
     { type: Actions },
     { type: CmsComponentConnector },
-    { type: RoutingService }
+    { type: RoutingService },
+    { type: FeatureConfigService }
 ];
 if (false) {
     /**
@@ -39322,6 +39342,11 @@ if (false) {
      * @private
      */
     ComponentEffects.prototype.routingService;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentEffects.prototype.featureConfigService;
 }
 
 /**
