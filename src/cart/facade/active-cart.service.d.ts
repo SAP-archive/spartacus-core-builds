@@ -40,6 +40,7 @@ export declare class ActiveCartService {
     private load;
     private addEntriesGuestMerge;
     private requireLoadedCartForGuestMerge;
+    private isCartCreating;
     private requireLoadedCart;
     /**
      * Add entry to active cart

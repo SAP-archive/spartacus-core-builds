@@ -34096,6 +34096,23 @@
         };
         /**
          * @private
+         * @param {?} cartState
+         * @return {?}
+         */
+        ActiveCartService.prototype.isCartCreating = /**
+         * @private
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) {
+            // cart creating is always represented with loading flags
+            // when all loading flags are false it means that we restored wrong cart id
+            // could happen on context change or reload right in the middle on cart create call
+            return (this.cartId === FRESH_CART_ID &&
+                (cartState.loading || cartState.success || cartState.error));
+        };
+        /**
+         * @private
          * @param {?=} customCartSelector$
          * @return {?}
          */
@@ -34120,9 +34137,10 @@
             function (cartState) { return !cartState.loading; })), 
             // Avoid load/create call when there are new cart creating at the moment
             operators.filter((/**
+             * @param {?} cartState
              * @return {?}
              */
-            function () { return _this.cartId !== FRESH_CART_ID; })), operators.take(1), operators.switchMap((/**
+            function (cartState) { return !_this.isCartCreating(cartState); })), operators.take(1), operators.switchMap((/**
              * @param {?} cartState
              * @return {?}
              */
@@ -34171,9 +34189,10 @@
             function (cartState) { return cartState.success || cartState.error; })), 
             // wait for active cart id to point to code/guid to avoid some work on fresh entity
             operators.filter((/**
+             * @param {?} cartState
              * @return {?}
              */
-            function () { return _this.cartId !== FRESH_CART_ID; })), operators.filter((/**
+            function (cartState) { return !_this.isCartCreating(cartState); })), operators.filter((/**
              * @param {?} cartState
              * @return {?}
              */
