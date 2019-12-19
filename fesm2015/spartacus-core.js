@@ -38185,8 +38185,9 @@ class ProtectedRoutesService {
         return this.config && this.config.routing;
     }
     /**
-     * @protected
-     * @return {?}
+     * Returns 'protected' property (boolean) from routing config
+     *
+     * @return {?} boolean
      */
     get shouldProtect() {
         return this.routingConfig.protected;

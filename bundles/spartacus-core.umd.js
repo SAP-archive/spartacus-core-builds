@@ -43226,9 +43226,15 @@
             configurable: true
         });
         Object.defineProperty(ProtectedRoutesService.prototype, "shouldProtect", {
+            /**
+             * Returns 'protected' property (boolean) from routing config
+             *
+             * @returns boolean
+             */
             get: /**
-             * @protected
-             * @return {?}
+             * Returns 'protected' property (boolean) from routing config
+             *
+             * @return {?} boolean
              */
             function () {
                 return this.routingConfig.protected;

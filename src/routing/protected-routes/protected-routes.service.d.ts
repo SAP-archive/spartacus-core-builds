@@ -3,7 +3,12 @@ export declare class ProtectedRoutesService {
     protected config: RoutingConfig;
     private nonProtectedPaths;
     protected readonly routingConfig: RoutingConfig['routing'];
-    protected readonly shouldProtect: boolean;
+    /**
+     * Returns 'protected' property (boolean) from routing config
+     *
+     * @returns boolean
+     */
+    readonly shouldProtect: boolean;
     constructor(config: RoutingConfig);
     /**
      * Tells if the url is protected
