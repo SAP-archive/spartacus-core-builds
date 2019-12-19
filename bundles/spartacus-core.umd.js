@@ -13172,7 +13172,21 @@
         CmsComponentMapping.prototype.i18nKeys;
         /** @type {?|undefined} */
         CmsComponentMapping.prototype.guards;
+        /**
+         * DeferLoading can be specified globally, but also per component.
+         * Some components require direct loading while it's not initially
+         * in the viewport.
+         * @type {?|undefined}
+         */
+        CmsComponentMapping.prototype.deferLoading;
     }
+    /** @enum {string} */
+    var DeferLoadingStrategy = {
+        /** Defers loading of DOM elements until element is near/in the users view port */
+        DEFER: 'DEFERRED-LOADING',
+        /** Renders the DOM instantly without being concerned with the view port */
+        INSTANT: 'INSTANT-LOADING',
+    };
     /**
      * @record
      */
@@ -57366,6 +57380,7 @@
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
     exports.DEFAULT_SESSION_STORAGE_KEY = DEFAULT_SESSION_STORAGE_KEY;
     exports.DELIVERY_MODE_NORMALIZER = DELIVERY_MODE_NORMALIZER;
+    exports.DeferLoadingStrategy = DeferLoadingStrategy;
     exports.DynamicAttributeService = DynamicAttributeService;
     exports.EMAIL_PATTERN = EMAIL_PATTERN;
     exports.EXTERNAL_CONFIG_TRANSFER_ID = EXTERNAL_CONFIG_TRANSFER_ID;
