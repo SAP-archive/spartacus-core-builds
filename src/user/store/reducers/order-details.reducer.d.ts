@@ -1,4 +1,4 @@
+import { Order } from '../../../model/order.model';
 import { UserActions } from '../actions/index';
-import { OrderDetailsState } from '../user-state';
-export declare const initialState: OrderDetailsState;
-export declare function reducer(state: OrderDetailsState, action: UserActions.OrderDetailsAction): OrderDetailsState;
+export declare const initialState: Order;
+export declare function reducer(state: Order, action: UserActions.OrderDetailsAction): Order;

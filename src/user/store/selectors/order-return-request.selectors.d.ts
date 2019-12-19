@@ -1,0 +1,10 @@
+import { MemoizedSelector } from '@ngrx/store';
+import { ReturnRequest, ReturnRequestList } from '../../../model/order.model';
+import { StateWithUser } from '../user-state';
+import { LoaderState } from '../../../state/utils/loader/loader-state';
+export declare const getOrderReturnRequestState: MemoizedSelector<StateWithUser, LoaderState<ReturnRequest>>;
+export declare const getOrderReturnRequest: MemoizedSelector<StateWithUser, ReturnRequest>;
+export declare const getOrderReturnRequestLoading: MemoizedSelector<StateWithUser, boolean>;
+export declare const getOrderReturnRequestSuccess: MemoizedSelector<StateWithUser, boolean>;
+export declare const getOrderReturnRequestListState: MemoizedSelector<StateWithUser, LoaderState<ReturnRequestList>>;
+export declare const getOrderReturnRequestList: MemoizedSelector<StateWithUser, ReturnRequestList>;

@@ -5,6 +5,7 @@ export * from './consignment-tracking.effect';
 export * from './delivery-countries.effect';
 export * from './notification-preference.effect';
 export * from './order-details.effect';
+export * from './order-return-request.effect';
 export * from './payment-methods.effect';
 export * from './regions.effect';
 export * from './reset-password.effect';

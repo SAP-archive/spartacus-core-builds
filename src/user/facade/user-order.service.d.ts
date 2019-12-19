@@ -2,7 +2,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
-import { Order, OrderHistoryList } from '../../model/order.model';
+import { Order, OrderHistoryList, CancellationRequestEntryInputList } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class UserOrderService {
@@ -64,6 +64,19 @@ export declare class UserOrderService {
      * Cleaning consignment tracking
      */
     clearConsignmentTracking(): void;
+    cancelOrder(orderCode: string, cancelRequestInput: CancellationRequestEntryInputList): void;
+    /**
+     * Returns the cancel order loading flag
+     */
+    getCancelOrderLoading(): Observable<boolean>;
+    /**
+     * Returns the cancel order success flag
+     */
+    getCancelOrderSuccess(): Observable<boolean>;
+    /**
+     * Resets the cancel order process flags
+     */
+    resetCancelOrderProcessState(): void;
     /**
      * Utility method to distinquish pre / post 1.3.0 in a convenient way.
      *

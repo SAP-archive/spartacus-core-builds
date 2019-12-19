@@ -6,5 +6,6 @@ export declare class OrderDetailsEffect {
     private actions$;
     private orderConnector;
     loadOrderDetails$: Observable<UserActions.OrderDetailsAction>;
+    cancelOrder$: Observable<UserActions.OrderDetailsAction>;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
 }

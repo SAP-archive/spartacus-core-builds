@@ -7955,6 +7955,104 @@
         OrderEntry.prototype.totalPrice;
         /** @type {?|undefined} */
         OrderEntry.prototype.updateable;
+        /** @type {?|undefined} */
+        OrderEntry.prototype.returnedItemsPrice;
+        /** @type {?|undefined} */
+        OrderEntry.prototype.returnableQuantity;
+        /** @type {?|undefined} */
+        OrderEntry.prototype.cancelledItemsPrice;
+        /** @type {?|undefined} */
+        OrderEntry.prototype.cancellableQuantity;
+    }
+    /**
+     * @record
+     */
+    function CancelOrReturnRequestEntryInput() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CancelOrReturnRequestEntryInput.prototype.orderEntryNumber;
+        /** @type {?|undefined} */
+        CancelOrReturnRequestEntryInput.prototype.quantity;
+    }
+    /**
+     * @record
+     */
+    function ReturnRequestEntryInputList() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ReturnRequestEntryInputList.prototype.orderCode;
+        /** @type {?|undefined} */
+        ReturnRequestEntryInputList.prototype.returnRequestEntryInputs;
+    }
+    /**
+     * @record
+     */
+    function CancellationRequestEntryInputList() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CancellationRequestEntryInputList.prototype.cancellationRequestEntryInputs;
+    }
+    /**
+     * @record
+     */
+    function ReturnRequestEntry() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ReturnRequestEntry.prototype.orderEntry;
+        /** @type {?|undefined} */
+        ReturnRequestEntry.prototype.expectedQuantity;
+        /** @type {?|undefined} */
+        ReturnRequestEntry.prototype.refundAmount;
+    }
+    /**
+     * @record
+     */
+    function ReturnRequest() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.cancellable;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.code;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.creationTime;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.deliveryCost;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.order;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.refundDeliveryCost;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.returnEntries;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.returnLabelDownloadUrl;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.rma;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.status;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.subTotal;
+        /** @type {?|undefined} */
+        ReturnRequest.prototype.totalPrice;
+    }
+    /**
+     * @record
+     */
+    function ReturnRequestList() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ReturnRequestList.prototype.returnRequests;
+        /** @type {?|undefined} */
+        ReturnRequestList.prototype.pagination;
+        /** @type {?|undefined} */
+        ReturnRequestList.prototype.sorts;
+    }
+    /**
+     * @record
+     */
+    function ReturnRequestModification() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ReturnRequestModification.prototype.status;
     }
     /**
      * @record
@@ -8123,6 +8221,10 @@
         Order.prototype.unconsignedEntries;
         /** @type {?|undefined} */
         Order.prototype.user;
+        /** @type {?|undefined} */
+        Order.prototype.returnable;
+        /** @type {?|undefined} */
+        Order.prototype.cancellable;
     }
 
     /**
@@ -16308,6 +16410,12 @@
     var ORDER_HISTORY_NORMALIZER = new core.InjectionToken('OrderHistoryNormalizer');
     /** @type {?} */
     var CONSIGNMENT_TRACKING_NORMALIZER = new core.InjectionToken('ConsignmentTrackingNormalizer');
+    /** @type {?} */
+    var ORDER_RETURN_REQUEST_NORMALIZER = new core.InjectionToken('OrderReturnRequestNormalizer');
+    /** @type {?} */
+    var ORDER_RETURN_REQUEST_INPUT_SERIALIZER = new core.InjectionToken('OrderReturnRequestInputSerializer');
+    /** @type {?} */
+    var ORDER_RETURNS_NORMALIZER = new core.InjectionToken('OrderReturnsNormalizer');
 
     /**
      * @fileoverview added by tsickle
@@ -16511,6 +16619,144 @@
             return this.http
                 .get(url)
                 .pipe(this.converter.pipeable(CONSIGNMENT_TRACKING_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.cancel = /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        function (userId, orderCode, cancelRequestInput) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('cancelOrder', {
+                userId: userId,
+                orderId: orderCode,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            return this.http
+                .post(url, cancelRequestInput, { headers: headers })
+                .pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestInput
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.createReturnRequest = /**
+         * @param {?} userId
+         * @param {?} returnRequestInput
+         * @return {?}
+         */
+        function (userId, returnRequestInput) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('returnOrder', {
+                userId: userId,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            returnRequestInput = this.converter.convert(returnRequestInput, ORDER_RETURN_REQUEST_INPUT_SERIALIZER);
+            return this.http.post(url, returnRequestInput, { headers: headers }).pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })), this.converter.pipeable(ORDER_RETURN_REQUEST_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.loadReturnRequestList = /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            /** @type {?} */
+            var params = {};
+            if (pageSize) {
+                params['pageSize'] = pageSize.toString();
+            }
+            if (currentPage) {
+                params['currentPage'] = currentPage.toString();
+            }
+            if (sort) {
+                params['sort'] = sort.toString();
+            }
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('orderReturns', { userId: userId }, params);
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(ORDER_RETURNS_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.loadReturnRequestDetail = /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        function (userId, returnRequestCode) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('orderReturnDetail', {
+                userId: userId,
+                returnRequestCode: returnRequestCode,
+            });
+            return this.http
+                .get(url)
+                .pipe(this.converter.pipeable(ORDER_RETURN_REQUEST_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        OccUserOrderAdapter.prototype.cancelReturnRequest = /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        function (userId, returnRequestCode, returnRequestModification) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('cancelReturn', {
+                userId: userId,
+                returnRequestCode: returnRequestCode,
+            });
+            /** @type {?} */
+            var headers = new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+            return this.http
+                .patch(url, returnRequestModification, { headers: headers })
+                .pipe(operators.catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            function (error) { return rxjs.throwError(error); })));
         };
         OccUserOrderAdapter.decorators = [
             { type: core.Injectable }
@@ -17077,6 +17323,50 @@
          * @return {?}
          */
         UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode) { };
+        /**
+         * Abstract method used to create return request
+         * @abstract
+         * @param {?} userId The `userId` for given user
+         * @param {?} returnRequestInput Return request entry input list
+         * @return {?}
+         */
+        UserOrderAdapter.prototype.createReturnRequest = function (userId, returnRequestInput) { };
+        /**
+         * Abstract method used to load order return request details
+         * @abstract
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        UserOrderAdapter.prototype.loadReturnRequestDetail = function (userId, returnRequestCode) { };
+        /**
+         * Abstract method used to load order return request list for an user.
+         * @abstract
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        UserOrderAdapter.prototype.loadReturnRequestList = function (userId, pageSize, currentPage, sort) { };
+        /**
+         * Abstract method used to cancel order
+         * @abstract
+         * @param {?} userId
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput Cancel request entry input list
+         * @return {?}
+         */
+        UserOrderAdapter.prototype.cancel = function (userId, orderCode, cancelRequestInput) { };
+        /**
+         * Abstract method used to cancel one return request
+         * @abstract
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        UserOrderAdapter.prototype.cancelReturnRequest = function (userId, returnRequestCode, returnRequestModification) { };
     }
 
     /**
@@ -17210,6 +17500,7 @@
         backend: {
             occ: {
                 endpoints: {
+                    // tslint:disable:max-line-length
                     user: 'users/${userId}',
                     userRegister: 'users',
                     userForgotPassword: 'forgottenpasswordtokens',
@@ -17232,6 +17523,11 @@
                     notificationPreference: 'users/${userId}/notificationpreferences',
                     productInterests: 'users/${userId}/productinterests',
                     getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
+                    cancelOrder: 'users/${userId}/orders/${orderId}/cancellation',
+                    returnOrder: 'users/${userId}/orderReturns?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name, code,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                    orderReturns: 'users/${userId}/orderReturns?fields=BASIC',
+                    orderReturnDetail: 'users/${userId}/orderReturns/${returnRequestCode}?fields=BASIC,returnEntries(BASIC,refundAmount(formattedValue),orderEntry(basePrice(formattedValue),product(name, code,images(DEFAULT,galleryIndex)))),deliveryCost(formattedValue),totalPrice(formattedValue),subTotal(formattedValue)',
+                    cancelReturn: 'users/${userId}/orderReturns/${returnRequestCode}',
                 },
             },
         },
@@ -17692,6 +17988,74 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var OccReturnRequestNormalizer = /** @class */ (function () {
+        function OccReturnRequestNormalizer(converter) {
+            this.converter = converter;
+        }
+        /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        OccReturnRequestNormalizer.prototype.convert = /**
+         * @param {?} source
+         * @param {?=} target
+         * @return {?}
+         */
+        function (source, target) {
+            var _this = this;
+            if (target === undefined) {
+                target = __assign({}, ((/** @type {?} */ (source))));
+            }
+            if (source.returnEntries) {
+                target.returnEntries = source.returnEntries.map((/**
+                 * @param {?} entry
+                 * @return {?}
+                 */
+                function (entry) { return (__assign({}, entry, { orderEntry: _this.convertOrderEntry(entry.orderEntry) })); }));
+            }
+            return target;
+        };
+        /**
+         * @private
+         * @param {?} source
+         * @return {?}
+         */
+        OccReturnRequestNormalizer.prototype.convertOrderEntry = /**
+         * @private
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            return __assign({}, source, { product: this.converter.convert(source.product, PRODUCT_NORMALIZER) });
+        };
+        OccReturnRequestNormalizer.decorators = [
+            { type: core.Injectable, args: [{ providedIn: 'root' },] }
+        ];
+        /** @nocollapse */
+        OccReturnRequestNormalizer.ctorParameters = function () { return [
+            { type: ConverterService }
+        ]; };
+        /** @nocollapse */ OccReturnRequestNormalizer.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function OccReturnRequestNormalizer_Factory() { return new OccReturnRequestNormalizer(core.ɵɵinject(ConverterService)); }, token: OccReturnRequestNormalizer, providedIn: "root" });
+        return OccReturnRequestNormalizer;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        OccReturnRequestNormalizer.prototype.converter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserOccModule = /** @class */ (function () {
         function UserOccModule() {
         }
@@ -17723,6 +18087,11 @@
                             {
                                 provide: PRODUCT_INTERESTS_NORMALIZER,
                                 useExisting: OccUserInterestsNormalizer,
+                                multi: true,
+                            },
+                            {
+                                provide: ORDER_RETURN_REQUEST_NORMALIZER,
+                                useExisting: OccReturnRequestNormalizer,
                                 multi: true,
                             },
                         ],
@@ -18960,6 +19329,31 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.getProductInterests;
+        /**
+         * Endpoint for cancel an order
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.cancelOrder;
+        /**
+         * Endpoint for creating order return request
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.returnOrder;
+        /**
+         * Endpoint for user's order return requests
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.orderReturns;
+        /**
+         * Endpoint for order return request details
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.orderReturnDetail;
+        /**
+         * Endpoint for cancelling return request
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.cancelReturn;
     }
 
     /**
@@ -21946,6 +22340,99 @@
         }
         /**
          *
+         * An interface representing ReturnRequest.
+         * @record
+         */
+        function ReturnRequest() { }
+        Occ.ReturnRequest = ReturnRequest;
+        if (false) {
+            /**
+             * \@member {boolean} [cancellable]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.cancellable;
+            /**
+             * \@member {string} [code]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.code;
+            /**
+             * \@member {Date} [creationTime]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.creationTime;
+            /**
+             * \@member {Price} [deliveryCost]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.deliveryCost;
+            /**
+             * \@member {order} [order]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.order;
+            /**
+             * \@member {boolean} [refundDeliveryCost]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.refundDeliveryCost;
+            /**
+             * \@member {ReturnRequestEntry[]} [returnEntries]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.returnEntries;
+            /**
+             * \@member {string} [returnLabelDownloadUrl]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.returnLabelDownloadUrl;
+            /**
+             * \@member {string} [rma]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.rma;
+            /**
+             * \@member {string} [status]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.status;
+            /**
+             * \@member {Price} [subTotal]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.subTotal;
+            /**
+             * \@member {Price} [totalPrice]
+             * @type {?|undefined}
+             */
+            ReturnRequest.prototype.totalPrice;
+        }
+        /**
+         *
+         * An interface representing ReturnRequestEntry.
+         * @record
+         */
+        function ReturnRequestEntry() { }
+        Occ.ReturnRequestEntry = ReturnRequestEntry;
+        if (false) {
+            /**
+             * \@member {OrderEntry} [orderEntry]
+             * @type {?|undefined}
+             */
+            ReturnRequestEntry.prototype.orderEntry;
+            /**
+             * \@member {number} [expectedQuantity]
+             * @type {?|undefined}
+             */
+            ReturnRequestEntry.prototype.expectedQuantity;
+            /**
+             * \@member {Price} [refundAmount]
+             * @type {?|undefined}
+             */
+            ReturnRequestEntry.prototype.refundAmount;
+        }
+        /**
+         *
          * An interface representing PaymentDetailsList.
          * @record
          */
@@ -24479,68 +24966,6 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var LOAD_ORDER_DETAILS = '[User] Load Order Details';
-    /** @type {?} */
-    var LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
-    /** @type {?} */
-    var LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
-    /** @type {?} */
-    var CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
-    var LoadOrderDetails = /** @class */ (function () {
-        function LoadOrderDetails(payload) {
-            this.payload = payload;
-            this.type = LOAD_ORDER_DETAILS;
-        }
-        return LoadOrderDetails;
-    }());
-    if (false) {
-        /** @type {?} */
-        LoadOrderDetails.prototype.type;
-        /** @type {?} */
-        LoadOrderDetails.prototype.payload;
-    }
-    var LoadOrderDetailsFail = /** @class */ (function () {
-        function LoadOrderDetailsFail(payload) {
-            this.payload = payload;
-            this.type = LOAD_ORDER_DETAILS_FAIL;
-        }
-        return LoadOrderDetailsFail;
-    }());
-    if (false) {
-        /** @type {?} */
-        LoadOrderDetailsFail.prototype.type;
-        /** @type {?} */
-        LoadOrderDetailsFail.prototype.payload;
-    }
-    var LoadOrderDetailsSuccess = /** @class */ (function () {
-        function LoadOrderDetailsSuccess(payload) {
-            this.payload = payload;
-            this.type = LOAD_ORDER_DETAILS_SUCCESS;
-        }
-        return LoadOrderDetailsSuccess;
-    }());
-    if (false) {
-        /** @type {?} */
-        LoadOrderDetailsSuccess.prototype.type;
-        /** @type {?} */
-        LoadOrderDetailsSuccess.prototype.payload;
-    }
-    var ClearOrderDetails = /** @class */ (function () {
-        function ClearOrderDetails() {
-            this.type = CLEAR_ORDER_DETAILS;
-        }
-        return ClearOrderDetails;
-    }());
-    if (false) {
-        /** @type {?} */
-        ClearOrderDetails.prototype.type;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var USER_FEATURE = 'user';
     /** @type {?} */
     var UPDATE_EMAIL_PROCESS_ID = 'updateEmail';
@@ -24563,6 +24988,10 @@
     /** @type {?} */
     var REMOVE_PRODUCT_INTERESTS_PROCESS_ID = 'removeProductInterests';
     /** @type {?} */
+    var CANCEL_ORDER_PROCESS_ID = 'cancelOrder';
+    /** @type {?} */
+    var CANCEL_RETURN_PROCESS_ID = 'cancelReturn';
+    /** @type {?} */
     var USER_CONSENTS = '[User] User Consents';
     /** @type {?} */
     var USER_PAYMENT_METHODS = '[User] User Payment Methods';
@@ -24570,6 +24999,12 @@
     var USER_ORDERS = '[User] User Orders';
     /** @type {?} */
     var USER_ADDRESSES = '[User] User Addresses';
+    /** @type {?} */
+    var USER_RETURN_REQUESTS = '[User] Order Return Requests';
+    /** @type {?} */
+    var USER_RETURN_REQUEST_DETAILS = '[User] Return Request Details';
+    /** @type {?} */
+    var USER_ORDER_DETAILS = '[User] User Order Details';
     /** @type {?} */
     var REGIONS = '[User] Regions';
     /** @type {?} */
@@ -24606,6 +25041,10 @@
         /** @type {?} */
         UserState.prototype.order;
         /** @type {?} */
+        UserState.prototype.orderReturn;
+        /** @type {?} */
+        UserState.prototype.orderReturnList;
+        /** @type {?} */
         UserState.prototype.titles;
         /** @type {?} */
         UserState.prototype.regions;
@@ -24617,14 +25056,6 @@
         UserState.prototype.notificationPreferences;
         /** @type {?} */
         UserState.prototype.productInterests;
-    }
-    /**
-     * @record
-     */
-    function OrderDetailsState() { }
-    if (false) {
-        /** @type {?} */
-        OrderDetailsState.prototype.order;
     }
     /**
      * @record
@@ -24687,6 +25118,146 @@
     if (false) {
         /** @type {?|undefined} */
         ConsignmentTrackingState.prototype.tracking;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_ORDER_DETAILS = '[User] Load Order Details';
+    /** @type {?} */
+    var LOAD_ORDER_DETAILS_FAIL = '[User] Load Order Details Fail';
+    /** @type {?} */
+    var LOAD_ORDER_DETAILS_SUCCESS = '[User] Load Order Details Success';
+    /** @type {?} */
+    var CLEAR_ORDER_DETAILS = '[User] Clear Order Details';
+    /** @type {?} */
+    var CANCEL_ORDER = '[User] Cancel Order';
+    /** @type {?} */
+    var CANCEL_ORDER_FAIL = '[User] Cancel Order Fail';
+    /** @type {?} */
+    var CANCEL_ORDER_SUCCESS = '[User] Cancel Order Success';
+    /** @type {?} */
+    var RESET_CANCEL_ORDER_PROCESS = '[User] Reset Cancel Order Process';
+    var LoadOrderDetails = /** @class */ (function (_super) {
+        __extends(LoadOrderDetails, _super);
+        function LoadOrderDetails(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS;
+            return _this;
+        }
+        return LoadOrderDetails;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderDetails.prototype.type;
+        /** @type {?} */
+        LoadOrderDetails.prototype.payload;
+    }
+    var LoadOrderDetailsFail = /** @class */ (function (_super) {
+        __extends(LoadOrderDetailsFail, _super);
+        function LoadOrderDetailsFail(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS_FAIL;
+            return _this;
+        }
+        return LoadOrderDetailsFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderDetailsFail.prototype.type;
+        /** @type {?} */
+        LoadOrderDetailsFail.prototype.payload;
+    }
+    var LoadOrderDetailsSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderDetailsSuccess, _super);
+        function LoadOrderDetailsSuccess(payload) {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_DETAILS_SUCCESS;
+            return _this;
+        }
+        return LoadOrderDetailsSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderDetailsSuccess.prototype.type;
+        /** @type {?} */
+        LoadOrderDetailsSuccess.prototype.payload;
+    }
+    var ClearOrderDetails = /** @class */ (function (_super) {
+        __extends(ClearOrderDetails, _super);
+        function ClearOrderDetails() {
+            var _this = _super.call(this, USER_ORDER_DETAILS) || this;
+            _this.type = CLEAR_ORDER_DETAILS;
+            return _this;
+        }
+        return ClearOrderDetails;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        ClearOrderDetails.prototype.type;
+    }
+    var CancelOrder = /** @class */ (function (_super) {
+        __extends(CancelOrder, _super);
+        function CancelOrder(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER;
+            return _this;
+        }
+        return CancelOrder;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrder.prototype.type;
+        /** @type {?} */
+        CancelOrder.prototype.payload;
+    }
+    var CancelOrderFail = /** @class */ (function (_super) {
+        __extends(CancelOrderFail, _super);
+        function CancelOrderFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_FAIL;
+            return _this;
+        }
+        return CancelOrderFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrderFail.prototype.type;
+        /** @type {?} */
+        CancelOrderFail.prototype.payload;
+    }
+    var CancelOrderSuccess = /** @class */ (function (_super) {
+        __extends(CancelOrderSuccess, _super);
+        function CancelOrderSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.type = CANCEL_ORDER_SUCCESS;
+            return _this;
+        }
+        return CancelOrderSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrderSuccess.prototype.type;
+    }
+    var ResetCancelOrderProcess = /** @class */ (function (_super) {
+        __extends(ResetCancelOrderProcess, _super);
+        function ResetCancelOrderProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_ORDER_PROCESS_ID) || this;
+            _this.type = RESET_CANCEL_ORDER_PROCESS;
+            return _this;
+        }
+        return ResetCancelOrderProcess;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetCancelOrderProcess.prototype.type;
     }
 
     /**
@@ -25810,12 +26381,15 @@
         /** @type {?} */
         LoadUserOrdersSuccess.prototype.payload;
     }
-    var ClearUserOrders = /** @class */ (function () {
+    var ClearUserOrders = /** @class */ (function (_super) {
+        __extends(ClearUserOrders, _super);
         function ClearUserOrders() {
-            this.type = CLEAR_USER_ORDERS;
+            var _this = _super.call(this, USER_ORDERS) || this;
+            _this.type = CLEAR_USER_ORDERS;
+            return _this;
         }
         return ClearUserOrders;
-    }());
+    }(LoaderResetAction));
     if (false) {
         /** @type {?} */
         ClearUserOrders.prototype.type;
@@ -26359,6 +26933,269 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var CREATE_ORDER_RETURN_REQUEST = '[User] Create Order Return Request';
+    /** @type {?} */
+    var CREATE_ORDER_RETURN_REQUEST_FAIL = '[User] Create Order Return Request Fail';
+    /** @type {?} */
+    var CREATE_ORDER_RETURN_REQUEST_SUCCESS = '[User] Create Order Return Request Success';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST = '[User] Load Order Return Request details';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST_FAIL = '[User] Load Order Return Request details Fail';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST_SUCCESS = '[User] Load Order Return Request details Success';
+    /** @type {?} */
+    var CANCEL_ORDER_RETURN_REQUEST = '[User] Cancel Order Return Request';
+    /** @type {?} */
+    var CANCEL_ORDER_RETURN_REQUEST_FAIL = '[User] Cancel Order Return Request Fail';
+    /** @type {?} */
+    var CANCEL_ORDER_RETURN_REQUEST_SUCCESS = '[User] Cancel Order Return Request Success';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST_LIST = '[User] Load User Order Return Request List';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST_LIST_FAIL = '[User] Load User Order Return Request List Fail';
+    /** @type {?} */
+    var LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS = '[User] Load User Order Return Request List Success';
+    /** @type {?} */
+    var CLEAR_ORDER_RETURN_REQUEST = '[User] Clear Order Return Request Details';
+    /** @type {?} */
+    var CLEAR_ORDER_RETURN_REQUEST_LIST = '[User] Clear Order Return Request List';
+    /** @type {?} */
+    var RESET_CANCEL_RETURN_PROCESS = '[User] Reset Cancel Return Request Process';
+    var CreateOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequest, _super);
+        function CreateOrderReturnRequest(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return CreateOrderReturnRequest;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CreateOrderReturnRequest.prototype.type;
+        /** @type {?} */
+        CreateOrderReturnRequest.prototype.payload;
+    }
+    var CreateOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequestFail, _super);
+        function CreateOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return CreateOrderReturnRequestFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CreateOrderReturnRequestFail.prototype.type;
+        /** @type {?} */
+        CreateOrderReturnRequestFail.prototype.payload;
+    }
+    var CreateOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(CreateOrderReturnRequestSuccess, _super);
+        function CreateOrderReturnRequestSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = CREATE_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return CreateOrderReturnRequestSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CreateOrderReturnRequestSuccess.prototype.type;
+        /** @type {?} */
+        CreateOrderReturnRequestSuccess.prototype.payload;
+    }
+    var LoadOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequest, _super);
+        function LoadOrderReturnRequest(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return LoadOrderReturnRequest;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequest.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequest.prototype.payload;
+    }
+    var LoadOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestFail, _super);
+        function LoadOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return LoadOrderReturnRequestFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequestFail.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequestFail.prototype.payload;
+    }
+    var LoadOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestSuccess, _super);
+        function LoadOrderReturnRequestSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return LoadOrderReturnRequestSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequestSuccess.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequestSuccess.prototype.payload;
+    }
+    var CancelOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequest, _super);
+        function CancelOrderReturnRequest(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return CancelOrderReturnRequest;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrderReturnRequest.prototype.type;
+        /** @type {?} */
+        CancelOrderReturnRequest.prototype.payload;
+    }
+    var CancelOrderReturnRequestFail = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequestFail, _super);
+        function CancelOrderReturnRequestFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST_FAIL;
+            return _this;
+        }
+        return CancelOrderReturnRequestFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrderReturnRequestFail.prototype.type;
+        /** @type {?} */
+        CancelOrderReturnRequestFail.prototype.payload;
+    }
+    var CancelOrderReturnRequestSuccess = /** @class */ (function (_super) {
+        __extends(CancelOrderReturnRequestSuccess, _super);
+        function CancelOrderReturnRequestSuccess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.type = CANCEL_ORDER_RETURN_REQUEST_SUCCESS;
+            return _this;
+        }
+        return CancelOrderReturnRequestSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        CancelOrderReturnRequestSuccess.prototype.type;
+    }
+    var LoadOrderReturnRequestList = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestList, _super);
+        function LoadOrderReturnRequestList(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST;
+            return _this;
+        }
+        return LoadOrderReturnRequestList;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequestList.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequestList.prototype.payload;
+    }
+    var LoadOrderReturnRequestListFail = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestListFail, _super);
+        function LoadOrderReturnRequestListFail(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_FAIL;
+            return _this;
+        }
+        return LoadOrderReturnRequestListFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequestListFail.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequestListFail.prototype.payload;
+    }
+    var LoadOrderReturnRequestListSuccess = /** @class */ (function (_super) {
+        __extends(LoadOrderReturnRequestListSuccess, _super);
+        function LoadOrderReturnRequestListSuccess(payload) {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS;
+            return _this;
+        }
+        return LoadOrderReturnRequestListSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadOrderReturnRequestListSuccess.prototype.type;
+        /** @type {?} */
+        LoadOrderReturnRequestListSuccess.prototype.payload;
+    }
+    var ClearOrderReturnRequest = /** @class */ (function (_super) {
+        __extends(ClearOrderReturnRequest, _super);
+        function ClearOrderReturnRequest() {
+            var _this = _super.call(this, USER_RETURN_REQUEST_DETAILS) || this;
+            _this.type = CLEAR_ORDER_RETURN_REQUEST;
+            return _this;
+        }
+        return ClearOrderReturnRequest;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        ClearOrderReturnRequest.prototype.type;
+    }
+    var ClearOrderReturnRequestList = /** @class */ (function (_super) {
+        __extends(ClearOrderReturnRequestList, _super);
+        function ClearOrderReturnRequestList() {
+            var _this = _super.call(this, USER_RETURN_REQUESTS) || this;
+            _this.type = CLEAR_ORDER_RETURN_REQUEST_LIST;
+            return _this;
+        }
+        return ClearOrderReturnRequestList;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        ClearOrderReturnRequestList.prototype.type;
+    }
+    var ResetCancelReturnProcess = /** @class */ (function (_super) {
+        __extends(ResetCancelReturnProcess, _super);
+        function ResetCancelReturnProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, CANCEL_RETURN_PROCESS_ID) || this;
+            _this.type = RESET_CANCEL_RETURN_PROCESS;
+            return _this;
+        }
+        return ResetCancelReturnProcess;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetCancelReturnProcess.prototype.type;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     var userGroup_actions = /*#__PURE__*/Object.freeze({
         LOAD_BILLING_COUNTRIES: LOAD_BILLING_COUNTRIES,
@@ -26391,10 +27228,18 @@
         LOAD_ORDER_DETAILS_FAIL: LOAD_ORDER_DETAILS_FAIL,
         LOAD_ORDER_DETAILS_SUCCESS: LOAD_ORDER_DETAILS_SUCCESS,
         CLEAR_ORDER_DETAILS: CLEAR_ORDER_DETAILS,
+        CANCEL_ORDER: CANCEL_ORDER,
+        CANCEL_ORDER_FAIL: CANCEL_ORDER_FAIL,
+        CANCEL_ORDER_SUCCESS: CANCEL_ORDER_SUCCESS,
+        RESET_CANCEL_ORDER_PROCESS: RESET_CANCEL_ORDER_PROCESS,
         LoadOrderDetails: LoadOrderDetails,
         LoadOrderDetailsFail: LoadOrderDetailsFail,
         LoadOrderDetailsSuccess: LoadOrderDetailsSuccess,
         ClearOrderDetails: ClearOrderDetails,
+        CancelOrder: CancelOrder,
+        CancelOrderFail: CancelOrderFail,
+        CancelOrderSuccess: CancelOrderSuccess,
+        ResetCancelOrderProcess: ResetCancelOrderProcess,
         LOAD_USER_PAYMENT_METHODS: LOAD_USER_PAYMENT_METHODS,
         LOAD_USER_PAYMENT_METHODS_FAIL: LOAD_USER_PAYMENT_METHODS_FAIL,
         LOAD_USER_PAYMENT_METHODS_SUCCESS: LOAD_USER_PAYMENT_METHODS_SUCCESS,
@@ -26584,7 +27429,37 @@
         AddProductInterestFail: AddProductInterestFail,
         ResetAddInterestState: ResetAddInterestState,
         ResetRemoveInterestState: ResetRemoveInterestState,
-        ClearProductInterests: ClearProductInterests
+        ClearProductInterests: ClearProductInterests,
+        CREATE_ORDER_RETURN_REQUEST: CREATE_ORDER_RETURN_REQUEST,
+        CREATE_ORDER_RETURN_REQUEST_FAIL: CREATE_ORDER_RETURN_REQUEST_FAIL,
+        CREATE_ORDER_RETURN_REQUEST_SUCCESS: CREATE_ORDER_RETURN_REQUEST_SUCCESS,
+        LOAD_ORDER_RETURN_REQUEST: LOAD_ORDER_RETURN_REQUEST,
+        LOAD_ORDER_RETURN_REQUEST_FAIL: LOAD_ORDER_RETURN_REQUEST_FAIL,
+        LOAD_ORDER_RETURN_REQUEST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_SUCCESS,
+        CANCEL_ORDER_RETURN_REQUEST: CANCEL_ORDER_RETURN_REQUEST,
+        CANCEL_ORDER_RETURN_REQUEST_FAIL: CANCEL_ORDER_RETURN_REQUEST_FAIL,
+        CANCEL_ORDER_RETURN_REQUEST_SUCCESS: CANCEL_ORDER_RETURN_REQUEST_SUCCESS,
+        LOAD_ORDER_RETURN_REQUEST_LIST: LOAD_ORDER_RETURN_REQUEST_LIST,
+        LOAD_ORDER_RETURN_REQUEST_LIST_FAIL: LOAD_ORDER_RETURN_REQUEST_LIST_FAIL,
+        LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS,
+        CLEAR_ORDER_RETURN_REQUEST: CLEAR_ORDER_RETURN_REQUEST,
+        CLEAR_ORDER_RETURN_REQUEST_LIST: CLEAR_ORDER_RETURN_REQUEST_LIST,
+        RESET_CANCEL_RETURN_PROCESS: RESET_CANCEL_RETURN_PROCESS,
+        CreateOrderReturnRequest: CreateOrderReturnRequest,
+        CreateOrderReturnRequestFail: CreateOrderReturnRequestFail,
+        CreateOrderReturnRequestSuccess: CreateOrderReturnRequestSuccess,
+        LoadOrderReturnRequest: LoadOrderReturnRequest,
+        LoadOrderReturnRequestFail: LoadOrderReturnRequestFail,
+        LoadOrderReturnRequestSuccess: LoadOrderReturnRequestSuccess,
+        CancelOrderReturnRequest: CancelOrderReturnRequest,
+        CancelOrderReturnRequestFail: CancelOrderReturnRequestFail,
+        CancelOrderReturnRequestSuccess: CancelOrderReturnRequestSuccess,
+        LoadOrderReturnRequestList: LoadOrderReturnRequestList,
+        LoadOrderReturnRequestListFail: LoadOrderReturnRequestListFail,
+        LoadOrderReturnRequestListSuccess: LoadOrderReturnRequestListSuccess,
+        ClearOrderReturnRequest: ClearOrderReturnRequest,
+        ClearOrderReturnRequestList: ClearOrderReturnRequestList,
+        ResetCancelReturnProcess: ResetCancelReturnProcess
     });
 
     /**
@@ -26705,7 +27580,7 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.order; };
+    function (state) { return loaderValueSelector(state); };
     /** @type {?} */
     var getOrderDetails = store.createSelector(getOrderState, (ɵ1$a));
 
@@ -26717,9 +27592,9 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.payments; };
+    function (state) { return state.orderReturn; };
     /** @type {?} */
-    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$f));
+    var getOrderReturnRequestState = store.createSelector(getUserState, (ɵ0$f));
     var ɵ1$b = /**
      * @param {?} state
      * @return {?}
@@ -26728,7 +27603,7 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$b));
+    var getOrderReturnRequest = store.createSelector(getOrderReturnRequestState, (ɵ1$b));
     var ɵ2$5 = /**
      * @param {?} state
      * @return {?}
@@ -26737,7 +27612,7 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$5));
+    var getOrderReturnRequestLoading = store.createSelector(getOrderReturnRequestState, (ɵ2$5));
     var ɵ3$3 = /**
      * @param {?} state
      * @return {?}
@@ -26747,7 +27622,23 @@
             !loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getPaymentMethodsLoadedSuccess = store.createSelector(getPaymentMethodsState, (ɵ3$3));
+    var getOrderReturnRequestSuccess = store.createSelector(getOrderReturnRequestState, (ɵ3$3));
+    var ɵ4 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.orderReturnList; };
+    /** @type {?} */
+    var getOrderReturnRequestListState = store.createSelector(getUserState, (ɵ4));
+    var ɵ5 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderValueSelector(state);
+    };
+    /** @type {?} */
+    var getOrderReturnRequestList = store.createSelector(getOrderReturnRequestListState, (ɵ5));
 
     /**
      * @fileoverview added by tsickle
@@ -26757,10 +27648,50 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return state.payments; };
+    /** @type {?} */
+    var getPaymentMethodsState = store.createSelector(getUserState, (ɵ0$g));
+    var ɵ1$c = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderValueSelector(state);
+    };
+    /** @type {?} */
+    var getPaymentMethods = store.createSelector(getPaymentMethodsState, (ɵ1$c));
+    var ɵ2$6 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderLoadingSelector(state);
+    };
+    /** @type {?} */
+    var getPaymentMethodsLoading = store.createSelector(getPaymentMethodsState, (ɵ2$6));
+    var ɵ3$4 = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderSuccessSelector(state) &&
+            !loaderLoadingSelector(state);
+    };
+    /** @type {?} */
+    var getPaymentMethodsLoadedSuccess = store.createSelector(getPaymentMethodsState, (ɵ3$4));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$h = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return state.regions; };
     /** @type {?} */
-    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$g));
-    var ɵ1$c = /**
+    var getRegionsLoaderState = store.createSelector(getUserState, (ɵ0$h));
+    var ɵ1$d = /**
      * @param {?} state
      * @return {?}
      */
@@ -26768,8 +27699,8 @@
         return loaderValueSelector(state).entities;
     };
     /** @type {?} */
-    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$c));
-    var ɵ2$6 = /**
+    var getAllRegions = store.createSelector(getRegionsLoaderState, (ɵ1$d));
+    var ɵ2$7 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26780,8 +27711,8 @@
         country: loaderValueSelector(state).country,
     }); };
     /** @type {?} */
-    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$6));
-    var ɵ3$4 = /**
+    var getRegionsDataAndLoading = store.createSelector(getRegionsLoaderState, (ɵ2$7));
+    var ɵ3$5 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26789,8 +27720,8 @@
         return loaderValueSelector(state).country;
     };
     /** @type {?} */
-    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$4));
-    var ɵ4 = /**
+    var getRegionsCountry = store.createSelector(getRegionsLoaderState, (ɵ3$5));
+    var ɵ4$1 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26798,8 +27729,8 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getRegionsLoading = store.createSelector(getRegionsLoaderState, (ɵ4));
-    var ɵ5 = /**
+    var getRegionsLoading = store.createSelector(getRegionsLoaderState, (ɵ4$1));
+    var ɵ5$1 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26807,19 +27738,7 @@
         return loaderSuccessSelector(state);
     };
     /** @type {?} */
-    var getRegionsLoaded = store.createSelector(getRegionsLoaderState, (ɵ5));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$h = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.resetPassword; };
-    /** @type {?} */
-    var getResetPassword = store.createSelector(getUserState, (ɵ0$h));
+    var getRegionsLoaded = store.createSelector(getRegionsLoaderState, (ɵ5$1));
 
     /**
      * @fileoverview added by tsickle
@@ -26829,17 +27748,29 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return state.resetPassword; };
+    /** @type {?} */
+    var getResetPassword = store.createSelector(getUserState, (ɵ0$i));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$j = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return state.titles; };
     /** @type {?} */
-    var getTitlesState = store.createSelector(getUserState, (ɵ0$i));
-    var ɵ1$d = /**
+    var getTitlesState = store.createSelector(getUserState, (ɵ0$j));
+    var ɵ1$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$d));
-    var ɵ2$7 = /**
+    var getTitlesEntites = store.createSelector(getTitlesState, (ɵ1$e));
+    var ɵ2$8 = /**
      * @param {?} entites
      * @return {?}
      */
@@ -26849,7 +27780,7 @@
      */
     function (code) { return entites[code]; })); };
     /** @type {?} */
-    var getAllTitles = store.createSelector(getTitlesEntites, (ɵ2$7));
+    var getAllTitles = store.createSelector(getTitlesEntites, (ɵ2$8));
     /** @type {?} */
     var titleSelectorFactory = (/**
      * @param {?} code
@@ -26867,14 +27798,14 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$j = /**
+    var ɵ0$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addresses; };
     /** @type {?} */
-    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$j));
-    var ɵ1$e = /**
+    var getAddressesLoaderState = store.createSelector(getUserState, (ɵ0$k));
+    var ɵ1$f = /**
      * @param {?} state
      * @return {?}
      */
@@ -26882,8 +27813,8 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$e));
-    var ɵ2$8 = /**
+    var getAddresses = store.createSelector(getAddressesLoaderState, (ɵ1$f));
+    var ɵ2$9 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26891,8 +27822,8 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$8));
-    var ɵ3$5 = /**
+    var getAddressesLoading = store.createSelector(getAddressesLoaderState, (ɵ2$9));
+    var ɵ3$6 = /**
      * @param {?} state
      * @return {?}
      */
@@ -26901,19 +27832,19 @@
             !loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getAddressesLoadedSuccess = store.createSelector(getAddressesLoaderState, (ɵ3$5));
+    var getAddressesLoadedSuccess = store.createSelector(getAddressesLoaderState, (ɵ3$6));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$k = /**
+    var ɵ0$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.consents; };
     /** @type {?} */
-    var getConsentsState = store.createSelector(getUserState, (ɵ0$k));
+    var getConsentsState = store.createSelector(getUserState, (ɵ0$l));
     /** @type {?} */
     var getConsentsValue = store.createSelector(getConsentsState, loaderValueSelector);
     /** @type {?} */
@@ -26943,50 +27874,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$l = /**
+    var ɵ0$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.account; };
     /** @type {?} */
-    var getDetailsState = store.createSelector(getUserState, (ɵ0$l));
-    var ɵ1$f = /**
+    var getDetailsState = store.createSelector(getUserState, (ɵ0$m));
+    var ɵ1$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getDetails = store.createSelector(getDetailsState, (ɵ1$f));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$m = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.orders; };
-    /** @type {?} */
-    var getOrdersState = store.createSelector(getUserState, (ɵ0$m));
-    var ɵ1$g = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        return loaderSuccessSelector(state);
-    };
-    /** @type {?} */
-    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$g));
-    var ɵ2$9 = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) {
-        return loaderValueSelector(state);
-    };
-    /** @type {?} */
-    var getOrders = store.createSelector(getOrdersState, (ɵ2$9));
+    var getDetails = store.createSelector(getDetailsState, (ɵ1$g));
 
     /**
      * @fileoverview added by tsickle
@@ -26996,17 +27897,47 @@
      * @param {?} state
      * @return {?}
      */
+    function (state) { return state.orders; };
+    /** @type {?} */
+    var getOrdersState = store.createSelector(getUserState, (ɵ0$n));
+    var ɵ1$h = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderSuccessSelector(state);
+    };
+    /** @type {?} */
+    var getOrdersLoaded = store.createSelector(getOrdersState, (ɵ1$h));
+    var ɵ2$a = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderValueSelector(state);
+    };
+    /** @type {?} */
+    var getOrders = store.createSelector(getOrdersState, (ɵ2$a));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$o = /**
+     * @param {?} state
+     * @return {?}
+     */
     function (state) { return state.notificationPreferences; };
     /** @type {?} */
-    var getPreferencesLoaderState = store.createSelector(getUserState, (ɵ0$n));
-    var ɵ1$h = /**
+    var getPreferencesLoaderState = store.createSelector(getUserState, (ɵ0$o));
+    var ɵ1$i = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getPreferences = store.createSelector(getPreferencesLoaderState, (ɵ1$h));
-    var ɵ2$a = /**
+    var getPreferences = store.createSelector(getPreferencesLoaderState, (ɵ1$i));
+    var ɵ2$b = /**
      * @param {?} state
      * @return {?}
      */
@@ -27018,27 +27949,27 @@
         function (p) { return p.enabled; }));
     };
     /** @type {?} */
-    var getEnabledPreferences = store.createSelector(getPreferencesLoaderState, (ɵ2$a));
-    var ɵ3$6 = /**
+    var getEnabledPreferences = store.createSelector(getPreferencesLoaderState, (ɵ2$b));
+    var ɵ3$7 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getPreferencesLoading = store.createSelector(getPreferencesLoaderState, (ɵ3$6));
+    var getPreferencesLoading = store.createSelector(getPreferencesLoaderState, (ɵ3$7));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$o = /**
+    var ɵ0$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.productInterests; };
     /** @type {?} */
-    var getInterestsState = store.createSelector(getUserState, (ɵ0$o));
-    var ɵ1$i = /**
+    var getInterestsState = store.createSelector(getUserState, (ɵ0$p));
+    var ɵ1$j = /**
      * @param {?} state
      * @return {?}
      */
@@ -27046,8 +27977,8 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getInterests = store.createSelector(getInterestsState, (ɵ1$i));
-    var ɵ2$b = /**
+    var getInterests = store.createSelector(getInterestsState, (ɵ1$j));
+    var ɵ2$c = /**
      * @param {?} state
      * @return {?}
      */
@@ -27055,7 +27986,7 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getInterestsLoading = store.createSelector(getInterestsState, (ɵ2$b));
+    var getInterestsLoading = store.createSelector(getInterestsState, (ɵ2$c));
 
     /**
      * @fileoverview added by tsickle
@@ -27075,6 +28006,12 @@
         getUserState: getUserState,
         getOrderState: getOrderState,
         getOrderDetails: getOrderDetails,
+        getOrderReturnRequestState: getOrderReturnRequestState,
+        getOrderReturnRequest: getOrderReturnRequest,
+        getOrderReturnRequestLoading: getOrderReturnRequestLoading,
+        getOrderReturnRequestSuccess: getOrderReturnRequestSuccess,
+        getOrderReturnRequestListState: getOrderReturnRequestListState,
+        getOrderReturnRequestList: getOrderReturnRequestList,
         getPaymentMethodsState: getPaymentMethodsState,
         getPaymentMethods: getPaymentMethods,
         getPaymentMethodsLoading: getPaymentMethodsLoading,
@@ -30020,39 +30957,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$p = /**
+    var ɵ0$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.asmUi; };
     /** @type {?} */
-    var getAsmUi = store.createSelector(getAsmState, (ɵ0$p));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$q = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.customerSearchResult; };
-    /** @type {?} */
-    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$q));
-    var ɵ1$j = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderValueSelector(state); };
-    /** @type {?} */
-    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$j));
-    var ɵ2$c = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderLoadingSelector(state); };
-    /** @type {?} */
-    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ2$c));
+    var getAsmUi = store.createSelector(getAsmState, (ɵ0$q));
 
     /**
      * @fileoverview added by tsickle
@@ -30062,23 +30973,49 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.csagentToken; };
+    function (state) { return state.customerSearchResult; };
     /** @type {?} */
-    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, (ɵ0$r));
+    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$r));
     var ɵ1$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$k));
+    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$k));
     var ɵ2$d = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, (ɵ2$d));
+    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ2$d));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$s = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.csagentToken; };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, (ɵ0$s));
+    var ɵ1$l = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$l));
+    var ɵ2$e = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, (ɵ2$e));
 
     /**
      * @fileoverview added by tsickle
@@ -30469,13 +31406,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$s = /**
+    var ɵ0$t = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$s));
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$t));
     /** @type {?} */
     var getGlobalMessageEntitiesByType = (/**
      * @param {?} type
@@ -32625,21 +33562,21 @@
      * @return {?}
      */
     function (state) { return state.content; });
-    var ɵ0$t = getCartContentSelector;
+    var ɵ0$u = getCartContentSelector;
     /** @type {?} */
     var getCartRefreshSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.refresh; });
-    var ɵ1$l = getCartRefreshSelector;
+    var ɵ1$m = getCartRefreshSelector;
     /** @type {?} */
     var getCartEntriesSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entries; });
-    var ɵ2$e = getCartEntriesSelector;
+    var ɵ2$f = getCartEntriesSelector;
     /** @type {?} */
     var getCartMergeCompleteSelector = (/**
      * @param {?} state
@@ -32648,23 +33585,23 @@
     function (state) {
         return state.cartMergeComplete;
     });
-    var ɵ3$7 = getCartMergeCompleteSelector;
+    var ɵ3$8 = getCartMergeCompleteSelector;
     /** @type {?} */
     var getCartsState = store.createFeatureSelector(CART_FEATURE);
-    var ɵ4$1 = /**
+    var ɵ4$2 = /**
      * @param {?} cartsState
      * @return {?}
      */
     function (cartsState) { return cartsState.active; };
     /** @type {?} */
-    var getActiveCartState = store.createSelector(getCartsState, (ɵ4$1));
-    var ɵ5$1 = /**
+    var getActiveCartState = store.createSelector(getCartsState, (ɵ4$2));
+    var ɵ5$2 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCartState = store.createSelector(getActiveCartState, (ɵ5$1));
+    var getCartState = store.createSelector(getActiveCartState, (ɵ5$2));
     /** @type {?} */
     var getCartContent = store.createSelector(getCartState, getCartContentSelector);
     /** @type {?} */
@@ -32757,13 +33694,13 @@
      */
     /** @type {?} */
     var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$u = /**
+    var ɵ0$v = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.carts; };
     /** @type {?} */
-    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$u));
+    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$v));
     /** @type {?} */
     var getCartEntitySelectorFactory = (/**
      * @param {?} cartId
@@ -32855,20 +33792,20 @@
                 : undefined;
         }));
     });
-    var ɵ1$m = /**
+    var ɵ1$n = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.active; };
     /** @type {?} */
-    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$m));
-    var ɵ2$f = /**
+    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$n));
+    var ɵ2$g = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.wishList; };
     /** @type {?} */
-    var getWishListId = store.createSelector(getMultiCartState, (ɵ2$f));
+    var getWishListId = store.createSelector(getMultiCartState, (ɵ2$g));
 
     /**
      * @fileoverview added by tsickle
@@ -36214,14 +37151,14 @@
             return acc;
         }), {});
     });
-    var ɵ0$v = getComponentEntitiesSelector;
-    var ɵ1$n = /**
+    var ɵ0$w = getComponentEntitiesSelector;
+    var ɵ1$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
     /** @type {?} */
-    var getComponentState = store.createSelector(getCmsState, (ɵ1$n));
+    var getComponentState = store.createSelector(getCmsState, (ɵ1$o));
     /** @type {?} */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
@@ -36268,13 +37205,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$w = /**
+    var ɵ0$x = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.navigation; };
     /** @type {?} */
-    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$w));
+    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$x));
     /** @type {?} */
     var getSelectedNavigationEntryItemState = (/**
      * @param {?} nodeId
@@ -36310,7 +37247,7 @@
      * @return {?}
      */
     function (state) { return state.pageData.entities; });
-    var ɵ0$x = getPageEntitiesSelector;
+    var ɵ0$y = getPageEntitiesSelector;
     /** @type {?} */
     var getIndexByType = (/**
      * @param {?} index
@@ -36334,7 +37271,7 @@
         }
         return { entities: {} };
     });
-    var ɵ1$o = getIndexByType;
+    var ɵ1$p = getIndexByType;
     /** @type {?} */
     var getPageComponentTypesSelector = (/**
      * @param {?} page
@@ -36373,21 +37310,21 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$g = getPageComponentTypesSelector;
-    var ɵ3$8 = /**
+    var ɵ2$h = getPageComponentTypesSelector;
+    var ɵ3$9 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.page; };
     /** @type {?} */
-    var getPageState = store.createSelector(getCmsState, (ɵ3$8));
-    var ɵ4$2 = /**
+    var getPageState = store.createSelector(getCmsState, (ɵ3$9));
+    var ɵ4$3 = /**
      * @param {?} page
      * @return {?}
      */
     function (page) { return page.index; };
     /** @type {?} */
-    var getPageStateIndex = store.createSelector(getPageState, (ɵ4$2));
+    var getPageStateIndex = store.createSelector(getPageState, (ɵ4$3));
     /** @type {?} */
     var getPageStateIndexEntityLoaderState = (/**
      * @param {?} pageContext
@@ -39791,7 +40728,7 @@
      * @return {?}
      */
     function (state) { return state.address; });
-    var ɵ0$y = getDeliveryAddressSelector;
+    var ɵ0$z = getDeliveryAddressSelector;
     /** @type {?} */
     var getDeliveryModeSelector = (/**
      * @param {?} state
@@ -39800,7 +40737,7 @@
     function (state) {
         return state.deliveryMode;
     });
-    var ɵ1$p = getDeliveryModeSelector;
+    var ɵ1$q = getDeliveryModeSelector;
     /** @type {?} */
     var getPaymentDetailsSelector = (/**
      * @param {?} state
@@ -39809,7 +40746,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$h = getPaymentDetailsSelector;
+    var ɵ2$i = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -39818,23 +40755,23 @@
     function (state) {
         return state.orderDetails;
     });
-    var ɵ3$9 = getOrderDetailsSelector;
+    var ɵ3$a = getOrderDetailsSelector;
     /** @type {?} */
     var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
-    var ɵ4$3 = /**
+    var ɵ4$4 = /**
      * @param {?} checkoutState
      * @return {?}
      */
     function (checkoutState) { return checkoutState.steps; };
     /** @type {?} */
-    var getCheckoutStepsState = store.createSelector(getCheckoutState, (ɵ4$3));
-    var ɵ5$2 = /**
+    var getCheckoutStepsState = store.createSelector(getCheckoutState, (ɵ4$4));
+    var ɵ5$3 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, (ɵ5$2));
+    var getCheckoutSteps = store.createSelector(getCheckoutStepsState, (ɵ5$3));
     /** @type {?} */
     var getDeliveryAddress = store.createSelector(getCheckoutSteps, getDeliveryAddressSelector);
     /** @type {?} */
@@ -39895,13 +40832,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$z = /**
+    var ɵ0$A = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addressVerification; };
     /** @type {?} */
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$z));
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$A));
     /** @type {?} */
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -39953,16 +40890,16 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$A = /**
+    var ɵ0$B = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.cardTypes; };
     /** @type {?} */
-    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$A));
+    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$B));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$q = /**
+    var ɵ1$r = /**
      * @param {?} entites
      * @return {?}
      */
@@ -39974,7 +40911,7 @@
         function (code) { return entites[code]; }));
     };
     /** @type {?} */
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$q));
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$r));
 
     /**
      * @fileoverview added by tsickle
@@ -46043,12 +46980,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$B = i18nextInit;
+    var ɵ0$C = i18nextInit;
     /** @type {?} */
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$B,
+            useFactory: ɵ0$C,
             deps: [ConfigInitializerService, LanguageService],
             multi: true,
         },
@@ -46579,13 +47516,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$C = /**
+    var ɵ0$D = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.openIdToken; };
     /** @type {?} */
-    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$C));
+    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$D));
     /** @type {?} */
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     /** @type {?} */
@@ -48256,13 +49193,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$D = /**
+    var ɵ0$E = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.references; };
     /** @type {?} */
-    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$D));
+    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$E));
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
@@ -48297,13 +49234,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$E = /**
+    var ɵ0$F = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.reviews; };
     /** @type {?} */
-    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$E));
+    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$F));
     /** @type {?} */
     var getSelectedProductReviewsFactory = (/**
      * @param {?} productCode
@@ -48384,13 +49321,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$F = /**
+    var ɵ0$G = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.search; };
     /** @type {?} */
-    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$F));
+    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$G));
     /** @type {?} */
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
@@ -48402,13 +49339,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$G = /**
+    var ɵ0$H = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getProductState = store.createSelector(getProductsState, (ɵ0$G));
+    var getProductState = store.createSelector(getProductsState, (ɵ0$H));
     /** @type {?} */
     var getSelectedProductsFactory = (/**
      * @param {?} codes
@@ -48504,7 +49441,7 @@
          */
         function (productState) { return loaderErrorSelector(productState); }));
     });
-    var ɵ1$r = /**
+    var ɵ1$s = /**
      * @param {?} details
      * @return {?}
      */
@@ -48512,7 +49449,7 @@
         return Object.keys(details.entities);
     };
     /** @type {?} */
-    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$r));
+    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$s));
 
     /**
      * @fileoverview added by tsickle
@@ -51337,53 +52274,53 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$H = /**
+    var ɵ0$I = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
-    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$H));
-    var ɵ1$s = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderValueSelector(state); };
-    /** @type {?} */
-    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$s));
-    var ɵ2$i = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderLoadingSelector(state); };
-    /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$i));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$I = /**
-     * @param {?} storesState
-     * @return {?}
-     */
-    function (storesState) { return storesState.viewAllStores; };
-    /** @type {?} */
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$I));
+    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$I));
     var ɵ1$t = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$t));
+    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$t));
     var ɵ2$j = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$j));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$j));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$J = /**
+     * @param {?} storesState
+     * @return {?}
+     */
+    function (storesState) { return storesState.viewAllStores; };
+    /** @type {?} */
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$J));
+    var ɵ1$u = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$u));
+    var ɵ2$k = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$k));
 
     /**
      * @fileoverview added by tsickle
@@ -52785,6 +53722,79 @@
         function (orderCode, consignmentCode) {
             return this.adapter.getConsignmentTracking(orderCode, consignmentCode);
         };
+        /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        UserOrderConnector.prototype.cancel = /**
+         * @param {?} userId
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        function (userId, orderCode, cancelRequestInput) {
+            return this.adapter.cancel(userId, orderCode, cancelRequestInput);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestInput
+         * @return {?}
+         */
+        UserOrderConnector.prototype.return = /**
+         * @param {?} userId
+         * @param {?} returnRequestInput
+         * @return {?}
+         */
+        function (userId, returnRequestInput) {
+            return this.adapter.createReturnRequest(userId, returnRequestInput);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        UserOrderConnector.prototype.getReturnRequestDetail = /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        function (userId, returnRequestCode) {
+            return this.adapter.loadReturnRequestDetail(userId, returnRequestCode);
+        };
+        /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        UserOrderConnector.prototype.getReturnRequestList = /**
+         * @param {?} userId
+         * @param {?=} pageSize
+         * @param {?=} currentPage
+         * @param {?=} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            return this.adapter.loadReturnRequestList(userId, pageSize, currentPage, sort);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        UserOrderConnector.prototype.cancelReturnRequest = /**
+         * @param {?} userId
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        function (userId, returnRequestCode, returnRequestModification) {
+            return this.adapter.cancelReturnRequest(userId, returnRequestCode, returnRequestModification);
+        };
         UserOrderConnector.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -53678,6 +54688,81 @@
         function () {
             this.store.dispatch(new ClearConsignmentTracking());
         };
+        /*
+         * Cancel an order
+         */
+        /*
+           * Cancel an order
+           */
+        /**
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        UserOrderService.prototype.cancelOrder = /*
+           * Cancel an order
+           */
+        /**
+         * @param {?} orderCode
+         * @param {?} cancelRequestInput
+         * @return {?}
+         */
+        function (orderCode, cancelRequestInput) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.store.dispatch(new CancelOrder({
+                    userId: userId,
+                    orderCode: orderCode,
+                    cancelRequestInput: cancelRequestInput,
+                }));
+            }));
+        };
+        /**
+         * Returns the cancel order loading flag
+         */
+        /**
+         * Returns the cancel order loading flag
+         * @return {?}
+         */
+        UserOrderService.prototype.getCancelOrderLoading = /**
+         * Returns the cancel order loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(CANCEL_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Returns the cancel order success flag
+         */
+        /**
+         * Returns the cancel order success flag
+         * @return {?}
+         */
+        UserOrderService.prototype.getCancelOrderSuccess = /**
+         * Returns the cancel order success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(CANCEL_ORDER_PROCESS_ID)));
+        };
+        /**
+         * Resets the cancel order process flags
+         */
+        /**
+         * Resets the cancel order process flags
+         * @return {?}
+         */
+        UserOrderService.prototype.resetCancelOrderProcessState = /**
+         * Resets the cancel order process flags
+         * @return {?}
+         */
+        function () {
+            return this.store.dispatch(new ResetCancelOrderProcess());
+        };
         /**
          * Utility method to distinquish pre / post 1.3.0 in a convenient way.
          *
@@ -53948,6 +55033,347 @@
          * @protected
          */
         UserPaymentService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OrderReturnRequestService = /** @class */ (function () {
+        function OrderReturnRequestService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Create order return request
+         * @param orderCode an order code
+         * @param returnRequestInput order return request entry input
+         */
+        /**
+         * Create order return request
+         * @param {?} returnRequestInput order return request entry input
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.createOrderReturnRequest = /**
+         * Create order return request
+         * @param {?} returnRequestInput order return request entry input
+         * @return {?}
+         */
+        function (returnRequestInput) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.store.dispatch(new CreateOrderReturnRequest({
+                    userId: userId,
+                    returnRequestInput: returnRequestInput,
+                }));
+            }));
+        };
+        /**
+         * Return an order return request
+         */
+        /**
+         * Return an order return request
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getOrderReturnRequest = /**
+         * Return an order return request
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getOrderReturnRequest));
+        };
+        /**
+         * Gets order return request list
+         */
+        /**
+         * Gets order return request list
+         * @param {?} pageSize
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getOrderReturnRequestList = /**
+         * Gets order return request list
+         * @param {?} pageSize
+         * @return {?}
+         */
+        function (pageSize) {
+            var _this = this;
+            return this.store.pipe(store.select(getOrderReturnRequestListState), operators.tap((/**
+             * @param {?} returnListState
+             * @return {?}
+             */
+            function (returnListState) {
+                /** @type {?} */
+                var attemptedLoad = returnListState.loading ||
+                    returnListState.success ||
+                    returnListState.error;
+                if (!attemptedLoad) {
+                    _this.loadOrderReturnRequestList(pageSize);
+                }
+            })), operators.map((/**
+             * @param {?} returnListState
+             * @return {?}
+             */
+            function (returnListState) { return returnListState.value; })));
+        };
+        /**
+         * Loads order return request detail
+         * @param returnRequestCode
+         */
+        /**
+         * Loads order return request detail
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.loadOrderReturnRequestDetail = /**
+         * Loads order return request detail
+         * @param {?} returnRequestCode
+         * @return {?}
+         */
+        function (returnRequestCode) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.store.dispatch(new LoadOrderReturnRequest({
+                    userId: userId,
+                    returnRequestCode: returnRequestCode,
+                }));
+            }));
+        };
+        /**
+         * Loads order return request list
+         * @param pageSize page size
+         * @param currentPage current page
+         * @param sort sort
+         */
+        /**
+         * Loads order return request list
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.loadOrderReturnRequestList = /**
+         * Loads order return request list
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        function (pageSize, currentPage, sort) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.store.dispatch(new LoadOrderReturnRequestList({
+                    userId: userId,
+                    pageSize: pageSize,
+                    currentPage: currentPage,
+                    sort: sort,
+                }));
+            }));
+        };
+        /**
+         * Cleaning order return request list
+         */
+        /**
+         * Cleaning order return request list
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.clearOrderReturnRequestList = /**
+         * Cleaning order return request list
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearOrderReturnRequestList());
+        };
+        /**
+         * Get the order return request loading flag
+         */
+        /**
+         * Get the order return request loading flag
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getReturnRequestLoading = /**
+         * Get the order return request loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getOrderReturnRequestLoading));
+        };
+        /**
+         * Get the order return request success flag
+         */
+        /**
+         * Get the order return request success flag
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getReturnRequestSuccess = /**
+         * Get the order return request success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getOrderReturnRequestSuccess));
+        };
+        /**
+         * Cleaning order return request details
+         */
+        /**
+         * Cleaning order return request details
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.clearOrderReturnRequestDetail = /**
+         * Cleaning order return request details
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ClearOrderReturnRequest());
+        };
+        /*
+         * Cancel order return request
+         */
+        /*
+           * Cancel order return request
+           */
+        /**
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.cancelOrderReturnRequest = /*
+           * Cancel order return request
+           */
+        /**
+         * @param {?} returnRequestCode
+         * @param {?} returnRequestModification
+         * @return {?}
+         */
+        function (returnRequestCode, returnRequestModification) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.store.dispatch(new CancelOrderReturnRequest({
+                    userId: userId,
+                    returnRequestCode: returnRequestCode,
+                    returnRequestModification: returnRequestModification,
+                }));
+            }));
+        };
+        /**
+         * Returns the cancel return request loading flag
+         */
+        /**
+         * Returns the cancel return request loading flag
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getCancelReturnRequestLoading = /**
+         * Returns the cancel return request loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(CANCEL_RETURN_PROCESS_ID)));
+        };
+        /**
+         * Returns the cancel return request success flag
+         */
+        /**
+         * Returns the cancel return request success flag
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.getCancelReturnRequestSuccess = /**
+         * Returns the cancel return request success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(CANCEL_RETURN_PROCESS_ID)));
+        };
+        /**
+         * Resets the cancel return request process flags
+         */
+        /**
+         * Resets the cancel return request process flags
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.resetCancelReturnRequestProcessState = /**
+         * Resets the cancel return request process flags
+         * @return {?}
+         */
+        function () {
+            return this.store.dispatch(new ResetCancelReturnProcess());
+        };
+        /*
+         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+         *
+         */
+        /*
+           * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+           *
+           */
+        /**
+         * @private
+         * @param {?} callback
+         * @return {?}
+         */
+        OrderReturnRequestService.prototype.withUserId = /*
+           * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+           *
+           */
+        /**
+         * @private
+         * @param {?} callback
+         * @return {?}
+         */
+        function (callback) {
+            if (this.authService) {
+                this.authService
+                    .getOccUserId()
+                    .pipe(operators.take(1))
+                    .subscribe((/**
+                 * @param {?} userId
+                 * @return {?}
+                 */
+                function (userId) { return callback(userId); }));
+            }
+            else {
+                // TODO(issue:#5628) Deprecated since 1.3.0
+                callback(OCC_USER_ID_CURRENT);
+            }
+        };
+        OrderReturnRequestService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        OrderReturnRequestService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        /** @nocollapse */ OrderReturnRequestService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function OrderReturnRequestService_Factory() { return new OrderReturnRequestService(core.ɵɵinject(store.Store), core.ɵɵinject(AuthService)); }, token: OrderReturnRequestService, providedIn: "root" });
+        return OrderReturnRequestService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        OrderReturnRequestService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OrderReturnRequestService.prototype.authService;
     }
 
     /**
@@ -55140,9 +56566,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$o = {
-        order: {},
-    };
+    var initialState$o = {};
     /**
      * @param {?=} state
      * @param {?=} action
@@ -55154,10 +56578,7 @@
             case LOAD_ORDER_DETAILS_SUCCESS: {
                 /** @type {?} */
                 var order = action.payload;
-                return __assign({}, state, { order: order });
-            }
-            case CLEAR_ORDER_DETAILS: {
-                return initialState$o;
+                return order;
             }
         }
         return state;
@@ -55424,6 +56845,31 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var initialState$y = {
+        returnRequests: [],
+        pagination: {},
+        sorts: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$y(state, action) {
+        if (state === void 0) { state = initialState$y; }
+        switch (action.type) {
+            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+                return action.payload ? action.payload : initialState$y;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * @return {?}
      */
@@ -55437,7 +56883,9 @@
             consents: loaderReducer(USER_CONSENTS, reducer$u),
             payments: loaderReducer(USER_PAYMENT_METHODS, reducer$p),
             orders: loaderReducer(USER_ORDERS, reducer$w),
-            order: reducer$o,
+            order: loaderReducer(USER_ORDER_DETAILS, reducer$o),
+            orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$y),
             countries: reducer$m,
             titles: reducer$s,
             regions: loaderReducer(REGIONS, reducer$q),
@@ -55876,6 +57324,29 @@
                     return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
+            this.cancelOrder$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector
+                    .cancel(payload.userId, payload.orderCode, payload.cancelRequestInput)
+                    .pipe(operators.map((/**
+                 * @param {?} _
+                 * @return {?}
+                 */
+                function (_) { return new CancelOrderSuccess(); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CancelOrderFail(makeErrorSerializable(error)));
+                })));
+            })));
         }
         OrderDetailsEffect.decorators = [
             { type: core.Injectable }
@@ -55889,11 +57360,17 @@
             effects$c.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderDetailsEffect.prototype, "cancelOrder$", void 0);
         return OrderDetailsEffect;
     }());
     if (false) {
         /** @type {?} */
         OrderDetailsEffect.prototype.loadOrderDetails$;
+        /** @type {?} */
+        OrderDetailsEffect.prototype.cancelOrder$;
         /**
          * @type {?}
          * @private
@@ -55904,6 +57381,161 @@
          * @private
          */
         OrderDetailsEffect.prototype.orderConnector;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OrderReturnRequestEffect = /** @class */ (function () {
+        function OrderReturnRequestEffect(actions$, orderConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.orderConnector = orderConnector;
+            this.createReturnRequest$ = this.actions$.pipe(effects$c.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector
+                    .return(payload.userId, payload.returnRequestInput)
+                    .pipe(operators.map((/**
+                 * @param {?} returnRequest
+                 * @return {?}
+                 */
+                function (returnRequest) {
+                    return new CreateOrderReturnRequestSuccess(returnRequest);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.loadReturnRequest$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector
+                    .getReturnRequestDetail(payload.userId, payload.returnRequestCode)
+                    .pipe(operators.map((/**
+                 * @param {?} returnRequest
+                 * @return {?}
+                 */
+                function (returnRequest) {
+                    return new LoadOrderReturnRequestSuccess(returnRequest);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.cancelReturnRequest$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector
+                    .cancelReturnRequest(payload.userId, payload.returnRequestCode, payload.returnRequestModification)
+                    .pipe(operators.map((/**
+                 * @param {?} _
+                 * @return {?}
+                 */
+                function (_) { return new CancelOrderReturnRequestSuccess(); })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.loadReturnRequestList$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.switchMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.orderConnector
+                    .getReturnRequestList(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                    .pipe(operators.map((/**
+                 * @param {?} returnRequestList
+                 * @return {?}
+                 */
+                function (returnRequestList) {
+                    return new LoadOrderReturnRequestListSuccess(returnRequestList);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadOrderReturnRequestListFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        OrderReturnRequestEffect.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OrderReturnRequestEffect.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: UserOrderConnector }
+        ]; };
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderReturnRequestEffect.prototype, "createReturnRequest$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderReturnRequestEffect.prototype, "loadReturnRequest$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderReturnRequestEffect.prototype, "cancelReturnRequest$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], OrderReturnRequestEffect.prototype, "loadReturnRequestList$", void 0);
+        return OrderReturnRequestEffect;
+    }());
+    if (false) {
+        /** @type {?} */
+        OrderReturnRequestEffect.prototype.createReturnRequest$;
+        /** @type {?} */
+        OrderReturnRequestEffect.prototype.loadReturnRequest$;
+        /** @type {?} */
+        OrderReturnRequestEffect.prototype.cancelReturnRequest$;
+        /** @type {?} */
+        OrderReturnRequestEffect.prototype.loadReturnRequestList$;
+        /**
+         * @type {?}
+         * @private
+         */
+        OrderReturnRequestEffect.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        OrderReturnRequestEffect.prototype.orderConnector;
     }
 
     /**
@@ -56873,12 +58505,6 @@
                     return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetUserOrders$ = this.actions$.pipe(effects$c.ofType(CLEAR_USER_MISCS_DATA, CLEAR_USER_ORDERS), operators.map((/**
-             * @return {?}
-             */
-            function () {
-                return new LoaderResetAction(USER_ORDERS);
-            })));
         }
         UserOrdersEffect.decorators = [
             { type: core.Injectable }
@@ -56892,17 +58518,11 @@
             effects$c.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
-        __decorate([
-            effects$c.Effect(),
-            __metadata("design:type", rxjs.Observable)
-        ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
         return UserOrdersEffect;
     }());
     if (false) {
         /** @type {?} */
         UserOrdersEffect.prototype.loadUserOrders$;
-        /** @type {?} */
-        UserOrdersEffect.prototype.resetUserOrders$;
         /**
          * @type {?}
          * @private
@@ -57201,6 +58821,7 @@
         ConsignmentTrackingEffects,
         NotificationPreferenceEffects,
         ProductInterestsEffect,
+        OrderReturnRequestEffect,
     ];
 
     /**
@@ -57293,6 +58914,8 @@
     exports.BadGatewayHandler = BadGatewayHandler;
     exports.BadRequestHandler = BadRequestHandler;
     exports.BaseSiteService = BaseSiteService;
+    exports.CANCEL_ORDER_PROCESS_ID = CANCEL_ORDER_PROCESS_ID;
+    exports.CANCEL_RETURN_PROCESS_ID = CANCEL_RETURN_PROCESS_ID;
     exports.CARD_TYPE_NORMALIZER = CARD_TYPE_NORMALIZER;
     exports.CART_DATA = CART_DATA;
     exports.CART_FEATURE = CART_FEATURE;
@@ -57448,6 +59071,9 @@
     exports.OPEN_ID_TOKEN_DATA = OPEN_ID_TOKEN_DATA;
     exports.ORDER_HISTORY_NORMALIZER = ORDER_HISTORY_NORMALIZER;
     exports.ORDER_NORMALIZER = ORDER_NORMALIZER;
+    exports.ORDER_RETURNS_NORMALIZER = ORDER_RETURNS_NORMALIZER;
+    exports.ORDER_RETURN_REQUEST_INPUT_SERIALIZER = ORDER_RETURN_REQUEST_INPUT_SERIALIZER;
+    exports.ORDER_RETURN_REQUEST_NORMALIZER = ORDER_RETURN_REQUEST_NORMALIZER;
     exports.OccAnonymousConsentTemplatesAdapter = OccAnonymousConsentTemplatesAdapter;
     exports.OccAsmAdapter = OccAsmAdapter;
     exports.OccCartAdapter = OccCartAdapter;
@@ -57475,6 +59101,7 @@
     exports.OccProductSearchAdapter = OccProductSearchAdapter;
     exports.OccProductSearchPageNormalizer = OccProductSearchPageNormalizer;
     exports.OccRequestsOptimizerService = OccRequestsOptimizerService;
+    exports.OccReturnRequestNormalizer = OccReturnRequestNormalizer;
     exports.OccSiteAdapter = OccSiteAdapter;
     exports.OccSitesConfigLoader = OccSitesConfigLoader;
     exports.OccStoreFinderAdapter = OccStoreFinderAdapter;
@@ -57482,9 +59109,11 @@
     exports.OccUserAddressAdapter = OccUserAddressAdapter;
     exports.OccUserConsentAdapter = OccUserConsentAdapter;
     exports.OccUserInterestsAdapter = OccUserInterestsAdapter;
+    exports.OccUserInterestsNormalizer = OccUserInterestsNormalizer;
     exports.OccUserNotificationPreferenceAdapter = OccUserNotificationPreferenceAdapter;
     exports.OccUserOrderAdapter = OccUserOrderAdapter;
     exports.OccUserPaymentAdapter = OccUserPaymentAdapter;
+    exports.OrderReturnRequestService = OrderReturnRequestService;
     exports.PASSWORD_PATTERN = PASSWORD_PATTERN;
     exports.PAYMENT_DETAILS_NORMALIZER = PAYMENT_DETAILS_NORMALIZER;
     exports.PAYMENT_DETAILS_SERIALIZER = PAYMENT_DETAILS_SERIALIZER;
@@ -57605,7 +59234,10 @@
     exports.USER_FEATURE = USER_FEATURE;
     exports.USER_NORMALIZER = USER_NORMALIZER;
     exports.USER_ORDERS = USER_ORDERS;
+    exports.USER_ORDER_DETAILS = USER_ORDER_DETAILS;
     exports.USER_PAYMENT_METHODS = USER_PAYMENT_METHODS;
+    exports.USER_RETURN_REQUESTS = USER_RETURN_REQUESTS;
+    exports.USER_RETURN_REQUEST_DETAILS = USER_RETURN_REQUEST_DETAILS;
     exports.USER_SERIALIZER = USER_SERIALIZER;
     exports.USER_SIGN_UP_SERIALIZER = USER_SIGN_UP_SERIALIZER;
     exports.USE_CLIENT_TOKEN = USE_CLIENT_TOKEN;
@@ -57809,84 +59441,84 @@
     exports.ɵff = defaultOccStoreFinderConfig;
     exports.ɵfg = defaultOccUserConfig;
     exports.ɵfh = UserNotificationPreferenceAdapter;
-    exports.ɵfi = OccUserInterestsNormalizer;
-    exports.ɵfj = defaultPersonalizationConfig;
-    exports.ɵfk = interceptors$3;
-    exports.ɵfl = OccPersonalizationIdInterceptor;
-    exports.ɵfm = OccPersonalizationTimeInterceptor;
-    exports.ɵfn = ProcessStoreModule;
-    exports.ɵfo = getReducers$a;
-    exports.ɵfp = reducerToken$a;
-    exports.ɵfq = reducerProvider$a;
-    exports.ɵfr = productStoreConfigFactory;
-    exports.ɵfs = ProductStoreModule;
-    exports.ɵft = getReducers$b;
-    exports.ɵfu = reducerToken$b;
-    exports.ɵfv = reducerProvider$b;
-    exports.ɵfw = clearProductsState;
-    exports.ɵfx = metaReducers$6;
-    exports.ɵfy = effects$9;
-    exports.ɵfz = ProductReferencesEffects;
+    exports.ɵfi = defaultPersonalizationConfig;
+    exports.ɵfj = interceptors$3;
+    exports.ɵfk = OccPersonalizationIdInterceptor;
+    exports.ɵfl = OccPersonalizationTimeInterceptor;
+    exports.ɵfm = ProcessStoreModule;
+    exports.ɵfn = getReducers$a;
+    exports.ɵfo = reducerToken$a;
+    exports.ɵfp = reducerProvider$a;
+    exports.ɵfq = productStoreConfigFactory;
+    exports.ɵfr = ProductStoreModule;
+    exports.ɵfs = getReducers$b;
+    exports.ɵft = reducerToken$b;
+    exports.ɵfu = reducerProvider$b;
+    exports.ɵfv = clearProductsState;
+    exports.ɵfw = metaReducers$6;
+    exports.ɵfx = effects$9;
+    exports.ɵfy = ProductReferencesEffects;
+    exports.ɵfz = ProductReviewsEffects;
     exports.ɵg = initSiteContextRoutesHandler;
-    exports.ɵga = ProductReviewsEffects;
-    exports.ɵgb = ProductsSearchEffects;
-    exports.ɵgc = ProductEffects;
-    exports.ɵgd = reducer$h;
-    exports.ɵge = entityScopedLoaderReducer;
-    exports.ɵgf = scopedLoaderReducer;
-    exports.ɵgg = reducer$j;
-    exports.ɵgh = reducer$i;
-    exports.ɵgi = PageMetaResolver;
-    exports.ɵgj = addExternalRoutesFactory;
-    exports.ɵgk = getReducers$7;
-    exports.ɵgl = reducer$d;
-    exports.ɵgm = reducerToken$7;
-    exports.ɵgn = reducerProvider$7;
-    exports.ɵgo = CustomSerializer;
-    exports.ɵgp = effects$6;
-    exports.ɵgq = RouterEffects;
-    exports.ɵgr = SiteContextParamsService;
-    exports.ɵgs = SiteContextUrlSerializer;
-    exports.ɵgt = SiteContextRoutesHandler;
-    exports.ɵgu = defaultSiteContextConfigFactory;
-    exports.ɵgv = siteContextStoreConfigFactory;
-    exports.ɵgw = SiteContextStoreModule;
-    exports.ɵgx = getReducers$1;
-    exports.ɵgy = reducerToken$1;
-    exports.ɵgz = reducerProvider$1;
+    exports.ɵga = ProductsSearchEffects;
+    exports.ɵgb = ProductEffects;
+    exports.ɵgc = reducer$h;
+    exports.ɵgd = entityScopedLoaderReducer;
+    exports.ɵge = scopedLoaderReducer;
+    exports.ɵgf = reducer$j;
+    exports.ɵgg = reducer$i;
+    exports.ɵgh = PageMetaResolver;
+    exports.ɵgi = addExternalRoutesFactory;
+    exports.ɵgj = getReducers$7;
+    exports.ɵgk = reducer$d;
+    exports.ɵgl = reducerToken$7;
+    exports.ɵgm = reducerProvider$7;
+    exports.ɵgn = CustomSerializer;
+    exports.ɵgo = effects$6;
+    exports.ɵgp = RouterEffects;
+    exports.ɵgq = SiteContextParamsService;
+    exports.ɵgr = SiteContextUrlSerializer;
+    exports.ɵgs = SiteContextRoutesHandler;
+    exports.ɵgt = defaultSiteContextConfigFactory;
+    exports.ɵgu = siteContextStoreConfigFactory;
+    exports.ɵgv = SiteContextStoreModule;
+    exports.ɵgw = getReducers$1;
+    exports.ɵgx = reducerToken$1;
+    exports.ɵgy = reducerProvider$1;
+    exports.ɵgz = effects$2;
     exports.ɵh = siteContextParamsProviders;
-    exports.ɵha = effects$2;
-    exports.ɵhb = LanguagesEffects;
-    exports.ɵhc = CurrenciesEffects;
-    exports.ɵhd = BaseSiteEffects;
-    exports.ɵhe = reducer$3;
-    exports.ɵhf = reducer$2;
-    exports.ɵhg = reducer$1;
-    exports.ɵhh = baseSiteConfigValidator;
-    exports.ɵhi = interceptors$4;
-    exports.ɵhj = CmsTicketInterceptor;
-    exports.ɵhk = defaultStoreFinderConfig;
-    exports.ɵhl = StoreFinderStoreModule;
-    exports.ɵhm = getReducers$c;
-    exports.ɵhn = reducerToken$c;
-    exports.ɵho = reducerProvider$c;
-    exports.ɵhp = effects$a;
-    exports.ɵhq = FindStoresEffect;
-    exports.ɵhr = ViewAllStoresEffect;
-    exports.ɵhs = UserStoreModule;
-    exports.ɵht = getReducers$d;
-    exports.ɵhu = reducerToken$d;
-    exports.ɵhv = reducerProvider$d;
-    exports.ɵhw = clearUserState;
-    exports.ɵhx = metaReducers$8;
-    exports.ɵhy = effects$b;
-    exports.ɵhz = BillingCountriesEffect;
+    exports.ɵha = LanguagesEffects;
+    exports.ɵhb = CurrenciesEffects;
+    exports.ɵhc = BaseSiteEffects;
+    exports.ɵhd = reducer$3;
+    exports.ɵhe = reducer$2;
+    exports.ɵhf = reducer$1;
+    exports.ɵhg = baseSiteConfigValidator;
+    exports.ɵhh = interceptors$4;
+    exports.ɵhi = CmsTicketInterceptor;
+    exports.ɵhj = defaultStoreFinderConfig;
+    exports.ɵhk = StoreFinderStoreModule;
+    exports.ɵhl = getReducers$c;
+    exports.ɵhm = reducerToken$c;
+    exports.ɵhn = reducerProvider$c;
+    exports.ɵho = effects$a;
+    exports.ɵhp = FindStoresEffect;
+    exports.ɵhq = ViewAllStoresEffect;
+    exports.ɵhr = UserStoreModule;
+    exports.ɵhs = getReducers$d;
+    exports.ɵht = reducerToken$d;
+    exports.ɵhu = reducerProvider$d;
+    exports.ɵhv = clearUserState;
+    exports.ɵhw = metaReducers$8;
+    exports.ɵhx = effects$b;
+    exports.ɵhy = BillingCountriesEffect;
+    exports.ɵhz = ClearMiscsDataEffect;
     exports.ɵi = anonymousConsentsStoreConfigFactory;
-    exports.ɵia = ClearMiscsDataEffect;
-    exports.ɵib = ConsignmentTrackingEffects;
-    exports.ɵic = DeliveryCountriesEffects;
-    exports.ɵid = NotificationPreferenceEffects;
-    exports.ɵie = OrderDetailsEffect;
+    exports.ɵia = ConsignmentTrackingEffects;
+    exports.ɵib = DeliveryCountriesEffects;
+    exports.ɵic = NotificationPreferenceEffects;
+    exports.ɵid = OrderDetailsEffect;
+    exports.ɵie = OrderReturnRequestEffect;
     exports.ɵif = UserPaymentMethodsEffects;
     exports.ɵig = RegionsEffects;
     exports.ɵih = ResetPasswordEffects;
@@ -57909,13 +59541,14 @@
     exports.ɵiy = reducer$w;
     exports.ɵiz = reducer$o;
     exports.ɵj = AnonymousConsentsStoreModule;
-    exports.ɵja = reducer$m;
-    exports.ɵjb = reducer$s;
-    exports.ɵjc = reducer$q;
-    exports.ɵjd = reducer$r;
-    exports.ɵje = reducer$l;
-    exports.ɵjf = reducer$n;
-    exports.ɵjg = reducer$x;
+    exports.ɵja = reducer$y;
+    exports.ɵjb = reducer$m;
+    exports.ɵjc = reducer$s;
+    exports.ɵjd = reducer$q;
+    exports.ɵje = reducer$r;
+    exports.ɵjf = reducer$l;
+    exports.ɵjg = reducer$n;
+    exports.ɵjh = reducer$x;
     exports.ɵk = TRANSFER_STATE_META_REDUCER;
     exports.ɵl = STORAGE_SYNC_META_REDUCER;
     exports.ɵm = stateMetaReducers;

@@ -3,7 +3,7 @@ import { PaymentDetails } from '../../model/cart.model';
 import { ConsentTemplate } from '../../model/consent.model';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { Title, User } from '../../model/misc.model';
-import { Order, OrderHistoryList } from '../../model/order.model';
+import { Order, OrderHistoryList, ReturnRequest, ReturnRequestList } from '../../model/order.model';
 import { LoaderState } from '../../state';
 import { NotificationPreference } from '../../model';
 import { ProductInterestSearchResult } from '../../model/product-interest.model';
@@ -18,10 +18,15 @@ export declare const WITHDRAW_CONSENT_PROCESS_ID = "withdrawConsent";
 export declare const UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = "updateNotificationPreferences";
 export declare const ADD_PRODUCT_INTEREST_PROCESS_ID = "addProductInterests";
 export declare const REMOVE_PRODUCT_INTERESTS_PROCESS_ID = "removeProductInterests";
+export declare const CANCEL_ORDER_PROCESS_ID = "cancelOrder";
+export declare const CANCEL_RETURN_PROCESS_ID = "cancelReturn";
 export declare const USER_CONSENTS = "[User] User Consents";
 export declare const USER_PAYMENT_METHODS = "[User] User Payment Methods";
 export declare const USER_ORDERS = "[User] User Orders";
 export declare const USER_ADDRESSES = "[User] User Addresses";
+export declare const USER_RETURN_REQUESTS = "[User] Order Return Requests";
+export declare const USER_RETURN_REQUEST_DETAILS = "[User] Return Request Details";
+export declare const USER_ORDER_DETAILS = "[User] User Order Details";
 export declare const REGIONS = "[User] Regions";
 export declare const NOTIFICATION_PREFERENCES = "[User] Notification Preferences";
 export declare const PRODUCT_INTERESTS = "[User] Product Interests";
@@ -36,16 +41,15 @@ export interface UserState {
     countries: DeliveryCountriesState;
     payments: LoaderState<PaymentDetails[]>;
     orders: LoaderState<OrderHistoryList>;
-    order: OrderDetailsState;
+    order: LoaderState<Order>;
+    orderReturn: LoaderState<ReturnRequest>;
+    orderReturnList: LoaderState<ReturnRequestList>;
     titles: TitlesState;
     regions: LoaderState<RegionsState>;
     resetPassword: boolean;
     consignmentTracking: ConsignmentTrackingState;
     notificationPreferences: LoaderState<NotificationPreference[]>;
     productInterests: LoaderState<ProductInterestSearchResult>;
-}
-export interface OrderDetailsState {
-    order: Order;
 }
 export interface RegionsState {
     entities: Region[];

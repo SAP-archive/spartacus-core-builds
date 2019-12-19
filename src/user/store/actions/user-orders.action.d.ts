@@ -29,7 +29,7 @@ export declare class LoadUserOrdersSuccess extends StateLoaderActions.LoaderSucc
     readonly type = "[User] Load User Orders Success";
     constructor(payload: OrderHistoryList);
 }
-export declare class ClearUserOrders {
+export declare class ClearUserOrders extends StateLoaderActions.LoaderResetAction {
     readonly type = "[User] Clear User Orders";
     constructor();
 }
