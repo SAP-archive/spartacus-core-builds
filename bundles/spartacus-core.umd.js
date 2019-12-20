@@ -507,7 +507,7 @@
      */
     function parseConfigJSON(config) {
         try {
-            return JSON.parse(config);
+            return JSON.parse(decodeURIComponent(config));
         }
         catch (_) {
             return {};

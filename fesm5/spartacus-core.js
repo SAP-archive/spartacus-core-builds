@@ -316,7 +316,7 @@ var TEST_CONFIG_COOKIE_NAME = new InjectionToken('TEST_CONFIG_COOKIE_NAME');
  */
 function parseConfigJSON(config) {
     try {
-        return JSON.parse(config);
+        return JSON.parse(decodeURIComponent(config));
     }
     catch (_) {
         return {};
