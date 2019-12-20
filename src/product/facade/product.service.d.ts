@@ -2,15 +2,16 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Product } from '../../model/product.model';
 import { StateWithProduct } from '../store/product-state';
-import { LoadingScopesService } from '../../occ/services/loading-scopes.service';
+import { ProductLoadingService } from '../services/product-loading.service';
 export declare class ProductService {
     protected store: Store<StateWithProduct>;
-    protected loadingScopes?: LoadingScopesService;
-    constructor(store: Store<StateWithProduct>, loadingScopes: LoadingScopesService);
+    protected productLoading?: ProductLoadingService;
+    constructor(store: Store<StateWithProduct>, productLoading: ProductLoadingService);
     /**
      * @deprecated since 1.4
      */
     constructor(store: Store<StateWithProduct>);
+    /** @deprecated since 1.4 */
     private products;
     /**
      * Returns the product observable. The product will be loaded
@@ -26,14 +27,6 @@ export declare class ProductService {
      * @param scopes Scope or scopes of the product data
      */
     get(productCode: string, scopes?: string[] | string): Observable<Product>;
-    private initProductScopes;
-    /**
-     * Creates observable for providing specified product data for the scope
-     *
-     * @param productCode
-     * @param scope
-     */
-    private getProductForScope;
     /**
      * Returns boolean observable for product's loading state
      */

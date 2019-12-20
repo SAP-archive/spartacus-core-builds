@@ -15,4 +15,11 @@ export declare class LoadingScopesService {
      * @param scopes
      */
     expand(model: string, scopes: string[]): string[];
+    /**
+     * Return maxAge for product scope in miliseconds
+     *
+     * @param model
+     * @param scope
+     */
+    getMaxAge(model: string, scope: string): number;
 }

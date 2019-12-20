@@ -24431,6 +24431,34 @@
             }
             return scopes;
         };
+        /**
+         * Return maxAge for product scope in miliseconds
+         *
+         * @param model
+         * @param scope
+         */
+        /**
+         * Return maxAge for product scope in miliseconds
+         *
+         * @param {?} model
+         * @param {?} scope
+         * @return {?}
+         */
+        LoadingScopesService.prototype.getMaxAge = /**
+         * Return maxAge for product scope in miliseconds
+         *
+         * @param {?} model
+         * @param {?} scope
+         * @return {?}
+         */
+        function (model, scope) {
+            /** @type {?} */
+            var scopesConfig = this.config &&
+                this.config.backend &&
+                this.config.backend.loadingScopes &&
+                this.config.backend.loadingScopes[model];
+            return (scopesConfig[scope] && scopesConfig[scope].maxAge) * 1000 || 0;
+        };
         LoadingScopesService.decorators = [
             { type: core.Injectable, args: [{
                         providedIn: 'root',
@@ -49669,10 +49697,300 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ProductService = /** @class */ (function () {
-        function ProductService(store, loadingScopes) {
+    var ProductLoadingService = /** @class */ (function () {
+        function ProductLoadingService(store, loadingScopes, actions$, platformId) {
             this.store = store;
             this.loadingScopes = loadingScopes;
+            this.actions$ = actions$;
+            this.platformId = platformId;
+            this.products = {};
+        }
+        /**
+         * @param {?} productCode
+         * @param {?} scopes
+         * @return {?}
+         */
+        ProductLoadingService.prototype.get = /**
+         * @param {?} productCode
+         * @param {?} scopes
+         * @return {?}
+         */
+        function (productCode, scopes) {
+            var _this = this;
+            scopes = this.loadingScopes.expand('product', scopes);
+            this.initProductScopes(productCode, scopes);
+            if (scopes.length > 1) {
+                return rxjs.combineLatest(scopes.map((/**
+                 * @param {?} scope
+                 * @return {?}
+                 */
+                function (scope) { return _this.products[productCode][scope]; }))).pipe(operators.auditTime(0), operators.map((/**
+                 * @param {?} productParts
+                 * @return {?}
+                 */
+                function (productParts) {
+                    return productParts.find(Boolean) && deepMerge.apply(void 0, __spread([{}], productParts));
+                })));
+            }
+            else {
+                return this.products[productCode][scopes[0]];
+            }
+        };
+        /**
+         * @protected
+         * @param {?} productCode
+         * @param {?} scopes
+         * @return {?}
+         */
+        ProductLoadingService.prototype.initProductScopes = /**
+         * @protected
+         * @param {?} productCode
+         * @param {?} scopes
+         * @return {?}
+         */
+        function (productCode, scopes) {
+            var e_1, _a;
+            if (!this.products[productCode]) {
+                this.products[productCode] = {};
+            }
+            try {
+                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
+                    var scope = scopes_1_1.value;
+                    if (!this.products[productCode][scope]) {
+                        this.products[productCode][scope] = this.getProductForScope(productCode, scope);
+                    }
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+        };
+        /**
+         * Creates observable for providing specified product data for the scope
+         *
+         * @param productCode
+         * @param scope
+         */
+        /**
+         * Creates observable for providing specified product data for the scope
+         *
+         * @protected
+         * @param {?} productCode
+         * @param {?} scope
+         * @return {?}
+         */
+        ProductLoadingService.prototype.getProductForScope = /**
+         * Creates observable for providing specified product data for the scope
+         *
+         * @protected
+         * @param {?} productCode
+         * @param {?} scope
+         * @return {?}
+         */
+        function (productCode, scope) {
+            var _this = this;
+            /** @type {?} */
+            var shouldLoad$ = this.store.pipe(store.select(getSelectedProductStateFactory(productCode, scope)), operators.map((/**
+             * @param {?} productState
+             * @return {?}
+             */
+            function (productState) {
+                return !productState.loading && !productState.success && !productState.error;
+            })), operators.distinctUntilChanged(), operators.filter((/**
+             * @param {?} x
+             * @return {?}
+             */
+            function (x) { return x; })));
+            /** @type {?} */
+            var isLoading$ = this.store.pipe(store.select(getSelectedProductLoadingFactory(productCode, scope)));
+            /** @type {?} */
+            var productLoadLogic$ = rxjs.merge.apply(void 0, __spread([shouldLoad$], this.getProductReloadTriggers(productCode, scope))).pipe(operators.debounceTime(0), operators.withLatestFrom(isLoading$), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), isLoading = _b[1];
+                if (!isLoading) {
+                    _this.store.dispatch(new LoadProduct(productCode, scope));
+                }
+            })));
+            /** @type {?} */
+            var productData$ = this.store.pipe(store.select(getSelectedProductFactory(productCode, scope)));
+            return rxjs.using((/**
+             * @return {?}
+             */
+            function () { return productLoadLogic$.subscribe(); }), (/**
+             * @return {?}
+             */
+            function () { return productData$; })).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
+        };
+        /**
+         * Returns reload triggers for product per scope
+         *
+         * @param productCode
+         * @param scope
+         */
+        /**
+         * Returns reload triggers for product per scope
+         *
+         * @protected
+         * @param {?} productCode
+         * @param {?} scope
+         * @return {?}
+         */
+        ProductLoadingService.prototype.getProductReloadTriggers = /**
+         * Returns reload triggers for product per scope
+         *
+         * @protected
+         * @param {?} productCode
+         * @param {?} scope
+         * @return {?}
+         */
+        function (productCode, scope) {
+            /** @type {?} */
+            var triggers = [];
+            // max age trigger add
+            /** @type {?} */
+            var maxAge = this.loadingScopes.getMaxAge('product', scope);
+            if (maxAge && common.isPlatformBrowser(this.platformId)) {
+                /** @type {?} */
+                var loadSuccess$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_SUCCESS), operators.filter((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) {
+                    return action.payload.code === productCode && action.meta.scope === scope;
+                })));
+                /** @type {?} */
+                var loadStart$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.filter((/**
+                 * @param {?} action
+                 * @return {?}
+                 */
+                function (action) {
+                    return action.payload === productCode && action.meta.scope === scope;
+                })));
+                triggers.push(this.getMaxAgeTrigger(loadStart$, loadSuccess$, maxAge));
+            }
+            return triggers;
+        };
+        /**
+         * Generic method that returns stream triggering reload by maxAge
+         *
+         * Could be refactored to separate service in future to use in other
+         * max age reload implementations
+         *
+         * @param loadStart$ Stream that emits on load start
+         * @param loadSuccess$ Stream that emits on load success
+         * @param maxAge max age
+         */
+        /**
+         * Generic method that returns stream triggering reload by maxAge
+         *
+         * Could be refactored to separate service in future to use in other
+         * max age reload implementations
+         *
+         * @private
+         * @param {?} loadStart$ Stream that emits on load start
+         * @param {?} loadSuccess$ Stream that emits on load success
+         * @param {?} maxAge max age
+         * @return {?}
+         */
+        ProductLoadingService.prototype.getMaxAgeTrigger = /**
+         * Generic method that returns stream triggering reload by maxAge
+         *
+         * Could be refactored to separate service in future to use in other
+         * max age reload implementations
+         *
+         * @private
+         * @param {?} loadStart$ Stream that emits on load start
+         * @param {?} loadSuccess$ Stream that emits on load success
+         * @param {?} maxAge max age
+         * @return {?}
+         */
+        function (loadStart$, loadSuccess$, maxAge) {
+            /** @type {?} */
+            var timestamp = 0;
+            /** @type {?} */
+            var timestamp$ = loadSuccess$.pipe(operators.tap((/**
+             * @return {?}
+             */
+            function () { return (timestamp = Date.now()); })));
+            /** @type {?} */
+            var shouldReload$ = rxjs.defer((/**
+             * @return {?}
+             */
+            function () {
+                /** @type {?} */
+                var age = Date.now() - timestamp;
+                /** @type {?} */
+                var timestampRefresh$ = timestamp$.pipe(operators.delay(maxAge), operators.mapTo(true), withdrawOn(loadStart$));
+                if (age > maxAge) {
+                    return rxjs.merge(rxjs.of(true), timestampRefresh$);
+                }
+                else {
+                    return rxjs.merge(rxjs.of(true).pipe(operators.delay(maxAge - age)), timestampRefresh$);
+                }
+            }));
+            return shouldReload$;
+        };
+        ProductLoadingService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductLoadingService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: LoadingScopesService },
+            { type: effects$c.Actions },
+            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
+        ]; };
+        /** @nocollapse */ ProductLoadingService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core.ɵɵinject(store.Store), core.ɵɵinject(LoadingScopesService), core.ɵɵinject(effects$c.Actions), core.ɵɵinject(core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+        return ProductLoadingService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProductLoadingService.prototype.products;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProductLoadingService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProductLoadingService.prototype.loadingScopes;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProductLoadingService.prototype.actions$;
+        /**
+         * @type {?}
+         * @protected
+         */
+        ProductLoadingService.prototype.platformId;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ProductService = /** @class */ (function () {
+        function ProductService(store, productLoading) {
+            this.store = store;
+            this.productLoading = productLoading;
+            /**
+             * @deprecated since 1.4
+             */
             this.products = {};
         }
         /**
@@ -49719,100 +50037,31 @@
         function (productCode, scopes) {
             var _this = this;
             if (scopes === void 0) { scopes = ''; }
-            scopes = [].concat(scopes);
-            if (this.loadingScopes) {
-                scopes = this.loadingScopes.expand('product', scopes);
-            }
-            this.initProductScopes(productCode, scopes);
-            if (scopes.length > 1) {
-                return rxjs.combineLatest(scopes.map((/**
-                 * @param {?} scope
-                 * @return {?}
-                 */
-                function (scope) { return _this.products[productCode][scope]; }))).pipe(operators.auditTime(0), operators.map((/**
-                 * @param {?} productParts
-                 * @return {?}
-                 */
-                function (productParts) {
-                    return productParts.find(Boolean) && deepMerge.apply(void 0, __spread([{}], productParts));
-                })));
-            }
-            else {
-                return this.products[productCode][scopes[0]];
-            }
-        };
-        /**
-         * @private
-         * @param {?} productCode
-         * @param {?} scopes
-         * @return {?}
-         */
-        ProductService.prototype.initProductScopes = /**
-         * @private
-         * @param {?} productCode
-         * @param {?} scopes
-         * @return {?}
-         */
-        function (productCode, scopes) {
-            var e_1, _a;
-            if (!this.products[productCode]) {
-                this.products[productCode] = {};
-            }
-            try {
-                for (var scopes_1 = __values(scopes), scopes_1_1 = scopes_1.next(); !scopes_1_1.done; scopes_1_1 = scopes_1.next()) {
-                    var scope = scopes_1_1.value;
-                    if (!this.products[productCode][scope]) {
-                        this.products[productCode][scope] = this.getProductForScope(productCode, scope);
-                    }
+            // TODO: Remove, deprecated since 1.4
+            if (!this.productLoading) {
+                if (!this.products[productCode]) {
+                    this.products[productCode] = this.store.pipe(store.select(getSelectedProductStateFactory(productCode)), operators.observeOn(rxjs.queueScheduler), operators.tap((/**
+                     * @param {?} productState
+                     * @return {?}
+                     */
+                    function (productState) {
+                        /** @type {?} */
+                        var attemptedLoad = productState.loading ||
+                            productState.success ||
+                            productState.error;
+                        if (!attemptedLoad) {
+                            _this.store.dispatch(new LoadProduct(productCode));
+                        }
+                    })), operators.map((/**
+                     * @param {?} productState
+                     * @return {?}
+                     */
+                    function (productState) { return productState.value; })), operators.shareReplay({ bufferSize: 1, refCount: true }));
                 }
+                return this.products[productCode];
             }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (scopes_1_1 && !scopes_1_1.done && (_a = scopes_1.return)) _a.call(scopes_1);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-        };
-        /**
-         * Creates observable for providing specified product data for the scope
-         *
-         * @param productCode
-         * @param scope
-         */
-        /**
-         * Creates observable for providing specified product data for the scope
-         *
-         * @private
-         * @param {?} productCode
-         * @param {?} scope
-         * @return {?}
-         */
-        ProductService.prototype.getProductForScope = /**
-         * Creates observable for providing specified product data for the scope
-         *
-         * @private
-         * @param {?} productCode
-         * @param {?} scope
-         * @return {?}
-         */
-        function (productCode, scope) {
-            var _this = this;
-            return this.store.pipe(store.select(getSelectedProductStateFactory(productCode, scope)), operators.observeOn(rxjs.queueScheduler), operators.tap((/**
-             * @param {?} productState
-             * @return {?}
-             */
-            function (productState) {
-                /** @type {?} */
-                var attemptedLoad = productState.loading || productState.success || productState.error;
-                if (!attemptedLoad) {
-                    _this.store.dispatch(new LoadProduct(productCode, scope));
-                }
-            })), operators.map((/**
-             * @param {?} productState
-             * @return {?}
-             */
-            function (productState) { return productState.value; })), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
+            // END OF (TODO: Remove, deprecated since 1.4)
+            return this.productLoading.get(productCode, [].concat(scopes));
         };
         /**
          * Returns boolean observable for product's loading state
@@ -49902,12 +50151,13 @@
         /** @nocollapse */
         ProductService.ctorParameters = function () { return [
             { type: store.Store },
-            { type: LoadingScopesService }
+            { type: ProductLoadingService }
         ]; };
         return ProductService;
     }());
     if (false) {
         /**
+         * @deprecated since 1.4
          * @type {?}
          * @private
          */
@@ -49921,7 +50171,7 @@
          * @type {?}
          * @protected
          */
-        ProductService.prototype.loadingScopes;
+        ProductService.prototype.productLoading;
     }
 
     /**
@@ -59143,6 +59393,7 @@
     exports.ProductAdapter = ProductAdapter;
     exports.ProductConnector = ProductConnector;
     exports.ProductImageNormalizer = ProductImageNormalizer;
+    exports.ProductLoadingService = ProductLoadingService;
     exports.ProductModule = ProductModule;
     exports.ProductNameNormalizer = ProductNameNormalizer;
     exports.ProductOccModule = ProductOccModule;
