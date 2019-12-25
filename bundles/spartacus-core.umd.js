@@ -7094,6 +7094,12 @@
         /** @type {?|undefined} */
         PromotionResult.prototype.promotion;
     }
+    /** @enum {string} */
+    var PromotionLocation = {
+        ActiveCart: 'CART',
+        Checkout: 'CHECKOUT',
+        Order: 'ORDER',
+    };
     /**
      * @record
      */
@@ -59410,6 +59416,7 @@
     exports.ProductSearchService = ProductSearchService;
     exports.ProductSelectors = productGroup_selectors;
     exports.ProductService = ProductService;
+    exports.PromotionLocation = PromotionLocation;
     exports.ProtectedRoutesGuard = ProtectedRoutesGuard;
     exports.ProtectedRoutesService = ProtectedRoutesService;
     exports.REGIONS = REGIONS;

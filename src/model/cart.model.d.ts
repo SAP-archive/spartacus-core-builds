@@ -7,6 +7,11 @@ export interface PromotionResult {
     description?: string;
     promotion?: Promotion;
 }
+export declare enum PromotionLocation {
+    ActiveCart = "CART",
+    Checkout = "CHECKOUT",
+    Order = "ORDER"
+}
 export interface Voucher {
     appliedValue?: Price;
     code?: string;
