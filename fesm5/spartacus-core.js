@@ -24247,20 +24247,20 @@ var LoadingScopesService = /** @class */ (function () {
         return scopes;
     };
     /**
-     * Return maxAge for product scope in miliseconds
+     * Return maxAge for product scope in milliseconds
      *
      * @param model
      * @param scope
      */
     /**
-     * Return maxAge for product scope in miliseconds
+     * Return maxAge for product scope in milliseconds
      *
      * @param {?} model
      * @param {?} scope
      * @return {?}
      */
     LoadingScopesService.prototype.getMaxAge = /**
-     * Return maxAge for product scope in miliseconds
+     * Return maxAge for product scope in milliseconds
      *
      * @param {?} model
      * @param {?} scope
@@ -49672,13 +49672,17 @@ var ProductLoadingService = /** @class */ (function () {
         /** @type {?} */
         var maxAge = this.loadingScopes.getMaxAge('product', scope);
         if (maxAge && isPlatformBrowser(this.platformId)) {
+            // we want to grab load product success and load product fail for this product and scope
             /** @type {?} */
-            var loadSuccess$ = this.actions$.pipe(ofType(LOAD_PRODUCT_SUCCESS), filter((/**
+            var loadFinish$ = this.actions$.pipe(filter((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
-                return action.payload.code === productCode && action.meta.scope === scope;
+                return (action.type === LOAD_PRODUCT_SUCCESS ||
+                    action.type === LOAD_PRODUCT_FAIL) &&
+                    action.meta.entityId === productCode &&
+                    action.meta.scope === scope;
             })));
             /** @type {?} */
             var loadStart$ = this.actions$.pipe(ofType(LOAD_PRODUCT), filter((/**
@@ -49688,7 +49692,7 @@ var ProductLoadingService = /** @class */ (function () {
             function (action) {
                 return action.payload === productCode && action.meta.scope === scope;
             })));
-            triggers.push(this.getMaxAgeTrigger(loadStart$, loadSuccess$, maxAge));
+            triggers.push(this.getMaxAgeTrigger(loadStart$, loadFinish$, maxAge));
         }
         return triggers;
     };
@@ -49699,7 +49703,7 @@ var ProductLoadingService = /** @class */ (function () {
      * max age reload implementations
      *
      * @param loadStart$ Stream that emits on load start
-     * @param loadSuccess$ Stream that emits on load success
+     * @param loadFinish$ Stream that emits on load finish
      * @param maxAge max age
      */
     /**
@@ -49710,8 +49714,9 @@ var ProductLoadingService = /** @class */ (function () {
      *
      * @private
      * @param {?} loadStart$ Stream that emits on load start
-     * @param {?} loadSuccess$ Stream that emits on load success
+     * @param {?} loadFinish$ Stream that emits on load finish
      * @param {?} maxAge max age
+     * @param {?=} scheduler
      * @return {?}
      */
     ProductLoadingService.prototype.getMaxAgeTrigger = /**
@@ -49722,32 +49727,45 @@ var ProductLoadingService = /** @class */ (function () {
      *
      * @private
      * @param {?} loadStart$ Stream that emits on load start
-     * @param {?} loadSuccess$ Stream that emits on load success
+     * @param {?} loadFinish$ Stream that emits on load finish
      * @param {?} maxAge max age
+     * @param {?=} scheduler
      * @return {?}
      */
-    function (loadStart$, loadSuccess$, maxAge) {
+    function (loadStart$, loadFinish$, maxAge, scheduler) {
         /** @type {?} */
         var timestamp = 0;
         /** @type {?} */
-        var timestamp$ = loadSuccess$.pipe(tap((/**
+        var now = (/**
          * @return {?}
          */
-        function () { return (timestamp = Date.now()); })));
+        function () { return (scheduler ? scheduler.now() : Date.now()); });
+        /** @type {?} */
+        var timestamp$ = loadFinish$.pipe(tap((/**
+         * @return {?}
+         */
+        function () { return (timestamp = now()); })));
         /** @type {?} */
         var shouldReload$ = defer((/**
          * @return {?}
          */
         function () {
             /** @type {?} */
-            var age = Date.now() - timestamp;
+            var age = now() - timestamp;
             /** @type {?} */
-            var timestampRefresh$ = timestamp$.pipe(delay(maxAge), mapTo(true), withdrawOn(loadStart$));
+            var timestampRefresh$ = timestamp$.pipe(delay(maxAge, scheduler), mapTo(true), withdrawOn(loadStart$));
             if (age > maxAge) {
+                // we should emit first value immediately
                 return merge(of(true), timestampRefresh$);
             }
+            else if (age === 0) {
+                // edge case, we should emit max age timeout after next load success
+                // could happen with artificial schedulers
+                return timestampRefresh$;
+            }
             else {
-                return merge(of(true).pipe(delay(maxAge - age)), timestampRefresh$);
+                // we should emit first value when age will expire
+                return merge(of(true).pipe(delay(maxAge - age, scheduler)), timestampRefresh$);
             }
         }));
         return shouldReload$;

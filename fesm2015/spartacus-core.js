@@ -21705,7 +21705,7 @@ class LoadingScopesService {
         return scopes;
     }
     /**
-     * Return maxAge for product scope in miliseconds
+     * Return maxAge for product scope in milliseconds
      *
      * @param {?} model
      * @param {?} scope
@@ -44125,19 +44125,23 @@ class ProductLoadingService {
         /** @type {?} */
         const maxAge = this.loadingScopes.getMaxAge('product', scope);
         if (maxAge && isPlatformBrowser(this.platformId)) {
+            // we want to grab load product success and load product fail for this product and scope
             /** @type {?} */
-            const loadSuccess$ = this.actions$.pipe(ofType(LOAD_PRODUCT_SUCCESS), filter((/**
+            const loadFinish$ = this.actions$.pipe(filter((/**
              * @param {?} action
              * @return {?}
              */
-            (action) => action.payload.code === productCode && action.meta.scope === scope)));
+            (action) => (action.type === LOAD_PRODUCT_SUCCESS ||
+                action.type === LOAD_PRODUCT_FAIL) &&
+                action.meta.entityId === productCode &&
+                action.meta.scope === scope)));
             /** @type {?} */
             const loadStart$ = this.actions$.pipe(ofType(LOAD_PRODUCT), filter((/**
              * @param {?} action
              * @return {?}
              */
             (action) => action.payload === productCode && action.meta.scope === scope)));
-            triggers.push(this.getMaxAgeTrigger(loadStart$, loadSuccess$, maxAge));
+            triggers.push(this.getMaxAgeTrigger(loadStart$, loadFinish$, maxAge));
         }
         return triggers;
     }
@@ -44149,32 +44153,45 @@ class ProductLoadingService {
      *
      * @private
      * @param {?} loadStart$ Stream that emits on load start
-     * @param {?} loadSuccess$ Stream that emits on load success
+     * @param {?} loadFinish$ Stream that emits on load finish
      * @param {?} maxAge max age
+     * @param {?=} scheduler
      * @return {?}
      */
-    getMaxAgeTrigger(loadStart$, loadSuccess$, maxAge) {
+    getMaxAgeTrigger(loadStart$, loadFinish$, maxAge, scheduler) {
         /** @type {?} */
         let timestamp = 0;
         /** @type {?} */
-        const timestamp$ = loadSuccess$.pipe(tap((/**
+        const now = (/**
          * @return {?}
          */
-        () => (timestamp = Date.now()))));
+        () => (scheduler ? scheduler.now() : Date.now()));
+        /** @type {?} */
+        const timestamp$ = loadFinish$.pipe(tap((/**
+         * @return {?}
+         */
+        () => (timestamp = now()))));
         /** @type {?} */
         const shouldReload$ = defer((/**
          * @return {?}
          */
         () => {
             /** @type {?} */
-            const age = Date.now() - timestamp;
+            const age = now() - timestamp;
             /** @type {?} */
-            const timestampRefresh$ = timestamp$.pipe(delay(maxAge), mapTo(true), withdrawOn(loadStart$));
+            const timestampRefresh$ = timestamp$.pipe(delay(maxAge, scheduler), mapTo(true), withdrawOn(loadStart$));
             if (age > maxAge) {
+                // we should emit first value immediately
                 return merge(of(true), timestampRefresh$);
             }
+            else if (age === 0) {
+                // edge case, we should emit max age timeout after next load success
+                // could happen with artificial schedulers
+                return timestampRefresh$;
+            }
             else {
-                return merge(of(true).pipe(delay(maxAge - age)), timestampRefresh$);
+                // we should emit first value when age will expire
+                return merge(of(true).pipe(delay(maxAge - age, scheduler)), timestampRefresh$);
             }
         }));
         return shouldReload$;

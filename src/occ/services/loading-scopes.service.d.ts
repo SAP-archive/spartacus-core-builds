@@ -16,7 +16,7 @@ export declare class LoadingScopesService {
      */
     expand(model: string, scopes: string[]): string[];
     /**
-     * Return maxAge for product scope in miliseconds
+     * Return maxAge for product scope in milliseconds
      *
      * @param model
      * @param scope

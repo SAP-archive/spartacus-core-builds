@@ -38,7 +38,7 @@ export declare class ProductLoadingService {
      * max age reload implementations
      *
      * @param loadStart$ Stream that emits on load start
-     * @param loadSuccess$ Stream that emits on load success
+     * @param loadFinish$ Stream that emits on load finish
      * @param maxAge max age
      */
     private getMaxAgeTrigger;
