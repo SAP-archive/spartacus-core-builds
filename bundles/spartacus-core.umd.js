@@ -58779,6 +58779,12 @@
                     return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
+            this.resetUserOrders$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map((/**
+             * @return {?}
+             */
+            function () {
+                return new ClearUserOrders();
+            })));
         }
         UserOrdersEffect.decorators = [
             { type: core.Injectable }
@@ -58792,11 +58798,17 @@
             effects$c.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
         return UserOrdersEffect;
     }());
     if (false) {
         /** @type {?} */
         UserOrdersEffect.prototype.loadUserOrders$;
+        /** @type {?} */
+        UserOrdersEffect.prototype.resetUserOrders$;
         /**
          * @type {?}
          * @private

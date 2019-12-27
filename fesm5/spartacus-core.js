@@ -58588,6 +58588,12 @@ var UserOrdersEffect = /** @class */ (function () {
                 return of(new LoadUserOrdersFail(makeErrorSerializable(error)));
             })));
         })));
+        this.resetUserOrders$ = this.actions$.pipe(ofType(LANGUAGE_CHANGE), map((/**
+         * @return {?}
+         */
+        function () {
+            return new ClearUserOrders();
+        })));
     }
     UserOrdersEffect.decorators = [
         { type: Injectable }
@@ -58601,11 +58607,17 @@ var UserOrdersEffect = /** @class */ (function () {
         Effect(),
         __metadata("design:type", Observable)
     ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
+    __decorate([
+        Effect(),
+        __metadata("design:type", Observable)
+    ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
     return UserOrdersEffect;
 }());
 if (false) {
     /** @type {?} */
     UserOrdersEffect.prototype.loadUserOrders$;
+    /** @type {?} */
+    UserOrdersEffect.prototype.resetUserOrders$;
     /**
      * @type {?}
      * @private

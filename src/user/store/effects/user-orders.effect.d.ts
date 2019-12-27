@@ -7,4 +7,5 @@ export declare class UserOrdersEffect {
     private orderConnector;
     constructor(actions$: Actions, orderConnector: UserOrderConnector);
     loadUserOrders$: Observable<UserActions.UserOrdersAction>;
+    resetUserOrders$: Observable<UserActions.ClearUserOrders>;
 }
