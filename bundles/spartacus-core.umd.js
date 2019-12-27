@@ -9217,11 +9217,15 @@
          * @param {?} templates
          * @return {?}
          */
-        function (templates) { return templates.find((/**
-         * @param {?} template
-         * @return {?}
-         */
-        function (template) { return template.id === templateCode; })); }));
+        function (templates) {
+            return templates
+                ? templates.find((/**
+                 * @param {?} template
+                 * @return {?}
+                 */
+                function (template) { return template.id === templateCode; }))
+                : null;
+        }));
     });
 
     /**

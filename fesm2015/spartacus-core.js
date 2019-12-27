@@ -8230,11 +8230,15 @@ const getAnonymousConsentTemplate = (/**
      * @param {?} templates
      * @return {?}
      */
-    templates => templates.find((/**
-     * @param {?} template
-     * @return {?}
-     */
-    template => template.id === templateCode))));
+    templates => {
+        return templates
+            ? templates.find((/**
+             * @param {?} template
+             * @return {?}
+             */
+            template => template.id === templateCode))
+            : null;
+    }));
 });
 
 /**
