@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { PageMeta } from '../../cms/model/page.model';
+import { PageMeta, PageRobotsMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
 import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, PageImageResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
 import { TranslationService } from '../../i18n/translation.service';
@@ -67,4 +67,10 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     resolveImage(product: Product): Observable<string>;
     private resolveFirstCategory;
     private resolveManufacturer;
+    resolveRobots(): Observable<PageRobotsMeta[]>;
+    /**
+     * @deprecated since version 1.3
+     * With 2.0, the argument(s) will be removed and the return type will change. Use `resolveRobots()` instead
+     */
+    resolveRobots(product: Product): Observable<PageRobotsMeta[]>;
 }

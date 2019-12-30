@@ -8542,6 +8542,12 @@
         VariantValueCategory.prototype.superCategories;
     }
     /** @enum {string} */
+    var VariantType = {
+        SIZE: 'ApparelSizeVariantProduct',
+        STYLE: 'ApparelStyleVariantProduct',
+        COLOR: 'ElectronicsColorVariantProduct',
+    };
+    /** @enum {string} */
     var PriceType = {
         BUY: 'BUY',
         FROM: 'FROM',
@@ -8802,6 +8808,15 @@
         /** @type {?|undefined} */
         Product.prototype.volumePricesFlag;
     }
+    /** @enum {string} */
+    var VariantQualifier = {
+        SIZE: 'size',
+        STYLE: 'style',
+        COLOR: 'color',
+        THUMBNAIL: 'thumbnail',
+        PRODUCT: 'product',
+        ROLLUP_PROPERTY: 'rollupProperty',
+    };
 
     /**
      * @fileoverview added by tsickle
@@ -15069,10 +15084,10 @@
         backend: {
             occ: {
                 endpoints: {
-                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL)',
+                    product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL),baseOptions,baseProduct,variantOptions,variantType',
                     product_scopes: {
                         list: 'products/${productCode}?fields=code,name,summary,price(formattedValue),images(DEFAULT,galleryIndex)',
-                        details: 'products/${productCode}?fields=averageRating,purchasable,stock(DEFAULT),description,variantMatrix(DEFAULT),baseOptions(DEFAULT),baseProduct,availableForPickup,variantOptions(DEFAULT),code,url,price(DEFAULT),numberOfReviews,manufacturer,categories(FULL),priceRange,multidimensional,configuratorType,configurable,tags,classifications,images(FULL)',
+                        details: 'products/${productCode}?fields=averageRating,purchasable,stock(DEFAULT),description,variantMatrix(DEFAULT),baseOptions(DEFAULT),baseProduct,availableForPickup,variantOptions(DEFAULT),variantType,code,url,price(DEFAULT),numberOfReviews,manufacturer,categories(FULL),priceRange,multidimensional,configuratorType,configurable,tags,classifications,images(FULL)',
                     },
                     productReviews: 'products/${productCode}/reviews',
                     // Uncomment this when occ gets configured
@@ -15080,7 +15095,7 @@
                     //   'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))&referenceType=${referenceType}',
                     productReferences: 'products/${productCode}/references?fields=DEFAULT,references(target(images(FULL)))',
                     // tslint:disable:max-line-length
-                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch',
+                    productSearch: 'products/search?fields=products(code,name,summary,price(FULL),images(DEFAULT),stock(FULL),averageRating,variantOptions),facets,breadcrumbs,pagination(DEFAULT),sorts(DEFAULT),freeTextSearch',
                     // tslint:enable
                     productSuggestions: 'products/suggestions',
                 },
@@ -50551,7 +50566,10 @@
                  * @param {?} comp
                  * @return {?}
                  */
-                function (comp) { return comp.typeCode === 'CMSProductListComponent'; }));
+                function (comp) {
+                    return comp.typeCode === 'CMSProductListComponent' ||
+                        comp.typeCode === 'ProductGridComponent';
+                }));
             }));
         };
         CategoryPageMetaResolver.decorators = [
@@ -50674,19 +50692,21 @@
                      */
                     function (label) { return _this.resolveBreadcrumbs(p, label); }))),
                     _this.resolveImage(p),
+                    _this.resolveRobots(p),
                 ]);
             })), operators.map((/**
              * @param {?} __0
              * @return {?}
              */
             function (_a) {
-                var _b = __read(_a, 5), heading = _b[0], title = _b[1], description = _b[2], breadcrumbs = _b[3], image = _b[4];
+                var _b = __read(_a, 6), heading = _b[0], title = _b[1], description = _b[2], breadcrumbs = _b[3], image = _b[4], robots = _b[5];
                 return ({
                     heading: heading,
                     title: title,
                     description: description,
                     breadcrumbs: breadcrumbs,
                     image: image,
+                    robots: robots,
                 });
             })));
         };
@@ -50877,6 +50897,30 @@
          */
         function (product) {
             return product.manufacturer ? " | " + product.manufacturer : '';
+        };
+        /**
+         * @param {?=} product
+         * @return {?}
+         */
+        ProductPageMetaResolver.prototype.resolveRobots = /**
+         * @param {?=} product
+         * @return {?}
+         */
+        function (product) {
+            /** @type {?} */
+            var product$ = product ? rxjs.of(product) : this.product$;
+            return product$.pipe(operators.switchMap((/**
+             * @param {?} p
+             * @return {?}
+             */
+            function (p) {
+                if (!p.purchasable) {
+                    return rxjs.of([PageRobotsMeta.FOLLOW, PageRobotsMeta.NOINDEX]);
+                }
+                else {
+                    return rxjs.of([PageRobotsMeta.FOLLOW, PageRobotsMeta.INDEX]);
+                }
+            })));
         };
         ProductPageMetaResolver.decorators = [
             { type: core.Injectable, args: [{
@@ -59561,6 +59605,8 @@
     exports.UserPaymentService = UserPaymentService;
     exports.UserService = UserService;
     exports.UsersSelectors = usersGroup_selectors;
+    exports.VariantQualifier = VariantQualifier;
+    exports.VariantType = VariantType;
     exports.WITHDRAW_CONSENT_PROCESS_ID = WITHDRAW_CONSENT_PROCESS_ID;
     exports.WindowRef = WindowRef;
     exports.WishListEffects = WishListEffects;
