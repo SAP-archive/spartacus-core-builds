@@ -1095,10 +1095,6 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * @record
-     */
-    function LoadingScopesConfig() { }
-    /**
      * @abstract
      */
     var   /**
@@ -15079,6 +15075,16 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @enum {string} */
+    var ProductScope = {
+        LIST: 'list',
+        DETAILS: 'details',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var defaultOccProductConfig = {
         backend: {
@@ -15103,12 +15109,36 @@
             loadingScopes: {
                 product: {
                     details: {
-                        include: ['list'],
+                        include: [ProductScope.LIST],
                     },
                 },
             },
         },
     };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function ProductScopesConfig() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ProductScopesConfig.prototype.list;
+        /** @type {?|undefined} */
+        ProductScopesConfig.prototype.details;
+        /* Skipping unhandled member: [scope: string]: ProductLoadingScopeConfig;*/
+    }
+    /**
+     * @record
+     */
+    function ProductLoadingScopeConfig() { }
+    if (false) {
+        /** @type {?|undefined} */
+        ProductLoadingScopeConfig.prototype.include;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -50634,7 +50664,7 @@
             _this.productService = productService;
             _this.translation = translation;
             _this.features = features;
-            _this.PRODUCT_SCOPE = _this.features && _this.features.isLevel('1.4') ? 'details' : '';
+            _this.PRODUCT_SCOPE = _this.features && _this.features.isLevel('1.4') ? ProductScope.DETAILS : '';
             // reusable observable for product data based on the current page
             _this.product$ = _this.routingService.getRouterState().pipe(operators.map((/**
              * @param {?} state
@@ -59489,6 +59519,7 @@
     exports.ProductReviewService = ProductReviewService;
     exports.ProductReviewsAdapter = ProductReviewsAdapter;
     exports.ProductReviewsConnector = ProductReviewsConnector;
+    exports.ProductScope = ProductScope;
     exports.ProductSearchAdapter = ProductSearchAdapter;
     exports.ProductSearchConnector = ProductSearchConnector;
     exports.ProductSearchService = ProductSearchService;
