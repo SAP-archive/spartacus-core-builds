@@ -32405,11 +32405,12 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var GlobalMessageEffect = /** @class */ (function () {
-        function GlobalMessageEffect(actions$, store$1, config) {
+        function GlobalMessageEffect(actions$, store$1, config, platformId) {
             var _this = this;
             this.actions$ = actions$;
             this.store = store$1;
             this.config = config;
+            this.platformId = platformId;
             this.removeDuplicated$ = this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
              * @param {?} message
              * @return {?}
@@ -32434,29 +32435,31 @@
                     });
                 })));
             })));
-            this.hideAfterDelay$ = this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
-             * @param {?} type
-             * @return {?}
-             */
-            function (type) {
-                /** @type {?} */
-                var config = _this.config.globalMessages[type];
-                return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.take(1), operators.filter((/**
-                 * @param {?} count
+            this.hideAfterDelay$ = common.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
+                ? this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
+                 * @param {?} type
                  * @return {?}
                  */
-                function (count) {
-                    return config && config.timeout !== undefined && count && count > 0;
-                })), operators.delay(config.timeout), operators.switchMap((/**
-                 * @return {?}
-                 */
-                function () {
-                    return rxjs.of(new RemoveMessage({
-                        type: type,
-                        index: 0,
-                    }));
-                })));
-            })));
+                function (type) {
+                    /** @type {?} */
+                    var config = _this.config.globalMessages[type];
+                    return _this.store.pipe(store.select(getGlobalMessageCountByType(type)), operators.take(1), operators.filter((/**
+                     * @param {?} count
+                     * @return {?}
+                     */
+                    function (count) {
+                        return config && config.timeout !== undefined && count && count > 0;
+                    })), operators.delay(config.timeout), operators.switchMap((/**
+                     * @return {?}
+                     */
+                    function () {
+                        return rxjs.of(new RemoveMessage({
+                            type: type,
+                            index: 0,
+                        }));
+                    })));
+                })))
+                : rxjs.EMPTY;
         }
         GlobalMessageEffect.decorators = [
             { type: core.Injectable }
@@ -32465,7 +32468,8 @@
         GlobalMessageEffect.ctorParameters = function () { return [
             { type: effects$c.Actions },
             { type: store.Store },
-            { type: GlobalMessageConfig }
+            { type: GlobalMessageConfig },
+            { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
         __decorate([
             effects$c.Effect(),
@@ -32497,6 +32501,11 @@
          * @private
          */
         GlobalMessageEffect.prototype.config;
+        /**
+         * @type {?}
+         * @private
+         */
+        GlobalMessageEffect.prototype.platformId;
     }
 
     /**

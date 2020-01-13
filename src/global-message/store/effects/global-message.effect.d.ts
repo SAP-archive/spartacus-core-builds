@@ -8,7 +8,8 @@ export declare class GlobalMessageEffect {
     private actions$;
     private store;
     private config;
+    private platformId;
     removeDuplicated$: Observable<GlobalMessageActions.RemoveMessage>;
     hideAfterDelay$: Observable<GlobalMessageActions.RemoveMessage>;
-    constructor(actions$: Actions, store: Store<StateWithGlobalMessage>, config: GlobalMessageConfig);
+    constructor(actions$: Actions, store: Store<StateWithGlobalMessage>, config: GlobalMessageConfig, platformId: any);
 }

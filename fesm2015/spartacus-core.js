@@ -28950,11 +28950,13 @@ class GlobalMessageEffect {
      * @param {?} actions$
      * @param {?} store
      * @param {?} config
+     * @param {?} platformId
      */
-    constructor(actions$, store, config) {
+    constructor(actions$, store, config, platformId) {
         this.actions$ = actions$;
         this.store = store;
         this.config = config;
+        this.platformId = platformId;
         this.removeDuplicated$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload'), switchMap((/**
          * @param {?} message
          * @return {?}
@@ -28971,25 +28973,27 @@ class GlobalMessageEffect {
             type: message.type,
             index: indexOfFirstOccurrence(text, messages),
         })))))));
-        this.hideAfterDelay$ = this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((/**
-         * @param {?} type
-         * @return {?}
-         */
-        (type) => {
-            /** @type {?} */
-            const config = this.config.globalMessages[type];
-            return this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter((/**
-             * @param {?} count
+        this.hideAfterDelay$ = isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
+            ? this.actions$.pipe(ofType(ADD_MESSAGE), pluck('payload', 'type'), concatMap((/**
+             * @param {?} type
              * @return {?}
              */
-            (count) => config && config.timeout !== undefined && count && count > 0)), delay(config.timeout), switchMap((/**
-             * @return {?}
-             */
-            () => of(new RemoveMessage({
-                type,
-                index: 0,
-            })))));
-        })));
+            (type) => {
+                /** @type {?} */
+                const config = this.config.globalMessages[type];
+                return this.store.pipe(select(getGlobalMessageCountByType(type)), take(1), filter((/**
+                 * @param {?} count
+                 * @return {?}
+                 */
+                (count) => config && config.timeout !== undefined && count && count > 0)), delay(config.timeout), switchMap((/**
+                 * @return {?}
+                 */
+                () => of(new RemoveMessage({
+                    type,
+                    index: 0,
+                })))));
+            })))
+            : EMPTY;
     }
 }
 GlobalMessageEffect.decorators = [
@@ -28999,7 +29003,8 @@ GlobalMessageEffect.decorators = [
 GlobalMessageEffect.ctorParameters = () => [
     { type: Actions },
     { type: Store },
-    { type: GlobalMessageConfig }
+    { type: GlobalMessageConfig },
+    { type: undefined, decorators: [{ type: Inject, args: [PLATFORM_ID,] }] }
 ];
 __decorate([
     Effect(),
@@ -29029,6 +29034,11 @@ if (false) {
      * @private
      */
     GlobalMessageEffect.prototype.config;
+    /**
+     * @type {?}
+     * @private
+     */
+    GlobalMessageEffect.prototype.platformId;
 }
 
 /**
