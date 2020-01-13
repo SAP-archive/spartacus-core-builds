@@ -42136,9 +42136,10 @@ if (false) {
 /**
  * @param {?} configInit
  * @param {?} languageService
+ * @param {?} httpClient
  * @return {?}
  */
-function i18nextInit(configInit, languageService) {
+function i18nextInit(configInit, languageService, httpClient) {
     return (/**
      * @return {?}
      */
@@ -42159,7 +42160,12 @@ function i18nextInit(configInit, languageService) {
         };
         if (config.i18n.backend) {
             i18next.use(i18nextXhrBackend);
-            i18nextConfig = Object.assign({}, i18nextConfig, { backend: config.i18n.backend });
+            /** @type {?} */
+            const backend = {
+                loadPath: config.i18n.backend.loadPath || undefined,
+                ajax: i18nextGetHttpClient(httpClient),
+            };
+            i18nextConfig = Object.assign({}, i18nextConfig, { backend });
         }
         return i18next.init(i18nextConfig, (/**
          * @return {?}
@@ -42203,6 +42209,36 @@ function syncI18nextWithSiteContext(language) {
      */
     lang => i18next.changeLanguage(lang)));
 }
+/**
+ * Returns a function appropriate for i18next to make http calls for JSON files.
+ * See docs for `i18next-xhr-backend`: https://github.com/i18next/i18next-xhr-backend#backend-options
+ *
+ * It uses Angular HttpClient under the hood, so it works in SSR.
+ * @param {?} httpClient Angular http client
+ * @return {?}
+ */
+function i18nextGetHttpClient(httpClient) {
+    return (/**
+     * @param {?} url
+     * @param {?} _options
+     * @param {?} callback
+     * @param {?} _data
+     * @return {?}
+     */
+    (url, _options, callback, _data) => {
+        httpClient
+            .get(url, { responseType: 'text' })
+            .subscribe((/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => callback(data, { status: 200 })), (/**
+         * @param {?} error
+         * @return {?}
+         */
+        error => callback(null, { status: error.status })));
+    });
+}
 
 /**
  * @fileoverview added by tsickle
@@ -42214,7 +42250,7 @@ const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
         useFactory: ɵ0$D,
-        deps: [ConfigInitializerService, LanguageService],
+        deps: [ConfigInitializerService, LanguageService, HttpClient],
         multi: true,
     },
 ];
