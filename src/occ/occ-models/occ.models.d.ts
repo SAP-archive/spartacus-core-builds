@@ -1863,6 +1863,60 @@ export declare namespace Occ {
         currencies?: Currency[];
     }
     /**
+     * An interface representing CustomerCoupon
+     */
+    interface CustomerCoupon {
+        /**
+         * @member {string} [couponId]
+         */
+        couponId?: string;
+        /**
+         * @member {string} [name]
+         */
+        name?: string;
+        /**
+         * @member {string} [startDate]
+         */
+        startDate?: string;
+        /**
+         * @member {string} [endDate]
+         */
+        endDate?: string;
+        /**
+         * @member {string} [endDate]
+         */
+        status?: string;
+        /**
+         * @member {string} [description]
+         */
+        description?: string;
+        /**
+         * @member {boolean} [notificationOn]
+         */
+        notificationOn?: boolean;
+        /**
+         * @member {boolean} [allProductsApplicable]
+         */
+        allProductsApplicable?: boolean;
+    }
+    /**
+     * An interface representing CustomerCouponSearchResult
+     */
+    interface CustomerCouponSearchResult {
+        /**
+         * @member {CustomerCoupon[]} [coupons]
+         */
+        coupons?: CustomerCoupon[];
+        /**
+         * @member {Sort[]} [sorts]
+         */
+        sorts?: Sort[];
+        /**
+         * @member {Pagination} [pagination]
+         */
+        pagination?: Pagination;
+    }
+    /**
      *
      * An interface representing DeliveryModeList.
      */

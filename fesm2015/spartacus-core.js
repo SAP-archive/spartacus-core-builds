@@ -7879,6 +7879,67 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
+ * @record
+ */
+function CustomerCoupon() { }
+if (false) {
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.couponId;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.name;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.startDate;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.endDate;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.status;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.description;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.notificationOn;
+    /** @type {?|undefined} */
+    CustomerCoupon.prototype.allProductsApplicable;
+}
+/**
+ * @record
+ */
+function CustomerCouponNotification() { }
+if (false) {
+    /** @type {?|undefined} */
+    CustomerCouponNotification.prototype.coupon;
+    /** @type {?|undefined} */
+    CustomerCouponNotification.prototype.customer;
+    /** @type {?|undefined} */
+    CustomerCouponNotification.prototype.status;
+}
+/**
+ * @record
+ */
+function CustomerCouponSearchResult() { }
+if (false) {
+    /** @type {?|undefined} */
+    CustomerCouponSearchResult.prototype.coupons;
+    /** @type {?|undefined} */
+    CustomerCouponSearchResult.prototype.sorts;
+    /** @type {?|undefined} */
+    CustomerCouponSearchResult.prototype.pagination;
+}
+/**
+ * @record
+ */
+function CustomerCoupon2Customer() { }
+if (false) {
+    /** @type {?|undefined} */
+    CustomerCoupon2Customer.prototype.coupon;
+    /** @type {?|undefined} */
+    CustomerCoupon2Customer.prototype.customer;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
  * Used to envelope data observable together with specified scope
  * @record
  * @template T
@@ -15102,6 +15163,9 @@ const defaultOccUserConfig = {
                 addressDetail: 'users/${userId}/addresses/${addressId}',
                 addressVerification: 'users/${userId}/addresses/verification',
                 consignmentTracking: 'orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                customerCoupons: 'users/${userId}/customercoupons',
+                claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
+                couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
                 notificationPreference: 'users/${userId}/notificationpreferences',
                 productInterests: 'users/${userId}/productinterests',
                 getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
@@ -15114,6 +15178,176 @@ const defaultOccUserConfig = {
         },
     },
 };
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @abstract
+ */
+class CustomerCouponAdapter {
+}
+if (false) {
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} pageSize
+     * @param {?} currentPage
+     * @param {?} sort
+     * @return {?}
+     */
+    CustomerCouponAdapter.prototype.getCustomerCoupons = function (userId, pageSize, currentPage, sort) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    CustomerCouponAdapter.prototype.turnOnNotification = function (userId, couponCode) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    CustomerCouponAdapter.prototype.turnOffNotification = function (userId, couponCode) { };
+    /**
+     * @abstract
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    CustomerCouponAdapter.prototype.claimCustomerCoupon = function (userId, couponCode) { };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new InjectionToken('CustomerCouponSearchResultNormalizer');
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class OccCustomerCouponAdapter {
+    /**
+     * @param {?} http
+     * @param {?} occEndpoints
+     * @param {?} converter
+     */
+    constructor(http, occEndpoints, converter) {
+        this.http = http;
+        this.occEndpoints = occEndpoints;
+        this.converter = converter;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} pageSize
+     * @param {?} currentPage
+     * @param {?} sort
+     * @return {?}
+     */
+    getCustomerCoupons(userId, pageSize, currentPage, sort) {
+        /** @type {?} */
+        const url = this.occEndpoints.getUrl('customerCoupons', { userId });
+        /** @type {?} */
+        let params = new HttpParams().set('sort', sort ? sort : 'startDate:asc');
+        if (pageSize) {
+            params = params.set('pageSize', pageSize.toString());
+        }
+        if (currentPage) {
+            params = params.set('currentPage', currentPage.toString());
+        }
+        /** @type {?} */
+        const headers = this.newHttpHeader();
+        return this.http
+            .get(url, { headers, params })
+            .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    turnOffNotification(userId, couponCode) {
+        /** @type {?} */
+        const url = this.occEndpoints.getUrl('couponNotification', {
+            userId,
+            couponCode,
+        });
+        /** @type {?} */
+        const headers = this.newHttpHeader();
+        return this.http.delete(url, { headers });
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    turnOnNotification(userId, couponCode) {
+        /** @type {?} */
+        const url = this.occEndpoints.getUrl('couponNotification', {
+            userId,
+            couponCode,
+        });
+        /** @type {?} */
+        const headers = this.newHttpHeader();
+        return this.http.post(url, { headers });
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    claimCustomerCoupon(userId, couponCode) {
+        /** @type {?} */
+        const url = this.occEndpoints.getUrl('claimCoupon', {
+            userId,
+            couponCode,
+        });
+        /** @type {?} */
+        const headers = this.newHttpHeader();
+        return this.http.post(url, { headers });
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    newHttpHeader() {
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+        });
+    }
+}
+OccCustomerCouponAdapter.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+OccCustomerCouponAdapter.ctorParameters = () => [
+    { type: HttpClient },
+    { type: OccEndpointsService },
+    { type: ConverterService }
+];
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCustomerCouponAdapter.prototype.http;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCustomerCouponAdapter.prototype.occEndpoints;
+    /**
+     * @type {?}
+     * @protected
+     */
+    OccCustomerCouponAdapter.prototype.converter;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -15607,6 +15841,7 @@ UserOccModule.decorators = [
                         useClass: OccUserPaymentAdapter,
                     },
                     { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
+                    { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
                     {
                         provide: UserNotificationPreferenceAdapter,
                         useClass: OccUserNotificationPreferenceAdapter,
@@ -16662,6 +16897,27 @@ if (false) {
      * @type {?|undefined}
      */
     OccEndpoints.prototype.cartVoucher;
+    /**
+     * Endpoint for coupons
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.customerCoupons;
+    /**
+     * Endpoint for claiming coupon
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.claimCoupon;
+    /**
+     * Endpoint for coupons
+     *
+     * \@member {string}
+     * @type {?|undefined}
+     */
+    OccEndpoints.prototype.couponNotification;
     /**
      * Explicitly saves a cart
      *
@@ -19150,6 +19406,77 @@ var Occ;
          * @type {?|undefined}
          */
         CurrencyList.prototype.currencies;
+    }
+    /**
+     * An interface representing CustomerCoupon
+     * @record
+     */
+    function CustomerCoupon() { }
+    Occ.CustomerCoupon = CustomerCoupon;
+    if (false) {
+        /**
+         * \@member {string} [couponId]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.couponId;
+        /**
+         * \@member {string} [name]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.name;
+        /**
+         * \@member {string} [startDate]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.startDate;
+        /**
+         * \@member {string} [endDate]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.endDate;
+        /**
+         * \@member {string} [endDate]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.status;
+        /**
+         * \@member {string} [description]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.description;
+        /**
+         * \@member {boolean} [notificationOn]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.notificationOn;
+        /**
+         * \@member {boolean} [allProductsApplicable]
+         * @type {?|undefined}
+         */
+        CustomerCoupon.prototype.allProductsApplicable;
+    }
+    /**
+     * An interface representing CustomerCouponSearchResult
+     * @record
+     */
+    function CustomerCouponSearchResult() { }
+    Occ.CustomerCouponSearchResult = CustomerCouponSearchResult;
+    if (false) {
+        /**
+         * \@member {CustomerCoupon[]} [coupons]
+         * @type {?|undefined}
+         */
+        CustomerCouponSearchResult.prototype.coupons;
+        /**
+         * \@member {Sort[]} [sorts]
+         * @type {?|undefined}
+         */
+        CustomerCouponSearchResult.prototype.sorts;
+        /**
+         * \@member {Pagination} [pagination]
+         * @type {?|undefined}
+         */
+        CustomerCouponSearchResult.prototype.pagination;
     }
     /**
      *
@@ -22319,6 +22646,14 @@ const USER_ORDER_DETAILS = '[User] User Order Details';
 /** @type {?} */
 const REGIONS = '[User] Regions';
 /** @type {?} */
+const CUSTOMER_COUPONS = '[User] Customer Coupons';
+/** @type {?} */
+const SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
+/** @type {?} */
+const UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
+/** @type {?} */
+const CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
+/** @type {?} */
 const NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
 /** @type {?} */
 const PRODUCT_INTERESTS = '[User] Product Interests';
@@ -22363,6 +22698,8 @@ if (false) {
     UserState.prototype.resetPassword;
     /** @type {?} */
     UserState.prototype.consignmentTracking;
+    /** @type {?} */
+    UserState.prototype.customerCoupons;
     /** @type {?} */
     UserState.prototype.notificationPreferences;
     /** @type {?} */
@@ -23850,6 +24187,274 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
+/** @type {?} */
+const LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
+/** @type {?} */
+const LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
+/** @type {?} */
+const RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
+/** @type {?} */
+const SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
+/** @type {?} */
+const SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
+/** @type {?} */
+const SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
+/** @type {?} */
+const RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
+/** @type {?} */
+const UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
+/** @type {?} */
+const UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
+/** @type {?} */
+const UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
+/** @type {?} */
+const RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
+/** @type {?} */
+const CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
+/** @type {?} */
+const CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
+/** @type {?} */
+const CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
+class LoadCustomerCoupons extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_COUPONS);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerCoupons.prototype.type;
+    /** @type {?} */
+    LoadCustomerCoupons.prototype.payload;
+}
+class LoadCustomerCouponsFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_COUPONS, payload);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerCouponsFail.prototype.type;
+    /** @type {?} */
+    LoadCustomerCouponsFail.prototype.payload;
+}
+class LoadCustomerCouponsSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CUSTOMER_COUPONS);
+        this.payload = payload;
+        this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCustomerCouponsSuccess.prototype.type;
+    /** @type {?} */
+    LoadCustomerCouponsSuccess.prototype.payload;
+}
+class ResetLoadCustomerCoupons extends LoaderResetAction {
+    constructor() {
+        super(CUSTOMER_COUPONS);
+        this.type = RESET_LOAD_CUSTOMER_COUPONS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ResetLoadCustomerCoupons.prototype.type;
+}
+// Subscribe coupon notification actions
+class SubscribeCustomerCoupon extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON;
+    }
+}
+if (false) {
+    /** @type {?} */
+    SubscribeCustomerCoupon.prototype.type;
+    /** @type {?} */
+    SubscribeCustomerCoupon.prototype.payload;
+}
+class SubscribeCustomerCouponFail extends EntityFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    SubscribeCustomerCouponFail.prototype.type;
+    /** @type {?} */
+    SubscribeCustomerCouponFail.prototype.payload;
+}
+class SubscribeCustomerCouponSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    SubscribeCustomerCouponSuccess.prototype.type;
+    /** @type {?} */
+    SubscribeCustomerCouponSuccess.prototype.payload;
+}
+class ResetSubscribeCustomerCouponProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ResetSubscribeCustomerCouponProcess.prototype.type;
+}
+class UnsubscribeCustomerCoupon extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
+    }
+}
+if (false) {
+    /** @type {?} */
+    UnsubscribeCustomerCoupon.prototype.type;
+    /** @type {?} */
+    UnsubscribeCustomerCoupon.prototype.payload;
+}
+class UnsubscribeCustomerCouponFail extends EntityFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    UnsubscribeCustomerCouponFail.prototype.type;
+    /** @type {?} */
+    UnsubscribeCustomerCouponFail.prototype.payload;
+}
+class UnsubscribeCustomerCouponSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    UnsubscribeCustomerCouponSuccess.prototype.type;
+    /** @type {?} */
+    UnsubscribeCustomerCouponSuccess.prototype.payload;
+}
+class ResetUnsubscribeCustomerCouponProcess extends EntityResetAction {
+    constructor() {
+        super(PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID);
+        this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ResetUnsubscribeCustomerCouponProcess.prototype.type;
+}
+class ClaimCustomerCoupon extends EntityLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClaimCustomerCoupon.prototype.type;
+    /** @type {?} */
+    ClaimCustomerCoupon.prototype.payload;
+}
+class ClaimCustomerCouponFail extends EntityFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClaimCustomerCouponFail.prototype.type;
+    /** @type {?} */
+    ClaimCustomerCouponFail.prototype.payload;
+}
+class ClaimCustomerCouponSuccess extends EntitySuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload);
+        this.payload = payload;
+        this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClaimCustomerCouponSuccess.prototype.type;
+    /** @type {?} */
+    ClaimCustomerCouponSuccess.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 /** @type {?} */
 const LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
 /** @type {?} */
@@ -24635,6 +25240,36 @@ var userGroup_actions = /*#__PURE__*/Object.freeze({
     RemoveUserFail: RemoveUserFail,
     RemoveUserSuccess: RemoveUserSuccess,
     RemoveUserReset: RemoveUserReset,
+    LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
+    LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
+    LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
+    RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
+    SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
+    SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
+    SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+    RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+    UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
+    UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
+    UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+    RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+    CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
+    CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
+    CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
+    LoadCustomerCoupons: LoadCustomerCoupons,
+    LoadCustomerCouponsFail: LoadCustomerCouponsFail,
+    LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
+    ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
+    SubscribeCustomerCoupon: SubscribeCustomerCoupon,
+    SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
+    SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
+    ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
+    UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
+    UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
+    UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
+    ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
+    ClaimCustomerCoupon: ClaimCustomerCoupon,
+    ClaimCustomerCouponFail: ClaimCustomerCouponFail,
+    ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
     LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
     LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
     LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
@@ -25136,34 +25771,30 @@ const ɵ0$o = /**
  * @param {?} state
  * @return {?}
  */
-(state) => state.notificationPreferences;
+(state) => state.customerCoupons;
 /** @type {?} */
-const getPreferencesLoaderState = createSelector(getUserState, (ɵ0$o));
+const getCustomerCouponsState = createSelector(getUserState, (ɵ0$o));
 const ɵ1$i = /**
  * @param {?} state
  * @return {?}
  */
-(state) => loaderValueSelector(state);
+(state) => loaderSuccessSelector(state);
 /** @type {?} */
-const getPreferences = createSelector(getPreferencesLoaderState, (ɵ1$i));
+const getCustomerCouponsLoaded = createSelector(getCustomerCouponsState, (ɵ1$i));
 const ɵ2$b = /**
- * @param {?} state
- * @return {?}
- */
-(state) => loaderValueSelector(state).filter((/**
- * @param {?} p
- * @return {?}
- */
-p => p.enabled));
-/** @type {?} */
-const getEnabledPreferences = createSelector(getPreferencesLoaderState, (ɵ2$b));
-const ɵ3$7 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getPreferencesLoading = createSelector(getPreferencesLoaderState, (ɵ3$7));
+const getCustomerCouponsLoading = createSelector(getCustomerCouponsState, (ɵ2$b));
+const ɵ3$7 = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderValueSelector(state);
+/** @type {?} */
+const getCustomerCoupons = createSelector(getCustomerCouponsState, (ɵ3$7));
 
 /**
  * @fileoverview added by tsickle
@@ -25173,23 +25804,60 @@ const ɵ0$p = /**
  * @param {?} state
  * @return {?}
  */
-(state) => state.productInterests;
+(state) => state.notificationPreferences;
 /** @type {?} */
-const getInterestsState = createSelector(getUserState, (ɵ0$p));
+const getPreferencesLoaderState = createSelector(getUserState, (ɵ0$p));
 const ɵ1$j = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderValueSelector(state);
 /** @type {?} */
-const getInterests = createSelector(getInterestsState, (ɵ1$j));
+const getPreferences = createSelector(getPreferencesLoaderState, (ɵ1$j));
 const ɵ2$c = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderValueSelector(state).filter((/**
+ * @param {?} p
+ * @return {?}
+ */
+p => p.enabled));
+/** @type {?} */
+const getEnabledPreferences = createSelector(getPreferencesLoaderState, (ɵ2$c));
+const ɵ3$8 = /**
  * @param {?} state
  * @return {?}
  */
 (state) => loaderLoadingSelector(state);
 /** @type {?} */
-const getInterestsLoading = createSelector(getInterestsState, (ɵ2$c));
+const getPreferencesLoading = createSelector(getPreferencesLoaderState, (ɵ3$8));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$q = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.productInterests;
+/** @type {?} */
+const getInterestsState = createSelector(getUserState, (ɵ0$q));
+const ɵ1$k = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderValueSelector(state);
+/** @type {?} */
+const getInterests = createSelector(getInterestsState, (ɵ1$k));
+const ɵ2$d = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => loaderLoadingSelector(state);
+/** @type {?} */
+const getInterestsLoading = createSelector(getInterestsState, (ɵ2$d));
 
 /**
  * @fileoverview added by tsickle
@@ -25245,6 +25913,10 @@ var usersGroup_selectors = /*#__PURE__*/Object.freeze({
     getOrdersState: getOrdersState,
     getOrdersLoaded: getOrdersLoaded,
     getOrders: getOrders,
+    getCustomerCouponsState: getCustomerCouponsState,
+    getCustomerCouponsLoaded: getCustomerCouponsLoaded,
+    getCustomerCouponsLoading: getCustomerCouponsLoading,
+    getCustomerCoupons: getCustomerCoupons,
     getPreferencesLoaderState: getPreferencesLoaderState,
     getPreferences: getPreferences,
     getEnabledPreferences: getEnabledPreferences,
@@ -27744,39 +28416,13 @@ const getAsmState = createFeatureSelector(ASM_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$q = /**
+const ɵ0$r = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.asmUi;
 /** @type {?} */
-const getAsmUi = createSelector(getAsmState, (ɵ0$q));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$r = /**
- * @param {?} state
- * @return {?}
- */
-(state) => state.customerSearchResult;
-/** @type {?} */
-const getCustomerSearchResultsLoaderState = createSelector(getAsmState, (ɵ0$r));
-const ɵ1$k = /**
- * @param {?} state
- * @return {?}
- */
-state => loaderValueSelector(state);
-/** @type {?} */
-const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, (ɵ1$k));
-const ɵ2$d = /**
- * @param {?} state
- * @return {?}
- */
-state => loaderLoadingSelector(state);
-/** @type {?} */
-const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, (ɵ2$d));
+const getAsmUi = createSelector(getAsmState, (ɵ0$r));
 
 /**
  * @fileoverview added by tsickle
@@ -27786,23 +28432,49 @@ const ɵ0$s = /**
  * @param {?} state
  * @return {?}
  */
-(state) => state.csagentToken;
+(state) => state.customerSearchResult;
 /** @type {?} */
-const getCustomerSupportAgentTokenState = createSelector(getAsmState, (ɵ0$s));
+const getCustomerSearchResultsLoaderState = createSelector(getAsmState, (ɵ0$s));
 const ɵ1$l = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, (ɵ1$l));
+const getCustomerSearchResults = createSelector(getCustomerSearchResultsLoaderState, (ɵ1$l));
 const ɵ2$e = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, (ɵ2$e));
+const getCustomerSearchResultsLoading = createSelector(getCustomerSearchResultsLoaderState, (ɵ2$e));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$t = /**
+ * @param {?} state
+ * @return {?}
+ */
+(state) => state.csagentToken;
+/** @type {?} */
+const getCustomerSupportAgentTokenState = createSelector(getAsmState, (ɵ0$t));
+const ɵ1$m = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderValueSelector(state);
+/** @type {?} */
+const getCustomerSupportAgentToken = createSelector(getCustomerSupportAgentTokenState, (ɵ1$m));
+const ɵ2$f = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderLoadingSelector(state);
+/** @type {?} */
+const getCustomerSupportAgentTokenLoading = createSelector(getCustomerSupportAgentTokenState, (ɵ2$f));
 
 /**
  * @fileoverview added by tsickle
@@ -28133,13 +28805,13 @@ const getGlobalMessageState = createFeatureSelector(GLOBAL_MESSAGE_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$t = /**
+const ɵ0$u = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entities;
 /** @type {?} */
-const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$t));
+const getGlobalMessageEntities = createSelector(getGlobalMessageState, (ɵ0$u));
 /** @type {?} */
 const getGlobalMessageEntitiesByType = (/**
  * @param {?} type
@@ -30110,28 +30782,28 @@ const getCartContentSelector = (/**
  * @return {?}
  */
 (state) => state.content);
-const ɵ0$u = getCartContentSelector;
+const ɵ0$v = getCartContentSelector;
 /** @type {?} */
 const getCartRefreshSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.refresh);
-const ɵ1$m = getCartRefreshSelector;
+const ɵ1$n = getCartRefreshSelector;
 /** @type {?} */
 const getCartEntriesSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.entries);
-const ɵ2$f = getCartEntriesSelector;
+const ɵ2$g = getCartEntriesSelector;
 /** @type {?} */
 const getCartMergeCompleteSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cartMergeComplete);
-const ɵ3$8 = getCartMergeCompleteSelector;
+const ɵ3$9 = getCartMergeCompleteSelector;
 /** @type {?} */
 const getCartsState = createFeatureSelector(CART_FEATURE);
 const ɵ4$2 = /**
@@ -30238,13 +30910,13 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
  */
 /** @type {?} */
 const getMultiCartState = createFeatureSelector(MULTI_CART_FEATURE);
-const ɵ0$v = /**
+const ɵ0$w = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.carts;
 /** @type {?} */
-const getMultiCartEntities = createSelector(getMultiCartState, (ɵ0$v));
+const getMultiCartEntities = createSelector(getMultiCartState, (ɵ0$w));
 /** @type {?} */
 const getCartEntitySelectorFactory = (/**
  * @param {?} cartId
@@ -30328,20 +31000,20 @@ const getCartEntrySelectorFactory$1 = (/**
             : undefined;
     }));
 });
-const ɵ1$n = /**
+const ɵ1$o = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.active;
 /** @type {?} */
-const getActiveCartId = createSelector(getMultiCartState, (ɵ1$n));
-const ɵ2$g = /**
+const getActiveCartId = createSelector(getMultiCartState, (ɵ1$o));
+const ɵ2$h = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.wishList;
 /** @type {?} */
-const getWishListId = createSelector(getMultiCartState, (ɵ2$g));
+const getWishListId = createSelector(getMultiCartState, (ɵ2$h));
 
 /**
  * @fileoverview added by tsickle
@@ -33050,14 +33722,14 @@ const getComponentEntitiesSelector = (/**
     acc[cur] = state.entities[cur].value;
     return acc;
 }), {}));
-const ɵ0$w = getComponentEntitiesSelector;
-const ɵ1$o = /**
+const ɵ0$x = getComponentEntitiesSelector;
+const ɵ1$p = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.component;
 /** @type {?} */
-const getComponentState = createSelector(getCmsState, (ɵ1$o));
+const getComponentState = createSelector(getCmsState, (ɵ1$p));
 /** @type {?} */
 const getComponentEntities = createSelector(getComponentState, getComponentEntitiesSelector);
 /** @type {?} */
@@ -33104,13 +33776,13 @@ const componentSelectorFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$x = /**
+const ɵ0$y = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.navigation;
 /** @type {?} */
-const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$x));
+const getNavigationEntryItemState = createSelector(getCmsState, (ɵ0$y));
 /** @type {?} */
 const getSelectedNavigationEntryItemState = (/**
  * @param {?} nodeId
@@ -33146,7 +33818,7 @@ const getPageEntitiesSelector = (/**
  * @return {?}
  */
 (state) => state.pageData.entities);
-const ɵ0$y = getPageEntitiesSelector;
+const ɵ0$z = getPageEntitiesSelector;
 /** @type {?} */
 const getIndexByType = (/**
  * @param {?} index
@@ -33170,7 +33842,7 @@ const getIndexByType = (/**
     }
     return { entities: {} };
 });
-const ɵ1$p = getIndexByType;
+const ɵ1$q = getIndexByType;
 /** @type {?} */
 const getPageComponentTypesSelector = (/**
  * @param {?} page
@@ -33188,14 +33860,14 @@ const getPageComponentTypesSelector = (/**
     }
     return Array.from(componentTypes);
 });
-const ɵ2$h = getPageComponentTypesSelector;
-const ɵ3$9 = /**
+const ɵ2$i = getPageComponentTypesSelector;
+const ɵ3$a = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.page;
 /** @type {?} */
-const getPageState = createSelector(getCmsState, (ɵ3$9));
+const getPageState = createSelector(getCmsState, (ɵ3$a));
 const ɵ4$3 = /**
  * @param {?} page
  * @return {?}
@@ -36311,28 +36983,28 @@ const getDeliveryAddressSelector = (/**
  * @return {?}
  */
 (state) => state.address);
-const ɵ0$z = getDeliveryAddressSelector;
+const ɵ0$A = getDeliveryAddressSelector;
 /** @type {?} */
 const getDeliveryModeSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.deliveryMode);
-const ɵ1$q = getDeliveryModeSelector;
+const ɵ1$r = getDeliveryModeSelector;
 /** @type {?} */
 const getPaymentDetailsSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.paymentDetails);
-const ɵ2$i = getPaymentDetailsSelector;
+const ɵ2$j = getPaymentDetailsSelector;
 /** @type {?} */
 const getOrderDetailsSelector = (/**
  * @param {?} state
  * @return {?}
  */
 (state) => state.orderDetails);
-const ɵ3$a = getOrderDetailsSelector;
+const ɵ3$b = getOrderDetailsSelector;
 /** @type {?} */
 const getCheckoutState = createFeatureSelector(CHECKOUT_FEATURE);
 const ɵ4$4 = /**
@@ -36407,13 +37079,13 @@ const getCheckoutDetailsLoaded = createSelector(getCheckoutStepsState, (ɵ9$1));
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$A = /**
+const ɵ0$B = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.addressVerification;
 /** @type {?} */
-const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$A));
+const getAddressVerificationResultsState = createSelector(getCheckoutState, (ɵ0$B));
 /** @type {?} */
 const getAddressVerificationResults$1 = createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -36463,16 +37135,16 @@ const getCardTypesEntites = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$B = /**
+const ɵ0$C = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.cardTypes;
 /** @type {?} */
-const getCardTypesState = createSelector(getCheckoutState, (ɵ0$B));
+const getCardTypesState = createSelector(getCheckoutState, (ɵ0$C));
 /** @type {?} */
 const getCardTypesEntites$1 = createSelector(getCardTypesState, getCardTypesEntites);
-const ɵ1$r = /**
+const ɵ1$s = /**
  * @param {?} entites
  * @return {?}
  */
@@ -36484,7 +37156,7 @@ entites => {
     code => entites[code]));
 };
 /** @type {?} */
-const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$r));
+const getAllCardTypes = createSelector(getCardTypesEntites$1, (ɵ1$s));
 
 /**
  * @fileoverview added by tsickle
@@ -41536,12 +42208,12 @@ function syncI18nextWithSiteContext(language) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$C = i18nextInit;
+const ɵ0$D = i18nextInit;
 /** @type {?} */
 const i18nextProviders = [
     {
         provide: APP_INITIALIZER,
-        useFactory: ɵ0$C,
+        useFactory: ɵ0$D,
         deps: [ConfigInitializerService, LanguageService],
         multi: true,
     },
@@ -41988,13 +42660,13 @@ const getKymaState = createFeatureSelector(KYMA_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$D = /**
+const ɵ0$E = /**
  * @param {?} state
  * @return {?}
  */
 state => state.openIdToken;
 /** @type {?} */
-const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$D));
+const getOpenIdTokenState = createSelector(getKymaState, (ɵ0$E));
 /** @type {?} */
 const getOpenIdTokenValue = createSelector(getOpenIdTokenState, loaderValueSelector);
 /** @type {?} */
@@ -42729,11 +43401,6 @@ ProcessModule.decorators = [
                 imports: [ProcessStoreModule],
             },] }
 ];
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 
 /**
  * @fileoverview added by tsickle
@@ -43629,13 +44296,13 @@ const getProductsState = createFeatureSelector(PRODUCT_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$E = /**
+const ɵ0$F = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.references;
 /** @type {?} */
-const getProductReferencesState = createSelector(getProductsState, (ɵ0$E));
+const getProductReferencesState = createSelector(getProductsState, (ɵ0$F));
 /** @type {?} */
 const getSelectedProductReferencesFactory = (/**
  * @param {?} productCode
@@ -43670,13 +44337,13 @@ const getSelectedProductReferencesFactory = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$F = /**
+const ɵ0$G = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.reviews;
 /** @type {?} */
-const getProductReviewsState = createSelector(getProductsState, (ɵ0$F));
+const getProductReviewsState = createSelector(getProductsState, (ɵ0$G));
 /** @type {?} */
 const getSelectedProductReviewsFactory = (/**
  * @param {?} productCode
@@ -43756,13 +44423,13 @@ const getProductSuggestions = (/**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$G = /**
+const ɵ0$H = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.search;
 /** @type {?} */
-const getProductsSearchState = createSelector(getProductsState, (ɵ0$G));
+const getProductsSearchState = createSelector(getProductsState, (ɵ0$H));
 /** @type {?} */
 const getSearchResults$1 = createSelector(getProductsSearchState, getSearchResults);
 /** @type {?} */
@@ -43774,13 +44441,13 @@ const getProductSuggestions$1 = createSelector(getProductsSearchState, getProduc
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$H = /**
+const ɵ0$I = /**
  * @param {?} state
  * @return {?}
  */
 (state) => state.details;
 /** @type {?} */
-const getProductState = createSelector(getProductsState, (ɵ0$H));
+const getProductState = createSelector(getProductsState, (ɵ0$I));
 /** @type {?} */
 const getSelectedProductsFactory = (/**
  * @param {?} codes
@@ -43872,7 +44539,7 @@ const getSelectedProductErrorFactory = (/**
      */
     productState => loaderErrorSelector(productState)));
 });
-const ɵ1$s = /**
+const ɵ1$t = /**
  * @param {?} details
  * @return {?}
  */
@@ -43880,7 +44547,7 @@ details => {
     return Object.keys(details.entities);
 };
 /** @type {?} */
-const getAllProductCodes = createSelector(getProductState, (ɵ1$s));
+const getAllProductCodes = createSelector(getProductState, (ɵ1$t));
 
 /**
  * @fileoverview added by tsickle
@@ -46484,53 +47151,53 @@ const getStoreFinderState = createFeatureSelector(STORE_FINDER_FEATURE);
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-const ɵ0$I = /**
+const ɵ0$J = /**
  * @param {?} storesState
  * @return {?}
  */
 (storesState) => storesState.findStores;
 /** @type {?} */
-const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$I));
-const ɵ1$t = /**
- * @param {?} state
- * @return {?}
- */
-state => loaderValueSelector(state);
-/** @type {?} */
-const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$t));
-const ɵ2$j = /**
- * @param {?} state
- * @return {?}
- */
-state => loaderLoadingSelector(state);
-/** @type {?} */
-const getStoresLoading = createSelector(getFindStoresState, (ɵ2$j));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-const ɵ0$J = /**
- * @param {?} storesState
- * @return {?}
- */
-(storesState) => storesState.viewAllStores;
-/** @type {?} */
-const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$J));
+const getFindStoresState = createSelector(getStoreFinderState, (ɵ0$J));
 const ɵ1$u = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderValueSelector(state);
 /** @type {?} */
-const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$u));
+const getFindStoresEntities = createSelector(getFindStoresState, (ɵ1$u));
 const ɵ2$k = /**
  * @param {?} state
  * @return {?}
  */
 state => loaderLoadingSelector(state);
 /** @type {?} */
-const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$k));
+const getStoresLoading = createSelector(getFindStoresState, (ɵ2$k));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+const ɵ0$K = /**
+ * @param {?} storesState
+ * @return {?}
+ */
+(storesState) => storesState.viewAllStores;
+/** @type {?} */
+const getViewAllStoresState = createSelector(getStoreFinderState, (ɵ0$K));
+const ɵ1$v = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderValueSelector(state);
+/** @type {?} */
+const getViewAllStoresEntities = createSelector(getViewAllStoresState, (ɵ1$v));
+const ɵ2$l = /**
+ * @param {?} state
+ * @return {?}
+ */
+state => loaderLoadingSelector(state);
+/** @type {?} */
+const getViewAllStoresLoading = createSelector(getViewAllStoresState, (ɵ2$l));
 
 /**
  * @fileoverview added by tsickle
@@ -47696,6 +48363,75 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class CustomerCouponConnector {
+    /**
+     * @param {?} adapter
+     */
+    constructor(adapter) {
+        this.adapter = adapter;
+    }
+    /**
+     * @param {?} userId
+     * @param {?} pageSize
+     * @param {?} currentPage
+     * @param {?} sort
+     * @return {?}
+     */
+    getCustomerCoupons(userId, pageSize, currentPage, sort) {
+        return this.adapter.getCustomerCoupons(userId, pageSize, currentPage, sort);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    turnOnNotification(userId, couponCode) {
+        return this.adapter.turnOnNotification(userId, couponCode);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    turnOffNotification(userId, couponCode) {
+        return this.adapter.turnOffNotification(userId, couponCode);
+    }
+    /**
+     * @param {?} userId
+     * @param {?} couponCode
+     * @return {?}
+     */
+    claimCustomerCoupon(userId, couponCode) {
+        return this.adapter.claimCustomerCoupon(userId, couponCode);
+    }
+}
+CustomerCouponConnector.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CustomerCouponConnector.ctorParameters = () => [
+    { type: CustomerCouponAdapter }
+];
+/** @nocollapse */ CustomerCouponConnector.ngInjectableDef = ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CustomerCouponConnector.prototype.adapter;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UserInterestsConnector {
     /**
      * @param {?} adapter
@@ -48332,6 +49068,171 @@ if (false) {
      * @protected
      */
     UserOrderService.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class CustomerCouponService {
+    /**
+     * @param {?} store
+     */
+    constructor(store) {
+        this.store = store;
+    }
+    /**
+     * Retrieves customer's coupons
+     * @param {?} pageSize page size
+     * @param {?=} currentPage current page
+     * @param {?=} sort sort
+     * @return {?}
+     */
+    loadCustomerCoupons(pageSize, currentPage, sort) {
+        this.store.dispatch(new LoadCustomerCoupons({
+            userId: OCC_USER_ID_CURRENT,
+            pageSize: pageSize,
+            currentPage: currentPage,
+            sort: sort,
+        }));
+    }
+    /**
+     * Returns customer coupon search result
+     * @param {?} pageSize page size
+     * @return {?}
+     */
+    getCustomerCoupons(pageSize) {
+        return this.store.pipe(select(getCustomerCouponsState), tap((/**
+         * @param {?} customerCouponsState
+         * @return {?}
+         */
+        customerCouponsState => {
+            /** @type {?} */
+            const attemptedLoad = customerCouponsState.loading ||
+                customerCouponsState.success ||
+                customerCouponsState.error;
+            if (!attemptedLoad) {
+                this.loadCustomerCoupons(pageSize);
+            }
+        })), map((/**
+         * @param {?} customerCouponsState
+         * @return {?}
+         */
+        customerCouponsState => customerCouponsState.value)));
+    }
+    /**
+     * Returns a loaded flag for customer coupons
+     * @return {?}
+     */
+    getCustomerCouponsLoaded() {
+        return this.store.pipe(select(getCustomerCouponsLoaded));
+    }
+    /**
+     * Returns a loading flag for customer coupons
+     * @return {?}
+     */
+    getCustomerCouponsLoading() {
+        return this.store.pipe(select(getCustomerCouponsLoading));
+    }
+    /**
+     * Subscribe a CustomerCoupon Notification
+     * @param {?} couponCode a customer coupon code
+     * @return {?}
+     */
+    subscribeCustomerCoupon(couponCode) {
+        this.store.dispatch(new SubscribeCustomerCoupon({
+            userId: OCC_USER_ID_CURRENT,
+            couponCode: couponCode,
+        }));
+    }
+    /**
+     * Returns the subscribe customer coupon notification process loading flag
+     * @return {?}
+     */
+    getSubscribeCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the subscribe customer coupon notification process success flag
+     * @return {?}
+     */
+    getSubscribeCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the subscribe customer coupon notification process error flag
+     * @return {?}
+     */
+    getSubscribeCustomerCouponResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Unsubscribe a CustomerCoupon Notification
+     * @param {?} couponCode a customer coupon code
+     * @return {?}
+     */
+    unsubscribeCustomerCoupon(couponCode) {
+        this.store.dispatch(new UnsubscribeCustomerCoupon({
+            userId: OCC_USER_ID_CURRENT,
+            couponCode: couponCode,
+        }));
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process loading flag
+     * @return {?}
+     */
+    getUnsubscribeCustomerCouponResultLoading() {
+        return this.store.pipe(select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process success flag
+     * @return {?}
+     */
+    getUnsubscribeCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Returns the unsubscribe customer coupon notification process error flag
+     * @return {?}
+     */
+    getUnsubscribeCustomerCouponResultError() {
+        return this.store.pipe(select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+    /**
+     * Claim a CustomerCoupon
+     * @param {?} couponCode a customer coupon code
+     * @return {?}
+     */
+    claimCustomerCoupon(couponCode) {
+        this.store.dispatch(new ClaimCustomerCoupon({
+            userId: OCC_USER_ID_CURRENT,
+            couponCode: couponCode,
+        }));
+    }
+    /**
+     * Returns the claim customer coupon notification process success flag
+     * @return {?}
+     */
+    getClaimCustomerCouponResultSuccess() {
+        return this.store.pipe(select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+    }
+}
+CustomerCouponService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+CustomerCouponService.ctorParameters = () => [
+    { type: Store }
+];
+/** @nocollapse */ CustomerCouponService.ngInjectableDef = ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(ɵɵinject(Store)); }, token: CustomerCouponService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    CustomerCouponService.prototype.store;
 }
 
 /**
@@ -49663,9 +50564,9 @@ function reducer$w(state = initialState$w, action) {
  */
 /** @type {?} */
 const initialState$x = {
-    results: [],
-    pagination: {},
+    coupons: [],
     sorts: [],
+    pagination: {},
 };
 /**
  * @param {?=} state
@@ -49674,11 +50575,38 @@ const initialState$x = {
  */
 function reducer$x(state = initialState$x, action) {
     switch (action.type) {
-        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-            return action.payload ? action.payload : initialState$x;
+        case LOAD_CUSTOMER_COUPONS_SUCCESS: {
+            return action.payload;
         }
-        case LOAD_PRODUCT_INTERESTS_FAIL: {
-            return initialState$x;
+        case SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
+            /** @type {?} */
+            const updatedCustomerCoupon = action.payload.coupon;
+            /** @type {?} */
+            const customerCoupons = new Array(state.coupons.length);
+            state.coupons.forEach((/**
+             * @param {?} customerCoupon
+             * @param {?} index
+             * @return {?}
+             */
+            (customerCoupon, index) => customerCoupon.couponId === updatedCustomerCoupon.couponId
+                ? (customerCoupons[index] = updatedCustomerCoupon)
+                : (customerCoupons[index] = customerCoupon)));
+            return Object.assign({}, state, { coupons: customerCoupons });
+        }
+        case UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
+            /** @type {?} */
+            const updatedCouponCode = action.payload;
+            /** @type {?} */
+            const customerCoupons = new Array(state.coupons.length);
+            state.coupons.forEach((/**
+             * @param {?} customerCoupon
+             * @param {?} index
+             * @return {?}
+             */
+            (customerCoupon, index) => customerCoupon.couponId === updatedCouponCode
+                ? (customerCoupons[index] = Object.assign({}, customerCoupon, { notificationOn: false }))
+                : (customerCoupons[index] = customerCoupon)));
+            return Object.assign({}, state, { coupons: customerCoupons });
         }
     }
     return state;
@@ -49690,7 +50618,7 @@ function reducer$x(state = initialState$x, action) {
  */
 /** @type {?} */
 const initialState$y = {
-    returnRequests: [],
+    results: [],
     pagination: {},
     sorts: [],
 };
@@ -49701,8 +50629,35 @@ const initialState$y = {
  */
 function reducer$y(state = initialState$y, action) {
     switch (action.type) {
-        case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+        case LOAD_PRODUCT_INTERESTS_SUCCESS: {
             return action.payload ? action.payload : initialState$y;
+        }
+        case LOAD_PRODUCT_INTERESTS_FAIL: {
+            return initialState$y;
+        }
+    }
+    return state;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const initialState$z = {
+    returnRequests: [],
+    pagination: {},
+    sorts: [],
+};
+/**
+ * @param {?=} state
+ * @param {?=} action
+ * @return {?}
+ */
+function reducer$z(state = initialState$z, action) {
+    switch (action.type) {
+        case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+            return action.payload ? action.payload : initialState$z;
         }
     }
     return state;
@@ -49727,14 +50682,15 @@ function getReducers$d() {
         orders: loaderReducer(USER_ORDERS, reducer$w),
         order: loaderReducer(USER_ORDER_DETAILS, reducer$o),
         orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$y),
+        orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$z),
         countries: reducer$m,
         titles: reducer$s,
         regions: loaderReducer(REGIONS, reducer$q),
         resetPassword: reducer$r,
         consignmentTracking: reducer$l,
+        customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$x),
         notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$n),
-        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$x),
+        productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$y),
     };
 }
 /** @type {?} */
@@ -51442,6 +52398,156 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class CustomerCouponEffects {
+    /**
+     * @param {?} actions$
+     * @param {?} customerCouponConnector
+     */
+    constructor(actions$, customerCouponConnector) {
+        this.actions$ = actions$;
+        this.customerCouponConnector = customerCouponConnector;
+        this.loadCustomerCoupons$ = this.actions$.pipe(ofType(LOAD_CUSTOMER_COUPONS), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.customerCouponConnector
+                .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                .pipe(map((/**
+             * @param {?} coupons
+             * @return {?}
+             */
+            (coupons) => {
+                return new LoadCustomerCouponsSuccess(coupons);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new LoadCustomerCouponsFail(makeErrorSerializable(error))))));
+        })));
+        this.subscribeCustomerCoupon$ = this.actions$.pipe(ofType(SUBSCRIBE_CUSTOMER_COUPON), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.customerCouponConnector
+                .turnOnNotification(payload.userId, payload.couponCode)
+                .pipe(map((/**
+             * @param {?} data
+             * @return {?}
+             */
+            (data) => {
+                return new SubscribeCustomerCouponSuccess(data);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new SubscribeCustomerCouponFail(makeErrorSerializable(error))))));
+        })));
+        this.unsubscribeCustomerCoupon$ = this.actions$.pipe(ofType(UNSUBSCRIBE_CUSTOMER_COUPON), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.customerCouponConnector
+                .turnOffNotification(payload.userId, payload.couponCode)
+                .pipe(map((/**
+             * @return {?}
+             */
+            () => {
+                return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error))))));
+        })));
+        this.claimCustomerCoupon$ = this.actions$.pipe(ofType(CLAIM_CUSTOMER_COUPON), map((/**
+         * @param {?} action
+         * @return {?}
+         */
+        (action) => action.payload)), mergeMap((/**
+         * @param {?} payload
+         * @return {?}
+         */
+        payload => {
+            return this.customerCouponConnector
+                .claimCustomerCoupon(payload.userId, payload.couponCode)
+                .pipe(map((/**
+             * @param {?} data
+             * @return {?}
+             */
+            data => {
+                return new ClaimCustomerCouponSuccess(data);
+            })), catchError((/**
+             * @param {?} error
+             * @return {?}
+             */
+            error => of(new ClaimCustomerCouponFail(makeErrorSerializable(error))))));
+        })));
+    }
+}
+CustomerCouponEffects.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomerCouponEffects.ctorParameters = () => [
+    { type: Actions },
+    { type: CustomerCouponConnector }
+];
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
+__decorate([
+    Effect(),
+    __metadata("design:type", Observable)
+], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
+if (false) {
+    /** @type {?} */
+    CustomerCouponEffects.prototype.loadCustomerCoupons$;
+    /** @type {?} */
+    CustomerCouponEffects.prototype.subscribeCustomerCoupon$;
+    /** @type {?} */
+    CustomerCouponEffects.prototype.unsubscribeCustomerCoupon$;
+    /** @type {?} */
+    CustomerCouponEffects.prototype.claimCustomerCoupon$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerCouponEffects.prototype.actions$;
+    /**
+     * @type {?}
+     * @private
+     */
+    CustomerCouponEffects.prototype.customerCouponConnector;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class ProductInterestsEffect {
     /**
      * @param {?} actions$
@@ -51591,6 +52697,7 @@ const effects$b = [
     UpdatePasswordEffects,
     UserConsentsEffect,
     ConsignmentTrackingEffects,
+    CustomerCouponEffects,
     NotificationPreferenceEffects,
     ProductInterestsEffect,
     OrderReturnRequestEffect,
@@ -51620,6 +52727,162 @@ UserStoreModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class FindProductPageMetaResolver extends PageMetaResolver {
+    /**
+     * @param {?} routingService
+     * @param {?} productSearchService
+     * @param {?} translation
+     * @param {?} authService
+     */
+    constructor(routingService, productSearchService, translation, authService) {
+        super();
+        this.routingService = routingService;
+        this.productSearchService = productSearchService;
+        this.translation = translation;
+        this.authService = authService;
+        this.totalAndCode$ = combineLatest([
+            this.productSearchService.getResults().pipe(filter((/**
+             * @param {?} data
+             * @return {?}
+             */
+            data => !!(data && data.pagination))), map((/**
+             * @param {?} results
+             * @return {?}
+             */
+            results => results.pagination.totalResults))),
+            this.routingService.getRouterState().pipe(map((/**
+             * @param {?} state
+             * @return {?}
+             */
+            state => state.state.queryParams['couponcode'])), filter(Boolean)),
+        ]);
+        this.pageType = PageType.CONTENT_PAGE;
+        this.pageTemplate = 'SearchResultsListPageTemplate';
+    }
+    /**
+     * @deprecated since version 1.3
+     *
+     * The resolve method is no longer preferred and will be removed with release 2.0.
+     * The caller `PageMetaService` service is improved to expect all individual resolvers
+     * instead, so that the code is easier extensible.
+     * @return {?}
+     */
+    resolve() {
+        return combineLatest([this.resolveTitle(), this.resolveBreadcrumbs()]).pipe(map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([title, breadcrumbs]) => ({
+            title,
+            breadcrumbs,
+        }))));
+    }
+    /**
+     * @return {?}
+     */
+    resolveBreadcrumbs() {
+        /** @type {?} */
+        const breadcrumbs = [{ label: 'Home', link: '/' }];
+        this.authService.isUserLoggedIn().subscribe((/**
+         * @param {?} login
+         * @return {?}
+         */
+        login => {
+            if (login)
+                breadcrumbs.push({ label: 'My Coupons', link: '/my-account/coupons' });
+        }));
+        return of(breadcrumbs);
+    }
+    /**
+     * @return {?}
+     */
+    resolveTitle() {
+        return this.totalAndCode$.pipe(switchMap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        ([total, code]) => this.translation.translate('pageMetaResolver.search.findProductTitle', {
+            count: total,
+            coupon: code,
+        }))));
+    }
+    /**
+     * @param {?} page
+     * @return {?}
+     */
+    getScore(page) {
+        /** @type {?} */
+        let score = 0;
+        if (this.pageType) {
+            score += page.type === this.pageType ? 1 : -1;
+        }
+        if (this.pageTemplate) {
+            score += page.template === this.pageTemplate ? 1 : -1;
+        }
+        this.routingService
+            .getRouterState()
+            .pipe(map((/**
+         * @param {?} state
+         * @return {?}
+         */
+        state => {
+            return state.state.queryParams;
+        })), filter(Boolean))
+            .subscribe((/**
+         * @param {?} queryParams
+         * @return {?}
+         */
+        (queryParams) => {
+            if (queryParams) {
+                score += queryParams['couponcode'] ? 1 : -1;
+            }
+        }))
+            .unsubscribe();
+        return score;
+    }
+}
+FindProductPageMetaResolver.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root',
+            },] }
+];
+/** @nocollapse */
+FindProductPageMetaResolver.ctorParameters = () => [
+    { type: RoutingService },
+    { type: ProductSearchService },
+    { type: TranslationService },
+    { type: AuthService }
+];
+/** @nocollapse */ FindProductPageMetaResolver.ngInjectableDef = ɵɵdefineInjectable({ factory: function FindProductPageMetaResolver_Factory() { return new FindProductPageMetaResolver(ɵɵinject(RoutingService), ɵɵinject(ProductSearchService), ɵɵinject(TranslationService), ɵɵinject(AuthService)); }, token: FindProductPageMetaResolver, providedIn: "root" });
+if (false) {
+    /** @type {?} */
+    FindProductPageMetaResolver.prototype.totalAndCode$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FindProductPageMetaResolver.prototype.routingService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FindProductPageMetaResolver.prototype.productSearchService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FindProductPageMetaResolver.prototype.translation;
+    /**
+     * @type {?}
+     * @protected
+     */
+    FindProductPageMetaResolver.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class UserModule {
     /**
      * @return {?}
@@ -51627,7 +52890,14 @@ class UserModule {
     static forRoot() {
         return {
             ngModule: UserModule,
-            providers: [UserService],
+            providers: [
+                UserService,
+                {
+                    provide: PageMetaResolver,
+                    useExisting: FindProductPageMetaResolver,
+                    multi: true,
+                },
+            ],
         };
     }
 }
@@ -51657,5 +52927,5 @@ UserModule.decorators = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, MultiCartService as ɵcz, initConfig as ɵd, CartPageMetaResolver as ɵda, CheckoutStoreModule as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, effects$5 as ɵdf, AddressVerificationEffect as ɵdg, CardTypesEffects as ɵdh, CheckoutEffects as ɵdi, reducer$c as ɵdj, reducer$b as ɵdk, reducer$a as ɵdl, cmsStoreConfigFactory as ɵdm, CmsStoreModule as ɵdn, getReducers$8 as ɵdo, reducerToken$8 as ɵdp, reducerProvider$8 as ɵdq, clearCmsState as ɵdr, metaReducers$4 as ɵds, effects$7 as ɵdt, PageEffects as ɵdu, ComponentEffects as ɵdv, NavigationEntryItemEffects as ɵdw, reducer$f as ɵdx, reducer$g as ɵdy, reducer$e as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$8 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$9 as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$h as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$j as ɵgf, reducer$i as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$6 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$a as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$b as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, ProductInterestsEffect as ɵio, ForgotPasswordEffects as ɵip, UpdateEmailEffects as ɵiq, UpdatePasswordEffects as ɵir, UserNotificationPreferenceConnector as ɵis, reducer$v as ɵit, reducer$t as ɵiu, reducer$k as ɵiv, reducer$u as ɵiw, reducer$p as ɵix, reducer$w as ɵiy, reducer$o as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$y as ɵja, reducer$m as ɵjb, reducer$s as ɵjc, reducer$q as ɵjd, reducer$r as ɵje, reducer$l as ɵjf, reducer$n as ɵjg, reducer$x as ɵjh, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, MultiCartService as ɵcz, initConfig as ɵd, CartPageMetaResolver as ɵda, CheckoutStoreModule as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, effects$5 as ɵdf, AddressVerificationEffect as ɵdg, CardTypesEffects as ɵdh, CheckoutEffects as ɵdi, reducer$c as ɵdj, reducer$b as ɵdk, reducer$a as ɵdl, cmsStoreConfigFactory as ɵdm, CmsStoreModule as ɵdn, getReducers$8 as ɵdo, reducerToken$8 as ɵdp, reducerProvider$8 as ɵdq, clearCmsState as ɵdr, metaReducers$4 as ɵds, effects$7 as ɵdt, PageEffects as ɵdu, ComponentEffects as ɵdv, NavigationEntryItemEffects as ɵdw, reducer$f as ɵdx, reducer$g as ɵdy, reducer$e as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$8 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$9 as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$h as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$j as ɵgf, reducer$i as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$6 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$a as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$b as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, CustomerCouponEffects as ɵio, ProductInterestsEffect as ɵip, ForgotPasswordEffects as ɵiq, UpdateEmailEffects as ɵir, UpdatePasswordEffects as ɵis, UserNotificationPreferenceConnector as ɵit, reducer$v as ɵiu, reducer$t as ɵiv, reducer$k as ɵiw, reducer$u as ɵix, reducer$p as ɵiy, reducer$w as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$o as ɵja, reducer$z as ɵjb, reducer$m as ɵjc, reducer$s as ɵjd, reducer$q as ɵje, reducer$r as ɵjf, reducer$l as ɵjg, reducer$x as ɵjh, reducer$n as ɵji, reducer$y as ɵjj, FindProductPageMetaResolver as ɵjk, PageMetaResolver as ɵjl, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
 //# sourceMappingURL=spartacus-core.js.map

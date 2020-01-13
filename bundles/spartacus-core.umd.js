@@ -8871,6 +8871,67 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
+     * @record
+     */
+    function CustomerCoupon() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.couponId;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.name;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.startDate;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.endDate;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.status;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.description;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.notificationOn;
+        /** @type {?|undefined} */
+        CustomerCoupon.prototype.allProductsApplicable;
+    }
+    /**
+     * @record
+     */
+    function CustomerCouponNotification() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CustomerCouponNotification.prototype.coupon;
+        /** @type {?|undefined} */
+        CustomerCouponNotification.prototype.customer;
+        /** @type {?|undefined} */
+        CustomerCouponNotification.prototype.status;
+    }
+    /**
+     * @record
+     */
+    function CustomerCouponSearchResult() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CustomerCouponSearchResult.prototype.coupons;
+        /** @type {?|undefined} */
+        CustomerCouponSearchResult.prototype.sorts;
+        /** @type {?|undefined} */
+        CustomerCouponSearchResult.prototype.pagination;
+    }
+    /**
+     * @record
+     */
+    function CustomerCoupon2Customer() { }
+    if (false) {
+        /** @type {?|undefined} */
+        CustomerCoupon2Customer.prototype.coupon;
+        /** @type {?|undefined} */
+        CustomerCoupon2Customer.prototype.customer;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
      * Used to envelope data observable together with specified scope
      * @record
      * @template T
@@ -17575,6 +17636,9 @@
                     addressDetail: 'users/${userId}/addresses/${addressId}',
                     addressVerification: 'users/${userId}/addresses/verification',
                     consignmentTracking: 'orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                    customerCoupons: 'users/${userId}/customercoupons',
+                    claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
+                    couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
                     notificationPreference: 'users/${userId}/notificationpreferences',
                     productInterests: 'users/${userId}/productinterests',
                     getProductInterests: 'users/${userId}/productinterests?fields=sorts,pagination,results(productInterestEntry,product(code))',
@@ -17587,6 +17651,204 @@
             },
         },
     };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @abstract
+     */
+    var   /**
+     * @abstract
+     */
+    CustomerCouponAdapter = /** @class */ (function () {
+        function CustomerCouponAdapter() {
+        }
+        return CustomerCouponAdapter;
+    }());
+    if (false) {
+        /**
+         * @abstract
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        CustomerCouponAdapter.prototype.getCustomerCoupons = function (userId, pageSize, currentPage, sort) { };
+        /**
+         * @abstract
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponAdapter.prototype.turnOnNotification = function (userId, couponCode) { };
+        /**
+         * @abstract
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponAdapter.prototype.turnOffNotification = function (userId, couponCode) { };
+        /**
+         * @abstract
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponAdapter.prototype.claimCustomerCoupon = function (userId, couponCode) { };
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = new core.InjectionToken('CustomerCouponSearchResultNormalizer');
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OccCustomerCouponAdapter = /** @class */ (function () {
+        function OccCustomerCouponAdapter(http, occEndpoints, converter) {
+            this.http = http;
+            this.occEndpoints = occEndpoints;
+            this.converter = converter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        OccCustomerCouponAdapter.prototype.getCustomerCoupons = /**
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('customerCoupons', { userId: userId });
+            /** @type {?} */
+            var params = new http.HttpParams().set('sort', sort ? sort : 'startDate:asc');
+            if (pageSize) {
+                params = params.set('pageSize', pageSize.toString());
+            }
+            if (currentPage) {
+                params = params.set('currentPage', currentPage.toString());
+            }
+            /** @type {?} */
+            var headers = this.newHttpHeader();
+            return this.http
+                .get(url, { headers: headers, params: params })
+                .pipe(this.converter.pipeable(CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER));
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        OccCustomerCouponAdapter.prototype.turnOffNotification = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('couponNotification', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            /** @type {?} */
+            var headers = this.newHttpHeader();
+            return this.http.delete(url, { headers: headers });
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        OccCustomerCouponAdapter.prototype.turnOnNotification = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('couponNotification', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            /** @type {?} */
+            var headers = this.newHttpHeader();
+            return this.http.post(url, { headers: headers });
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        OccCustomerCouponAdapter.prototype.claimCustomerCoupon = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            /** @type {?} */
+            var url = this.occEndpoints.getUrl('claimCoupon', {
+                userId: userId,
+                couponCode: couponCode,
+            });
+            /** @type {?} */
+            var headers = this.newHttpHeader();
+            return this.http.post(url, { headers: headers });
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        OccCustomerCouponAdapter.prototype.newHttpHeader = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            return new http.HttpHeaders({
+                'Content-Type': 'application/json',
+            });
+        };
+        OccCustomerCouponAdapter.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        OccCustomerCouponAdapter.ctorParameters = function () { return [
+            { type: http.HttpClient },
+            { type: OccEndpointsService },
+            { type: ConverterService }
+        ]; };
+        return OccCustomerCouponAdapter;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCustomerCouponAdapter.prototype.http;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCustomerCouponAdapter.prototype.occEndpoints;
+        /**
+         * @type {?}
+         * @protected
+         */
+        OccCustomerCouponAdapter.prototype.converter;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -18134,6 +18396,7 @@
                                 useClass: OccUserPaymentAdapter,
                             },
                             { provide: UserOrderAdapter, useClass: OccUserOrderAdapter },
+                            { provide: CustomerCouponAdapter, useClass: OccCustomerCouponAdapter },
                             {
                                 provide: UserNotificationPreferenceAdapter,
                                 useClass: OccUserNotificationPreferenceAdapter,
@@ -19356,6 +19619,27 @@
          * @type {?|undefined}
          */
         OccEndpoints.prototype.cartVoucher;
+        /**
+         * Endpoint for coupons
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.customerCoupons;
+        /**
+         * Endpoint for claiming coupon
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.claimCoupon;
+        /**
+         * Endpoint for coupons
+         *
+         * \@member {string}
+         * @type {?|undefined}
+         */
+        OccEndpoints.prototype.couponNotification;
         /**
          * Explicitly saves a cart
          *
@@ -21844,6 +22128,77 @@
              * @type {?|undefined}
              */
             CurrencyList.prototype.currencies;
+        }
+        /**
+         * An interface representing CustomerCoupon
+         * @record
+         */
+        function CustomerCoupon() { }
+        Occ.CustomerCoupon = CustomerCoupon;
+        if (false) {
+            /**
+             * \@member {string} [couponId]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.couponId;
+            /**
+             * \@member {string} [name]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.name;
+            /**
+             * \@member {string} [startDate]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.startDate;
+            /**
+             * \@member {string} [endDate]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.endDate;
+            /**
+             * \@member {string} [endDate]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.status;
+            /**
+             * \@member {string} [description]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.description;
+            /**
+             * \@member {boolean} [notificationOn]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.notificationOn;
+            /**
+             * \@member {boolean} [allProductsApplicable]
+             * @type {?|undefined}
+             */
+            CustomerCoupon.prototype.allProductsApplicable;
+        }
+        /**
+         * An interface representing CustomerCouponSearchResult
+         * @record
+         */
+        function CustomerCouponSearchResult() { }
+        Occ.CustomerCouponSearchResult = CustomerCouponSearchResult;
+        if (false) {
+            /**
+             * \@member {CustomerCoupon[]} [coupons]
+             * @type {?|undefined}
+             */
+            CustomerCouponSearchResult.prototype.coupons;
+            /**
+             * \@member {Sort[]} [sorts]
+             * @type {?|undefined}
+             */
+            CustomerCouponSearchResult.prototype.sorts;
+            /**
+             * \@member {Pagination} [pagination]
+             * @type {?|undefined}
+             */
+            CustomerCouponSearchResult.prototype.pagination;
         }
         /**
          *
@@ -25091,6 +25446,14 @@
     /** @type {?} */
     var REGIONS = '[User] Regions';
     /** @type {?} */
+    var CUSTOMER_COUPONS = '[User] Customer Coupons';
+    /** @type {?} */
+    var SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'subscribeCustomerCoupon';
+    /** @type {?} */
+    var UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = 'unsubscribeCustomerCoupon';
+    /** @type {?} */
+    var CLAIM_CUSTOMER_COUPON_PROCESS_ID = 'claimCustomerCoupon';
+    /** @type {?} */
     var NOTIFICATION_PREFERENCES = '[User] Notification Preferences';
     /** @type {?} */
     var PRODUCT_INTERESTS = '[User] Product Interests';
@@ -25135,6 +25498,8 @@
         UserState.prototype.resetPassword;
         /** @type {?} */
         UserState.prototype.consignmentTracking;
+        /** @type {?} */
+        UserState.prototype.customerCoupons;
         /** @type {?} */
         UserState.prototype.notificationPreferences;
         /** @type {?} */
@@ -26661,6 +27026,285 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var LOAD_CUSTOMER_COUPONS = '[User] Load Customer Coupons';
+    /** @type {?} */
+    var LOAD_CUSTOMER_COUPONS_FAIL = '[User] Load Customer Coupons Fail';
+    /** @type {?} */
+    var LOAD_CUSTOMER_COUPONS_SUCCESS = '[User] Load Customer Coupons Success';
+    /** @type {?} */
+    var RESET_LOAD_CUSTOMER_COUPONS = '[User] Reset Load Customer Coupons';
+    /** @type {?} */
+    var SUBSCRIBE_CUSTOMER_COUPON = '[User] Subscribe Customer Notification Coupon';
+    /** @type {?} */
+    var SUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Subscribe Customer Coupon Notification Fail';
+    /** @type {?} */
+    var SUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Subscribe Customer Coupon Notification Success';
+    /** @type {?} */
+    var RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Subscribe Customer Coupon Process';
+    /** @type {?} */
+    var UNSUBSCRIBE_CUSTOMER_COUPON = '[User] Unsubscribe Customer Notification Coupon';
+    /** @type {?} */
+    var UNSUBSCRIBE_CUSTOMER_COUPON_FAIL = '[User] Unsubscribe Customer Coupon Notification Fail';
+    /** @type {?} */
+    var UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS = '[User] Unsubscribe Customer Coupon Notification Success';
+    /** @type {?} */
+    var RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS = '[User] Reset Unsubscribe Customer Coupon Process';
+    /** @type {?} */
+    var CLAIM_CUSTOMER_COUPON = '[User] Claim Customer';
+    /** @type {?} */
+    var CLAIM_CUSTOMER_COUPON_FAIL = '[User] Claim Customer Fail';
+    /** @type {?} */
+    var CLAIM_CUSTOMER_COUPON_SUCCESS = '[User] Claim Customer Success';
+    var LoadCustomerCoupons = /** @class */ (function (_super) {
+        __extends(LoadCustomerCoupons, _super);
+        function LoadCustomerCoupons(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS;
+            return _this;
+        }
+        return LoadCustomerCoupons;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerCoupons.prototype.type;
+        /** @type {?} */
+        LoadCustomerCoupons.prototype.payload;
+    }
+    var LoadCustomerCouponsFail = /** @class */ (function (_super) {
+        __extends(LoadCustomerCouponsFail, _super);
+        function LoadCustomerCouponsFail(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS_FAIL;
+            return _this;
+        }
+        return LoadCustomerCouponsFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerCouponsFail.prototype.type;
+        /** @type {?} */
+        LoadCustomerCouponsFail.prototype.payload;
+    }
+    var LoadCustomerCouponsSuccess = /** @class */ (function (_super) {
+        __extends(LoadCustomerCouponsSuccess, _super);
+        function LoadCustomerCouponsSuccess(payload) {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CUSTOMER_COUPONS_SUCCESS;
+            return _this;
+        }
+        return LoadCustomerCouponsSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadCustomerCouponsSuccess.prototype.type;
+        /** @type {?} */
+        LoadCustomerCouponsSuccess.prototype.payload;
+    }
+    var ResetLoadCustomerCoupons = /** @class */ (function (_super) {
+        __extends(ResetLoadCustomerCoupons, _super);
+        function ResetLoadCustomerCoupons() {
+            var _this = _super.call(this, CUSTOMER_COUPONS) || this;
+            _this.type = RESET_LOAD_CUSTOMER_COUPONS;
+            return _this;
+        }
+        return ResetLoadCustomerCoupons;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetLoadCustomerCoupons.prototype.type;
+    }
+    // Subscribe coupon notification actions
+    var 
+    // Subscribe coupon notification actions
+    SubscribeCustomerCoupon = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCoupon, _super);
+        function SubscribeCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON;
+            return _this;
+        }
+        return SubscribeCustomerCoupon;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        SubscribeCustomerCoupon.prototype.type;
+        /** @type {?} */
+        SubscribeCustomerCoupon.prototype.payload;
+    }
+    var SubscribeCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCouponFail, _super);
+        function SubscribeCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return SubscribeCustomerCouponFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        SubscribeCustomerCouponFail.prototype.type;
+        /** @type {?} */
+        SubscribeCustomerCouponFail.prototype.payload;
+    }
+    var SubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(SubscribeCustomerCouponSuccess, _super);
+        function SubscribeCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = SUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return SubscribeCustomerCouponSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        SubscribeCustomerCouponSuccess.prototype.type;
+        /** @type {?} */
+        SubscribeCustomerCouponSuccess.prototype.payload;
+    }
+    var ResetSubscribeCustomerCouponProcess = /** @class */ (function (_super) {
+        __extends(ResetSubscribeCustomerCouponProcess, _super);
+        function ResetSubscribeCustomerCouponProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.type = RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+            return _this;
+        }
+        return ResetSubscribeCustomerCouponProcess;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetSubscribeCustomerCouponProcess.prototype.type;
+    }
+    var UnsubscribeCustomerCoupon = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCoupon, _super);
+        function UnsubscribeCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON;
+            return _this;
+        }
+        return UnsubscribeCustomerCoupon;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        UnsubscribeCustomerCoupon.prototype.type;
+        /** @type {?} */
+        UnsubscribeCustomerCoupon.prototype.payload;
+    }
+    var UnsubscribeCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCouponFail, _super);
+        function UnsubscribeCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return UnsubscribeCustomerCouponFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        UnsubscribeCustomerCouponFail.prototype.type;
+        /** @type {?} */
+        UnsubscribeCustomerCouponFail.prototype.payload;
+    }
+    var UnsubscribeCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(UnsubscribeCustomerCouponSuccess, _super);
+        function UnsubscribeCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return UnsubscribeCustomerCouponSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        UnsubscribeCustomerCouponSuccess.prototype.type;
+        /** @type {?} */
+        UnsubscribeCustomerCouponSuccess.prototype.payload;
+    }
+    var ResetUnsubscribeCustomerCouponProcess = /** @class */ (function (_super) {
+        __extends(ResetUnsubscribeCustomerCouponProcess, _super);
+        function ResetUnsubscribeCustomerCouponProcess() {
+            var _this = _super.call(this, PROCESS_FEATURE, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.type = RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS;
+            return _this;
+        }
+        return ResetUnsubscribeCustomerCouponProcess;
+    }(EntityResetAction));
+    if (false) {
+        /** @type {?} */
+        ResetUnsubscribeCustomerCouponProcess.prototype.type;
+    }
+    var ClaimCustomerCoupon = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCoupon, _super);
+        function ClaimCustomerCoupon(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON;
+            return _this;
+        }
+        return ClaimCustomerCoupon;
+    }(EntityLoadAction));
+    if (false) {
+        /** @type {?} */
+        ClaimCustomerCoupon.prototype.type;
+        /** @type {?} */
+        ClaimCustomerCoupon.prototype.payload;
+    }
+    var ClaimCustomerCouponFail = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCouponFail, _super);
+        function ClaimCustomerCouponFail(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON_FAIL;
+            return _this;
+        }
+        return ClaimCustomerCouponFail;
+    }(EntityFailAction));
+    if (false) {
+        /** @type {?} */
+        ClaimCustomerCouponFail.prototype.type;
+        /** @type {?} */
+        ClaimCustomerCouponFail.prototype.payload;
+    }
+    var ClaimCustomerCouponSuccess = /** @class */ (function (_super) {
+        __extends(ClaimCustomerCouponSuccess, _super);
+        function ClaimCustomerCouponSuccess(payload) {
+            var _this = _super.call(this, PROCESS_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, payload) || this;
+            _this.payload = payload;
+            _this.type = CLAIM_CUSTOMER_COUPON_SUCCESS;
+            return _this;
+        }
+        return ClaimCustomerCouponSuccess;
+    }(EntitySuccessAction));
+    if (false) {
+        /** @type {?} */
+        ClaimCustomerCouponSuccess.prototype.type;
+        /** @type {?} */
+        ClaimCustomerCouponSuccess.prototype.payload;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /** @type {?} */
     var LOAD_NOTIFICATION_PREFERENCES = '[User] Load Notification Preferences';
     /** @type {?} */
@@ -27473,6 +28117,36 @@
         RemoveUserFail: RemoveUserFail,
         RemoveUserSuccess: RemoveUserSuccess,
         RemoveUserReset: RemoveUserReset,
+        LOAD_CUSTOMER_COUPONS: LOAD_CUSTOMER_COUPONS,
+        LOAD_CUSTOMER_COUPONS_FAIL: LOAD_CUSTOMER_COUPONS_FAIL,
+        LOAD_CUSTOMER_COUPONS_SUCCESS: LOAD_CUSTOMER_COUPONS_SUCCESS,
+        RESET_LOAD_CUSTOMER_COUPONS: RESET_LOAD_CUSTOMER_COUPONS,
+        SUBSCRIBE_CUSTOMER_COUPON: SUBSCRIBE_CUSTOMER_COUPON,
+        SUBSCRIBE_CUSTOMER_COUPON_FAIL: SUBSCRIBE_CUSTOMER_COUPON_FAIL,
+        SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: SUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+        RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_SUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+        UNSUBSCRIBE_CUSTOMER_COUPON: UNSUBSCRIBE_CUSTOMER_COUPON,
+        UNSUBSCRIBE_CUSTOMER_COUPON_FAIL: UNSUBSCRIBE_CUSTOMER_COUPON_FAIL,
+        UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS,
+        RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS: RESET_UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS,
+        CLAIM_CUSTOMER_COUPON: CLAIM_CUSTOMER_COUPON,
+        CLAIM_CUSTOMER_COUPON_FAIL: CLAIM_CUSTOMER_COUPON_FAIL,
+        CLAIM_CUSTOMER_COUPON_SUCCESS: CLAIM_CUSTOMER_COUPON_SUCCESS,
+        LoadCustomerCoupons: LoadCustomerCoupons,
+        LoadCustomerCouponsFail: LoadCustomerCouponsFail,
+        LoadCustomerCouponsSuccess: LoadCustomerCouponsSuccess,
+        ResetLoadCustomerCoupons: ResetLoadCustomerCoupons,
+        SubscribeCustomerCoupon: SubscribeCustomerCoupon,
+        SubscribeCustomerCouponFail: SubscribeCustomerCouponFail,
+        SubscribeCustomerCouponSuccess: SubscribeCustomerCouponSuccess,
+        ResetSubscribeCustomerCouponProcess: ResetSubscribeCustomerCouponProcess,
+        UnsubscribeCustomerCoupon: UnsubscribeCustomerCoupon,
+        UnsubscribeCustomerCouponFail: UnsubscribeCustomerCouponFail,
+        UnsubscribeCustomerCouponSuccess: UnsubscribeCustomerCouponSuccess,
+        ResetUnsubscribeCustomerCouponProcess: ResetUnsubscribeCustomerCouponProcess,
+        ClaimCustomerCoupon: ClaimCustomerCoupon,
+        ClaimCustomerCouponFail: ClaimCustomerCouponFail,
+        ClaimCustomerCouponSuccess: ClaimCustomerCouponSuccess,
         LOAD_NOTIFICATION_PREFERENCES: LOAD_NOTIFICATION_PREFERENCES,
         LOAD_NOTIFICATION_PREFERENCES_FAIL: LOAD_NOTIFICATION_PREFERENCES_FAIL,
         LOAD_NOTIFICATION_PREFERENCES_SUCCESS: LOAD_NOTIFICATION_PREFERENCES_SUCCESS,
@@ -28010,17 +28684,54 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.notificationPreferences; };
+    function (state) { return state.customerCoupons; };
     /** @type {?} */
-    var getPreferencesLoaderState = store.createSelector(getUserState, (ɵ0$o));
+    var getCustomerCouponsState = store.createSelector(getUserState, (ɵ0$o));
     var ɵ1$i = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderSuccessSelector(state);
+    };
+    /** @type {?} */
+    var getCustomerCouponsLoaded = store.createSelector(getCustomerCouponsState, (ɵ1$i));
+    var ɵ2$b = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) {
+        return loaderLoadingSelector(state);
+    };
+    /** @type {?} */
+    var getCustomerCouponsLoading = store.createSelector(getCustomerCouponsState, (ɵ2$b));
+    var ɵ3$7 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getPreferences = store.createSelector(getPreferencesLoaderState, (ɵ1$i));
-    var ɵ2$b = /**
+    var getCustomerCoupons = store.createSelector(getCustomerCouponsState, (ɵ3$7));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$p = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.notificationPreferences; };
+    /** @type {?} */
+    var getPreferencesLoaderState = store.createSelector(getUserState, (ɵ0$p));
+    var ɵ1$j = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getPreferences = store.createSelector(getPreferencesLoaderState, (ɵ1$j));
+    var ɵ2$c = /**
      * @param {?} state
      * @return {?}
      */
@@ -28032,27 +28743,27 @@
         function (p) { return p.enabled; }));
     };
     /** @type {?} */
-    var getEnabledPreferences = store.createSelector(getPreferencesLoaderState, (ɵ2$b));
-    var ɵ3$7 = /**
+    var getEnabledPreferences = store.createSelector(getPreferencesLoaderState, (ɵ2$c));
+    var ɵ3$8 = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getPreferencesLoading = store.createSelector(getPreferencesLoaderState, (ɵ3$7));
+    var getPreferencesLoading = store.createSelector(getPreferencesLoaderState, (ɵ3$8));
 
     /**
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$p = /**
+    var ɵ0$q = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.productInterests; };
     /** @type {?} */
-    var getInterestsState = store.createSelector(getUserState, (ɵ0$p));
-    var ɵ1$j = /**
+    var getInterestsState = store.createSelector(getUserState, (ɵ0$q));
+    var ɵ1$k = /**
      * @param {?} state
      * @return {?}
      */
@@ -28060,8 +28771,8 @@
         return loaderValueSelector(state);
     };
     /** @type {?} */
-    var getInterests = store.createSelector(getInterestsState, (ɵ1$j));
-    var ɵ2$c = /**
+    var getInterests = store.createSelector(getInterestsState, (ɵ1$k));
+    var ɵ2$d = /**
      * @param {?} state
      * @return {?}
      */
@@ -28069,7 +28780,7 @@
         return loaderLoadingSelector(state);
     };
     /** @type {?} */
-    var getInterestsLoading = store.createSelector(getInterestsState, (ɵ2$c));
+    var getInterestsLoading = store.createSelector(getInterestsState, (ɵ2$d));
 
     /**
      * @fileoverview added by tsickle
@@ -28125,6 +28836,10 @@
         getOrdersState: getOrdersState,
         getOrdersLoaded: getOrdersLoaded,
         getOrders: getOrders,
+        getCustomerCouponsState: getCustomerCouponsState,
+        getCustomerCouponsLoaded: getCustomerCouponsLoaded,
+        getCustomerCouponsLoading: getCustomerCouponsLoading,
+        getCustomerCoupons: getCustomerCoupons,
         getPreferencesLoaderState: getPreferencesLoaderState,
         getPreferences: getPreferences,
         getEnabledPreferences: getEnabledPreferences,
@@ -31040,39 +31755,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$q = /**
+    var ɵ0$r = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.asmUi; };
     /** @type {?} */
-    var getAsmUi = store.createSelector(getAsmState, (ɵ0$q));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$r = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return state.customerSearchResult; };
-    /** @type {?} */
-    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$r));
-    var ɵ1$k = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderValueSelector(state); };
-    /** @type {?} */
-    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$k));
-    var ɵ2$d = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderLoadingSelector(state); };
-    /** @type {?} */
-    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ2$d));
+    var getAsmUi = store.createSelector(getAsmState, (ɵ0$r));
 
     /**
      * @fileoverview added by tsickle
@@ -31082,23 +31771,49 @@
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.csagentToken; };
+    function (state) { return state.customerSearchResult; };
     /** @type {?} */
-    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, (ɵ0$s));
+    var getCustomerSearchResultsLoaderState = store.createSelector(getAsmState, (ɵ0$s));
     var ɵ1$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$l));
+    var getCustomerSearchResults = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ1$l));
     var ɵ2$e = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, (ɵ2$e));
+    var getCustomerSearchResultsLoading = store.createSelector(getCustomerSearchResultsLoaderState, (ɵ2$e));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$t = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.csagentToken; };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenState = store.createSelector(getAsmState, (ɵ0$t));
+    var ɵ1$m = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentToken = store.createSelector(getCustomerSupportAgentTokenState, (ɵ1$m));
+    var ɵ2$f = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getCustomerSupportAgentTokenLoading = store.createSelector(getCustomerSupportAgentTokenState, (ɵ2$f));
 
     /**
      * @fileoverview added by tsickle
@@ -31489,13 +32204,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$t = /**
+    var ɵ0$u = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entities; };
     /** @type {?} */
-    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$t));
+    var getGlobalMessageEntities = store.createSelector(getGlobalMessageState, (ɵ0$u));
     /** @type {?} */
     var getGlobalMessageEntitiesByType = (/**
      * @param {?} type
@@ -33654,21 +34369,21 @@
      * @return {?}
      */
     function (state) { return state.content; });
-    var ɵ0$u = getCartContentSelector;
+    var ɵ0$v = getCartContentSelector;
     /** @type {?} */
     var getCartRefreshSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.refresh; });
-    var ɵ1$m = getCartRefreshSelector;
+    var ɵ1$n = getCartRefreshSelector;
     /** @type {?} */
     var getCartEntriesSelector = (/**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.entries; });
-    var ɵ2$f = getCartEntriesSelector;
+    var ɵ2$g = getCartEntriesSelector;
     /** @type {?} */
     var getCartMergeCompleteSelector = (/**
      * @param {?} state
@@ -33677,7 +34392,7 @@
     function (state) {
         return state.cartMergeComplete;
     });
-    var ɵ3$8 = getCartMergeCompleteSelector;
+    var ɵ3$9 = getCartMergeCompleteSelector;
     /** @type {?} */
     var getCartsState = store.createFeatureSelector(CART_FEATURE);
     var ɵ4$2 = /**
@@ -33786,13 +34501,13 @@
      */
     /** @type {?} */
     var getMultiCartState = store.createFeatureSelector(MULTI_CART_FEATURE);
-    var ɵ0$v = /**
+    var ɵ0$w = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.carts; };
     /** @type {?} */
-    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$v));
+    var getMultiCartEntities = store.createSelector(getMultiCartState, (ɵ0$w));
     /** @type {?} */
     var getCartEntitySelectorFactory = (/**
      * @param {?} cartId
@@ -33884,20 +34599,20 @@
                 : undefined;
         }));
     });
-    var ɵ1$n = /**
+    var ɵ1$o = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.active; };
     /** @type {?} */
-    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$n));
-    var ɵ2$g = /**
+    var getActiveCartId = store.createSelector(getMultiCartState, (ɵ1$o));
+    var ɵ2$h = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.wishList; };
     /** @type {?} */
-    var getWishListId = store.createSelector(getMultiCartState, (ɵ2$g));
+    var getWishListId = store.createSelector(getMultiCartState, (ɵ2$h));
 
     /**
      * @fileoverview added by tsickle
@@ -37243,14 +37958,14 @@
             return acc;
         }), {});
     });
-    var ɵ0$w = getComponentEntitiesSelector;
-    var ɵ1$o = /**
+    var ɵ0$x = getComponentEntitiesSelector;
+    var ɵ1$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
     /** @type {?} */
-    var getComponentState = store.createSelector(getCmsState, (ɵ1$o));
+    var getComponentState = store.createSelector(getCmsState, (ɵ1$p));
     /** @type {?} */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
     /** @type {?} */
@@ -37297,13 +38012,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$x = /**
+    var ɵ0$y = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.navigation; };
     /** @type {?} */
-    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$x));
+    var getNavigationEntryItemState = store.createSelector(getCmsState, (ɵ0$y));
     /** @type {?} */
     var getSelectedNavigationEntryItemState = (/**
      * @param {?} nodeId
@@ -37339,7 +38054,7 @@
      * @return {?}
      */
     function (state) { return state.pageData.entities; });
-    var ɵ0$y = getPageEntitiesSelector;
+    var ɵ0$z = getPageEntitiesSelector;
     /** @type {?} */
     var getIndexByType = (/**
      * @param {?} index
@@ -37363,7 +38078,7 @@
         }
         return { entities: {} };
     });
-    var ɵ1$p = getIndexByType;
+    var ɵ1$q = getIndexByType;
     /** @type {?} */
     var getPageComponentTypesSelector = (/**
      * @param {?} page
@@ -37402,14 +38117,14 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$h = getPageComponentTypesSelector;
-    var ɵ3$9 = /**
+    var ɵ2$i = getPageComponentTypesSelector;
+    var ɵ3$a = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.page; };
     /** @type {?} */
-    var getPageState = store.createSelector(getCmsState, (ɵ3$9));
+    var getPageState = store.createSelector(getCmsState, (ɵ3$a));
     var ɵ4$3 = /**
      * @param {?} page
      * @return {?}
@@ -40820,7 +41535,7 @@
      * @return {?}
      */
     function (state) { return state.address; });
-    var ɵ0$z = getDeliveryAddressSelector;
+    var ɵ0$A = getDeliveryAddressSelector;
     /** @type {?} */
     var getDeliveryModeSelector = (/**
      * @param {?} state
@@ -40829,7 +41544,7 @@
     function (state) {
         return state.deliveryMode;
     });
-    var ɵ1$q = getDeliveryModeSelector;
+    var ɵ1$r = getDeliveryModeSelector;
     /** @type {?} */
     var getPaymentDetailsSelector = (/**
      * @param {?} state
@@ -40838,7 +41553,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$i = getPaymentDetailsSelector;
+    var ɵ2$j = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -40847,7 +41562,7 @@
     function (state) {
         return state.orderDetails;
     });
-    var ɵ3$a = getOrderDetailsSelector;
+    var ɵ3$b = getOrderDetailsSelector;
     /** @type {?} */
     var getCheckoutState = store.createFeatureSelector(CHECKOUT_FEATURE);
     var ɵ4$4 = /**
@@ -40924,13 +41639,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$A = /**
+    var ɵ0$B = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.addressVerification; };
     /** @type {?} */
-    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$A));
+    var getAddressVerificationResultsState = store.createSelector(getCheckoutState, (ɵ0$B));
     /** @type {?} */
     var getAddressVerificationResults$1 = store.createSelector(getAddressVerificationResultsState, getAddressVerificationResults);
 
@@ -40982,16 +41697,16 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$B = /**
+    var ɵ0$C = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.cardTypes; };
     /** @type {?} */
-    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$B));
+    var getCardTypesState = store.createSelector(getCheckoutState, (ɵ0$C));
     /** @type {?} */
     var getCardTypesEntites$1 = store.createSelector(getCardTypesState, getCardTypesEntites);
-    var ɵ1$r = /**
+    var ɵ1$s = /**
      * @param {?} entites
      * @return {?}
      */
@@ -41003,7 +41718,7 @@
         function (code) { return entites[code]; }));
     };
     /** @type {?} */
-    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$r));
+    var getAllCardTypes = store.createSelector(getCardTypesEntites$1, (ɵ1$s));
 
     /**
      * @fileoverview added by tsickle
@@ -47072,12 +47787,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$C = i18nextInit;
+    var ɵ0$D = i18nextInit;
     /** @type {?} */
     var i18nextProviders = [
         {
             provide: core.APP_INITIALIZER,
-            useFactory: ɵ0$C,
+            useFactory: ɵ0$D,
             deps: [ConfigInitializerService, LanguageService],
             multi: true,
         },
@@ -47608,13 +48323,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$D = /**
+    var ɵ0$E = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.openIdToken; };
     /** @type {?} */
-    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$D));
+    var getOpenIdTokenState = store.createSelector(getKymaState, (ɵ0$E));
     /** @type {?} */
     var getOpenIdTokenValue = store.createSelector(getOpenIdTokenState, loaderValueSelector);
     /** @type {?} */
@@ -48408,11 +49123,6 @@
         ];
         return ProcessModule;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -49285,13 +49995,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$E = /**
+    var ɵ0$F = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.references; };
     /** @type {?} */
-    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$E));
+    var getProductReferencesState = store.createSelector(getProductsState, (ɵ0$F));
     /** @type {?} */
     var getSelectedProductReferencesFactory = (/**
      * @param {?} productCode
@@ -49326,13 +50036,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$F = /**
+    var ɵ0$G = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.reviews; };
     /** @type {?} */
-    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$F));
+    var getProductReviewsState = store.createSelector(getProductsState, (ɵ0$G));
     /** @type {?} */
     var getSelectedProductReviewsFactory = (/**
      * @param {?} productCode
@@ -49413,13 +50123,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$G = /**
+    var ɵ0$H = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.search; };
     /** @type {?} */
-    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$G));
+    var getProductsSearchState = store.createSelector(getProductsState, (ɵ0$H));
     /** @type {?} */
     var getSearchResults$1 = store.createSelector(getProductsSearchState, getSearchResults);
     /** @type {?} */
@@ -49431,13 +50141,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$H = /**
+    var ɵ0$I = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.details; };
     /** @type {?} */
-    var getProductState = store.createSelector(getProductsState, (ɵ0$H));
+    var getProductState = store.createSelector(getProductsState, (ɵ0$I));
     /** @type {?} */
     var getSelectedProductsFactory = (/**
      * @param {?} codes
@@ -49533,7 +50243,7 @@
          */
         function (productState) { return loaderErrorSelector(productState); }));
     });
-    var ɵ1$s = /**
+    var ɵ1$t = /**
      * @param {?} details
      * @return {?}
      */
@@ -49541,7 +50251,7 @@
         return Object.keys(details.entities);
     };
     /** @type {?} */
-    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$s));
+    var getAllProductCodes = store.createSelector(getProductState, (ɵ1$t));
 
     /**
      * @fileoverview added by tsickle
@@ -52635,53 +53345,53 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var ɵ0$I = /**
+    var ɵ0$J = /**
      * @param {?} storesState
      * @return {?}
      */
     function (storesState) { return storesState.findStores; };
     /** @type {?} */
-    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$I));
-    var ɵ1$t = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderValueSelector(state); };
-    /** @type {?} */
-    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$t));
-    var ɵ2$j = /**
-     * @param {?} state
-     * @return {?}
-     */
-    function (state) { return loaderLoadingSelector(state); };
-    /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$j));
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var ɵ0$J = /**
-     * @param {?} storesState
-     * @return {?}
-     */
-    function (storesState) { return storesState.viewAllStores; };
-    /** @type {?} */
-    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$J));
+    var getFindStoresState = store.createSelector(getStoreFinderState, (ɵ0$J));
     var ɵ1$u = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
-    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$u));
+    var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$u));
     var ɵ2$k = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$k));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$k));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var ɵ0$K = /**
+     * @param {?} storesState
+     * @return {?}
+     */
+    function (storesState) { return storesState.viewAllStores; };
+    /** @type {?} */
+    var getViewAllStoresState = store.createSelector(getStoreFinderState, (ɵ0$K));
+    var ɵ1$v = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderValueSelector(state); };
+    /** @type {?} */
+    var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$v));
+    var ɵ2$l = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return loaderLoadingSelector(state); };
+    /** @type {?} */
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$l));
 
     /**
      * @fileoverview added by tsickle
@@ -54185,6 +54895,95 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CustomerCouponConnector = /** @class */ (function () {
+        function CustomerCouponConnector(adapter) {
+            this.adapter = adapter;
+        }
+        /**
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        CustomerCouponConnector.prototype.getCustomerCoupons = /**
+         * @param {?} userId
+         * @param {?} pageSize
+         * @param {?} currentPage
+         * @param {?} sort
+         * @return {?}
+         */
+        function (userId, pageSize, currentPage, sort) {
+            return this.adapter.getCustomerCoupons(userId, pageSize, currentPage, sort);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponConnector.prototype.turnOnNotification = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            return this.adapter.turnOnNotification(userId, couponCode);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponConnector.prototype.turnOffNotification = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            return this.adapter.turnOffNotification(userId, couponCode);
+        };
+        /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        CustomerCouponConnector.prototype.claimCustomerCoupon = /**
+         * @param {?} userId
+         * @param {?} couponCode
+         * @return {?}
+         */
+        function (userId, couponCode) {
+            return this.adapter.claimCustomerCoupon(userId, couponCode);
+        };
+        CustomerCouponConnector.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CustomerCouponConnector.ctorParameters = function () { return [
+            { type: CustomerCouponAdapter }
+        ]; };
+        /** @nocollapse */ CustomerCouponConnector.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CustomerCouponConnector_Factory() { return new CustomerCouponConnector(core.ɵɵinject(CustomerCouponAdapter)); }, token: CustomerCouponConnector, providedIn: "root" });
+        return CustomerCouponConnector;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CustomerCouponConnector.prototype.adapter;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserInterestsConnector = /** @class */ (function () {
         function UserInterestsConnector(adapter) {
             this.adapter = adapter;
@@ -55182,6 +55981,282 @@
          * @protected
          */
         UserOrderService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var CustomerCouponService = /** @class */ (function () {
+        function CustomerCouponService(store) {
+            this.store = store;
+        }
+        /**
+         * Retrieves customer's coupons
+         * @param pageSize page size
+         * @param currentPage current page
+         * @param sort sort
+         */
+        /**
+         * Retrieves customer's coupons
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        CustomerCouponService.prototype.loadCustomerCoupons = /**
+         * Retrieves customer's coupons
+         * @param {?} pageSize page size
+         * @param {?=} currentPage current page
+         * @param {?=} sort sort
+         * @return {?}
+         */
+        function (pageSize, currentPage, sort) {
+            this.store.dispatch(new LoadCustomerCoupons({
+                userId: OCC_USER_ID_CURRENT,
+                pageSize: pageSize,
+                currentPage: currentPage,
+                sort: sort,
+            }));
+        };
+        /**
+         * Returns customer coupon search result
+         * @param pageSize page size
+         */
+        /**
+         * Returns customer coupon search result
+         * @param {?} pageSize page size
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getCustomerCoupons = /**
+         * Returns customer coupon search result
+         * @param {?} pageSize page size
+         * @return {?}
+         */
+        function (pageSize) {
+            var _this = this;
+            return this.store.pipe(store.select(getCustomerCouponsState), operators.tap((/**
+             * @param {?} customerCouponsState
+             * @return {?}
+             */
+            function (customerCouponsState) {
+                /** @type {?} */
+                var attemptedLoad = customerCouponsState.loading ||
+                    customerCouponsState.success ||
+                    customerCouponsState.error;
+                if (!attemptedLoad) {
+                    _this.loadCustomerCoupons(pageSize);
+                }
+            })), operators.map((/**
+             * @param {?} customerCouponsState
+             * @return {?}
+             */
+            function (customerCouponsState) { return customerCouponsState.value; })));
+        };
+        /**
+         * Returns a loaded flag for customer coupons
+         */
+        /**
+         * Returns a loaded flag for customer coupons
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getCustomerCouponsLoaded = /**
+         * Returns a loaded flag for customer coupons
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerCouponsLoaded));
+        };
+        /**
+         * Returns a loading flag for customer coupons
+         */
+        /**
+         * Returns a loading flag for customer coupons
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getCustomerCouponsLoading = /**
+         * Returns a loading flag for customer coupons
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getCustomerCouponsLoading));
+        };
+        /**
+         * Subscribe a CustomerCoupon Notification
+         * @param couponCode a customer coupon code
+         */
+        /**
+         * Subscribe a CustomerCoupon Notification
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        CustomerCouponService.prototype.subscribeCustomerCoupon = /**
+         * Subscribe a CustomerCoupon Notification
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        function (couponCode) {
+            this.store.dispatch(new SubscribeCustomerCoupon({
+                userId: OCC_USER_ID_CURRENT,
+                couponCode: couponCode,
+            }));
+        };
+        /**
+         * Returns the subscribe customer coupon notification process loading flag
+         */
+        /**
+         * Returns the subscribe customer coupon notification process loading flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getSubscribeCustomerCouponResultLoading = /**
+         * Returns the subscribe customer coupon notification process loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Returns the subscribe customer coupon notification process success flag
+         */
+        /**
+         * Returns the subscribe customer coupon notification process success flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getSubscribeCustomerCouponResultSuccess = /**
+         * Returns the subscribe customer coupon notification process success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Returns the subscribe customer coupon notification process error flag
+         */
+        /**
+         * Returns the subscribe customer coupon notification process error flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getSubscribeCustomerCouponResultError = /**
+         * Returns the subscribe customer coupon notification process error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Unsubscribe a CustomerCoupon Notification
+         * @param couponCode a customer coupon code
+         */
+        /**
+         * Unsubscribe a CustomerCoupon Notification
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        CustomerCouponService.prototype.unsubscribeCustomerCoupon = /**
+         * Unsubscribe a CustomerCoupon Notification
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        function (couponCode) {
+            this.store.dispatch(new UnsubscribeCustomerCoupon({
+                userId: OCC_USER_ID_CURRENT,
+                couponCode: couponCode,
+            }));
+        };
+        /**
+         * Returns the unsubscribe customer coupon notification process loading flag
+         */
+        /**
+         * Returns the unsubscribe customer coupon notification process loading flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultLoading = /**
+         * Returns the unsubscribe customer coupon notification process loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Returns the unsubscribe customer coupon notification process success flag
+         */
+        /**
+         * Returns the unsubscribe customer coupon notification process success flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultSuccess = /**
+         * Returns the unsubscribe customer coupon notification process success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Returns the unsubscribe customer coupon notification process error flag
+         */
+        /**
+         * Returns the unsubscribe customer coupon notification process error flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getUnsubscribeCustomerCouponResultError = /**
+         * Returns the unsubscribe customer coupon notification process error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        /**
+         * Claim a CustomerCoupon
+         * @param couponCode a customer coupon code
+         */
+        /**
+         * Claim a CustomerCoupon
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        CustomerCouponService.prototype.claimCustomerCoupon = /**
+         * Claim a CustomerCoupon
+         * @param {?} couponCode a customer coupon code
+         * @return {?}
+         */
+        function (couponCode) {
+            this.store.dispatch(new ClaimCustomerCoupon({
+                userId: OCC_USER_ID_CURRENT,
+                couponCode: couponCode,
+            }));
+        };
+        /**
+         * Returns the claim customer coupon notification process success flag
+         */
+        /**
+         * Returns the claim customer coupon notification process success flag
+         * @return {?}
+         */
+        CustomerCouponService.prototype.getClaimCustomerCouponResultSuccess = /**
+         * Returns the claim customer coupon notification process success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(CLAIM_CUSTOMER_COUPON_PROCESS_ID)));
+        };
+        CustomerCouponService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        CustomerCouponService.ctorParameters = function () { return [
+            { type: store.Store }
+        ]; };
+        /** @nocollapse */ CustomerCouponService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function CustomerCouponService_Factory() { return new CustomerCouponService(core.ɵɵinject(store.Store)); }, token: CustomerCouponService, providedIn: "root" });
+        return CustomerCouponService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        CustomerCouponService.prototype.store;
     }
 
     /**
@@ -57180,9 +58255,9 @@
      */
     /** @type {?} */
     var initialState$x = {
-        results: [],
-        pagination: {},
+        coupons: [],
         sorts: [],
+        pagination: {},
     };
     /**
      * @param {?=} state
@@ -57192,11 +58267,42 @@
     function reducer$x(state, action) {
         if (state === void 0) { state = initialState$x; }
         switch (action.type) {
-            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-                return action.payload ? action.payload : initialState$x;
+            case LOAD_CUSTOMER_COUPONS_SUCCESS: {
+                return action.payload;
             }
-            case LOAD_PRODUCT_INTERESTS_FAIL: {
-                return initialState$x;
+            case SUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
+                /** @type {?} */
+                var updatedCustomerCoupon_1 = action.payload.coupon;
+                /** @type {?} */
+                var customerCoupons_1 = new Array(state.coupons.length);
+                state.coupons.forEach((/**
+                 * @param {?} customerCoupon
+                 * @param {?} index
+                 * @return {?}
+                 */
+                function (customerCoupon, index) {
+                    return customerCoupon.couponId === updatedCustomerCoupon_1.couponId
+                        ? (customerCoupons_1[index] = updatedCustomerCoupon_1)
+                        : (customerCoupons_1[index] = customerCoupon);
+                }));
+                return __assign({}, state, { coupons: customerCoupons_1 });
+            }
+            case UNSUBSCRIBE_CUSTOMER_COUPON_SUCCESS: {
+                /** @type {?} */
+                var updatedCouponCode_1 = action.payload;
+                /** @type {?} */
+                var customerCoupons_2 = new Array(state.coupons.length);
+                state.coupons.forEach((/**
+                 * @param {?} customerCoupon
+                 * @param {?} index
+                 * @return {?}
+                 */
+                function (customerCoupon, index) {
+                    return customerCoupon.couponId === updatedCouponCode_1
+                        ? (customerCoupons_2[index] = __assign({}, customerCoupon, { notificationOn: false }))
+                        : (customerCoupons_2[index] = customerCoupon);
+                }));
+                return __assign({}, state, { coupons: customerCoupons_2 });
             }
         }
         return state;
@@ -57208,7 +58314,7 @@
      */
     /** @type {?} */
     var initialState$y = {
-        returnRequests: [],
+        results: [],
         pagination: {},
         sorts: [],
     };
@@ -57220,8 +58326,36 @@
     function reducer$y(state, action) {
         if (state === void 0) { state = initialState$y; }
         switch (action.type) {
-            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
                 return action.payload ? action.payload : initialState$y;
+            }
+            case LOAD_PRODUCT_INTERESTS_FAIL: {
+                return initialState$y;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$z = {
+        returnRequests: [],
+        pagination: {},
+        sorts: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$z(state, action) {
+        if (state === void 0) { state = initialState$z; }
+        switch (action.type) {
+            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+                return action.payload ? action.payload : initialState$z;
             }
         }
         return state;
@@ -57246,14 +58380,15 @@
             orders: loaderReducer(USER_ORDERS, reducer$w),
             order: loaderReducer(USER_ORDER_DETAILS, reducer$o),
             orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$y),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$z),
             countries: reducer$m,
             titles: reducer$s,
             regions: loaderReducer(REGIONS, reducer$q),
             resetPassword: reducer$r,
             consignmentTracking: reducer$l,
+            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$x),
             notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$n),
-            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$x),
+            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$y),
         };
     }
     /** @type {?} */
@@ -59035,6 +60170,166 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var CustomerCouponEffects = /** @class */ (function () {
+        function CustomerCouponEffects(actions$, customerCouponConnector) {
+            var _this = this;
+            this.actions$ = actions$;
+            this.customerCouponConnector = customerCouponConnector;
+            this.loadCustomerCoupons$ = this.actions$.pipe(effects$c.ofType(LOAD_CUSTOMER_COUPONS), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.customerCouponConnector
+                    .getCustomerCoupons(payload.userId, payload.pageSize, payload.currentPage, payload.sort)
+                    .pipe(operators.map((/**
+                 * @param {?} coupons
+                 * @return {?}
+                 */
+                function (coupons) {
+                    return new LoadCustomerCouponsSuccess(coupons);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.subscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.customerCouponConnector
+                    .turnOnNotification(payload.userId, payload.couponCode)
+                    .pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    return new SubscribeCustomerCouponSuccess(data);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                return action.payload;
+            })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.customerCouponConnector
+                    .turnOffNotification(payload.userId, payload.couponCode)
+                    .pipe(operators.map((/**
+                 * @return {?}
+                 */
+                function () {
+                    return new UnsubscribeCustomerCouponSuccess(payload.couponCode);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)));
+                })));
+            })));
+            this.claimCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(CLAIM_CUSTOMER_COUPON), operators.map((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) { return action.payload; })), operators.mergeMap((/**
+             * @param {?} payload
+             * @return {?}
+             */
+            function (payload) {
+                return _this.customerCouponConnector
+                    .claimCustomerCoupon(payload.userId, payload.couponCode)
+                    .pipe(operators.map((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) {
+                    return new ClaimCustomerCouponSuccess(data);
+                })), operators.catchError((/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) {
+                    return rxjs.of(new ClaimCustomerCouponFail(makeErrorSerializable(error)));
+                })));
+            })));
+        }
+        CustomerCouponEffects.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        CustomerCouponEffects.ctorParameters = function () { return [
+            { type: effects$c.Actions },
+            { type: CustomerCouponConnector }
+        ]; };
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
+        __decorate([
+            effects$c.Effect(),
+            __metadata("design:type", rxjs.Observable)
+        ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
+        return CustomerCouponEffects;
+    }());
+    if (false) {
+        /** @type {?} */
+        CustomerCouponEffects.prototype.loadCustomerCoupons$;
+        /** @type {?} */
+        CustomerCouponEffects.prototype.subscribeCustomerCoupon$;
+        /** @type {?} */
+        CustomerCouponEffects.prototype.unsubscribeCustomerCoupon$;
+        /** @type {?} */
+        CustomerCouponEffects.prototype.claimCustomerCoupon$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerCouponEffects.prototype.actions$;
+        /**
+         * @type {?}
+         * @private
+         */
+        CustomerCouponEffects.prototype.customerCouponConnector;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var ProductInterestsEffect = /** @class */ (function () {
         function ProductInterestsEffect(actions$, userInterestsConnector) {
             var _this = this;
@@ -59192,6 +60487,7 @@
         UpdatePasswordEffects,
         UserConsentsEffect,
         ConsignmentTrackingEffects,
+        CustomerCouponEffects,
         NotificationPreferenceEffects,
         ProductInterestsEffect,
         OrderReturnRequestEffect,
@@ -59224,6 +60520,191 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var FindProductPageMetaResolver = /** @class */ (function (_super) {
+        __extends(FindProductPageMetaResolver, _super);
+        function FindProductPageMetaResolver(routingService, productSearchService, translation, authService) {
+            var _this = _super.call(this) || this;
+            _this.routingService = routingService;
+            _this.productSearchService = productSearchService;
+            _this.translation = translation;
+            _this.authService = authService;
+            _this.totalAndCode$ = rxjs.combineLatest([
+                _this.productSearchService.getResults().pipe(operators.filter((/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return !!(data && data.pagination); })), operators.map((/**
+                 * @param {?} results
+                 * @return {?}
+                 */
+                function (results) { return results.pagination.totalResults; }))),
+                _this.routingService.getRouterState().pipe(operators.map((/**
+                 * @param {?} state
+                 * @return {?}
+                 */
+                function (state) { return state.state.queryParams['couponcode']; })), operators.filter(Boolean)),
+            ]);
+            _this.pageType = PageType.CONTENT_PAGE;
+            _this.pageTemplate = 'SearchResultsListPageTemplate';
+            return _this;
+        }
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         */
+        /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        FindProductPageMetaResolver.prototype.resolve = /**
+         * @deprecated since version 1.3
+         *
+         * The resolve method is no longer preferred and will be removed with release 2.0.
+         * The caller `PageMetaService` service is improved to expect all individual resolvers
+         * instead, so that the code is easier extensible.
+         * @return {?}
+         */
+        function () {
+            return rxjs.combineLatest([this.resolveTitle(), this.resolveBreadcrumbs()]).pipe(operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), title = _b[0], breadcrumbs = _b[1];
+                return ({
+                    title: title,
+                    breadcrumbs: breadcrumbs,
+                });
+            })));
+        };
+        /**
+         * @return {?}
+         */
+        FindProductPageMetaResolver.prototype.resolveBreadcrumbs = /**
+         * @return {?}
+         */
+        function () {
+            /** @type {?} */
+            var breadcrumbs = [{ label: 'Home', link: '/' }];
+            this.authService.isUserLoggedIn().subscribe((/**
+             * @param {?} login
+             * @return {?}
+             */
+            function (login) {
+                if (login)
+                    breadcrumbs.push({ label: 'My Coupons', link: '/my-account/coupons' });
+            }));
+            return rxjs.of(breadcrumbs);
+        };
+        /**
+         * @return {?}
+         */
+        FindProductPageMetaResolver.prototype.resolveTitle = /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.totalAndCode$.pipe(operators.switchMap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), total = _b[0], code = _b[1];
+                return _this.translation.translate('pageMetaResolver.search.findProductTitle', {
+                    count: total,
+                    coupon: code,
+                });
+            })));
+        };
+        /**
+         * @param {?} page
+         * @return {?}
+         */
+        FindProductPageMetaResolver.prototype.getScore = /**
+         * @param {?} page
+         * @return {?}
+         */
+        function (page) {
+            /** @type {?} */
+            var score = 0;
+            if (this.pageType) {
+                score += page.type === this.pageType ? 1 : -1;
+            }
+            if (this.pageTemplate) {
+                score += page.template === this.pageTemplate ? 1 : -1;
+            }
+            this.routingService
+                .getRouterState()
+                .pipe(operators.map((/**
+             * @param {?} state
+             * @return {?}
+             */
+            function (state) {
+                return state.state.queryParams;
+            })), operators.filter(Boolean))
+                .subscribe((/**
+             * @param {?} queryParams
+             * @return {?}
+             */
+            function (queryParams) {
+                if (queryParams) {
+                    score += queryParams['couponcode'] ? 1 : -1;
+                }
+            }))
+                .unsubscribe();
+            return score;
+        };
+        FindProductPageMetaResolver.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        FindProductPageMetaResolver.ctorParameters = function () { return [
+            { type: RoutingService },
+            { type: ProductSearchService },
+            { type: TranslationService },
+            { type: AuthService }
+        ]; };
+        /** @nocollapse */ FindProductPageMetaResolver.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function FindProductPageMetaResolver_Factory() { return new FindProductPageMetaResolver(core.ɵɵinject(RoutingService), core.ɵɵinject(ProductSearchService), core.ɵɵinject(TranslationService), core.ɵɵinject(AuthService)); }, token: FindProductPageMetaResolver, providedIn: "root" });
+        return FindProductPageMetaResolver;
+    }(PageMetaResolver));
+    if (false) {
+        /** @type {?} */
+        FindProductPageMetaResolver.prototype.totalAndCode$;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FindProductPageMetaResolver.prototype.routingService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FindProductPageMetaResolver.prototype.productSearchService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FindProductPageMetaResolver.prototype.translation;
+        /**
+         * @type {?}
+         * @protected
+         */
+        FindProductPageMetaResolver.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UserModule = /** @class */ (function () {
         function UserModule() {
         }
@@ -59236,7 +60717,14 @@
         function () {
             return {
                 ngModule: UserModule,
-                providers: [UserService],
+                providers: [
+                    UserService,
+                    {
+                        provide: PageMetaResolver,
+                        useExisting: FindProductPageMetaResolver,
+                        multi: true,
+                    },
+                ],
             };
         };
         UserModule.decorators = [
@@ -59297,6 +60785,7 @@
     exports.CART_VOUCHER_NORMALIZER = CART_VOUCHER_NORMALIZER;
     exports.CHECKOUT_DETAILS = CHECKOUT_DETAILS;
     exports.CHECKOUT_FEATURE = CHECKOUT_FEATURE;
+    exports.CLAIM_CUSTOMER_COUPON_PROCESS_ID = CLAIM_CUSTOMER_COUPON_PROCESS_ID;
     exports.CLIENT_TOKEN_DATA = CLIENT_TOKEN_DATA;
     exports.CMS_COMPONENT_NORMALIZER = CMS_COMPONENT_NORMALIZER;
     exports.CMS_FEATURE = CMS_FEATURE;
@@ -59310,6 +60799,8 @@
     exports.CSAGENT_TOKEN_DATA = CSAGENT_TOKEN_DATA;
     exports.CURRENCY_CONTEXT_ID = CURRENCY_CONTEXT_ID;
     exports.CURRENCY_NORMALIZER = CURRENCY_NORMALIZER;
+    exports.CUSTOMER_COUPONS = CUSTOMER_COUPONS;
+    exports.CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER = CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER;
     exports.CUSTOMER_SEARCH_DATA = CUSTOMER_SEARCH_DATA;
     exports.CUSTOMER_SEARCH_PAGE_NORMALIZER = CUSTOMER_SEARCH_PAGE_NORMALIZER;
     exports.CartActions = cartGroup_actions;
@@ -59371,6 +60862,9 @@
     exports.ConverterService = ConverterService;
     exports.CountryType = CountryType;
     exports.CurrencyService = CurrencyService;
+    exports.CustomerCouponAdapter = CustomerCouponAdapter;
+    exports.CustomerCouponConnector = CustomerCouponConnector;
+    exports.CustomerCouponService = CustomerCouponService;
     exports.CustomerSupportAgentTokenInterceptor = CustomerSupportAgentTokenInterceptor;
     exports.CxDatePipe = CxDatePipe;
     exports.DEFAULT_LOCAL_STORAGE_KEY = DEFAULT_LOCAL_STORAGE_KEY;
@@ -59462,6 +60956,7 @@
     exports.OccConfig = OccConfig;
     exports.OccConfigLoaderModule = OccConfigLoaderModule;
     exports.OccConfigLoaderService = OccConfigLoaderService;
+    exports.OccCustomerCouponAdapter = OccCustomerCouponAdapter;
     exports.OccEndpointsService = OccEndpointsService;
     exports.OccFieldsService = OccFieldsService;
     exports.OccLoadedConfigConverter = OccLoadedConfigConverter;
@@ -59559,6 +61054,7 @@
     exports.STORE_FINDER_DATA = STORE_FINDER_DATA;
     exports.STORE_FINDER_FEATURE = STORE_FINDER_FEATURE;
     exports.STORE_FINDER_SEARCH_PAGE_NORMALIZER = STORE_FINDER_SEARCH_PAGE_NORMALIZER;
+    exports.SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID;
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.SearchboxService = SearchboxService;
     exports.SemanticPathService = SemanticPathService;
@@ -59601,6 +61097,7 @@
     exports.TranslatePipe = TranslatePipe;
     exports.TranslationChunkService = TranslationChunkService;
     exports.TranslationService = TranslationService;
+    exports.UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID;
     exports.UPDATE_EMAIL_PROCESS_ID = UPDATE_EMAIL_PROCESS_ID;
     exports.UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID = UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID;
     exports.UPDATE_PASSWORD_PROCESS_ID = UPDATE_PASSWORD_PROCESS_ID;
@@ -59906,27 +61403,31 @@
     exports.ɵil = UserDetailsEffects;
     exports.ɵim = UserOrdersEffect;
     exports.ɵin = UserRegisterEffects;
-    exports.ɵio = ProductInterestsEffect;
-    exports.ɵip = ForgotPasswordEffects;
-    exports.ɵiq = UpdateEmailEffects;
-    exports.ɵir = UpdatePasswordEffects;
-    exports.ɵis = UserNotificationPreferenceConnector;
-    exports.ɵit = reducer$v;
-    exports.ɵiu = reducer$t;
-    exports.ɵiv = reducer$k;
-    exports.ɵiw = reducer$u;
-    exports.ɵix = reducer$p;
-    exports.ɵiy = reducer$w;
-    exports.ɵiz = reducer$o;
+    exports.ɵio = CustomerCouponEffects;
+    exports.ɵip = ProductInterestsEffect;
+    exports.ɵiq = ForgotPasswordEffects;
+    exports.ɵir = UpdateEmailEffects;
+    exports.ɵis = UpdatePasswordEffects;
+    exports.ɵit = UserNotificationPreferenceConnector;
+    exports.ɵiu = reducer$v;
+    exports.ɵiv = reducer$t;
+    exports.ɵiw = reducer$k;
+    exports.ɵix = reducer$u;
+    exports.ɵiy = reducer$p;
+    exports.ɵiz = reducer$w;
     exports.ɵj = AnonymousConsentsStoreModule;
-    exports.ɵja = reducer$y;
-    exports.ɵjb = reducer$m;
-    exports.ɵjc = reducer$s;
-    exports.ɵjd = reducer$q;
-    exports.ɵje = reducer$r;
-    exports.ɵjf = reducer$l;
-    exports.ɵjg = reducer$n;
+    exports.ɵja = reducer$o;
+    exports.ɵjb = reducer$z;
+    exports.ɵjc = reducer$m;
+    exports.ɵjd = reducer$s;
+    exports.ɵje = reducer$q;
+    exports.ɵjf = reducer$r;
+    exports.ɵjg = reducer$l;
     exports.ɵjh = reducer$x;
+    exports.ɵji = reducer$n;
+    exports.ɵjj = reducer$y;
+    exports.ɵjk = FindProductPageMetaResolver;
+    exports.ɵjl = PageMetaResolver;
     exports.ɵk = TRANSFER_STATE_META_REDUCER;
     exports.ɵl = STORAGE_SYNC_META_REDUCER;
     exports.ɵm = stateMetaReducers;

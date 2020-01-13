@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { CustomerCouponConnector } from './customer-coupon.connector';
+export { CustomerCouponAdapter } from './customer-coupon.adapter';
+export { CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER } from './converters';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9Ac3BhcnRhY3VzL2NvcmUvIiwic291cmNlcyI6WyJzcmMvdXNlci9jb25uZWN0b3JzL2N1c3RvbWVyLWNvdXBvbi9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsd0NBQWMsNkJBQTZCLENBQUM7QUFDNUMsc0NBQWMsMkJBQTJCLENBQUM7QUFDMUMseURBQWMsY0FBYyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jdXN0b21lci1jb3Vwb24uY29ubmVjdG9yJztcbmV4cG9ydCAqIGZyb20gJy4vY3VzdG9tZXItY291cG9uLmFkYXB0ZXInO1xuZXhwb3J0ICogZnJvbSAnLi9jb252ZXJ0ZXJzJztcbiJdfQ==

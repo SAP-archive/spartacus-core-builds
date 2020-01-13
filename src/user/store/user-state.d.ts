@@ -5,6 +5,7 @@ import { ConsignmentTracking } from '../../model/consignment-tracking.model';
 import { Title, User } from '../../model/misc.model';
 import { Order, OrderHistoryList, ReturnRequest, ReturnRequestList } from '../../model/order.model';
 import { LoaderState } from '../../state';
+import { CustomerCouponSearchResult } from '../../model/customer-coupon.model';
 import { NotificationPreference } from '../../model';
 import { ProductInterestSearchResult } from '../../model/product-interest.model';
 export declare const USER_FEATURE = "user";
@@ -28,6 +29,10 @@ export declare const USER_RETURN_REQUESTS = "[User] Order Return Requests";
 export declare const USER_RETURN_REQUEST_DETAILS = "[User] Return Request Details";
 export declare const USER_ORDER_DETAILS = "[User] User Order Details";
 export declare const REGIONS = "[User] Regions";
+export declare const CUSTOMER_COUPONS = "[User] Customer Coupons";
+export declare const SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = "subscribeCustomerCoupon";
+export declare const UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = "unsubscribeCustomerCoupon";
+export declare const CLAIM_CUSTOMER_COUPON_PROCESS_ID = "claimCustomerCoupon";
 export declare const NOTIFICATION_PREFERENCES = "[User] Notification Preferences";
 export declare const PRODUCT_INTERESTS = "[User] Product Interests";
 export interface StateWithUser {
@@ -48,6 +53,7 @@ export interface UserState {
     regions: LoaderState<RegionsState>;
     resetPassword: boolean;
     consignmentTracking: ConsignmentTrackingState;
+    customerCoupons: LoaderState<CustomerCouponSearchResult>;
     notificationPreferences: LoaderState<NotificationPreference[]>;
     productInterests: LoaderState<ProductInterestSearchResult>;
 }
