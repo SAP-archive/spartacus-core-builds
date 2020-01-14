@@ -37610,6 +37610,956 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var UserService = /** @class */ (function () {
+        function UserService(store, authService) {
+            this.store = store;
+            this.authService = authService;
+        }
+        /**
+         * Returns a user
+         */
+        /**
+         * Returns a user
+         * @return {?}
+         */
+        UserService.prototype.get = /**
+         * Returns a user
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.store.pipe(store.select(getDetails), operators.tap((/**
+             * @param {?} details
+             * @return {?}
+             */
+            function (details) {
+                if (Object.keys(details).length === 0) {
+                    _this.load();
+                }
+            })));
+        };
+        /**
+         * Loads the user's details
+         */
+        /**
+         * Loads the user's details
+         * @return {?}
+         */
+        UserService.prototype.load = /**
+         * Loads the user's details
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new LoadUserDetails(userId));
+            }));
+        };
+        /**
+         * Register a new user
+         *
+         * @param submitFormData as UserRegisterFormData
+         */
+        /**
+         * Register a new user
+         *
+         * @param {?} userRegisterFormData
+         * @return {?}
+         */
+        UserService.prototype.register = /**
+         * Register a new user
+         *
+         * @param {?} userRegisterFormData
+         * @return {?}
+         */
+        function (userRegisterFormData) {
+            this.store.dispatch(new RegisterUser(userRegisterFormData));
+        };
+        /**
+         * Register a new user from guest
+         *
+         * @param guid
+         * @param password
+         */
+        /**
+         * Register a new user from guest
+         *
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        UserService.prototype.registerGuest = /**
+         * Register a new user from guest
+         *
+         * @param {?} guid
+         * @param {?} password
+         * @return {?}
+         */
+        function (guid, password) {
+            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
+        };
+        /**
+         * Returns the register user process loading flag
+         */
+        /**
+         * Returns the register user process loading flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultLoading = /**
+         * Returns the register user process loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process success flag
+         */
+        /**
+         * Returns the register user process success flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultSuccess = /**
+         * Returns the register user process success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the register user process error flag
+         */
+        /**
+         * Returns the register user process error flag
+         * @return {?}
+         */
+        UserService.prototype.getRegisterUserResultError = /**
+         * Returns the register user process error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the register user process flags
+         */
+        /**
+         * Resets the register user process flags
+         * @return {?}
+         */
+        UserService.prototype.resetRegisterUserProcessState = /**
+         * Resets the register user process flags
+         * @return {?}
+         */
+        function () {
+            return this.store.dispatch(new ResetRegisterUserProcess());
+        };
+        /**
+         * Remove user account, that's also called close user's account
+         */
+        /**
+         * Remove user account, that's also called close user's account
+         * @return {?}
+         */
+        UserService.prototype.remove = /**
+         * Remove user account, that's also called close user's account
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new RemoveUser(userId));
+            }));
+        };
+        /**
+         * Returns the remove user loading flag
+         */
+        /**
+         * Returns the remove user loading flag
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultLoading = /**
+         * Returns the remove user loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user failure outcome.
+         */
+        /**
+         * Returns the remove user failure outcome.
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultError = /**
+         * Returns the remove user failure outcome.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Returns the remove user process success outcome.
+         */
+        /**
+         * Returns the remove user process success outcome.
+         * @return {?}
+         */
+        UserService.prototype.getRemoveUserResultSuccess = /**
+         * Returns the remove user process success outcome.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+        };
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+        UserService.prototype.resetRemoveUserProcessState = /**
+         * Resets the remove user process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new RemoveUserReset());
+        };
+        /**
+         * Returns titles
+         */
+        /**
+         * Returns titles
+         * @return {?}
+         */
+        UserService.prototype.getTitles = /**
+         * Returns titles
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getAllTitles));
+        };
+        /**
+         * Retrieves titles
+         */
+        /**
+         * Retrieves titles
+         * @return {?}
+         */
+        UserService.prototype.loadTitles = /**
+         * Retrieves titles
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new LoadTitles());
+        };
+        /**
+         * Return whether user's password is successfully reset
+         */
+        /**
+         * Return whether user's password is successfully reset
+         * @return {?}
+         */
+        UserService.prototype.isPasswordReset = /**
+         * Return whether user's password is successfully reset
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getResetPassword));
+        };
+        /**
+         * Updates the user's details
+         * @param userDetails to be updated
+         */
+        /**
+         * Updates the user's details
+         * @param {?} userDetails to be updated
+         * @return {?}
+         */
+        UserService.prototype.updatePersonalDetails = /**
+         * Updates the user's details
+         * @param {?} userDetails to be updated
+         * @return {?}
+         */
+        function (userDetails) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new UpdateUserDetails({
+                    username: userId,
+                    userDetails: userDetails,
+                }));
+            }));
+        };
+        /**
+         * Returns the update user's personal details loading flag
+         */
+        /**
+         * Returns the update user's personal details loading flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultLoading = /**
+         * Returns the update user's personal details loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details error flag
+         */
+        /**
+         * Returns the update user's personal details error flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultError = /**
+         * Returns the update user's personal details error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's personal details success flag
+         */
+        /**
+         * Returns the update user's personal details success flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePersonalDetailsResultSuccess = /**
+         * Returns the update user's personal details success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user details processing state
+         */
+        /**
+         * Resets the update user details processing state
+         * @return {?}
+         */
+        UserService.prototype.resetUpdatePersonalDetailsProcessingState = /**
+         * Resets the update user details processing state
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ResetUpdateUserDetails());
+        };
+        /**
+         * Reset new password.  Part of the forgot password flow.
+         * @param token
+         * @param password
+         */
+        /**
+         * Reset new password.  Part of the forgot password flow.
+         * @param {?} token
+         * @param {?} password
+         * @return {?}
+         */
+        UserService.prototype.resetPassword = /**
+         * Reset new password.  Part of the forgot password flow.
+         * @param {?} token
+         * @param {?} password
+         * @return {?}
+         */
+        function (token, password) {
+            this.store.dispatch(new ResetPassword({ token: token, password: password }));
+        };
+        /*
+         * Request an email to reset a forgotten password.
+         */
+        /*
+           * Request an email to reset a forgotten password.
+           */
+        /**
+         * @param {?} userEmailAddress
+         * @return {?}
+         */
+        UserService.prototype.requestForgotPasswordEmail = /*
+           * Request an email to reset a forgotten password.
+           */
+        /**
+         * @param {?} userEmailAddress
+         * @return {?}
+         */
+        function (userEmailAddress) {
+            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+        };
+        /**
+         * Updates the user's email
+         */
+        /**
+         * Updates the user's email
+         * @param {?} password
+         * @param {?} newUid
+         * @return {?}
+         */
+        UserService.prototype.updateEmail = /**
+         * Updates the user's email
+         * @param {?} password
+         * @param {?} newUid
+         * @return {?}
+         */
+        function (password, newUid) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new UpdateEmailAction({
+                    uid: userId,
+                    password: password,
+                    newUid: newUid,
+                }));
+            }));
+        };
+        /**
+         * Returns the update user's email success flag
+         */
+        /**
+         * Returns the update user's email success flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultSuccess = /**
+         * Returns the update user's email success flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email error flag
+         */
+        /**
+         * Returns the update user's email error flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultError = /**
+         * Returns the update user's email error flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Returns the update user's email loading flag
+         */
+        /**
+         * Returns the update user's email loading flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdateEmailResultLoading = /**
+         * Returns the update user's email loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+        };
+        /**
+         * Resets the update user's email processing state
+         */
+        /**
+         * Resets the update user's email processing state
+         * @return {?}
+         */
+        UserService.prototype.resetUpdateEmailResultState = /**
+         * Resets the update user's email processing state
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new ResetUpdateEmailAction());
+        };
+        /**
+         * Updates the password for the user
+         * @param oldPassword the current password that will be changed
+         * @param newPassword the new password
+         */
+        /**
+         * Updates the password for the user
+         * @param {?} oldPassword the current password that will be changed
+         * @param {?} newPassword the new password
+         * @return {?}
+         */
+        UserService.prototype.updatePassword = /**
+         * Updates the password for the user
+         * @param {?} oldPassword the current password that will be changed
+         * @param {?} newPassword the new password
+         * @return {?}
+         */
+        function (oldPassword, newPassword) {
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new UpdatePassword({
+                    userId: userId,
+                    oldPassword: oldPassword,
+                    newPassword: newPassword,
+                }));
+            }));
+        };
+        /**
+         * Returns the update password loading flag
+         */
+        /**
+         * Returns the update password loading flag
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePasswordResultLoading = /**
+         * Returns the update password loading flag
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password failure outcome.
+         */
+        /**
+         * Returns the update password failure outcome.
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePasswordResultError = /**
+         * Returns the update password failure outcome.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Returns the update password process success outcome.
+         */
+        /**
+         * Returns the update password process success outcome.
+         * @return {?}
+         */
+        UserService.prototype.getUpdatePasswordResultSuccess = /**
+         * Returns the update password process success outcome.
+         * @return {?}
+         */
+        function () {
+            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+        };
+        /**
+         * Resets the update password process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         */
+        /**
+         * Resets the update password process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+        UserService.prototype.resetUpdatePasswordProcessState = /**
+         * Resets the update password process state. The state needs to be reset after the process
+         * concludes, regardless if it's a success or an error
+         * @return {?}
+         */
+        function () {
+            this.store.dispatch(new UpdatePasswordReset());
+        };
+        /**
+         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+         *
+         */
+        /**
+         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+         *
+         * @private
+         * @param {?} callback
+         * @return {?}
+         */
+        UserService.prototype.withUserId = /**
+         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+         *
+         * @private
+         * @param {?} callback
+         * @return {?}
+         */
+        function (callback) {
+            if (this.authService) {
+                this.authService
+                    .getOccUserId()
+                    .pipe(operators.take(1))
+                    .subscribe((/**
+                 * @param {?} userId
+                 * @return {?}
+                 */
+                function (userId) { return callback(userId); }));
+            }
+            else {
+                // TODO(issue:#5628) Deprecated since 1.3.0
+                callback(OCC_USER_ID_CURRENT);
+            }
+        };
+        UserService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        UserService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: AuthService }
+        ]; };
+        return UserService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        UserService.prototype.authService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var SelectiveCartService = /** @class */ (function () {
+        function SelectiveCartService(store, userService, authService, multiCartService) {
+            var _this = this;
+            this.store = store;
+            this.userService = userService;
+            this.authService = authService;
+            this.multiCartService = multiCartService;
+            this.cartId$ = new rxjs.BehaviorSubject(undefined);
+            this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+            this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+            this.cartSelector$ = this.cartId$.pipe(operators.switchMap((/**
+             * @param {?} cartId
+             * @return {?}
+             */
+            function (cartId) {
+                _this.cartId = cartId;
+                return _this.multiCartService.getCartEntity(cartId);
+            })));
+            this.userService.get().subscribe((/**
+             * @param {?} user
+             * @return {?}
+             */
+            function (user) {
+                if (user && user.customerId) {
+                    _this.customerId = user.customerId;
+                    _this.cartId$.next("selectivecart" + _this.customerId);
+                }
+                else if (user && !user.customerId) {
+                    _this.cartId$.next(undefined);
+                }
+            }));
+            this.authService.getOccUserId().subscribe((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                _this.userId = userId;
+                if (_this.isJustLoggedIn(userId)) {
+                    _this.load();
+                }
+                _this.previousUserId = userId;
+            }));
+            this.selectiveCart$ = this.cartSelector$.pipe(operators.map((/**
+             * @param {?} cartEntity
+             * @return {?}
+             */
+            function (cartEntity) {
+                return {
+                    cart: cartEntity.value,
+                    loading: cartEntity.loading,
+                    loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+                };
+            })), operators.filter((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var loading = _a.loading;
+                return !loading;
+            })), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var cart = _a.cart, loaded = _a.loaded;
+                if (_this.cartId && _this.isEmpty(cart) && !loaded) {
+                    _this.load();
+                }
+            })), operators.map((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var cart = _a.cart;
+                return (cart ? cart : {});
+            })), operators.shareReplay({ bufferSize: 1, refCount: true }));
+        }
+        /**
+         * @return {?}
+         */
+        SelectiveCartService.prototype.getCart = /**
+         * @return {?}
+         */
+        function () {
+            return this.selectiveCart$;
+        };
+        /**
+         * @return {?}
+         */
+        SelectiveCartService.prototype.getEntries = /**
+         * @return {?}
+         */
+        function () {
+            return this.multiCartService.getEntries(this.cartId);
+        };
+        /**
+         * @return {?}
+         */
+        SelectiveCartService.prototype.getLoaded = /**
+         * @return {?}
+         */
+        function () {
+            return this.cartSelector$.pipe(operators.map((/**
+             * @param {?} cart
+             * @return {?}
+             */
+            function (cart) { return (cart.success || cart.error) && !cart.loading; })));
+        };
+        /**
+         * @private
+         * @return {?}
+         */
+        SelectiveCartService.prototype.load = /**
+         * @private
+         * @return {?}
+         */
+        function () {
+            if (this.isLoggedIn(this.userId) && this.cartId) {
+                this.multiCartService.loadCart({
+                    userId: this.userId,
+                    cartId: this.cartId,
+                });
+            }
+        };
+        /**
+         * @param {?} productCode
+         * @param {?} quantity
+         * @return {?}
+         */
+        SelectiveCartService.prototype.addEntry = /**
+         * @param {?} productCode
+         * @param {?} quantity
+         * @return {?}
+         */
+        function (productCode, quantity) {
+            var _this = this;
+            /** @type {?} */
+            var loadAttempted = false;
+            this.cartSelector$
+                .pipe(operators.filter((/**
+             * @return {?}
+             */
+            function () { return !loadAttempted; })), operators.switchMap((/**
+             * @param {?} cartState
+             * @return {?}
+             */
+            function (cartState) {
+                if (_this.isEmpty(cartState.value) && !cartState.loading) {
+                    loadAttempted = true;
+                    _this.load();
+                }
+                return rxjs.of(cartState);
+            })), operators.filter((/**
+             * @param {?} cartState
+             * @return {?}
+             */
+            function (cartState) { return !_this.isEmpty(cartState.value); })), operators.take(1))
+                .subscribe((/**
+             * @param {?} _
+             * @return {?}
+             */
+            function (_) {
+                _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
+            }));
+        };
+        /**
+         * @param {?} entry
+         * @return {?}
+         */
+        SelectiveCartService.prototype.removeEntry = /**
+         * @param {?} entry
+         * @return {?}
+         */
+        function (entry) {
+            this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+        };
+        /**
+         * @param {?} entryNumber
+         * @param {?} quantity
+         * @return {?}
+         */
+        SelectiveCartService.prototype.updateEntry = /**
+         * @param {?} entryNumber
+         * @param {?} quantity
+         * @return {?}
+         */
+        function (entryNumber, quantity) {
+            this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+        };
+        /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        SelectiveCartService.prototype.getEntry = /**
+         * @param {?} productCode
+         * @return {?}
+         */
+        function (productCode) {
+            return this.multiCartService.getEntry(this.cartId, productCode);
+        };
+        /**
+         * @private
+         * @param {?} cart
+         * @return {?}
+         */
+        SelectiveCartService.prototype.isEmpty = /**
+         * @private
+         * @param {?} cart
+         * @return {?}
+         */
+        function (cart) {
+            return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+        };
+        /**
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        SelectiveCartService.prototype.isJustLoggedIn = /**
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return (this.isLoggedIn(userId) &&
+                this.previousUserId !== userId && // *just* logged in
+                this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+            );
+        };
+        /**
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        SelectiveCartService.prototype.isLoggedIn = /**
+         * @private
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
+        };
+        SelectiveCartService.decorators = [
+            { type: core.Injectable }
+        ];
+        /** @nocollapse */
+        SelectiveCartService.ctorParameters = function () { return [
+            { type: store.Store },
+            { type: UserService },
+            { type: AuthService },
+            { type: MultiCartService }
+        ]; };
+        return SelectiveCartService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.customerId;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.userId;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.cartId;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.selectiveCart$;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.cartId$;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.previousUserId;
+        /**
+         * @type {?}
+         * @private
+         */
+        SelectiveCartService.prototype.cartSelector$;
+        /**
+         * @type {?}
+         * @protected
+         */
+        SelectiveCartService.prototype.store;
+        /**
+         * @type {?}
+         * @protected
+         */
+        SelectiveCartService.prototype.userService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        SelectiveCartService.prototype.authService;
+        /**
+         * @type {?}
+         * @protected
+         */
+        SelectiveCartService.prototype.multiCartService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -41442,6 +42392,7 @@
                     MultiCartService,
                     WishListService,
                     ActiveCartService,
+                    SelectiveCartService,
                     {
                         provide: PageMetaResolver,
                         useExisting: CartPageMetaResolver,
@@ -56852,635 +57803,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var UserService = /** @class */ (function () {
-        function UserService(store, authService) {
-            this.store = store;
-            this.authService = authService;
-        }
-        /**
-         * Returns a user
-         */
-        /**
-         * Returns a user
-         * @return {?}
-         */
-        UserService.prototype.get = /**
-         * Returns a user
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            return this.store.pipe(store.select(getDetails), operators.tap((/**
-             * @param {?} details
-             * @return {?}
-             */
-            function (details) {
-                if (Object.keys(details).length === 0) {
-                    _this.load();
-                }
-            })));
-        };
-        /**
-         * Loads the user's details
-         */
-        /**
-         * Loads the user's details
-         * @return {?}
-         */
-        UserService.prototype.load = /**
-         * Loads the user's details
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            this.withUserId((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) {
-                return _this.store.dispatch(new LoadUserDetails(userId));
-            }));
-        };
-        /**
-         * Register a new user
-         *
-         * @param submitFormData as UserRegisterFormData
-         */
-        /**
-         * Register a new user
-         *
-         * @param {?} userRegisterFormData
-         * @return {?}
-         */
-        UserService.prototype.register = /**
-         * Register a new user
-         *
-         * @param {?} userRegisterFormData
-         * @return {?}
-         */
-        function (userRegisterFormData) {
-            this.store.dispatch(new RegisterUser(userRegisterFormData));
-        };
-        /**
-         * Register a new user from guest
-         *
-         * @param guid
-         * @param password
-         */
-        /**
-         * Register a new user from guest
-         *
-         * @param {?} guid
-         * @param {?} password
-         * @return {?}
-         */
-        UserService.prototype.registerGuest = /**
-         * Register a new user from guest
-         *
-         * @param {?} guid
-         * @param {?} password
-         * @return {?}
-         */
-        function (guid, password) {
-            this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
-        };
-        /**
-         * Returns the register user process loading flag
-         */
-        /**
-         * Returns the register user process loading flag
-         * @return {?}
-         */
-        UserService.prototype.getRegisterUserResultLoading = /**
-         * Returns the register user process loading flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process success flag
-         */
-        /**
-         * Returns the register user process success flag
-         * @return {?}
-         */
-        UserService.prototype.getRegisterUserResultSuccess = /**
-         * Returns the register user process success flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the register user process error flag
-         */
-        /**
-         * Returns the register user process error flag
-         * @return {?}
-         */
-        UserService.prototype.getRegisterUserResultError = /**
-         * Returns the register user process error flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the register user process flags
-         */
-        /**
-         * Resets the register user process flags
-         * @return {?}
-         */
-        UserService.prototype.resetRegisterUserProcessState = /**
-         * Resets the register user process flags
-         * @return {?}
-         */
-        function () {
-            return this.store.dispatch(new ResetRegisterUserProcess());
-        };
-        /**
-         * Remove user account, that's also called close user's account
-         */
-        /**
-         * Remove user account, that's also called close user's account
-         * @return {?}
-         */
-        UserService.prototype.remove = /**
-         * Remove user account, that's also called close user's account
-         * @return {?}
-         */
-        function () {
-            var _this = this;
-            this.withUserId((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) {
-                return _this.store.dispatch(new RemoveUser(userId));
-            }));
-        };
-        /**
-         * Returns the remove user loading flag
-         */
-        /**
-         * Returns the remove user loading flag
-         * @return {?}
-         */
-        UserService.prototype.getRemoveUserResultLoading = /**
-         * Returns the remove user loading flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user failure outcome.
-         */
-        /**
-         * Returns the remove user failure outcome.
-         * @return {?}
-         */
-        UserService.prototype.getRemoveUserResultError = /**
-         * Returns the remove user failure outcome.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Returns the remove user process success outcome.
-         */
-        /**
-         * Returns the remove user process success outcome.
-         * @return {?}
-         */
-        UserService.prototype.getRemoveUserResultSuccess = /**
-         * Returns the remove user process success outcome.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-        };
-        /**
-         * Resets the remove user process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        /**
-         * Resets the remove user process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         * @return {?}
-         */
-        UserService.prototype.resetRemoveUserProcessState = /**
-         * Resets the remove user process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new RemoveUserReset());
-        };
-        /**
-         * Returns titles
-         */
-        /**
-         * Returns titles
-         * @return {?}
-         */
-        UserService.prototype.getTitles = /**
-         * Returns titles
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getAllTitles));
-        };
-        /**
-         * Retrieves titles
-         */
-        /**
-         * Retrieves titles
-         * @return {?}
-         */
-        UserService.prototype.loadTitles = /**
-         * Retrieves titles
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new LoadTitles());
-        };
-        /**
-         * Return whether user's password is successfully reset
-         */
-        /**
-         * Return whether user's password is successfully reset
-         * @return {?}
-         */
-        UserService.prototype.isPasswordReset = /**
-         * Return whether user's password is successfully reset
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getResetPassword));
-        };
-        /**
-         * Updates the user's details
-         * @param userDetails to be updated
-         */
-        /**
-         * Updates the user's details
-         * @param {?} userDetails to be updated
-         * @return {?}
-         */
-        UserService.prototype.updatePersonalDetails = /**
-         * Updates the user's details
-         * @param {?} userDetails to be updated
-         * @return {?}
-         */
-        function (userDetails) {
-            var _this = this;
-            this.withUserId((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) {
-                return _this.store.dispatch(new UpdateUserDetails({
-                    username: userId,
-                    userDetails: userDetails,
-                }));
-            }));
-        };
-        /**
-         * Returns the update user's personal details loading flag
-         */
-        /**
-         * Returns the update user's personal details loading flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultLoading = /**
-         * Returns the update user's personal details loading flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details error flag
-         */
-        /**
-         * Returns the update user's personal details error flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultError = /**
-         * Returns the update user's personal details error flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's personal details success flag
-         */
-        /**
-         * Returns the update user's personal details success flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePersonalDetailsResultSuccess = /**
-         * Returns the update user's personal details success flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user details processing state
-         */
-        /**
-         * Resets the update user details processing state
-         * @return {?}
-         */
-        UserService.prototype.resetUpdatePersonalDetailsProcessingState = /**
-         * Resets the update user details processing state
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new ResetUpdateUserDetails());
-        };
-        /**
-         * Reset new password.  Part of the forgot password flow.
-         * @param token
-         * @param password
-         */
-        /**
-         * Reset new password.  Part of the forgot password flow.
-         * @param {?} token
-         * @param {?} password
-         * @return {?}
-         */
-        UserService.prototype.resetPassword = /**
-         * Reset new password.  Part of the forgot password flow.
-         * @param {?} token
-         * @param {?} password
-         * @return {?}
-         */
-        function (token, password) {
-            this.store.dispatch(new ResetPassword({ token: token, password: password }));
-        };
-        /*
-         * Request an email to reset a forgotten password.
-         */
-        /*
-           * Request an email to reset a forgotten password.
-           */
-        /**
-         * @param {?} userEmailAddress
-         * @return {?}
-         */
-        UserService.prototype.requestForgotPasswordEmail = /*
-           * Request an email to reset a forgotten password.
-           */
-        /**
-         * @param {?} userEmailAddress
-         * @return {?}
-         */
-        function (userEmailAddress) {
-            this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-        };
-        /**
-         * Updates the user's email
-         */
-        /**
-         * Updates the user's email
-         * @param {?} password
-         * @param {?} newUid
-         * @return {?}
-         */
-        UserService.prototype.updateEmail = /**
-         * Updates the user's email
-         * @param {?} password
-         * @param {?} newUid
-         * @return {?}
-         */
-        function (password, newUid) {
-            var _this = this;
-            this.withUserId((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) {
-                return _this.store.dispatch(new UpdateEmailAction({
-                    uid: userId,
-                    password: password,
-                    newUid: newUid,
-                }));
-            }));
-        };
-        /**
-         * Returns the update user's email success flag
-         */
-        /**
-         * Returns the update user's email success flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdateEmailResultSuccess = /**
-         * Returns the update user's email success flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email error flag
-         */
-        /**
-         * Returns the update user's email error flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdateEmailResultError = /**
-         * Returns the update user's email error flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Returns the update user's email loading flag
-         */
-        /**
-         * Returns the update user's email loading flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdateEmailResultLoading = /**
-         * Returns the update user's email loading flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-        };
-        /**
-         * Resets the update user's email processing state
-         */
-        /**
-         * Resets the update user's email processing state
-         * @return {?}
-         */
-        UserService.prototype.resetUpdateEmailResultState = /**
-         * Resets the update user's email processing state
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new ResetUpdateEmailAction());
-        };
-        /**
-         * Updates the password for the user
-         * @param oldPassword the current password that will be changed
-         * @param newPassword the new password
-         */
-        /**
-         * Updates the password for the user
-         * @param {?} oldPassword the current password that will be changed
-         * @param {?} newPassword the new password
-         * @return {?}
-         */
-        UserService.prototype.updatePassword = /**
-         * Updates the password for the user
-         * @param {?} oldPassword the current password that will be changed
-         * @param {?} newPassword the new password
-         * @return {?}
-         */
-        function (oldPassword, newPassword) {
-            var _this = this;
-            this.withUserId((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) {
-                return _this.store.dispatch(new UpdatePassword({
-                    userId: userId,
-                    oldPassword: oldPassword,
-                    newPassword: newPassword,
-                }));
-            }));
-        };
-        /**
-         * Returns the update password loading flag
-         */
-        /**
-         * Returns the update password loading flag
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePasswordResultLoading = /**
-         * Returns the update password loading flag
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password failure outcome.
-         */
-        /**
-         * Returns the update password failure outcome.
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePasswordResultError = /**
-         * Returns the update password failure outcome.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Returns the update password process success outcome.
-         */
-        /**
-         * Returns the update password process success outcome.
-         * @return {?}
-         */
-        UserService.prototype.getUpdatePasswordResultSuccess = /**
-         * Returns the update password process success outcome.
-         * @return {?}
-         */
-        function () {
-            return this.store.pipe(store.select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-        };
-        /**
-         * Resets the update password process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         */
-        /**
-         * Resets the update password process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         * @return {?}
-         */
-        UserService.prototype.resetUpdatePasswordProcessState = /**
-         * Resets the update password process state. The state needs to be reset after the process
-         * concludes, regardless if it's a success or an error
-         * @return {?}
-         */
-        function () {
-            this.store.dispatch(new UpdatePasswordReset());
-        };
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
-         */
-        /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
-         * @private
-         * @param {?} callback
-         * @return {?}
-         */
-        UserService.prototype.withUserId = /**
-         * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-         *
-         * @private
-         * @param {?} callback
-         * @return {?}
-         */
-        function (callback) {
-            if (this.authService) {
-                this.authService
-                    .getOccUserId()
-                    .pipe(operators.take(1))
-                    .subscribe((/**
-                 * @param {?} userId
-                 * @return {?}
-                 */
-                function (userId) { return callback(userId); }));
-            }
-            else {
-                // TODO(issue:#5628) Deprecated since 1.3.0
-                callback(OCC_USER_ID_CURRENT);
-            }
-        };
-        UserService.decorators = [
-            { type: core.Injectable }
-        ];
-        /** @nocollapse */
-        UserService.ctorParameters = function () { return [
-            { type: store.Store },
-            { type: AuthService }
-        ]; };
-        return UserService;
-    }());
-    if (false) {
-        /**
-         * @type {?}
-         * @protected
-         */
-        UserService.prototype.store;
-        /**
-         * @type {?}
-         * @protected
-         */
-        UserService.prototype.authService;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var UserNotificationPreferenceService = /** @class */ (function () {
         function UserNotificationPreferenceService(store) {
             this.store = store;
@@ -61093,6 +61415,7 @@
     exports.SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID = SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID;
     exports.SearchPageMetaResolver = SearchPageMetaResolver;
     exports.SearchboxService = SearchboxService;
+    exports.SelectiveCartService = SelectiveCartService;
     exports.SemanticPathService = SemanticPathService;
     exports.SiteAdapter = SiteAdapter;
     exports.SiteConnector = SiteConnector;

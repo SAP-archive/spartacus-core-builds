@@ -37419,6 +37419,956 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+var UserService = /** @class */ (function () {
+    function UserService(store, authService) {
+        this.store = store;
+        this.authService = authService;
+    }
+    /**
+     * Returns a user
+     */
+    /**
+     * Returns a user
+     * @return {?}
+     */
+    UserService.prototype.get = /**
+     * Returns a user
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        return this.store.pipe(select(getDetails), tap((/**
+         * @param {?} details
+         * @return {?}
+         */
+        function (details) {
+            if (Object.keys(details).length === 0) {
+                _this.load();
+            }
+        })));
+    };
+    /**
+     * Loads the user's details
+     */
+    /**
+     * Loads the user's details
+     * @return {?}
+     */
+    UserService.prototype.load = /**
+     * Loads the user's details
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return _this.store.dispatch(new LoadUserDetails(userId));
+        }));
+    };
+    /**
+     * Register a new user
+     *
+     * @param submitFormData as UserRegisterFormData
+     */
+    /**
+     * Register a new user
+     *
+     * @param {?} userRegisterFormData
+     * @return {?}
+     */
+    UserService.prototype.register = /**
+     * Register a new user
+     *
+     * @param {?} userRegisterFormData
+     * @return {?}
+     */
+    function (userRegisterFormData) {
+        this.store.dispatch(new RegisterUser(userRegisterFormData));
+    };
+    /**
+     * Register a new user from guest
+     *
+     * @param guid
+     * @param password
+     */
+    /**
+     * Register a new user from guest
+     *
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    UserService.prototype.registerGuest = /**
+     * Register a new user from guest
+     *
+     * @param {?} guid
+     * @param {?} password
+     * @return {?}
+     */
+    function (guid, password) {
+        this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
+    };
+    /**
+     * Returns the register user process loading flag
+     */
+    /**
+     * Returns the register user process loading flag
+     * @return {?}
+     */
+    UserService.prototype.getRegisterUserResultLoading = /**
+     * Returns the register user process loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the register user process success flag
+     */
+    /**
+     * Returns the register user process success flag
+     * @return {?}
+     */
+    UserService.prototype.getRegisterUserResultSuccess = /**
+     * Returns the register user process success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the register user process error flag
+     */
+    /**
+     * Returns the register user process error flag
+     * @return {?}
+     */
+    UserService.prototype.getRegisterUserResultError = /**
+     * Returns the register user process error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
+    };
+    /**
+     * Resets the register user process flags
+     */
+    /**
+     * Resets the register user process flags
+     * @return {?}
+     */
+    UserService.prototype.resetRegisterUserProcessState = /**
+     * Resets the register user process flags
+     * @return {?}
+     */
+    function () {
+        return this.store.dispatch(new ResetRegisterUserProcess());
+    };
+    /**
+     * Remove user account, that's also called close user's account
+     */
+    /**
+     * Remove user account, that's also called close user's account
+     * @return {?}
+     */
+    UserService.prototype.remove = /**
+     * Remove user account, that's also called close user's account
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return _this.store.dispatch(new RemoveUser(userId));
+        }));
+    };
+    /**
+     * Returns the remove user loading flag
+     */
+    /**
+     * Returns the remove user loading flag
+     * @return {?}
+     */
+    UserService.prototype.getRemoveUserResultLoading = /**
+     * Returns the remove user loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the remove user failure outcome.
+     */
+    /**
+     * Returns the remove user failure outcome.
+     * @return {?}
+     */
+    UserService.prototype.getRemoveUserResultError = /**
+     * Returns the remove user failure outcome.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Returns the remove user process success outcome.
+     */
+    /**
+     * Returns the remove user process success outcome.
+     * @return {?}
+     */
+    UserService.prototype.getRemoveUserResultSuccess = /**
+     * Returns the remove user process success outcome.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
+    };
+    /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     * @return {?}
+     */
+    UserService.prototype.resetRemoveUserProcessState = /**
+     * Resets the remove user process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new RemoveUserReset());
+    };
+    /**
+     * Returns titles
+     */
+    /**
+     * Returns titles
+     * @return {?}
+     */
+    UserService.prototype.getTitles = /**
+     * Returns titles
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getAllTitles));
+    };
+    /**
+     * Retrieves titles
+     */
+    /**
+     * Retrieves titles
+     * @return {?}
+     */
+    UserService.prototype.loadTitles = /**
+     * Retrieves titles
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new LoadTitles());
+    };
+    /**
+     * Return whether user's password is successfully reset
+     */
+    /**
+     * Return whether user's password is successfully reset
+     * @return {?}
+     */
+    UserService.prototype.isPasswordReset = /**
+     * Return whether user's password is successfully reset
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getResetPassword));
+    };
+    /**
+     * Updates the user's details
+     * @param userDetails to be updated
+     */
+    /**
+     * Updates the user's details
+     * @param {?} userDetails to be updated
+     * @return {?}
+     */
+    UserService.prototype.updatePersonalDetails = /**
+     * Updates the user's details
+     * @param {?} userDetails to be updated
+     * @return {?}
+     */
+    function (userDetails) {
+        var _this = this;
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return _this.store.dispatch(new UpdateUserDetails({
+                username: userId,
+                userDetails: userDetails,
+            }));
+        }));
+    };
+    /**
+     * Returns the update user's personal details loading flag
+     */
+    /**
+     * Returns the update user's personal details loading flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultLoading = /**
+     * Returns the update user's personal details loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's personal details error flag
+     */
+    /**
+     * Returns the update user's personal details error flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultError = /**
+     * Returns the update user's personal details error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's personal details success flag
+     */
+    /**
+     * Returns the update user's personal details success flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePersonalDetailsResultSuccess = /**
+     * Returns the update user's personal details success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
+    };
+    /**
+     * Resets the update user details processing state
+     */
+    /**
+     * Resets the update user details processing state
+     * @return {?}
+     */
+    UserService.prototype.resetUpdatePersonalDetailsProcessingState = /**
+     * Resets the update user details processing state
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new ResetUpdateUserDetails());
+    };
+    /**
+     * Reset new password.  Part of the forgot password flow.
+     * @param token
+     * @param password
+     */
+    /**
+     * Reset new password.  Part of the forgot password flow.
+     * @param {?} token
+     * @param {?} password
+     * @return {?}
+     */
+    UserService.prototype.resetPassword = /**
+     * Reset new password.  Part of the forgot password flow.
+     * @param {?} token
+     * @param {?} password
+     * @return {?}
+     */
+    function (token, password) {
+        this.store.dispatch(new ResetPassword({ token: token, password: password }));
+    };
+    /*
+     * Request an email to reset a forgotten password.
+     */
+    /*
+       * Request an email to reset a forgotten password.
+       */
+    /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    UserService.prototype.requestForgotPasswordEmail = /*
+       * Request an email to reset a forgotten password.
+       */
+    /**
+     * @param {?} userEmailAddress
+     * @return {?}
+     */
+    function (userEmailAddress) {
+        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
+    };
+    /**
+     * Updates the user's email
+     */
+    /**
+     * Updates the user's email
+     * @param {?} password
+     * @param {?} newUid
+     * @return {?}
+     */
+    UserService.prototype.updateEmail = /**
+     * Updates the user's email
+     * @param {?} password
+     * @param {?} newUid
+     * @return {?}
+     */
+    function (password, newUid) {
+        var _this = this;
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return _this.store.dispatch(new UpdateEmailAction({
+                uid: userId,
+                password: password,
+                newUid: newUid,
+            }));
+        }));
+    };
+    /**
+     * Returns the update user's email success flag
+     */
+    /**
+     * Returns the update user's email success flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultSuccess = /**
+     * Returns the update user's email success flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email error flag
+     */
+    /**
+     * Returns the update user's email error flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultError = /**
+     * Returns the update user's email error flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Returns the update user's email loading flag
+     */
+    /**
+     * Returns the update user's email loading flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdateEmailResultLoading = /**
+     * Returns the update user's email loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
+    };
+    /**
+     * Resets the update user's email processing state
+     */
+    /**
+     * Resets the update user's email processing state
+     * @return {?}
+     */
+    UserService.prototype.resetUpdateEmailResultState = /**
+     * Resets the update user's email processing state
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new ResetUpdateEmailAction());
+    };
+    /**
+     * Updates the password for the user
+     * @param oldPassword the current password that will be changed
+     * @param newPassword the new password
+     */
+    /**
+     * Updates the password for the user
+     * @param {?} oldPassword the current password that will be changed
+     * @param {?} newPassword the new password
+     * @return {?}
+     */
+    UserService.prototype.updatePassword = /**
+     * Updates the password for the user
+     * @param {?} oldPassword the current password that will be changed
+     * @param {?} newPassword the new password
+     * @return {?}
+     */
+    function (oldPassword, newPassword) {
+        var _this = this;
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            return _this.store.dispatch(new UpdatePassword({
+                userId: userId,
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+            }));
+        }));
+    };
+    /**
+     * Returns the update password loading flag
+     */
+    /**
+     * Returns the update password loading flag
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePasswordResultLoading = /**
+     * Returns the update password loading flag
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Returns the update password failure outcome.
+     */
+    /**
+     * Returns the update password failure outcome.
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePasswordResultError = /**
+     * Returns the update password failure outcome.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Returns the update password process success outcome.
+     */
+    /**
+     * Returns the update password process success outcome.
+     * @return {?}
+     */
+    UserService.prototype.getUpdatePasswordResultSuccess = /**
+     * Returns the update password process success outcome.
+     * @return {?}
+     */
+    function () {
+        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
+    };
+    /**
+     * Resets the update password process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     */
+    /**
+     * Resets the update password process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     * @return {?}
+     */
+    UserService.prototype.resetUpdatePasswordProcessState = /**
+     * Resets the update password process state. The state needs to be reset after the process
+     * concludes, regardless if it's a success or an error
+     * @return {?}
+     */
+    function () {
+        this.store.dispatch(new UpdatePasswordReset());
+    };
+    /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     */
+    /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     * @private
+     * @param {?} callback
+     * @return {?}
+     */
+    UserService.prototype.withUserId = /**
+     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
+     *
+     * @private
+     * @param {?} callback
+     * @return {?}
+     */
+    function (callback) {
+        if (this.authService) {
+            this.authService
+                .getOccUserId()
+                .pipe(take(1))
+                .subscribe((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) { return callback(userId); }));
+        }
+        else {
+            // TODO(issue:#5628) Deprecated since 1.3.0
+            callback(OCC_USER_ID_CURRENT);
+        }
+    };
+    UserService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    UserService.ctorParameters = function () { return [
+        { type: Store },
+        { type: AuthService }
+    ]; };
+    return UserService;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    UserService.prototype.authService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SelectiveCartService = /** @class */ (function () {
+    function SelectiveCartService(store, userService, authService, multiCartService) {
+        var _this = this;
+        this.store = store;
+        this.userService = userService;
+        this.authService = authService;
+        this.multiCartService = multiCartService;
+        this.cartId$ = new BehaviorSubject(undefined);
+        this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
+        this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
+        this.cartSelector$ = this.cartId$.pipe(switchMap((/**
+         * @param {?} cartId
+         * @return {?}
+         */
+        function (cartId) {
+            _this.cartId = cartId;
+            return _this.multiCartService.getCartEntity(cartId);
+        })));
+        this.userService.get().subscribe((/**
+         * @param {?} user
+         * @return {?}
+         */
+        function (user) {
+            if (user && user.customerId) {
+                _this.customerId = user.customerId;
+                _this.cartId$.next("selectivecart" + _this.customerId);
+            }
+            else if (user && !user.customerId) {
+                _this.cartId$.next(undefined);
+            }
+        }));
+        this.authService.getOccUserId().subscribe((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        function (userId) {
+            _this.userId = userId;
+            if (_this.isJustLoggedIn(userId)) {
+                _this.load();
+            }
+            _this.previousUserId = userId;
+        }));
+        this.selectiveCart$ = this.cartSelector$.pipe(map((/**
+         * @param {?} cartEntity
+         * @return {?}
+         */
+        function (cartEntity) {
+            return {
+                cart: cartEntity.value,
+                loading: cartEntity.loading,
+                loaded: (cartEntity.error || cartEntity.success) && !cartEntity.loading,
+            };
+        })), filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var loading = _a.loading;
+            return !loading;
+        })), tap((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var cart = _a.cart, loaded = _a.loaded;
+            if (_this.cartId && _this.isEmpty(cart) && !loaded) {
+                _this.load();
+            }
+        })), map((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var cart = _a.cart;
+            return (cart ? cart : {});
+        })), shareReplay({ bufferSize: 1, refCount: true }));
+    }
+    /**
+     * @return {?}
+     */
+    SelectiveCartService.prototype.getCart = /**
+     * @return {?}
+     */
+    function () {
+        return this.selectiveCart$;
+    };
+    /**
+     * @return {?}
+     */
+    SelectiveCartService.prototype.getEntries = /**
+     * @return {?}
+     */
+    function () {
+        return this.multiCartService.getEntries(this.cartId);
+    };
+    /**
+     * @return {?}
+     */
+    SelectiveCartService.prototype.getLoaded = /**
+     * @return {?}
+     */
+    function () {
+        return this.cartSelector$.pipe(map((/**
+         * @param {?} cart
+         * @return {?}
+         */
+        function (cart) { return (cart.success || cart.error) && !cart.loading; })));
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    SelectiveCartService.prototype.load = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        if (this.isLoggedIn(this.userId) && this.cartId) {
+            this.multiCartService.loadCart({
+                userId: this.userId,
+                cartId: this.cartId,
+            });
+        }
+    };
+    /**
+     * @param {?} productCode
+     * @param {?} quantity
+     * @return {?}
+     */
+    SelectiveCartService.prototype.addEntry = /**
+     * @param {?} productCode
+     * @param {?} quantity
+     * @return {?}
+     */
+    function (productCode, quantity) {
+        var _this = this;
+        /** @type {?} */
+        var loadAttempted = false;
+        this.cartSelector$
+            .pipe(filter((/**
+         * @return {?}
+         */
+        function () { return !loadAttempted; })), switchMap((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) {
+            if (_this.isEmpty(cartState.value) && !cartState.loading) {
+                loadAttempted = true;
+                _this.load();
+            }
+            return of(cartState);
+        })), filter((/**
+         * @param {?} cartState
+         * @return {?}
+         */
+        function (cartState) { return !_this.isEmpty(cartState.value); })), take(1))
+            .subscribe((/**
+         * @param {?} _
+         * @return {?}
+         */
+        function (_) {
+            _this.multiCartService.addEntry(_this.userId, _this.cartId, productCode, quantity);
+        }));
+    };
+    /**
+     * @param {?} entry
+     * @return {?}
+     */
+    SelectiveCartService.prototype.removeEntry = /**
+     * @param {?} entry
+     * @return {?}
+     */
+    function (entry) {
+        this.multiCartService.removeEntry(this.userId, this.cartId, entry.entryNumber);
+    };
+    /**
+     * @param {?} entryNumber
+     * @param {?} quantity
+     * @return {?}
+     */
+    SelectiveCartService.prototype.updateEntry = /**
+     * @param {?} entryNumber
+     * @param {?} quantity
+     * @return {?}
+     */
+    function (entryNumber, quantity) {
+        this.multiCartService.updateEntry(this.userId, this.cartId, entryNumber, quantity);
+    };
+    /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    SelectiveCartService.prototype.getEntry = /**
+     * @param {?} productCode
+     * @return {?}
+     */
+    function (productCode) {
+        return this.multiCartService.getEntry(this.cartId, productCode);
+    };
+    /**
+     * @private
+     * @param {?} cart
+     * @return {?}
+     */
+    SelectiveCartService.prototype.isEmpty = /**
+     * @private
+     * @param {?} cart
+     * @return {?}
+     */
+    function (cart) {
+        return (!cart || (typeof cart === 'object' && Object.keys(cart).length === 0));
+    };
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    SelectiveCartService.prototype.isJustLoggedIn = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return (this.isLoggedIn(userId) &&
+            this.previousUserId !== userId && // *just* logged in
+            this.previousUserId !== this.PREVIOUS_USER_ID_INITIAL_VALUE // not app initialization
+        );
+    };
+    /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    SelectiveCartService.prototype.isLoggedIn = /**
+     * @private
+     * @param {?} userId
+     * @return {?}
+     */
+    function (userId) {
+        return typeof userId !== 'undefined' && userId !== OCC_USER_ID_ANONYMOUS;
+    };
+    SelectiveCartService.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    SelectiveCartService.ctorParameters = function () { return [
+        { type: Store },
+        { type: UserService },
+        { type: AuthService },
+        { type: MultiCartService }
+    ]; };
+    return SelectiveCartService;
+}());
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.customerId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.userId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.cartId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.selectiveCart$;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.cartId$;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.PREVIOUS_USER_ID_INITIAL_VALUE;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.previousUserId;
+    /**
+     * @type {?}
+     * @private
+     */
+    SelectiveCartService.prototype.cartSelector$;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.store;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.userService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.multiCartService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -41251,6 +42201,7 @@ var CartModule = /** @class */ (function () {
                 MultiCartService,
                 WishListService,
                 ActiveCartService,
+                SelectiveCartService,
                 {
                     provide: PageMetaResolver,
                     useExisting: CartPageMetaResolver,
@@ -56661,635 +57612,6 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var UserService = /** @class */ (function () {
-    function UserService(store, authService) {
-        this.store = store;
-        this.authService = authService;
-    }
-    /**
-     * Returns a user
-     */
-    /**
-     * Returns a user
-     * @return {?}
-     */
-    UserService.prototype.get = /**
-     * Returns a user
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        return this.store.pipe(select(getDetails), tap((/**
-         * @param {?} details
-         * @return {?}
-         */
-        function (details) {
-            if (Object.keys(details).length === 0) {
-                _this.load();
-            }
-        })));
-    };
-    /**
-     * Loads the user's details
-     */
-    /**
-     * Loads the user's details
-     * @return {?}
-     */
-    UserService.prototype.load = /**
-     * Loads the user's details
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        this.withUserId((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return _this.store.dispatch(new LoadUserDetails(userId));
-        }));
-    };
-    /**
-     * Register a new user
-     *
-     * @param submitFormData as UserRegisterFormData
-     */
-    /**
-     * Register a new user
-     *
-     * @param {?} userRegisterFormData
-     * @return {?}
-     */
-    UserService.prototype.register = /**
-     * Register a new user
-     *
-     * @param {?} userRegisterFormData
-     * @return {?}
-     */
-    function (userRegisterFormData) {
-        this.store.dispatch(new RegisterUser(userRegisterFormData));
-    };
-    /**
-     * Register a new user from guest
-     *
-     * @param guid
-     * @param password
-     */
-    /**
-     * Register a new user from guest
-     *
-     * @param {?} guid
-     * @param {?} password
-     * @return {?}
-     */
-    UserService.prototype.registerGuest = /**
-     * Register a new user from guest
-     *
-     * @param {?} guid
-     * @param {?} password
-     * @return {?}
-     */
-    function (guid, password) {
-        this.store.dispatch(new RegisterGuest({ guid: guid, password: password }));
-    };
-    /**
-     * Returns the register user process loading flag
-     */
-    /**
-     * Returns the register user process loading flag
-     * @return {?}
-     */
-    UserService.prototype.getRegisterUserResultLoading = /**
-     * Returns the register user process loading flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessLoadingFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the register user process success flag
-     */
-    /**
-     * Returns the register user process success flag
-     * @return {?}
-     */
-    UserService.prototype.getRegisterUserResultSuccess = /**
-     * Returns the register user process success flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessSuccessFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the register user process error flag
-     */
-    /**
-     * Returns the register user process error flag
-     * @return {?}
-     */
-    UserService.prototype.getRegisterUserResultError = /**
-     * Returns the register user process error flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessErrorFactory(REGISTER_USER_PROCESS_ID)));
-    };
-    /**
-     * Resets the register user process flags
-     */
-    /**
-     * Resets the register user process flags
-     * @return {?}
-     */
-    UserService.prototype.resetRegisterUserProcessState = /**
-     * Resets the register user process flags
-     * @return {?}
-     */
-    function () {
-        return this.store.dispatch(new ResetRegisterUserProcess());
-    };
-    /**
-     * Remove user account, that's also called close user's account
-     */
-    /**
-     * Remove user account, that's also called close user's account
-     * @return {?}
-     */
-    UserService.prototype.remove = /**
-     * Remove user account, that's also called close user's account
-     * @return {?}
-     */
-    function () {
-        var _this = this;
-        this.withUserId((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return _this.store.dispatch(new RemoveUser(userId));
-        }));
-    };
-    /**
-     * Returns the remove user loading flag
-     */
-    /**
-     * Returns the remove user loading flag
-     * @return {?}
-     */
-    UserService.prototype.getRemoveUserResultLoading = /**
-     * Returns the remove user loading flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessLoadingFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the remove user failure outcome.
-     */
-    /**
-     * Returns the remove user failure outcome.
-     * @return {?}
-     */
-    UserService.prototype.getRemoveUserResultError = /**
-     * Returns the remove user failure outcome.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessErrorFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Returns the remove user process success outcome.
-     */
-    /**
-     * Returns the remove user process success outcome.
-     * @return {?}
-     */
-    UserService.prototype.getRemoveUserResultSuccess = /**
-     * Returns the remove user process success outcome.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessSuccessFactory(REMOVE_USER_PROCESS_ID)));
-    };
-    /**
-     * Resets the remove user process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    /**
-     * Resets the remove user process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     * @return {?}
-     */
-    UserService.prototype.resetRemoveUserProcessState = /**
-     * Resets the remove user process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new RemoveUserReset());
-    };
-    /**
-     * Returns titles
-     */
-    /**
-     * Returns titles
-     * @return {?}
-     */
-    UserService.prototype.getTitles = /**
-     * Returns titles
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getAllTitles));
-    };
-    /**
-     * Retrieves titles
-     */
-    /**
-     * Retrieves titles
-     * @return {?}
-     */
-    UserService.prototype.loadTitles = /**
-     * Retrieves titles
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new LoadTitles());
-    };
-    /**
-     * Return whether user's password is successfully reset
-     */
-    /**
-     * Return whether user's password is successfully reset
-     * @return {?}
-     */
-    UserService.prototype.isPasswordReset = /**
-     * Return whether user's password is successfully reset
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getResetPassword));
-    };
-    /**
-     * Updates the user's details
-     * @param userDetails to be updated
-     */
-    /**
-     * Updates the user's details
-     * @param {?} userDetails to be updated
-     * @return {?}
-     */
-    UserService.prototype.updatePersonalDetails = /**
-     * Updates the user's details
-     * @param {?} userDetails to be updated
-     * @return {?}
-     */
-    function (userDetails) {
-        var _this = this;
-        this.withUserId((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return _this.store.dispatch(new UpdateUserDetails({
-                username: userId,
-                userDetails: userDetails,
-            }));
-        }));
-    };
-    /**
-     * Returns the update user's personal details loading flag
-     */
-    /**
-     * Returns the update user's personal details loading flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultLoading = /**
-     * Returns the update user's personal details loading flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's personal details error flag
-     */
-    /**
-     * Returns the update user's personal details error flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultError = /**
-     * Returns the update user's personal details error flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's personal details success flag
-     */
-    /**
-     * Returns the update user's personal details success flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePersonalDetailsResultSuccess = /**
-     * Returns the update user's personal details success flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_USER_DETAILS_PROCESS_ID)));
-    };
-    /**
-     * Resets the update user details processing state
-     */
-    /**
-     * Resets the update user details processing state
-     * @return {?}
-     */
-    UserService.prototype.resetUpdatePersonalDetailsProcessingState = /**
-     * Resets the update user details processing state
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new ResetUpdateUserDetails());
-    };
-    /**
-     * Reset new password.  Part of the forgot password flow.
-     * @param token
-     * @param password
-     */
-    /**
-     * Reset new password.  Part of the forgot password flow.
-     * @param {?} token
-     * @param {?} password
-     * @return {?}
-     */
-    UserService.prototype.resetPassword = /**
-     * Reset new password.  Part of the forgot password flow.
-     * @param {?} token
-     * @param {?} password
-     * @return {?}
-     */
-    function (token, password) {
-        this.store.dispatch(new ResetPassword({ token: token, password: password }));
-    };
-    /*
-     * Request an email to reset a forgotten password.
-     */
-    /*
-       * Request an email to reset a forgotten password.
-       */
-    /**
-     * @param {?} userEmailAddress
-     * @return {?}
-     */
-    UserService.prototype.requestForgotPasswordEmail = /*
-       * Request an email to reset a forgotten password.
-       */
-    /**
-     * @param {?} userEmailAddress
-     * @return {?}
-     */
-    function (userEmailAddress) {
-        this.store.dispatch(new ForgotPasswordEmailRequest(userEmailAddress));
-    };
-    /**
-     * Updates the user's email
-     */
-    /**
-     * Updates the user's email
-     * @param {?} password
-     * @param {?} newUid
-     * @return {?}
-     */
-    UserService.prototype.updateEmail = /**
-     * Updates the user's email
-     * @param {?} password
-     * @param {?} newUid
-     * @return {?}
-     */
-    function (password, newUid) {
-        var _this = this;
-        this.withUserId((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return _this.store.dispatch(new UpdateEmailAction({
-                uid: userId,
-                password: password,
-                newUid: newUid,
-            }));
-        }));
-    };
-    /**
-     * Returns the update user's email success flag
-     */
-    /**
-     * Returns the update user's email success flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdateEmailResultSuccess = /**
-     * Returns the update user's email success flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's email error flag
-     */
-    /**
-     * Returns the update user's email error flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdateEmailResultError = /**
-     * Returns the update user's email error flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Returns the update user's email loading flag
-     */
-    /**
-     * Returns the update user's email loading flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdateEmailResultLoading = /**
-     * Returns the update user's email loading flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_EMAIL_PROCESS_ID)));
-    };
-    /**
-     * Resets the update user's email processing state
-     */
-    /**
-     * Resets the update user's email processing state
-     * @return {?}
-     */
-    UserService.prototype.resetUpdateEmailResultState = /**
-     * Resets the update user's email processing state
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new ResetUpdateEmailAction());
-    };
-    /**
-     * Updates the password for the user
-     * @param oldPassword the current password that will be changed
-     * @param newPassword the new password
-     */
-    /**
-     * Updates the password for the user
-     * @param {?} oldPassword the current password that will be changed
-     * @param {?} newPassword the new password
-     * @return {?}
-     */
-    UserService.prototype.updatePassword = /**
-     * Updates the password for the user
-     * @param {?} oldPassword the current password that will be changed
-     * @param {?} newPassword the new password
-     * @return {?}
-     */
-    function (oldPassword, newPassword) {
-        var _this = this;
-        this.withUserId((/**
-         * @param {?} userId
-         * @return {?}
-         */
-        function (userId) {
-            return _this.store.dispatch(new UpdatePassword({
-                userId: userId,
-                oldPassword: oldPassword,
-                newPassword: newPassword,
-            }));
-        }));
-    };
-    /**
-     * Returns the update password loading flag
-     */
-    /**
-     * Returns the update password loading flag
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePasswordResultLoading = /**
-     * Returns the update password loading flag
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessLoadingFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Returns the update password failure outcome.
-     */
-    /**
-     * Returns the update password failure outcome.
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePasswordResultError = /**
-     * Returns the update password failure outcome.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessErrorFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Returns the update password process success outcome.
-     */
-    /**
-     * Returns the update password process success outcome.
-     * @return {?}
-     */
-    UserService.prototype.getUpdatePasswordResultSuccess = /**
-     * Returns the update password process success outcome.
-     * @return {?}
-     */
-    function () {
-        return this.store.pipe(select(getProcessSuccessFactory(UPDATE_PASSWORD_PROCESS_ID)));
-    };
-    /**
-     * Resets the update password process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     */
-    /**
-     * Resets the update password process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     * @return {?}
-     */
-    UserService.prototype.resetUpdatePasswordProcessState = /**
-     * Resets the update password process state. The state needs to be reset after the process
-     * concludes, regardless if it's a success or an error
-     * @return {?}
-     */
-    function () {
-        this.store.dispatch(new UpdatePasswordReset());
-    };
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
-     */
-    /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
-     * @private
-     * @param {?} callback
-     * @return {?}
-     */
-    UserService.prototype.withUserId = /**
-     * Utility method to distinquish pre / post 1.3.0 in a convenient way.
-     *
-     * @private
-     * @param {?} callback
-     * @return {?}
-     */
-    function (callback) {
-        if (this.authService) {
-            this.authService
-                .getOccUserId()
-                .pipe(take(1))
-                .subscribe((/**
-             * @param {?} userId
-             * @return {?}
-             */
-            function (userId) { return callback(userId); }));
-        }
-        else {
-            // TODO(issue:#5628) Deprecated since 1.3.0
-            callback(OCC_USER_ID_CURRENT);
-        }
-    };
-    UserService.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    UserService.ctorParameters = function () { return [
-        { type: Store },
-        { type: AuthService }
-    ]; };
-    return UserService;
-}());
-if (false) {
-    /**
-     * @type {?}
-     * @protected
-     */
-    UserService.prototype.store;
-    /**
-     * @type {?}
-     * @protected
-     */
-    UserService.prototype.authService;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var UserNotificationPreferenceService = /** @class */ (function () {
     function UserNotificationPreferenceService(store) {
         this.store = store;
@@ -60600,5 +60922,5 @@ var UserModule = /** @class */ (function () {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, MultiCartService as ɵcz, initConfig as ɵd, CartPageMetaResolver as ɵda, CheckoutStoreModule as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, effects$5 as ɵdf, AddressVerificationEffect as ɵdg, CardTypesEffects as ɵdh, CheckoutEffects as ɵdi, reducer$c as ɵdj, reducer$b as ɵdk, reducer$a as ɵdl, cmsStoreConfigFactory as ɵdm, CmsStoreModule as ɵdn, getReducers$8 as ɵdo, reducerToken$8 as ɵdp, reducerProvider$8 as ɵdq, clearCmsState as ɵdr, metaReducers$4 as ɵds, effects$7 as ɵdt, PageEffects as ɵdu, ComponentEffects as ɵdv, NavigationEntryItemEffects as ɵdw, reducer$f as ɵdx, reducer$g as ɵdy, reducer$e as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$8 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$9 as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$h as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$j as ɵgf, reducer$i as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$6 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$a as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$b as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, CustomerCouponEffects as ɵio, ProductInterestsEffect as ɵip, ForgotPasswordEffects as ɵiq, UpdateEmailEffects as ɵir, UpdatePasswordEffects as ɵis, UserNotificationPreferenceConnector as ɵit, reducer$v as ɵiu, reducer$t as ɵiv, reducer$k as ɵiw, reducer$u as ɵix, reducer$p as ɵiy, reducer$w as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$o as ɵja, reducer$z as ɵjb, reducer$m as ɵjc, reducer$s as ɵjd, reducer$q as ɵje, reducer$r as ɵjf, reducer$l as ɵjg, reducer$x as ɵjh, reducer$n as ɵji, reducer$y as ɵjj, FindProductPageMetaResolver as ɵjk, PageMetaResolver as ɵjl, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
+export { ADDRESS_NORMALIZER, ADDRESS_SERIALIZER, ADDRESS_VALIDATION_NORMALIZER, ADD_PRODUCT_INTEREST_PROCESS_ID, ADD_VOUCHER_PROCESS_ID, ANONYMOUS_CONSENTS, ANONYMOUS_CONSENTS_FEATURE, ANONYMOUS_CONSENTS_STORE_FEATURE, ANONYMOUS_CONSENT_STATUS, ANONYMOUS_USERID, ASM_FEATURE, AUTH_FEATURE, ActiveCartService, AnonymousConsentTemplatesAdapter, AnonymousConsentTemplatesConnector, anonymousConsentsGroup as AnonymousConsentsActions, AnonymousConsentsConfig, AnonymousConsentsModule, anonymousConsentsGroup_selectors as AnonymousConsentsSelectors, AnonymousConsentsService, customerGroup_actions as AsmActions, AsmAdapter, AsmAuthService, AsmConfig, AsmConnector, AsmModule, AsmOccModule, asmGroup_selectors as AsmSelectors, AsmService, authGroup_actions as AuthActions, AuthConfig, AuthGuard, AuthModule, AuthRedirectService, authGroup_selectors as AuthSelectors, AuthService, BASE_SITE_CONTEXT_ID, BadGatewayHandler, BadRequestHandler, BaseSiteService, CANCEL_ORDER_PROCESS_ID, CANCEL_RETURN_PROCESS_ID, CARD_TYPE_NORMALIZER, CART_DATA, CART_FEATURE, CART_MODIFICATION_NORMALIZER, CART_NORMALIZER, CART_VOUCHER_NORMALIZER, CHECKOUT_DETAILS, CHECKOUT_FEATURE, CLAIM_CUSTOMER_COUPON_PROCESS_ID, CLIENT_TOKEN_DATA, CMS_COMPONENT_NORMALIZER, CMS_FEATURE, CMS_FLEX_COMPONENT_TYPE, CMS_PAGE_NORMALIZER, COMPONENT_ENTITY, CONFIG_INITIALIZER, CONSENT_TEMPLATE_NORMALIZER, CONSIGNMENT_TRACKING_NORMALIZER, COUNTRY_NORMALIZER, CSAGENT_TOKEN_DATA, CURRENCY_CONTEXT_ID, CURRENCY_NORMALIZER, CUSTOMER_COUPONS, CUSTOMER_COUPON_SEARCH_RESULT_NORMALIZER, CUSTOMER_SEARCH_DATA, CUSTOMER_SEARCH_PAGE_NORMALIZER, cartGroup_actions as CartActions, CartAdapter, CartConnector, CartDataService, CartEffects, CartEntryAdapter, CartEntryConnector, CartEntryEffects, CartModule, CartOccModule, cartGroup_selectors as CartSelectors, CartService, CartVoucherAdapter, CartVoucherConnector, CartVoucherEffects, CartVoucherService, CategoryPageMetaResolver, checkoutGroup_actions as CheckoutActions, CheckoutAdapter, CheckoutConnector, CheckoutDeliveryAdapter, CheckoutDeliveryConnector, CheckoutDeliveryService, CheckoutModule, CheckoutOccModule, CheckoutPageMetaResolver, CheckoutPaymentAdapter, CheckoutPaymentConnector, CheckoutPaymentService, checkoutGroup_selectors as CheckoutSelectors, CheckoutService, cmsGroup_actions as CmsActions, CmsBannerCarouselEffect, CmsComponentAdapter, CmsComponentConnector, CmsConfig, CmsModule, CmsOccModule, CmsPageAdapter, CmsPageConnector, CmsPageTitleModule, cmsGroup_selectors as CmsSelectors, CmsService, CmsStructureConfig, CmsStructureConfigService, Config, ConfigChunk, ConfigInitializerModule, ConfigInitializerService, ConfigModule, ConfigValidatorToken, ConfigurableRoutesService, ConflictHandler, ConsentService, ContentPageMetaResolver, ContextServiceMap, ConverterService, CountryType, CurrencyService, CustomerCouponAdapter, CustomerCouponConnector, CustomerCouponService, CustomerSupportAgentTokenInterceptor, CxDatePipe, DEFAULT_LOCAL_STORAGE_KEY, DEFAULT_SESSION_STORAGE_KEY, DELIVERY_MODE_NORMALIZER, DeferLoadingStrategy, DynamicAttributeService, EMAIL_PATTERN, EXTERNAL_CONFIG_TRANSFER_ID, ExternalJsFileLoader, ExternalRoutesConfig, ExternalRoutesGuard, ExternalRoutesModule, ExternalRoutesService, FeatureConfigService, FeatureDirective, FeatureLevelDirective, FeaturesConfig, FeaturesConfigModule, ForbiddenHandler, GIVE_CONSENT_PROCESS_ID, GLOBAL_MESSAGE_FEATURE, GatewayTimeoutHandler, GlobService, globalMessageGroup_actions as GlobalMessageActions, GlobalMessageConfig, GlobalMessageModule, globalMessageGroup_selectors as GlobalMessageSelectors, GlobalMessageService, GlobalMessageType, GoogleMapRendererService, HttpErrorHandler, I18nConfig, I18nModule, I18nTestingModule, I18nextTranslationService, ImageType, InterceptorUtil, JSP_INCLUDE_CMS_COMPONENT_TYPE, JavaRegExpConverter, KYMA_FEATURE, kymaGroup_actions as KymaActions, KymaConfig, KymaModule, kymaGroup_selectors as KymaSelectors, KymaService, KymaServices, LANGUAGE_CONTEXT_ID, LANGUAGE_NORMALIZER, LanguageService, LoadingScopesService, MEDIA_BASE_URL_META_TAG_NAME, MEDIA_BASE_URL_META_TAG_PLACEHOLDER, MULTI_CART_DATA, MULTI_CART_FEATURE, MockDatePipe, MockTranslatePipe, multiCartGroup_selectors as MultiCartSelectors, NAVIGATION_DETAIL_ENTITY, NOTIFICATION_PREFERENCES, NgExpressEngineDecorator, NotAuthGuard, NotFoundHandler, NotificationType, OCC_BASE_URL_META_TAG_NAME, OCC_BASE_URL_META_TAG_PLACEHOLDER, OCC_CART_ID_CURRENT, OCC_USER_ID_ANONYMOUS, OCC_USER_ID_CURRENT, OCC_USER_ID_GUEST, OPEN_ID_TOKEN_DATA, ORDER_HISTORY_NORMALIZER, ORDER_NORMALIZER, ORDER_RETURNS_NORMALIZER, ORDER_RETURN_REQUEST_INPUT_SERIALIZER, ORDER_RETURN_REQUEST_NORMALIZER, Occ, OccAnonymousConsentTemplatesAdapter, OccAsmAdapter, OccCartAdapter, OccCartEntryAdapter, OccCartNormalizer, OccCartVoucherAdapter, OccCheckoutAdapter, OccCheckoutDeliveryAdapter, OccCheckoutPaymentAdapter, OccCmsComponentAdapter, OccCmsPageAdapter, OccCmsPageNormalizer, OccConfig, OccConfigLoaderModule, OccConfigLoaderService, OccCustomerCouponAdapter, OccEndpointsService, OccFieldsService, OccLoadedConfigConverter, OccModule, OccOrderNormalizer, OccProductAdapter, OccProductReferencesAdapter, OccProductReferencesListNormalizer, OccProductReviewsAdapter, OccProductSearchAdapter, OccProductSearchPageNormalizer, OccRequestsOptimizerService, OccReturnRequestNormalizer, OccSiteAdapter, OccSitesConfigLoader, OccStoreFinderAdapter, OccUserAdapter, OccUserAddressAdapter, OccUserConsentAdapter, OccUserInterestsAdapter, OccUserInterestsNormalizer, OccUserNotificationPreferenceAdapter, OccUserOrderAdapter, OccUserPaymentAdapter, OrderReturnRequestService, PASSWORD_PATTERN, PAYMENT_DETAILS_NORMALIZER, PAYMENT_DETAILS_SERIALIZER, POINT_OF_SERVICE_NORMALIZER, PROCESS_FEATURE, PRODUCT_DETAIL_ENTITY, PRODUCT_FEATURE, PRODUCT_INTERESTS, PRODUCT_INTERESTS_NORMALIZER, PRODUCT_NORMALIZER, PRODUCT_REFERENCES_NORMALIZER, PRODUCT_REVIEW_NORMALIZER, PRODUCT_REVIEW_SERIALIZER, PRODUCT_SEARCH_PAGE_NORMALIZER, PRODUCT_SUGGESTION_NORMALIZER, PageContext, PageMetaResolver, PageMetaService, PageRobotsMeta, PageType, PersonalizationConfig, PersonalizationModule, PriceType, ProcessModule, process_selectors as ProcessSelectors, productGroup_actions as ProductActions, ProductAdapter, ProductConnector, ProductImageNormalizer, ProductLoadingService, ProductModule, ProductNameNormalizer, ProductOccModule, ProductPageMetaResolver, ProductReferenceNormalizer, ProductReferenceService, ProductReferencesAdapter, ProductReferencesConnector, ProductReviewService, ProductReviewsAdapter, ProductReviewsConnector, ProductScope, ProductSearchAdapter, ProductSearchConnector, ProductSearchService, productGroup_selectors as ProductSelectors, ProductService, PromotionLocation, ProtectedRoutesGuard, ProtectedRoutesService, REGIONS, REGION_NORMALIZER, REGISTER_USER_PROCESS_ID, REMOVE_PRODUCT_INTERESTS_PROCESS_ID, REMOVE_USER_PROCESS_ID, ROUTING_FEATURE, routingGroup_actions as RoutingActions, RoutingConfig, RoutingConfigService, RoutingModule, routingGroup_selectors as RoutingSelector, RoutingService, SERVER_REQUEST_URL, SET_DELIVERY_ADDRESS_PROCESS_ID, SET_DELIVERY_MODE_PROCESS_ID, SET_PAYMENT_DETAILS_PROCESS_ID, SET_SUPPORTED_DELIVERY_MODE_PROCESS_ID, SITE_CONTEXT_FEATURE, STORE_COUNT_NORMALIZER, STORE_FINDER_DATA, STORE_FINDER_FEATURE, STORE_FINDER_SEARCH_PAGE_NORMALIZER, SUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, SearchPageMetaResolver, SearchboxService, SelectiveCartService, SemanticPathService, SiteAdapter, SiteConnector, siteContextGroup_actions as SiteContextActions, SiteContextConfig, SiteContextInterceptor, SiteContextModule, SiteContextOccModule, siteContextGroup_selectors as SiteContextSelectors, SmartEditModule, SmartEditService, StateConfig, entity_action as StateEntityActions, entityLoader_action as StateEntityLoaderActions, entityLoader_selectors as StateEntityLoaderSelectors, entityProcessesLoader_action as StateEntityProcessesLoaderActions, entityProcessesLoader_selectors as StateEntityProcessesLoaderSelectors, entity_selectors as StateEntitySelectors, loader_action as StateLoaderActions, loader_selectors as StateLoaderSelectors, StateModule, processesLoader_action as StateProcessesLoaderActions, processesLoader_selectors as StateProcessesLoaderSelectors, StateTransferType, StorageSyncType, StoreDataService, storeFinderGroup_actions as StoreFinderActions, StoreFinderAdapter, StoreFinderConfig, StoreFinderConnector, StoreFinderCoreModule, StoreFinderOccModule, storeFinderGroup_selectors as StoreFinderSelectors, StoreFinderService, TITLE_NORMALIZER, TOKEN_REVOCATION_HEADER, TestConfigModule, TranslatePipe, TranslationChunkService, TranslationService, UNSUBSCRIBE_CUSTOMER_COUPON_PROCESS_ID, UPDATE_EMAIL_PROCESS_ID, UPDATE_NOTIFICATION_PREFERENCES_PROCESS_ID, UPDATE_PASSWORD_PROCESS_ID, UPDATE_USER_DETAILS_PROCESS_ID, USER_ADDRESSES, USER_CONSENTS, USER_FEATURE, USER_NORMALIZER, USER_ORDERS, USER_ORDER_DETAILS, USER_PAYMENT_METHODS, USER_RETURN_REQUESTS, USER_RETURN_REQUEST_DETAILS, USER_SERIALIZER, USER_SIGN_UP_SERIALIZER, USE_CLIENT_TOKEN, USE_CUSTOMER_SUPPORT_AGENT_TOKEN, UnknownErrorHandler, UrlMatcherFactoryService, UrlModule, UrlPipe, userGroup_actions as UserActions, UserAdapter, UserAddressAdapter, UserAddressConnector, UserAddressService, UserConnector, UserConsentAdapter, UserConsentConnector, UserConsentService, UserInterestsAdapter, UserInterestsConnector, UserInterestsService, UserModule, UserNotificationPreferenceService, UserOccModule, UserOrderAdapter, UserOrderConnector, UserOrderService, UserPaymentAdapter, UserPaymentConnector, UserPaymentService, UserService, usersGroup_selectors as UsersSelectors, VariantQualifier, VariantType, WITHDRAW_CONSENT_PROCESS_ID, WindowRef, WishListEffects, WishListService, clearCartState, clearMultiCartState, configInitializerFactory, configurationFactory, contextServiceMapProvider, deprecatedContextServiceProviders as contextServiceProviders, defaultAnonymousConsentsConfig, defaultCmsModuleConfig, defaultOccConfig, defaultStateConfig, effects$4 as effects, entityLoaderReducer, entityProcessesLoaderReducer, entityReducer, errorHandlers, getMultiCartReducers, getReducers$5 as getReducers, getServerRequestProviders, getStateSlice, httpErrorInterceptors, initConfigurableRoutes, deprecatedInitSiteContextRoutesHandler as initSiteContextRoutesHandler, initialEntityState, initialLoaderState, initialProcessesState, inititializeContext, isFeatureEnabled, isFeatureLevel, loaderReducer, mediaServerConfigFromMetaTagFactory, metaReducers$3 as metaReducers, multiCartMetaReducers, multiCartReducerProvider, multiCartReducerToken, occConfigValidator, occServerConfigFromMetaTagFactory, ofLoaderFail, ofLoaderLoad, ofLoaderSuccess, processesLoaderReducer, provideConfig, provideConfigFactory, provideConfigFromMetaTags, provideConfigValidator, reducerProvider$5 as reducerProvider, reducerToken$5 as reducerToken, serviceMapFactory, deprecatedSiteContextParamsProviders as siteContextParamsProviders, testestsd, validateConfig, TEST_CONFIG_COOKIE_NAME as ɵa, configFromCookieFactory as ɵb, AnonymousConsentsInterceptor as ɵba, asmStoreConfigFactory as ɵbb, AsmStoreModule as ɵbc, getReducers$3 as ɵbd, reducerToken$3 as ɵbe, reducerProvider$3 as ɵbf, clearCustomerSupportAgentAsmState as ɵbg, metaReducers$2 as ɵbh, effects$3 as ɵbi, CustomerEffects as ɵbj, CustomerSupportAgentTokenEffects as ɵbk, UserAuthenticationTokenService as ɵbl, reducer$7 as ɵbm, defaultAsmConfig as ɵbn, interceptors$2 as ɵbo, CustomerSupportAgentAuthErrorInterceptor as ɵbp, CustomerSupportAgentErrorHandlingService as ɵbq, authStoreConfigFactory as ɵbr, AuthStoreModule as ɵbs, getReducers as ɵbt, reducerToken as ɵbu, reducerProvider as ɵbv, clearAuthState as ɵbw, metaReducers as ɵbx, effects as ɵby, ClientTokenEffect as ɵbz, CONFIG_INITIALIZER_FORROOT_GUARD as ɵc, UserTokenEffects as ɵca, ClientAuthenticationTokenService as ɵcb, reducer as ɵcc, defaultAuthConfig as ɵcd, interceptors as ɵce, ClientTokenInterceptor as ɵcf, UserTokenInterceptor as ɵcg, AuthErrorInterceptor as ɵch, UserErrorHandlingService as ɵci, UrlParsingService as ɵcj, ClientErrorHandlingService as ɵck, TokenRevocationInterceptor as ɵcl, AuthServices as ɵcm, cartStoreConfigFactory as ɵcn, CartStoreModule as ɵco, SaveCartConnector as ɵcp, SaveCartAdapter as ɵcq, reducer$9 as ɵcr, multiCartStoreConfigFactory as ɵcs, MultiCartStoreModule as ɵct, MultiCartEffects as ɵcu, processesLoaderReducer as ɵcv, activeCartReducer as ɵcw, cartEntitiesReducer as ɵcx, wishListReducer as ɵcy, MultiCartService as ɵcz, initConfig as ɵd, CartPageMetaResolver as ɵda, CheckoutStoreModule as ɵdb, getReducers$6 as ɵdc, reducerToken$6 as ɵdd, reducerProvider$6 as ɵde, effects$5 as ɵdf, AddressVerificationEffect as ɵdg, CardTypesEffects as ɵdh, CheckoutEffects as ɵdi, reducer$c as ɵdj, reducer$b as ɵdk, reducer$a as ɵdl, cmsStoreConfigFactory as ɵdm, CmsStoreModule as ɵdn, getReducers$8 as ɵdo, reducerToken$8 as ɵdp, reducerProvider$8 as ɵdq, clearCmsState as ɵdr, metaReducers$4 as ɵds, effects$7 as ɵdt, PageEffects as ɵdu, ComponentEffects as ɵdv, NavigationEntryItemEffects as ɵdw, reducer$f as ɵdx, reducer$g as ɵdy, reducer$e as ɵdz, initializeContext as ɵe, configValidatorFactory as ɵea, ConfigValidatorModule as ɵeb, GlobalMessageStoreModule as ɵec, getReducers$4 as ɵed, reducerToken$4 as ɵee, reducerProvider$4 as ɵef, reducer$8 as ɵeg, GlobalMessageEffect as ɵeh, defaultGlobalMessageConfigFactory as ɵei, InternalServerErrorHandler as ɵej, HttpErrorInterceptor as ɵek, defaultI18nConfig as ɵel, i18nextProviders as ɵem, i18nextInit as ɵen, MockTranslationService as ɵeo, kymaStoreConfigFactory as ɵep, KymaStoreModule as ɵeq, getReducers$9 as ɵer, reducerToken$9 as ɵes, reducerProvider$9 as ɵet, clearKymaState as ɵeu, metaReducers$5 as ɵev, effects$8 as ɵew, OpenIdTokenEffect as ɵex, OpenIdAuthenticationTokenService as ɵey, defaultKymaConfig as ɵez, contextServiceProviders as ɵf, defaultOccAsmConfig as ɵfa, defaultOccCartConfig as ɵfb, OccSaveCartAdapter as ɵfc, defaultOccProductConfig as ɵfd, defaultOccSiteContextConfig as ɵfe, defaultOccStoreFinderConfig as ɵff, defaultOccUserConfig as ɵfg, UserNotificationPreferenceAdapter as ɵfh, defaultPersonalizationConfig as ɵfi, interceptors$3 as ɵfj, OccPersonalizationIdInterceptor as ɵfk, OccPersonalizationTimeInterceptor as ɵfl, ProcessStoreModule as ɵfm, getReducers$a as ɵfn, reducerToken$a as ɵfo, reducerProvider$a as ɵfp, productStoreConfigFactory as ɵfq, ProductStoreModule as ɵfr, getReducers$b as ɵfs, reducerToken$b as ɵft, reducerProvider$b as ɵfu, clearProductsState as ɵfv, metaReducers$6 as ɵfw, effects$9 as ɵfx, ProductReferencesEffects as ɵfy, ProductReviewsEffects as ɵfz, initSiteContextRoutesHandler as ɵg, ProductsSearchEffects as ɵga, ProductEffects as ɵgb, reducer$h as ɵgc, entityScopedLoaderReducer as ɵgd, scopedLoaderReducer as ɵge, reducer$j as ɵgf, reducer$i as ɵgg, PageMetaResolver as ɵgh, addExternalRoutesFactory as ɵgi, getReducers$7 as ɵgj, reducer$d as ɵgk, reducerToken$7 as ɵgl, reducerProvider$7 as ɵgm, CustomSerializer as ɵgn, effects$6 as ɵgo, RouterEffects as ɵgp, SiteContextParamsService as ɵgq, SiteContextUrlSerializer as ɵgr, SiteContextRoutesHandler as ɵgs, defaultSiteContextConfigFactory as ɵgt, siteContextStoreConfigFactory as ɵgu, SiteContextStoreModule as ɵgv, getReducers$1 as ɵgw, reducerToken$1 as ɵgx, reducerProvider$1 as ɵgy, effects$2 as ɵgz, siteContextParamsProviders as ɵh, LanguagesEffects as ɵha, CurrenciesEffects as ɵhb, BaseSiteEffects as ɵhc, reducer$3 as ɵhd, reducer$2 as ɵhe, reducer$1 as ɵhf, baseSiteConfigValidator as ɵhg, interceptors$4 as ɵhh, CmsTicketInterceptor as ɵhi, defaultStoreFinderConfig as ɵhj, StoreFinderStoreModule as ɵhk, getReducers$c as ɵhl, reducerToken$c as ɵhm, reducerProvider$c as ɵhn, effects$a as ɵho, FindStoresEffect as ɵhp, ViewAllStoresEffect as ɵhq, UserStoreModule as ɵhr, getReducers$d as ɵhs, reducerToken$d as ɵht, reducerProvider$d as ɵhu, clearUserState as ɵhv, metaReducers$8 as ɵhw, effects$b as ɵhx, BillingCountriesEffect as ɵhy, ClearMiscsDataEffect as ɵhz, anonymousConsentsStoreConfigFactory as ɵi, ConsignmentTrackingEffects as ɵia, DeliveryCountriesEffects as ɵib, NotificationPreferenceEffects as ɵic, OrderDetailsEffect as ɵid, OrderReturnRequestEffect as ɵie, UserPaymentMethodsEffects as ɵif, RegionsEffects as ɵig, ResetPasswordEffects as ɵih, TitlesEffects as ɵii, UserAddressesEffects as ɵij, UserConsentsEffect as ɵik, UserDetailsEffects as ɵil, UserOrdersEffect as ɵim, UserRegisterEffects as ɵin, CustomerCouponEffects as ɵio, ProductInterestsEffect as ɵip, ForgotPasswordEffects as ɵiq, UpdateEmailEffects as ɵir, UpdatePasswordEffects as ɵis, UserNotificationPreferenceConnector as ɵit, reducer$v as ɵiu, reducer$t as ɵiv, reducer$k as ɵiw, reducer$u as ɵix, reducer$p as ɵiy, reducer$w as ɵiz, AnonymousConsentsStoreModule as ɵj, reducer$o as ɵja, reducer$z as ɵjb, reducer$m as ɵjc, reducer$s as ɵjd, reducer$q as ɵje, reducer$r as ɵjf, reducer$l as ɵjg, reducer$x as ɵjh, reducer$n as ɵji, reducer$y as ɵjj, FindProductPageMetaResolver as ɵjk, PageMetaResolver as ɵjl, TRANSFER_STATE_META_REDUCER as ɵk, STORAGE_SYNC_META_REDUCER as ɵl, stateMetaReducers as ɵm, getStorageSyncReducer as ɵn, getTransferStateReducer as ɵo, getReducers$2 as ɵp, reducerToken$2 as ɵq, reducerProvider$2 as ɵr, clearAnonymousConsentTemplates as ɵs, metaReducers$1 as ɵt, effects$1 as ɵu, AnonymousConsentsEffects as ɵv, reducer$6 as ɵw, reducer$4 as ɵx, reducer$5 as ɵy, interceptors$1 as ɵz };
 //# sourceMappingURL=spartacus-core.js.map
