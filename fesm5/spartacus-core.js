@@ -33818,360 +33818,6 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * @param {?} cart
- * @param {?} userId
- * @return {?}
- */
-function getCartIdByUserId(cart, userId) {
-    if (userId === OCC_USER_ID_ANONYMOUS) {
-        return cart.guid;
-    }
-    return cart.code;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var MULTI_CART_FEATURE = 'multi-cart';
-/** @type {?} */
-var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
-/**
- * @record
- */
-function StateWithMultiCart() { }
-if (false) {
-    /* Skipping unnamed member:
-    [MULTI_CART_FEATURE]: MultiCartState;*/
-}
-/**
- * @record
- */
-function MultiCartState() { }
-if (false) {
-    /** @type {?} */
-    MultiCartState.prototype.carts;
-    /** @type {?} */
-    MultiCartState.prototype.active;
-    /** @type {?} */
-    MultiCartState.prototype.wishList;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
-var RESET_FRESH_CART = '[Multi Cart] Reset Fresh Cart';
-/** @type {?} */
-var CREATE_MULTI_CART = '[Multi Cart] Create Cart';
-/** @type {?} */
-var CREATE_MULTI_CART_FAIL = '[Multi Cart] Create Cart Fail';
-/** @type {?} */
-var CREATE_MULTI_CART_SUCCESS = '[Multi Cart] Create Cart Success';
-/** @type {?} */
-var LOAD_MULTI_CART = '[Multi Cart] Load Cart';
-/** @type {?} */
-var LOAD_MULTI_CART_FAIL = '[Multi Cart] Load Cart Fail';
-/** @type {?} */
-var LOAD_MULTI_CART_SUCCESS = '[Multi Cart] Load Cart Success';
-/** @type {?} */
-var MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
-/** @type {?} */
-var MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
-/** @type {?} */
-var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
-/** @type {?} */
-var SET_FRESH_CART = '[Multi Cart] Set Fresh Cart';
-/** @type {?} */
-var REMOVE_CART = '[Multi Cart] Remove Cart';
-/** @type {?} */
-var ADD_EMAIL_TO_MULTI_CART = '[Multi Cart] Add Email';
-/** @type {?} */
-var ADD_EMAIL_TO_MULTI_CART_FAIL = '[Multi Cart] Add Email Fail';
-/** @type {?} */
-var ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
-/** @type {?} */
-var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
-/** @type {?} */
-var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
-/**
- * To keep track of cart creation process we use cart with `fresh` id.
- * After creating cart we switch to entity with `code` or `guid`.
- * We need `fresh` cart entity for loading/error state.
- * @type {?}
- */
-var FRESH_CART_ID = 'fresh';
-var ResetFreshCart = /** @class */ (function (_super) {
-    __extends(ResetFreshCart, _super);
-    function ResetFreshCart() {
-        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID) || this;
-        _this.type = RESET_FRESH_CART;
-        return _this;
-    }
-    return ResetFreshCart;
-}(EntityProcessesLoaderResetAction));
-if (false) {
-    /** @type {?} */
-    ResetFreshCart.prototype.type;
-}
-var SetFreshCart = /** @class */ (function (_super) {
-    __extends(SetFreshCart, _super);
-    function SetFreshCart(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID, payload) || this;
-        _this.payload = payload;
-        _this.type = SET_FRESH_CART;
-        return _this;
-    }
-    return SetFreshCart;
-}(EntitySuccessAction));
-if (false) {
-    /** @type {?} */
-    SetFreshCart.prototype.type;
-    /** @type {?} */
-    SetFreshCart.prototype.payload;
-}
-var CreateMultiCart = /** @class */ (function (_super) {
-    __extends(CreateMultiCart, _super);
-    function CreateMultiCart(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART;
-        return _this;
-    }
-    return CreateMultiCart;
-}(EntityLoadAction));
-if (false) {
-    /** @type {?} */
-    CreateMultiCart.prototype.type;
-    /** @type {?} */
-    CreateMultiCart.prototype.payload;
-}
-var CreateMultiCartFail = /** @class */ (function (_super) {
-    __extends(CreateMultiCartFail, _super);
-    function CreateMultiCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART_FAIL;
-        return _this;
-    }
-    return CreateMultiCartFail;
-}(EntityFailAction));
-if (false) {
-    /** @type {?} */
-    CreateMultiCartFail.prototype.type;
-    /** @type {?} */
-    CreateMultiCartFail.prototype.payload;
-}
-var CreateMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(CreateMultiCartSuccess, _super);
-    function CreateMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
-        _this.payload = payload;
-        _this.type = CREATE_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return CreateMultiCartSuccess;
-}(EntitySuccessAction));
-if (false) {
-    /** @type {?} */
-    CreateMultiCartSuccess.prototype.type;
-    /** @type {?} */
-    CreateMultiCartSuccess.prototype.payload;
-}
-var LoadMultiCart = /** @class */ (function (_super) {
-    __extends(LoadMultiCart, _super);
-    function LoadMultiCart(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = LOAD_MULTI_CART;
-        return _this;
-    }
-    return LoadMultiCart;
-}(EntityLoadAction));
-if (false) {
-    /** @type {?} */
-    LoadMultiCart.prototype.type;
-    /** @type {?} */
-    LoadMultiCart.prototype.payload;
-}
-var LoadMultiCartFail = /** @class */ (function (_super) {
-    __extends(LoadMultiCartFail, _super);
-    function LoadMultiCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
-        _this.payload = payload;
-        _this.type = LOAD_MULTI_CART_FAIL;
-        return _this;
-    }
-    return LoadMultiCartFail;
-}(EntityFailAction));
-if (false) {
-    /** @type {?} */
-    LoadMultiCartFail.prototype.type;
-    /** @type {?} */
-    LoadMultiCartFail.prototype.payload;
-}
-var LoadMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(LoadMultiCartSuccess, _super);
-    function LoadMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
-        _this.payload = payload;
-        _this.type = LOAD_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return LoadMultiCartSuccess;
-}(EntitySuccessAction));
-if (false) {
-    /** @type {?} */
-    LoadMultiCartSuccess.prototype.type;
-    /** @type {?} */
-    LoadMultiCartSuccess.prototype.payload;
-}
-var MergeMultiCart = /** @class */ (function () {
-    function MergeMultiCart(payload) {
-        this.payload = payload;
-        this.type = MERGE_MULTI_CART;
-    }
-    return MergeMultiCart;
-}());
-if (false) {
-    /** @type {?} */
-    MergeMultiCart.prototype.type;
-    /** @type {?} */
-    MergeMultiCart.prototype.payload;
-}
-var MergeMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(MergeMultiCartSuccess, _super);
-    function MergeMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.oldCartId) || this;
-        _this.payload = payload;
-        _this.type = MERGE_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return MergeMultiCartSuccess;
-}(EntityRemoveAction));
-if (false) {
-    /** @type {?} */
-    MergeMultiCartSuccess.prototype.type;
-    /** @type {?} */
-    MergeMultiCartSuccess.prototype.payload;
-}
-var ResetMultiCartDetails = /** @class */ (function (_super) {
-    __extends(ResetMultiCartDetails, _super);
-    function ResetMultiCartDetails() {
-        var _this = _super.call(this, MULTI_CART_FEATURE, undefined) || this;
-        _this.type = RESET_MULTI_CART_DETAILS;
-        return _this;
-    }
-    return ResetMultiCartDetails;
-}(EntityProcessesLoaderResetAction));
-if (false) {
-    /** @type {?} */
-    ResetMultiCartDetails.prototype.type;
-}
-var RemoveCart = /** @class */ (function (_super) {
-    __extends(RemoveCart, _super);
-    function RemoveCart(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
-        _this.payload = payload;
-        _this.type = REMOVE_CART;
-        return _this;
-    }
-    return RemoveCart;
-}(EntityRemoveAction));
-if (false) {
-    /** @type {?} */
-    RemoveCart.prototype.type;
-    /** @type {?} */
-    RemoveCart.prototype.payload;
-}
-var AddEmailToMultiCart = /** @class */ (function (_super) {
-    __extends(AddEmailToMultiCart, _super);
-    function AddEmailToMultiCart(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_MULTI_CART;
-        return _this;
-    }
-    return AddEmailToMultiCart;
-}(EntityLoadAction));
-if (false) {
-    /** @type {?} */
-    AddEmailToMultiCart.prototype.type;
-    /** @type {?} */
-    AddEmailToMultiCart.prototype.payload;
-}
-var AddEmailToMultiCartFail = /** @class */ (function (_super) {
-    __extends(AddEmailToMultiCartFail, _super);
-    function AddEmailToMultiCartFail(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_MULTI_CART_FAIL;
-        return _this;
-    }
-    return AddEmailToMultiCartFail;
-}(EntityFailAction));
-if (false) {
-    /** @type {?} */
-    AddEmailToMultiCartFail.prototype.type;
-    /** @type {?} */
-    AddEmailToMultiCartFail.prototype.payload;
-}
-var AddEmailToMultiCartSuccess = /** @class */ (function (_super) {
-    __extends(AddEmailToMultiCartSuccess, _super);
-    function AddEmailToMultiCartSuccess(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
-        _this.payload = payload;
-        _this.type = ADD_EMAIL_TO_MULTI_CART_SUCCESS;
-        return _this;
-    }
-    return AddEmailToMultiCartSuccess;
-}(EntitySuccessAction));
-if (false) {
-    /** @type {?} */
-    AddEmailToMultiCartSuccess.prototype.type;
-    /** @type {?} */
-    AddEmailToMultiCartSuccess.prototype.payload;
-}
-var CartProcessesIncrement = /** @class */ (function (_super) {
-    __extends(CartProcessesIncrement, _super);
-    function CartProcessesIncrement(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
-        _this.payload = payload;
-        _this.type = CART_PROCESSES_INCREMENT;
-        return _this;
-    }
-    return CartProcessesIncrement;
-}(EntityProcessesIncrementAction));
-if (false) {
-    /** @type {?} */
-    CartProcessesIncrement.prototype.type;
-    /** @type {?} */
-    CartProcessesIncrement.prototype.payload;
-}
-var CartProcessesDecrement = /** @class */ (function (_super) {
-    __extends(CartProcessesDecrement, _super);
-    function CartProcessesDecrement(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
-        _this.payload = payload;
-        _this.type = CART_PROCESSES_DECREMENT;
-        return _this;
-    }
-    return CartProcessesDecrement;
-}(EntityProcessesDecrementAction));
-if (false) {
-    /** @type {?} */
-    CartProcessesDecrement.prototype.type;
-    /** @type {?} */
-    CartProcessesDecrement.prototype.payload;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @type {?} */
 var getCartContentSelector = (/**
  * @param {?} state
@@ -34303,6 +33949,35 @@ var cartGroup_selectors = /*#__PURE__*/Object.freeze({
     getCartEntries: getCartEntries,
     getCartUser: getCartUser
 });
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+var MULTI_CART_FEATURE = 'multi-cart';
+/** @type {?} */
+var MULTI_CART_DATA = '[Multi Cart] Multi Cart Data';
+/**
+ * @record
+ */
+function StateWithMultiCart() { }
+if (false) {
+    /* Skipping unnamed member:
+    [MULTI_CART_FEATURE]: MultiCartState;*/
+}
+/**
+ * @record
+ */
+function MultiCartState() { }
+if (false) {
+    /** @type {?} */
+    MultiCartState.prototype.carts;
+    /** @type {?} */
+    MultiCartState.prototype.active;
+    /** @type {?} */
+    MultiCartState.prototype.wishList;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -34445,6 +34120,45 @@ var multiCartGroup_selectors = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @param {?} cart
+ * @param {?} userId
+ * @return {?}
+ */
+function getCartIdByUserId(cart, userId) {
+    if (userId === OCC_USER_ID_ANONYMOUS) {
+        return cart.guid;
+    }
+    return cart.code;
+}
+/**
+ * What is a temporary cart?
+ * - frontend only cart entity!
+ * - can be identified in store by `temp-` prefix with some unique id (multiple carts can be created at the same time eg. active cart, wishlist)
+ *
+ * Why we need temporary carts?
+ * - to have information about cart creation process (meta flags: loading, error - for showing loader, error message)
+ * - to know if there is currently a cart creation process in progress (eg. so, we don't create more than one active cart at the same time)
+ * - cart identifiers are created in the backend, so those are only known after cart is created
+ *
+ * Temporary cart lifecycle
+ * - create cart method invoked
+ * - new `temp-${uuid}` cart is created with `loading=true` state
+ * - backend returns created cart
+ * - normal cart entity is saved under correct id (eg. for logged user under cart `code` key)
+ * - temporary cart value is set to backend response (anyone observing this cart can read code/guid from it and switch selector to normal cart)
+ * - in next tick temporary cart is removed
+ * @param {?} cartId
+ * @return {?}
+ */
+function isTempCartId(cartId) {
+    return cartId.startsWith('temp-');
+}
 
 /**
  * @fileoverview added by tsickle
@@ -34752,6 +34466,321 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
+var REMOVE_TEMP_CART = '[Multi Cart] Remove Temp Cart';
+/** @type {?} */
+var CREATE_MULTI_CART = '[Multi Cart] Create Cart';
+/** @type {?} */
+var CREATE_MULTI_CART_FAIL = '[Multi Cart] Create Cart Fail';
+/** @type {?} */
+var CREATE_MULTI_CART_SUCCESS = '[Multi Cart] Create Cart Success';
+/** @type {?} */
+var LOAD_MULTI_CART = '[Multi Cart] Load Cart';
+/** @type {?} */
+var LOAD_MULTI_CART_FAIL = '[Multi Cart] Load Cart Fail';
+/** @type {?} */
+var LOAD_MULTI_CART_SUCCESS = '[Multi Cart] Load Cart Success';
+/** @type {?} */
+var MERGE_MULTI_CART = '[Multi Cart] Merge Cart';
+/** @type {?} */
+var MERGE_MULTI_CART_SUCCESS = '[Multi Cart] Merge Cart Success';
+/** @type {?} */
+var RESET_MULTI_CART_DETAILS = '[Multi Cart] Reset Cart Details';
+/** @type {?} */
+var SET_TEMP_CART = '[Multi Cart] Set Temp Cart';
+/** @type {?} */
+var REMOVE_CART = '[Multi Cart] Remove Cart';
+/** @type {?} */
+var ADD_EMAIL_TO_MULTI_CART = '[Multi Cart] Add Email';
+/** @type {?} */
+var ADD_EMAIL_TO_MULTI_CART_FAIL = '[Multi Cart] Add Email Fail';
+/** @type {?} */
+var ADD_EMAIL_TO_MULTI_CART_SUCCESS = '[Multi Cart] Add Email Success';
+/** @type {?} */
+var CART_PROCESSES_INCREMENT = '[Multi Cart] Cart Processes Increment';
+/** @type {?} */
+var CART_PROCESSES_DECREMENT = '[Multi Cart] Cart Processes Decrement';
+/**
+ * To keep track of cart creation process we use cart with `temp-${uuid}` id.
+ * After creating cart we switch to entity with `code` or `guid`.
+ * We need `temp-${uuid}` cart entities for loading/error state.
+ */
+var /**
+ * To keep track of cart creation process we use cart with `temp-${uuid}` id.
+ * After creating cart we switch to entity with `code` or `guid`.
+ * We need `temp-${uuid}` cart entities for loading/error state.
+ */
+RemoveTempCart = /** @class */ (function (_super) {
+    __extends(RemoveTempCart, _super);
+    function RemoveTempCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = REMOVE_TEMP_CART;
+        return _this;
+    }
+    return RemoveTempCart;
+}(EntityRemoveAction));
+if (false) {
+    /** @type {?} */
+    RemoveTempCart.prototype.type;
+    /** @type {?} */
+    RemoveTempCart.prototype.payload;
+}
+var SetTempCart = /** @class */ (function (_super) {
+    __extends(SetTempCart, _super);
+    function SetTempCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId, payload.cart) || this;
+        _this.payload = payload;
+        _this.type = SET_TEMP_CART;
+        return _this;
+    }
+    return SetTempCart;
+}(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    SetTempCart.prototype.type;
+    /** @type {?} */
+    SetTempCart.prototype.payload;
+}
+var CreateMultiCart = /** @class */ (function (_super) {
+    __extends(CreateMultiCart, _super);
+    function CreateMultiCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_MULTI_CART;
+        return _this;
+    }
+    return CreateMultiCart;
+}(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    CreateMultiCart.prototype.type;
+    /** @type {?} */
+    CreateMultiCart.prototype.payload;
+}
+var CreateMultiCartFail = /** @class */ (function (_super) {
+    __extends(CreateMultiCartFail, _super);
+    function CreateMultiCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.tempCartId) || this;
+        _this.payload = payload;
+        _this.type = CREATE_MULTI_CART_FAIL;
+        return _this;
+    }
+    return CreateMultiCartFail;
+}(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    CreateMultiCartFail.prototype.type;
+    /** @type {?} */
+    CreateMultiCartFail.prototype.payload;
+}
+var CreateMultiCartSuccess = /** @class */ (function (_super) {
+    __extends(CreateMultiCartSuccess, _super);
+    function CreateMultiCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+        _this.payload = payload;
+        _this.type = CREATE_MULTI_CART_SUCCESS;
+        return _this;
+    }
+    return CreateMultiCartSuccess;
+}(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    CreateMultiCartSuccess.prototype.type;
+    /** @type {?} */
+    CreateMultiCartSuccess.prototype.payload;
+}
+var LoadMultiCart = /** @class */ (function (_super) {
+    __extends(LoadMultiCart, _super);
+    function LoadMultiCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = LOAD_MULTI_CART;
+        return _this;
+    }
+    return LoadMultiCart;
+}(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    LoadMultiCart.prototype.type;
+    /** @type {?} */
+    LoadMultiCart.prototype.payload;
+}
+var LoadMultiCartFail = /** @class */ (function (_super) {
+    __extends(LoadMultiCartFail, _super);
+    function LoadMultiCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+        _this.payload = payload;
+        _this.type = LOAD_MULTI_CART_FAIL;
+        return _this;
+    }
+    return LoadMultiCartFail;
+}(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    LoadMultiCartFail.prototype.type;
+    /** @type {?} */
+    LoadMultiCartFail.prototype.payload;
+}
+var LoadMultiCartSuccess = /** @class */ (function (_super) {
+    __extends(LoadMultiCartSuccess, _super);
+    function LoadMultiCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, getCartIdByUserId(payload.cart, payload.userId)) || this;
+        _this.payload = payload;
+        _this.type = LOAD_MULTI_CART_SUCCESS;
+        return _this;
+    }
+    return LoadMultiCartSuccess;
+}(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    LoadMultiCartSuccess.prototype.type;
+    /** @type {?} */
+    LoadMultiCartSuccess.prototype.payload;
+}
+var MergeMultiCart = /** @class */ (function () {
+    function MergeMultiCart(payload) {
+        this.payload = payload;
+        this.type = MERGE_MULTI_CART;
+    }
+    return MergeMultiCart;
+}());
+if (false) {
+    /** @type {?} */
+    MergeMultiCart.prototype.type;
+    /** @type {?} */
+    MergeMultiCart.prototype.payload;
+}
+var MergeMultiCartSuccess = /** @class */ (function (_super) {
+    __extends(MergeMultiCartSuccess, _super);
+    function MergeMultiCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.oldCartId) || this;
+        _this.payload = payload;
+        _this.type = MERGE_MULTI_CART_SUCCESS;
+        return _this;
+    }
+    return MergeMultiCartSuccess;
+}(EntityRemoveAction));
+if (false) {
+    /** @type {?} */
+    MergeMultiCartSuccess.prototype.type;
+    /** @type {?} */
+    MergeMultiCartSuccess.prototype.payload;
+}
+var ResetMultiCartDetails = /** @class */ (function (_super) {
+    __extends(ResetMultiCartDetails, _super);
+    function ResetMultiCartDetails() {
+        var _this = _super.call(this, MULTI_CART_FEATURE, undefined) || this;
+        _this.type = RESET_MULTI_CART_DETAILS;
+        return _this;
+    }
+    return ResetMultiCartDetails;
+}(EntityProcessesLoaderResetAction));
+if (false) {
+    /** @type {?} */
+    ResetMultiCartDetails.prototype.type;
+}
+var RemoveCart = /** @class */ (function (_super) {
+    __extends(RemoveCart, _super);
+    function RemoveCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+        _this.payload = payload;
+        _this.type = REMOVE_CART;
+        return _this;
+    }
+    return RemoveCart;
+}(EntityRemoveAction));
+if (false) {
+    /** @type {?} */
+    RemoveCart.prototype.type;
+    /** @type {?} */
+    RemoveCart.prototype.payload;
+}
+var AddEmailToMultiCart = /** @class */ (function (_super) {
+    __extends(AddEmailToMultiCart, _super);
+    function AddEmailToMultiCart(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_MULTI_CART;
+        return _this;
+    }
+    return AddEmailToMultiCart;
+}(EntityLoadAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToMultiCart.prototype.type;
+    /** @type {?} */
+    AddEmailToMultiCart.prototype.payload;
+}
+var AddEmailToMultiCartFail = /** @class */ (function (_super) {
+    __extends(AddEmailToMultiCartFail, _super);
+    function AddEmailToMultiCartFail(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId, payload.error) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_MULTI_CART_FAIL;
+        return _this;
+    }
+    return AddEmailToMultiCartFail;
+}(EntityFailAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToMultiCartFail.prototype.type;
+    /** @type {?} */
+    AddEmailToMultiCartFail.prototype.payload;
+}
+var AddEmailToMultiCartSuccess = /** @class */ (function (_super) {
+    __extends(AddEmailToMultiCartSuccess, _super);
+    function AddEmailToMultiCartSuccess(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload.cartId) || this;
+        _this.payload = payload;
+        _this.type = ADD_EMAIL_TO_MULTI_CART_SUCCESS;
+        return _this;
+    }
+    return AddEmailToMultiCartSuccess;
+}(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    AddEmailToMultiCartSuccess.prototype.type;
+    /** @type {?} */
+    AddEmailToMultiCartSuccess.prototype.payload;
+}
+var CartProcessesIncrement = /** @class */ (function (_super) {
+    __extends(CartProcessesIncrement, _super);
+    function CartProcessesIncrement(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+        _this.payload = payload;
+        _this.type = CART_PROCESSES_INCREMENT;
+        return _this;
+    }
+    return CartProcessesIncrement;
+}(EntityProcessesIncrementAction));
+if (false) {
+    /** @type {?} */
+    CartProcessesIncrement.prototype.type;
+    /** @type {?} */
+    CartProcessesIncrement.prototype.payload;
+}
+var CartProcessesDecrement = /** @class */ (function (_super) {
+    __extends(CartProcessesDecrement, _super);
+    function CartProcessesDecrement(payload) {
+        var _this = _super.call(this, MULTI_CART_FEATURE, payload) || this;
+        _this.payload = payload;
+        _this.type = CART_PROCESSES_DECREMENT;
+        return _this;
+    }
+    return CartProcessesDecrement;
+}(EntityProcessesDecrementAction));
+if (false) {
+    /** @type {?} */
+    CartProcessesDecrement.prototype.type;
+    /** @type {?} */
+    CartProcessesDecrement.prototype.payload;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
 var CREATE_WISH_LIST = '[Wish List] Create Wish List';
 /** @type {?} */
 var CREATE_WISH_LIST_FAIL = '[Wish List] Create Wish List Fail';
@@ -34763,16 +34792,13 @@ var LOAD_WISH_LIST = '[Wish List] Load Wish List';
 var LOAD_WISH_LIST_SUCCESS = '[Wish List] Load Wish List Success';
 /** @type {?} */
 var RESET_WISH_LIST_DETAILS = '[Wish List] Reset Wish List';
-var CreateWishList = /** @class */ (function (_super) {
-    __extends(CreateWishList, _super);
+var CreateWishList = /** @class */ (function () {
     function CreateWishList(payload) {
-        var _this = _super.call(this, MULTI_CART_FEATURE, FRESH_CART_ID) || this;
-        _this.payload = payload;
-        _this.type = CREATE_WISH_LIST;
-        return _this;
+        this.payload = payload;
+        this.type = CREATE_WISH_LIST;
     }
     return CreateWishList;
-}(EntityLoadAction));
+}());
 if (false) {
     /** @type {?} */
     CreateWishList.prototype.type;
@@ -34839,19 +34865,6 @@ if (false) {
     LoadWishListSuccess.prototype.type;
     /** @type {?} */
     LoadWishListSuccess.prototype.payload;
-}
-var ResetWishListDetails = /** @class */ (function (_super) {
-    __extends(ResetWishListDetails, _super);
-    function ResetWishListDetails() {
-        var _this = _super.call(this, MULTI_CART_FEATURE, undefined) || this;
-        _this.type = RESET_WISH_LIST_DETAILS;
-        return _this;
-    }
-    return ResetWishListDetails;
-}(EntityResetAction));
-if (false) {
-    /** @type {?} */
-    ResetWishListDetails.prototype.type;
 }
 
 /**
@@ -34924,7 +34937,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     ClearCart: ClearCart,
     DeleteCart: DeleteCart,
     DeleteCartFail: DeleteCartFail,
-    RESET_FRESH_CART: RESET_FRESH_CART,
+    REMOVE_TEMP_CART: REMOVE_TEMP_CART,
     CREATE_MULTI_CART: CREATE_MULTI_CART,
     CREATE_MULTI_CART_FAIL: CREATE_MULTI_CART_FAIL,
     CREATE_MULTI_CART_SUCCESS: CREATE_MULTI_CART_SUCCESS,
@@ -34934,16 +34947,15 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     MERGE_MULTI_CART: MERGE_MULTI_CART,
     MERGE_MULTI_CART_SUCCESS: MERGE_MULTI_CART_SUCCESS,
     RESET_MULTI_CART_DETAILS: RESET_MULTI_CART_DETAILS,
-    SET_FRESH_CART: SET_FRESH_CART,
+    SET_TEMP_CART: SET_TEMP_CART,
     REMOVE_CART: REMOVE_CART,
     ADD_EMAIL_TO_MULTI_CART: ADD_EMAIL_TO_MULTI_CART,
     ADD_EMAIL_TO_MULTI_CART_FAIL: ADD_EMAIL_TO_MULTI_CART_FAIL,
     ADD_EMAIL_TO_MULTI_CART_SUCCESS: ADD_EMAIL_TO_MULTI_CART_SUCCESS,
     CART_PROCESSES_INCREMENT: CART_PROCESSES_INCREMENT,
     CART_PROCESSES_DECREMENT: CART_PROCESSES_DECREMENT,
-    FRESH_CART_ID: FRESH_CART_ID,
-    ResetFreshCart: ResetFreshCart,
-    SetFreshCart: SetFreshCart,
+    RemoveTempCart: RemoveTempCart,
+    SetTempCart: SetTempCart,
     CreateMultiCart: CreateMultiCart,
     CreateMultiCartFail: CreateMultiCartFail,
     CreateMultiCartSuccess: CreateMultiCartSuccess,
@@ -34969,8 +34981,7 @@ var cartGroup_actions = /*#__PURE__*/Object.freeze({
     CreateWishListSuccess: CreateWishListSuccess,
     CreateWishListFail: CreateWishListFail,
     LoadWishList: LoadWishList,
-    LoadWishListSuccess: LoadWishListSuccess,
-    ResetWishListDetails: ResetWishListDetails
+    LoadWishListSuccess: LoadWishListSuccess
 });
 
 /**
@@ -35056,6 +35067,26 @@ var MultiCartService = /** @class */ (function () {
         function (isStable) { return (isStable ? timer(0) : EMPTY); })), distinctUntilChanged());
     };
     /**
+     * Simple random temp cart id generator
+     */
+    /**
+     * Simple random temp cart id generator
+     * @private
+     * @return {?}
+     */
+    MultiCartService.prototype.generateTempCartId = /**
+     * Simple random temp cart id generator
+     * @private
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var pseudoUuid = Math.random()
+            .toString(36)
+            .substr(2, 9);
+        return "temp-" + pseudoUuid;
+    };
+    /**
      * Create or merge cart
      *
      * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
@@ -35074,13 +35105,18 @@ var MultiCartService = /** @class */ (function () {
      */
     function (_a) {
         var userId = _a.userId, oldCartId = _a.oldCartId, toMergeCartGuid = _a.toMergeCartGuid, extraData = _a.extraData;
+        // to support creating multiple carts at the same time we need to use different entity for every process
+        // simple random uuid generator is used here for entity names
+        /** @type {?} */
+        var tempCartId = this.generateTempCartId();
         this.store.dispatch(new CreateCart({
             extraData: extraData,
             userId: userId,
             oldCartId: oldCartId,
             toMergeCartGuid: toMergeCartGuid,
+            tempCartId: tempCartId,
         }));
-        return this.getCartEntity(FRESH_CART_ID);
+        return this.getCartEntity(tempCartId);
     };
     /**
      * Load cart
@@ -35453,7 +35489,7 @@ var ActiveCartService = /** @class */ (function () {
             if (isStable &&
                 _this.isEmpty(cart) &&
                 !loaded &&
-                cartId !== FRESH_CART_ID) {
+                !isTempCartId(cartId)) {
                 _this.load(cartId);
             }
         })), map((/**
@@ -35540,7 +35576,7 @@ var ActiveCartService = /** @class */ (function () {
         var _this = this;
         // Debounce is used here, to avoid flickering when we switch between different cart entities.
         // For example during `addEntry` method. We might try to load current cart, so `current cart will be then active id.
-        // After load fails we might create new cart so we switch to `fresh` cart entity used when creating cart.
+        // After load fails we might create new cart so we switch to `temp-${uuid}` cart entity used when creating cart.
         // At the end we finally switch to cart `code` for cart id. Between those switches cart `getLoaded` function should not flicker.
         return this.activeCartId$.pipe(switchMap((/**
          * @param {?} cartId
@@ -35675,7 +35711,7 @@ var ActiveCartService = /** @class */ (function () {
         // cart creating is always represented with loading flags
         // when all loading flags are false it means that we restored wrong cart id
         // could happen on context change or reload right in the middle on cart create call
-        return (this.cartId === FRESH_CART_ID &&
+        return (isTempCartId(this.cartId) &&
             (cartState.loading || cartState.success || cartState.error));
     };
     /**
@@ -35754,7 +35790,7 @@ var ActiveCartService = /** @class */ (function () {
          * @return {?}
          */
         function (cartState) { return cartState.success || cartState.error; })), 
-        // wait for active cart id to point to code/guid to avoid some work on fresh entity
+        // wait for active cart id to point to code/guid to avoid some work on temp cart entity
         filter((/**
          * @param {?} cartState
          * @return {?}
@@ -41268,7 +41304,10 @@ var CartEffects = /** @class */ (function () {
                         userId: payload.userId,
                         extraData: payload.extraData,
                     }),
-                    new SetFreshCart(cart)
+                    new SetTempCart({
+                        cart: cart,
+                        tempCartId: payload.tempCartId,
+                    })
                 ], conditionalActions);
             })), catchError((/**
              * @param {?} error
@@ -41278,7 +41317,7 @@ var CartEffects = /** @class */ (function () {
                 return from([
                     new CreateCartFail(makeErrorSerializable(error)),
                     new CreateMultiCartFail({
-                        cartId: payload.cartId,
+                        tempCartId: payload.tempCartId,
                         error: makeErrorSerializable(error),
                     }),
                 ]);
@@ -41843,7 +41882,7 @@ function activeCartReducer(state, action) {
     switch (action.type) {
         case LOAD_MULTI_CART_SUCCESS:
         case CREATE_MULTI_CART_SUCCESS:
-        // point to `fresh` cart when we are creating/merging cart
+        // point to `temp-${uuid}` cart when we are creating/merging cart
         case CREATE_MULTI_CART:
             if (action.payload &&
                 action.payload.extraData &&
@@ -41877,9 +41916,8 @@ function cartEntitiesReducer(state, action) {
         case CREATE_MULTI_CART_SUCCESS:
         case CREATE_WISH_LIST_SUCCESS:
         case LOAD_WISH_LIST_SUCCESS:
+        case SET_TEMP_CART:
             return action.payload.cart;
-        case SET_FRESH_CART:
-            return action.payload;
     }
     return state;
 }
@@ -42037,11 +42075,12 @@ var MultiCartEffects = /** @class */ (function () {
         function (action) {
             return new CreateMultiCart(action.payload);
         })));
-        this.setFreshCart$ = this.actions$.pipe(ofType(SET_FRESH_CART), map((/**
+        this.setTempCart$ = this.actions$.pipe(ofType(SET_TEMP_CART), map((/**
+         * @param {?} action
          * @return {?}
          */
-        function () {
-            return new ResetFreshCart();
+        function (action) {
+            return new RemoveTempCart(action.payload);
         })));
         this.mergeCart2$ = this.actions$.pipe(ofType(MERGE_CART), map((/**
          * @param {?} action
@@ -42096,7 +42135,7 @@ var MultiCartEffects = /** @class */ (function () {
     __decorate([
         Effect(),
         __metadata("design:type", Object)
-    ], MultiCartEffects.prototype, "setFreshCart$", void 0);
+    ], MultiCartEffects.prototype, "setTempCart$", void 0);
     __decorate([
         Effect(),
         __metadata("design:type", Observable)
@@ -42121,7 +42160,7 @@ if (false) {
     /** @type {?} */
     MultiCartEffects.prototype.createCart2$;
     /** @type {?} */
-    MultiCartEffects.prototype.setFreshCart$;
+    MultiCartEffects.prototype.setTempCart$;
     /** @type {?} */
     MultiCartEffects.prototype.mergeCart2$;
     /** @type {?} */

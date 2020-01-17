@@ -13,7 +13,7 @@ export declare class CartEffects {
     private store?;
     private contextChange$;
     loadCart$: Observable<DeprecatedCartActions.LoadCartFail | CartActions.LoadMultiCartFail | DeprecatedCartActions.LoadCartSuccess | CartActions.LoadMultiCartSuccess | CartActions.ClearExpiredCoupons | DeprecatedCartActions.ClearCart | CartActions.RemoveCart>;
-    createCart$: Observable<DeprecatedCartActions.MergeCartSuccess | CartActions.MergeMultiCartSuccess | DeprecatedCartActions.CreateCartSuccess | CartActions.CreateMultiCartSuccess | DeprecatedCartActions.CreateCartFail | CartActions.CreateMultiCartFail | CartActions.SetFreshCart>;
+    createCart$: Observable<DeprecatedCartActions.MergeCartSuccess | CartActions.MergeMultiCartSuccess | DeprecatedCartActions.CreateCartSuccess | CartActions.CreateMultiCartSuccess | DeprecatedCartActions.CreateCartFail | CartActions.CreateMultiCartFail | CartActions.SetTempCart>;
     mergeCart$: Observable<DeprecatedCartActions.CreateCart>;
     refresh$: Observable<DeprecatedCartActions.LoadCart | CartActions.CartProcessesDecrement>;
     refreshWithoutProcesses$: Observable<DeprecatedCartActions.LoadCart>;

@@ -1,13 +1,13 @@
 import { Action } from '@ngrx/store';
 import { Cart } from '../../../model/cart.model';
-import { EntityFailAction, EntityLoadAction, EntityResetAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
+import { EntityFailAction, EntitySuccessAction } from '../../../state/utils/entity-loader/entity-loader.action';
 export declare const CREATE_WISH_LIST = "[Wish List] Create Wish List";
 export declare const CREATE_WISH_LIST_FAIL = "[Wish List] Create Wish List Fail";
 export declare const CREATE_WISH_LIST_SUCCESS = "[Wish List] Create Wish List Success";
 export declare const LOAD_WISH_LIST = "[Wish List] Load Wish List";
 export declare const LOAD_WISH_LIST_SUCCESS = "[Wish List] Load Wish List Success";
 export declare const RESET_WISH_LIST_DETAILS = "[Wish List] Reset Wish List";
-export declare class CreateWishList extends EntityLoadAction {
+export declare class CreateWishList implements Action {
     payload: {
         userId: string;
         name?: string;
@@ -60,8 +60,4 @@ export declare class LoadWishListSuccess extends EntitySuccessAction {
         extraData?: any;
     });
 }
-export declare class ResetWishListDetails extends EntityResetAction {
-    readonly type = "[Wish List] Reset Wish List";
-    constructor();
-}
-export declare type WishListActions = CreateWishList | CreateWishListSuccess | CreateWishListFail | LoadWishList | LoadWishListSuccess | ResetWishListDetails;
+export declare type WishListActions = CreateWishList | CreateWishListSuccess | CreateWishListFail | LoadWishList | LoadWishListSuccess;

@@ -26,6 +26,10 @@ export declare class MultiCartService {
      */
     isStable(cartId: string): Observable<boolean>;
     /**
+     * Simple random temp cart id generator
+     */
+    private generateTempCartId;
+    /**
      * Create or merge cart
      *
      * @param params Object with userId, oldCartId, toMergeCartGuid and extraData
