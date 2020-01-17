@@ -1,4 +1,6 @@
 export declare enum ProductScope {
     LIST = "list",
-    DETAILS = "details"
+    DETAILS = "details",
+    ATTRIBUTES = "attributes",
+    VARIANTS = "variants"
 }

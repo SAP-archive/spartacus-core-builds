@@ -15140,6 +15140,8 @@
     var ProductScope = {
         LIST: 'list',
         DETAILS: 'details',
+        ATTRIBUTES: 'attributes',
+        VARIANTS: 'variants',
     };
 
     /**
@@ -15154,7 +15156,9 @@
                     product: 'products/${productCode}?fields=DEFAULT,averageRating,images(FULL),classifications,manufacturer,numberOfReviews,categories(FULL),baseOptions,baseProduct,variantOptions,variantType',
                     product_scopes: {
                         list: 'products/${productCode}?fields=code,name,summary,price(formattedValue),images(DEFAULT,galleryIndex)',
-                        details: 'products/${productCode}?fields=averageRating,purchasable,stock(DEFAULT),description,variantMatrix(DEFAULT),baseOptions(DEFAULT),baseProduct,availableForPickup,variantOptions(DEFAULT),variantType,code,url,price(DEFAULT),numberOfReviews,manufacturer,categories(FULL),priceRange,multidimensional,configuratorType,configurable,tags,classifications,images(FULL)',
+                        details: 'products/${productCode}?fields=averageRating,stock(DEFAULT),description,availableForPickup,code,url,price(DEFAULT),numberOfReviews,manufacturer,categories(FULL),priceRange,multidimensional,configuratorType,configurable,tags,images(FULL)',
+                        attributes: 'products/${productCode}?fields=classifications',
+                        variants: 'products/${productCode}?fields=purchasable,baseOptions(DEFAULT),baseProduct,variantOptions(DEFAULT),variantType',
                     },
                     productReviews: 'products/${productCode}/reviews',
                     // Uncomment this when occ gets configured
@@ -15170,7 +15174,7 @@
             loadingScopes: {
                 product: {
                     details: {
-                        include: [ProductScope.LIST],
+                        include: [ProductScope.LIST, ProductScope.VARIANTS],
                     },
                 },
             },
@@ -15190,6 +15194,10 @@
         ProductScopesConfig.prototype.list;
         /** @type {?|undefined} */
         ProductScopesConfig.prototype.details;
+        /** @type {?|undefined} */
+        ProductScopesConfig.prototype.attributes;
+        /** @type {?|undefined} */
+        ProductScopesConfig.prototype.variants;
         /* Skipping unhandled member: [scope: string]: ProductLoadingScopeConfig;*/
     }
     /**
