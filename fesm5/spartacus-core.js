@@ -13596,17 +13596,7 @@ var ProductImageNormalizer = /** @class */ (function () {
                     }
                     /** @type {?} */
                     var targetImage = __assign({}, image);
-                    /**
-                     * Traditionally, in an on-prem world, medias and other backend related calls
-                     * are hosted at the same platform, but in a cloud setup, applications are are
-                     * typically distributed cross different environments. For media, we use the
-                     * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
-                     * if none provided.
-                     */
-                    targetImage.url =
-                        (this.config.backend.media.baseUrl ||
-                            this.config.backend.occ.baseUrl ||
-                            '') + image.url;
+                    targetImage.url = this.normalizeImageUrl(targetImage.url);
                     imageContainer[image.format] = targetImage;
                 }
             }
@@ -13619,6 +13609,41 @@ var ProductImageNormalizer = /** @class */ (function () {
             }
         }
         return images;
+    };
+    /**
+     * Traditionally, in an on-prem world, medias and other backend related calls
+     * are hosted at the same platform, but in a cloud setup, applications are are
+     * typically distributed cross different environments. For media, we use the
+     * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
+     * if none provided.
+     */
+    /**
+     * Traditionally, in an on-prem world, medias and other backend related calls
+     * are hosted at the same platform, but in a cloud setup, applications are are
+     * typically distributed cross different environments. For media, we use the
+     * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
+     * if none provided.
+     * @private
+     * @param {?} url
+     * @return {?}
+     */
+    ProductImageNormalizer.prototype.normalizeImageUrl = /**
+     * Traditionally, in an on-prem world, medias and other backend related calls
+     * are hosted at the same platform, but in a cloud setup, applications are are
+     * typically distributed cross different environments. For media, we use the
+     * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
+     * if none provided.
+     * @private
+     * @param {?} url
+     * @return {?}
+     */
+    function (url) {
+        if (new RegExp(/^(http|data:image|\/\/)/i).test(url)) {
+            return url;
+        }
+        return ((this.config.backend.media.baseUrl ||
+            this.config.backend.occ.baseUrl ||
+            '') + url);
     };
     ProductImageNormalizer.decorators = [
         { type: Injectable, args: [{ providedIn: 'root' },] }

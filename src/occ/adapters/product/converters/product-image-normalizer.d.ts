@@ -16,4 +16,12 @@ export declare class ProductImageNormalizer implements Converter<Occ.Product, Pr
      * - images.GALLERY[0].thumnail.url
      */
     normalize(source: Occ.Image[]): Images;
+    /**
+     * Traditionally, in an on-prem world, medias and other backend related calls
+     * are hosted at the same platform, but in a cloud setup, applications are are
+     * typically distributed cross different environments. For media, we use the
+     * `backend.media.baseUrl` by default, but fallback to `backend.occ.baseUrl`
+     * if none provided.
+     */
+    private normalizeImageUrl;
 }
