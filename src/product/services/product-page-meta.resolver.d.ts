@@ -2,11 +2,11 @@ import { Observable } from 'rxjs';
 import { PageMeta, PageRobotsMeta } from '../../cms/model/page.model';
 import { PageMetaResolver } from '../../cms/page/page-meta.resolver';
 import { PageBreadcrumbResolver, PageDescriptionResolver, PageHeadingResolver, PageImageResolver, PageTitleResolver } from '../../cms/page/page.resolvers';
+import { FeatureConfigService } from '../../features-config/services/feature-config.service';
 import { TranslationService } from '../../i18n/translation.service';
 import { Product } from '../../model/product.model';
 import { RoutingService } from '../../routing/facade/routing.service';
 import { ProductService } from '../facade/product.service';
-import { FeatureConfigService } from '../../features-config/services/feature-config.service';
 /**
  * Resolves the page data for the Product Detail Page
  * based on the `PageType.PRODUCT_PAGE`.
@@ -21,7 +21,11 @@ export declare class ProductPageMetaResolver extends PageMetaResolver implements
     protected features?: FeatureConfigService;
     protected readonly PRODUCT_SCOPE: string;
     private product$;
-    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService, features?: FeatureConfigService);
+    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService, features: FeatureConfigService);
+    /**
+     * @deprecated since 1.4
+     */
+    constructor(routingService: RoutingService, productService: ProductService, translation: TranslationService);
     /**
      * @deprecated since version 1.3
      *
