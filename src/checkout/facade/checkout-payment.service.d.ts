@@ -39,5 +39,9 @@ export declare class CheckoutPaymentService {
      * @param paymentDetails : the PaymentDetails to be set
      */
     setPaymentDetails(paymentDetails: PaymentDetails): void;
+    /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     */
+    paymentProcessSuccess(): void;
     protected actionAllowed(): boolean;
 }

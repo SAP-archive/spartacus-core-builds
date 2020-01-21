@@ -40444,6 +40444,8 @@ var LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
 var LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
 /** @type {?} */
 var CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+/** @type {?} */
+var PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
 var AddDeliveryAddress = /** @class */ (function () {
     function AddDeliveryAddress(payload) {
         this.payload = payload;
@@ -40666,26 +40668,32 @@ if (false) {
     /** @type {?} */
     ResetSetDeliveryModeProcess.prototype.type;
 }
-var CreatePaymentDetails = /** @class */ (function () {
+var CreatePaymentDetails = /** @class */ (function (_super) {
+    __extends(CreatePaymentDetails, _super);
     function CreatePaymentDetails(payload) {
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS;
+        var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+        _this.payload = payload;
+        _this.type = CREATE_PAYMENT_DETAILS;
+        return _this;
     }
     return CreatePaymentDetails;
-}());
+}(EntityLoadAction));
 if (false) {
     /** @type {?} */
     CreatePaymentDetails.prototype.type;
     /** @type {?} */
     CreatePaymentDetails.prototype.payload;
 }
-var CreatePaymentDetailsFail = /** @class */ (function () {
+var CreatePaymentDetailsFail = /** @class */ (function (_super) {
+    __extends(CreatePaymentDetailsFail, _super);
     function CreatePaymentDetailsFail(payload) {
-        this.payload = payload;
-        this.type = CREATE_PAYMENT_DETAILS_FAIL;
+        var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+        _this.payload = payload;
+        _this.type = CREATE_PAYMENT_DETAILS_FAIL;
+        return _this;
     }
     return CreatePaymentDetailsFail;
-}());
+}(EntityFailAction));
 if (false) {
     /** @type {?} */
     CreatePaymentDetailsFail.prototype.type;
@@ -40704,6 +40712,19 @@ if (false) {
     CreatePaymentDetailsSuccess.prototype.type;
     /** @type {?} */
     CreatePaymentDetailsSuccess.prototype.payload;
+}
+var PaymentProcessSuccess = /** @class */ (function (_super) {
+    __extends(PaymentProcessSuccess, _super);
+    function PaymentProcessSuccess() {
+        var _this = _super.call(this, PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID) || this;
+        _this.type = PAYMENT_PROCESS_SUCCESS;
+        return _this;
+    }
+    return PaymentProcessSuccess;
+}(EntitySuccessAction));
+if (false) {
+    /** @type {?} */
+    PaymentProcessSuccess.prototype.type;
 }
 var SetPaymentDetails = /** @class */ (function (_super) {
     __extends(SetPaymentDetails, _super);
@@ -41033,6 +41054,7 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
     LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
     CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
     AddDeliveryAddress: AddDeliveryAddress,
     AddDeliveryAddressFail: AddDeliveryAddressFail,
     AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
@@ -41051,6 +41073,7 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     CreatePaymentDetails: CreatePaymentDetails,
     CreatePaymentDetailsFail: CreatePaymentDetailsFail,
     CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+    PaymentProcessSuccess: PaymentProcessSuccess,
     SetPaymentDetails: SetPaymentDetails,
     SetPaymentDetailsFail: SetPaymentDetailsFail,
     SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
@@ -44693,6 +44716,20 @@ var CheckoutPaymentService = /** @class */ (function () {
                 paymentDetails: paymentDetails,
             }));
         }
+    };
+    /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     */
+    /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     * @return {?}
+     */
+    CheckoutPaymentService.prototype.paymentProcessSuccess = /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     * @return {?}
+     */
+    function () {
+        this.checkoutStore.dispatch(new PaymentProcessSuccess());
     };
     /**
      * @protected

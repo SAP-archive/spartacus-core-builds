@@ -2,7 +2,7 @@ import { Action } from '@ngrx/store';
 import { Address } from '../../../model/address.model';
 import { PaymentDetails } from '../../../model/cart.model';
 import { DeliveryMode, Order } from '../../../model/order.model';
-import { StateLoaderActions, StateEntityLoaderActions } from '../../../state/utils/index';
+import { StateEntityLoaderActions, StateLoaderActions } from '../../../state/utils/index';
 import { CheckoutDetails } from '../../models/checkout.model';
 export declare const CLEAR_CHECKOUT_DELIVERY_ADDRESS = "[Checkout] Clear Checkout Delivery Address";
 export declare const CLEAR_CHECKOUT_DELIVERY_ADDRESS_SUCCESS = "[Checkout] Clear Checkout Delivery Address Success";
@@ -45,6 +45,7 @@ export declare const LOAD_CHECKOUT_DETAILS = "[Checkout] Load Checkout Details";
 export declare const LOAD_CHECKOUT_DETAILS_FAIL = "[Checkout] Load Checkout Details Fail";
 export declare const LOAD_CHECKOUT_DETAILS_SUCCESS = "[Checkout] Load Checkout Details Success";
 export declare const CHECKOUT_CLEAR_MISCS_DATA = "[Checkout] Clear Miscs Data";
+export declare const PAYMENT_PROCESS_SUCCESS = "[Checkout] Payment Process Success";
 export declare class AddDeliveryAddress implements Action {
     payload: {
         userId: string;
@@ -147,7 +148,7 @@ export declare class ResetSetDeliveryModeProcess extends StateEntityLoaderAction
     readonly type = "[Checkout] Reset Set Delivery Mode Process";
     constructor();
 }
-export declare class CreatePaymentDetails implements Action {
+export declare class CreatePaymentDetails extends StateEntityLoaderActions.EntityLoadAction {
     payload: {
         userId: string;
         cartId: string;
@@ -160,7 +161,7 @@ export declare class CreatePaymentDetails implements Action {
         paymentDetails: PaymentDetails;
     });
 }
-export declare class CreatePaymentDetailsFail implements Action {
+export declare class CreatePaymentDetailsFail extends StateEntityLoaderActions.EntityFailAction {
     payload: any;
     readonly type = "[Checkout] Create Payment Details Fail";
     constructor(payload: any);
@@ -169,6 +170,10 @@ export declare class CreatePaymentDetailsSuccess implements Action {
     payload: PaymentDetails;
     readonly type = "[Checkout] Create Payment Details Success";
     constructor(payload: PaymentDetails);
+}
+export declare class PaymentProcessSuccess extends StateEntityLoaderActions.EntitySuccessAction {
+    readonly type = "[Checkout] Payment Process Success";
+    constructor();
 }
 export declare class SetPaymentDetails extends StateEntityLoaderActions.EntityLoadAction {
     payload: {

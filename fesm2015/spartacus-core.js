@@ -35793,6 +35793,8 @@ const LOAD_CHECKOUT_DETAILS_FAIL = '[Checkout] Load Checkout Details Fail';
 const LOAD_CHECKOUT_DETAILS_SUCCESS = '[Checkout] Load Checkout Details Success';
 /** @type {?} */
 const CHECKOUT_CLEAR_MISCS_DATA = '[Checkout] Clear Miscs Data';
+/** @type {?} */
+const PAYMENT_PROCESS_SUCCESS = '[Checkout] Payment Process Success';
 class AddDeliveryAddress {
     /**
      * @param {?} payload
@@ -36012,11 +36014,12 @@ if (false) {
     /** @type {?} */
     ResetSetDeliveryModeProcess.prototype.type;
 }
-class CreatePaymentDetails {
+class CreatePaymentDetails extends EntityLoadAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
         this.payload = payload;
         this.type = CREATE_PAYMENT_DETAILS;
     }
@@ -36027,11 +36030,12 @@ if (false) {
     /** @type {?} */
     CreatePaymentDetails.prototype.payload;
 }
-class CreatePaymentDetailsFail {
+class CreatePaymentDetailsFail extends EntityFailAction {
     /**
      * @param {?} payload
      */
     constructor(payload) {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
         this.payload = payload;
         this.type = CREATE_PAYMENT_DETAILS_FAIL;
     }
@@ -36056,6 +36060,16 @@ if (false) {
     CreatePaymentDetailsSuccess.prototype.type;
     /** @type {?} */
     CreatePaymentDetailsSuccess.prototype.payload;
+}
+class PaymentProcessSuccess extends EntitySuccessAction {
+    constructor() {
+        super(PROCESS_FEATURE, SET_PAYMENT_DETAILS_PROCESS_ID);
+        this.type = PAYMENT_PROCESS_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    PaymentProcessSuccess.prototype.type;
 }
 class SetPaymentDetails extends EntityLoadAction {
     /**
@@ -36396,6 +36410,7 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     LOAD_CHECKOUT_DETAILS_FAIL: LOAD_CHECKOUT_DETAILS_FAIL,
     LOAD_CHECKOUT_DETAILS_SUCCESS: LOAD_CHECKOUT_DETAILS_SUCCESS,
     CHECKOUT_CLEAR_MISCS_DATA: CHECKOUT_CLEAR_MISCS_DATA,
+    PAYMENT_PROCESS_SUCCESS: PAYMENT_PROCESS_SUCCESS,
     AddDeliveryAddress: AddDeliveryAddress,
     AddDeliveryAddressFail: AddDeliveryAddressFail,
     AddDeliveryAddressSuccess: AddDeliveryAddressSuccess,
@@ -36414,6 +36429,7 @@ var checkoutGroup_actions = /*#__PURE__*/Object.freeze({
     CreatePaymentDetails: CreatePaymentDetails,
     CreatePaymentDetailsFail: CreatePaymentDetailsFail,
     CreatePaymentDetailsSuccess: CreatePaymentDetailsSuccess,
+    PaymentProcessSuccess: PaymentProcessSuccess,
     SetPaymentDetails: SetPaymentDetails,
     SetPaymentDetailsFail: SetPaymentDetailsFail,
     SetPaymentDetailsSuccess: SetPaymentDetailsSuccess,
@@ -39559,6 +39575,13 @@ class CheckoutPaymentService {
                 paymentDetails: paymentDetails,
             }));
         }
+    }
+    /**
+     * Sets payment loading to true without having the flicker issue (GH-3102)
+     * @return {?}
+     */
+    paymentProcessSuccess() {
+        this.checkoutStore.dispatch(new PaymentProcessSuccess());
     }
     /**
      * @protected
