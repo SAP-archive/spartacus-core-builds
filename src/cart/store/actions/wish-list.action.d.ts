@@ -10,13 +10,13 @@ export declare const RESET_WISH_LIST_DETAILS = "[Wish List] Reset Wish List";
 export declare class CreateWishList implements Action {
     payload: {
         userId: string;
-        name?: string;
+        name: string;
         description?: string;
     };
     readonly type = "[Wish List] Create Wish List";
     constructor(payload: {
         userId: string;
-        name?: string;
+        name: string;
         description?: string;
     });
 }
@@ -43,9 +43,15 @@ export declare class CreateWishListFail extends EntityFailAction {
     });
 }
 export declare class LoadWishList implements Action {
-    payload: string;
+    payload: {
+        userId: string;
+        customerId: string;
+    };
     readonly type = "[Wish List] Load Wish List";
-    constructor(payload: string);
+    constructor(payload: {
+        userId: string;
+        customerId: string;
+    });
 }
 export declare class LoadWishListSuccess extends EntitySuccessAction {
     payload: {

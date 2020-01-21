@@ -38236,9 +38236,10 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var WishListService = /** @class */ (function () {
-    function WishListService(store, authService, multiCartService) {
+    function WishListService(store, authService, userService, multiCartService) {
         this.store = store;
         this.authService = authService;
+        this.userService = userService;
         this.multiCartService = multiCartService;
     }
     /**
@@ -38264,14 +38265,21 @@ var WishListService = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        return this.getWishListId().pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+        return combineLatest([
+            this.getWishListId(),
+            this.userService.get(),
+            this.authService.getOccUserId(),
+        ]).pipe(distinctUntilChanged(), tap((/**
          * @param {?} __0
          * @return {?}
          */
         function (_a) {
-            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-            if (!Boolean(wishListId) && userId !== OCC_USER_ID_ANONYMOUS) {
-                _this.loadWishList(userId);
+            var _b = __read(_a, 3), wishListId = _b[0], user = _b[1], userId = _b[2];
+            if (!Boolean(wishListId) &&
+                userId !== OCC_USER_ID_ANONYMOUS &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -38291,14 +38299,16 @@ var WishListService = /** @class */ (function () {
     };
     /**
      * @param {?} userId
+     * @param {?} customerId
      * @return {?}
      */
     WishListService.prototype.loadWishList = /**
      * @param {?} userId
+     * @param {?} customerId
      * @return {?}
      */
-    function (userId) {
-        this.store.dispatch(new LoadWishList(userId));
+    function (userId, customerId) {
+        this.store.dispatch(new LoadWishList({ userId: userId, customerId: customerId }));
     };
     /**
      * @param {?} productCode
@@ -38311,14 +38321,16 @@ var WishListService = /** @class */ (function () {
     function (productCode) {
         var _this = this;
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap((/**
          * @param {?} __0
          * @return {?}
          */
         function (_a) {
-            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-            if (!Boolean(wishListId)) {
-                _this.loadWishList(userId);
+            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -38348,14 +38360,16 @@ var WishListService = /** @class */ (function () {
     function (entry) {
         var _this = this;
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap((/**
          * @param {?} __0
          * @return {?}
          */
         function (_a) {
-            var _b = __read(_a, 2), wishListId = _b[0], userId = _b[1];
-            if (!Boolean(wishListId)) {
-                _this.loadWishList(userId);
+            var _b = __read(_a, 3), wishListId = _b[0], userId = _b[1], user = _b[2];
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                _this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -38412,6 +38426,7 @@ var WishListService = /** @class */ (function () {
     WishListService.ctorParameters = function () { return [
         { type: Store },
         { type: AuthService },
+        { type: UserService },
         { type: MultiCartService }
     ]; };
     return WishListService;
@@ -38427,6 +38442,11 @@ if (false) {
      * @protected
      */
     WishListService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    WishListService.prototype.userService;
     /**
      * @type {?}
      * @protected
@@ -41718,10 +41738,11 @@ var WishListEffects = /** @class */ (function () {
          * @return {?}
          */
         function (action) { return action.payload; })), concatMap((/**
-         * @param {?} userId
+         * @param {?} payload
          * @return {?}
          */
-        function (userId) {
+        function (payload) {
+            var userId = payload.userId, customerId = payload.customerId;
             return _this.cartConnector.loadAll(userId).pipe(switchMap((/**
              * @param {?} carts
              * @return {?}
@@ -41733,7 +41754,7 @@ var WishListEffects = /** @class */ (function () {
                      * @param {?} cart
                      * @return {?}
                      */
-                    function (cart) { return cart.name === 'wishlist'; }));
+                    function (cart) { return cart.name === "wishlist" + customerId; }));
                     if (Boolean(wishList)) {
                         return [
                             new LoadWishListSuccess({
@@ -41744,7 +41765,10 @@ var WishListEffects = /** @class */ (function () {
                     }
                     else {
                         return [
-                            new CreateWishList({ userId: userId, name: 'wishlist' }),
+                            new CreateWishList({
+                                userId: userId,
+                                name: "wishlist" + customerId,
+                            }),
                         ];
                     }
                 }

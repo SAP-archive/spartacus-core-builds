@@ -33890,11 +33890,13 @@ class WishListService {
     /**
      * @param {?} store
      * @param {?} authService
+     * @param {?} userService
      * @param {?} multiCartService
      */
-    constructor(store, authService, multiCartService) {
+    constructor(store, authService, userService, multiCartService) {
         this.store = store;
         this.authService = authService;
+        this.userService = userService;
         this.multiCartService = multiCartService;
     }
     /**
@@ -33910,13 +33912,20 @@ class WishListService {
      * @return {?}
      */
     getWishList() {
-        return this.getWishListId().pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+        return combineLatest([
+            this.getWishListId(),
+            this.userService.get(),
+            this.authService.getOccUserId(),
+        ]).pipe(distinctUntilChanged(), tap((/**
          * @param {?} __0
          * @return {?}
          */
-        ([wishListId, userId]) => {
-            if (!Boolean(wishListId) && userId !== OCC_USER_ID_ANONYMOUS) {
-                this.loadWishList(userId);
+        ([wishListId, user, userId]) => {
+            if (!Boolean(wishListId) &&
+                userId !== OCC_USER_ID_ANONYMOUS &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -33930,10 +33939,11 @@ class WishListService {
     }
     /**
      * @param {?} userId
+     * @param {?} customerId
      * @return {?}
      */
-    loadWishList(userId) {
-        this.store.dispatch(new LoadWishList(userId));
+    loadWishList(userId, customerId) {
+        this.store.dispatch(new LoadWishList({ userId, customerId }));
     }
     /**
      * @param {?} productCode
@@ -33941,13 +33951,15 @@ class WishListService {
      */
     addEntry(productCode) {
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap((/**
          * @param {?} __0
          * @return {?}
          */
-        ([wishListId, userId]) => {
-            if (!Boolean(wishListId)) {
-                this.loadWishList(userId);
+        ([wishListId, userId, user]) => {
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -33966,13 +33978,15 @@ class WishListService {
      */
     removeEntry(entry) {
         this.getWishListId()
-            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId()), tap((/**
+            .pipe(distinctUntilChanged(), withLatestFrom(this.authService.getOccUserId(), this.userService.get()), tap((/**
          * @param {?} __0
          * @return {?}
          */
-        ([wishListId, userId]) => {
-            if (!Boolean(wishListId)) {
-                this.loadWishList(userId);
+        ([wishListId, userId, user]) => {
+            if (!Boolean(wishListId) &&
+                Boolean(user) &&
+                Boolean(user.customerId)) {
+                this.loadWishList(userId, user.customerId);
             }
         })), filter((/**
          * @param {?} __0
@@ -34014,6 +34028,7 @@ WishListService.decorators = [
 WishListService.ctorParameters = () => [
     { type: Store },
     { type: AuthService },
+    { type: UserService },
     { type: MultiCartService }
 ];
 if (false) {
@@ -34027,6 +34042,11 @@ if (false) {
      * @protected
      */
     WishListService.prototype.authService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    WishListService.prototype.userService;
     /**
      * @type {?}
      * @protected
@@ -37033,10 +37053,11 @@ class WishListEffects {
          * @return {?}
          */
         (action) => action.payload)), concatMap((/**
-         * @param {?} userId
+         * @param {?} payload
          * @return {?}
          */
-        userId => {
+        payload => {
+            const { userId, customerId } = payload;
             return this.cartConnector.loadAll(userId).pipe(switchMap((/**
              * @param {?} carts
              * @return {?}
@@ -37048,7 +37069,7 @@ class WishListEffects {
                      * @param {?} cart
                      * @return {?}
                      */
-                    cart => cart.name === 'wishlist'));
+                    cart => cart.name === `wishlist${customerId}`));
                     if (Boolean(wishList)) {
                         return [
                             new LoadWishListSuccess({
@@ -37059,7 +37080,10 @@ class WishListEffects {
                     }
                     else {
                         return [
-                            new CreateWishList({ userId, name: 'wishlist' }),
+                            new CreateWishList({
+                                userId,
+                                name: `wishlist${customerId}`,
+                            }),
                         ];
                     }
                 }
