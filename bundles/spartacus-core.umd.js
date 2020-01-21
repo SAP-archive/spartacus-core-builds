@@ -2,7 +2,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('@angular/common'), require('rxjs'), require('rxjs/operators'), require('@ngrx/store'), require('@angular/common/http'), require('@angular/router'), require('@ngrx/effects'), require('@angular/platform-browser'), require('@angular/forms'), require('@ngrx/router-store'), require('i18next'), require('i18next-xhr-backend')) :
     typeof define === 'function' && define.amd ? define('@spartacus/core', ['exports', '@angular/core', '@angular/common', 'rxjs', 'rxjs/operators', '@ngrx/store', '@angular/common/http', '@angular/router', '@ngrx/effects', '@angular/platform-browser', '@angular/forms', '@ngrx/router-store', 'i18next', 'i18next-xhr-backend'], factory) :
     (global = global || self, factory((global.spartacus = global.spartacus || {}, global.spartacus.core = {}), global.ng.core, global.ng.common, global.rxjs, global.rxjs.operators, global.store, global.ng.common.http, global.ng.router, global.effects, global.ng.platformBrowser, global.ng.forms, global.fromNgrxRouter, global.i18next, global.i18nextXhrBackend));
-}(this, function (exports, core, common, rxjs, operators, store, http, router, effects$c, platformBrowser, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
+}(this, function (exports, core, common, rxjs, operators, store, http, router, effects$d, platformBrowser, forms, routerStore, i18next, i18nextXhrBackend) { 'use strict';
 
     i18next = i18next && i18next.hasOwnProperty('default') ? i18next['default'] : i18next;
     i18nextXhrBackend = i18nextXhrBackend && i18nextXhrBackend.hasOwnProperty('default') ? i18nextXhrBackend['default'] : i18nextXhrBackend;
@@ -6332,7 +6332,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.clientAuthenticationTokenService = clientAuthenticationTokenService;
-            this.loadClientToken$ = this.actions$.pipe(effects$c.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap((/**
+            this.loadClientToken$ = this.actions$.pipe(effects$d.ofType(LOAD_CLIENT_TOKEN), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -6358,11 +6358,11 @@
         ];
         /** @nocollapse */
         ClientTokenEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: ClientAuthenticationTokenService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ClientTokenEffect.prototype, "loadClientToken$", void 0);
         return ClientTokenEffect;
@@ -6391,7 +6391,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userTokenService = userTokenService;
-            this.loadUserToken$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN), operators.map((/**
+            this.loadUserToken$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6420,11 +6420,11 @@
                     return rxjs.of(new LoadUserTokenFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.login$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
+            this.login$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN_SUCCESS), operators.map((/**
              * @return {?}
              */
             function () { return new Login(); })));
-            this.refreshUserToken$ = this.actions$.pipe(effects$c.ofType(REFRESH_USER_TOKEN), operators.map((/**
+            this.refreshUserToken$ = this.actions$.pipe(effects$d.ofType(REFRESH_USER_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6450,7 +6450,7 @@
                  */
                 function (error) { return rxjs.of(new RefreshUserTokenFail(makeErrorSerializable(error))); }))));
             })));
-            this.revokeUserToken$ = this.actions$.pipe(effects$c.ofType(REVOKE_USER_TOKEN), operators.map((/**
+            this.revokeUserToken$ = this.actions$.pipe(effects$d.ofType(REVOKE_USER_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -6476,23 +6476,23 @@
         ];
         /** @nocollapse */
         UserTokenEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserAuthenticationTokenService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "loadUserToken$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "login$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "refreshUserToken$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserTokenEffects.prototype, "revokeUserToken$", void 0);
         return UserTokenEffects;
@@ -6631,7 +6631,7 @@
                             http.HttpClientModule,
                             StateModule,
                             store.StoreModule.forFeature(AUTH_FEATURE, reducerToken, { metaReducers: metaReducers }),
-                            effects$c.EffectsModule.forFeature(effects),
+                            effects$d.EffectsModule.forFeature(effects),
                             ConfigModule.withConfigFactory(authStoreConfigFactory),
                         ],
                         providers: [reducerProvider],
@@ -29459,7 +29459,7 @@
             this.anonymousConsentsConfig = anonymousConsentsConfig;
             this.anonymousConsentService = anonymousConsentService;
             this.userConsentService = userConsentService;
-            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$c.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.concatMap((/**
+            this.loadAnonymousConsentTemplates$ = this.actions$.pipe(effects$d.ofType(LOAD_ANONYMOUS_CONSENT_TEMPLATES), operators.concatMap((/**
              * @param {?} _
              * @return {?}
              */
@@ -29490,12 +29490,12 @@
                     return rxjs.of(new LoadAnonymousConsentTemplatesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter((/**
+            this.transferAnonymousConsentsToUser$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter((/**
              * @return {?}
              */
             function () {
                 return isFeatureEnabled(_this.anonymousConsentsConfig, ANONYMOUS_CONSENTS_FEATURE) && Boolean(_this.anonymousConsentsConfig.anonymousConsents);
-            })), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(REGISTER_USER_SUCCESS))), operators.filter((/**
+            })), operators.withLatestFrom(this.actions$.pipe(effects$d.ofType(REGISTER_USER_SUCCESS))), operators.filter((/**
              * @param {?} __0
              * @return {?}
              */
@@ -29565,7 +29565,7 @@
                     return rxjs.EMPTY;
                 })));
             })));
-            this.giveRequiredConsentsToUser$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter((/**
+            this.giveRequiredConsentsToUser$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN_SUCCESS), operators.filter((/**
              * @param {?} action
              * @return {?}
              */
@@ -29642,7 +29642,7 @@
         ];
         /** @nocollapse */
         AnonymousConsentsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: AnonymousConsentTemplatesConnector },
             { type: AuthService },
             { type: AnonymousConsentsConfig },
@@ -29650,15 +29650,15 @@
             { type: UserConsentService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AnonymousConsentsEffects.prototype, "loadAnonymousConsentTemplates$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AnonymousConsentsEffects.prototype, "transferAnonymousConsentsToUser$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AnonymousConsentsEffects.prototype, "giveRequiredConsentsToUser$", void 0);
         return AnonymousConsentsEffects;
@@ -30599,7 +30599,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
-            this.loadLanguages$ = this.actions$.pipe(effects$c.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
+            this.loadLanguages$ = this.actions$.pipe(effects$d.ofType(LOAD_LANGUAGES), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -30615,7 +30615,7 @@
                     return rxjs.of(new LoadLanguagesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.activateLanguage$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
+            this.activateLanguage$ = this.actions$.pipe(effects$d.ofType(SET_ACTIVE_LANGUAGE), operators.tap((/**
              * @param {?} action
              * @return {?}
              */
@@ -30633,16 +30633,16 @@
         ];
         /** @nocollapse */
         LanguagesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector },
             { type: WindowRef }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], LanguagesEffects.prototype, "loadLanguages$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], LanguagesEffects.prototype, "activateLanguage$", void 0);
         return LanguagesEffects;
@@ -30679,7 +30679,7 @@
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
             this.winRef = winRef;
-            this.loadCurrencies$ = this.actions$.pipe(effects$c.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
+            this.loadCurrencies$ = this.actions$.pipe(effects$d.ofType(LOAD_CURRENCIES), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -30695,7 +30695,7 @@
                     return rxjs.of(new LoadCurrenciesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.activateCurrency$ = this.actions$.pipe(effects$c.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
+            this.activateCurrency$ = this.actions$.pipe(effects$d.ofType(SET_ACTIVE_CURRENCY), operators.tap((/**
              * @param {?} action
              * @return {?}
              */
@@ -30713,16 +30713,16 @@
         ];
         /** @nocollapse */
         CurrenciesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector },
             { type: WindowRef }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CurrenciesEffects.prototype, "loadCurrencies$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CurrenciesEffects.prototype, "activateCurrency$", void 0);
         return CurrenciesEffects;
@@ -30758,7 +30758,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBaseSite$ = this.actions$.pipe(effects$c.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
+            this.loadBaseSite$ = this.actions$.pipe(effects$d.ofType(LOAD_BASE_SITE), operators.exhaustMap((/**
              * @return {?}
              */
             function () {
@@ -30780,11 +30780,11 @@
         ];
         /** @nocollapse */
         BaseSiteEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], BaseSiteEffects.prototype, "loadBaseSite$", void 0);
         return BaseSiteEffects;
@@ -30975,7 +30975,7 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             store.StoreModule.forFeature(SITE_CONTEXT_FEATURE, reducerToken$1),
-                            effects$c.EffectsModule.forFeature(effects$2),
+                            effects$d.EffectsModule.forFeature(effects$2),
                             ConfigModule.withConfigFactory(siteContextStoreConfigFactory),
                         ],
                         providers: [reducerProvider$1],
@@ -31196,7 +31196,7 @@
                             store.StoreModule.forFeature(ANONYMOUS_CONSENTS_STORE_FEATURE, reducerToken$2, {
                                 metaReducers: metaReducers$1,
                             }),
-                            effects$c.EffectsModule.forFeature(effects$1),
+                            effects$d.EffectsModule.forFeature(effects$1),
                             ConfigModule.withConfigFactory(anonymousConsentsStoreConfigFactory),
                         ],
                         providers: [reducerProvider$2],
@@ -31536,7 +31536,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.asmConnector = asmConnector;
-            this.customerSearch$ = this.actions$.pipe(effects$c.ofType(CUSTOMER_SEARCH), operators.map((/**
+            this.customerSearch$ = this.actions$.pipe(effects$d.ofType(CUSTOMER_SEARCH), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -31565,11 +31565,11 @@
         ];
         /** @nocollapse */
         CustomerEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: AsmConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerEffects.prototype, "customerSearch$", void 0);
         return CustomerEffects;
@@ -31598,7 +31598,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userTokenService = userTokenService;
-            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(effects$c.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map((/**
+            this.loadCustomerSupportAgentToken$ = this.actions$.pipe(effects$d.ofType(LOAD_CUSTOMER_SUPPORT_AGENT_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -31632,11 +31632,11 @@
         ];
         /** @nocollapse */
         CustomerSupportAgentTokenEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserAuthenticationTokenService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerSupportAgentTokenEffects.prototype, "loadCustomerSupportAgentToken$", void 0);
         return CustomerSupportAgentTokenEffects;
@@ -31768,7 +31768,7 @@
                             http.HttpClientModule,
                             StateModule,
                             store.StoreModule.forFeature(ASM_FEATURE, reducerToken$3, { metaReducers: metaReducers$2 }),
-                            effects$c.EffectsModule.forFeature(effects$3),
+                            effects$d.EffectsModule.forFeature(effects$3),
                             ConfigModule.withConfigFactory(asmStoreConfigFactory),
                         ],
                         providers: [reducerProvider$3],
@@ -33159,7 +33159,7 @@
             this.store = store$1;
             this.config = config;
             this.platformId = platformId;
-            this.removeDuplicated$ = this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
+            this.removeDuplicated$ = this.actions$.pipe(effects$d.ofType(ADD_MESSAGE), operators.pluck('payload'), operators.switchMap((/**
              * @param {?} message
              * @return {?}
              */
@@ -33184,7 +33184,7 @@
                 })));
             })));
             this.hideAfterDelay$ = common.isPlatformBrowser(this.platformId) // we don't want to run this logic when doing SSR
-                ? this.actions$.pipe(effects$c.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
+                ? this.actions$.pipe(effects$d.ofType(ADD_MESSAGE), operators.pluck('payload', 'type'), operators.concatMap((/**
                  * @param {?} type
                  * @return {?}
                  */
@@ -33214,17 +33214,17 @@
         ];
         /** @nocollapse */
         GlobalMessageEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: store.Store },
             { type: GlobalMessageConfig },
             { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], GlobalMessageEffect.prototype, "removeDuplicated$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], GlobalMessageEffect.prototype, "hideAfterDelay$", void 0);
         return GlobalMessageEffect;
@@ -33303,7 +33303,7 @@
             { type: core.NgModule, args: [{
                         imports: [
                             GlobalMessageStoreModule,
-                            effects$c.EffectsModule.forFeature([GlobalMessageEffect]),
+                            effects$d.EffectsModule.forFeature([GlobalMessageEffect]),
                             ConfigModule.withConfigFactory(defaultGlobalMessageConfigFactory),
                         ],
                         providers: [
@@ -39989,13 +39989,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     */
     var CartEntryEffects = /** @class */ (function () {
         function CartEntryEffects(actions$, cartEntryConnector) {
             var _this = this;
             this.actions$ = actions$;
             this.cartEntryConnector = cartEntryConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addEntry$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY), operators.map((/**
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addEntry$ = this.actions$.pipe(effects$d.ofType(CART_ADD_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -40027,7 +40034,7 @@
                     ]);
                 })));
             })), withdrawOn(this.contextChange$));
-            this.removeEntry$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_ENTRY), operators.map((/**
+            this.removeEntry$ = this.actions$.pipe(effects$d.ofType(CART_REMOVE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -40061,7 +40068,7 @@
                     ]);
                 })));
             })), withdrawOn(this.contextChange$));
-            this.updateEntry$ = this.actions$.pipe(effects$c.ofType(CART_UPDATE_ENTRY), operators.map((/**
+            this.updateEntry$ = this.actions$.pipe(effects$d.ofType(CART_UPDATE_ENTRY), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -40101,19 +40108,19 @@
         ];
         /** @nocollapse */
         CartEntryEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CartEntryConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "addEntry$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "removeEntry$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEntryEffects.prototype, "updateEntry$", void 0);
         return CartEntryEffects;
@@ -40204,13 +40211,20 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     */
     var CartVoucherEffects = /** @class */ (function () {
         function CartVoucherEffects(actions$, cartVoucherConnector, messageService) {
             var _this = this;
             this.actions$ = actions$;
             this.cartVoucherConnector = cartVoucherConnector;
             this.messageService = messageService;
-            this.addCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_ADD_VOUCHER), operators.map((/**
+            this.addCartVoucher$ = this.actions$.pipe(effects$d.ofType(CART_ADD_VOUCHER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -40245,7 +40259,7 @@
                     ]);
                 })));
             })));
-            this.removeCartVoucher$ = this.actions$.pipe(effects$c.ofType(CART_REMOVE_VOUCHER), operators.map((/**
+            this.removeCartVoucher$ = this.actions$.pipe(effects$d.ofType(CART_REMOVE_VOUCHER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -40303,16 +40317,16 @@
         ];
         /** @nocollapse */
         CartVoucherEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CartVoucherConnector },
             { type: GlobalMessageService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartVoucherEffects.prototype, "addCartVoucher$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartVoucherEffects.prototype, "removeCartVoucher$", void 0);
         return CartVoucherEffects;
@@ -41334,6 +41348,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     */
     var CartEffects = /** @class */ (function () {
         function CartEffects(actions$, cartConnector, cartData, store$1) {
             var _this = this;
@@ -41341,8 +41362,8 @@
             this.cartConnector = cartConnector;
             this.cartData = cartData;
             this.store = store$1;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadCart$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map((/**
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadCart$ = this.actions$.pipe(effects$d.ofType(LOAD_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41488,7 +41509,7 @@
                     })));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.createCart$ = this.actions$.pipe(effects$c.ofType(CREATE_CART), operators.map((/**
+            this.createCart$ = this.actions$.pipe(effects$d.ofType(CREATE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41547,7 +41568,7 @@
                     ]);
                 })));
             })), withdrawOn(this.contextChange$));
-            this.mergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map((/**
+            this.mergeCart$ = this.actions$.pipe(effects$d.ofType(MERGE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41571,7 +41592,7 @@
                     ];
                 })));
             })), withdrawOn(this.contextChange$));
-            this.refresh$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map((/**
+            this.refresh$ = this.actions$.pipe(effects$d.ofType(CART_ADD_ENTRY_SUCCESS, CART_UPDATE_ENTRY_SUCCESS, CART_REMOVE_ENTRY_SUCCESS, ADD_EMAIL_TO_CART_SUCCESS, CLEAR_CHECKOUT_DELIVERY_MODE_SUCCESS, CART_ADD_VOUCHER_SUCCESS, CART_REMOVE_VOUCHER_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41588,7 +41609,7 @@
                     }),
                 ]);
             })));
-            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS), operators.map((/**
+            this.refreshWithoutProcesses$ = this.actions$.pipe(effects$d.ofType(MERGE_CART_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41602,7 +41623,7 @@
                     cartId: payload.cartId,
                 });
             })));
-            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap((/**
+            this.resetCartDetailsOnSiteContextChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.mergeMap((/**
              * @return {?}
              */
             function () {
@@ -41611,7 +41632,7 @@
                     new ResetMultiCartDetails(),
                 ];
             })));
-            this.addEmail$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map((/**
+            this.addEmail$ = this.actions$.pipe(effects$d.ofType(ADD_EMAIL_TO_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41656,7 +41677,7 @@
                     ]);
                 })));
             })), withdrawOn(this.contextChange$));
-            this.deleteCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map((/**
+            this.deleteCart$ = this.actions$.pipe(effects$d.ofType(DELETE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41697,41 +41718,41 @@
         ];
         /** @nocollapse */
         CartEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CartConnector },
             { type: CartDataService },
             { type: store.Store }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "loadCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "createCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "mergeCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "refresh$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "refreshWithoutProcesses$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "resetCartDetailsOnSiteContextChange$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "addEmail$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CartEffects.prototype, "deleteCart$", void 0);
         return CartEffects;
@@ -41829,6 +41850,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     */
     var WishListEffects = /** @class */ (function () {
         function WishListEffects(actions$, cartConnector, saveCartConnector, authService, store$1) {
             var _this = this;
@@ -41837,7 +41865,7 @@
             this.saveCartConnector = saveCartConnector;
             this.authService = authService;
             this.store = store$1;
-            this.createWishList$ = this.actions$.pipe(effects$c.ofType(CREATE_WISH_LIST), operators.map((/**
+            this.createWishList$ = this.actions$.pipe(effects$d.ofType(CREATE_WISH_LIST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41876,7 +41904,7 @@
                     })));
                 })));
             })));
-            this.loadWishList$ = this.actions$.pipe(effects$c.ofType(LOAD_WISH_LIST), operators.map((/**
+            this.loadWishList$ = this.actions$.pipe(effects$d.ofType(LOAD_WISH_LIST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -41919,7 +41947,7 @@
                     return rxjs.from([new LoadCartFail(makeErrorSerializable(error))]);
                 })));
             })));
-            this.resetWishList$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap((/**
+            this.resetWishList$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.withLatestFrom(this.authService.getOccUserId(), this.store.pipe(store.select(getWishListId))), operators.switchMap((/**
              * @param {?} __0
              * @return {?}
              */
@@ -41948,22 +41976,22 @@
         ];
         /** @nocollapse */
         WishListEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CartConnector },
             { type: SaveCartConnector },
             { type: AuthService },
             { type: store.Store }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], WishListEffects.prototype, "createWishList$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], WishListEffects.prototype, "loadWishList$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], WishListEffects.prototype, "resetWishList$", void 0);
         return WishListEffects;
@@ -42001,18 +42029,6 @@
          */
         WishListEffects.prototype.store;
     }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var effects$4 = [
-        CartEffects,
-        CartEntryEffects,
-        CartVoucherEffects,
-        WishListEffects,
-    ];
 
     /**
      * @fileoverview added by tsickle
@@ -42165,6 +42181,11 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
      * @return {?}
      */
     function getReducers$5() {
@@ -42172,14 +42193,33 @@
             active: loaderReducer(CART_DATA, reducer$9),
         };
     }
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var reducerToken$5 = new core.InjectionToken('CartReducers');
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var reducerProvider$5 = {
         provide: reducerToken$5,
         useFactory: getReducers$5,
     };
     /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
      * @param {?} reducer
      * @return {?}
      */
@@ -42197,9 +42237,21 @@
             return reducer(state, action);
         });
     }
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var metaReducers$3 = [clearCartState];
     /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
      * @param {?} reducer
      * @return {?}
      */
@@ -42216,11 +42268,30 @@
             return reducer(state, action);
         });
     }
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var multiCartMetaReducers = [clearMultiCartState];
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var multiCartReducerToken = new core.InjectionToken('MultiCartReducers');
     /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
      * @return {?}
      */
     function getMultiCartReducers() {
@@ -42230,7 +42301,14 @@
             wishList: wishListReducer,
         };
     }
-    /** @type {?} */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx reducers will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
     var multiCartReducerProvider = {
         provide: multiCartReducerToken,
         useFactory: getMultiCartReducers,
@@ -42240,6 +42318,13 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var effects$4 = [
+        CartEffects,
+        CartEntryEffects,
+        CartVoucherEffects,
+        WishListEffects,
+    ];
     /**
      * @return {?}
      */
@@ -42269,7 +42354,7 @@
                             http.HttpClientModule,
                             StateModule,
                             store.StoreModule.forFeature(CART_FEATURE, reducerToken$5, { metaReducers: metaReducers$3 }),
-                            effects$c.EffectsModule.forFeature(effects$4),
+                            effects$d.EffectsModule.forFeature(effects$4),
                             ConfigModule.withConfigFactory(cartStoreConfigFactory),
                         ],
                         providers: [reducerProvider$5],
@@ -42285,42 +42370,42 @@
     var MultiCartEffects = /** @class */ (function () {
         function MultiCartEffects(actions$) {
             this.actions$ = actions$;
-            this.loadCart2$ = this.actions$.pipe(effects$c.ofType(LOAD_CART), operators.map((/**
+            this.loadCart2$ = this.actions$.pipe(effects$d.ofType(LOAD_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
                 return new LoadMultiCart(action.payload);
             })));
-            this.createCart2$ = this.actions$.pipe(effects$c.ofType(CREATE_CART), operators.map((/**
+            this.createCart2$ = this.actions$.pipe(effects$d.ofType(CREATE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
                 return new CreateMultiCart(action.payload);
             })));
-            this.setTempCart$ = this.actions$.pipe(effects$c.ofType(SET_TEMP_CART), operators.map((/**
+            this.setTempCart$ = this.actions$.pipe(effects$d.ofType(SET_TEMP_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
                 return new RemoveTempCart(action.payload);
             })));
-            this.mergeCart2$ = this.actions$.pipe(effects$c.ofType(MERGE_CART), operators.map((/**
+            this.mergeCart2$ = this.actions$.pipe(effects$d.ofType(MERGE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
                 return new MergeMultiCart(action.payload);
             })));
-            this.addEmail2$ = this.actions$.pipe(effects$c.ofType(ADD_EMAIL_TO_CART), operators.map((/**
+            this.addEmail2$ = this.actions$.pipe(effects$d.ofType(ADD_EMAIL_TO_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
             function (action) {
                 return new AddEmailToMultiCart(action.payload);
             })));
-            this.removeCart$ = this.actions$.pipe(effects$c.ofType(DELETE_CART), operators.map((/**
+            this.removeCart$ = this.actions$.pipe(effects$d.ofType(DELETE_CART), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42331,7 +42416,7 @@
             function (payload) { return new RemoveCart(payload.cartId); })));
             // TODO: Change actions to extend Increment action instead of doing extra dispatch in this effect
             // Change for 2.0 release
-            this.processesIncrement$ = this.actions$.pipe(effects$c.ofType(CART_ADD_ENTRY, CART_UPDATE_ENTRY, CART_REMOVE_ENTRY, ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER, CART_REMOVE_VOUCHER), operators.map((/**
+            this.processesIncrement$ = this.actions$.pipe(effects$d.ofType(CART_ADD_ENTRY, CART_UPDATE_ENTRY, CART_REMOVE_ENTRY, ADD_EMAIL_TO_CART, CLEAR_CHECKOUT_DELIVERY_MODE, CART_ADD_VOUCHER, CART_REMOVE_VOUCHER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -42346,34 +42431,34 @@
         ];
         /** @nocollapse */
         MultiCartEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions }
+            { type: effects$d.Actions }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "loadCart2$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "createCart2$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", Object)
         ], MultiCartEffects.prototype, "setTempCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "mergeCart2$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "addEmail2$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "removeCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], MultiCartEffects.prototype, "processesIncrement$", void 0);
         return MultiCartEffects;
@@ -42432,7 +42517,7 @@
                             store.StoreModule.forFeature(MULTI_CART_FEATURE, multiCartReducerToken, {
                                 metaReducers: multiCartMetaReducers,
                             }),
-                            effects$c.EffectsModule.forFeature([MultiCartEffects]),
+                            effects$d.EffectsModule.forFeature([MultiCartEffects]),
                             ConfigModule.withConfigFactory(multiCartStoreConfigFactory),
                         ],
                         providers: [multiCartReducerProvider],
@@ -42500,6 +42585,25 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @deprecated since version 1.5
+     *
+     * spartacus ngrx effects will no longer be a part of public API
+     *
+     * TODO(issue:#4507)
+     * @type {?}
+     */
+    var effects$5 = [
+        CartEffects,
+        CartEntryEffects,
+        CartVoucherEffects,
+        WishListEffects,
+    ];
 
     /**
      * @fileoverview added by tsickle
@@ -43302,7 +43406,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAddressConnector = userAddressConnector;
-            this.verifyAddress$ = this.actions$.pipe(effects$c.ofType(VERIFY_ADDRESS), operators.map((/**
+            this.verifyAddress$ = this.actions$.pipe(effects$d.ofType(VERIFY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43329,11 +43433,11 @@
         ];
         /** @nocollapse */
         AddressVerificationEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserAddressConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], AddressVerificationEffect.prototype, "verifyAddress$", void 0);
         return AddressVerificationEffect;
@@ -43429,7 +43533,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
-            this.loadCardTypes$ = this.actions$.pipe(effects$c.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
+            this.loadCardTypes$ = this.actions$.pipe(effects$d.ofType(LOAD_CARD_TYPES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -43451,11 +43555,11 @@
         ];
         /** @nocollapse */
         CardTypesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CheckoutPaymentConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CardTypesEffects.prototype, "loadCardTypes$", void 0);
         return CardTypesEffects;
@@ -43665,8 +43769,8 @@
             this.checkoutDeliveryConnector = checkoutDeliveryConnector;
             this.checkoutPaymentConnector = checkoutPaymentConnector;
             this.checkoutConnector = checkoutConnector;
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.addDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(ADD_DELIVERY_ADDRESS), operators.map((/**
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.addDeliveryAddress$ = this.actions$.pipe(effects$d.ofType(ADD_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43715,7 +43819,7 @@
                     return rxjs.of(new AddDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.setDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(SET_DELIVERY_ADDRESS), operators.map((/**
+            this.setDeliveryAddress$ = this.actions$.pipe(effects$d.ofType(SET_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43749,7 +43853,7 @@
                     return rxjs.of(new SetDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$c.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map((/**
+            this.loadSupportedDeliveryModes$ = this.actions$.pipe(effects$d.ofType(LOAD_SUPPORTED_DELIVERY_MODES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43774,23 +43878,23 @@
                     return rxjs.of(new LoadSupportedDeliveryModesFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.clearCheckoutMiscsDataOnLanguageChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new CheckoutClearMiscsData(); })));
-            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE), operators.map((/**
+            this.clearDeliveryModesOnCurrencyChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new ClearSupportedDeliveryModes(); })));
-            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(effects$c.ofType(LOGOUT), operators.map((/**
+            this.clearCheckoutDataOnLogout$ = this.actions$.pipe(effects$d.ofType(LOGOUT), operators.map((/**
              * @return {?}
              */
             function () { return new ClearCheckoutData(); })));
-            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$c.ofType(LOGIN), operators.map((/**
+            this.clearCheckoutDataOnLogin$ = this.actions$.pipe(effects$d.ofType(LOGIN), operators.map((/**
              * @return {?}
              */
             function () { return new ClearCheckoutData(); })));
-            this.setDeliveryMode$ = this.actions$.pipe(effects$c.ofType(SET_DELIVERY_MODE), operators.map((/**
+            this.setDeliveryMode$ = this.actions$.pipe(effects$d.ofType(SET_DELIVERY_MODE), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43820,7 +43924,7 @@
                     return rxjs.of(new SetDeliveryModeFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.createPaymentDetails$ = this.actions$.pipe(effects$c.ofType(CREATE_PAYMENT_DETAILS), operators.map((/**
+            this.createPaymentDetails$ = this.actions$.pipe(effects$d.ofType(CREATE_PAYMENT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43854,7 +43958,7 @@
                     return rxjs.of(new CreatePaymentDetailsFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.setPaymentDetails$ = this.actions$.pipe(effects$c.ofType(SET_PAYMENT_DETAILS), operators.map((/**
+            this.setPaymentDetails$ = this.actions$.pipe(effects$d.ofType(SET_PAYMENT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43878,7 +43982,7 @@
                     return rxjs.of(new SetPaymentDetailsFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.placeOrder$ = this.actions$.pipe(effects$c.ofType(PLACE_ORDER), operators.map((/**
+            this.placeOrder$ = this.actions$.pipe(effects$d.ofType(PLACE_ORDER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43904,7 +44008,7 @@
                     return rxjs.of(new PlaceOrderFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.loadCheckoutDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_CHECKOUT_DETAILS), operators.map((/**
+            this.loadCheckoutDetails$ = this.actions$.pipe(effects$d.ofType(LOAD_CHECKOUT_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43929,7 +44033,7 @@
                     return rxjs.of(new LoadCheckoutDetailsFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$c.ofType(MERGE_CART_SUCCESS), operators.map((/**
+            this.reloadDetailsOnMergeCart$ = this.actions$.pipe(effects$d.ofType(MERGE_CART_SUCCESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43943,7 +44047,7 @@
                     cartId: payload.cartId ? payload.cartId : OCC_CART_ID_CURRENT,
                 });
             })));
-            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map((/**
+            this.clearCheckoutDeliveryAddress$ = this.actions$.pipe(effects$d.ofType(CLEAR_CHECKOUT_DELIVERY_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -43969,7 +44073,7 @@
                     return rxjs.of(new ClearCheckoutDeliveryAddressFail(makeErrorSerializable(error)));
                 })));
             })), withdrawOn(this.contextChange$));
-            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$c.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map((/**
+            this.clearCheckoutDeliveryMode$ = this.actions$.pipe(effects$d.ofType(CLEAR_CHECKOUT_DELIVERY_MODE), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -44013,69 +44117,69 @@
         ];
         /** @nocollapse */
         CheckoutEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CheckoutDeliveryConnector },
             { type: CheckoutPaymentConnector },
             { type: CheckoutConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "addDeliveryAddress$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setDeliveryAddress$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadSupportedDeliveryModes$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutMiscsDataOnLanguageChange$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearDeliveryModesOnCurrencyChange$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDataOnLogout$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDataOnLogin$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setDeliveryMode$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "createPaymentDetails$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "setPaymentDetails$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "placeOrder$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "loadCheckoutDetails$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "reloadDetailsOnMergeCart$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDeliveryAddress$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CheckoutEffects.prototype, "clearCheckoutDeliveryMode$", void 0);
         return CheckoutEffects;
@@ -44143,7 +44247,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$5 = [
+    var effects$6 = [
         CheckoutEffects,
         AddressVerificationEffect,
         CardTypesEffects,
@@ -44162,7 +44266,7 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             store.StoreModule.forFeature(CHECKOUT_FEATURE, reducerToken$6),
-                            effects$c.EffectsModule.forFeature(effects$5),
+                            effects$d.EffectsModule.forFeature(effects$6),
                         ],
                         providers: [reducerProvider$6],
                     },] }
@@ -46243,7 +46347,7 @@
             this.actions$ = actions$;
             this.router = router;
             this.location = location;
-            this.navigate$ = this.actions$.pipe(effects$c.ofType(ROUTER_GO), operators.map((/**
+            this.navigate$ = this.actions$.pipe(effects$d.ofType(ROUTER_GO), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -46255,7 +46359,7 @@
                 var path = _a.path, queryParams = _a.query, extras = _a.extras;
                 _this.router.navigate(path, __assign({ queryParams: queryParams }, extras));
             })));
-            this.navigateBuUrl$ = this.actions$.pipe(effects$c.ofType(ROUTER_GO_BY_URL), operators.map((/**
+            this.navigateBuUrl$ = this.actions$.pipe(effects$d.ofType(ROUTER_GO_BY_URL), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -46266,7 +46370,7 @@
             function (url) {
                 _this.router.navigateByUrl(url);
             })));
-            this.clearCmsRoutes$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
+            this.clearCmsRoutes$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.tap((/**
              * @param {?} _
              * @return {?}
              */
@@ -46281,11 +46385,11 @@
                     _this.router.resetConfig(filteredConfig);
                 }
             })));
-            this.navigateBack$ = this.actions$.pipe(effects$c.ofType(ROUTER_BACK), operators.tap((/**
+            this.navigateBack$ = this.actions$.pipe(effects$d.ofType(ROUTER_BACK), operators.tap((/**
              * @return {?}
              */
             function () { return _this.location.back(); })));
-            this.navigateForward$ = this.actions$.pipe(effects$c.ofType(ROUTER_FORWARD), operators.tap((/**
+            this.navigateForward$ = this.actions$.pipe(effects$d.ofType(ROUTER_FORWARD), operators.tap((/**
              * @return {?}
              */
             function () { return _this.location.forward(); })));
@@ -46295,28 +46399,28 @@
         ];
         /** @nocollapse */
         RouterEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: router.Router },
             { type: common.Location }
         ]; };
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigate$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateBuUrl$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "clearCmsRoutes$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateBack$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", rxjs.Observable)
         ], RouterEffects.prototype, "navigateForward$", void 0);
         return RouterEffects;
@@ -46354,7 +46458,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$6 = [RouterEffects];
+    var effects$7 = [RouterEffects];
 
     /**
      * @fileoverview added by tsickle
@@ -46557,7 +46661,7 @@
             { type: core.NgModule, args: [{
                         imports: [
                             store.StoreModule.forFeature(ROUTING_FEATURE, reducerToken$7),
-                            effects$c.EffectsModule.forFeature(effects$6),
+                            effects$d.EffectsModule.forFeature(effects$7),
                             routerStore.StoreRouterConnectingModule.forRoot({
                                 routerState: 1 /* Minimal */,
                                 stateKey: ROUTING_FEATURE,
@@ -47054,7 +47158,7 @@
             this.actions$ = actions$;
             this.cmsPageConnector = cmsPageConnector;
             this.routingService = routingService;
-            this.refreshPage$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap((/**
+            this.refreshPage$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN), operators.switchMap((/**
              * @param {?} _
              * @return {?}
              */
@@ -47078,7 +47182,7 @@
                  */
                 function (context) { return rxjs.of(new LoadCmsPageData(context)); })));
             })));
-            this.loadPageData$ = this.actions$.pipe(effects$c.ofType(LOAD_CMS_PAGE_DATA), operators.map((/**
+            this.loadPageData$ = this.actions$.pipe(effects$d.ofType(LOAD_CMS_PAGE_DATA), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -47129,16 +47233,16 @@
         ];
         /** @nocollapse */
         PageEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CmsPageConnector },
             { type: RoutingService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], PageEffects.prototype, "refreshPage$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], PageEffects.prototype, "loadPageData$", void 0);
         return PageEffects;
@@ -47331,8 +47435,8 @@
              * @return {?}
              */
             function (routerState) { return routerState.state.context; })));
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
-            this.loadComponent$ = effects$c.createEffect((/**
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
+            this.loadComponent$ = effects$d.createEffect((/**
              * @return {?}
              */
             function () { return (/**
@@ -47341,7 +47445,7 @@
              */
             function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$c.ofType(LOAD_CMS_COMPONENT), operators.map((/**
+                return _this.actions$.pipe(effects$d.ofType(LOAD_CMS_COMPONENT), operators.map((/**
                  * @param {?} action
                  * @return {?}
                  */
@@ -47423,7 +47527,7 @@
         ];
         /** @nocollapse */
         ComponentEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CmsComponentConnector },
             { type: RoutingService },
             { type: FeatureConfigService }
@@ -47475,7 +47579,7 @@
             this.actions$ = actions$;
             this.cmsComponentConnector = cmsComponentConnector;
             this.routingService = routingService;
-            this.loadNavigationItems$ = this.actions$.pipe(effects$c.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
+            this.loadNavigationItems$ = this.actions$.pipe(effects$d.ofType(LOAD_CMS_NAVIGATION_ITEMS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -47582,12 +47686,12 @@
         ];
         /** @nocollapse */
         NavigationEntryItemEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CmsComponentConnector },
             { type: RoutingService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], NavigationEntryItemEffects.prototype, "loadNavigationItems$", void 0);
         return NavigationEntryItemEffects;
@@ -47617,7 +47721,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$7 = [
+    var effects$8 = [
         PageEffects,
         ComponentEffects,
         NavigationEntryItemEffects,
@@ -47801,7 +47905,7 @@
                             http.HttpClientModule,
                             StateModule,
                             store.StoreModule.forFeature(CMS_FEATURE, reducerToken$8, { metaReducers: metaReducers$4 }),
-                            effects$c.EffectsModule.forFeature(effects$7),
+                            effects$d.EffectsModule.forFeature(effects$8),
                             ConfigModule.withConfigFactory(cmsStoreConfigFactory),
                         ],
                         providers: [reducerProvider$8],
@@ -49598,7 +49702,7 @@
             this.triggerOpenIdTokenLoading$ = rxjs.iif((/**
              * @return {?}
              */
-            function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }), this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$c.ofType(LOAD_USER_TOKEN))), operators.map((/**
+            function () { return _this.config.authentication && _this.config.authentication.kyma_enabled; }), this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN_SUCCESS), operators.withLatestFrom(this.actions$.pipe(effects$d.ofType(LOAD_USER_TOKEN))), operators.map((/**
              * @param {?} __0
              * @return {?}
              */
@@ -49609,7 +49713,7 @@
                     password: loginAction.payload.password,
                 });
             }))));
-            this.loadOpenIdToken$ = this.actions$.pipe(effects$c.ofType(LOAD_OPEN_ID_TOKEN), operators.map((/**
+            this.loadOpenIdToken$ = this.actions$.pipe(effects$d.ofType(LOAD_OPEN_ID_TOKEN), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -49638,16 +49742,16 @@
         ];
         /** @nocollapse */
         OpenIdTokenEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: OpenIdAuthenticationTokenService },
             { type: KymaConfig }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OpenIdTokenEffect.prototype, "triggerOpenIdTokenLoading$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OpenIdTokenEffect.prototype, "loadOpenIdToken$", void 0);
         return OpenIdTokenEffect;
@@ -49679,7 +49783,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$8 = [OpenIdTokenEffect];
+    var effects$9 = [OpenIdTokenEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -49751,7 +49855,7 @@
                             http.HttpClientModule,
                             StateModule,
                             store.StoreModule.forFeature(KYMA_FEATURE, reducerToken$9, { metaReducers: metaReducers$5 }),
-                            effects$c.EffectsModule.forFeature(effects$8),
+                            effects$d.EffectsModule.forFeature(effects$9),
                             ConfigModule.withConfigFactory(kymaStoreConfigFactory),
                         ],
                         providers: [reducerProvider$9],
@@ -51703,7 +51807,7 @@
                         action.meta.scope === scope;
                 })));
                 /** @type {?} */
-                var loadStart$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.filter((/**
+                var loadStart$ = this.actions$.pipe(effects$d.ofType(LOAD_PRODUCT), operators.filter((/**
                  * @param {?} action
                  * @return {?}
                  */
@@ -51797,10 +51901,10 @@
         ProductLoadingService.ctorParameters = function () { return [
             { type: store.Store },
             { type: LoadingScopesService },
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: undefined, decorators: [{ type: core.Inject, args: [core.PLATFORM_ID,] }] }
         ]; };
-        /** @nocollapse */ ProductLoadingService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core.ɵɵinject(store.Store), core.ɵɵinject(LoadingScopesService), core.ɵɵinject(effects$c.Actions), core.ɵɵinject(core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
+        /** @nocollapse */ ProductLoadingService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function ProductLoadingService_Factory() { return new ProductLoadingService(core.ɵɵinject(store.Store), core.ɵɵinject(LoadingScopesService), core.ɵɵinject(effects$d.Actions), core.ɵɵinject(core.PLATFORM_ID)); }, token: ProductLoadingService, providedIn: "root" });
         return ProductLoadingService;
     }());
     if (false) {
@@ -52912,7 +53016,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productReferencesConnector = productReferencesConnector;
-            this.loadProductReferences$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
+            this.loadProductReferences$ = this.actions$.pipe(effects$d.ofType(LOAD_PRODUCT_REFERENCES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -52948,11 +53052,11 @@
         ];
         /** @nocollapse */
         ProductReferencesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: ProductReferencesConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReferencesEffects.prototype, "loadProductReferences$", void 0);
         return ProductReferencesEffects;
@@ -52982,7 +53086,7 @@
             this.actions$ = actions$;
             this.productReviewsConnector = productReviewsConnector;
             this.globalMessageService = globalMessageService;
-            this.loadProductReviews$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
+            this.loadProductReviews$ = this.actions$.pipe(effects$d.ofType(LOAD_PRODUCT_REVIEWS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -53010,7 +53114,7 @@
                     }))));
                 })));
             })));
-            this.postProductReview = this.actions$.pipe(effects$c.ofType(POST_PRODUCT_REVIEW), operators.map((/**
+            this.postProductReview = this.actions$.pipe(effects$d.ofType(POST_PRODUCT_REVIEW), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -53035,7 +53139,7 @@
                     return rxjs.of(new PostProductReviewFail(payload.productCode));
                 })));
             })));
-            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(effects$c.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnPostProductReviewSuccess$ = this.actions$.pipe(effects$d.ofType(POST_PRODUCT_REVIEW_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -53047,20 +53151,20 @@
         ];
         /** @nocollapse */
         ProductReviewsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: ProductReviewsConnector },
             { type: GlobalMessageService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReviewsEffects.prototype, "loadProductReviews$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductReviewsEffects.prototype, "postProductReview", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], ProductReviewsEffects.prototype, "showGlobalMessageOnPostProductReviewSuccess$", void 0);
         return ProductReviewsEffects;
@@ -53098,7 +53202,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.productSearchConnector = productSearchConnector;
-            this.searchProducts$ = this.actions$.pipe(effects$c.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
+            this.searchProducts$ = this.actions$.pipe(effects$d.ofType(SEARCH_PRODUCTS), operators.groupBy((/**
              * @param {?} action
              * @return {?}
              */
@@ -53129,7 +53233,7 @@
                     })));
                 })));
             })));
-            this.getProductSuggestions$ = this.actions$.pipe(effects$c.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
+            this.getProductSuggestions$ = this.actions$.pipe(effects$d.ofType(GET_PRODUCT_SUGGESTIONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -53163,15 +53267,15 @@
         ];
         /** @nocollapse */
         ProductsSearchEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: ProductSearchConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductsSearchEffects.prototype, "searchProducts$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductsSearchEffects.prototype, "getProductSuggestions$", void 0);
         return ProductsSearchEffects;
@@ -53203,8 +53307,8 @@
             this.actions$ = actions$;
             this.productConnector = productConnector;
             // we want to cancel all ongoing requests when currency or language changes,
-            this.contextChange$ = this.actions$.pipe(effects$c.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
-            this.loadProduct$ = effects$c.createEffect((/**
+            this.contextChange$ = this.actions$.pipe(effects$d.ofType(CURRENCY_CHANGE, LANGUAGE_CHANGE));
+            this.loadProduct$ = effects$d.createEffect((/**
              * @return {?}
              */
             function () { return (/**
@@ -53213,7 +53317,7 @@
              */
             function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT), operators.map((/**
+                return _this.actions$.pipe(effects$d.ofType(LOAD_PRODUCT), operators.map((/**
                  * @param {?} action
                  * @return {?}
                  */
@@ -53264,7 +53368,7 @@
         ];
         /** @nocollapse */
         ProductEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: ProductConnector }
         ]; };
         return ProductEffects;
@@ -53294,7 +53398,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$9 = [
+    var effects$a = [
         ProductsSearchEffects,
         ProductEffects,
         ProductReviewsEffects,
@@ -53535,7 +53639,7 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             store.StoreModule.forFeature(PRODUCT_FEATURE, reducerToken$b, { metaReducers: metaReducers$6 }),
-                            effects$c.EffectsModule.forFeature(effects$9),
+                            effects$d.EffectsModule.forFeature(effects$a),
                             ConfigModule.withConfigFactory(productStoreConfigFactory),
                         ],
                         providers: [reducerProvider$b],
@@ -55287,7 +55391,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.findStores$ = this.actions$.pipe(effects$c.ofType(FIND_STORES), operators.map((/**
+            this.findStores$ = this.actions$.pipe(effects$d.ofType(FIND_STORES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -55321,7 +55425,7 @@
                     return rxjs.of(new FindStoresFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.findStoreById$ = this.actions$.pipe(effects$c.ofType(FIND_STORE_BY_ID), operators.map((/**
+            this.findStoreById$ = this.actions$.pipe(effects$d.ofType(FIND_STORE_BY_ID), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -55348,15 +55452,15 @@
         ];
         /** @nocollapse */
         FindStoresEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: StoreFinderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], FindStoresEffect.prototype, "findStores$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], FindStoresEffect.prototype, "findStoreById$", void 0);
         return FindStoresEffect;
@@ -55387,7 +55491,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.storeFinderConnector = storeFinderConnector;
-            this.viewAllStores$ = this.actions$.pipe(effects$c.ofType(VIEW_ALL_STORES), operators.switchMap((/**
+            this.viewAllStores$ = this.actions$.pipe(effects$d.ofType(VIEW_ALL_STORES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -55417,11 +55521,11 @@
         ];
         /** @nocollapse */
         ViewAllStoresEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: StoreFinderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ViewAllStoresEffect.prototype, "viewAllStores$", void 0);
         return ViewAllStoresEffect;
@@ -55446,7 +55550,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$a = [FindStoresEffect, ViewAllStoresEffect];
+    var effects$b = [FindStoresEffect, ViewAllStoresEffect];
 
     /**
      * @fileoverview added by tsickle
@@ -55461,7 +55565,7 @@
                             common.CommonModule,
                             http.HttpClientModule,
                             store.StoreModule.forFeature(STORE_FINDER_FEATURE, reducerToken$c),
-                            effects$c.EffectsModule.forFeature(effects$a),
+                            effects$d.EffectsModule.forFeature(effects$b),
                         ],
                         providers: [reducerProvider$c],
                     },] }
@@ -58857,7 +58961,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadBillingCountries$ = this.actions$.pipe(effects$c.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap((/**
+            this.loadBillingCountries$ = this.actions$.pipe(effects$d.ofType(LOAD_BILLING_COUNTRIES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -58879,11 +58983,11 @@
         ];
         /** @nocollapse */
         BillingCountriesEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], BillingCountriesEffect.prototype, "loadBillingCountries$", void 0);
         return BillingCountriesEffect;
@@ -58910,7 +59014,7 @@
     var ClearMiscsDataEffect = /** @class */ (function () {
         function ClearMiscsDataEffect(actions$) {
             this.actions$ = actions$;
-            this.clearMiscsData$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
+            this.clearMiscsData$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, CURRENCY_CHANGE), operators.map((/**
              * @return {?}
              */
             function () {
@@ -58922,10 +59026,10 @@
         ];
         /** @nocollapse */
         ClearMiscsDataEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions }
+            { type: effects$d.Actions }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ClearMiscsDataEffect.prototype, "clearMiscsData$", void 0);
         return ClearMiscsDataEffect;
@@ -58949,7 +59053,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userOrderConnector = userOrderConnector;
-            this.loadConsignmentTracking$ = this.actions$.pipe(effects$c.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map((/**
+            this.loadConsignmentTracking$ = this.actions$.pipe(effects$d.ofType(LOAD_CONSIGNMENT_TRACKING), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -58980,11 +59084,11 @@
         ];
         /** @nocollapse */
         ConsignmentTrackingEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ConsignmentTrackingEffects.prototype, "loadConsignmentTracking$", void 0);
         return ConsignmentTrackingEffects;
@@ -59013,7 +59117,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadDeliveryCountries$ = this.actions$.pipe(effects$c.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap((/**
+            this.loadDeliveryCountries$ = this.actions$.pipe(effects$d.ofType(LOAD_DELIVERY_COUNTRIES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -59035,11 +59139,11 @@
         ];
         /** @nocollapse */
         DeliveryCountriesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], DeliveryCountriesEffects.prototype, "loadDeliveryCountries$", void 0);
         return DeliveryCountriesEffects;
@@ -59068,7 +59172,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$c.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
+            this.requestForgotPasswordEmail$ = this.actions$.pipe(effects$d.ofType(FORGOT_PASSWORD_EMAIL_REQUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59104,11 +59208,11 @@
         ];
         /** @nocollapse */
         ForgotPasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ForgotPasswordEffects.prototype, "requestForgotPasswordEmail$", void 0);
         return ForgotPasswordEffects;
@@ -59137,7 +59241,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.connector = connector;
-            this.loadPreferences$ = this.actions$.pipe(effects$c.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map((/**
+            this.loadPreferences$ = this.actions$.pipe(effects$d.ofType(LOAD_NOTIFICATION_PREFERENCES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59160,7 +59264,7 @@
                     return rxjs.of(new LoadNotificationPreferencesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updatePreferences$ = this.actions$.pipe(effects$c.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map((/**
+            this.updatePreferences$ = this.actions$.pipe(effects$d.ofType(UPDATE_NOTIFICATION_PREFERENCES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59188,15 +59292,15 @@
         ];
         /** @nocollapse */
         NotificationPreferenceEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserNotificationPreferenceConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], NotificationPreferenceEffects.prototype, "loadPreferences$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], NotificationPreferenceEffects.prototype, "updatePreferences$", void 0);
         return NotificationPreferenceEffects;
@@ -59227,7 +59331,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.loadOrderDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_DETAILS), operators.map((/**
+            this.loadOrderDetails$ = this.actions$.pipe(effects$d.ofType(LOAD_ORDER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59250,7 +59354,7 @@
                     return rxjs.of(new LoadOrderDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.cancelOrder$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER), operators.map((/**
+            this.cancelOrder$ = this.actions$.pipe(effects$d.ofType(CANCEL_ORDER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59279,15 +59383,15 @@
         ];
         /** @nocollapse */
         OrderDetailsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderDetailsEffect.prototype, "loadOrderDetails$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderDetailsEffect.prototype, "cancelOrder$", void 0);
         return OrderDetailsEffect;
@@ -59318,7 +59422,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.createReturnRequest$ = this.actions$.pipe(effects$c.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map((/**
+            this.createReturnRequest$ = this.actions$.pipe(effects$d.ofType(CREATE_ORDER_RETURN_REQUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59343,7 +59447,7 @@
                     return rxjs.of(new CreateOrderReturnRequestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.loadReturnRequest$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map((/**
+            this.loadReturnRequest$ = this.actions$.pipe(effects$d.ofType(LOAD_ORDER_RETURN_REQUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59368,7 +59472,7 @@
                     return rxjs.of(new LoadOrderReturnRequestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.cancelReturnRequest$ = this.actions$.pipe(effects$c.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map((/**
+            this.cancelReturnRequest$ = this.actions$.pipe(effects$d.ofType(CANCEL_ORDER_RETURN_REQUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59391,7 +59495,7 @@
                     return rxjs.of(new CancelOrderReturnRequestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.loadReturnRequestList$ = this.actions$.pipe(effects$c.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map((/**
+            this.loadReturnRequestList$ = this.actions$.pipe(effects$d.ofType(LOAD_ORDER_RETURN_REQUEST_LIST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59422,23 +59526,23 @@
         ];
         /** @nocollapse */
         OrderReturnRequestEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderReturnRequestEffect.prototype, "createReturnRequest$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderReturnRequestEffect.prototype, "loadReturnRequest$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderReturnRequestEffect.prototype, "cancelReturnRequest$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], OrderReturnRequestEffect.prototype, "loadReturnRequestList$", void 0);
         return OrderReturnRequestEffect;
@@ -59473,7 +59577,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userPaymentMethodConnector = userPaymentMethodConnector;
-            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
+            this.loadUserPaymentMethods$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_PAYMENT_METHODS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59496,7 +59600,7 @@
                     return rxjs.of(new LoadUserPaymentMethodsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$c.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
+            this.setDefaultUserPaymentMethod$ = this.actions$.pipe(effects$d.ofType(SET_DEFAULT_USER_PAYMENT_METHOD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59522,7 +59626,7 @@
                     return rxjs.of(new SetDefaultUserPaymentMethodFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
+            this.deleteUserPaymentMethod$ = this.actions$.pipe(effects$d.ofType(DELETE_USER_PAYMENT_METHOD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59554,19 +59658,19 @@
         ];
         /** @nocollapse */
         UserPaymentMethodsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserPaymentConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "loadUserPaymentMethods$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "setDefaultUserPaymentMethod$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserPaymentMethodsEffects.prototype, "deleteUserPaymentMethod$", void 0);
         return UserPaymentMethodsEffects;
@@ -59599,7 +59703,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.siteConnector = siteConnector;
-            this.loadRegions$ = this.actions$.pipe(effects$c.ofType(LOAD_REGIONS), operators.map((/**
+            this.loadRegions$ = this.actions$.pipe(effects$d.ofType(LOAD_REGIONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59627,7 +59731,7 @@
                     return rxjs.of(new LoadRegionsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetRegions$ = this.actions$.pipe(effects$c.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
+            this.resetRegions$ = this.actions$.pipe(effects$d.ofType(CLEAR_USER_MISCS_DATA, CLEAR_REGIONS), operators.map((/**
              * @return {?}
              */
             function () {
@@ -59639,15 +59743,15 @@
         ];
         /** @nocollapse */
         RegionsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: SiteConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], RegionsEffects.prototype, "loadRegions$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], RegionsEffects.prototype, "resetRegions$", void 0);
         return RegionsEffects;
@@ -59678,7 +59782,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.resetPassword$ = this.actions$.pipe(effects$c.ofType(RESET_PASSWORD), operators.map((/**
+            this.resetPassword$ = this.actions$.pipe(effects$d.ofType(RESET_PASSWORD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59711,11 +59815,11 @@
         ];
         /** @nocollapse */
         ResetPasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ResetPasswordEffects.prototype, "resetPassword$", void 0);
         return ResetPasswordEffects;
@@ -59744,7 +59848,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.loadTitles$ = this.actions$.pipe(effects$c.ofType(LOAD_TITLES), operators.switchMap((/**
+            this.loadTitles$ = this.actions$.pipe(effects$d.ofType(LOAD_TITLES), operators.switchMap((/**
              * @return {?}
              */
             function () {
@@ -59768,11 +59872,11 @@
         ];
         /** @nocollapse */
         TitlesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], TitlesEffects.prototype, "loadTitles$", void 0);
         return TitlesEffects;
@@ -59801,7 +59905,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updateEmail$ = this.actions$.pipe(effects$c.ofType(UPDATE_EMAIL), operators.map((/**
+            this.updateEmail$ = this.actions$.pipe(effects$d.ofType(UPDATE_EMAIL), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59829,11 +59933,11 @@
         ];
         /** @nocollapse */
         UpdateEmailEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UpdateEmailEffects.prototype, "updateEmail$", void 0);
         return UpdateEmailEffects;
@@ -59862,7 +59966,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userAccountConnector = userAccountConnector;
-            this.updatePassword$ = this.actions$.pipe(effects$c.ofType(UPDATE_PASSWORD), operators.map((/**
+            this.updatePassword$ = this.actions$.pipe(effects$d.ofType(UPDATE_PASSWORD), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59891,11 +59995,11 @@
         ];
         /** @nocollapse */
         UpdatePasswordEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UpdatePasswordEffects.prototype, "updatePassword$", void 0);
         return UpdatePasswordEffects;
@@ -59926,7 +60030,7 @@
             this.userAddressConnector = userAddressConnector;
             this.userAddressService = userAddressService;
             this.messageService = messageService;
-            this.loadUserAddresses$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_ADDRESSES), operators.map((/**
+            this.loadUserAddresses$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_ADDRESSES), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59949,7 +60053,7 @@
                     return rxjs.of(new LoadUserAddressesFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.addUserAddress$ = this.actions$.pipe(effects$c.ofType(ADD_USER_ADDRESS), operators.map((/**
+            this.addUserAddress$ = this.actions$.pipe(effects$d.ofType(ADD_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -59974,7 +60078,7 @@
                     return rxjs.of(new AddUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateUserAddress$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_ADDRESS), operators.map((/**
+            this.updateUserAddress$ = this.actions$.pipe(effects$d.ofType(UPDATE_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60007,7 +60111,7 @@
                     return rxjs.of(new UpdateUserAddressFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.deleteUserAddress$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_ADDRESS), operators.map((/**
+            this.deleteUserAddress$ = this.actions$.pipe(effects$d.ofType(DELETE_USER_ADDRESS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60035,7 +60139,7 @@
             /**
              *  Reload addresses and notify about add success
              */
-            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(effects$c.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnAddSuccess$ = this.actions$.pipe(effects$d.ofType(ADD_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -60045,7 +60149,7 @@
             /**
              *  Reload addresses and notify about update success
              */
-            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnUpdateSuccess$ = this.actions$.pipe(effects$d.ofType(UPDATE_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -60055,7 +60159,7 @@
             /**
              *  Reload addresses and notify about delete success
              */
-            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(effects$c.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap((/**
+            this.showGlobalMessageOnDeleteSuccess$ = this.actions$.pipe(effects$d.ofType(DELETE_USER_ADDRESS_SUCCESS), operators.tap((/**
              * @return {?}
              */
             function () {
@@ -60097,37 +60201,37 @@
         ];
         /** @nocollapse */
         UserAddressesEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserAddressConnector },
             { type: UserAddressService },
             { type: GlobalMessageService }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "loadUserAddresses$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "addUserAddress$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "updateUserAddress$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserAddressesEffects.prototype, "deleteUserAddress$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnAddSuccess$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnUpdateSuccess$", void 0);
         __decorate([
-            effects$c.Effect({ dispatch: false }),
+            effects$d.Effect({ dispatch: false }),
             __metadata("design:type", Object)
         ], UserAddressesEffects.prototype, "showGlobalMessageOnDeleteSuccess$", void 0);
         return UserAddressesEffects;
@@ -60187,11 +60291,11 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConsentConnector = userConsentConnector;
-            this.resetConsents$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.resetConsents$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
              */
             function () { return new ResetLoadUserConsents(); })));
-            this.getConsents$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_CONSENTS), operators.map((/**
+            this.getConsents$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_CONSENTS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60212,7 +60316,7 @@
                     return rxjs.of(new LoadUserConsentsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.giveConsent$ = this.actions$.pipe(effects$c.ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), operators.concatMap((/**
+            this.giveConsent$ = this.actions$.pipe(effects$d.ofType(GIVE_USER_CONSENT, TRANSFER_ANONYMOUS_CONSENT), operators.concatMap((/**
              * @param {?} action
              * @return {?}
              */
@@ -60239,7 +60343,7 @@
                     return rxjs.of.apply(void 0, __spread(errors));
                 })));
             })));
-            this.withdrawConsent$ = this.actions$.pipe(effects$c.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
+            this.withdrawConsent$ = this.actions$.pipe(effects$d.ofType(WITHDRAW_USER_CONSENT), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60266,23 +60370,23 @@
         ];
         /** @nocollapse */
         UserConsentsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConsentConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "resetConsents$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "getConsents$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "giveConsent$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserConsentsEffect.prototype, "withdrawConsent$", void 0);
         return UserConsentsEffect;
@@ -60317,7 +60421,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.loadUserDetails$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_DETAILS), operators.map((/**
+            this.loadUserDetails$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60340,7 +60444,7 @@
                     return rxjs.of(new LoadUserDetailsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.updateUserDetails$ = this.actions$.pipe(effects$c.ofType(UPDATE_USER_DETAILS), operators.map((/**
+            this.updateUserDetails$ = this.actions$.pipe(effects$d.ofType(UPDATE_USER_DETAILS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60367,15 +60471,15 @@
         ];
         /** @nocollapse */
         UserDetailsEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserDetailsEffects.prototype, "loadUserDetails$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserDetailsEffects.prototype, "updateUserDetails$", void 0);
         return UserDetailsEffects;
@@ -60406,7 +60510,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.orderConnector = orderConnector;
-            this.loadUserOrders$ = this.actions$.pipe(effects$c.ofType(LOAD_USER_ORDERS), operators.map((/**
+            this.loadUserOrders$ = this.actions$.pipe(effects$d.ofType(LOAD_USER_ORDERS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60431,7 +60535,7 @@
                     return rxjs.of(new LoadUserOrdersFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.resetUserOrders$ = this.actions$.pipe(effects$c.ofType(LANGUAGE_CHANGE), operators.map((/**
+            this.resetUserOrders$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE), operators.map((/**
              * @return {?}
              */
             function () {
@@ -60443,15 +60547,15 @@
         ];
         /** @nocollapse */
         UserOrdersEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserOrderConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "loadUserOrders$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserOrdersEffect.prototype, "resetUserOrders$", void 0);
         return UserOrdersEffect;
@@ -60482,7 +60586,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userConnector = userConnector;
-            this.registerUser$ = this.actions$.pipe(effects$c.ofType(REGISTER_USER), operators.map((/**
+            this.registerUser$ = this.actions$.pipe(effects$d.ofType(REGISTER_USER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60502,7 +60606,7 @@
                     return rxjs.of(new RegisterUserFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.registerGuest$ = this.actions$.pipe(effects$c.ofType(REGISTER_GUEST), operators.map((/**
+            this.registerGuest$ = this.actions$.pipe(effects$d.ofType(REGISTER_GUEST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60530,7 +60634,7 @@
                     return rxjs.of(new RegisterGuestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.removeUser$ = this.actions$.pipe(effects$c.ofType(REMOVE_USER), operators.map((/**
+            this.removeUser$ = this.actions$.pipe(effects$d.ofType(REMOVE_USER), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60560,19 +60664,19 @@
         ];
         /** @nocollapse */
         UserRegisterEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "registerUser$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "registerGuest$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], UserRegisterEffects.prototype, "removeUser$", void 0);
         return UserRegisterEffects;
@@ -60605,7 +60709,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.customerCouponConnector = customerCouponConnector;
-            this.loadCustomerCoupons$ = this.actions$.pipe(effects$c.ofType(LOAD_CUSTOMER_COUPONS), operators.map((/**
+            this.loadCustomerCoupons$ = this.actions$.pipe(effects$d.ofType(LOAD_CUSTOMER_COUPONS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60630,7 +60734,7 @@
                     return rxjs.of(new LoadCustomerCouponsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.subscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
+            this.subscribeCustomerCoupon$ = this.actions$.pipe(effects$d.ofType(SUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60657,7 +60761,7 @@
                     return rxjs.of(new SubscribeCustomerCouponFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
+            this.unsubscribeCustomerCoupon$ = this.actions$.pipe(effects$d.ofType(UNSUBSCRIBE_CUSTOMER_COUPON), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60683,7 +60787,7 @@
                     return rxjs.of(new UnsubscribeCustomerCouponFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.claimCustomerCoupon$ = this.actions$.pipe(effects$c.ofType(CLAIM_CUSTOMER_COUPON), operators.map((/**
+            this.claimCustomerCoupon$ = this.actions$.pipe(effects$d.ofType(CLAIM_CUSTOMER_COUPON), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60714,23 +60818,23 @@
         ];
         /** @nocollapse */
         CustomerCouponEffects.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: CustomerCouponConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerCouponEffects.prototype, "loadCustomerCoupons$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerCouponEffects.prototype, "subscribeCustomerCoupon$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerCouponEffects.prototype, "unsubscribeCustomerCoupon$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], CustomerCouponEffects.prototype, "claimCustomerCoupon$", void 0);
         return CustomerCouponEffects;
@@ -60765,7 +60869,7 @@
             var _this = this;
             this.actions$ = actions$;
             this.userInterestsConnector = userInterestsConnector;
-            this.loadProductInteres$ = this.actions$.pipe(effects$c.ofType(LOAD_PRODUCT_INTERESTS), operators.map((/**
+            this.loadProductInteres$ = this.actions$.pipe(effects$d.ofType(LOAD_PRODUCT_INTERESTS), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60790,7 +60894,7 @@
                     return rxjs.of(new LoadProductInterestsFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.removeProductInterest$ = this.actions$.pipe(effects$c.ofType(REMOVE_PRODUCT_INTEREST), operators.map((/**
+            this.removeProductInterest$ = this.actions$.pipe(effects$d.ofType(REMOVE_PRODUCT_INTEREST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60822,7 +60926,7 @@
                     return rxjs.of(new RemoveProductInterestFail(makeErrorSerializable(error)));
                 })));
             })));
-            this.addProductInterest$ = this.actions$.pipe(effects$c.ofType(ADD_PRODUCT_INTEREST), operators.map((/**
+            this.addProductInterest$ = this.actions$.pipe(effects$d.ofType(ADD_PRODUCT_INTEREST), operators.map((/**
              * @param {?} action
              * @return {?}
              */
@@ -60858,19 +60962,19 @@
         ];
         /** @nocollapse */
         ProductInterestsEffect.ctorParameters = function () { return [
-            { type: effects$c.Actions },
+            { type: effects$d.Actions },
             { type: UserInterestsConnector }
         ]; };
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductInterestsEffect.prototype, "loadProductInteres$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductInterestsEffect.prototype, "removeProductInterest$", void 0);
         __decorate([
-            effects$c.Effect(),
+            effects$d.Effect(),
             __metadata("design:type", rxjs.Observable)
         ], ProductInterestsEffect.prototype, "addProductInterest$", void 0);
         return ProductInterestsEffect;
@@ -60899,7 +61003,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var effects$b = [
+    var effects$c = [
         ClearMiscsDataEffect,
         DeliveryCountriesEffects,
         RegionsEffects,
@@ -60937,7 +61041,7 @@
                             forms.ReactiveFormsModule,
                             StateModule,
                             store.StoreModule.forFeature(USER_FEATURE, reducerToken$d, { metaReducers: metaReducers$8 }),
-                            effects$c.EffectsModule.forFeature(effects$b),
+                            effects$d.EffectsModule.forFeature(effects$c),
                             router.RouterModule,
                         ],
                         providers: [reducerProvider$d],
@@ -61590,7 +61694,7 @@
     exports.defaultCmsModuleConfig = defaultCmsModuleConfig;
     exports.defaultOccConfig = defaultOccConfig;
     exports.defaultStateConfig = defaultStateConfig;
-    exports.effects = effects$4;
+    exports.effects = effects$5;
     exports.entityLoaderReducer = entityLoaderReducer;
     exports.entityProcessesLoaderReducer = entityProcessesLoaderReducer;
     exports.entityReducer = entityReducer;
@@ -61690,7 +61794,7 @@
     exports.ɵdb = getReducers$6;
     exports.ɵdc = reducerToken$6;
     exports.ɵdd = reducerProvider$6;
-    exports.ɵde = effects$5;
+    exports.ɵde = effects$6;
     exports.ɵdf = AddressVerificationEffect;
     exports.ɵdg = CardTypesEffects;
     exports.ɵdh = CheckoutEffects;
@@ -61704,7 +61808,7 @@
     exports.ɵdp = reducerProvider$8;
     exports.ɵdq = clearCmsState;
     exports.ɵdr = metaReducers$4;
-    exports.ɵds = effects$7;
+    exports.ɵds = effects$8;
     exports.ɵdt = PageEffects;
     exports.ɵdu = ComponentEffects;
     exports.ɵdv = NavigationEntryItemEffects;
@@ -61734,7 +61838,7 @@
     exports.ɵes = reducerProvider$9;
     exports.ɵet = clearKymaState;
     exports.ɵeu = metaReducers$5;
-    exports.ɵev = effects$8;
+    exports.ɵev = effects$9;
     exports.ɵew = OpenIdTokenEffect;
     exports.ɵex = OpenIdAuthenticationTokenService;
     exports.ɵey = defaultKymaConfig;
@@ -61762,7 +61866,7 @@
     exports.ɵft = reducerProvider$b;
     exports.ɵfu = clearProductsState;
     exports.ɵfv = metaReducers$6;
-    exports.ɵfw = effects$9;
+    exports.ɵfw = effects$a;
     exports.ɵfx = ProductReferencesEffects;
     exports.ɵfy = ProductReviewsEffects;
     exports.ɵfz = ProductsSearchEffects;
@@ -61780,7 +61884,7 @@
     exports.ɵgk = reducerToken$7;
     exports.ɵgl = reducerProvider$7;
     exports.ɵgm = CustomSerializer;
-    exports.ɵgn = effects$6;
+    exports.ɵgn = effects$7;
     exports.ɵgo = RouterEffects;
     exports.ɵgp = SiteContextParamsService;
     exports.ɵgq = SiteContextUrlSerializer;
@@ -61807,7 +61911,7 @@
     exports.ɵhk = getReducers$c;
     exports.ɵhl = reducerToken$c;
     exports.ɵhm = reducerProvider$c;
-    exports.ɵhn = effects$a;
+    exports.ɵhn = effects$b;
     exports.ɵho = FindStoresEffect;
     exports.ɵhp = ViewAllStoresEffect;
     exports.ɵhq = UserStoreModule;
@@ -61816,7 +61920,7 @@
     exports.ɵht = reducerProvider$d;
     exports.ɵhu = clearUserState;
     exports.ɵhv = metaReducers$8;
-    exports.ɵhw = effects$b;
+    exports.ɵhw = effects$c;
     exports.ɵhx = BillingCountriesEffect;
     exports.ɵhy = ClearMiscsDataEffect;
     exports.ɵhz = ConsignmentTrackingEffects;

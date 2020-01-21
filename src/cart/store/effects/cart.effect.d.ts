@@ -6,6 +6,13 @@ import { CartDataService } from '../../facade/cart-data.service';
 import * as DeprecatedCartActions from '../actions/cart.action';
 import { CartActions } from '../actions/index';
 import { StateWithMultiCart } from '../multi-cart-state';
+/**
+ * @deprecated since version 1.5
+ *
+ * spartacus ngrx effects will no longer be a part of public API
+ *
+ * TODO(issue:#4507)
+ */
 export declare class CartEffects {
     private actions$;
     private cartConnector;
