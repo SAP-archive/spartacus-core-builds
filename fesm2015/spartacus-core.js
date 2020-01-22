@@ -47437,7 +47437,7 @@ class SmartEditService {
                 this.defaultPreviewProductCode) {
                 this.routingService.go({
                     cxRoute: 'product',
-                    params: { code: this.defaultPreviewProductCode },
+                    params: { code: this.defaultPreviewProductCode, name: '' },
                 });
             }
             else if (cmsPage.type === PageType.CATEGORY_PAGE &&
