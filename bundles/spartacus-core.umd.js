@@ -45774,14 +45774,52 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var ProductURLPipe = /** @class */ (function () {
+        function ProductURLPipe(semanticPath) {
+            this.semanticPath = semanticPath;
+        }
+        /**
+         * @param {?} product
+         * @return {?}
+         */
+        ProductURLPipe.prototype.transform = /**
+         * @param {?} product
+         * @return {?}
+         */
+        function (product) {
+            return this.semanticPath.transform({ cxRoute: 'product', params: product });
+        };
+        ProductURLPipe.decorators = [
+            { type: core.Pipe, args: [{
+                        name: 'cxProductUrl',
+                    },] }
+        ];
+        /** @nocollapse */
+        ProductURLPipe.ctorParameters = function () { return [
+            { type: SemanticPathService }
+        ]; };
+        return ProductURLPipe;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @private
+         */
+        ProductURLPipe.prototype.semanticPath;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var UrlModule = /** @class */ (function () {
         function UrlModule() {
         }
         UrlModule.decorators = [
             { type: core.NgModule, args: [{
                         imports: [common.CommonModule],
-                        declarations: [UrlPipe],
-                        exports: [UrlPipe],
+                        declarations: [UrlPipe, ProductURLPipe],
+                        exports: [UrlPipe, ProductURLPipe],
                     },] }
         ];
         return UrlModule;
@@ -61939,91 +61977,92 @@
     exports.ɵge = reducer$j;
     exports.ɵgf = reducer$i;
     exports.ɵgg = PageMetaResolver;
-    exports.ɵgh = addExternalRoutesFactory;
-    exports.ɵgi = getReducers$7;
-    exports.ɵgj = reducer$d;
-    exports.ɵgk = reducerToken$7;
-    exports.ɵgl = reducerProvider$7;
-    exports.ɵgm = CustomSerializer;
-    exports.ɵgn = effects$7;
-    exports.ɵgo = RouterEffects;
-    exports.ɵgp = SiteContextParamsService;
-    exports.ɵgq = SiteContextUrlSerializer;
-    exports.ɵgr = SiteContextRoutesHandler;
-    exports.ɵgs = defaultSiteContextConfigFactory;
-    exports.ɵgt = siteContextStoreConfigFactory;
-    exports.ɵgu = SiteContextStoreModule;
-    exports.ɵgv = getReducers$1;
-    exports.ɵgw = reducerToken$1;
-    exports.ɵgx = reducerProvider$1;
-    exports.ɵgy = effects$2;
-    exports.ɵgz = LanguagesEffects;
+    exports.ɵgh = ProductURLPipe;
+    exports.ɵgi = addExternalRoutesFactory;
+    exports.ɵgj = getReducers$7;
+    exports.ɵgk = reducer$d;
+    exports.ɵgl = reducerToken$7;
+    exports.ɵgm = reducerProvider$7;
+    exports.ɵgn = CustomSerializer;
+    exports.ɵgo = effects$7;
+    exports.ɵgp = RouterEffects;
+    exports.ɵgq = SiteContextParamsService;
+    exports.ɵgr = SiteContextUrlSerializer;
+    exports.ɵgs = SiteContextRoutesHandler;
+    exports.ɵgt = defaultSiteContextConfigFactory;
+    exports.ɵgu = siteContextStoreConfigFactory;
+    exports.ɵgv = SiteContextStoreModule;
+    exports.ɵgw = getReducers$1;
+    exports.ɵgx = reducerToken$1;
+    exports.ɵgy = reducerProvider$1;
+    exports.ɵgz = effects$2;
     exports.ɵh = siteContextParamsProviders;
-    exports.ɵha = CurrenciesEffects;
-    exports.ɵhb = BaseSiteEffects;
-    exports.ɵhc = reducer$3;
-    exports.ɵhd = reducer$2;
-    exports.ɵhe = reducer$1;
-    exports.ɵhf = baseSiteConfigValidator;
-    exports.ɵhg = interceptors$4;
-    exports.ɵhh = CmsTicketInterceptor;
-    exports.ɵhi = defaultStoreFinderConfig;
-    exports.ɵhj = StoreFinderStoreModule;
-    exports.ɵhk = getReducers$c;
-    exports.ɵhl = reducerToken$c;
-    exports.ɵhm = reducerProvider$c;
-    exports.ɵhn = effects$b;
-    exports.ɵho = FindStoresEffect;
-    exports.ɵhp = ViewAllStoresEffect;
-    exports.ɵhq = UserStoreModule;
-    exports.ɵhr = getReducers$d;
-    exports.ɵhs = reducerToken$d;
-    exports.ɵht = reducerProvider$d;
-    exports.ɵhu = clearUserState;
-    exports.ɵhv = metaReducers$8;
-    exports.ɵhw = effects$c;
-    exports.ɵhx = BillingCountriesEffect;
-    exports.ɵhy = ClearMiscsDataEffect;
-    exports.ɵhz = ConsignmentTrackingEffects;
+    exports.ɵha = LanguagesEffects;
+    exports.ɵhb = CurrenciesEffects;
+    exports.ɵhc = BaseSiteEffects;
+    exports.ɵhd = reducer$3;
+    exports.ɵhe = reducer$2;
+    exports.ɵhf = reducer$1;
+    exports.ɵhg = baseSiteConfigValidator;
+    exports.ɵhh = interceptors$4;
+    exports.ɵhi = CmsTicketInterceptor;
+    exports.ɵhj = defaultStoreFinderConfig;
+    exports.ɵhk = StoreFinderStoreModule;
+    exports.ɵhl = getReducers$c;
+    exports.ɵhm = reducerToken$c;
+    exports.ɵhn = reducerProvider$c;
+    exports.ɵho = effects$b;
+    exports.ɵhp = FindStoresEffect;
+    exports.ɵhq = ViewAllStoresEffect;
+    exports.ɵhr = UserStoreModule;
+    exports.ɵhs = getReducers$d;
+    exports.ɵht = reducerToken$d;
+    exports.ɵhu = reducerProvider$d;
+    exports.ɵhv = clearUserState;
+    exports.ɵhw = metaReducers$8;
+    exports.ɵhx = effects$c;
+    exports.ɵhy = BillingCountriesEffect;
+    exports.ɵhz = ClearMiscsDataEffect;
     exports.ɵi = anonymousConsentsStoreConfigFactory;
-    exports.ɵia = DeliveryCountriesEffects;
-    exports.ɵib = NotificationPreferenceEffects;
-    exports.ɵic = OrderDetailsEffect;
-    exports.ɵid = OrderReturnRequestEffect;
-    exports.ɵie = UserPaymentMethodsEffects;
-    exports.ɵif = RegionsEffects;
-    exports.ɵig = ResetPasswordEffects;
-    exports.ɵih = TitlesEffects;
-    exports.ɵii = UserAddressesEffects;
-    exports.ɵij = UserConsentsEffect;
-    exports.ɵik = UserDetailsEffects;
-    exports.ɵil = UserOrdersEffect;
-    exports.ɵim = UserRegisterEffects;
-    exports.ɵin = CustomerCouponEffects;
-    exports.ɵio = ProductInterestsEffect;
-    exports.ɵip = ForgotPasswordEffects;
-    exports.ɵiq = UpdateEmailEffects;
-    exports.ɵir = UpdatePasswordEffects;
-    exports.ɵis = UserNotificationPreferenceConnector;
-    exports.ɵit = reducer$v;
-    exports.ɵiu = reducer$t;
-    exports.ɵiv = reducer$k;
-    exports.ɵiw = reducer$u;
-    exports.ɵix = reducer$p;
-    exports.ɵiy = reducer$w;
-    exports.ɵiz = reducer$o;
+    exports.ɵia = ConsignmentTrackingEffects;
+    exports.ɵib = DeliveryCountriesEffects;
+    exports.ɵic = NotificationPreferenceEffects;
+    exports.ɵid = OrderDetailsEffect;
+    exports.ɵie = OrderReturnRequestEffect;
+    exports.ɵif = UserPaymentMethodsEffects;
+    exports.ɵig = RegionsEffects;
+    exports.ɵih = ResetPasswordEffects;
+    exports.ɵii = TitlesEffects;
+    exports.ɵij = UserAddressesEffects;
+    exports.ɵik = UserConsentsEffect;
+    exports.ɵil = UserDetailsEffects;
+    exports.ɵim = UserOrdersEffect;
+    exports.ɵin = UserRegisterEffects;
+    exports.ɵio = CustomerCouponEffects;
+    exports.ɵip = ProductInterestsEffect;
+    exports.ɵiq = ForgotPasswordEffects;
+    exports.ɵir = UpdateEmailEffects;
+    exports.ɵis = UpdatePasswordEffects;
+    exports.ɵit = UserNotificationPreferenceConnector;
+    exports.ɵiu = reducer$v;
+    exports.ɵiv = reducer$t;
+    exports.ɵiw = reducer$k;
+    exports.ɵix = reducer$u;
+    exports.ɵiy = reducer$p;
+    exports.ɵiz = reducer$w;
     exports.ɵj = AnonymousConsentsStoreModule;
-    exports.ɵja = reducer$z;
-    exports.ɵjb = reducer$m;
-    exports.ɵjc = reducer$s;
-    exports.ɵjd = reducer$q;
-    exports.ɵje = reducer$r;
-    exports.ɵjf = reducer$l;
-    exports.ɵjg = reducer$x;
-    exports.ɵjh = reducer$n;
-    exports.ɵji = reducer$y;
-    exports.ɵjj = FindProductPageMetaResolver;
-    exports.ɵjk = PageMetaResolver;
+    exports.ɵja = reducer$o;
+    exports.ɵjb = reducer$z;
+    exports.ɵjc = reducer$m;
+    exports.ɵjd = reducer$s;
+    exports.ɵje = reducer$q;
+    exports.ɵjf = reducer$r;
+    exports.ɵjg = reducer$l;
+    exports.ɵjh = reducer$x;
+    exports.ɵji = reducer$n;
+    exports.ɵjj = reducer$y;
+    exports.ɵjk = FindProductPageMetaResolver;
+    exports.ɵjl = PageMetaResolver;
     exports.ɵk = TRANSFER_STATE_META_REDUCER;
     exports.ɵl = STORAGE_SYNC_META_REDUCER;
     exports.ɵm = stateMetaReducers;
