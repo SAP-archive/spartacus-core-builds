@@ -27,9 +27,19 @@ export declare class CmsService {
     getCurrentPage(): Observable<Page>;
     /**
      * Get CMS component data by uid
-     * @param uid : CMS componet uid
+     *
+     * This method can be safely and optimally used to load multiple components data at the same time.
+     * Calling getComponentData multiple times for different components will always result in optimized
+     * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
+     *
+     * In case the component data is not present, the method will load it.
+     * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
+     *
+     * @param uid CMS component uid
+     * @param pageContext if provided, it will be used to lookup the component data.
      */
-    getComponentData<T extends CmsComponent>(uid: string): Observable<T>;
+    getComponentData<T extends CmsComponent>(uid: string, pageContext?: PageContext): Observable<T>;
+    private createComponentData;
     /**
      * Given the position, get the content slot data
      * @param position : content slot position
@@ -60,9 +70,11 @@ export declare class CmsService {
     refreshPageById(pageId: string): void;
     /**
      * Refresh cms component's content
-     * @param uid : component uid
+     * @param uid component uid
+     * @param pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
+     * If not specified, 'current' page context is used.
      */
-    refreshComponent(uid: string): void;
+    refreshComponent(uid: string, pageContext?: PageContext): void;
     /**
      * Given pageContext, return the CMS page data
      * @param pageContext

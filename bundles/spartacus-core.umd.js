@@ -6268,6 +6268,8 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
+    var CURRENT_CONTEXT_KEY = 'current';
+    /** @type {?} */
     var UNKNOWN_ERROR = {
         error: 'unknown error',
     };
@@ -6321,6 +6323,16 @@
             }));
         }
         return isObject(error) ? UNKNOWN_ERROR : error;
+    }
+    /**
+     * @param {?} pageContext
+     * @return {?}
+     */
+    function serializePageContext(pageContext) {
+        if (!pageContext) {
+            return CURRENT_CONTEXT_KEY;
+        }
+        return pageContext.type + "-" + pageContext.id;
     }
 
     /**
@@ -38658,6 +38670,7 @@
     var CMS_FEATURE = 'cms';
     /** @type {?} */
     var NAVIGATION_DETAIL_ENTITY = '[Cms] Navigation Entity';
+    // TODO(issue:6027) - fix the const value to `[Cms] Component Entity`
     /** @type {?} */
     var COMPONENT_ENTITY = '[Cms[ Component Entity';
     /**
@@ -38667,6 +38680,51 @@
     if (false) {
         /* Skipping unnamed member:
         [CMS_FEATURE]: CmsState;*/
+    }
+    /**
+     * @record
+     */
+    function ComponentsContext() { }
+    if (false) {
+        /** @type {?} */
+        ComponentsContext.prototype.component;
+        /**
+         * Page context stores an information for which context does the component exist.
+         * For example, if `SiteLogoComponent` was successfully loaded for a product page with an ID of 1776948, then this object will contain:
+         *
+         * ```ts
+         * ProductPage-1776948: {
+         *  success: true,
+         *  loading: false,
+         *  error: false,
+         *  // The `value` property indicates that the component exists for the given page context.
+         *  value: true
+         * }
+         * ```
+         *
+         * If the same `SiteLogoComponent` component was tried to be loaded on homepage (page context id is `homepage`),
+         * and it doesn't exist for some reason (maybe it has a restriction), then this object will contain:
+         *
+         * ```ts
+         * ProductPage-1776948: {
+         *  success: true,
+         *  loading: false,
+         *  error: false,
+         *  // The `value` property indicates that the component exists for the given page context.
+         *  value: true
+         * },
+         * ContentPage-homepage: {
+         *  success: true,
+         *  loading: false,
+         *  error: false,
+         *  // The `value` in this case is `false` indicating that the component was tried to be loaded, but it doesn't exist or has a restriction.
+         *  value: false
+         * }
+         * ```
+         *
+         * @type {?}
+         */
+        ComponentsContext.prototype.pageContext;
     }
     /**
      * @record
@@ -38692,6 +38750,8 @@
         /** @type {?} */
         CmsState.prototype.component;
         /** @type {?} */
+        CmsState.prototype.components;
+        /** @type {?} */
         CmsState.prototype.navigation;
     }
 
@@ -38705,13 +38765,16 @@
     var LOAD_CMS_COMPONENT_FAIL = '[Cms] Load Component Fail';
     /** @type {?} */
     var LOAD_CMS_COMPONENT_SUCCESS = '[Cms] Load Component Success';
+    // TODO(issue:6027) - rename the const to `CMS_GET_COMPONENT_FROM_PAGE`
     /** @type {?} */
     var CMS_GET_COMPONENET_FROM_PAGE = '[Cms] Get Component from Page';
     var LoadCmsComponent = /** @class */ (function (_super) {
         __extends(LoadCmsComponent, _super);
-        function LoadCmsComponent(payload) {
+        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
+        function LoadCmsComponent(payload, pageContext) {
             var _this = _super.call(this, COMPONENT_ENTITY, payload) || this;
             _this.payload = payload;
+            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT;
             return _this;
         }
@@ -38722,12 +38785,16 @@
         LoadCmsComponent.prototype.type;
         /** @type {?} */
         LoadCmsComponent.prototype.payload;
+        /** @type {?} */
+        LoadCmsComponent.prototype.pageContext;
     }
     var LoadCmsComponentFail = /** @class */ (function (_super) {
         __extends(LoadCmsComponentFail, _super);
-        function LoadCmsComponentFail(uid, payload) {
+        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
+        function LoadCmsComponentFail(uid, payload, pageContext) {
             var _this = _super.call(this, COMPONENT_ENTITY, uid, payload) || this;
             _this.payload = payload;
+            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT_FAIL;
             return _this;
         }
@@ -38738,6 +38805,8 @@
         LoadCmsComponentFail.prototype.type;
         /** @type {?} */
         LoadCmsComponentFail.prototype.payload;
+        /** @type {?} */
+        LoadCmsComponentFail.prototype.pageContext;
     }
     /**
      * @template T
@@ -38747,9 +38816,11 @@
      */
     LoadCmsComponentSuccess = /** @class */ (function (_super) {
         __extends(LoadCmsComponentSuccess, _super);
-        function LoadCmsComponentSuccess(payload, uid) {
+        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
+        function LoadCmsComponentSuccess(payload, uid, pageContext) {
             var _this = _super.call(this, COMPONENT_ENTITY, uid || payload.uid || '') || this;
             _this.payload = payload;
+            _this.pageContext = pageContext;
             _this.type = LOAD_CMS_COMPONENT_SUCCESS;
             return _this;
         }
@@ -38760,6 +38831,8 @@
         LoadCmsComponentSuccess.prototype.type;
         /** @type {?} */
         LoadCmsComponentSuccess.prototype.payload;
+        /** @type {?} */
+        LoadCmsComponentSuccess.prototype.pageContext;
     }
     /**
      * @template T
@@ -38769,13 +38842,15 @@
      */
     CmsGetComponentFromPage = /** @class */ (function (_super) {
         __extends(CmsGetComponentFromPage, _super);
-        function CmsGetComponentFromPage(payload) {
+        // TODO(issue:6027) - this action should have only one `payload` property which should encapsulate all of the constructor's arguments
+        function CmsGetComponentFromPage(payload, pageContext) {
             var _this = _super.call(this, COMPONENT_ENTITY, payload.map((/**
              * @param {?} cmp
              * @return {?}
              */
             function (cmp) { return cmp.uid; }))) || this;
             _this.payload = payload;
+            _this.pageContext = pageContext;
             _this.type = CMS_GET_COMPONENET_FROM_PAGE;
             return _this;
         }
@@ -38786,6 +38861,8 @@
         CmsGetComponentFromPage.prototype.type;
         /** @type {?} */
         CmsGetComponentFromPage.prototype.payload;
+        /** @type {?} */
+        CmsGetComponentFromPage.prototype.pageContext;
     }
 
     /**
@@ -38981,7 +39058,11 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /** @type {?} */
+    // TODO(issue:6027) - delete this method
+    /**
+     * @deprecated as of 2.0, this method will be removed.
+     * @type {?}
+     */
     var getComponentEntitiesSelector = (/**
      * @param {?} state
      * @return {?}
@@ -38998,16 +39079,28 @@
         }), {});
     });
     var ɵ0$x = getComponentEntitiesSelector;
+    // TODO(issue:6027) - delete this method
     var ɵ1$p = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return state.component; };
-    /** @type {?} */
+    /**
+     * @deprecated as of 2.0, this method will be removed in favour of `getComponentsState`
+     * @type {?}
+     */
     var getComponentState = store.createSelector(getCmsState, (ɵ1$p));
-    /** @type {?} */
+    // TODO(issue:6027) - delete this method
+    /**
+     * @deprecated as of 2.0, this method will be removed.
+     * @type {?}
+     */
     var getComponentEntities = store.createSelector(getComponentState, getComponentEntitiesSelector);
-    /** @type {?} */
+    // TODO(issue:6027) - delete this method
+    /**
+     * @deprecated as of 2.0, this method will be removed in favour of `componentsLoaderStateSelectorFactory`
+     * @type {?}
+     */
     var componentStateSelectorFactory = (/**
      * @param {?} uid
      * @return {?}
@@ -39018,7 +39111,7 @@
          * @return {?}
          */
         function (entities) {
-            // the whole component entities are emtpy
+            // the whole component entities are empty
             if (Object.keys(entities.entities).length === 0) {
                 return undefined;
             }
@@ -39027,7 +39120,11 @@
             }
         }));
     });
-    /** @type {?} */
+    // TODO(issue:6027) - delete this method
+    /**
+     * @deprecated as of 2.0, this method will be removed in favour of `componentsSelectorFactory`
+     * @type {?}
+     */
     var componentSelectorFactory = (/**
      * @param {?} uid
      * @return {?}
@@ -39040,6 +39137,91 @@
         function (state) {
             if (state) {
                 return loaderValueSelector(state);
+            }
+            else {
+                return undefined;
+            }
+        }));
+    });
+    var ɵ2$i = /**
+     * @param {?} state
+     * @return {?}
+     */
+    function (state) { return state.components; };
+    /** @type {?} */
+    var getComponentsState = store.createSelector(getCmsState, (ɵ2$i));
+    /** @type {?} */
+    var componentsContextSelectorFactory = (/**
+     * @param {?} uid
+     * @return {?}
+     */
+    function (uid) {
+        return store.createSelector(getComponentsState, (/**
+         * @param {?} componentsState
+         * @return {?}
+         */
+        function (componentsState) { return entitySelector(componentsState, uid); }));
+    });
+    /** @type {?} */
+    var componentsLoaderStateSelectorFactory = (/**
+     * @param {?} uid
+     * @param {?} context
+     * @return {?}
+     */
+    function (uid, context) {
+        return store.createSelector(componentsContextSelectorFactory(uid), (/**
+         * @param {?} componentsContext
+         * @return {?}
+         */
+        function (componentsContext) {
+            return (componentsContext &&
+                componentsContext.pageContext &&
+                componentsContext.pageContext[context]) ||
+                initialLoaderState;
+        }));
+    });
+    /** @type {?} */
+    var componentsContextExistsSelectorFactory = (/**
+     * @param {?} uid
+     * @param {?} context
+     * @return {?}
+     */
+    function (uid, context) {
+        return store.createSelector(componentsLoaderStateSelectorFactory(uid, context), (/**
+         * @param {?} loaderState
+         * @return {?}
+         */
+        function (loaderState) {
+            return loaderValueSelector(loaderState) || false;
+        }));
+    });
+    /** @type {?} */
+    var componentsDataSelectorFactory = (/**
+     * @param {?} uid
+     * @return {?}
+     */
+    function (uid) {
+        return store.createSelector(componentsContextSelectorFactory(uid), (/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state) { return state.component; }));
+    });
+    /** @type {?} */
+    var componentsSelectorFactory = (/**
+     * @param {?} uid
+     * @param {?} context
+     * @return {?}
+     */
+    function (uid, context) {
+        return store.createSelector(componentsDataSelectorFactory(uid), componentsContextExistsSelectorFactory(uid, context), (/**
+         * @param {?} componentState
+         * @param {?} exists
+         * @return {?}
+         */
+        function (componentState, exists) {
+            if (componentState && exists) {
+                return componentState;
             }
             else {
                 return undefined;
@@ -39156,7 +39338,7 @@
         }
         return Array.from(componentTypes);
     });
-    var ɵ2$i = getPageComponentTypesSelector;
+    var ɵ2$j = getPageComponentTypesSelector;
     var ɵ3$a = /**
      * @param {?} state
      * @return {?}
@@ -39266,6 +39448,12 @@
         getComponentEntities: getComponentEntities,
         componentStateSelectorFactory: componentStateSelectorFactory,
         componentSelectorFactory: componentSelectorFactory,
+        getComponentsState: getComponentsState,
+        componentsContextSelectorFactory: componentsContextSelectorFactory,
+        componentsLoaderStateSelectorFactory: componentsLoaderStateSelectorFactory,
+        componentsContextExistsSelectorFactory: componentsContextExistsSelectorFactory,
+        componentsDataSelectorFactory: componentsDataSelectorFactory,
+        componentsSelectorFactory: componentsSelectorFactory,
         getCmsState: getCmsState,
         getNavigationEntryItemState: getNavigationEntryItemState,
         getSelectedNavigationEntryItemState: getSelectedNavigationEntryItemState,
@@ -39351,50 +39539,135 @@
         };
         /**
          * Get CMS component data by uid
-         * @param uid : CMS componet uid
+         *
+         * This method can be safely and optimally used to load multiple components data at the same time.
+         * Calling getComponentData multiple times for different components will always result in optimized
+         * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
+         *
+         * In case the component data is not present, the method will load it.
+         * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
+         *
+         * @param uid CMS component uid
+         * @param pageContext if provided, it will be used to lookup the component data.
          */
         /**
          * Get CMS component data by uid
+         *
+         * This method can be safely and optimally used to load multiple components data at the same time.
+         * Calling getComponentData multiple times for different components will always result in optimized
+         * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
+         *
+         * In case the component data is not present, the method will load it.
+         * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
+         *
          * @template T
-         * @param {?} uid : CMS componet uid
+         * @param {?} uid CMS component uid
+         * @param {?=} pageContext if provided, it will be used to lookup the component data.
          * @return {?}
          */
         CmsService.prototype.getComponentData = /**
          * Get CMS component data by uid
+         *
+         * This method can be safely and optimally used to load multiple components data at the same time.
+         * Calling getComponentData multiple times for different components will always result in optimized
+         * back-end request: all components requested at the same time (in one event loop) will be loaded in one network call.
+         *
+         * In case the component data is not present, the method will load it.
+         * Otherwise, if the page context is not provided, the current page context from the router state will be used instead.
+         *
          * @template T
-         * @param {?} uid : CMS componet uid
+         * @param {?} uid CMS component uid
+         * @param {?=} pageContext if provided, it will be used to lookup the component data.
          * @return {?}
          */
-        function (uid) {
-            var _this = this;
+        function (uid, pageContext) {
+            /** @type {?} */
+            var context = serializePageContext(pageContext);
             if (!this.components[uid]) {
-                this.components[uid] = rxjs.combineLatest([
-                    this.routingService.isNavigating(),
-                    this.store.pipe(store.select(componentStateSelectorFactory(uid))),
-                ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap((/**
-                 * @param {?} __0
-                 * @return {?}
-                 */
-                function (_a) {
-                    var _b = __read(_a, 2), isNavigating = _b[0], componentState = _b[1];
-                    // componentState is undefined when the whole components entities are empty.
-                    // In this case, we don't load component one by one, but extract component data from cms page
-                    if (componentState !== undefined) {
-                        /** @type {?} */
-                        var attemptedLoad = componentState.loading ||
-                            componentState.success ||
-                            componentState.error;
-                        if (!attemptedLoad && !isNavigating) {
-                            _this.store.dispatch(new LoadCmsComponent(uid));
-                        }
-                    }
-                })), operators.pluck(1), operators.filter((/**
-                 * @param {?} componentState
-                 * @return {?}
-                 */
-                function (componentState) { return componentState && componentState.success; })), operators.pluck('value'), operators.distinctUntilChanged(), operators.shareReplay({ bufferSize: 1, refCount: true }));
+                // create the component data structure, if it doesn't already exist
+                this.components[uid] = {};
             }
-            return (/** @type {?} */ (this.components[uid]));
+            /** @type {?} */
+            var component = this.components[uid];
+            if (!component[context]) {
+                // create the component data and assign it to the component's context
+                component[context] = this.createComponentData(uid, pageContext);
+            }
+            return (/** @type {?} */ (component[context]));
+        };
+        /**
+         * @private
+         * @template T
+         * @param {?} uid
+         * @param {?=} pageContext
+         * @return {?}
+         */
+        CmsService.prototype.createComponentData = /**
+         * @private
+         * @template T
+         * @param {?} uid
+         * @param {?=} pageContext
+         * @return {?}
+         */
+        function (uid, pageContext) {
+            var _this = this;
+            if (!pageContext) {
+                return this.routingService.getPageContext().pipe(operators.filter((/**
+                 * @param {?} currentContext
+                 * @return {?}
+                 */
+                function (currentContext) { return !!currentContext; })), operators.switchMap((/**
+                 * @param {?} currentContext
+                 * @return {?}
+                 */
+                function (currentContext) {
+                    return _this.getComponentData(uid, currentContext);
+                })));
+            }
+            /** @type {?} */
+            var context = serializePageContext(pageContext);
+            /** @type {?} */
+            var loading$ = rxjs.combineLatest([
+                this.routingService.getNextPageContext(),
+                this.store.pipe(store.select(componentsLoaderStateSelectorFactory(uid, context))),
+            ]).pipe(operators.observeOn(rxjs.queueScheduler), operators.tap((/**
+             * @param {?} __0
+             * @return {?}
+             */
+            function (_a) {
+                var _b = __read(_a, 2), nextContext = _b[0], loadingState = _b[1];
+                /** @type {?} */
+                var attemptedLoad = loadingState.loading || loadingState.success || loadingState.error;
+                // if the requested context is the same as the one that's currently being navigated to
+                // (as it might already been triggered and might be available shortly from page data)
+                // TODO(issue:3649), TODO(issue:3668) - this optimization could be removed
+                /** @type {?} */
+                var couldBeLoadedWithPageData = nextContext
+                    ? serializePageContext(nextContext) === context
+                    : false;
+                if (!attemptedLoad && !couldBeLoadedWithPageData) {
+                    _this.store.dispatch(new LoadCmsComponent(uid, pageContext));
+                }
+            })));
+            /** @type {?} */
+            var component$ = (/** @type {?} */ (this.store.pipe(store.select(componentsSelectorFactory(uid, context)), 
+            // TODO(issue:6027) - this `filter` should be removed.
+            // The reason for removal: with `filter` in place, when moving to a page that has restrictions, the component data will still emit the previous value.
+            // Removing it causes some components to fail, because they are not checking
+            // if the data is actually there. I noticed these that this component is failing, but there are possibly more:
+            // - `tab-paragraph-container.component.ts` when visiting any PDP page
+            operators.filter((/**
+             * @param {?} component
+             * @return {?}
+             */
+            function (component) { return !!component; })))));
+            return rxjs.using((/**
+             * @return {?}
+             */
+            function () { return loading$.subscribe(); }), (/**
+             * @return {?}
+             */
+            function () { return component$; })).pipe(operators.shareReplay({ bufferSize: 1, refCount: true }));
         };
         /**
          * Given the position, get the content slot data
@@ -39505,20 +39778,26 @@
         };
         /**
          * Refresh cms component's content
-         * @param uid : component uid
+         * @param uid component uid
+         * @param pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
+         * If not specified, 'current' page context is used.
          */
         /**
          * Refresh cms component's content
-         * @param {?} uid : component uid
+         * @param {?} uid component uid
+         * @param {?=} pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
+         * If not specified, 'current' page context is used.
          * @return {?}
          */
         CmsService.prototype.refreshComponent = /**
          * Refresh cms component's content
-         * @param {?} uid : component uid
+         * @param {?} uid component uid
+         * @param {?=} pageContext an optional parameter that enables the caller to specify for which context the component should be refreshed.
+         * If not specified, 'current' page context is used.
          * @return {?}
          */
-        function (uid) {
-            this.store.dispatch(new LoadCmsComponent(uid));
+        function (uid, pageContext) {
+            this.store.dispatch(new LoadCmsComponent(uid, pageContext));
         };
         /**
          * Given pageContext, return the CMS page data
@@ -39592,7 +39871,7 @@
              */
             function (entity) {
                 if (!entity.hasOwnProperty('value')) {
-                    // if we have incomplete state from srr failed load transfer state,
+                    // if we have incomplete state from SSR failed load transfer state,
                     // we should wait for reload and actual value
                     return false;
                 }
@@ -42727,7 +43006,7 @@
     function (state) {
         return state.paymentDetails;
     });
-    var ɵ2$j = getPaymentDetailsSelector;
+    var ɵ2$k = getPaymentDetailsSelector;
     /** @type {?} */
     var getOrderDetailsSelector = (/**
      * @param {?} state
@@ -47289,7 +47568,7 @@
              * @param {?} pageContext
              * @return {?}
              */
-            function (pageContext) { return pageContext.type + pageContext.id; })), operators.mergeMap((/**
+            function (pageContext) { return serializePageContext(pageContext); })), operators.mergeMap((/**
              * @param {?} group
              * @return {?}
              */
@@ -47306,7 +47585,7 @@
                     function (cmsStructure) {
                         /** @type {?} */
                         var actions = [
-                            new CmsGetComponentFromPage(cmsStructure.components),
+                            new CmsGetComponentFromPage(cmsStructure.components, pageContext),
                             new LoadCmsPageDataSuccess(pageContext, cmsStructure.page),
                         ];
                         /** @type {?} */
@@ -47366,6 +47645,39 @@
          * @private
          */
         PageEffects.prototype.routingService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @template T
+     * @param {?=} time
+     * @param {?=} scheduler
+     * @return {?}
+     */
+    function bufferDebounceTime(time, scheduler) {
+        if (time === void 0) { time = 0; }
+        return (/**
+         * @param {?} source
+         * @return {?}
+         */
+        function (source) {
+            /** @type {?} */
+            var bufferedValues = [];
+            return source.pipe(operators.tap((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
+             * @return {?}
+             */
+            function () { return bufferedValues; })), operators.tap((/**
+             * @return {?}
+             */
+            function () { return (bufferedValues = []); })));
+        });
     }
 
     /**
@@ -47485,55 +47797,12 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    /**
-     * @template T
-     * @param {?=} time
-     * @param {?=} scheduler
-     * @return {?}
-     */
-    function bufferDebounceTime(time, scheduler) {
-        if (time === void 0) { time = 0; }
-        return (/**
-         * @param {?} source
-         * @return {?}
-         */
-        function (source) {
-            /** @type {?} */
-            var bufferedValues = [];
-            return source.pipe(operators.tap((/**
-             * @param {?} value
-             * @return {?}
-             */
-            function (value) { return bufferedValues.push(value); })), operators.debounceTime(time, scheduler), operators.map((/**
-             * @return {?}
-             */
-            function () { return bufferedValues; })), operators.tap((/**
-             * @return {?}
-             */
-            function () { return (bufferedValues = []); })));
-        });
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var ComponentEffects = /** @class */ (function () {
-        function ComponentEffects(actions$, cmsComponentLoader, routingService, featureConfigService) {
+        function ComponentEffects(actions$, cmsComponentLoader, featureConfigService) {
             var _this = this;
             this.actions$ = actions$;
             this.cmsComponentLoader = cmsComponentLoader;
-            this.routingService = routingService;
             this.featureConfigService = featureConfigService;
-            this.currentPageContext$ = this.routingService.getRouterState().pipe(operators.filter((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            function (routerState) { return routerState !== undefined; })), operators.map((/**
-             * @param {?} routerState
-             * @return {?}
-             */
-            function (routerState) { return routerState.state.context; })));
             this.contextChange$ = this.actions$.pipe(effects$d.ofType(LANGUAGE_CHANGE, LOGOUT, LOGIN));
             this.loadComponent$ = effects$d.createEffect((/**
              * @return {?}
@@ -47544,17 +47813,26 @@
              */
             function (_a) {
                 var _b = _a === void 0 ? {} : _a, scheduler = _b.scheduler, _c = _b.debounce, debounce = _c === void 0 ? 0 : _c;
-                return _this.actions$.pipe(effects$d.ofType(LOAD_CMS_COMPONENT), operators.map((/**
-                 * @param {?} action
+                return _this.actions$.pipe(effects$d.ofType(LOAD_CMS_COMPONENT), operators.groupBy((/**
+                 * @param {?} actions
                  * @return {?}
                  */
-                function (action) { return action.payload; })), bufferDebounceTime(debounce, scheduler), operators.withLatestFrom(_this.currentPageContext$), operators.mergeMap((/**
-                 * @param {?} __0
+                function (actions) { return serializePageContext(actions.pageContext); })), operators.mergeMap((/**
+                 * @param {?} actionGroup
                  * @return {?}
                  */
-                function (_a) {
-                    var _b = __read(_a, 2), componentUids = _b[0], pageContext = _b[1];
-                    return _this.loadComponentsEffect(componentUids, pageContext);
+                function (actionGroup) {
+                    return actionGroup.pipe(bufferDebounceTime(debounce, scheduler), operators.mergeMap((/**
+                     * @param {?} actions
+                     * @return {?}
+                     */
+                    function (actions) {
+                        return _this.loadComponentsEffect(actions.map((/**
+                         * @param {?} action
+                         * @return {?}
+                         */
+                        function (action) { return action.payload; })), actions[0].pageContext);
+                    })));
                 })), withdrawOn(_this.contextChange$));
             }); }));
         }
@@ -47584,13 +47862,13 @@
                      * @return {?}
                      */
                     function (component) {
-                        return new LoadCmsComponentSuccess(component, component.uid);
+                        return new LoadCmsComponentSuccess(component, component.uid, pageContext);
                     })), operators.catchError((/**
                      * @param {?} error
                      * @return {?}
                      */
                     function (error) {
-                        return rxjs.of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error)));
+                        return rxjs.of(new LoadCmsComponentFail(componentUid, makeErrorSerializable(error), pageContext));
                     })));
                 }))));
             }
@@ -47605,7 +47883,7 @@
                  * @return {?}
                  */
                 function (component) {
-                    return new LoadCmsComponentSuccess(component, component.uid);
+                    return new LoadCmsComponentSuccess(component, component.uid, pageContext);
                 })));
             })), operators.catchError((/**
              * @param {?} error
@@ -47617,7 +47895,7 @@
                  * @return {?}
                  */
                 function (uid) {
-                    return new LoadCmsComponentFail(uid, makeErrorSerializable(error));
+                    return new LoadCmsComponentFail(uid, makeErrorSerializable(error), pageContext);
                 })));
             })));
         };
@@ -47628,17 +47906,11 @@
         ComponentEffects.ctorParameters = function () { return [
             { type: effects$d.Actions },
             { type: CmsComponentConnector },
-            { type: RoutingService },
             { type: FeatureConfigService }
         ]; };
         return ComponentEffects;
     }());
     if (false) {
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.currentPageContext$;
         /**
          * @type {?}
          * @private
@@ -47656,11 +47928,6 @@
          * @private
          */
         ComponentEffects.prototype.cmsComponentLoader;
-        /**
-         * @type {?}
-         * @private
-         */
-        ComponentEffects.prototype.routingService;
         /**
          * @type {?}
          * @private
@@ -47831,14 +48098,76 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$e = undefined;
+    var initialState$e = {
+        component: undefined,
+        pageContext: {},
+    };
     /**
+     * @template T
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function componentExistsReducer(state, action) {
+        if (state === void 0) { state = false; }
+        switch (action.type) {
+            case LOAD_CMS_COMPONENT_FAIL:
+                return false;
+            case CMS_GET_COMPONENET_FROM_PAGE:
+            case LOAD_CMS_COMPONENT_SUCCESS:
+                return true;
+        }
+        return state;
+    }
+    /**
+     * @template T
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
     function reducer$e(state, action) {
+        var _a, _b, _c;
         if (state === void 0) { state = initialState$e; }
+        switch (action.type) {
+            case LOAD_CMS_COMPONENT: {
+                /** @type {?} */
+                var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
+                /** @type {?} */
+                var context = serializePageContext(action.pageContext);
+                return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
+            }
+            case LOAD_CMS_COMPONENT_FAIL: {
+                /** @type {?} */
+                var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
+                /** @type {?} */
+                var context = serializePageContext(action.pageContext);
+                return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
+            }
+            case CMS_GET_COMPONENET_FROM_PAGE:
+            case LOAD_CMS_COMPONENT_SUCCESS: {
+                /** @type {?} */
+                var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
+                /** @type {?} */
+                var context = serializePageContext(action.pageContext);
+                return __assign({}, state, { component: (/** @type {?} */ (action.payload)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$f = undefined;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$f(state, action) {
+        if (state === void 0) { state = initialState$f; }
         switch (action.type) {
             case LOAD_CMS_NAVIGATION_ITEMS_SUCCESS: {
                 if (action.payload.components) {
@@ -47866,15 +48195,15 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$f = { entities: {} };
+    var initialState$g = { entities: {} };
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$f(state, action) {
+    function reducer$g(state, action) {
         var _a;
-        if (state === void 0) { state = initialState$f; }
+        if (state === void 0) { state = initialState$g; }
         switch (action.type) {
             case LOAD_CMS_PAGE_DATA_SUCCESS: {
                 /** @type {?} */
@@ -47890,26 +48219,26 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$g = undefined;
+    var initialState$h = undefined;
     /**
      * @param {?} entityType
      * @return {?}
      */
-    function reducer$g(entityType) {
+    function reducer$h(entityType) {
         return (/**
          * @param {?=} state
          * @param {?=} action
          * @return {?}
          */
         function (state, action) {
-            if (state === void 0) { state = initialState$g; }
+            if (state === void 0) { state = initialState$h; }
             if (action.meta && action.meta.entityType === entityType) {
                 switch (action.type) {
                     case LOAD_CMS_PAGE_DATA_SUCCESS: {
                         return action.payload.pageId;
                     }
                     case LOAD_CMS_PAGE_DATA_FAIL: {
-                        return initialState$g;
+                        return initialState$h;
                     }
                     case CMS_SET_PAGE_FAIL_INDEX: {
                         return action.payload;
@@ -47933,16 +48262,21 @@
     function getReducers$8() {
         return {
             page: store.combineReducers({
-                pageData: reducer$f,
+                pageData: reducer$g,
                 index: store.combineReducers({
-                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$g(PageType.CONTENT_PAGE)),
-                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$g(PageType.PRODUCT_PAGE)),
-                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$g(PageType.CATEGORY_PAGE)),
-                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$g(PageType.CATALOG_PAGE)),
+                    content: entityLoaderReducer(PageType.CONTENT_PAGE, reducer$h(PageType.CONTENT_PAGE)),
+                    product: entityLoaderReducer(PageType.PRODUCT_PAGE, reducer$h(PageType.PRODUCT_PAGE)),
+                    category: entityLoaderReducer(PageType.CATEGORY_PAGE, reducer$h(PageType.CATEGORY_PAGE)),
+                    catalog: entityLoaderReducer(PageType.CATALOG_PAGE, reducer$h(PageType.CATALOG_PAGE)),
                 }),
             }),
+            /**
+             * @deprecated in favour of `components`. From 2.0, this will be removed.
+             */
+            // TODO(issue:6027) - remove this `component` slice
             component: entityLoaderReducer(COMPONENT_ENTITY),
-            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$e),
+            components: entityReducer(COMPONENT_ENTITY, reducer$e),
+            navigation: entityLoaderReducer(NAVIGATION_DETAIL_ENTITY, reducer$f),
         };
     }
     /** @type {?} */
@@ -51327,7 +51661,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$h = {
+    var initialState$i = {
         results: {},
         suggestions: [],
         auxResults: {},
@@ -51337,8 +51671,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$h(state, action) {
-        if (state === void 0) { state = initialState$h; }
+    function reducer$i(state, action) {
+        if (state === void 0) { state = initialState$i; }
         switch (action.type) {
             case SEARCH_PRODUCTS_SUCCESS: {
                 /** @type {?} */
@@ -53509,7 +53843,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$i = {
+    var initialState$j = {
         productCode: '',
         list: [],
     };
@@ -53518,8 +53852,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$i(state, action) {
-        if (state === void 0) { state = initialState$i; }
+    function reducer$j(state, action) {
+        if (state === void 0) { state = initialState$j; }
         switch (action.type) {
             case LOAD_PRODUCT_REFERENCES_SUCCESS: {
                 /** @type {?} */
@@ -53546,7 +53880,7 @@
                     }), []), productCode: productCode });
             }
             case CLEAN_PRODUCT_REFERENCES: {
-                return initialState$i;
+                return initialState$j;
             }
         }
         return state;
@@ -53569,7 +53903,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$j = {
+    var initialState$k = {
         productCode: '',
         list: [],
     };
@@ -53578,8 +53912,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$j(state, action) {
-        if (state === void 0) { state = initialState$j; }
+    function reducer$k(state, action) {
+        if (state === void 0) { state = initialState$k; }
         switch (action.type) {
             case LOAD_PRODUCT_REVIEWS_SUCCESS: {
                 /** @type {?} */
@@ -53675,10 +54009,10 @@
      */
     function getReducers$b() {
         return {
-            search: reducer$h,
+            search: reducer$i,
             details: entityScopedLoaderReducer(PRODUCT_DETAIL_ENTITY),
-            reviews: reducer$j,
-            references: reducer$i,
+            reviews: reducer$k,
+            references: reducer$j,
         };
     }
     /** @type {?} */
@@ -54621,13 +54955,13 @@
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
     var getFindStoresEntities = store.createSelector(getFindStoresState, (ɵ1$u));
-    var ɵ2$k = /**
+    var ɵ2$l = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$k));
+    var getStoresLoading = store.createSelector(getFindStoresState, (ɵ2$l));
 
     /**
      * @fileoverview added by tsickle
@@ -54647,13 +54981,13 @@
     function (state) { return loaderValueSelector(state); };
     /** @type {?} */
     var getViewAllStoresEntities = store.createSelector(getViewAllStoresState, (ɵ1$v));
-    var ɵ2$l = /**
+    var ɵ2$m = /**
      * @param {?} state
      * @return {?}
      */
     function (state) { return loaderLoadingSelector(state); };
     /** @type {?} */
-    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$l));
+    var getViewAllStoresLoading = store.createSelector(getViewAllStoresState, (ɵ2$m));
 
     /**
      * @fileoverview added by tsickle
@@ -58506,7 +58840,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$k = {
+    var initialState$l = {
         entities: {},
     };
     /**
@@ -58514,8 +58848,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$k(state, action) {
-        if (state === void 0) { state = initialState$k; }
+    function reducer$l(state, action) {
+        if (state === void 0) { state = initialState$l; }
         switch (action.type) {
             case LOAD_BILLING_COUNTRIES_SUCCESS: {
                 /** @type {?} */
@@ -58533,34 +58867,6 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$k;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$l = {};
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$l(state, action) {
-        if (state === void 0) { state = initialState$l; }
-        switch (action.type) {
-            case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
-                /** @type {?} */
-                var tracking = action.payload;
-                return {
-                    tracking: tracking,
-                };
-            }
-            case CLEAR_CONSIGNMENT_TRACKING: {
                 return initialState$l;
             }
         }
@@ -58572,9 +58878,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$m = {
-        entities: {},
-    };
+    var initialState$m = {};
     /**
      * @param {?=} state
      * @param {?=} action
@@ -58582,6 +58886,36 @@
      */
     function reducer$m(state, action) {
         if (state === void 0) { state = initialState$m; }
+        switch (action.type) {
+            case LOAD_CONSIGNMENT_TRACKING_SUCCESS: {
+                /** @type {?} */
+                var tracking = action.payload;
+                return {
+                    tracking: tracking,
+                };
+            }
+            case CLEAR_CONSIGNMENT_TRACKING: {
+                return initialState$m;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$n = {
+        entities: {},
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$n(state, action) {
+        if (state === void 0) { state = initialState$n; }
         switch (action.type) {
             case LOAD_DELIVERY_COUNTRIES_SUCCESS: {
                 /** @type {?} */
@@ -58599,33 +58933,8 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$m;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$n = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$n(state, action) {
-        if (state === void 0) { state = initialState$n; }
-        switch (action.type) {
-            case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
                 return initialState$n;
             }
-            case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
-            case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
-                return action.payload ? action.payload : initialState$n;
-            }
         }
         return state;
     }
@@ -58635,7 +58944,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$o = {};
+    var initialState$o = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -58643,6 +58952,31 @@
      */
     function reducer$o(state, action) {
         if (state === void 0) { state = initialState$o; }
+        switch (action.type) {
+            case LOAD_NOTIFICATION_PREFERENCES_FAIL: {
+                return initialState$o;
+            }
+            case LOAD_NOTIFICATION_PREFERENCES_SUCCESS:
+            case UPDATE_NOTIFICATION_PREFERENCES_SUCCESS: {
+                return action.payload ? action.payload : initialState$o;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$p = {};
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$p(state, action) {
+        if (state === void 0) { state = initialState$p; }
         switch (action.type) {
             case LOAD_ORDER_DETAILS_SUCCESS: {
                 /** @type {?} */
@@ -58658,34 +58992,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$p = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$p(state, action) {
-        if (state === void 0) { state = initialState$p; }
-        switch (action.type) {
-            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
-                return action.payload ? action.payload : initialState$p;
-            }
-            case LOAD_USER_PAYMENT_METHODS_FAIL: {
-                return initialState$p;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$q = {
-        entities: [],
-        country: null,
-    };
+    var initialState$q = [];
     /**
      * @param {?=} state
      * @param {?=} action
@@ -58694,15 +59001,10 @@
     function reducer$q(state, action) {
         if (state === void 0) { state = initialState$q; }
         switch (action.type) {
-            case LOAD_REGIONS_SUCCESS: {
-                /** @type {?} */
-                var entities = action.payload.entities;
-                /** @type {?} */
-                var country = action.payload.country;
-                if (entities || country) {
-                    return __assign({}, state, { entities: entities,
-                        country: country });
-                }
+            case LOAD_USER_PAYMENT_METHODS_SUCCESS: {
+                return action.payload ? action.payload : initialState$q;
+            }
+            case LOAD_USER_PAYMENT_METHODS_FAIL: {
                 return initialState$q;
             }
         }
@@ -58714,7 +59016,10 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$r = false;
+    var initialState$r = {
+        entities: [],
+        country: null,
+    };
     /**
      * @param {?=} state
      * @param {?=} action
@@ -58722,6 +59027,35 @@
      */
     function reducer$r(state, action) {
         if (state === void 0) { state = initialState$r; }
+        switch (action.type) {
+            case LOAD_REGIONS_SUCCESS: {
+                /** @type {?} */
+                var entities = action.payload.entities;
+                /** @type {?} */
+                var country = action.payload.country;
+                if (entities || country) {
+                    return __assign({}, state, { entities: entities,
+                        country: country });
+                }
+                return initialState$r;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$s = false;
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$s(state, action) {
+        if (state === void 0) { state = initialState$s; }
         switch (action.type) {
             case RESET_PASSWORD_SUCCESS: {
                 return true;
@@ -58735,7 +59069,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$s = {
+    var initialState$t = {
         entities: {},
     };
     /**
@@ -58743,8 +59077,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$s(state, action) {
-        if (state === void 0) { state = initialState$s; }
+    function reducer$t(state, action) {
+        if (state === void 0) { state = initialState$t; }
         switch (action.type) {
             case LOAD_TITLES_SUCCESS: {
                 /** @type {?} */
@@ -58762,31 +59096,7 @@
                 return __assign({}, state, { entities: entities });
             }
             case CLEAR_USER_MISCS_DATA: {
-                return initialState$s;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
-    var initialState$t = [];
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$t(state, action) {
-        if (state === void 0) { state = initialState$t; }
-        switch (action.type) {
-            case LOAD_USER_ADDRESSES_FAIL: {
                 return initialState$t;
-            }
-            case LOAD_USER_ADDRESSES_SUCCESS: {
-                return action.payload ? action.payload : initialState$t;
             }
         }
         return state;
@@ -58806,10 +59116,34 @@
     function reducer$u(state, action) {
         if (state === void 0) { state = initialState$u; }
         switch (action.type) {
+            case LOAD_USER_ADDRESSES_FAIL: {
+                return initialState$u;
+            }
+            case LOAD_USER_ADDRESSES_SUCCESS: {
+                return action.payload ? action.payload : initialState$u;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$v = [];
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$v(state, action) {
+        if (state === void 0) { state = initialState$v; }
+        switch (action.type) {
             case LOAD_USER_CONSENTS_SUCCESS: {
                 /** @type {?} */
                 var consents = action.payload;
-                return consents ? consents : initialState$u;
+                return consents ? consents : initialState$v;
             }
             case GIVE_USER_CONSENT_SUCCESS: {
                 /** @type {?} */
@@ -58833,14 +59167,14 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$v = (/** @type {?} */ ({}));
+    var initialState$w = (/** @type {?} */ ({}));
     /**
      * @param {?=} state
      * @param {?=} action
      * @return {?}
      */
-    function reducer$v(state, action) {
-        if (state === void 0) { state = initialState$v; }
+    function reducer$w(state, action) {
+        if (state === void 0) { state = initialState$w; }
         switch (action.type) {
             case LOAD_USER_DETAILS_SUCCESS: {
                 return action.payload;
@@ -58859,7 +59193,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$w = {
+    var initialState$x = {
         orders: [],
         pagination: {},
         sorts: [],
@@ -58869,14 +59203,14 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$w(state, action) {
-        if (state === void 0) { state = initialState$w; }
+    function reducer$x(state, action) {
+        if (state === void 0) { state = initialState$x; }
         switch (action.type) {
             case LOAD_USER_ORDERS_SUCCESS: {
-                return action.payload ? action.payload : initialState$w;
+                return action.payload ? action.payload : initialState$x;
             }
             case LOAD_USER_ORDERS_FAIL: {
-                return initialState$w;
+                return initialState$x;
             }
         }
         return state;
@@ -58887,7 +59221,7 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$x = {
+    var initialState$y = {
         coupons: [],
         sorts: [],
         pagination: {},
@@ -58897,8 +59231,8 @@
      * @param {?=} action
      * @return {?}
      */
-    function reducer$x(state, action) {
-        if (state === void 0) { state = initialState$x; }
+    function reducer$y(state, action) {
+        if (state === void 0) { state = initialState$y; }
         switch (action.type) {
             case LOAD_CUSTOMER_COUPONS_SUCCESS: {
                 return action.payload;
@@ -58946,36 +59280,8 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var initialState$y = {
-        results: [],
-        pagination: {},
-        sorts: [],
-    };
-    /**
-     * @param {?=} state
-     * @param {?=} action
-     * @return {?}
-     */
-    function reducer$y(state, action) {
-        if (state === void 0) { state = initialState$y; }
-        switch (action.type) {
-            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
-                return action.payload ? action.payload : initialState$y;
-            }
-            case LOAD_PRODUCT_INTERESTS_FAIL: {
-                return initialState$y;
-            }
-        }
-        return state;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var initialState$z = {
-        returnRequests: [],
+        results: [],
         pagination: {},
         sorts: [],
     };
@@ -58987,8 +59293,36 @@
     function reducer$z(state, action) {
         if (state === void 0) { state = initialState$z; }
         switch (action.type) {
-            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+            case LOAD_PRODUCT_INTERESTS_SUCCESS: {
                 return action.payload ? action.payload : initialState$z;
+            }
+            case LOAD_PRODUCT_INTERESTS_FAIL: {
+                return initialState$z;
+            }
+        }
+        return state;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var initialState$A = {
+        returnRequests: [],
+        pagination: {},
+        sorts: [],
+    };
+    /**
+     * @param {?=} state
+     * @param {?=} action
+     * @return {?}
+     */
+    function reducer$A(state, action) {
+        if (state === void 0) { state = initialState$A; }
+        switch (action.type) {
+            case LOAD_ORDER_RETURN_REQUEST_LIST_SUCCESS: {
+                return action.payload ? action.payload : initialState$A;
             }
         }
         return state;
@@ -59004,24 +59338,24 @@
     function getReducers$d() {
         return {
             account: store.combineReducers({
-                details: reducer$v,
+                details: reducer$w,
             }),
-            addresses: loaderReducer(USER_ADDRESSES, reducer$t),
-            billingCountries: reducer$k,
-            consents: loaderReducer(USER_CONSENTS, reducer$u),
-            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$p),
-            orders: loaderReducer(USER_ORDERS, reducer$w),
-            order: loaderReducer(USER_ORDER_DETAILS, reducer$o),
+            addresses: loaderReducer(USER_ADDRESSES, reducer$u),
+            billingCountries: reducer$l,
+            consents: loaderReducer(USER_CONSENTS, reducer$v),
+            payments: loaderReducer(USER_PAYMENT_METHODS, reducer$q),
+            orders: loaderReducer(USER_ORDERS, reducer$x),
+            order: loaderReducer(USER_ORDER_DETAILS, reducer$p),
             orderReturn: loaderReducer(USER_RETURN_REQUEST_DETAILS),
-            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$z),
-            countries: reducer$m,
-            titles: reducer$s,
-            regions: loaderReducer(REGIONS, reducer$q),
-            resetPassword: reducer$r,
-            consignmentTracking: reducer$l,
-            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$x),
-            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$n),
-            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$y),
+            orderReturnList: loaderReducer(USER_RETURN_REQUESTS, reducer$A),
+            countries: reducer$n,
+            titles: reducer$t,
+            regions: loaderReducer(REGIONS, reducer$r),
+            resetPassword: reducer$s,
+            consignmentTracking: reducer$m,
+            customerCoupons: loaderReducer(CUSTOMER_COUPONS, reducer$y),
+            notificationPreferences: loaderReducer(NOTIFICATION_PREFERENCES, reducer$o),
+            productInterests: loaderReducer(PRODUCT_INTERESTS, reducer$z),
         };
     }
     /** @type {?} */
@@ -61911,158 +62245,159 @@
     exports.ɵdt = PageEffects;
     exports.ɵdu = ComponentEffects;
     exports.ɵdv = NavigationEntryItemEffects;
-    exports.ɵdw = reducer$f;
-    exports.ɵdx = reducer$g;
+    exports.ɵdw = reducer$g;
+    exports.ɵdx = reducer$h;
     exports.ɵdy = reducer$e;
-    exports.ɵdz = configValidatorFactory;
+    exports.ɵdz = reducer$f;
     exports.ɵe = initializeContext;
-    exports.ɵea = ConfigValidatorModule;
-    exports.ɵeb = GlobalMessageStoreModule;
-    exports.ɵec = getReducers$4;
-    exports.ɵed = reducerToken$4;
-    exports.ɵee = reducerProvider$4;
-    exports.ɵef = reducer$8;
-    exports.ɵeg = GlobalMessageEffect;
-    exports.ɵeh = defaultGlobalMessageConfigFactory;
-    exports.ɵei = InternalServerErrorHandler;
-    exports.ɵej = HttpErrorInterceptor;
-    exports.ɵek = defaultI18nConfig;
-    exports.ɵel = i18nextProviders;
-    exports.ɵem = i18nextInit;
-    exports.ɵen = MockTranslationService;
-    exports.ɵeo = kymaStoreConfigFactory;
-    exports.ɵep = KymaStoreModule;
-    exports.ɵeq = getReducers$9;
-    exports.ɵer = reducerToken$9;
-    exports.ɵes = reducerProvider$9;
-    exports.ɵet = clearKymaState;
-    exports.ɵeu = metaReducers$5;
-    exports.ɵev = effects$9;
-    exports.ɵew = OpenIdTokenEffect;
-    exports.ɵex = OpenIdAuthenticationTokenService;
-    exports.ɵey = defaultKymaConfig;
-    exports.ɵez = defaultOccAsmConfig;
+    exports.ɵea = configValidatorFactory;
+    exports.ɵeb = ConfigValidatorModule;
+    exports.ɵec = GlobalMessageStoreModule;
+    exports.ɵed = getReducers$4;
+    exports.ɵee = reducerToken$4;
+    exports.ɵef = reducerProvider$4;
+    exports.ɵeg = reducer$8;
+    exports.ɵeh = GlobalMessageEffect;
+    exports.ɵei = defaultGlobalMessageConfigFactory;
+    exports.ɵej = InternalServerErrorHandler;
+    exports.ɵek = HttpErrorInterceptor;
+    exports.ɵel = defaultI18nConfig;
+    exports.ɵem = i18nextProviders;
+    exports.ɵen = i18nextInit;
+    exports.ɵeo = MockTranslationService;
+    exports.ɵep = kymaStoreConfigFactory;
+    exports.ɵeq = KymaStoreModule;
+    exports.ɵer = getReducers$9;
+    exports.ɵes = reducerToken$9;
+    exports.ɵet = reducerProvider$9;
+    exports.ɵeu = clearKymaState;
+    exports.ɵev = metaReducers$5;
+    exports.ɵew = effects$9;
+    exports.ɵex = OpenIdTokenEffect;
+    exports.ɵey = OpenIdAuthenticationTokenService;
+    exports.ɵez = defaultKymaConfig;
     exports.ɵf = contextServiceProviders;
-    exports.ɵfa = defaultOccCartConfig;
-    exports.ɵfb = OccSaveCartAdapter;
-    exports.ɵfc = defaultOccProductConfig;
-    exports.ɵfd = defaultOccSiteContextConfig;
-    exports.ɵfe = defaultOccStoreFinderConfig;
-    exports.ɵff = defaultOccUserConfig;
-    exports.ɵfg = UserNotificationPreferenceAdapter;
-    exports.ɵfh = defaultPersonalizationConfig;
-    exports.ɵfi = interceptors$3;
-    exports.ɵfj = OccPersonalizationIdInterceptor;
-    exports.ɵfk = OccPersonalizationTimeInterceptor;
-    exports.ɵfl = ProcessStoreModule;
-    exports.ɵfm = getReducers$a;
-    exports.ɵfn = reducerToken$a;
-    exports.ɵfo = reducerProvider$a;
-    exports.ɵfp = productStoreConfigFactory;
-    exports.ɵfq = ProductStoreModule;
-    exports.ɵfr = getReducers$b;
-    exports.ɵfs = reducerToken$b;
-    exports.ɵft = reducerProvider$b;
-    exports.ɵfu = clearProductsState;
-    exports.ɵfv = metaReducers$6;
-    exports.ɵfw = effects$a;
-    exports.ɵfx = ProductReferencesEffects;
-    exports.ɵfy = ProductReviewsEffects;
-    exports.ɵfz = ProductsSearchEffects;
+    exports.ɵfa = defaultOccAsmConfig;
+    exports.ɵfb = defaultOccCartConfig;
+    exports.ɵfc = OccSaveCartAdapter;
+    exports.ɵfd = defaultOccProductConfig;
+    exports.ɵfe = defaultOccSiteContextConfig;
+    exports.ɵff = defaultOccStoreFinderConfig;
+    exports.ɵfg = defaultOccUserConfig;
+    exports.ɵfh = UserNotificationPreferenceAdapter;
+    exports.ɵfi = defaultPersonalizationConfig;
+    exports.ɵfj = interceptors$3;
+    exports.ɵfk = OccPersonalizationIdInterceptor;
+    exports.ɵfl = OccPersonalizationTimeInterceptor;
+    exports.ɵfm = ProcessStoreModule;
+    exports.ɵfn = getReducers$a;
+    exports.ɵfo = reducerToken$a;
+    exports.ɵfp = reducerProvider$a;
+    exports.ɵfq = productStoreConfigFactory;
+    exports.ɵfr = ProductStoreModule;
+    exports.ɵfs = getReducers$b;
+    exports.ɵft = reducerToken$b;
+    exports.ɵfu = reducerProvider$b;
+    exports.ɵfv = clearProductsState;
+    exports.ɵfw = metaReducers$6;
+    exports.ɵfx = effects$a;
+    exports.ɵfy = ProductReferencesEffects;
+    exports.ɵfz = ProductReviewsEffects;
     exports.ɵg = initSiteContextRoutesHandler;
-    exports.ɵga = ProductEffects;
-    exports.ɵgb = reducer$h;
-    exports.ɵgc = entityScopedLoaderReducer;
-    exports.ɵgd = scopedLoaderReducer;
-    exports.ɵge = reducer$j;
-    exports.ɵgf = reducer$i;
-    exports.ɵgg = PageMetaResolver;
-    exports.ɵgh = ProductURLPipe;
-    exports.ɵgi = addExternalRoutesFactory;
-    exports.ɵgj = getReducers$7;
-    exports.ɵgk = reducer$d;
-    exports.ɵgl = reducerToken$7;
-    exports.ɵgm = reducerProvider$7;
-    exports.ɵgn = CustomSerializer;
-    exports.ɵgo = effects$7;
-    exports.ɵgp = RouterEffects;
-    exports.ɵgq = SiteContextParamsService;
-    exports.ɵgr = SiteContextUrlSerializer;
-    exports.ɵgs = SiteContextRoutesHandler;
-    exports.ɵgt = defaultSiteContextConfigFactory;
-    exports.ɵgu = siteContextStoreConfigFactory;
-    exports.ɵgv = SiteContextStoreModule;
-    exports.ɵgw = getReducers$1;
-    exports.ɵgx = reducerToken$1;
-    exports.ɵgy = reducerProvider$1;
-    exports.ɵgz = effects$2;
+    exports.ɵga = ProductsSearchEffects;
+    exports.ɵgb = ProductEffects;
+    exports.ɵgc = reducer$i;
+    exports.ɵgd = entityScopedLoaderReducer;
+    exports.ɵge = scopedLoaderReducer;
+    exports.ɵgf = reducer$k;
+    exports.ɵgg = reducer$j;
+    exports.ɵgh = PageMetaResolver;
+    exports.ɵgi = ProductURLPipe;
+    exports.ɵgj = addExternalRoutesFactory;
+    exports.ɵgk = getReducers$7;
+    exports.ɵgl = reducer$d;
+    exports.ɵgm = reducerToken$7;
+    exports.ɵgn = reducerProvider$7;
+    exports.ɵgo = CustomSerializer;
+    exports.ɵgp = effects$7;
+    exports.ɵgq = RouterEffects;
+    exports.ɵgr = SiteContextParamsService;
+    exports.ɵgs = SiteContextUrlSerializer;
+    exports.ɵgt = SiteContextRoutesHandler;
+    exports.ɵgu = defaultSiteContextConfigFactory;
+    exports.ɵgv = siteContextStoreConfigFactory;
+    exports.ɵgw = SiteContextStoreModule;
+    exports.ɵgx = getReducers$1;
+    exports.ɵgy = reducerToken$1;
+    exports.ɵgz = reducerProvider$1;
     exports.ɵh = siteContextParamsProviders;
-    exports.ɵha = LanguagesEffects;
-    exports.ɵhb = CurrenciesEffects;
-    exports.ɵhc = BaseSiteEffects;
-    exports.ɵhd = reducer$3;
-    exports.ɵhe = reducer$2;
-    exports.ɵhf = reducer$1;
-    exports.ɵhg = baseSiteConfigValidator;
-    exports.ɵhh = interceptors$4;
-    exports.ɵhi = CmsTicketInterceptor;
-    exports.ɵhj = defaultStoreFinderConfig;
-    exports.ɵhk = StoreFinderStoreModule;
-    exports.ɵhl = getReducers$c;
-    exports.ɵhm = reducerToken$c;
-    exports.ɵhn = reducerProvider$c;
-    exports.ɵho = effects$b;
-    exports.ɵhp = FindStoresEffect;
-    exports.ɵhq = ViewAllStoresEffect;
-    exports.ɵhr = UserStoreModule;
-    exports.ɵhs = getReducers$d;
-    exports.ɵht = reducerToken$d;
-    exports.ɵhu = reducerProvider$d;
-    exports.ɵhv = clearUserState;
-    exports.ɵhw = metaReducers$8;
-    exports.ɵhx = effects$c;
-    exports.ɵhy = BillingCountriesEffect;
-    exports.ɵhz = ClearMiscsDataEffect;
+    exports.ɵha = effects$2;
+    exports.ɵhb = LanguagesEffects;
+    exports.ɵhc = CurrenciesEffects;
+    exports.ɵhd = BaseSiteEffects;
+    exports.ɵhe = reducer$3;
+    exports.ɵhf = reducer$2;
+    exports.ɵhg = reducer$1;
+    exports.ɵhh = baseSiteConfigValidator;
+    exports.ɵhi = interceptors$4;
+    exports.ɵhj = CmsTicketInterceptor;
+    exports.ɵhk = defaultStoreFinderConfig;
+    exports.ɵhl = StoreFinderStoreModule;
+    exports.ɵhm = getReducers$c;
+    exports.ɵhn = reducerToken$c;
+    exports.ɵho = reducerProvider$c;
+    exports.ɵhp = effects$b;
+    exports.ɵhq = FindStoresEffect;
+    exports.ɵhr = ViewAllStoresEffect;
+    exports.ɵhs = UserStoreModule;
+    exports.ɵht = getReducers$d;
+    exports.ɵhu = reducerToken$d;
+    exports.ɵhv = reducerProvider$d;
+    exports.ɵhw = clearUserState;
+    exports.ɵhx = metaReducers$8;
+    exports.ɵhy = effects$c;
+    exports.ɵhz = BillingCountriesEffect;
     exports.ɵi = anonymousConsentsStoreConfigFactory;
-    exports.ɵia = ConsignmentTrackingEffects;
-    exports.ɵib = DeliveryCountriesEffects;
-    exports.ɵic = NotificationPreferenceEffects;
-    exports.ɵid = OrderDetailsEffect;
-    exports.ɵie = OrderReturnRequestEffect;
-    exports.ɵif = UserPaymentMethodsEffects;
-    exports.ɵig = RegionsEffects;
-    exports.ɵih = ResetPasswordEffects;
-    exports.ɵii = TitlesEffects;
-    exports.ɵij = UserAddressesEffects;
-    exports.ɵik = UserConsentsEffect;
-    exports.ɵil = UserDetailsEffects;
-    exports.ɵim = UserOrdersEffect;
-    exports.ɵin = UserRegisterEffects;
-    exports.ɵio = CustomerCouponEffects;
-    exports.ɵip = ProductInterestsEffect;
-    exports.ɵiq = ForgotPasswordEffects;
-    exports.ɵir = UpdateEmailEffects;
-    exports.ɵis = UpdatePasswordEffects;
-    exports.ɵit = UserNotificationPreferenceConnector;
-    exports.ɵiu = reducer$v;
-    exports.ɵiv = reducer$t;
-    exports.ɵiw = reducer$k;
-    exports.ɵix = reducer$u;
-    exports.ɵiy = reducer$p;
-    exports.ɵiz = reducer$w;
+    exports.ɵia = ClearMiscsDataEffect;
+    exports.ɵib = ConsignmentTrackingEffects;
+    exports.ɵic = DeliveryCountriesEffects;
+    exports.ɵid = NotificationPreferenceEffects;
+    exports.ɵie = OrderDetailsEffect;
+    exports.ɵif = OrderReturnRequestEffect;
+    exports.ɵig = UserPaymentMethodsEffects;
+    exports.ɵih = RegionsEffects;
+    exports.ɵii = ResetPasswordEffects;
+    exports.ɵij = TitlesEffects;
+    exports.ɵik = UserAddressesEffects;
+    exports.ɵil = UserConsentsEffect;
+    exports.ɵim = UserDetailsEffects;
+    exports.ɵin = UserOrdersEffect;
+    exports.ɵio = UserRegisterEffects;
+    exports.ɵip = CustomerCouponEffects;
+    exports.ɵiq = ProductInterestsEffect;
+    exports.ɵir = ForgotPasswordEffects;
+    exports.ɵis = UpdateEmailEffects;
+    exports.ɵit = UpdatePasswordEffects;
+    exports.ɵiu = UserNotificationPreferenceConnector;
+    exports.ɵiv = reducer$w;
+    exports.ɵiw = reducer$u;
+    exports.ɵix = reducer$l;
+    exports.ɵiy = reducer$v;
+    exports.ɵiz = reducer$q;
     exports.ɵj = AnonymousConsentsStoreModule;
-    exports.ɵja = reducer$o;
-    exports.ɵjb = reducer$z;
-    exports.ɵjc = reducer$m;
-    exports.ɵjd = reducer$s;
-    exports.ɵje = reducer$q;
+    exports.ɵja = reducer$x;
+    exports.ɵjb = reducer$p;
+    exports.ɵjc = reducer$A;
+    exports.ɵjd = reducer$n;
+    exports.ɵje = reducer$t;
     exports.ɵjf = reducer$r;
-    exports.ɵjg = reducer$l;
-    exports.ɵjh = reducer$x;
-    exports.ɵji = reducer$n;
-    exports.ɵjj = reducer$y;
-    exports.ɵjk = FindProductPageMetaResolver;
-    exports.ɵjl = PageMetaResolver;
+    exports.ɵjg = reducer$s;
+    exports.ɵjh = reducer$m;
+    exports.ɵji = reducer$y;
+    exports.ɵjj = reducer$o;
+    exports.ɵjk = reducer$z;
+    exports.ɵjl = FindProductPageMetaResolver;
+    exports.ɵjm = PageMetaResolver;
     exports.ɵk = TRANSFER_STATE_META_REDUCER;
     exports.ɵl = STORAGE_SYNC_META_REDUCER;
     exports.ɵm = stateMetaReducers;

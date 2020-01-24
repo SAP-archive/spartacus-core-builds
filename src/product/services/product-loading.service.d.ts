@@ -1,9 +1,9 @@
+import { Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Product } from '../../model/product.model';
-import { StateWithProduct } from '../store/product-state';
 import { LoadingScopesService } from '../../occ/services/loading-scopes.service';
-import { Actions } from '@ngrx/effects';
+import { StateWithProduct } from '../store/product-state';
 export declare class ProductLoadingService {
     protected store: Store<StateWithProduct>;
     protected loadingScopes: LoadingScopesService;
