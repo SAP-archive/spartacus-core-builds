@@ -41,6 +41,16 @@ export declare class MultiCartService {
         extraData?: any;
     }): Observable<ProcessesLoaderState<Cart>>;
     /**
+     * Merge provided cart to current user cart
+     *
+     * @param params Object with userId, cartId and extraData
+     */
+    mergeToCurrentCart({ userId, cartId, extraData }: {
+        userId: any;
+        cartId: any;
+        extraData: any;
+    }): void;
+    /**
      * Load cart
      *
      * @param params Object with userId, cartId and extraData

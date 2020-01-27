@@ -33780,281 +33780,6 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var CREATE_CART = '[Cart] Create Cart';
-    /** @type {?} */
-    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-    /** @type {?} */
-    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-    /** @type {?} */
-    var LOAD_CART = '[Cart] Load Cart';
-    /** @type {?} */
-    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-    /** @type {?} */
-    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-    /** @type {?} */
-    var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-    /** @type {?} */
-    var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-    /** @type {?} */
-    var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-    /** @type {?} */
-    var MERGE_CART = '[Cart] Merge Cart';
-    /** @type {?} */
-    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-    /** @type {?} */
-    var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-    /** @type {?} */
-    var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
-    /** @type {?} */
-    var CLEAR_CART = '[Cart] Clear Cart';
-    /** @type {?} */
-    var DELETE_CART = '[Cart] Delete Cart';
-    /** @type {?} */
-    var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-    var CreateCart = /** @class */ (function (_super) {
-        __extends(CreateCart, _super);
-        function CreateCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART;
-            return _this;
-        }
-        return CreateCart;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        CreateCart.prototype.type;
-        /** @type {?} */
-        CreateCart.prototype.payload;
-    }
-    var CreateCartFail = /** @class */ (function (_super) {
-        __extends(CreateCartFail, _super);
-        function CreateCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_FAIL;
-            return _this;
-        }
-        return CreateCartFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        CreateCartFail.prototype.type;
-        /** @type {?} */
-        CreateCartFail.prototype.payload;
-    }
-    var CreateCartSuccess = /** @class */ (function (_super) {
-        __extends(CreateCartSuccess, _super);
-        function CreateCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = CREATE_CART_SUCCESS;
-            return _this;
-        }
-        return CreateCartSuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        CreateCartSuccess.prototype.type;
-        /** @type {?} */
-        CreateCartSuccess.prototype.payload;
-    }
-    var AddEmailToCart = /** @class */ (function (_super) {
-        __extends(AddEmailToCart, _super);
-        function AddEmailToCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART;
-            return _this;
-        }
-        return AddEmailToCart;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        AddEmailToCart.prototype.type;
-        /** @type {?} */
-        AddEmailToCart.prototype.payload;
-    }
-    var AddEmailToCartFail = /** @class */ (function (_super) {
-        __extends(AddEmailToCartFail, _super);
-        function AddEmailToCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_FAIL;
-            return _this;
-        }
-        return AddEmailToCartFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        AddEmailToCartFail.prototype.type;
-        /** @type {?} */
-        AddEmailToCartFail.prototype.payload;
-    }
-    var AddEmailToCartSuccess = /** @class */ (function (_super) {
-        __extends(AddEmailToCartSuccess, _super);
-        function AddEmailToCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
-            return _this;
-        }
-        return AddEmailToCartSuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        AddEmailToCartSuccess.prototype.type;
-        /** @type {?} */
-        AddEmailToCartSuccess.prototype.payload;
-    }
-    var LoadCart = /** @class */ (function (_super) {
-        __extends(LoadCart, _super);
-        function LoadCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART;
-            return _this;
-        }
-        return LoadCart;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        LoadCart.prototype.type;
-        /** @type {?} */
-        LoadCart.prototype.payload;
-    }
-    var LoadCartFail = /** @class */ (function (_super) {
-        __extends(LoadCartFail, _super);
-        function LoadCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_FAIL;
-            return _this;
-        }
-        return LoadCartFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        LoadCartFail.prototype.type;
-        /** @type {?} */
-        LoadCartFail.prototype.payload;
-    }
-    var LoadCartSuccess = /** @class */ (function (_super) {
-        __extends(LoadCartSuccess, _super);
-        function LoadCartSuccess(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = LOAD_CART_SUCCESS;
-            return _this;
-        }
-        return LoadCartSuccess;
-    }(LoaderSuccessAction));
-    if (false) {
-        /** @type {?} */
-        LoadCartSuccess.prototype.type;
-        /** @type {?} */
-        LoadCartSuccess.prototype.payload;
-    }
-    var MergeCart = /** @class */ (function () {
-        function MergeCart(payload) {
-            this.payload = payload;
-            this.type = MERGE_CART;
-        }
-        return MergeCart;
-    }());
-    if (false) {
-        /** @type {?} */
-        MergeCart.prototype.type;
-        /** @type {?} */
-        MergeCart.prototype.payload;
-    }
-    var MergeCartSuccess = /** @class */ (function () {
-        function MergeCartSuccess(payload) {
-            this.payload = payload;
-            this.type = MERGE_CART_SUCCESS;
-        }
-        return MergeCartSuccess;
-    }());
-    if (false) {
-        /** @type {?} */
-        MergeCartSuccess.prototype.type;
-        /** @type {?} */
-        MergeCartSuccess.prototype.payload;
-    }
-    var ResetCartDetails = /** @class */ (function () {
-        function ResetCartDetails() {
-            this.type = RESET_CART_DETAILS;
-        }
-        return ResetCartDetails;
-    }());
-    if (false) {
-        /** @type {?} */
-        ResetCartDetails.prototype.type;
-    }
-    var ClearExpiredCoupons = /** @class */ (function () {
-        function ClearExpiredCoupons(payload) {
-            this.payload = payload;
-            this.type = CLEAR_EXPIRED_COUPONS;
-        }
-        return ClearExpiredCoupons;
-    }());
-    if (false) {
-        /** @type {?} */
-        ClearExpiredCoupons.prototype.type;
-        /** @type {?} */
-        ClearExpiredCoupons.prototype.payload;
-    }
-    var ClearCart = /** @class */ (function (_super) {
-        __extends(ClearCart, _super);
-        function ClearCart() {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.type = CLEAR_CART;
-            return _this;
-        }
-        return ClearCart;
-    }(LoaderResetAction));
-    if (false) {
-        /** @type {?} */
-        ClearCart.prototype.type;
-    }
-    var DeleteCart = /** @class */ (function (_super) {
-        __extends(DeleteCart, _super);
-        function DeleteCart(payload) {
-            var _this = _super.call(this, CART_DATA) || this;
-            _this.payload = payload;
-            _this.type = DELETE_CART;
-            return _this;
-        }
-        return DeleteCart;
-    }(LoaderLoadAction));
-    if (false) {
-        /** @type {?} */
-        DeleteCart.prototype.type;
-        /** @type {?} */
-        DeleteCart.prototype.payload;
-    }
-    var DeleteCartFail = /** @class */ (function (_super) {
-        __extends(DeleteCartFail, _super);
-        function DeleteCartFail(payload) {
-            var _this = _super.call(this, CART_DATA, payload) || this;
-            _this.payload = payload;
-            _this.type = DELETE_CART_FAIL;
-            return _this;
-        }
-        return DeleteCartFail;
-    }(LoaderFailAction));
-    if (false) {
-        /** @type {?} */
-        DeleteCartFail.prototype.type;
-        /** @type {?} */
-        DeleteCartFail.prototype.payload;
-    }
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /** @type {?} */
     var getCartContentSelector = (/**
      * @param {?} state
      * @return {?}
@@ -34394,6 +34119,281 @@
      */
     function isTempCartId(cartId) {
         return cartId.startsWith('temp-');
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /** @type {?} */
+    var CREATE_CART = '[Cart] Create Cart';
+    /** @type {?} */
+    var CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+    /** @type {?} */
+    var CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+    /** @type {?} */
+    var LOAD_CART = '[Cart] Load Cart';
+    /** @type {?} */
+    var LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+    /** @type {?} */
+    var LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+    /** @type {?} */
+    var ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+    /** @type {?} */
+    var ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+    /** @type {?} */
+    var ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+    /** @type {?} */
+    var MERGE_CART = '[Cart] Merge Cart';
+    /** @type {?} */
+    var MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+    /** @type {?} */
+    var RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+    /** @type {?} */
+    var CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
+    /** @type {?} */
+    var CLEAR_CART = '[Cart] Clear Cart';
+    /** @type {?} */
+    var DELETE_CART = '[Cart] Delete Cart';
+    /** @type {?} */
+    var DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+    var CreateCart = /** @class */ (function (_super) {
+        __extends(CreateCart, _super);
+        function CreateCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART;
+            return _this;
+        }
+        return CreateCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        CreateCart.prototype.type;
+        /** @type {?} */
+        CreateCart.prototype.payload;
+    }
+    var CreateCartFail = /** @class */ (function (_super) {
+        __extends(CreateCartFail, _super);
+        function CreateCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_FAIL;
+            return _this;
+        }
+        return CreateCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        CreateCartFail.prototype.type;
+        /** @type {?} */
+        CreateCartFail.prototype.payload;
+    }
+    var CreateCartSuccess = /** @class */ (function (_super) {
+        __extends(CreateCartSuccess, _super);
+        function CreateCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = CREATE_CART_SUCCESS;
+            return _this;
+        }
+        return CreateCartSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        CreateCartSuccess.prototype.type;
+        /** @type {?} */
+        CreateCartSuccess.prototype.payload;
+    }
+    var AddEmailToCart = /** @class */ (function (_super) {
+        __extends(AddEmailToCart, _super);
+        function AddEmailToCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART;
+            return _this;
+        }
+        return AddEmailToCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCart.prototype.type;
+        /** @type {?} */
+        AddEmailToCart.prototype.payload;
+    }
+    var AddEmailToCartFail = /** @class */ (function (_super) {
+        __extends(AddEmailToCartFail, _super);
+        function AddEmailToCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_FAIL;
+            return _this;
+        }
+        return AddEmailToCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCartFail.prototype.type;
+        /** @type {?} */
+        AddEmailToCartFail.prototype.payload;
+    }
+    var AddEmailToCartSuccess = /** @class */ (function (_super) {
+        __extends(AddEmailToCartSuccess, _super);
+        function AddEmailToCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = ADD_EMAIL_TO_CART_SUCCESS;
+            return _this;
+        }
+        return AddEmailToCartSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        AddEmailToCartSuccess.prototype.type;
+        /** @type {?} */
+        AddEmailToCartSuccess.prototype.payload;
+    }
+    var LoadCart = /** @class */ (function (_super) {
+        __extends(LoadCart, _super);
+        function LoadCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART;
+            return _this;
+        }
+        return LoadCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        LoadCart.prototype.type;
+        /** @type {?} */
+        LoadCart.prototype.payload;
+    }
+    var LoadCartFail = /** @class */ (function (_super) {
+        __extends(LoadCartFail, _super);
+        function LoadCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_FAIL;
+            return _this;
+        }
+        return LoadCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        LoadCartFail.prototype.type;
+        /** @type {?} */
+        LoadCartFail.prototype.payload;
+    }
+    var LoadCartSuccess = /** @class */ (function (_super) {
+        __extends(LoadCartSuccess, _super);
+        function LoadCartSuccess(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = LOAD_CART_SUCCESS;
+            return _this;
+        }
+        return LoadCartSuccess;
+    }(LoaderSuccessAction));
+    if (false) {
+        /** @type {?} */
+        LoadCartSuccess.prototype.type;
+        /** @type {?} */
+        LoadCartSuccess.prototype.payload;
+    }
+    var MergeCart = /** @class */ (function () {
+        function MergeCart(payload) {
+            this.payload = payload;
+            this.type = MERGE_CART;
+        }
+        return MergeCart;
+    }());
+    if (false) {
+        /** @type {?} */
+        MergeCart.prototype.type;
+        /** @type {?} */
+        MergeCart.prototype.payload;
+    }
+    var MergeCartSuccess = /** @class */ (function () {
+        function MergeCartSuccess(payload) {
+            this.payload = payload;
+            this.type = MERGE_CART_SUCCESS;
+        }
+        return MergeCartSuccess;
+    }());
+    if (false) {
+        /** @type {?} */
+        MergeCartSuccess.prototype.type;
+        /** @type {?} */
+        MergeCartSuccess.prototype.payload;
+    }
+    var ResetCartDetails = /** @class */ (function () {
+        function ResetCartDetails() {
+            this.type = RESET_CART_DETAILS;
+        }
+        return ResetCartDetails;
+    }());
+    if (false) {
+        /** @type {?} */
+        ResetCartDetails.prototype.type;
+    }
+    var ClearExpiredCoupons = /** @class */ (function () {
+        function ClearExpiredCoupons(payload) {
+            this.payload = payload;
+            this.type = CLEAR_EXPIRED_COUPONS;
+        }
+        return ClearExpiredCoupons;
+    }());
+    if (false) {
+        /** @type {?} */
+        ClearExpiredCoupons.prototype.type;
+        /** @type {?} */
+        ClearExpiredCoupons.prototype.payload;
+    }
+    var ClearCart = /** @class */ (function (_super) {
+        __extends(ClearCart, _super);
+        function ClearCart() {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.type = CLEAR_CART;
+            return _this;
+        }
+        return ClearCart;
+    }(LoaderResetAction));
+    if (false) {
+        /** @type {?} */
+        ClearCart.prototype.type;
+    }
+    var DeleteCart = /** @class */ (function (_super) {
+        __extends(DeleteCart, _super);
+        function DeleteCart(payload) {
+            var _this = _super.call(this, CART_DATA) || this;
+            _this.payload = payload;
+            _this.type = DELETE_CART;
+            return _this;
+        }
+        return DeleteCart;
+    }(LoaderLoadAction));
+    if (false) {
+        /** @type {?} */
+        DeleteCart.prototype.type;
+        /** @type {?} */
+        DeleteCart.prototype.payload;
+    }
+    var DeleteCartFail = /** @class */ (function (_super) {
+        __extends(DeleteCartFail, _super);
+        function DeleteCartFail(payload) {
+            var _this = _super.call(this, CART_DATA, payload) || this;
+            _this.payload = payload;
+            _this.type = DELETE_CART_FAIL;
+            return _this;
+        }
+        return DeleteCartFail;
+    }(LoaderFailAction));
+    if (false) {
+        /** @type {?} */
+        DeleteCartFail.prototype.type;
+        /** @type {?} */
+        DeleteCartFail.prototype.payload;
     }
 
     /**
@@ -35355,6 +35355,34 @@
             return this.getCartEntity(tempCartId);
         };
         /**
+         * Merge provided cart to current user cart
+         *
+         * @param params Object with userId, cartId and extraData
+         */
+        /**
+         * Merge provided cart to current user cart
+         *
+         * @param {?} __0
+         * @return {?}
+         */
+        MultiCartService.prototype.mergeToCurrentCart = /**
+         * Merge provided cart to current user cart
+         *
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var userId = _a.userId, cartId = _a.cartId, extraData = _a.extraData;
+            /** @type {?} */
+            var tempCartId = this.generateTempCartId();
+            this.store.dispatch(new MergeCart({
+                userId: userId,
+                cartId: cartId,
+                extraData: extraData,
+                tempCartId: tempCartId,
+            }));
+        };
+        /**
          * Load cart
          *
          * @param params Object with userId, cartId and extraData
@@ -35850,13 +35878,13 @@
                 this.guestCartMerge(cartId);
             }
             else {
-                this.store.dispatch(new MergeCart({
+                this.multiCartService.mergeToCurrentCart({
                     userId: this.userId,
                     cartId: cartId,
                     extraData: {
                         active: true,
                     },
-                }));
+                });
             }
         };
         /**
@@ -41910,6 +41938,7 @@
                             oldCartId: payload.cartId,
                             toMergeCartGuid: currentCart ? currentCart.guid : undefined,
                             extraData: payload.extraData,
+                            tempCartId: payload.tempCartId,
                         }),
                     ];
                 })));

@@ -30178,283 +30178,6 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const CREATE_CART = '[Cart] Create Cart';
-/** @type {?} */
-const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
-/** @type {?} */
-const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
-/** @type {?} */
-const LOAD_CART = '[Cart] Load Cart';
-/** @type {?} */
-const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
-/** @type {?} */
-const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
-/** @type {?} */
-const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
-/** @type {?} */
-const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
-/** @type {?} */
-const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
-/** @type {?} */
-const MERGE_CART = '[Cart] Merge Cart';
-/** @type {?} */
-const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
-/** @type {?} */
-const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
-/** @type {?} */
-const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
-/** @type {?} */
-const CLEAR_CART = '[Cart] Clear Cart';
-/** @type {?} */
-const DELETE_CART = '[Cart] Delete Cart';
-/** @type {?} */
-const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
-class CreateCart extends LoaderLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = CREATE_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CreateCart.prototype.type;
-    /** @type {?} */
-    CreateCart.prototype.payload;
-}
-class CreateCartFail extends LoaderFailAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA, payload);
-        this.payload = payload;
-        this.type = CREATE_CART_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CreateCartFail.prototype.type;
-    /** @type {?} */
-    CreateCartFail.prototype.payload;
-}
-class CreateCartSuccess extends LoaderSuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = CREATE_CART_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    CreateCartSuccess.prototype.type;
-    /** @type {?} */
-    CreateCartSuccess.prototype.payload;
-}
-class AddEmailToCart extends LoaderLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    AddEmailToCart.prototype.type;
-    /** @type {?} */
-    AddEmailToCart.prototype.payload;
-}
-class AddEmailToCartFail extends LoaderFailAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA, payload);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    AddEmailToCartFail.prototype.type;
-    /** @type {?} */
-    AddEmailToCartFail.prototype.payload;
-}
-class AddEmailToCartSuccess extends LoaderSuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = ADD_EMAIL_TO_CART_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    AddEmailToCartSuccess.prototype.type;
-    /** @type {?} */
-    AddEmailToCartSuccess.prototype.payload;
-}
-class LoadCart extends LoaderLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = LOAD_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCart.prototype.type;
-    /** @type {?} */
-    LoadCart.prototype.payload;
-}
-class LoadCartFail extends LoaderFailAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA, payload);
-        this.payload = payload;
-        this.type = LOAD_CART_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCartFail.prototype.type;
-    /** @type {?} */
-    LoadCartFail.prototype.payload;
-}
-class LoadCartSuccess extends LoaderSuccessAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = LOAD_CART_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    LoadCartSuccess.prototype.type;
-    /** @type {?} */
-    LoadCartSuccess.prototype.payload;
-}
-class MergeCart {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    MergeCart.prototype.type;
-    /** @type {?} */
-    MergeCart.prototype.payload;
-}
-class MergeCartSuccess {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = MERGE_CART_SUCCESS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    MergeCartSuccess.prototype.type;
-    /** @type {?} */
-    MergeCartSuccess.prototype.payload;
-}
-class ResetCartDetails {
-    constructor() {
-        this.type = RESET_CART_DETAILS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    ResetCartDetails.prototype.type;
-}
-class ClearExpiredCoupons {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        this.payload = payload;
-        this.type = CLEAR_EXPIRED_COUPONS;
-    }
-}
-if (false) {
-    /** @type {?} */
-    ClearExpiredCoupons.prototype.type;
-    /** @type {?} */
-    ClearExpiredCoupons.prototype.payload;
-}
-class ClearCart extends LoaderResetAction {
-    constructor() {
-        super(CART_DATA);
-        this.type = CLEAR_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    ClearCart.prototype.type;
-}
-class DeleteCart extends LoaderLoadAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA);
-        this.payload = payload;
-        this.type = DELETE_CART;
-    }
-}
-if (false) {
-    /** @type {?} */
-    DeleteCart.prototype.type;
-    /** @type {?} */
-    DeleteCart.prototype.payload;
-}
-class DeleteCartFail extends LoaderFailAction {
-    /**
-     * @param {?} payload
-     */
-    constructor(payload) {
-        super(CART_DATA, payload);
-        this.payload = payload;
-        this.type = DELETE_CART_FAIL;
-    }
-}
-if (false) {
-    /** @type {?} */
-    DeleteCartFail.prototype.type;
-    /** @type {?} */
-    DeleteCartFail.prototype.payload;
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/** @type {?} */
 const getCartContentSelector = (/**
  * @param {?} state
  * @return {?}
@@ -30782,6 +30505,283 @@ function getCartIdByUserId(cart, userId) {
  */
 function isTempCartId(cartId) {
     return cartId.startsWith('temp-');
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/** @type {?} */
+const CREATE_CART = '[Cart] Create Cart';
+/** @type {?} */
+const CREATE_CART_FAIL = '[Cart] Create Cart Fail';
+/** @type {?} */
+const CREATE_CART_SUCCESS = '[Cart] Create Cart Success';
+/** @type {?} */
+const LOAD_CART = '[Cart] Load Cart';
+/** @type {?} */
+const LOAD_CART_FAIL = '[Cart] Load Cart Fail';
+/** @type {?} */
+const LOAD_CART_SUCCESS = '[Cart] Load Cart Success';
+/** @type {?} */
+const ADD_EMAIL_TO_CART = '[Cart] Add Email to Cart';
+/** @type {?} */
+const ADD_EMAIL_TO_CART_FAIL = '[Cart] Add Email to Cart Fail';
+/** @type {?} */
+const ADD_EMAIL_TO_CART_SUCCESS = '[Cart] Add Email to Cart Success';
+/** @type {?} */
+const MERGE_CART = '[Cart] Merge Cart';
+/** @type {?} */
+const MERGE_CART_SUCCESS = '[Cart] Merge Cart Success';
+/** @type {?} */
+const RESET_CART_DETAILS = '[Cart] Reset Cart Details';
+/** @type {?} */
+const CLEAR_EXPIRED_COUPONS = '[Cart] Clear Expired Coupon';
+/** @type {?} */
+const CLEAR_CART = '[Cart] Clear Cart';
+/** @type {?} */
+const DELETE_CART = '[Cart] Delete Cart';
+/** @type {?} */
+const DELETE_CART_FAIL = '[Cart] Delete Cart Fail';
+class CreateCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = CREATE_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CreateCart.prototype.type;
+    /** @type {?} */
+    CreateCart.prototype.payload;
+}
+class CreateCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = CREATE_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CreateCartFail.prototype.type;
+    /** @type {?} */
+    CreateCartFail.prototype.payload;
+}
+class CreateCartSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = CREATE_CART_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    CreateCartSuccess.prototype.type;
+    /** @type {?} */
+    CreateCartSuccess.prototype.payload;
+}
+class AddEmailToCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCart.prototype.type;
+    /** @type {?} */
+    AddEmailToCart.prototype.payload;
+}
+class AddEmailToCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCartFail.prototype.type;
+    /** @type {?} */
+    AddEmailToCartFail.prototype.payload;
+}
+class AddEmailToCartSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = ADD_EMAIL_TO_CART_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.type;
+    /** @type {?} */
+    AddEmailToCartSuccess.prototype.payload;
+}
+class LoadCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = LOAD_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCart.prototype.type;
+    /** @type {?} */
+    LoadCart.prototype.payload;
+}
+class LoadCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = LOAD_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCartFail.prototype.type;
+    /** @type {?} */
+    LoadCartFail.prototype.payload;
+}
+class LoadCartSuccess extends LoaderSuccessAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = LOAD_CART_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    LoadCartSuccess.prototype.type;
+    /** @type {?} */
+    LoadCartSuccess.prototype.payload;
+}
+class MergeCart {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    MergeCart.prototype.type;
+    /** @type {?} */
+    MergeCart.prototype.payload;
+}
+class MergeCartSuccess {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = MERGE_CART_SUCCESS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    MergeCartSuccess.prototype.type;
+    /** @type {?} */
+    MergeCartSuccess.prototype.payload;
+}
+class ResetCartDetails {
+    constructor() {
+        this.type = RESET_CART_DETAILS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ResetCartDetails.prototype.type;
+}
+class ClearExpiredCoupons {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        this.payload = payload;
+        this.type = CLEAR_EXPIRED_COUPONS;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClearExpiredCoupons.prototype.type;
+    /** @type {?} */
+    ClearExpiredCoupons.prototype.payload;
+}
+class ClearCart extends LoaderResetAction {
+    constructor() {
+        super(CART_DATA);
+        this.type = CLEAR_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    ClearCart.prototype.type;
+}
+class DeleteCart extends LoaderLoadAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA);
+        this.payload = payload;
+        this.type = DELETE_CART;
+    }
+}
+if (false) {
+    /** @type {?} */
+    DeleteCart.prototype.type;
+    /** @type {?} */
+    DeleteCart.prototype.payload;
+}
+class DeleteCartFail extends LoaderFailAction {
+    /**
+     * @param {?} payload
+     */
+    constructor(payload) {
+        super(CART_DATA, payload);
+        this.payload = payload;
+        this.type = DELETE_CART_FAIL;
+    }
+}
+if (false) {
+    /** @type {?} */
+    DeleteCartFail.prototype.type;
+    /** @type {?} */
+    DeleteCartFail.prototype.payload;
 }
 
 /**
@@ -31684,6 +31684,22 @@ class MultiCartService {
         return this.getCartEntity(tempCartId);
     }
     /**
+     * Merge provided cart to current user cart
+     *
+     * @param {?} __0
+     * @return {?}
+     */
+    mergeToCurrentCart({ userId, cartId, extraData }) {
+        /** @type {?} */
+        const tempCartId = this.generateTempCartId();
+        this.store.dispatch(new MergeCart({
+            userId,
+            cartId,
+            extraData,
+            tempCartId,
+        }));
+    }
+    /**
      * Load cart
      *
      * @param {?} __0
@@ -32006,13 +32022,13 @@ class ActiveCartService {
             this.guestCartMerge(cartId);
         }
         else {
-            this.store.dispatch(new MergeCart({
+            this.multiCartService.mergeToCurrentCart({
                 userId: this.userId,
-                cartId: cartId,
+                cartId,
                 extraData: {
                     active: true,
                 },
-            }));
+            });
         }
     }
     /**
@@ -37015,6 +37031,7 @@ class CartEffects {
                         oldCartId: payload.cartId,
                         toMergeCartGuid: currentCart ? currentCart.guid : undefined,
                         extraData: payload.extraData,
+                        tempCartId: payload.tempCartId,
                     }),
                 ];
             })));
