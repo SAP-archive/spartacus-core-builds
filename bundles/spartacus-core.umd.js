@@ -50397,6 +50397,10 @@
                 id: 'Occ-Personalization-Id',
                 timestamp: 'Occ-Personalization-Time',
             },
+            context: {
+                slotPosition: 'PlaceholderContentSlot',
+                componentId: 'PersonalizationScriptComponent',
+            },
         },
     };
 
@@ -50681,6 +50685,137 @@
         ];
         return PersonalizationModule;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var PersonalizationContextService = /** @class */ (function () {
+        function PersonalizationContextService(config, cmsService) {
+            this.config = config;
+            this.cmsService = cmsService;
+        }
+        /**
+         * @return {?}
+         */
+        PersonalizationContextService.prototype.getPersonalizationContext = /**
+         * @return {?}
+         */
+        function () {
+            var _this = this;
+            return this.cmsService.getCurrentPage().pipe(operators.filter(Boolean), operators.map((/**
+             * @param {?} page
+             * @return {?}
+             */
+            function (page) {
+                return page.slots[_this.config.personalization.context.slotPosition];
+            })), operators.filter(Boolean), operators.map((/**
+             * @param {?} slot
+             * @return {?}
+             */
+            function (slot) {
+                return slot.components.find((/**
+                 * @param {?} i
+                 * @return {?}
+                 */
+                function (i) { return i.uid === _this.config.personalization.context.componentId; }));
+            })), operators.filter(Boolean), operators.map((/**
+             * @param {?} component
+             * @return {?}
+             */
+            function (component) {
+                return _this.buildPersonalizationContext(component.properties.script.data);
+            })));
+        };
+        /**
+         * @private
+         * @param {?} data
+         * @return {?}
+         */
+        PersonalizationContextService.prototype.buildPersonalizationContext = /**
+         * @private
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) {
+            /** @type {?} */
+            var context = JSON.parse(atob(data));
+            context.actions.forEach((/**
+             * @param {?} action
+             * @return {?}
+             */
+            function (action) {
+                Object.keys(action).forEach((/**
+                 * @param {?} key
+                 * @return {?}
+                 */
+                function (key) {
+                    action[key] = atob(action[key]);
+                }));
+            }));
+            for (var i = 0; i < context.segments.length; i++) {
+                context.segments[i] = atob(context.segments[i]);
+            }
+            return context;
+        };
+        PersonalizationContextService.decorators = [
+            { type: core.Injectable, args: [{
+                        providedIn: 'root',
+                    },] }
+        ];
+        /** @nocollapse */
+        PersonalizationContextService.ctorParameters = function () { return [
+            { type: PersonalizationConfig },
+            { type: CmsService }
+        ]; };
+        /** @nocollapse */ PersonalizationContextService.ngInjectableDef = core.ɵɵdefineInjectable({ factory: function PersonalizationContextService_Factory() { return new PersonalizationContextService(core.ɵɵinject(PersonalizationConfig), core.ɵɵinject(CmsService)); }, token: PersonalizationContextService, providedIn: "root" });
+        return PersonalizationContextService;
+    }());
+    if (false) {
+        /**
+         * @type {?}
+         * @protected
+         */
+        PersonalizationContextService.prototype.config;
+        /**
+         * @type {?}
+         * @protected
+         */
+        PersonalizationContextService.prototype.cmsService;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @record
+     */
+    function PersonalizationAction() { }
+    if (false) {
+        /** @type {?} */
+        PersonalizationAction.prototype.action_name;
+        /** @type {?} */
+        PersonalizationAction.prototype.action_type;
+        /** @type {?|undefined} */
+        PersonalizationAction.prototype.customization_name;
+        /** @type {?|undefined} */
+        PersonalizationAction.prototype.customization_code;
+        /** @type {?|undefined} */
+        PersonalizationAction.prototype.variation_name;
+        /** @type {?|undefined} */
+        PersonalizationAction.prototype.variation_code;
+    }
+    /**
+     * @record
+     */
+    function PersonalizationContext() { }
+    if (false) {
+        /** @type {?} */
+        PersonalizationContext.prototype.actions;
+        /** @type {?} */
+        PersonalizationContext.prototype.segments;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -62000,6 +62135,7 @@
     exports.PageRobotsMeta = PageRobotsMeta;
     exports.PageType = PageType;
     exports.PersonalizationConfig = PersonalizationConfig;
+    exports.PersonalizationContextService = PersonalizationContextService;
     exports.PersonalizationModule = PersonalizationModule;
     exports.PriceType = PriceType;
     exports.ProcessModule = ProcessModule;
