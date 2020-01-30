@@ -52072,8 +52072,9 @@ var ProductLoadingService = /** @class */ (function () {
              * @return {?}
              */
             function (productParts) {
-                return productParts.find(Boolean) && deepMerge.apply(void 0, __spread([{}], productParts));
-            })));
+                return productParts.every(Boolean)
+                    ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined;
+            })), distinctUntilChanged());
         }
         else {
             return this.products[productCode][scopes[0]];

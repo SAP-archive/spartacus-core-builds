@@ -46101,7 +46101,9 @@ class ProductLoadingService {
              * @param {?} productParts
              * @return {?}
              */
-            productParts => productParts.find(Boolean) && deepMerge({}, ...productParts))));
+            productParts => productParts.every(Boolean)
+                ? deepMerge({}, ...productParts)
+                : undefined)), distinctUntilChanged());
         }
         else {
             return this.products[productCode][scopes[0]];
