@@ -24665,10 +24665,11 @@ var LoadingScopesService = /** @class */ (function () {
             this.config.backend.loadingScopes[model];
         if (scopesConfig) {
             /** @type {?} */
-            var i = 0;
+            var expandedScopes = __spread(scopes);
             /** @type {?} */
-            var expandedScopes = __spread(scopes).reverse();
-            while (i < expandedScopes.length) {
+            var i = expandedScopes.length;
+            while (i > 0) {
+                i--;
                 /** @type {?} */
                 var includedScopes = scopesConfig[expandedScopes[i]] &&
                     scopesConfig[expandedScopes[i]].include;
@@ -24677,7 +24678,8 @@ var LoadingScopesService = /** @class */ (function () {
                         for (var includedScopes_1 = (e_1 = void 0, __values(includedScopes)), includedScopes_1_1 = includedScopes_1.next(); !includedScopes_1_1.done; includedScopes_1_1 = includedScopes_1.next()) {
                             var includedScope = includedScopes_1_1.value;
                             if (!expandedScopes.includes(includedScope)) {
-                                expandedScopes.push(includedScope);
+                                expandedScopes.splice(i, 0, includedScope);
+                                i++;
                             }
                         }
                     }
@@ -24689,9 +24691,8 @@ var LoadingScopesService = /** @class */ (function () {
                         finally { if (e_1) throw e_1.error; }
                     }
                 }
-                i++;
             }
-            return expandedScopes.reverse();
+            return expandedScopes;
         }
         return scopes;
     };
