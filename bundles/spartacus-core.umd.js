@@ -18585,6 +18585,12 @@
      * @type {?}
      */
     var SERVER_REQUEST_URL = new core.InjectionToken('SERVER_REQUEST_URL');
+    /**
+     * The url of the server request host when running SSR
+     *
+     * @type {?}
+     */
+    var SERVER_REQUEST_ORIGIN = new core.InjectionToken('SERVER_REQUEST_ORIGIN');
 
     /**
      * @fileoverview added by tsickle
@@ -49333,9 +49339,10 @@
      * @param {?} configInit
      * @param {?} languageService
      * @param {?} httpClient
+     * @param {?} serverRequestOrigin
      * @return {?}
      */
-    function i18nextInit(configInit, languageService, httpClient) {
+    function i18nextInit(configInit, languageService, httpClient, serverRequestOrigin) {
         return (/**
          * @return {?}
          */
@@ -49358,8 +49365,10 @@
                 if (config.i18n.backend) {
                     i18next.use(i18nextXhrBackend);
                     /** @type {?} */
+                    var loadPath = getLoadPath(config.i18n.backend.loadPath, serverRequestOrigin);
+                    /** @type {?} */
                     var backend = {
-                        loadPath: config.i18n.backend.loadPath || undefined,
+                        loadPath: loadPath,
                         ajax: i18nextGetHttpClient(httpClient),
                     };
                     i18nextConfig = __assign({}, i18nextConfig, { backend: backend });
@@ -49438,6 +49447,32 @@
             function (error) { return callback(null, { status: error.status }); }));
         });
     }
+    /**
+     * Resolves the relative path to the absolute one in SSR, using the server request's origin.
+     * It's needed, because Angular Universal doesn't support relative URLs in HttpClient. See Angular issues:
+     * - https://github.com/angular/angular/issues/19224
+     * - https://github.com/angular/universal/issues/858
+     * @param {?} path
+     * @param {?} serverRequestOrigin
+     * @return {?}
+     */
+    function getLoadPath(path, serverRequestOrigin) {
+        if (!path) {
+            return undefined;
+        }
+        if (serverRequestOrigin && !path.match(/^http(s)?:\/\//)) {
+            if (path.startsWith('/')) {
+                path = path.slice(1);
+            }
+            if (path.startsWith('./')) {
+                path = path.slice(2);
+            }
+            /** @type {?} */
+            var result = serverRequestOrigin + "/" + path;
+            return result;
+        }
+        return path;
+    }
 
     /**
      * @fileoverview added by tsickle
@@ -49449,7 +49484,12 @@
         {
             provide: core.APP_INITIALIZER,
             useFactory: ɵ0$D,
-            deps: [ConfigInitializerService, LanguageService, http.HttpClient],
+            deps: [
+                ConfigInitializerService,
+                LanguageService,
+                http.HttpClient,
+                [new core.Optional(), SERVER_REQUEST_ORIGIN],
+            ],
             multi: true,
         },
     ];
@@ -54831,6 +54871,10 @@
                 provide: SERVER_REQUEST_URL,
                 useValue: getRequestUrl(options.req),
             },
+            {
+                provide: SERVER_REQUEST_ORIGIN,
+                useValue: getRequestOrigin(options.req),
+            },
         ];
     }
     /**
@@ -54838,7 +54882,14 @@
      * @return {?}
      */
     function getRequestUrl(req) {
-        return req.protocol + '://' + req.get('host') + req.originalUrl;
+        return getRequestOrigin(req) + req.originalUrl;
+    }
+    /**
+     * @param {?} req
+     * @return {?}
+     */
+    function getRequestOrigin(req) {
+        return req.protocol + '://' + req.get('host');
     }
 
     /**
@@ -62209,6 +62260,7 @@
     exports.RoutingModule = RoutingModule;
     exports.RoutingSelector = routingGroup_selectors;
     exports.RoutingService = RoutingService;
+    exports.SERVER_REQUEST_ORIGIN = SERVER_REQUEST_ORIGIN;
     exports.SERVER_REQUEST_URL = SERVER_REQUEST_URL;
     exports.SET_DELIVERY_ADDRESS_PROCESS_ID = SET_DELIVERY_ADDRESS_PROCESS_ID;
     exports.SET_DELIVERY_MODE_PROCESS_ID = SET_DELIVERY_MODE_PROCESS_ID;
