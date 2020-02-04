@@ -37572,7 +37572,9 @@
              * @return {?}
              */
             function (userId) {
-                return _this.store.dispatch(new LoadUserDetails(userId));
+                if (userId !== OCC_USER_ID_ANONYMOUS) {
+                    _this.store.dispatch(new LoadUserDetails(userId));
+                }
             }));
         };
         /**

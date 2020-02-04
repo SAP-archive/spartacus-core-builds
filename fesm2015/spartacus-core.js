@@ -33341,7 +33341,11 @@ class UserService {
          * @param {?} userId
          * @return {?}
          */
-        userId => this.store.dispatch(new LoadUserDetails(userId))));
+        userId => {
+            if (userId !== OCC_USER_ID_ANONYMOUS) {
+                this.store.dispatch(new LoadUserDetails(userId));
+            }
+        }));
     }
     /**
      * Register a new user
