@@ -39071,7 +39071,7 @@ function (uid) {
      * @param {?} state
      * @return {?}
      */
-    function (state) { return state.component; }));
+    function (state) { return (state ? state.component : undefined); }));
 });
 /** @type {?} */
 var componentsSelectorFactory = (/**

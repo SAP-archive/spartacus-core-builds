@@ -34660,7 +34660,7 @@ const componentsDataSelectorFactory = (/**
      * @param {?} state
      * @return {?}
      */
-    state => state.component));
+    state => (state ? state.component : undefined)));
 });
 /** @type {?} */
 const componentsSelectorFactory = (/**
