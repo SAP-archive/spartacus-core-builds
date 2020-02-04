@@ -37967,12 +37967,13 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var SelectiveCartService = /** @class */ (function () {
-    function SelectiveCartService(store, userService, authService, multiCartService) {
+    function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService) {
         var _this = this;
         this.store = store;
         this.userService = userService;
         this.authService = authService;
         this.multiCartService = multiCartService;
+        this.baseSiteService = baseSiteService;
         this.cartId$ = new BehaviorSubject(undefined);
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -37984,14 +37985,18 @@ var SelectiveCartService = /** @class */ (function () {
             _this.cartId = cartId;
             return _this.multiCartService.getCartEntity(cartId);
         })));
-        this.userService.get().subscribe((/**
-         * @param {?} user
+        combineLatest([
+            this.userService.get(),
+            this.baseSiteService.getActive(),
+        ]).subscribe((/**
+         * @param {?} __0
          * @return {?}
          */
-        function (user) {
-            if (user && user.customerId) {
+        function (_a) {
+            var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
+            if (user && user.customerId && activeBaseSite) {
                 _this.customerId = user.customerId;
-                _this.cartId$.next("selectivecart" + _this.customerId);
+                _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
             }
             else if (user && !user.customerId) {
                 _this.cartId$.next(undefined);
@@ -38216,7 +38221,8 @@ var SelectiveCartService = /** @class */ (function () {
         { type: Store },
         { type: UserService },
         { type: AuthService },
-        { type: MultiCartService }
+        { type: MultiCartService },
+        { type: BaseSiteService }
     ]; };
     return SelectiveCartService;
 }());
@@ -38281,6 +38287,11 @@ if (false) {
      * @protected
      */
     SelectiveCartService.prototype.multiCartService;
+    /**
+     * @type {?}
+     * @protected
+     */
+    SelectiveCartService.prototype.baseSiteService;
 }
 
 /**
