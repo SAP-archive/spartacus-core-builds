@@ -16750,18 +16750,21 @@
                 .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
         };
         /**
+         * @param {?} userId
          * @param {?} orderCode
          * @param {?} consignmentCode
          * @return {?}
          */
         OccUserOrderAdapter.prototype.getConsignmentTracking = /**
+         * @param {?} userId
          * @param {?} orderCode
          * @param {?} consignmentCode
          * @return {?}
          */
-        function (orderCode, consignmentCode) {
+        function (userId, orderCode, consignmentCode) {
             /** @type {?} */
             var url = this.occEndpoints.getUrl('consignmentTracking', {
+                userId: userId,
                 orderCode: orderCode,
                 consignmentCode: consignmentCode,
             });
@@ -17467,11 +17470,12 @@
         /**
          * Abstract method used to get consignment tracking details
          * @abstract
+         * @param {?} userId
          * @param {?} orderCode an order code
          * @param {?} consignmentCode a consignment code
          * @return {?}
          */
-        UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode) { };
+        UserOrderAdapter.prototype.getConsignmentTracking = function (userId, orderCode, consignmentCode) { };
         /**
          * Abstract method used to create return request
          * @abstract
@@ -17668,7 +17672,7 @@
                     addresses: 'users/${userId}/addresses',
                     addressDetail: 'users/${userId}/addresses/${addressId}',
                     addressVerification: 'users/${userId}/addresses/verification',
-                    consignmentTracking: 'orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                    consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
                     customerCoupons: 'users/${userId}/customercoupons',
                     claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
                     couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
@@ -56627,17 +56631,19 @@
             return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
         };
         /**
+         * @param {?} userId
          * @param {?} orderCode
          * @param {?} consignmentCode
          * @return {?}
          */
         UserOrderConnector.prototype.getConsignmentTracking = /**
+         * @param {?} userId
          * @param {?} orderCode
          * @param {?} consignmentCode
          * @return {?}
          */
-        function (orderCode, consignmentCode) {
-            return this.adapter.getConsignmentTracking(orderCode, consignmentCode);
+        function (userId, orderCode, consignmentCode) {
+            return this.adapter.getConsignmentTracking(userId, orderCode, consignmentCode);
         };
         /**
          * @param {?} userId
@@ -57675,9 +57681,17 @@
          * @return {?}
          */
         function (orderCode, consignmentCode) {
-            this.store.dispatch(new LoadConsignmentTracking({
-                orderCode: orderCode,
-                consignmentCode: consignmentCode,
+            var _this = this;
+            this.withUserId((/**
+             * @param {?} userId
+             * @return {?}
+             */
+            function (userId) {
+                return _this.store.dispatch(new LoadConsignmentTracking({
+                    userId: userId,
+                    orderCode: orderCode,
+                    consignmentCode: consignmentCode,
+                }));
             }));
         };
         /**
@@ -59746,7 +59760,7 @@
              */
             function (payload) {
                 return _this.userOrderConnector
-                    .getConsignmentTracking(payload.orderCode, payload.consignmentCode)
+                    .getConsignmentTracking(payload.userId, payload.orderCode, payload.consignmentCode)
                     .pipe(operators.map((/**
                  * @param {?} tracking
                  * @return {?}

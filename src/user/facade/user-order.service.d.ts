@@ -2,7 +2,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../auth/facade/auth.service';
 import { ConsignmentTracking } from '../../model/consignment-tracking.model';
-import { Order, OrderHistoryList, CancellationRequestEntryInputList } from '../../model/order.model';
+import { CancellationRequestEntryInputList, Order, OrderHistoryList } from '../../model/order.model';
 import { StateWithProcess } from '../../process/store/process-state';
 import { StateWithUser } from '../store/user-state';
 export declare class UserOrderService {

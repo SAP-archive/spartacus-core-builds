@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { ConsignmentTracking } from '../../../model/consignment-tracking.model';
-import { Order, OrderHistoryList, ReturnRequest, ReturnRequestEntryInputList, CancellationRequestEntryInputList, ReturnRequestList, ReturnRequestModification } from '../../../model/order.model';
+import { CancellationRequestEntryInputList, Order, OrderHistoryList, ReturnRequest, ReturnRequestEntryInputList, ReturnRequestList, ReturnRequestModification } from '../../../model/order.model';
 export declare abstract class UserOrderAdapter {
     /**
      * Abstract method used to load order data.
@@ -23,7 +23,7 @@ export declare abstract class UserOrderAdapter {
      * @param orderCode an order code
      * @param consignmentCode a consignment code
      */
-    abstract getConsignmentTracking(orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
+    abstract getConsignmentTracking(userId: string, orderCode: string, consignmentCode: string): Observable<ConsignmentTracking>;
     /**
      * Abstract method used to create return request
      * @param userId The `userId` for given user

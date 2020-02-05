@@ -6,11 +6,13 @@ export declare const LOAD_CONSIGNMENT_TRACKING_SUCCESS = "[User] Load Consignmen
 export declare const CLEAR_CONSIGNMENT_TRACKING = "[User] Clear Consignment Tracking";
 export declare class LoadConsignmentTracking implements Action {
     payload: {
+        userId: string;
         orderCode: string;
         consignmentCode: string;
     };
     readonly type = "[User] Load Consignment Tracking";
     constructor(payload: {
+        userId: string;
         orderCode: string;
         consignmentCode: string;
     });

@@ -14383,13 +14383,15 @@ class OccUserOrderAdapter {
             .pipe(this.converter.pipeable(ORDER_HISTORY_NORMALIZER));
     }
     /**
+     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
      * @return {?}
      */
-    getConsignmentTracking(orderCode, consignmentCode) {
+    getConsignmentTracking(userId, orderCode, consignmentCode) {
         /** @type {?} */
         const url = this.occEndpoints.getUrl('consignmentTracking', {
+            userId,
             orderCode,
             consignmentCode,
         });
@@ -14989,11 +14991,12 @@ if (false) {
     /**
      * Abstract method used to get consignment tracking details
      * @abstract
+     * @param {?} userId
      * @param {?} orderCode an order code
      * @param {?} consignmentCode a consignment code
      * @return {?}
      */
-    UserOrderAdapter.prototype.getConsignmentTracking = function (orderCode, consignmentCode) { };
+    UserOrderAdapter.prototype.getConsignmentTracking = function (userId, orderCode, consignmentCode) { };
     /**
      * Abstract method used to create return request
      * @abstract
@@ -15178,7 +15181,7 @@ const defaultOccUserConfig = {
                 addresses: 'users/${userId}/addresses',
                 addressDetail: 'users/${userId}/addresses/${addressId}',
                 addressVerification: 'users/${userId}/addresses/verification',
-                consignmentTracking: 'orders/${orderCode}/consignments/${consignmentCode}/tracking',
+                consignmentTracking: 'users/${userId}/orders/${orderCode}/consignments/${consignmentCode}/tracking',
                 customerCoupons: 'users/${userId}/customercoupons',
                 claimCoupon: 'users/${userId}/customercoupons/${couponCode}/claim',
                 couponNotification: 'users/${userId}/customercoupons/${couponCode}/notification',
@@ -49701,12 +49704,13 @@ class UserOrderConnector {
         return this.adapter.loadHistory(userId, pageSize, currentPage, sort);
     }
     /**
+     * @param {?} userId
      * @param {?} orderCode
      * @param {?} consignmentCode
      * @return {?}
      */
-    getConsignmentTracking(orderCode, consignmentCode) {
-        return this.adapter.getConsignmentTracking(orderCode, consignmentCode);
+    getConsignmentTracking(userId, orderCode, consignmentCode) {
+        return this.adapter.getConsignmentTracking(userId, orderCode, consignmentCode);
     }
     /**
      * @param {?} userId
@@ -50385,10 +50389,15 @@ class UserOrderService {
      * @return {?}
      */
     loadConsignmentTracking(orderCode, consignmentCode) {
-        this.store.dispatch(new LoadConsignmentTracking({
-            orderCode: orderCode,
-            consignmentCode: consignmentCode,
-        }));
+        this.withUserId((/**
+         * @param {?} userId
+         * @return {?}
+         */
+        userId => this.store.dispatch(new LoadConsignmentTracking({
+            userId,
+            orderCode,
+            consignmentCode,
+        }))));
     }
     /**
      * Cleaning consignment tracking
@@ -51908,7 +51917,7 @@ class ConsignmentTrackingEffects {
          */
         payload => {
             return this.userOrderConnector
-                .getConsignmentTracking(payload.orderCode, payload.consignmentCode)
+                .getConsignmentTracking(payload.userId, payload.orderCode, payload.consignmentCode)
                 .pipe(map((/**
              * @param {?} tracking
              * @return {?}
