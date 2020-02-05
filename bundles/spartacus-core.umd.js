@@ -6268,8 +6268,6 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /** @type {?} */
-    var CURRENT_CONTEXT_KEY = 'current';
-    /** @type {?} */
     var UNKNOWN_ERROR = {
         error: 'unknown error',
     };
@@ -6323,16 +6321,6 @@
             }));
         }
         return isObject(error) ? UNKNOWN_ERROR : error;
-    }
-    /**
-     * @param {?} pageContext
-     * @return {?}
-     */
-    function serializePageContext(pageContext) {
-        if (!pageContext) {
-            return CURRENT_CONTEXT_KEY;
-        }
-        return pageContext.type + "-" + pageContext.id;
     }
 
     /**
@@ -9674,7 +9662,7 @@
          * @return {?}
          */
         function (consent) {
-            return consent.consentState === ANONYMOUS_CONSENT_STATUS.GIVEN;
+            return consent && consent.consentState === ANONYMOUS_CONSENT_STATUS.GIVEN;
         };
         /**
          * Withdraw a consent for the given `templateCode`
@@ -9733,7 +9721,7 @@
          * @return {?}
          */
         function (consent) {
-            return consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN;
+            return (consent && consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN);
         };
         /**
          * Toggles the dismissed state of the anonymous consents banner.
@@ -38164,13 +38152,12 @@
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var SelectiveCartService = /** @class */ (function () {
-        function SelectiveCartService(store, userService, authService, multiCartService, baseSiteService) {
+        function SelectiveCartService(store, userService, authService, multiCartService) {
             var _this = this;
             this.store = store;
             this.userService = userService;
             this.authService = authService;
             this.multiCartService = multiCartService;
-            this.baseSiteService = baseSiteService;
             this.cartId$ = new rxjs.BehaviorSubject(undefined);
             this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
             this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -38182,18 +38169,14 @@
                 _this.cartId = cartId;
                 return _this.multiCartService.getCartEntity(cartId);
             })));
-            rxjs.combineLatest([
-                this.userService.get(),
-                this.baseSiteService.getActive(),
-            ]).subscribe((/**
-             * @param {?} __0
+            this.userService.get().subscribe((/**
+             * @param {?} user
              * @return {?}
              */
-            function (_a) {
-                var _b = __read(_a, 2), user = _b[0], activeBaseSite = _b[1];
-                if (user && user.customerId && activeBaseSite) {
+            function (user) {
+                if (user && user.customerId) {
                     _this.customerId = user.customerId;
-                    _this.cartId$.next("selectivecart" + activeBaseSite + _this.customerId);
+                    _this.cartId$.next("selectivecart" + _this.customerId);
                 }
                 else if (user && !user.customerId) {
                     _this.cartId$.next(undefined);
@@ -38418,8 +38401,7 @@
             { type: store.Store },
             { type: UserService },
             { type: AuthService },
-            { type: MultiCartService },
-            { type: BaseSiteService }
+            { type: MultiCartService }
         ]; };
         return SelectiveCartService;
     }());
@@ -38484,11 +38466,6 @@
          * @protected
          */
         SelectiveCartService.prototype.multiCartService;
-        /**
-         * @type {?}
-         * @protected
-         */
-        SelectiveCartService.prototype.baseSiteService;
     }
 
     /**
@@ -39535,6 +39512,32 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var CURRENT_CONTEXT_KEY = 'current';
+    /**
+     *
+     * Serializes the provided page context.
+     * The pattern used for serialization is: `pageContext.type-pageContext.id`.
+     *
+     * @param {?} pageContext to serialize
+     * @param {?=} ignoreContentPageId if set to true, and the PageType is of type ContentPage, then the serialized page context will not contain the ID.
+     * Otherwise, the page context if fully serialized.
+     * @return {?}
+     */
+    function serializePageContext(pageContext, ignoreContentPageId) {
+        if (!pageContext) {
+            return CURRENT_CONTEXT_KEY;
+        }
+        if (ignoreContentPageId && pageContext.type === PageType.CONTENT_PAGE) {
+            return "" + pageContext.type;
+        }
+        return pageContext.type + "-" + pageContext.id;
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var CmsService = /** @class */ (function () {
         function CmsService(store, routingService) {
             this.store = store;
@@ -39639,7 +39642,7 @@
          */
         function (uid, pageContext) {
             /** @type {?} */
-            var context = serializePageContext(pageContext);
+            var context = serializePageContext(pageContext, true);
             if (!this.components[uid]) {
                 // create the component data structure, if it doesn't already exist
                 this.components[uid] = {};
@@ -39682,7 +39685,7 @@
                 })));
             }
             /** @type {?} */
-            var context = serializePageContext(pageContext);
+            var context = serializePageContext(pageContext, true);
             /** @type {?} */
             var loading$ = rxjs.combineLatest([
                 this.routingService.getNextPageContext(),
@@ -39700,7 +39703,7 @@
                 // TODO(issue:3649), TODO(issue:3668) - this optimization could be removed
                 /** @type {?} */
                 var couldBeLoadedWithPageData = nextContext
-                    ? serializePageContext(nextContext) === context
+                    ? serializePageContext(nextContext, true) === context
                     : false;
                 if (!attemptedLoad && !couldBeLoadedWithPageData) {
                     _this.store.dispatch(new LoadCmsComponent(uid, pageContext));
@@ -48199,14 +48202,14 @@
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext);
+                var context = serializePageContext(action.pageContext, true);
                 return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_a = {}, _a[context] = pageContextReducer(state.pageContext[context], action), _a)) });
             }
             case LOAD_CMS_COMPONENT_FAIL: {
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext);
+                var context = serializePageContext(action.pageContext, true);
                 return __assign({}, state, { pageContext: __assign({}, state.pageContext, (_b = {}, _b[context] = pageContextReducer(state.pageContext[context], action), _b)) });
             }
             case CMS_GET_COMPONENET_FROM_PAGE:
@@ -48214,7 +48217,7 @@
                 /** @type {?} */
                 var pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
                 /** @type {?} */
-                var context = serializePageContext(action.pageContext);
+                var context = serializePageContext(action.pageContext, true);
                 return __assign({}, state, { component: (/** @type {?} */ (action.payload)), pageContext: __assign({}, state.pageContext, (_c = {}, _c[context] = pageContextReducer(state.pageContext[context], action), _c)) });
             }
         }

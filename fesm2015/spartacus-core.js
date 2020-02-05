@@ -5299,8 +5299,6 @@ StateModule.decorators = [
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /** @type {?} */
-const CURRENT_CONTEXT_KEY = 'current';
-/** @type {?} */
 const UNKNOWN_ERROR = {
     error: 'unknown error',
 };
@@ -5354,16 +5352,6 @@ function makeErrorSerializable(error) {
         }));
     }
     return isObject(error) ? UNKNOWN_ERROR : error;
-}
-/**
- * @param {?} pageContext
- * @return {?}
- */
-function serializePageContext(pageContext) {
-    if (!pageContext) {
-        return CURRENT_CONTEXT_KEY;
-    }
-    return `${pageContext.type}-${pageContext.id}`;
 }
 
 /**
@@ -8553,7 +8541,7 @@ class AnonymousConsentsService {
      * @return {?}
      */
     isConsentGiven(consent) {
-        return consent.consentState === ANONYMOUS_CONSENT_STATUS.GIVEN;
+        return consent && consent.consentState === ANONYMOUS_CONSENT_STATUS.GIVEN;
     }
     /**
      * Withdraw a consent for the given `templateCode`
@@ -8584,7 +8572,7 @@ class AnonymousConsentsService {
      * @return {?}
      */
     isConsentWithdrawn(consent) {
-        return consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN;
+        return (consent && consent.consentState === ANONYMOUS_CONSENT_STATUS.WITHDRAWN);
     }
     /**
      * Toggles the dismissed state of the anonymous consents banner.
@@ -33669,14 +33657,12 @@ class SelectiveCartService {
      * @param {?} userService
      * @param {?} authService
      * @param {?} multiCartService
-     * @param {?} baseSiteService
      */
-    constructor(store, userService, authService, multiCartService, baseSiteService) {
+    constructor(store, userService, authService, multiCartService) {
         this.store = store;
         this.userService = userService;
         this.authService = authService;
         this.multiCartService = multiCartService;
-        this.baseSiteService = baseSiteService;
         this.cartId$ = new BehaviorSubject(undefined);
         this.PREVIOUS_USER_ID_INITIAL_VALUE = 'PREVIOUS_USER_ID_INITIAL_VALUE';
         this.previousUserId = this.PREVIOUS_USER_ID_INITIAL_VALUE;
@@ -33688,17 +33674,14 @@ class SelectiveCartService {
             this.cartId = cartId;
             return this.multiCartService.getCartEntity(cartId);
         })));
-        combineLatest([
-            this.userService.get(),
-            this.baseSiteService.getActive(),
-        ]).subscribe((/**
-         * @param {?} __0
+        this.userService.get().subscribe((/**
+         * @param {?} user
          * @return {?}
          */
-        ([user, activeBaseSite]) => {
-            if (user && user.customerId && activeBaseSite) {
+        user => {
+            if (user && user.customerId) {
                 this.customerId = user.customerId;
-                this.cartId$.next(`selectivecart${activeBaseSite}${this.customerId}`);
+                this.cartId$.next(`selectivecart${this.customerId}`);
             }
             else if (user && !user.customerId) {
                 this.cartId$.next(undefined);
@@ -33870,8 +33853,7 @@ SelectiveCartService.ctorParameters = () => [
     { type: Store },
     { type: UserService },
     { type: AuthService },
-    { type: MultiCartService },
-    { type: BaseSiteService }
+    { type: MultiCartService }
 ];
 if (false) {
     /**
@@ -33934,11 +33916,6 @@ if (false) {
      * @protected
      */
     SelectiveCartService.prototype.multiCartService;
-    /**
-     * @type {?}
-     * @protected
-     */
-    SelectiveCartService.prototype.baseSiteService;
 }
 
 /**
@@ -34898,6 +34875,32 @@ var cmsGroup_selectors = /*#__PURE__*/Object.freeze({
  * @fileoverview added by tsickle
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+/** @type {?} */
+const CURRENT_CONTEXT_KEY = 'current';
+/**
+ *
+ * Serializes the provided page context.
+ * The pattern used for serialization is: `pageContext.type-pageContext.id`.
+ *
+ * @param {?} pageContext to serialize
+ * @param {?=} ignoreContentPageId if set to true, and the PageType is of type ContentPage, then the serialized page context will not contain the ID.
+ * Otherwise, the page context if fully serialized.
+ * @return {?}
+ */
+function serializePageContext(pageContext, ignoreContentPageId) {
+    if (!pageContext) {
+        return CURRENT_CONTEXT_KEY;
+    }
+    if (ignoreContentPageId && pageContext.type === PageType.CONTENT_PAGE) {
+        return `${pageContext.type}`;
+    }
+    return `${pageContext.type}-${pageContext.id}`;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 class CmsService {
     /**
      * @param {?} store
@@ -34954,7 +34957,7 @@ class CmsService {
      */
     getComponentData(uid, pageContext) {
         /** @type {?} */
-        const context = serializePageContext(pageContext);
+        const context = serializePageContext(pageContext, true);
         if (!this.components[uid]) {
             // create the component data structure, if it doesn't already exist
             this.components[uid] = {};
@@ -34987,7 +34990,7 @@ class CmsService {
             currentContext => this.getComponentData(uid, currentContext))));
         }
         /** @type {?} */
-        const context = serializePageContext(pageContext);
+        const context = serializePageContext(pageContext, true);
         /** @type {?} */
         const loading$ = combineLatest([
             this.routingService.getNextPageContext(),
@@ -35004,7 +35007,7 @@ class CmsService {
             // TODO(issue:3649), TODO(issue:3668) - this optimization could be removed
             /** @type {?} */
             const couldBeLoadedWithPageData = nextContext
-                ? serializePageContext(nextContext) === context
+                ? serializePageContext(nextContext, true) === context
                 : false;
             if (!attemptedLoad && !couldBeLoadedWithPageData) {
                 this.store.dispatch(new LoadCmsComponent(uid, pageContext));
@@ -42323,14 +42326,14 @@ function reducer$e(state = initialState$e, action) {
             /** @type {?} */
             const pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            const context = serializePageContext(action.pageContext);
+            const context = serializePageContext(action.pageContext, true);
             return Object.assign({}, state, { pageContext: Object.assign({}, state.pageContext, { [context]: pageContextReducer(state.pageContext[context], action) }) });
         }
         case LOAD_CMS_COMPONENT_FAIL: {
             /** @type {?} */
             const pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            const context = serializePageContext(action.pageContext);
+            const context = serializePageContext(action.pageContext, true);
             return Object.assign({}, state, { pageContext: Object.assign({}, state.pageContext, { [context]: pageContextReducer(state.pageContext[context], action) }) });
         }
         case CMS_GET_COMPONENET_FROM_PAGE:
@@ -42338,7 +42341,7 @@ function reducer$e(state = initialState$e, action) {
             /** @type {?} */
             const pageContextReducer = loaderReducer(action.meta.entityType, componentExistsReducer);
             /** @type {?} */
-            const context = serializePageContext(action.pageContext);
+            const context = serializePageContext(action.pageContext, true);
             return Object.assign({}, state, { component: (/** @type {?} */ (action.payload)), pageContext: Object.assign({}, state.pageContext, { [context]: pageContextReducer(state.pageContext[context], action) }) });
         }
     }
