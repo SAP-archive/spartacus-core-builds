@@ -17,6 +17,7 @@ export declare class ProductLoadingService {
     constructor(store: Store<StateWithProduct>, loadingScopes: LoadingScopesService, actions$: Actions, platformId: any);
     get(productCode: string, scopes: string[]): Observable<Product>;
     protected initProductScopes(productCode: string, scopes: string[]): void;
+    protected getScopesIndex(scopes: string[]): string;
     /**
      * Creates observable for providing specified product data for the scope
      *

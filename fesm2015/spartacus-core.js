@@ -46171,22 +46171,7 @@ class ProductLoadingService {
     get(productCode, scopes) {
         scopes = this.loadingScopes.expand('product', scopes);
         this.initProductScopes(productCode, scopes);
-        if (scopes.length > 1) {
-            return combineLatest(scopes.map((/**
-             * @param {?} scope
-             * @return {?}
-             */
-            scope => this.products[productCode][scope]))).pipe(auditTime(0), map((/**
-             * @param {?} productParts
-             * @return {?}
-             */
-            productParts => productParts.every(Boolean)
-                ? deepMerge({}, ...productParts)
-                : undefined)), distinctUntilChanged());
-        }
-        else {
-            return this.products[productCode][scopes[0]];
-        }
+        return this.products[productCode][this.getScopesIndex(scopes)];
     }
     /**
      * @protected
@@ -46203,6 +46188,27 @@ class ProductLoadingService {
                 this.products[productCode][scope] = this.getProductForScope(productCode, scope);
             }
         }
+        if (scopes.length > 1) {
+            this.products[productCode][this.getScopesIndex(scopes)] = combineLatest(scopes.map((/**
+             * @param {?} scope
+             * @return {?}
+             */
+            scope => this.products[productCode][scope]))).pipe(auditTime(0), map((/**
+             * @param {?} productParts
+             * @return {?}
+             */
+            productParts => productParts.every(Boolean)
+                ? deepMerge({}, ...productParts)
+                : undefined)), distinctUntilChanged());
+        }
+    }
+    /**
+     * @protected
+     * @param {?} scopes
+     * @return {?}
+     */
+    getScopesIndex(scopes) {
+        return scopes.join('ɵ');
     }
     /**
      * Creates observable for providing specified product data for the scope

@@ -52137,26 +52137,9 @@ var ProductLoadingService = /** @class */ (function () {
      * @return {?}
      */
     function (productCode, scopes) {
-        var _this = this;
         scopes = this.loadingScopes.expand('product', scopes);
         this.initProductScopes(productCode, scopes);
-        if (scopes.length > 1) {
-            return combineLatest(scopes.map((/**
-             * @param {?} scope
-             * @return {?}
-             */
-            function (scope) { return _this.products[productCode][scope]; }))).pipe(auditTime(0), map((/**
-             * @param {?} productParts
-             * @return {?}
-             */
-            function (productParts) {
-                return productParts.every(Boolean)
-                    ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined;
-            })), distinctUntilChanged());
-        }
-        else {
-            return this.products[productCode][scopes[0]];
-        }
+        return this.products[productCode][this.getScopesIndex(scopes)];
     };
     /**
      * @protected
@@ -52172,6 +52155,7 @@ var ProductLoadingService = /** @class */ (function () {
      */
     function (productCode, scopes) {
         var e_1, _a;
+        var _this = this;
         if (!this.products[productCode]) {
             this.products[productCode] = {};
         }
@@ -52190,6 +52174,33 @@ var ProductLoadingService = /** @class */ (function () {
             }
             finally { if (e_1) throw e_1.error; }
         }
+        if (scopes.length > 1) {
+            this.products[productCode][this.getScopesIndex(scopes)] = combineLatest(scopes.map((/**
+             * @param {?} scope
+             * @return {?}
+             */
+            function (scope) { return _this.products[productCode][scope]; }))).pipe(auditTime(0), map((/**
+             * @param {?} productParts
+             * @return {?}
+             */
+            function (productParts) {
+                return productParts.every(Boolean)
+                    ? deepMerge.apply(void 0, __spread([{}], productParts)) : undefined;
+            })), distinctUntilChanged());
+        }
+    };
+    /**
+     * @protected
+     * @param {?} scopes
+     * @return {?}
+     */
+    ProductLoadingService.prototype.getScopesIndex = /**
+     * @protected
+     * @param {?} scopes
+     * @return {?}
+     */
+    function (scopes) {
+        return scopes.join('ɵ');
     };
     /**
      * Creates observable for providing specified product data for the scope
